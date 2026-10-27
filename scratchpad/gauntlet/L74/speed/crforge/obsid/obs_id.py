@@ -54,6 +54,8 @@ def src_shas() -> dict:
                                                                       "vocab.py")})
     files.update({f"builder/{p.name}": str(p) for p in (HERE.parent / "CfSpeed.java", HERE / "CfObsBind.java",
                                                         HERE / "CfOppElixir.java", HERE / "CfPubObj.java", HERE / "obs_id.py")})
+    files.update({f"pipeline/{m}": str(RL / "pipeline" / m) for m in ("sim_unit_state.py", "fast_obs.py", "model_gen.py")}
+                 | {"builder/CfCue.java": str(HERE / "CfCue.java")})      # S3b-3f: the cue path
     out = {k: hashlib.sha256(Path(v).read_bytes()).hexdigest() for k, v in files.items()}
     fb = os.environ.get("OBSID_FACADE_BUILD")
     if fb:
@@ -374,6 +376,79 @@ class JavaPub:
         return out
 
 
+class JavaCue:
+    """S3b-3f: CfCue on the facade battle -> "cue" ([64, 22] float32, e1_eval.sim_cue_rows), from the tok / mask the
+    builder before it (JavaMain) left in its buffers for this row. The card-table facts (sim_unit_state._tbl: hit speed,
+    hides_when_not_attacking, the idle buff, each buff's _statuses and table totals) go to CfCue.Tables on first sight;
+    the buff memo lives on the production Match as production's does (``_s3b3f_cue`` beside ``_cue_memo``).
+    Cost diagnostics (ns, summed): production's sim_cue_rows (timed in place), fast_obs.sim_cue_rows (S1b, on a copy of
+    the memo), the Java build inside the JVM and the Python call around it."""
+    TAG = {"frozen": 1, "slowed": 2, "raged": 4, "invisible": 8, "shielded": 16}   # CfCue's status bits
+
+    def __init__(self, main, E):
+        from pipeline import sim_unit_state as SU
+        self.main, self.Cue, self.SU = main, jpype.JClass("CfCue"), SU
+        self.T = self.Cue.Tables()
+        sim = sys.modules["royalesim"]
+        bit = {n: 1 << b for b, n in enumerate(sim.STATUS_BITS)}
+        self.T.underground, self.T.invisible, self.T.windup = bit["underground"], bit["invisible"], bit["ability_windup"]
+        assert (self.T.underground, self.T.invisible, self.T.windup) == (1, 2, 64)   # the bits CfCue.vector computes
+        self.tbl = SU._tbl(sim)
+        BB = jpype.JClass("java.nio.ByteBuffer")
+        self.bo = BB.allocateDirect(64 * 22 * 4).order(jpype.JClass("java.nio.ByteOrder").nativeOrder())
+        self.outF, self.v = self.bo.asFloatBuffer(), np.frombuffer(memoryview(self.bo), np.float32)
+        from pipeline import fast_obs
+        self.fast, self.py_ns = fast_obs.sim_cue_rows, 0
+        orig = E.sim_cue_rows
+
+        def timed(match):                                 # production's call, unchanged, timed
+            t = time.perf_counter_ns()
+            r = orig(match)
+            self.py_ns = time.perf_counter_ns() - t
+            return r
+        E.sim_cue_rows = timed
+
+    def _bits(self, alias) -> int:
+        return sum(self.TAG[t] for t in self.SU._statuses(alias, self.tbl["buffs"]) if t in self.TAG)
+
+    def fill(self) -> None:
+        for m in self.T.takeMissing():
+            kind, name = str(m)[0], str(m)[2:]
+            if kind == "B":
+                ct = self.tbl["char"].get(name, {})
+                hs, ib = ct.get("hit_speed_ms"), ct.get("idle_buff")
+                assert hs is None or type(hs) is int, (name, hs)
+                self.T.putBody(name, int(hs or 0), bool(ct.get("hides_when_not_attacking")),
+                               self._bits(ib["buff_name"]) if ib else -1)
+            else:
+                self.T.putBuff(name, self._bits(name), max(self.tbl["totals"].get(a, 0) for a in name.split("|")))
+
+    def __call__(self, s) -> dict:
+        seat = s.__dict__.get("_s3b3f_cue")
+        if seat is None:
+            seat = s._s3b3f_cue = self.Cue.Seat()
+        jn0 = int(seat.nanos)
+        while True:
+            t = time.perf_counter_ns()
+            ok = self.Cue.build(s.env.core._cf, int(s.side), self.T, seat, self.main.tokF, 0, self.main.b["mask"], 0,
+                                self.outF, 0)
+            t = time.perf_counter_ns() - t
+            if ok:
+                break
+            self.fill()
+        memo = s._cue_memo                                # S1b's path on a copy (the production memo stays as it is)
+        s._cue_memo = dict(memo)
+        tf = time.perf_counter_ns()
+        self.fast(s)
+        tf = time.perf_counter_ns() - tf
+        s._cue_memo = memo
+        prod = s._gen_row["cue"]
+        return {"cue": self.v.reshape(64, 22).copy(), "_n_cue_py_ns": self.py_ns, "_n_cue_fast_ns": tf,
+                "_n_cue_java_ns": int(seat.nanos) - jn0, "_n_cue_jcall_ns": t,
+                "_n_rows_cue_active": int(bool(prod[:, 0].any())), "_n_cue_tokens": int((prod[:, 0] > 0).sum()),
+                **{f"_n_cue_col{k:02d}": int((prod[:, k] != 0).sum()) for k in range(22)}}   # tokens with column k set
+
+
 BUILDERS: list = []   # filled in main (they need the JVM); a later ticket appends one builder per ported key
 
 
@@ -468,6 +543,7 @@ def main():
     BUILDERS[0].opp_spells, BUILDERS[0].gid = bool(a.opp_spells), model.gid
     ident = JavaIdent(model)
     BUILDERS.append(ident)
+    BUILDERS.append(JavaCue(BUILDERS[0], E))           # S3b-3f: "cue" from JavaMain's tok / mask
     pub = JavaPub(BUILDERS[0], model)                   # S3b-3d: projectiles / effects / own_ability / opp_cycle
     BUILDERS.append(pub)
     cfg = S.live_cfg(0.5, info["grid"])
@@ -570,6 +646,7 @@ def main():
               f"one-hots. sc[{OPP_EL}] (opponent elixir) is production's PUBLIC estimate on both sides (S3b-3c: CfOppElixir), "
               "compared like every index; no engine truth is read or logged. sc@nospell_opp = sc on the rows whose "
               "opponent deck has no spell card; _opp_plays / _opp_spawns = PublicObserver's play / spawn tallies."))
+    out["acceptance"]["cue_identical"] = keys.get("cue", {}).get("status") == "IDENTICAL"     # S3b-3f
     Path(a.out).write_text(json.dumps(out, indent=1, default=str))
     print(json.dumps({k: out[k] for k in ("seat_rows", "tick_mismatch", "diag", "opp_counter_edges", "acceptance",
                                           "status_by_key")}, default=str))

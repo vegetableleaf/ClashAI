@@ -496,3 +496,62 @@ python -I project.py results/loop_n2048_c2_t24.json --extra-core-s 0.05   # lapt
 - Command (pod 30408): `OBSID_RL=/workspace/s3b3d/rl OBSID_CLXIII=/workspace/f1c/models/succ48_o_s91_u0075_grafted.pt
   OBSID_BUILD=/workspace/s3b3d/build_live rl/scratchpad/gauntlet/L74/speed/crforge/obsid/run.sh out/s3b3d_live.json
   --n 56 [--set extrapolate_ticks=0]`.
+
+## S3b-3f: the cue rows in Java (`obsid/CfCue.java`)
+
+- **What production computes (a, code at 0446ab3; sources pinned in each JSON).** CLXIII has a cue layer
+  (`model.cue_in`), so `e1_eval.gen_row_keys` lists `cue` and `Match.gen_row` sets `row["cue"] = sim_cue_rows(match)`:
+  [64, 22] float32 = `model_gen.cue_vector` (cue_known, state one-hot 7, charging, Tesla hidden, has target, target is a
+  tower, phase one-hot 3, attack frac, frozen / slowed / raged / invisible / shielded, slow frac). `fast_obs.sim_cue_rows`
+  (S1b) gives the same rows when installed; the harness runs the original. Its sources:
+  1. `sim_unit_state.extract(core._battle, match._cue_memo, hit_window_ms=100)`. On the facade `save()` =
+     `CfCore.cueSave()` (attack timer, `phase()`, river jump / dash from the view state, kind, base speed, `hide()`,
+     the charge flag) and `state_json()` = `CfCore.state()` (uid = entity id, team, x / y, deploy ticks, `stunTicks()`,
+     shield, target = `acquired()`, status flags = body_map flags | underground / invisible / hidden | hero | charged |
+     `abilityBits()` | evolved, buffs by name at their longest remaining ms, FOREVER = 999999, the idle buff left out).
+     Units = alive bodies but the Mighty Miner bomb, named by crforge body row (`unit_types_json`). Hit speed,
+     `hides_when_not_attacking`, the idle buff, each buff's status words (`_statuses`) and table totals come from the
+     royalesim module's 10-19 card table looked up by those crforge names. Flag bits read: underground 1, invisible 2,
+     ability_windup 64 (`royalesim.STATUS_BITS`).
+  2. Per unit: state (tunnelling > deploying > jumping > casting > engaged > moving > idle), phase (idle; hit while
+     progress mod hit speed < 100 ms; else windup), frac = round(progress mod hs / hs, 3).
+  3. **Memo (time-dependent).** One dict per seat per match (`Match._cue_memo`), updated at every decision of that seat
+     for every unit (towers too): total(uid, buff) = max(ms now, the earlier total, the table total); a buff's frac =
+     round(ms / total, 3). So a frac depends on which earlier decisions of that seat saw the buff.
+  4. **Matching (extrapolation-dependent).** The unit tokens (mask, col 13 = 0, a side flag) of the prepared `tok`,
+     which is the look-ahead view (tick + 26 at the live cfg), are matched to the bodies of the battle NOW (not
+     extrapolated; towers out; by uid) on the same side, distance hypot(dx * 18, dy * 32) tiles, pairs taken globally
+     nearest-first (`np.argmin` order), within 3 tiles; unmatched rows stay 0.
+  Not read: the opponent's hand or elixir; extract's projectiles / areas (built, unused by the cue).
+- **Port.** `CfCue.build(core, seat, Tables, Seat, tok, mask, out)` reads the same crforge values through CfCore's own
+  helpers (same package), the card-table facts by name from `CfCue.Tables` (filled by `obs_id.JavaCue.fill` from
+  `_tbl` / `_statuses` on first sight; a build with an unknown name writes nothing and asks for them), the memo per seat;
+  tok / mask are JavaMain's buffers for the row. Python `round(x, 3)` = `BigDecimal` HALF_EVEN; a body's x / y =
+  `a / 1000` (= `round(a * 18 / 18000, 3)`, checked for a in -100..40,000); `np.hypot` = `Math.hypot` (no difference
+  seen).
+- **Result (a), facade 0446ab3 (`CfCore.java` sha256 57e3755b...), 56 matches each, `cue` byte-identical on every row:**
+
+  | cfg | JSON | seat-rows | rows with a cue | tokens with a cue | cue |
+  |---|---|---:|---:|---:|---|
+  | live | `results/cue_live.json` | 49,822 | 31,297 | 177,603 | **identical** |
+  | extrapolate 0 | `results/cue_x0.json` | 50,353 | 31,312 | 181,374 | **identical** |
+  | live, census pairs with Miner / Goblin Drill / hero Knight / Monk / Mighty Miner (pod wrapper, 14 matches) | `results/cue_cover.json` | 11,454 | 8,221 | 45,435 | identical |
+
+  Tokens with each column set (live; `diag.cue_colNN`): every column but state=tunnelling (col 6) and state=casting
+  (col 7) is set on 150+ tokens. Tunnelling: 0 live, 126 in the coverage run (identical). **Casting: 0 tokens in all
+  three runs (b: untested)**; it is the same flag test as tunnelling, on `abilityBits` bit 64.
+- **Cost per seat-row (a, in-process on the same rows, pod under load ~14, two runs at once):**
+
+  | path | live | extrapolate 0 |
+  |---|---:|---:|
+  | production `e1_eval.sim_cue_rows` | 791 us | 767 us |
+  | `fast_obs.sim_cue_rows` (S1b; timed on a copy of the memo) | 389 us | 376 us |
+  | `CfCue.build` inside the JVM | 15.5 us | 13.9 us |
+  | the same call from Python (JPype) | 21.7 us | 20.3 us |
+
+  The Java path takes tok / mask as built; the first-sight table fills are left out of its time.
+- **Seen on the way (not this ticket's key).** On facade 0446ab3 the Java `unit_form` is no longer identical (a:
+  39,156 / 49,822 live rows equal, 40,846 / 50,353 at extrapolate 0; first diffs prod form 1, Java 0). Cause (b, from
+  the code, not traced row by row): that facade sets STATUS_EVOLVED (8) from the body's `_EV` row (`evolvedBit`), and
+  `FacadeMatch.unitCode` still takes the form from the body_map flags alone. tok / mask / the 10 identity keys stay identical; sc differs at index 5 only (the counter,
+  S3b-3c).
