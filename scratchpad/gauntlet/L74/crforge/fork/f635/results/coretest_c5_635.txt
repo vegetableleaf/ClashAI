@@ -1,0 +1,3 @@
+core tests 2149 failures 3 errors 0 skipped 2
+[('UnsupportedOperationException', 3)]
+[('BattleChargeTest', 2), ('ActionRowsTest', 1)]

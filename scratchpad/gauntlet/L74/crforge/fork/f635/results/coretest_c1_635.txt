@@ -1,0 +1,3 @@
+core tests 2145 failures 13 errors 0 skipped 2
+[('IllegalArgumentException', 8), ('UnsupportedOperationException', 5)]
+[('BattleTravellingHitDrainTest', 3), ('BattleChargeTest', 2), ('BattleHunterEvoTest', 2), ('ActionRowsTest', 1), ('AttackSequenceEntryFormsTest', 1), ('BattleAttackSequenceTest', 1), ('BattleElectroGiantTest', 1), ('HunterDeflectTest', 1), ('HunterVolleyQueuedTotalTest', 1)]

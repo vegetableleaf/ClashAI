@@ -1,0 +1,156 @@
+From 7ba87550d7337e0403cd73ac0b6b9fc0fb03a4c5 Mon Sep 17 00:00:00 2001
+From: vegetableleaf <benzhu2029@u.northwestern.edu>
+Date: Tue, 27 Oct 2026 20:55:46 +0000
+Subject: [PATCH 6/6] F635-8: a carried push's PushBackDamage written as a
+ damage table (data 16.635.3)
+
+Data 16.635.3 writes BattleRam_EV1_PushBack's PushBackDamage 83 as a damage table, {BaseDamage 83,
+Flags NoCounter}. The carried push reads either form: the number, or the table's BaseDamage with
+no flag or NoCounter; another field or flag is refused. What NoCounter turns off is not read from
+the game (b): the 16.402.x push's hit takes no hit id from the battle's counter, and the flag is
+read as keeping the hit as the number form dealt it.
+ActionRowsTest: the carried push test reads either shipped form; a new test holds both table forms
+and the refusals (red on the number-only read).
+Core tests: 16.402.22 2150/0; 16.635.3 (guard bypassed for the run) 3 -> 0 failures.
+---
+ .../crforge/core/battle/data/ActionRows.java  | 40 ++++++++++++++-
+ .../core/battle/data/ActionRowsTest.java      | 51 ++++++++++++++++++-
+ 2 files changed, 89 insertions(+), 2 deletions(-)
+
+diff --git a/core/src/main/java/org/crforge/core/battle/data/ActionRows.java b/core/src/main/java/org/crforge/core/battle/data/ActionRows.java
+index cedb2404..263fe493 100644
+--- a/core/src/main/java/org/crforge/core/battle/data/ActionRows.java
++++ b/core/src/main/java/org/crforge/core/battle/data/ActionRows.java
+@@ -2541,7 +2541,7 @@ public final class ActionRows {
+               .pushBackRadius(integer(f, "PushBackRadius"))
+               .continuousPushBack(bool(f, "ContinuosPushBack"))
+               .distanceProportionalPush(bool(f, "DistanceProportinalPush"))
+-              .pushBackDamage(integer(f, "PushBackDamage"))
++              .pushBackDamage(pushBackDamage(name, f))
+               .pushToSide(bool(f, "PushToSide"))
+               .pushRadiusDirectionalOffset(integer(f, "PushRadiusDirectionalOffset"))
+               .gameObjectFilter(records.filter(f.get("GameObjectFilter").asText()))
+@@ -3999,6 +3999,44 @@ public final class ActionRows {
+           flags.contains("DamagesHidden"));
+     }
+ 
++    /**
++     * A carried push's damage: a number, as data 16.402.x writes it, or a damage table of
++     * BaseDamage and the flag NoCounter, as data 16.635.3 writes the evolved Battle Ram's (clashbot
++     * fork F635): its BaseDamage, the push's hit dealt as the number's was. What NoCounter turns off
++     * is not read from the game (b): the 16.402.x push's hit takes no hit id from the battle's
++     * counter, and the flag is read as keeping it so. Refused: another field or flag.
++     */
++    private int pushBackDamage(String name, JsonNode f) {
++      JsonNode value = f.get("PushBackDamage");
++      if (value == null || !value.isObject()) {
++        return integer(f, "PushBackDamage");
++      }
++      for (Iterator<String> it = value.fieldNames(); it.hasNext(); ) {
++        String field = it.next();
++        if (!Set.of("BaseDamage", "Flags").contains(field)) {
++          throw new UnsupportedOperationException(
++              name + " sets " + field + " in its PushBackDamage, which is not modelled");
++        }
++      }
++      JsonNode written = value.get("Flags");
++      List<String> flags = new ArrayList<>();
++      if (written != null && written.isArray()) {
++        written.forEach(flag -> flags.add(flag.asText()));
++      } else if (written != null && !written.isNull()) {
++        flags.addAll(List.of(written.asText().split(",")));
++      }
++      for (String flag : flags) {
++        if (!flag.isBlank() && !flag.trim().equals("NoCounter")) {
++          throw new UnsupportedOperationException(
++              name
++                  + " sets the damage flag "
++                  + flag.trim()
++                  + " in its PushBackDamage, which is not modelled");
++        }
++      }
++      return integer(value, "BaseDamage", 0);
++    }
++
+     /** A named action, a row inline by name, or null for none. */
+     private BattleAction action(JsonNode reference) {
+       if (reference == null || reference.isNull()) {
+diff --git a/core/src/test/java/org/crforge/core/battle/data/ActionRowsTest.java b/core/src/test/java/org/crforge/core/battle/data/ActionRowsTest.java
+index 6f277a2d..6560488c 100644
+--- a/core/src/test/java/org/crforge/core/battle/data/ActionRowsTest.java
++++ b/core/src/test/java/org/crforge/core/battle/data/ActionRowsTest.java
+@@ -15,6 +15,7 @@ import static org.crforge.core.battle.Shipped.numbers;
+ import static org.crforge.core.battle.Shipped.text;
+ import static org.crforge.core.battle.Shipped.texts;
+ 
++import com.fasterxml.jackson.databind.JsonNode;
+ import com.fasterxml.jackson.databind.node.ObjectNode;
+ import java.io.IOException;
+ import java.nio.file.Files;
+@@ -977,7 +978,11 @@ class ActionRowsTest {
+     assertThat(columns.pushBackRadius()).isEqualTo(number(row, "PushBackRadius"));
+     assertThat(columns.continuousPushBack()).isTrue();
+     assertThat(columns.distanceProportionalPush()).isFalse();
+-    assertThat(columns.pushBackDamage()).isEqualTo(number(row, "PushBackDamage"));
++    // A number in data 16.402.x; a damage table of BaseDamage and NoCounter in 16.635.3 (clashbot
++    // fork F635).
++    JsonNode damage = Shipped.fields(row).get("PushBackDamage");
++    assertThat(columns.pushBackDamage())
++        .isEqualTo(damage.isObject() ? damage.get("BaseDamage").asInt() : damage.asInt());
+     assertThat(columns.pushToSide()).isTrue();
+     assertThat(columns.pushRadiusDirectionalOffset())
+         .isEqualTo(number(row, "PushRadiusDirectionalOffset"));
+@@ -985,6 +990,50 @@ class ActionRowsTest {
+     assertThat(columns.pushFilter()).isNotNull();
+   }
+ 
++  @Test
++  @DisplayName(
++      "clashbot F635: a carried push's damage written as a damage table (data 16.635.3) reads as"
++          + " its BaseDamage with no flag or the flag NoCounter; another flag or field is refused")
++  void aCarriedPushDamageTableIsRead(@TempDir Path folder) throws IOException {
++    String row = "BattleRam_EV1_PushBack";
++    Map<String, Consumer<ObjectNode>> read =
++        new TreeMap<>(
++            Map.of(
++                "NoCounter", d -> d.put("Flags", "NoCounter"),
++                "NoCounter_listed", d -> d.putArray("Flags").add("NoCounter"),
++                "no_flag", d -> {}));
++    Map<String, Consumer<ObjectNode>> refused =
++        new TreeMap<>(
++            Map.of(
++                "Reflected", d -> d.put("Flags", "NoCounter,Reflected"),
++                "TowerDamage", d -> d.put("TowerDamage", 10)));
++    for (boolean reads : new boolean[] {true, false}) {
++      for (Map.Entry<String, Consumer<ObjectNode>> form : (reads ? read : refused).entrySet()) {
++        Path dir = Files.createDirectories(folder.resolve(form.getKey()));
++        GameTables altered =
++            GameData.altered(
++                dir,
++                "actions",
++                rows -> {
++                  ObjectNode damage =
++                      ((ObjectNode) rows.get(row).get("fields")).putObject("PushBackDamage");
++                  damage.put("BaseDamage", 91);
++                  form.getValue().accept(damage);
++                });
++        ActionRows rows = new ActionRows(altered, new BattleRecords(altered));
++        if (reads) {
++          DamagingPushBack built = (DamagingPushBack) rows.build(row, INERT_BINDING);
++          assertThat(built.getColumns().pushBackDamage()).as(form.getKey()).isEqualTo(91);
++        } else {
++          assertThatThrownBy(() -> rows.build(row, INERT_BINDING))
++              .as(form.getKey())
++              .isInstanceOf(UnsupportedOperationException.class)
++              .hasMessageContaining(form.getKey());
++        }
++      }
++    }
++  }
++
+   @Test
+   @DisplayName(
+       "the Little Prince's guard spawn reads its guard, where it appears and charges to, the area"
+-- 
+2.43.0
+

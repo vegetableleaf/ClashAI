@@ -1,0 +1,246 @@
+From 3a42667c3afb06394f06c4cde4bcd9f1211c9fc7 Mon Sep 17 00:00:00 2001
+From: vegetableleaf <benzhu2029@u.northwestern.edu>
+Date: Tue, 27 Oct 2026 20:46:02 +0000
+Subject: [PATCH 4/6] F635-6: V16_PROJECTILE_DAMAGE_BUG gone (data 16.635.3): a
+ pellet dooms its target with its own damage
+
+Data 16.635.3 drops the global V16_PROJECTILE_DAMAGE_BUG (with V16_AEO_OWNERSHIP_BUG and
+V16_RUNE_GIANT_VISUAL_BUG, which crforge does not read). A global the tables no longer publish is
+read as clear (globalFlagOrClear), the bug's fix running. Clear, a travelling hit just queued
+dooms its target for the rest of its volley when its own damage reaches the target's hit points,
+as this global's own reading in crforge has it; the queued total is not read. Inferred from the
+tables, no recorded match tells set from clear (b); the alternative, the set rule kept with the
+global gone, is not excluded.
+BattleTravellingHitDrainTest: its three set-rule tests set the global whatever the tables; a new
+test holds the rule with the global gone (every pellet of the killing volley stops at the ram).
+Core tests: 16.402.22 2148/0; 16.635.3 (guard bypassed for the run) 11 -> 3 failures.
+---
+ .../core/battle/data/BattleRecords.java       | 10 +++
+ .../crforge/core/battle/unit/BattleWorld.java | 34 +++++---
+ .../unit/BattleTravellingHitDrainTest.java    | 78 +++++++++++++++++--
+ 3 files changed, 104 insertions(+), 18 deletions(-)
+
+diff --git a/core/src/main/java/org/crforge/core/battle/data/BattleRecords.java b/core/src/main/java/org/crforge/core/battle/data/BattleRecords.java
+index bc37bd95..50584281 100644
+--- a/core/src/main/java/org/crforge/core/battle/data/BattleRecords.java
++++ b/core/src/main/java/org/crforge/core/battle/data/BattleRecords.java
+@@ -3240,6 +3240,16 @@ public final class BattleRecords {
+     return globals.row(name).intValue("NumberValue");
+   }
+ 
++  /**
++   * Whether the tables publish a global (clashbot fork F635: data 16.635.3 drops the V16 bug
++   * globals).
++   *
++   * @param name the global's name
++   */
++  public boolean hasGlobal(String name) {
++    return tables.table(GLOBALS).has(name);
++  }
++
+   /**
+    * A published global's flag.
+    *
+diff --git a/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java b/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java
+index 3ef9861c..8cc03bb5 100644
+--- a/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java
++++ b/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java
+@@ -819,11 +819,22 @@ public class BattleWorld implements HolderPasses {
+     return globalFlags.computeIfAbsent(name, records::globalBoolean);
+   }
+ 
++  /**
++   * A published global's flag, or false when the tables publish no such global (clashbot fork
++   * F635: data 16.635.3 drops the V16 bug globals, read as their fix running; b).
++   *
++   * @param name the global's name
++   */
++  boolean globalFlagOrClear(String name) {
++    return globalFlags.computeIfAbsent(
++        name, n -> records.hasGlobal(n) && records.globalBoolean(n));
++  }
++
+   /**
+    * The global that decides when a travelling hit queued for the drain dooms what it hit for the
+    * rest of its volley: set, by the damage queued for the entity against its hit points and shield;
+-   * clear, by the one hit's damage against its hit points, which is refused (see {@link
+-   * #queuedHits}); set in 16.402.18.
++   * clear, by the one hit's damage against its hit points (see {@link #queuedHits}); set in
++   * 16.402.18, gone in 16.635.3, which clashbot fork F635 reads as clear (b).
+    */
+   private static final String PROJECTILE_DAMAGE_BUG = "V16_PROJECTILE_DAMAGE_BUG";
+ 
+@@ -5214,19 +5225,18 @@ public class BattleWorld implements HolderPasses {
+    * at the drain all the same; held by crawled battles where a Hunter's volley met a target another
+    * unit's hit kills on the same step, each pellet that reaches it then stopping at it.
+    *
+-   * <p>Refused rather than guessed: the global clear, where the one hit's damage alone is held
+-   * against the entity's hit points, which no data version holds.
++   * <p>The global clear, or gone as data 16.635.3 has it (clashbot fork F635, inferred from the
++   * tables and this global's own reading, b): the one hit's damage alone is held against the
++   * entity's hit points, the queued total read for nothing.
+    *
+    * @param entity the entity hit
++   * @param damage the damage of the hit just queued
+    */
+-  private boolean queuedKill(WorldEntity entity) {
+-    if (!globalFlag(PROJECTILE_DAMAGE_BUG)) {
+-      throw new UnsupportedOperationException(
+-          "a travelling hit is queued with "
+-              + PROJECTILE_DAMAGE_BUG
+-              + " clear, whose test of a kill is not modelled");
+-    }
++  private boolean queuedKill(WorldEntity entity, int damage) {
+     HitPoints hitPoints = entity.getHitPoints();
++    if (!globalFlagOrClear(PROJECTILE_DAMAGE_BUG)) {
++      return damage >= hitPoints.getHitPoints();
++    }
+     int queued = 0;
+     int start = queuedTotalStarts.getOrDefault(entity, 0);
+     for (QueuedHit hit : queuedHits.subList(start, queuedHits.size())) {
+@@ -5368,7 +5378,7 @@ public class BattleWorld implements HolderPasses {
+     queuedHits.add(
+         new TravellingHitDue(
+             projectile, entity, damage, hitId, view.getX() - x, view.getY() - y, false));
+-    if (projectile.getGroup() != null && queuedKill(entity)) {
++    if (projectile.getGroup() != null && queuedKill(entity, damage)) {
+       projectile.getGroup().doom(id);
+     }
+     if (data.pushback() >= 1 && entity instanceof CharacterEntity character) {
+diff --git a/core/src/test/java/org/crforge/core/battle/unit/BattleTravellingHitDrainTest.java b/core/src/test/java/org/crforge/core/battle/unit/BattleTravellingHitDrainTest.java
+index f3e72717..7b5df5cf 100644
+--- a/core/src/test/java/org/crforge/core/battle/unit/BattleTravellingHitDrainTest.java
++++ b/core/src/test/java/org/crforge/core/battle/unit/BattleTravellingHitDrainTest.java
+@@ -10,6 +10,10 @@ import static org.assertj.core.api.Assertions.assertThat;
+ import static org.crforge.core.battle.Shipped.number;
+ import static org.crforge.core.battle.Shipped.unitRow;
+ 
++import com.fasterxml.jackson.databind.JsonNode;
++import com.fasterxml.jackson.databind.node.ObjectNode;
++import java.io.IOException;
++import java.nio.file.Path;
+ import java.util.ArrayList;
+ import java.util.List;
+ import java.util.function.BiConsumer;
+@@ -22,6 +26,7 @@ import org.crforge.core.battle.spawn.SpawnHost;
+ import org.crforge.core.pathfinding.combat.HitPoints;
+ import org.junit.jupiter.api.DisplayName;
+ import org.junit.jupiter.api.Test;
++import org.junit.jupiter.api.io.TempDir;
+ 
+ /**
+  * When the travelling hit of a projectile flying to a point lands its damage, seen through a Hunter
+@@ -38,11 +43,42 @@ import org.junit.jupiter.api.Test;
+  * projectile's hit on its one target adds its damage, as the travelling hits do, while a
+  * damage-taking action's hit adds nothing, its amount being worked out only at the drain. The scene
+  * is played again with one such hit queued for the ram just before the tick of its death.
++ *
++ * <p>All of this is the rule of the global V16_PROJECTILE_DAMAGE_BUG set, as data 16.402.x
++ * publishes it; those scenes set it whatever the tables. Data 16.635.3 drops the global (clashbot
++ * fork F635): a pellet then dooms the ram only with its own damage.
+  */
+ class BattleTravellingHitDrainTest {
+ 
+   private static final int LEVEL = Standard1v1Battle.DEFAULT_LEVEL;
+ 
++  private static final String BUG = "V16_PROJECTILE_DAMAGE_BUG";
++
++  /** The tables with the global set, as data 16.402.x publishes it; added when they have none. */
++  private static GameTables bugSet(Path folder) throws IOException {
++    return GameData.altered(
++        folder,
++        "globals",
++        rows -> {
++          if (!rows.has(BUG)) {
++            int index = 0;
++            for (JsonNode row : rows) {
++              index = Math.max(index, row.path("index").asInt() + 1);
++            }
++            ObjectNode row = rows.putObject(BUG);
++            row.put("class", "LogicData");
++            row.put("index", index);
++            row.putObject("columns").put("Name", BUG);
++          }
++          GameData.columns(rows, BUG).put("BooleanValue", true);
++        });
++  }
++
++  /** The tables without the global, as data 16.635.3 publishes them. */
++  private static GameTables bugGone(Path folder) throws IOException {
++    return GameData.altered(folder, "globals", rows -> rows.remove(BUG));
++  }
++
+   /** Long enough for the ram to walk into the Hunter's reach and die. */
+   private static final int TICKS = 600;
+ 
+@@ -141,8 +177,8 @@ class BattleTravellingHitDrainTest {
+   @DisplayName(
+       "a Hunter volley's damage lands at the drain: the walking ram"
+           + " dies after its step and its Barbarians ring the point it walked to")
+-  void theRamDiesAfterItsStep() {
+-    Death death = scene(GameData.tables());
++  void theRamDiesAfterItsStep(@TempDir Path folder) throws IOException {
++    Death death = scene(bugSet(folder));
+     // The ring is centred where the ram stood after its step of the death tick, not before it.
+     assertThat(death.centreY()).isLessThan(death.beforeY() - 50);
+     // The volley killed it in one tick, and its later pellets passed over it.
+@@ -161,8 +197,8 @@ class BattleTravellingHitDrainTest {
+   @DisplayName(
+       "a projectile's hit queued for the ram counts in its queued total: the volley's first"
+           + " pellet marks it and every later one passes over it")
+-  void aQueuedProjectileHitCounts() {
+-    GameTables tables = GameData.tables();
++  void aQueuedProjectileHitCounts(@TempDir Path folder) throws IOException {
++    GameTables tables = bugSet(folder);
+     Death plain = scene(tables);
+     List<ProjectileEntity> shooter = new ArrayList<>();
+     Death queued =
+@@ -191,8 +227,8 @@ class BattleTravellingHitDrainTest {
+   @DisplayName(
+       "a damage-taking action's hit queued for the ram adds nothing to its queued total: the"
+           + " volley's pellets hit it as they do without it")
+-  void aQueuedActionHitDoesNotCount() {
+-    GameTables tables = GameData.tables();
++  void aQueuedActionHitDoesNotCount(@TempDir Path folder) throws IOException {
++    GameTables tables = bugSet(folder);
+     Death plain = scene(tables);
+     Death queued =
+         scene(
+@@ -217,4 +253,34 @@ class BattleTravellingHitDrainTest {
+     assertThat(queued.volleyPellets()).isEqualTo(plain.volleyPellets());
+     assertThat(queued.pelletsFlyingOn()).isEqualTo(plain.pelletsFlyingOn());
+   }
++
++  @Test
++  @DisplayName(
++      "clashbot F635: with V16_PROJECTILE_DAMAGE_BUG gone (data 16.635.3) a pellet dooms the ram"
++          + " only with its own damage: every pellet of the killing volley stops at it, a kill-sized"
++          + " hit queued before them included")
++  void withTheGlobalGoneOnlyThePelletsOwnDamageDooms(@TempDir Path folder) throws IOException {
++    GameTables tables = bugGone(folder);
++    int pellets = number(unitRow("Hunter"), "MultipleProjectiles");
++    List<Integer> pelletDamage = new ArrayList<>();
++    Death plain = scene(tables);
++    assertThat(plain.volleyPellets()).isEqualTo(pellets);
++    assertThat(plain.pelletsFlyingOn()).isZero();
++    Death queued =
++        scene(
++            tables,
++            plain.tick(),
++            (world, recording) -> {
++              ProjectileEntity projectile = recording.pellets.get(0);
++              // No pellet alone kills the ram here: the rule under test is the queued total's.
++              pelletDamage.add(projectile.undeflectedDamage());
++              assertThat(projectile.undeflectedDamage()).isLessThan(whole(recording.ram));
++              world.dealProjectileHit(
++                  projectile, recording.ram, whole(recording.ram), world.nextHitId(), 0, 0);
++            });
++    assertThat(pelletDamage).hasSize(1);
++    assertThat(queued.tick()).isEqualTo(plain.tick());
++    assertThat(queued.volleyPellets()).isEqualTo(pellets);
++    assertThat(queued.pelletsFlyingOn()).isZero();
++  }
+ }
+-- 
+2.43.0
+

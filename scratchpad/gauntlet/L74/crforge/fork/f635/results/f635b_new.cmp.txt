@@ -1,0 +1,80 @@
+== sme/f2_new -> sme/c1_new
+exact apart from torn: 13/33 -> 17/33 | exact frames 53001 -> 70198 | regressions 0 | gained 4
+torn frames after: {'torn_mixed': 138, 'torn_t1': 17, 'torn_step': 31, 'torn_cmd': 14}
+   4  body in the reader, none near in the sim (play missed / late / unit not made)
+   4  body position (movement / collision / targeting)
+   3  live client: own elixir down a card cost 1 frame before the sim
+   1  hp only: sim more damage at the same points
+   1  spell area effect timing
+   1  hp only: sim less/mixed damage at the same points
+   1  projectile only (launch timing / flight)
+   1  body in the sim, none near in the reader
+matches in both 47: identical 39, different 8
+  live_play_20261027_073745 ["java.lang.UnsupportedOperationException: the buff FirecrackerFireworks_EV1 sets columns not modelled: [CastIdSpecificBuff]", null, null, null] -> [null, {"exact": 2423, "torn_mixed": 1, "div": 234, "torn_step":
+  live_play_20261027_074233 ["java.lang.UnsupportedOperationException: the buff FirecrackerFireworks_EV1 sets columns not modelled: [CastIdSpecificBuff]", null, null, null] -> [null, {"exact": 3031, "torn_t1": 1, "div": 1}, 0, {"start": 597
+  live_play_20261027_102005 ["java.lang.UnsupportedOperationException: the buff Cannon_EV1_barrage_damage_buff sets columns not modelled: [CastIdSpecificBuff]", null, null, null] -> [null, {"exact": 2685, "torn_t1": 2, "torn_step": 1}, 0, n
+  live_play_20261027_103247 ["java.lang.UnsupportedOperationException: the buff Cannon_EV1_barrage_damage_buff sets columns not modelled: [CastIdSpecificBuff]", null, null, null] -> [null, {"exact": 1824, "torn_mixed": 1, "torn_t1": 2, "tor
+  live_play_20261027_103803 ["java.lang.UnsupportedOperationException: the buff FirecrackerFireworks_EV1 sets columns not modelled: [CastIdSpecificBuff]", null, null, null] -> [null, {"exact": 2316, "torn_cmd": 1, "torn_mixed": 1, "torn_ste
+  live_play_20261027_111047 ["java.lang.UnsupportedOperationException: the buff FirecrackerFireworks_EV1 sets columns not modelled: [CastIdSpecificBuff]", null, null, null] -> [null, {"exact": 1390, "div": 785, "torn_step": 1}, 1, {"start":
+  live_play_20261027_113341 ["java.lang.UnsupportedOperationException: the buff FirecrackerFireworks_EV1 sets columns not modelled: [CastIdSpecificBuff]", null, null, null] -> [null, {"exact": 1766, "torn_step": 1}, 0, null]
+  live_play_20261027_120301 ["java.lang.UnsupportedOperationException: the buff FirecrackerFireworks_EV1 sets columns not modelled: [CastIdSpecificBuff]", null, null, null] -> [null, {"exact": 1762, "torn_cmd": 1, "torn_step": 2, "torn_t1":
+== sme/c1_new -> sme/c2_new
+exact apart from torn: 17/33 -> 17/33 | exact frames 70198 -> 70198 | regressions 0 | gained 0
+torn frames after: {'torn_mixed': 138, 'torn_t1': 17, 'torn_step': 31, 'torn_cmd': 14}
+   4  body in the reader, none near in the sim (play missed / late / unit not made)
+   4  body position (movement / collision / targeting)
+   3  live client: own elixir down a card cost 1 frame before the sim
+   1  hp only: sim more damage at the same points
+   1  spell area effect timing
+   1  hp only: sim less/mixed damage at the same points
+   1  projectile only (launch timing / flight)
+   1  body in the sim, none near in the reader
+matches in both 47: identical 47, different 0
+== sme/c2_new -> sme/c3_new
+exact apart from torn: 17/33 -> 17/33 | exact frames 70198 -> 70198 | regressions 0 | gained 0
+torn frames after: {'torn_mixed': 138, 'torn_t1': 17, 'torn_step': 31, 'torn_cmd': 14}
+   4  body in the reader, none near in the sim (play missed / late / unit not made)
+   4  body position (movement / collision / targeting)
+   3  live client: own elixir down a card cost 1 frame before the sim
+   1  hp only: sim more damage at the same points
+   1  spell area effect timing
+   1  hp only: sim less/mixed damage at the same points
+   1  projectile only (launch timing / flight)
+   1  body in the sim, none near in the reader
+matches in both 47: identical 47, different 0
+== sme/c3_new -> sme/c4_new
+exact apart from torn: 17/33 -> 17/33 | exact frames 70198 -> 70198 | regressions 0 | gained 0
+torn frames after: {'torn_mixed': 138, 'torn_t1': 17, 'torn_step': 31, 'torn_cmd': 14}
+   4  body in the reader, none near in the sim (play missed / late / unit not made)
+   4  body position (movement / collision / targeting)
+   3  live client: own elixir down a card cost 1 frame before the sim
+   1  hp only: sim more damage at the same points
+   1  spell area effect timing
+   1  hp only: sim less/mixed damage at the same points
+   1  projectile only (launch timing / flight)
+   1  body in the sim, none near in the reader
+matches in both 47: identical 47, different 0
+== sme/c4_new -> sme/c5_new
+exact apart from torn: 17/33 -> 17/33 | exact frames 70198 -> 70198 | regressions 0 | gained 0
+torn frames after: {'torn_mixed': 138, 'torn_t1': 17, 'torn_step': 31, 'torn_cmd': 14}
+   4  body in the reader, none near in the sim (play missed / late / unit not made)
+   4  body position (movement / collision / targeting)
+   3  live client: own elixir down a card cost 1 frame before the sim
+   1  hp only: sim more damage at the same points
+   1  spell area effect timing
+   1  hp only: sim less/mixed damage at the same points
+   1  projectile only (launch timing / flight)
+   1  body in the sim, none near in the reader
+matches in both 47: identical 47, different 0
+== sme/c5_new -> sme/c6_new
+exact apart from torn: 17/33 -> 17/33 | exact frames 70198 -> 70198 | regressions 0 | gained 0
+torn frames after: {'torn_mixed': 138, 'torn_t1': 17, 'torn_step': 31, 'torn_cmd': 14}
+   4  body in the reader, none near in the sim (play missed / late / unit not made)
+   4  body position (movement / collision / targeting)
+   3  live client: own elixir down a card cost 1 frame before the sim
+   1  hp only: sim more damage at the same points
+   1  spell area effect timing
+   1  hp only: sim less/mixed damage at the same points
+   1  projectile only (launch timing / flight)
+   1  body in the sim, none near in the reader
+matches in both 47: identical 47, different 0

@@ -1,0 +1,22 @@
+== ref_bpA -> sme/b67_base
+exact apart from torn: 67/109 -> 67/109 | exact frames 245973 -> 245973 | regressions 0 | gained 0
+torn frames after: {'torn_step': 61, 'torn_t1': 107, 'torn_cmd': 65, 'torn_mixed': 26}
+matches in both 138: identical 138, different 0
+== sme/b67_base -> sme/b67_f2
+exact apart from torn: 67/109 -> 67/109 | exact frames 245973 -> 245973 | regressions 0 | gained 0
+torn frames after: {'torn_step': 61, 'torn_t1': 107, 'torn_cmd': 65, 'torn_mixed': 26}
+matches in both 138: identical 138, different 0
+== sme/b67_f2 -> sme/b67_c1
+exact apart from torn: 67/109 -> 67/109 | exact frames 245973 -> 245973 | regressions 0 | gained 0
+torn frames after: {'torn_step': 61, 'torn_t1': 107, 'torn_cmd': 65, 'torn_mixed': 26}
+matches in both 138: identical 138, different 0
+== sme/b67_c1 -> sme/b67_c2
+exact apart from torn: 67/109 -> 67/109 | exact frames 245973 -> 245973 | regressions 0 | gained 0
+torn frames after: {'torn_step': 61, 'torn_t1': 107, 'torn_cmd': 65, 'torn_mixed': 26}
+matches in both 138: identical 138, different 0
+done b67_c6
+== sme/b67_c2 -> sme/b67_c6 (head)
+exact apart from torn: 67/109 -> 67/109 | exact frames 245973 -> 245973 | regressions 0 | gained 0
+torn frames after: {'torn_step': 61, 'torn_t1': 107, 'torn_cmd': 65, 'torn_mixed': 26}
+matches in both 138: identical 138, different 0
+matches in both 138: identical 138, different 0

@@ -1,0 +1,397 @@
+From b346fd5f8d3e0a5e2e2de3dc944cb8cbf27b9178 Mon Sep 17 00:00:00 2001
+From: vegetableleaf <benzhu2029@u.northwestern.edu>
+Date: Tue, 27 Oct 2026 20:22:00 +0000
+Subject: [PATCH 1/6] F635-3: CastIdSpecificBuff, refreshed from its own side
+ and the same play (data 16.635.3)
+
+Data 16.635.3 puts CastIdSpecificBuff in PlayerSpecificBuff's place on the evolved Firecracker's
+fireworks and the evolved Cannon's barrage buff. An instance is refreshed only from its own side
+and the same play: the play behind the source, by its king's count of card plays (the deploy
+stamp crforge already keeps). A unit's shot reads its root's play; an impact's area effect, its
+projectile's; a cast area effect, its cast's; a barrage's area effect, its cannon's, and the bomb
+it drops keeps it. An area effect made any other way is refused for such a buff. Inferred from
+the tables (b): per play and per side agree wherever one side has one such source alive.
+Core tests: 16.402.22 2145/0; 16.635.3 (guard bypassed for the run) 16 -> 13 failures.
+---
+ .../core/battle/data/BattleRecords.java       |   3 +
+ .../battle/projectile/ProjectileEntity.java   |  11 ++
+ .../core/battle/unit/AreaEffectEntity.java    |  19 ++++
+ .../crforge/core/battle/unit/BattleWorld.java |  13 ++-
+ .../core/battle/unit/BuffComponent.java       |   6 +
+ .../crforge/core/battle/unit/BuffData.java    |   4 +
+ .../core/battle/unit/BuffInstance.java        |  61 ++++++++++
+ .../unit/BattleCastIdSpecificBuffTest.java    | 105 ++++++++++++++++++
+ 8 files changed, 220 insertions(+), 2 deletions(-)
+ create mode 100644 core/src/test/java/org/crforge/core/battle/unit/BattleCastIdSpecificBuffTest.java
+
+diff --git a/core/src/main/java/org/crforge/core/battle/data/BattleRecords.java b/core/src/main/java/org/crforge/core/battle/data/BattleRecords.java
+index 4435f8b6..c6c3c312 100644
+--- a/core/src/main/java/org/crforge/core/battle/data/BattleRecords.java
++++ b/core/src/main/java/org/crforge/core/battle/data/BattleRecords.java
+@@ -142,6 +142,8 @@ public final class BattleRecords {
+           "ControlledByParent",
+           "EnableStacking",
+           "PlayerSpecificBuff",
++          // Data 16.635.3 (clashbot fork F635).
++          "CastIdSpecificBuff",
+           "NoEffectToCrownTowers",
+           "IgnoreBuildings",
+           "DeathSpawn",
+@@ -2276,6 +2278,7 @@ public final class BattleRecords {
+         .controlledByParent(row.bool("ControlledByParent"))
+         .enableStacking(row.bool("EnableStacking"))
+         .playerSpecificBuff(row.bool("PlayerSpecificBuff"))
++        .castIdSpecificBuff(row.bool("CastIdSpecificBuff"))
+         .noEffectToCrownTowers(row.bool("NoEffectToCrownTowers"))
+         .ignoreBuildings(row.bool("IgnoreBuildings"))
+         .deathSpawn(sets(row, "DeathSpawn") ? row.string("DeathSpawn") : null)
+diff --git a/core/src/main/java/org/crforge/core/battle/projectile/ProjectileEntity.java b/core/src/main/java/org/crforge/core/battle/projectile/ProjectileEntity.java
+index 384b6537..1b988d34 100644
+--- a/core/src/main/java/org/crforge/core/battle/projectile/ProjectileEntity.java
++++ b/core/src/main/java/org/crforge/core/battle/projectile/ProjectileEntity.java
+@@ -208,6 +208,15 @@ public class ProjectileEntity extends BattleEntity
+    */
+   @Getter private AreaEffectEntity areaLauncher;
+ 
++  /** True for a projectile an area effect launched (clashbot fork F635). */
++  @Getter private boolean areaLaunched;
++
++  /**
++   * The play behind the area effect that launched it, kept after that area effect leaves, which a
++   * buff specific to its cast id reads (clashbot fork F635); read only when {@link #areaLaunched}.
++   */
++  @Getter private int areaLaunchPlay;
++
+   /** What the projectile was fired at, or null once it has left or was never aimed at one. */
+   @Getter private WorldEntity target;
+ 
+@@ -539,6 +548,8 @@ public class ProjectileEntity extends BattleEntity
+     refuseUnitOnly("launched by an area effect");
+     place(null, null, target, area.getPackedLevel(), sx, sy, sz, hx, hy, area.getX(), area.getY());
+     areaLauncher = area;
++    areaLaunched = true;
++    areaLaunchPlay = area.getCastPlay();
+   }
+ 
+   /**
+diff --git a/core/src/main/java/org/crforge/core/battle/unit/AreaEffectEntity.java b/core/src/main/java/org/crforge/core/battle/unit/AreaEffectEntity.java
+index 4f1d7e29..5f1654ef 100644
+--- a/core/src/main/java/org/crforge/core/battle/unit/AreaEffectEntity.java
++++ b/core/src/main/java/org/crforge/core/battle/unit/AreaEffectEntity.java
+@@ -229,6 +229,16 @@ public final class AreaEffectEntity extends BattleEntity implements ActionOwner,
+ 
+   @Getter private final AreaEffectData data;
+ 
++  /** The play of an area effect whose creation handed it none (clashbot fork F635). */
++  public static final int PLAY_UNKNOWN = Integer.MIN_VALUE;
++
++  /**
++   * The play behind it, by its king's count of card plays before it, which a buff specific to its
++   * cast id reads (clashbot fork F635): a projectile's impact and a spell's cast hand it; {@link
++   * #PLAY_UNKNOWN} for one made any other way.
++   */
++  @Getter private int castPlay = PLAY_UNKNOWN;
++
+   /** The area effect's name in logs, given once its id is known when none is given. */
+   private String name;
+ 
+@@ -300,6 +310,15 @@ public final class AreaEffectEntity extends BattleEntity implements ActionOwner,
+    */
+   @Getter private boolean clone;
+ 
++  /**
++   * Hands it the play behind it (clashbot fork F635).
++   *
++   * @param play the play, by its king's count of card plays before it; -1 for none
++   */
++  void handPlay(int play) {
++    castPlay = play;
++  }
++
+   /** Its hits' owner as the validator sees it: an area effect of its side at its point. */
+   private final TargetingState owner;
+ 
+diff --git a/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java b/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java
+index ae8f5dda..a4d8f68a 100644
+--- a/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java
++++ b/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java
+@@ -3878,6 +3878,8 @@ public class BattleWorld implements HolderPasses {
+     AreaEffectEntity areaEffect = null;
+     if (card.areaEffect() != null) {
+       areaEffect = createAreaEffect(card.areaEffect(), x, y, side, cardLevel, null, "cast", name);
++      // Clashbot fork F635: the play, which a buff specific to its cast id reads.
++      areaEffect.handPlay(play);
+     }
+     ProjectileEntity firstProjectile = null;
+     if (card.projectile() != null) {
+@@ -4144,6 +4146,9 @@ public class BattleWorld implements HolderPasses {
+             records.areaEffect(projectile.getData().spawnAreaEffectObject()).followsTarget()
+                 ? projectile.getTarget()
+                 : null);
++    // Clashbot fork F635: the play behind the projectile, which a buff specific to its cast id
++    // reads.
++    areaEffect.handPlay(BuffInstance.playOf(projectile));
+     for (WorldObserver observer : observers) {
+       observer.projectileAreaEffect(tick, projectile, areaEffect);
+     }
+@@ -8694,8 +8699,12 @@ public class BattleWorld implements HolderPasses {
+    * @return the area effect
+    */
+   AreaEffectEntity barrageAreaEffect(CharacterEntity owner, String row, int x, int y) {
+-    return createAreaEffect(
+-        row, x, y, owner.side(), owner.getPackedLevel(), null, "barrage", owner.name());
++    AreaEffectEntity areaEffect =
++        createAreaEffect(
++            row, x, y, owner.side(), owner.getPackedLevel(), null, "barrage", owner.name());
++    // Clashbot fork F635: the owner's play, which a buff specific to its cast id reads.
++    areaEffect.handPlay(owner.getDeployIndex());
++    return areaEffect;
+   }
+ 
+   /** Tells every observer that a barrage's run started on a character. */
+diff --git a/core/src/main/java/org/crforge/core/battle/unit/BuffComponent.java b/core/src/main/java/org/crforge/core/battle/unit/BuffComponent.java
+index 3e880d86..05112edf 100644
+--- a/core/src/main/java/org/crforge/core/battle/unit/BuffComponent.java
++++ b/core/src/main/java/org/crforge/core/battle/unit/BuffComponent.java
+@@ -352,6 +352,12 @@ public final class BuffComponent implements BattleComponent {
+         refresh = same && instance.getSource() == source;
+       } else if (!same) {
+         refresh = false;
++      } else if (buff.castIdSpecificBuff()) {
++        // Clashbot fork F635 (data 16.635.3, b): from its own side and the same play only.
++        refresh =
++            source != null
++                && instance.getSide() == source.side()
++                && instance.getCastPlay() == BuffInstance.castPlay(source, buff);
+       } else if (!buff.playerSpecificBuff()) {
+         refresh = true;
+       } else {
+diff --git a/core/src/main/java/org/crforge/core/battle/unit/BuffData.java b/core/src/main/java/org/crforge/core/battle/unit/BuffData.java
+index c7e44803..f70db9a0 100644
+--- a/core/src/main/java/org/crforge/core/battle/unit/BuffData.java
++++ b/core/src/main/java/org/crforge/core/battle/unit/BuffData.java
+@@ -45,6 +45,9 @@ import org.crforge.core.pathfinding.combat.RarityTable;
+  *     removal removes it
+  * @param enableStacking true when an instance is refreshed only by the source that applied it
+  * @param playerSpecificBuff true when an instance is refreshed only from its own side
++ * @param castIdSpecificBuff true when an instance is refreshed only from its own side and the same
++ *     play, by the play behind what applies it (data 16.635.3 puts it in PlayerSpecificBuff's place
++ *     on the evolved Firecracker's fireworks and the evolved Cannon's barrage; clashbot fork F635)
+  * @param noEffectToCrownTowers true when a crown tower takes nothing of it
+  * @param ignoreBuildings true when a building takes nothing of it
+  * @param deathSpawn the character its carrier leaves as it dies, or null
+@@ -124,6 +127,7 @@ public record BuffData(
+     boolean controlledByParent,
+     boolean enableStacking,
+     boolean playerSpecificBuff,
++    boolean castIdSpecificBuff,
+     boolean noEffectToCrownTowers,
+     boolean ignoreBuildings,
+     String deathSpawn,
+diff --git a/core/src/main/java/org/crforge/core/battle/unit/BuffInstance.java b/core/src/main/java/org/crforge/core/battle/unit/BuffInstance.java
+index 39eca4f3..e02958d0 100644
+--- a/core/src/main/java/org/crforge/core/battle/unit/BuffInstance.java
++++ b/core/src/main/java/org/crforge/core/battle/unit/BuffInstance.java
+@@ -50,6 +50,13 @@ public final class BuffInstance {
+    */
+   private int sourceLauncherId = -1;
+ 
++  /**
++   * The play behind what applied it, by its king's count of card plays before it, for a buff
++   * specific to its cast id (see {@link #castPlay(SpawnHost, BuffData)}); -1 for every other buff
++   * and for none.
++   */
++  private int castPlay = -1;
++
+   /**
+    * The entity whose removal, or whose being removable, removes it: the area effect that applied a
+    * buff its parent controls, kept only for a buff that stacks; null for none.
+@@ -90,6 +97,9 @@ public final class BuffInstance {
+     if (source instanceof ProjectileEntity projectile && projectile.getOwner() != null) {
+       this.sourceLauncherId = projectile.getOwner().getId();
+     }
++    if (buff.castIdSpecificBuff() && source != null) {
++      this.castPlay = castPlay(source, buff);
++    }
+     // The instance keeps a parent only for a buff that stacks.
+     this.parent = buff.enableStacking() ? parent : null;
+     // The new instance's spawner: its start time and its limit.
+@@ -108,6 +118,7 @@ public final class BuffInstance {
+     copy.total = total;
+     copy.hitCounter = hitCounter;
+     copy.sourceLauncherId = sourceLauncherId;
++    copy.castPlay = castPlay;
+     return copy;
+   }
+ 
+@@ -245,6 +256,56 @@ public final class BuffInstance {
+         || sourceLauncherId != -1 && sourceLauncherId == id;
+   }
+ 
++  /**
++   * The play behind a source, as a buff specific to its cast id reads it (clashbot fork F635, from
++   * the 16.635.3 tables, b): a unit's own play, the play a projectile carries, or for a unit's
++   * shot, which carries none here, its root's (the stamp the launch copies from its owner); for a
++   * projectile an area effect launched (the evolved Cannon's bombs), that area effect's; an area
++   * effect's, the play its creation handed it. An area effect made where no play is handed is
++   * refused for such a buff.
++   *
++   * @param source what applies the buff
++   * @param buff the buff, named in the refusal
++   * @return the play, by its king's count of card plays before it; -1 for none
++   */
++  static int castPlay(SpawnHost source, BuffData buff) {
++    int play = playOf(source);
++    if (play == AreaEffectEntity.PLAY_UNKNOWN) {
++      throw new UnsupportedOperationException(
++          buff.name()
++              + " is specific to its cast id and is applied by "
++              + source.name()
++              + ", an area effect whose play is not known, which is not modelled");
++    }
++    return play;
++  }
++
++  /**
++   * The play behind a source, as {@link #castPlay(SpawnHost, BuffData)} reads it, with {@link
++   * AreaEffectEntity#PLAY_UNKNOWN} for an area effect handed none.
++   *
++   * @param source what applies the buff
++   * @return the play; -1 for none
++   */
++  static int playOf(SpawnHost source) {
++    if (source instanceof CharacterEntity unit) {
++      return unit.getDeployIndex();
++    }
++    if (source instanceof ProjectileEntity projectile) {
++      if (projectile.isAreaLaunched()) {
++        return projectile.getAreaLaunchPlay();
++      }
++      if (projectile.getDeployIndex() != -1) {
++        return projectile.getDeployIndex();
++      }
++      return projectile.getRoot() instanceof CharacterEntity unit ? unit.getDeployIndex() : -1;
++    }
++    if (source instanceof AreaEffectEntity area) {
++      return area.getCastPlay();
++    }
++    return -1;
++  }
++
+   /** The source that left the battle is forgotten; the instance stays. */
+   void forgetSource() {
+     source = null;
+diff --git a/core/src/test/java/org/crforge/core/battle/unit/BattleCastIdSpecificBuffTest.java b/core/src/test/java/org/crforge/core/battle/unit/BattleCastIdSpecificBuffTest.java
+new file mode 100644
+index 00000000..10f064a3
+--- /dev/null
++++ b/core/src/test/java/org/crforge/core/battle/unit/BattleCastIdSpecificBuffTest.java
+@@ -0,0 +1,105 @@
++/*
++ * crforge - https://github.com/voonhous/crforge
++ * SPDX-License-Identifier: Apache-2.0
++ * Porting this code? Please cite this file and the commit you read: see the README.
++ */
++
++package org.crforge.core.battle.unit;
++
++import static org.assertj.core.api.Assertions.assertThat;
++
++import com.fasterxml.jackson.databind.node.ObjectNode;
++import java.io.IOException;
++import java.nio.file.Files;
++import java.nio.file.Path;
++import org.crforge.core.battle.GameData;
++import org.crforge.core.battle.data.GameTables;
++import org.junit.jupiter.api.DisplayName;
++import org.junit.jupiter.api.Test;
++import org.junit.jupiter.api.io.TempDir;
++
++/**
++ * Clashbot fork F635: data 16.635.3 puts CastIdSpecificBuff in PlayerSpecificBuff's place on the
++ * evolved Firecracker's fireworks and the evolved Cannon's barrage. An instance is then refreshed
++ * only from its own side and the same play: two evolved Firecrackers of one side, from two plays,
++ * burn one target twice over, where the player-specific row burns it once.
++ */
++class BattleCastIdSpecificBuffTest {
++
++  private static final int LEVEL = Standard1v1Battle.DEFAULT_LEVEL;
++
++  /** The evolved Firecracker's fireworks' buff. */
++  private static final String BURN = "FirecrackerFireworks_EV1";
++
++  /** The row as data 16.635.3 writes it. */
++  private static GameTables castIdSpecific(Path folder) throws IOException {
++    return GameData.altered(
++        folder,
++        "character_buffs",
++        rows -> {
++          ObjectNode row = GameData.columns(rows, BURN);
++          row.remove("PlayerSpecificBuff");
++          row.put("CastIdSpecificBuff", true);
++        });
++  }
++
++  /** The row as data 16.402.22 writes it. */
++  private static GameTables playerSpecific(Path folder) throws IOException {
++    return GameData.altered(
++        folder,
++        "character_buffs",
++        rows -> {
++          ObjectNode row = GameData.columns(rows, BURN);
++          row.remove("CastIdSpecificBuff");
++          row.put("PlayerSpecificBuff", true);
++        });
++  }
++
++  /**
++   * Two evolved Firecrackers of the bottom side, the given plays, shooting one held Barbarian of
++   * the top side: the most instances of the burn it carries at once over the first 200 ticks.
++   */
++  private static int mostBurnsAtOnce(GameTables tables, int playA, int playB) {
++    Standard1v1Battle match = new Standard1v1Battle(tables, LEVEL, false);
++    CharacterEntity a =
++        match.deploy(0, match.getWorld().getRecords().unit("Firecracker_EV1"), LEVEL, 0, 9000,
++            13000, "FA");
++    CharacterEntity b =
++        match.deploy(0, match.getWorld().getRecords().unit("Firecracker_EV1"), LEVEL, 0, 9000,
++            15000, "FB");
++    a.setDeployIndex(playA);
++    b.setDeployIndex(playB);
++    CharacterEntity target =
++        match.deploy(0, match.getWorld().getRecords().unit("Barbarian"), LEVEL, 1, 4500, 14000,
++            "B");
++    target.setActive(CharacterEntity.MOVEMENT_SLOT, false);
++    target.setActive(CharacterEntity.TARGETING_SLOT, false);
++    int most = 0;
++    for (int t = 0; t < 200 && !target.isRemovable(); t++) {
++      match.getBattle().step();
++      int burns =
++          (int) target.getBuffs().items().stream()
++              .filter(i -> i.getBuff().name().equals(BURN))
++              .count();
++      most = Math.max(most, burns);
++    }
++    return most;
++  }
++
++  @Test
++  @DisplayName(
++      "clashbot F635: the cast-id-specific burn from two plays of one side lists two instances on"
++          + " one target; from one play, one")
++  void twoPlaysBurnTwice(@TempDir Path folder) throws IOException {
++    assertThat(mostBurnsAtOnce(castIdSpecific(Files.createDirectories(folder.resolve("two"))), 4, 6))
++        .isEqualTo(2);
++    assertThat(mostBurnsAtOnce(castIdSpecific(Files.createDirectories(folder.resolve("one"))), 4, 4))
++        .isEqualTo(1);
++  }
++
++  @Test
++  @DisplayName("the player-specific burn (data 16.402.22) lists one instance from two plays")
++  void playerSpecificBurnsOnce(@TempDir Path folder) throws IOException {
++    assertThat(mostBurnsAtOnce(playerSpecific(folder), 4, 6)).isEqualTo(1);
++  }
++}
+-- 
+2.43.0
+

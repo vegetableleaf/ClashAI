@@ -1,0 +1,325 @@
+From b8efac0db261f7c8d32299d83b516eb87ef26815 Mon Sep 17 00:00:00 2001
+From: vegetableleaf <benzhu2029@u.northwestern.edu>
+Date: Tue, 27 Oct 2026 20:29:12 +0000
+Subject: [PATCH 2/6] F635-4: an attack sequence entry's CustomBuffOnDamageTime
+ (data 16.635.3)
+
+Data 16.635.3 gives the hero Electro Wizard's two surge entries CustomBuffOnDamageTime 600 in
+place of the row's BuffOnDamageTime 500 (ZapFreeze). The entry the index selects at the hit, at
+any length of the order as the entry's other custom columns, times the row's buff on damage; the
+queued direct hit carries that time to the drain, where the buff is applied. An entry without it
+keeps the row's time. From the tables (b).
+Core tests: 16.402.22 2146/0; 16.635.3 (guard bypassed for the run) 13 -> 11 failures.
+---
+ .../core/battle/data/BattleRecords.java       | 10 +-
+ .../core/battle/unit/AttackSequence.java      |  7 +-
+ .../crforge/core/battle/unit/BattleWorld.java | 47 +++++++--
+ .../crforge/core/battle/unit/WorldEntity.java | 19 ++++
+ .../BattleCustomBuffOnDamageTimeTest.java     | 97 +++++++++++++++++++
+ 5 files changed, 169 insertions(+), 11 deletions(-)
+ create mode 100644 core/src/test/java/org/crforge/core/battle/unit/BattleCustomBuffOnDamageTimeTest.java
+
+diff --git a/core/src/main/java/org/crforge/core/battle/data/BattleRecords.java b/core/src/main/java/org/crforge/core/battle/data/BattleRecords.java
+index c6c3c312..bc37bd95 100644
+--- a/core/src/main/java/org/crforge/core/battle/data/BattleRecords.java
++++ b/core/src/main/java/org/crforge/core/battle/data/BattleRecords.java
+@@ -1167,7 +1167,9 @@ public final class BattleRecords {
+           "CustomMultipleTargets",
+           "CustomRememberMultipleTargets",
+           "CustomOnAttackAction",
+-          "AttackStartDelay");
++          "AttackStartDelay",
++          // Data 16.635.3 (clashbot fork F635).
++          "CustomBuffOnDamageTime");
+ 
+   /**
+    * The fields of an attack sequence entry that only show something: its effects, the stats its
+@@ -1615,7 +1617,8 @@ public final class BattleRecords {
+         -1,
+         -1,
+         null,
+-        0);
++        0,
++        -1);
+   }
+ 
+   /** An entry of an AttackSequenceList element, with the entry columns' defaults. */
+@@ -1641,7 +1644,8 @@ public final class BattleRecords {
+         row.intField(column, element, "CustomMultipleTargets", -1),
+         row.intField(column, element, "CustomRememberMultipleTargets", -1),
+         actionName(row.name(), "CustomOnAttackAction", element.path("CustomOnAttackAction")),
+-        row.intField(column, element, "AttackStartDelay", 0));
++        row.intField(column, element, "AttackStartDelay", 0),
++        row.intField(column, element, "CustomBuffOnDamageTime", -1));
+   }
+ 
+   /** The columns of a row's death that are not modelled, those of its death spawn only with one. */
+diff --git a/core/src/main/java/org/crforge/core/battle/unit/AttackSequence.java b/core/src/main/java/org/crforge/core/battle/unit/AttackSequence.java
+index 611eb2a1..b7492a2f 100644
+--- a/core/src/main/java/org/crforge/core/battle/unit/AttackSequence.java
++++ b/core/src/main/java/org/crforge/core/battle/unit/AttackSequence.java
+@@ -85,6 +85,10 @@ public record AttackSequence(int mode, List<Integer> order, List<Entry> entries)
+    *     or null to keep the row's; read at any length of the order
+    * @param attackStartDelay milliseconds the attack timer is held at 0 when an attack starts while
+    *     the index selects the entry
++   * @param customBuffOnDamageTime how long the row's BuffOnDamage lasts on what each hit of the
++   *     entry reaches, in milliseconds, or -1 for the row's BuffOnDamageTime; read at any length
++   *     of the order (data 16.635.3 sets it on the hero Electro Wizard's surge entries; clashbot
++   *     fork F635)
+    */
+   public record Entry(
+       int damage,
+@@ -103,7 +107,8 @@ public record AttackSequence(int mode, List<Integer> order, List<Entry> entries)
+       int customMultipleTargets,
+       int customRememberMultipleTargets,
+       String customOnAttackAction,
+-      int attackStartDelay) {
++      int attackStartDelay,
++      int customBuffOnDamageTime) {
+ 
+     /**
+      * True when the entry sets a variable damage time outside a timer-driven mode, which walks no
+diff --git a/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java b/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java
+index a4d8f68a..3ef9861c 100644
+--- a/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java
++++ b/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java
+@@ -366,7 +366,13 @@ public class BattleWorld implements HolderPasses {
+    *     kills for the attacker's side
+    */
+   private record DirectHitDue(
+-      WorldEntity attacker, TargetView target, int damage, int directionX, int directionY, int side)
++      WorldEntity attacker,
++      TargetView target,
++      int damage,
++      int directionX,
++      int directionY,
++      int side,
++      int buffOnDamageTimeMs)
+       implements QueuedHit {}
+ 
+   /**
+@@ -1111,7 +1117,18 @@ public class BattleWorld implements HolderPasses {
+    */
+   public void dealDirectHit(
+       WorldEntity attacker, TargetView target, int damage, int directionX, int directionY) {
+-    queuedHits.add(new DirectHitDue(attacker, target, damage, directionX, directionY, -1));
++    // Clashbot fork F635: the buff on damage's time is the one of the entry the hit lands with.
++    queuedHits.add(
++        new DirectHitDue(
++            attacker,
++            target,
++            damage,
++            directionX,
++            directionY,
++            -1,
++            attacker != null && attacker.getData().buffOnDamage() != null
++                ? attacker.buffOnDamageTimeMs()
++                : 0));
+   }
+ 
+   /**
+@@ -1143,7 +1160,7 @@ public class BattleWorld implements HolderPasses {
+    */
+   public void dealQueuedDamage(
+       TargetView target, int damage, int directionX, int directionY, int side) {
+-    queuedHits.add(new DirectHitDue(null, target, damage, directionX, directionY, side));
++    queuedHits.add(new DirectHitDue(null, target, damage, directionX, directionY, side, 0));
+   }
+ 
+   /**
+@@ -6339,7 +6356,8 @@ public class BattleWorld implements HolderPasses {
+                 direct.directionY(),
+                 false,
+                 direct.side());
+-        drainBuffOnDamage(direct.attacker(), direct.target(), result);
++        drainBuffOnDamage(
++            direct.attacker(), direct.target(), result, direct.buffOnDamageTimeMs());
+         continue;
+       }
+       if (queued instanceof AreaHitDue area) {
+@@ -9104,8 +9122,10 @@ public class BattleWorld implements HolderPasses {
+    * @param attacker the entity whose hit it is, or null for none
+    * @param target the view the hit resolved against
+    * @param result what the hit's damage did
++   * @param time how long the buff lasts: the time of the entry the hit landed with
+    */
+-  private void drainBuffOnDamage(WorldEntity attacker, TargetView target, DamageResult result) {
++  private void drainBuffOnDamage(
++      WorldEntity attacker, TargetView target, DamageResult result, int time) {
+     if (!result.accepted() || attacker == null || attacker.getData().buffOnDamage() == null) {
+       return;
+     }
+@@ -9117,7 +9137,7 @@ public class BattleWorld implements HolderPasses {
+     }
+     WorldEntity entity = known.get(target.getEntity());
+     if (entity != null) {
+-      buffOnDamage(attacker, entity);
++      buffOnDamage(attacker, entity, time);
+     }
+   }
+ 
+@@ -9133,6 +9153,19 @@ public class BattleWorld implements HolderPasses {
+    * @param target what the hit reached
+    */
+   void buffOnDamage(WorldEntity attacker, WorldEntity target) {
++    buffOnDamage(attacker, target, attacker.getData().buffOnDamageTimeMs());
++  }
++
++  /**
++   * A hit's buff on damage on what it reached, for the given time (clashbot fork F635: the time of
++   * the attack sequence entry the hit landed with), as {@link #buffOnDamage(WorldEntity,
++   * WorldEntity)} applies it.
++   *
++   * @param attacker the entity whose hit it is
++   * @param target what the hit reached
++   * @param time how long it lasts, in milliseconds
++   */
++  void buffOnDamage(WorldEntity attacker, WorldEntity target, int time) {
+     UnitData data = attacker.getData();
+     BuffData buff = buffData(data.buffOnDamage());
+     // A hit applies its buff with the attacker as its parent, which a stacking buff keeps: its
+@@ -9146,7 +9179,7 @@ public class BattleWorld implements HolderPasses {
+           .getBuffs()
+           .apply(
+               buff,
+-              data.buffOnDamageTimeMs(),
++              time,
+               attacker.getPackedLevel(),
+               attacker,
+               attacker.side());
+diff --git a/core/src/main/java/org/crforge/core/battle/unit/WorldEntity.java b/core/src/main/java/org/crforge/core/battle/unit/WorldEntity.java
+index 0db25600..24cd6d6f 100644
+--- a/core/src/main/java/org/crforge/core/battle/unit/WorldEntity.java
++++ b/core/src/main/java/org/crforge/core/battle/unit/WorldEntity.java
+@@ -2881,6 +2881,25 @@ public abstract class WorldEntity extends BattleEntity implements ActionOwner, S
+    * entity's level and falling back to the entry's projectile as the row's damage does, when the
+    * sequence has two or more in its order; otherwise the row's.
+    */
++  /**
++   * How long the row's BuffOnDamage lasts on what the next direct hit reaches: the custom time of
++   * the entry the index selects, at any length of the order, when the index is not -1 and the
++   * entry sets one (data 16.635.3, clashbot fork F635); otherwise the row's BuffOnDamageTime.
++   */
++  int buffOnDamageTimeMs() {
++    AttackSequence sequence = data.attackSequence();
++    int index = targeting.getAttackSequenceIndex();
++    if (index != TargetingState.NO_SEQUENCE_STEP
++        && index < sequence.order().size()
++        && !sequence.entries().isEmpty()) {
++      int custom = sequence.entryAt(index).customBuffOnDamageTime();
++      if (custom >= 0) {
++        return custom;
++      }
++    }
++    return data.buffOnDamageTimeMs();
++  }
++
+   /** The MeleePushback of the attack sequence step the next hit lands with; 0 without one. */
+   int stepMeleePushback() {
+     AttackSequence sequence = data.attackSequence();
+diff --git a/core/src/test/java/org/crforge/core/battle/unit/BattleCustomBuffOnDamageTimeTest.java b/core/src/test/java/org/crforge/core/battle/unit/BattleCustomBuffOnDamageTimeTest.java
+new file mode 100644
+index 00000000..d56cf099
+--- /dev/null
++++ b/core/src/test/java/org/crforge/core/battle/unit/BattleCustomBuffOnDamageTimeTest.java
+@@ -0,0 +1,97 @@
++/*
++ * crforge - https://github.com/voonhous/crforge
++ * SPDX-License-Identifier: Apache-2.0
++ * Porting this code? Please cite this file and the commit you read: see the README.
++ */
++
++package org.crforge.core.battle.unit;
++
++import static org.assertj.core.api.Assertions.assertThat;
++
++import com.fasterxml.jackson.databind.JsonNode;
++import com.fasterxml.jackson.databind.node.ObjectNode;
++import java.io.IOException;
++import java.nio.file.Files;
++import java.nio.file.Path;
++import org.crforge.core.battle.GameData;
++import org.crforge.core.battle.data.GameTables;
++import org.junit.jupiter.api.DisplayName;
++import org.junit.jupiter.api.Test;
++import org.junit.jupiter.api.io.TempDir;
++
++/**
++ * Clashbot fork F635: data 16.635.3 gives the hero Electro Wizard's surge entries of its attack
++ * sequence CustomBuffOnDamageTime 600, in place of the row's BuffOnDamageTime 500, for the stun
++ * each of their hits leaves. An entry's hit stuns for the entry's time; an entry without one, for
++ * the row's.
++ */
++class BattleCustomBuffOnDamageTimeTest {
++
++  private static final int LEVEL = Standard1v1Battle.DEFAULT_LEVEL;
++
++  private static final String WIZARD = "ElectroWizardHero";
++
++  /**
++   * The hero Electro Wizard's row with every entry of its attack sequence given the custom time, or
++   * none for -1.
++   */
++  private static GameTables entriesAt(Path folder, int time) throws IOException {
++    return GameData.altered(
++        folder,
++        "characters",
++        rows -> {
++          ObjectNode row = GameData.columns(rows, WIZARD);
++          for (JsonNode element : row.withArray("AttackSequenceList")) {
++            ObjectNode entry = (ObjectNode) element;
++            if (time < 0) {
++              entry.remove("CustomBuffOnDamageTime");
++            } else {
++              entry.put("CustomBuffOnDamageTime", time);
++            }
++          }
++        });
++  }
++
++  /** The whole time of the first stun the wizard's own hit lists on a held Knight. */
++  private static int firstStunTime(GameTables tables) {
++    Standard1v1Battle match = new Standard1v1Battle(tables, LEVEL, false);
++    CharacterEntity wizard =
++        match.deploy(0, match.getWorld().getRecords().unit(WIZARD), LEVEL, 0, 9000, 14000, "W");
++    CharacterEntity knight =
++        match.deploy(0, match.getWorld().getRecords().unit("Knight"), LEVEL, 1, 9000, 18500, "K");
++    knight.setActive(CharacterEntity.MOVEMENT_SLOT, false);
++    knight.setActive(CharacterEntity.TARGETING_SLOT, false);
++    String stun = wizard.getData().buffOnDamage();
++    int[] first = {-1};
++    match
++        .getWorld()
++        .addObserver(
++            new WorldObserver() {
++              @Override
++              public void buffApplied(int tick, WorldEntity target, BuffInstance buff) {
++                if (first[0] < 0
++                    && target == knight
++                    && buff.getBuff().name().equals(stun)
++                    && buff.getSource() == wizard) {
++                  first[0] = buff.getTotal();
++                }
++              }
++            });
++    for (int t = 0; t < 200 && first[0] < 0; t++) {
++      match.getBattle().step();
++    }
++    return first[0];
++  }
++
++  @Test
++  @DisplayName(
++      "clashbot F635: a hit of an attack sequence entry with CustomBuffOnDamageTime stuns for the"
++          + " entry's time; without it, for the row's BuffOnDamageTime")
++  void theEntryTimesTheStun(@TempDir Path folder) throws IOException {
++    assertThat(firstStunTime(entriesAt(Files.createDirectories(folder.resolve("custom")), 600)))
++        .isEqualTo(600);
++    // The row's BuffOnDamageTime, 500 in both data versions.
++    assertThat(firstStunTime(entriesAt(Files.createDirectories(folder.resolve("row")), -1)))
++        .isEqualTo(500);
++  }
++}
+-- 
+2.43.0
+
