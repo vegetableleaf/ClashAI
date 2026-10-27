@@ -82,14 +82,65 @@ def fx_spells():
 
 
 FX_SHIFT = int(os.environ.get('SME_FX_SHIFT', '0'))  # round 1: +1 run tick on fx-dated spell plays
+GK_DASH = int(os.environ.get('SME_GK', '0'))          # round 2.2: Golden Knight ability casts from its dashes
+GK_ID, GK_STEP, GK_LAG = 26000074, 100, 2               # card id; dash = > 100 units a tick; crforge: run R moves at R+2
 
 
-def plan_from(rec, opp_deal):
+def gk_dashes(frames):
+    """Golden Knight ability casts, which A2b-1 never extracts (champions are not in seen_casts): the first frame of
+    each dash burst, a GK body moving more than GK_STEP units a tick (walk ~30). Run tick window: the movement began
+    in (t_prev, t], and crforge moves a GK on R+2 (probe), so R in [t_prev - 1, t - 2]."""
+    out, ts = [], sorted(frames)
+    dashing, lastcast = {}, {}
+    for a, b in zip(ts, ts[1:]):
+        dt = b - a
+        if dt <= 0:
+            continue
+        for side in (0, 1):
+            pa = [e for e in frames[a]['E'] if e[0] == side and e[3] == GK_ID]
+            pb = [e for e in frames[b]['E'] if e[0] == side and e[3] == GK_ID]
+            for e in pb:
+                if not pa:
+                    continue
+                q = min(pa, key=lambda f: abs(f[1] - e[1]) + abs(f[2] - e[2]))
+                fast = (abs(q[1] - e[1]) + abs(q[2] - e[2])) / dt > GK_STEP
+                if fast and not dashing.get(side) and b - lastcast.get(side, -10 ** 6) > 100:
+                    lastcast[side] = b  # one cast per chain: a pause inside a dash chain is not a new cast
+                    out.append({'side': side, 'kind': 'ability', 'card': 'GoldenKnight', 'tick': b - 2,
+                                'run_ticks': [a - 1, b - 2], 'source': 'gk_dash'})
+                dashing[side] = fast
+    return out
+
+
+GOLEM_DEATH = int(os.environ.get('SME_GOLEM', '0'))  # round 2.3
+GOLEM_HERO_ID = 203000038
+
+
+def golem_death_cast(p, frames):
+    """A hero Ice Golem 'ability cast' that is its death: seen_casts dates an instant hero's cast from its ability
+    area row, and the hero golem's death areas carry the same card id (203000038). True when the cast's side has a
+    hero golem body at the last frame <= R and none in the first frame >= R+2 (it died at the cast tick)."""
+    if p['kind'] != 'ability' or p['card'] != 'IceGolemite' or p.get('source') != 'cast_seen':
+        return False
+    R, side = p['tick'], p['side']
+    ts = sorted(frames)
+    before = max((t for t in ts if t <= R), default=None)
+    after = min((t for t in ts if t >= R + 2), default=None)
+    has = lambda t: any(e[0] == side and e[3] == GOLEM_HERO_ID and e[4] > 0 for e in frames[t]['E'])  # noqa: E731
+    return before is not None and after is not None and has(before) and not has(after)
+
+
+def plan_from(rec, opp_deal, frames=None):
     me = rec['my_side']
     sides = rec['sides']
     cmds, last = [], {}
     fx = fx_spells() if FX_SHIFT else set()
     plays = []
+    if GK_DASH and frames:
+        for g in gk_dashes(frames):
+            deck = sides[str(g['side'])]['deck']
+            if 'GoldenKnight' in deck:
+                plays.append(dict(g, deck_index=deck.index('GoldenKnight'), name='GoldenKnight', form=0))
     for p in rec['plays']:
         # only countdown-dated casts (seen_casts' effect path gives lo = hi); a gap-dated one (Zap: 1 ms life, no
         # countdown to read) keeps its window -- run4 shifted those too and lost live_play_20261026_100756
@@ -97,6 +148,8 @@ def plan_from(rec, opp_deal):
                 and p['run_ticks'][0] == p['run_ticks'][1]:
             p = dict(p, tick=p['tick'] + FX_SHIFT, run_ticks=[p['run_ticks'][0] + FX_SHIFT, p['run_ticks'][1] + FX_SHIFT])
         plays.append(p)
+    if GOLEM_DEATH and frames:
+        plays = [p for p in plays if not golem_death_cast(p, frames)]
     rec = dict(rec, plays=plays)
     for p in sorted(rec['plays'], key=lambda p: p['tick']):
         s, d = p['side'], p['deck_index']
@@ -267,7 +320,7 @@ def fit_match(rec, frames, out):
     deal = rec['opp_deal_fit']
     if deal is None:  # no fitting deal (an opponent play missed or invented): the first deal, refused plays expected
         deal = list(range(8))
-    plan = plan_from(rec, deal)
+    plan = plan_from(rec, deal, frames)
     work = os.path.join(out, 'work')
     log = []
     o, an = base_run(plan, frames, me, end, work, log)

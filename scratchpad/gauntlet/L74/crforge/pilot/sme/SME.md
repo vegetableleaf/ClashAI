@@ -425,6 +425,7 @@ Sources: `results/live/dossier_body_position_top10.txt` (`dossier.py`, `dossier_
 |---|---|---|---:|---:|---|
 | start (run5) | | | 17 / 109 | 188,233 | |
 | 2.1 (run6) | live own elixir 1 frame early | comparator: a read inside the step's command pass counts as torn (`torn_cmd`) | **24 / 109** | 188,233 | 0 (+7) |
+| 2.2 (run7) | Golden Knight ability never extracted | input: GK ability cast at each dash burst (`SME_GK=1`) | **25 / 109** | 197,203 | 0 (+1) |
 
 ## 2.1: the live own-elixir class is a reader read in the middle of a step (a)
 Source: `elixir_check.py` on run5, unflagged matches.
@@ -458,3 +459,26 @@ That is a torn read.
 - The next tick reaches the sim by 178 or 357 regen alone.
 
 40 frames are reclassified as `torn_cmd`; 4 own-elixir onsets with other arithmetic stay counted.
+
+## 2.2: champion abilities and the hero Valkyrie dating
+**Golden Knight (a).**
+- The reader shows nothing for its cast: the phase-2 `ability` is `{pending 0, timer 0}` throughout, and
+  `fights.seen_casts` skips champions.
+- The cast does show as a dash. The body moves 300-640 units in 2 ticks, against a walk of about 55, in behaviour
+  state 3, retargeting between hits (`live_play_20261026_212917` 454-458).
+- **crforge probe:** `useAbility` at run 310 first moves the Golden Knight at line 312.
+- **Rule (`gk_dashes`):** each dash burst (> 100 units a tick, first frame of a burst, one cast per 100 ticks) becomes
+  an ability command. Its window is [previous frame - 1, burst frame - 2].
+- **Result:**
+  - `live_play_20261026_085635` becomes exact (183 → 1,765 exact frames).
+  - `212917`: first divergence moves from 454 to 4,564.
+  - `184912`: still diverges at 413, but heals (131 → 2,333 exact frames).
+- **Other champions are not done here** (one mechanism per sub-round). Extracted ability counts on the 109 unflagged:
+  Monk 19 / 20 plays, Mighty Miner 6 / 64; Archer Queen 0 / 23, Boss Bandit 0 / 21, Goblinstein 0 / 16.
+
+**Hero Valkyrie dating is right; the delay is crforge's (b) (`valk_check.py`, run6, 33 clean casts).**
+- The game's first hero-Valkyrie area is at R+2 on all 33.
+- crforge's first `ValkyrieHero_AEO` is at R+2 on 24, but later on 9 (R+3 to R+25).
+- So in 9 / 33 crforge starts the ability's spin late. That is a crforge candidate (the ability waiting on something,
+  perhaps an attack in progress), not a dating fault.
+- 31 more casts were not usable: an earlier area was already present.
