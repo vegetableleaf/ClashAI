@@ -455,6 +455,18 @@ public final class CfCore {
         ints(b, code == 0 || code == PlayerCommands.Refusal.NOT_ENOUGH_ELIXIR.ordinal() ? 1 : 0,
             code == PlayerCommands.Refusal.NO_CHARGES.ordinal() ? 1 : 0, cost, cardOf(u), -1);
       }
+      // RoyaleSim's evo rows: [card id, plays since its last evolved play, 1 if its next play is evolved, plays needed]
+      // per evolution-slot card in deck order (MatchSide.item: the item a play given now carries)
+      b.append("],\"evo\":[");
+      boolean firstEvo = true;
+      for (int idx = 0; idx < 8; idx++) {
+        if ((ms.slotFlags(idx) & MatchSide.EVOLUTION_SLOT) == 0) continue;
+        var evoRow = ms.deck().get(idx).formRow(org.crforge.core.battle.match.MatchCard.EVO_FORM);
+        if (!firstEvo) b.append(',');
+        firstEvo = false;
+        ints(b, s.deckIds[side][idx], ms.evolutionCount(idx),
+            ms.item(idx).field() == org.crforge.core.battle.match.EvolutionItem.EVOLVED ? 1 : 0, evoRow.darkElixirCost());
+      }
       b.append("],\"pending_cost\":").append(s.cmds.promised(side) / 10).append(",\"deck\":");
       ints(b, s.deckIds[side]);
       b.append(",\"forms\":");
