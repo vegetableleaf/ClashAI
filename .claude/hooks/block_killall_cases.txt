@@ -1,0 +1,10 @@
+2	{"tool_name":"Bash","tool_input":{"command":"killall python","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"cd x; killall -9 java","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"ssh -p 1 root@h 'killall python3'","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"ssh -p 1 root@h \"sudo killall java\"","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"ls\nkillall node\n","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"timeout 5 killall x","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"kill 12345","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"git commit -m \"note: never use killall\"","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"grep -n killall notes.md","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"echo no killall here","description":"x"}}
