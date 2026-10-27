@@ -1,0 +1,14 @@
+20261026_172835 1114 exact pos+1 div hp+1 div
+20261026_172835 1418 exact pos+1 div hp+1 div
+20261026_172835 3960 exact pos+1 div hp+1 div
+20261026_172835 4106 exact pos+1 div hp+1 div
+20261026_183750 2653 exact pos+1 div hp+1 div
+20261026_200941 376 exact pos+1 div hp+1 div
+20261026_200941 2366 exact pos+1 div hp+1 div
+20261026_200941 3329 exact pos+1 div hp+1 div
+20261026_200941 3470 exact pos+1 div hp+1 div
+20261026_201701 830 exact pos+1 div hp+1 div
+20261026_201701 994 exact pos+1 div hp+1 div
+20261026_201701 2127 exact pos+1 div hp+1 div
+20261027_004031 3482 exact pos+1 div hp+1 div
+{'frames': 13, 'exact': 13, 'pos+1_n': 13, 'pos+1_caught': 13, 'hp+1_n': 13, 'hp+1_caught': 13}

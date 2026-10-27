@@ -782,3 +782,100 @@ That is well over the plan's 5 mechanisms; D1 (99 / 109) is not in reach with in
 - `sme_live.py`: `own_press_elixir`; `gk_dashes` start rule behind `SME_GK_ACCEL` (off).
 - `repr_v2.json` (pod and here): RageBottle dropped.
 - Results: `results/live/run{18,19,20,21}_{results.jsonl,cmp.txt}`.
+
+---
+
+# Fix loop round 6 (ticket A2c round 6.0-6.3, worker a2c6)
+
+Same engine (`lib_008aa626`), `repr_v2.json`. Runs on pod 33920 `/workspace/pilot/sme_live/r6*` (named so they cannot
+clash with another worker's runs). Each row is cumulative on the one before. **0 regressions in every sub-round.**
+
+| sub-round | class | where | change | exact apart from torn (unflagged) | exact frames | gained |
+|---|---|---|---|---:|---:|---|
+| start (run20) | | | | 40 / 109 | 227,262 | |
+| **6.1 (r61)** | read inside step t+1, fewer than 2 movers | reader (comparator rule) | `step_read`: our elixir equal to sim t+1's and not to sim t's stands in for the two-mover count (`SME_STEP_CLOCK=1`) | **44 / 109** | 227,262 | `212111`, `222240`, `002429`, `022821` |
+| **6.2 (r62)** | command-pass read at triple elixir | reader (comparator rule) | `cmd_pass_read` also accepts a 537 regen (`SME_TORN_CMD3=1`) | **48 / 109** | 227,262 | `144057`, `210720`, `032352`, `040302` |
+| **6.3a (r63a)** | Rage dated a tick late | extractor | `table_shims.life` follows SummonCharacter -> DeathAreaEffect -> LifeDuration (10 Rage commands -1; inputs_v8) | **51 / 109** | **228,990** | `200616`, `224041`, `020134` |
+| **6.3b (r63b)** | our own Ice Wizard press dated from the reader's cast | extractor | `own_press_elixir` also for our `cast_seen` presses (`SME_OWN_CAST=1`; 10 of 125 moved; inputs_v9) | **54 / 109** | **229,357** | `154839`, `175027`, `182050` |
+
+## 6.0: all 69 failures of run20, classified (a)
+Tools (all on run20's plans, `SME_TORN_STEP=1`):
+- `diag6.py`: per onset, the diff against sim t0-2 .. t0+2, why `step_read` rejects it, the mover count, our elixir
+  around it and the commands near it.
+- `sweep6.py`: every command in [t0-130, t0+15] moved by -3..+3 (a command after t0 also back to t0-3); scored to t0+400.
+- `cls6.py`: the class rules, first match wins.
+- 138 onsets in total: 68 first onsets, plus the 70 later ones in the same matches. 1 match is refused by crforge
+  (`225213`, GoblinDrill evolution).
+- Results: `results/live/{diag6all,sweep6all}_run20.jsonl`, `cls6_run20.tsv`.
+
+| class | where | first onsets | all onsets | matches it alone blocks (run20) | cost | fixed in |
+|---|---|---:|---:|---:|---|---|
+| read inside step t+1 with our elixir already t+1's (0-1 movers) | reader | 8 | 12 | 4 (+2 with the 3x class) | comparator rule, 1 line | 6.1 |
+| command-pass read at triple elixir (regen 537) | reader | 4 | 12 | 2 (+2 with the class above) | comparator rule, 1 line | 6.2 |
+| Rage one tick late | extractor (`life` None) | 3 | 6 | 3 | extractor, 4 lines | 6.3a |
+| our own IW press dated from the cast, not the elixir drop | extractor | 5 | 6 | 3 | extractor, reuse `own_press_elixir` | 6.3b |
+| a troop row with an unmapped id (card -1) read as a tower | comparator (`canon_live`) | 4 | 13 | 3 (+1) | comparator, use the reader's kind | 6.6 (staged) |
+| hero IW deploy area taken for an ability cast | extractor (`seen_casts`) | 3 | 5 | -- | extractor rule | 6.7 (staged) |
+| hero Valkyrie cast dated from the spin, charge 3-16 ticks earlier | extractor | 4 (+1 partial) | 5 | 3 | extractor rule (body-position worker) | -- |
+| Golden Knight dash start | extractor | 2 | 2 | 0 alone | (body-position worker) | -- |
+| other hero ability casts 1-3 ticks off (Bowler, Balloon, opponent IW) | extractor | 3 | 6 | 2 | opponent IW: 6.8 (staged); Bowler / Balloon one case each (b) | -- |
+| open: body position (steering / contact, GK dash length, Rascals formation, IW cube, ...) | crforge / unknown (b) | 15 | 31 | | (body-position worker) | |
+| open: projectile (Goblin Barrel evolution decoys, Balloon bomb, tower shot) | unknown (b) | 5 | 17 | | | |
+| open: body missing / extra (Goblins never extracted `224856`, MiniPekka hero, ...) | extractor / unknown (b) | 4 | 12 | | | |
+| open: hp only (`192935`, `204518`, `010245`) | unknown (b) | 3 | 5 | | | |
+| open: Earthquake pulse (`222712`, behind an IW deploy cast) | -- | 1 | 1 | | | |
+
+**Projection (a, from the sweep + rules, each match counted when all its onsets are in fixed classes):** the first
+four classes reach 54 / 109 (measured: 54 / 109). With the tower-label, IW-deploy and Valkyrie classes: about 60 / 109.
+**28 of the 68 failing matches have at least one onset in an open class**, mostly body position. So D1 (99 / 109) needs
+the open classes, not more input dating.
+
+### Hypothesis (i): "own elixir one card cost low" is partly the IW press read one frame early -- confirmed, but the cause is the dating (a)
+- **The 9 run20 onsets of that class split into two classes.**
+  - **4 (`154319`, `210720`, `032352`, `040302`) are the round-2.1 command-pass read at triple elixir.** The board
+    equals sim t0. Our elixir is lower by a whole card cost, and sim t0+1 is reached by one 537 regen.
+    `cmd_pass_read` only allowed 178 / 357 (6.2 fixes this; 12 onsets in all).
+  - **5 (`175027`, `154839`, `182050`, `220728`, `004031`) are our own Ice Wizard presses with no logged tap.** They
+    are dated from the reader's cast (`cast_seen`, 125 of our 140 presses), so `own_press_elixir` (round 5.1, `own_press`
+    only) never saw them.
+- **The game's elixir drop is 1-12 ticks before the cast_seen tick.**
+- **Probe (`cmdprobe6.py`), the press moved into the drop window:** `175027`, `182050` and `154839` become exact.
+  `220728` moves from 778 to 3007; 3007 is the IW deploy class. `004031` moves from 2083 to 3482. Its drop holds our
+  Skeletons as well, so the rule skips it.
+- **Rule (6.3b):** the same function on our `cast_seen` presses. A drop whose frame pair holds one of our card plays is
+  not taken. Without that, a Log / Tornado / X-Bow drop was taken on 5 casts: `100018`, `144057`, `204837`, `004031`,
+  `030951`.
+
+### Hypothesis (ii): some "bodies the sim lacks" are step reads rejected for < 2 movers -- confirmed for some (a)
+- **Of the 10 run20 "body in the reader, none near in the sim" onsets:**
+  - 4 are a different class: a troop read as a tower (`172835`, `201701`, `183750`, `200941`; 6.6).
+  - 3 are reads of step t0+1 (our elixir = sim t0+1): `080929`, `094126`, `002021`. `step_read` still fails them, but not
+    on the mover count. It fails on the IW deploy area (6.7) and, in `080929`, on a dead Battle Ram read at its moved
+    point with its old hp.
+  - The other 3 are a Goblins play never extracted (`224856`), the Rascals formation (`010613`) and `233957`.
+- **The two-mover rule was the blocker on 8 first onsets in other classes:** `142027`, `001141`, `014928`, `002429`
+  (1 mover) and `144057`, `222240`, `212111`, `022821` (0 movers). Each frame's elixir is sim t0+1's (a per-tick clock:
+  regen every tick), while the board is at t0+1 with the step's removals not yet in (hp 0 bodies still listed).
+- **Why the clock is safe where 1 mover was not (round 4.1):** a single body one tick ahead does not change our elixir.
+
+### Planted checks (a)
+- **6.1, `step_test6.py`, on the 12 onsets the clock rule classes torn_step:** each planted change must take the frame
+  out of torn_step.
+
+  | planted change | caught |
+  |---|---:|
+  | our elixir set to sim t's (the clock gone) | 12 / 12 |
+  | our elixir +1 | 12 / 12 |
+  | one live recorded body moved 1 unit | 9 / 9 (3 frames have no live unit row) |
+  | a hp-0 body given hp 5 | 10 / 10 |
+
+- **6.2, `cmd_test6.py`, on the 12 triple-elixir torn_cmd frames:** each planted change must make the frame div.
+
+  | planted change | caught |
+  |---|---:|
+  | elixir +1 | 12 / 12 |
+  | elixir -1 | 12 / 12 |
+  | elixir 0.5 elixir lower still | 12 / 12 |
+  | one live unit moved 1 unit | 12 / 12 |
+
+- Outputs: `results/live/{steptest6,cmdtest6,kindtest6}_run20.txt`.

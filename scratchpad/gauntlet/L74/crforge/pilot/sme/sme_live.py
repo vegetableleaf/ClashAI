@@ -32,10 +32,16 @@ def load_frames(path):
     return {f['t']: f for f in map(json.loads, open(path))}
 
 
+KIND_T = int(os.environ.get('SME_KIND_T', '0'))  # round 6.6: a card -1 row is a tower only if the reader's kind says building
+
+
 def canon_live(f, my_side):
     c = {'T': [], 'U': [], 'P': [], 'A': []}
     for side, x, y, card, hp, kind in f['E']:
-        c['T' if card == -1 else 'U'].append((side, x, y, hp))
+        # card -1 = an id live_frames does not map. Towers read kind 12/13 (1,881,839 rows, all at the 6 tower points);
+        # the other 1,426 card -1 rows read kind 14/15 (troops; at the 4 run20 onsets the Witch Mother's VoodooHog).
+        tower = card == -1 and (not KIND_T or kind in (12, 13))
+        c['T' if tower else 'U'].append((side, x, y, hp))
     for side, x, y, card in f['P']:
         c['P'].append((side, x, y))
     for side, x, y, card in f['A']:
@@ -154,6 +160,7 @@ def gk_dashes(frames):
 
 
 VALK_LAG = int(os.environ.get('SME_VALK', '0'))  # round 4.2
+OWN_CAST = int(os.environ.get('SME_OWN_CAST', '0'))  # round 6.2: own cast_seen presses dated by our elixir too
 
 
 def valk_shift(p):
@@ -166,16 +173,21 @@ def valk_shift(p):
     return p
 
 
-def own_press_elixir(p, frames):
+def own_press_elixir(p, frames, my=None, own_ticks=()):
     """Our own ability press dated by our elixir (SME.md round 5.1): crforge takes the cost on the run tick R and shows
     it on line R+1, so the press runs in [prev, first - 1] of the frame pair where our elixir drops by >= 1.5 elixir,
     the drop nearest the tap-dated tick within 15 ticks. The tap-dated tick is kept when it is inside that window,
-    else the window end nearest it. run17: the tap-dated tick lies outside the drop window on 6 of 15 presses."""
-    if p['kind'] != 'ability' or p.get('source') != 'own_press' or not frames:
+    else the window end nearest it. run17: the tap-dated tick lies outside the drop window on 6 of 15 presses.
+    Round 6.2 (SME_OWN_CAST=1): also our own presses that have no logged tap and are dated from the reader's cast
+    (cast_seen on side `my`; 125 of the 140 own presses); for those, a frame pair holding one of our card plays (own_ticks:
+    their run ticks) is not a press drop (a Log / Tornado / X-Bow drop was taken for the press on 5 casts)."""
+    own_cast = OWN_CAST and my is not None and p.get('source') == 'cast_seen' and p['side'] == my
+    if p['kind'] != 'ability' or not (p.get('source') == 'own_press' or own_cast) or not frames:
         return p
     ts = sorted(frames)
     R = p['tick']
-    drops = [(a, b) for a, b in zip(ts, ts[1:]) if R - 15 <= b <= R + 15 and frames[a]['el'] - frames[b]['el'] >= 15000]
+    drops = [(a, b) for a, b in zip(ts, ts[1:]) if R - 15 <= b <= R + 15 and frames[a]['el'] - frames[b]['el'] >= 15000
+             and not (own_cast and any(a - 1 <= t <= b for t in own_ticks))]
     if not drops:
         return p
     a, b = min(drops, key=lambda ab: min(abs(ab[0] - R), abs(ab[1] - 1 - R)))
@@ -199,6 +211,49 @@ def golem_death_cast(p, frames):
     after = min((t for t in ts if t >= R + 2), default=None)
     has = lambda t: any(e[0] == side and e[3] == GOLEM_HERO_ID and e[4] > 0 for e in frames[t]['E'])  # noqa: E731
     return before is not None and after is not None and has(before) and not has(after)
+
+
+IW_DEPLOY = int(os.environ.get('SME_IW_DEPLOY', '0'))  # round 6.7
+IW_AREA_ID = 203000023
+
+
+def iw_deploy_cast(p, frames, plays):
+    """A hero Ice Wizard 'ability cast' that is the hero's deploy (SME.md round 6.7): seen_casts dates an instant hero's
+    cast from its ability area row, and a hero Ice Wizard's deploy shows an area of that card id (203000023) on its own
+    point (iwfx6.py): all 9 such areas with no countdown, and 1 at 1 ms, on the 138 matches sit on an Ice Wizard play's
+    point on its first frame, each with a cast_seen cast 1-2 ticks before it (a real cast's areas read 50 ms then
+    ~1,000,000 ms, 4-8 ticks after it, on the old Ice Wizard). True for a cast_seen Ice Wizard cast with a
+    same-side Ice Wizard play 1-3 ticks later and an area row of 203000023 within 1 unit of that play's point on a frame
+    in [play - 1, play + 2]."""
+    if not IW_DEPLOY or p['kind'] != 'ability' or p['card'] != 'IceWizard' or p.get('source') != 'cast_seen':
+        return False
+    for q in plays:
+        if q['kind'] == 'play' and q['card'] == 'IceWizard' and q['side'] == p['side'] and 1 <= q['tick'] - p['tick'] <= 3:
+            if any(a[0] == q['side'] and a[3] == IW_AREA_ID and abs(a[1] - q['x']) <= 1 and abs(a[2] - q['y']) <= 1
+                   for t in range(q['tick'] - 1, q['tick'] + 3) if t in frames for a in frames[t]['A']):
+                return True
+    return False
+
+
+IW_AREA_DATE = int(os.environ.get('SME_IW_AREA', '0'))  # round 6.8
+
+
+def iw_area_cast(p, fx, my):
+    """An opponent hero Ice Wizard cast dated by its ability's first area (SME.md round 6.8, iwfx6.py). The ability
+    makes an area of card 203000023 with a 50 ms life 4 ticks after the cast: first seen at R+4 with 50 ms left or at
+    R+5 with 0 ms left on 16 of the 18 opponent casts. On the other 2 (014151@1266, 211239@5544) the cast_seen tick
+    sits 2-3 ticks late. fx: fights.read_match rows tick -> [(side, x, y, cid, rem, _, gen)]. R = made - 4, made =
+    first - (50 - rem) / 50, from the first such area in [R - 2, R + 10]. Our own casts keep the elixir dating."""
+    if not IW_AREA_DATE or not fx or p['kind'] != 'ability' or p['card'] != 'IceWizard' or \
+            p.get('source') != 'cast_seen' or p['side'] == my:
+        return p
+    R = p['tick']
+    for t in range(R - 2, R + 11):
+        e = next((e for e in fx.get(t, ()) if e[0] == p['side'] and e[3] == IW_AREA_ID and e[4] in (0, 50)), None)
+        if e:
+            r = t - (50 - e[4]) // 50 - 4
+            return p if r == R else dict(p, tick=r, run_ticks=[r, r], dated='iw_area')
+    return p
 
 
 def plan_from(rec, opp_deal, frames=None):
@@ -283,11 +338,13 @@ def fitting_classes(rec, limit=None):
 
 # ---------------------------------------------------------------- analysis
 TORN_CMD = int(os.environ.get('SME_TORN_CMD', '0'))  # round 2.1
+TORN_CMD3 = int(os.environ.get('SME_TORN_CMD3', '0'))  # round 6.2: the same read at triple elixir (regen 537 a tick)
 
 
 HP_PH = int(os.environ.get('SME_HP_PLACEHOLDER', '0'))  # round 2.4
 TORN_STEP = int(os.environ.get('SME_TORN_STEP', '0'))  # round 4.1
 STEP_MOVE = 200  # game units: more than one step of the fastest walker read here (~180 per tick)
+STEP_CLOCK = int(os.environ.get('SME_STEP_CLOCK', '0'))  # round 6.1: our elixir as the step clock
 
 
 def _no(why, *msg):
@@ -296,7 +353,7 @@ def _no(why, *msg):
     return False
 
 
-def step_read(f, ot, ot1, me, why=None):
+def step_read(f, ot, ot1, me, why=None, min_movers=2):
     """A read inside step t+1 (SME.md round 4.1): the board has moved but the step's hits, removals, spawns and regen
     are not all in yet. True when every sim body that moves between t and t+1 is read at its t+1 point (at least two
     move; analyse also requires the frame to be isolated), every recorded body sits at the t+1 point of a sim body with that body's hp at t or t+1 (or the reader's
@@ -309,7 +366,10 @@ def step_read(f, ot, ot1, me, why=None):
     bod = lambda d: {i: e for i, e in d.items() if e[1] in 'TC'}  # noqa: E731
     ba, bb = bod(a), bod(b)
     moving = [i for i in ba if i in bb and ba[i][4:6] != bb[i][4:6]]
-    if len(moving) < 2:  # one mover cannot tell a step read from that body's own 1-tick lead (run15 audit, 4.1b)
+    # round 6.1: our elixir changes every tick (regen), so a frame whose elixir is sim t+1's and not sim t's was read
+    # after step t+1's regen. That is direct evidence of a read inside step t+1 and stands in for the mover count.
+    clock = STEP_CLOCK and f['el'] == ot1['S'][me][0] != ot['S'][me][0]
+    if len(moving) < min_movers and not clock:  # one mover cannot tell a step read from that body's own 1-tick lead (run15 audit, 4.1b)
         return _no(why, 'fewer than 2 bodies move')
     at1, at0 = collections.defaultdict(list), collections.defaultdict(list)
     for i, e in bb.items():
@@ -374,12 +434,13 @@ def fill_placeholder(r, s):
 def cmd_pass_read(d, by, t, me):
     """A read inside step t, after its command pass and before its regen and spawns (SME.md round 2.1): the board
     equals sim t, and our elixir is sim t's minus whole elixir exactly, the elixir step t+1 then reaches by its regen
-    alone (178 or 357, one or double rate)."""
+    alone (178 or 357, one or double rate; with SME_TORN_CMD3=1 also 537, triple rate: 12 of run20's 138 onsets)."""
     if not d or any(x[0] != 'S%d_elixir' % me for x in d) or t + 1 not in by:
         return False
     r, s = d[0][1], d[0][2]
     nxt = by[t + 1]['S'][me][0]
-    return (s - r) % 10000 == 0 and 10000 <= s - r <= 100000 and (nxt - r) in (178, 179, 357, 358)
+    regen = (178, 179, 357, 358) + ((536, 537, 538) if TORN_CMD3 else ())
+    return (s - r) % 10000 == 0 and 10000 <= s - r <= 100000 and (nxt - r) in regen
 
 
 def analyse(obs, frames, me, lo=0, hi=10 ** 9):

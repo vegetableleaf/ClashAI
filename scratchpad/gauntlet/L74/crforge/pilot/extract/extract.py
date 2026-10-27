@@ -56,7 +56,12 @@ def table_shims(tables):
     for f in ('spells_other', 'spells_characters', 'spells_buildings', 'characters', 'buildings', 'area_effect_objects'):
         rows[f] = json.load(open(Path(tables) / f'{f}.json'))['rows']
     def life(name):
-        ae = (rows['spells_other'].get(name) or {}).get('columns', {}).get('AreaEffectObject')
+        col = (rows['spells_other'].get(name) or {}).get('columns', {})
+        ae = col.get('AreaEffectObject')
+        if not ae and col.get('SummonCharacter'):
+            # round 6.3a: Rage has no AreaEffectObject; its area is the RageBottle's DeathAreaEffect. Without this life is
+            # None, deployments dates the area at first sighting, 1 tick late on 10 of 16 casts (CRFORGE_S0.md 6.4).
+            ae = ((rows['buildings'].get(col['SummonCharacter']) or {}).get('columns') or {}).get('DeathAreaEffect')
         return (rows['area_effect_objects'].get(ae) or {}).get('columns', {}).get('LifeDuration') if ae else None
     def stats(name):
         r = rows['characters'].get(name) or rows['buildings'].get(name) or {}
@@ -227,14 +232,19 @@ def bottle_lag(card):
     return b['DeployTime'] // 50 if ch and b.get('DeathAreaEffect') and b.get('DeployTime') else None
 
 
-def crforge_casts(path, plays, sides):
+def crforge_casts(path, plays, sides, my=None, fx=None):
     """Ability casts seen_casts does not give, dated for crforge (SME.md fix rounds 2.2 / 2.3 / 3.1; the rules live in
     crforge/pilot/sme so the SME layer and this extractor share one copy):
     - Golden Knight: one cast per dash burst (sme_live.gk_dashes);
     - Archer Queen / Boss Bandit / Goblinstein: from the phase-2 ability buffs (sme_live.buff_casts);
     - a hero Ice Golem 'cast' that is its death (same area card id) is dropped (sme_live.golem_death_cast);
+    - a hero Ice Wizard 'cast' that is its deploy area (same card id) is dropped (sme_live.iw_deploy_cast,
+      SME_IW_DEPLOY=1, round 6.7);
+    - an opponent hero Ice Wizard cast is dated by its ability's first 50 ms area (sme_live.iw_area_cast,
+      SME_IW_AREA=1, round 6.8);
     - a hero Valkyrie cast_seen cast goes 1 tick earlier (sme_live.valk_shift, round 4.2);
-    - our own ability presses are dated by our elixir drop (sme_live.own_press_elixir, round 5.1)."""
+    - our own ability presses are dated by our elixir drop (sme_live.own_press_elixir, round 5.1; with SME_OWN_CAST=1
+      also the cast_seen ones on our side, round 6.2)."""
     sme_dir = str(HERE.parent / 'sme')
     if sme_dir not in sys.path:
         sys.path.insert(0, sme_dir)
@@ -243,7 +253,10 @@ def crforge_casts(path, plays, sides):
     frames = {f['t']: f for f in live_frames.convert(path)}
     # hero Valkyrie cast_seen casts 1 tick earlier for crforge (charge on R+2; SME.md round 4.2, sme_live.valk_shift)
     # our own ability presses dated by our elixir drop (round 5.1, sme_live.own_press_elixir)
-    out = [sme_live.own_press_elixir(sme_live.valk_shift(p), frames) for p in plays if not sme_live.golem_death_cast(p, frames)]
+    # round 6.2: also our own cast_seen presses (no logged tap), and not on a drop that holds one of our card plays
+    own_ticks = {t for q in plays if q['kind'] == 'play' and q['side'] == my for t in range(q['run_ticks'][0], q['run_ticks'][1] + 1)}
+    out = [sme_live.iw_area_cast(sme_live.own_press_elixir(sme_live.valk_shift(p), frames, my, own_ticks), fx, my) for p in plays
+           if not sme_live.golem_death_cast(p, frames) and not sme_live.iw_deploy_cast(p, frames, plays)]
     for g in sme_live.gk_dashes(frames) + sme_live.buff_casts(frames):
         deck = sides[g['side']]['deck']
         if g['card'] in deck:
@@ -338,7 +351,7 @@ def match(path, bl=None, names=None, cat=None, shims=None, tt=None, uhp=None, by
         if e.get('inferred'):
             row['inferred'] = True
         (plays if k is not None else unplaced).append(row)
-    plays = crforge_casts(path, plays, sides)
+    plays = crforge_casts(path, plays, sides, my, m.get('fx'))
     build = next(((json.loads(r).get('phase2') or {}).get('build') for r in open(path, 'rb') if b'"phase2"' in r), None)
     # RNG-free: no deck card is a drawer. Without the API only seen cards are known; an unseen slot was never played (it
     # is unseen because no play of it was extracted), and G0's drawers draw only when played (crforge: Arrows / Princess

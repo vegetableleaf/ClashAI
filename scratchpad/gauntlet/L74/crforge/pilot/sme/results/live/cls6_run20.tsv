@@ -1,0 +1,138 @@
+live_play_20261026_080929	1602	open:body in the reader, none near in the sim (play missed / late / unit not made)
+live_play_20261026_080929	2007	open:body position (movement / collision / targeting)
+live_play_20261026_080929	3131	ext:own_play
+live_play_20261026_083722	3097	ext:valk_charge
+live_play_20261026_094126	2533	open:body in the reader, none near in the sim (play missed / late / unit not made)
+live_play_20261026_094126	3485	open:body position (movement / collision / targeting)
+live_play_20261026_095134	2747	open:body position (movement / collision / targeting)
+live_play_20261026_101112	660	partial:ext:hero_cast:IceGolemite
+live_play_20261026_141505	1808	open:body position (movement / collision / targeting)
+live_play_20261026_141505	4922	cmp:torn_cmd_3x
+live_play_20261026_141505	5331	cmp:torn_cmd_3x
+live_play_20261026_142027	1990	cmp:step_clock
+live_play_20261026_142027	3037	open:body position (movement / collision / targeting)
+live_play_20261026_142345	2282	ext:valk_charge
+live_play_20261026_144057	2792	cmp:step_clock
+live_play_20261026_144057	5521	cmp:torn_cmd_3x
+live_play_20261026_144615	1996	open:projectile only (launch timing / flight)
+live_play_20261026_144615	2028	open:body position (movement / collision / targeting)
+live_play_20261026_145247	3032	open:body in the sim, none near in the reader
+live_play_20261026_154319	5366	cmp:torn_cmd_3x
+live_play_20261026_154319	5911	cmp:torn_cmd_3x
+live_play_20261026_154319	5997	open:body position (movement / collision / targeting)
+live_play_20261026_154839	3052	ext:own_press
+live_play_20261026_162012	517	partial:ext:valk_charge
+live_play_20261026_164443	744	ext:gk_dash
+live_play_20261026_164443	3213	open:body position (movement / collision / targeting)
+live_play_20261026_165839	2539	open:projectile only (launch timing / flight)
+live_play_20261026_165839	3204	open:area effect only (start / end timing)
+live_play_20261026_170912	745	open:body position (movement / collision / targeting)
+live_play_20261026_171232	961	open:body position (movement / collision / targeting)
+live_play_20261026_171753	1770	partial:ext:own_play
+live_play_20261026_171753	3293	open:body position (movement / collision / targeting)
+live_play_20261026_171753	3303	open:body position (movement / collision / targeting)
+live_play_20261026_172835	1114	cmp:tower_label
+live_play_20261026_172835	1418	cmp:tower_label
+live_play_20261026_172835	2831	open:body position (movement / collision / targeting)
+live_play_20261026_172835	3960	cmp:tower_label
+live_play_20261026_172835	4106	cmp:tower_label
+live_play_20261026_175027	4375	ext:own_press
+live_play_20261026_180336	2911	open:body position (movement / collision / targeting)
+live_play_20261026_180652	5308	open:body position (movement / collision / targeting)
+live_play_20261026_181217	3041	open:body in the sim, none near in the reader
+live_play_20261026_181217	5431	cmp:torn_cmd_3x
+live_play_20261026_182050	3464	ext:own_press
+live_play_20261026_183044	2978	ext:hero_cast:Bowler
+live_play_20261026_183044	3034	ext:hero_cast:Bowler
+live_play_20261026_183044	3092	open:hp only: sim less/mixed damage at the same points
+live_play_20261026_183750	2653	cmp:tower_label
+live_play_20261026_184912	413	ext:gk_dash
+live_play_20261026_184912	595	open:body position (movement / collision / targeting)
+live_play_20261026_184912	655	open:body position (movement / collision / targeting)
+live_play_20261026_184912	679	open:projectile only (launch timing / flight)
+live_play_20261026_192935	382	open:hp only: sim less/mixed damage at the same points
+live_play_20261026_192935	3975	ext:own_press
+live_play_20261026_200616	2545	partial:crf:rage_chain
+live_play_20261026_200941	376	cmp:tower_label
+live_play_20261026_200941	2366	cmp:tower_label
+live_play_20261026_200941	3329	cmp:tower_label
+live_play_20261026_200941	3470	cmp:tower_label
+live_play_20261026_201701	830	cmp:tower_label
+live_play_20261026_201701	994	cmp:tower_label
+live_play_20261026_201701	2127	cmp:tower_label
+live_play_20261026_204518	723	open:hp only: sim less/mixed damage at the same points
+live_play_20261026_205934	3357	open:body position (movement / collision / targeting)
+live_play_20261026_210720	5018	cmp:torn_cmd_3x
+live_play_20261026_210720	5168	cmp:torn_cmd_3x
+live_play_20261026_211239	1532	open:body position (movement / collision / targeting)
+live_play_20261026_211239	4894	open:body position (movement / collision / targeting)
+live_play_20261026_211239	5546	ext:hero_cast:IceWizard
+live_play_20261026_212111	4082	cmp:step_clock
+live_play_20261026_212917	4564	open:body position (movement / collision / targeting)
+live_play_20261026_220728	778	ext:own_press
+live_play_20261026_220728	3007	open:body in the reader, none near in the sim (play missed / late / unit not made)
+live_play_20261026_222240	3474	cmp:step_clock
+live_play_20261026_222712	4183	open:Earthquake pulse timing
+live_play_20261026_222712	4742	open:body position (movement / collision / targeting)
+live_play_20261026_224041	296	crf:rage_chain
+live_play_20261026_224041	1335	crf:rage_chain
+live_play_20261026_224041	1897	open:projectile only (launch timing / flight)
+live_play_20261026_224041	2504	crf:rage_chain
+live_play_20261026_224856	365	open:body in the reader, none near in the sim (play missed / late / unit not made)
+live_play_20261026_233436	1182	open:body position (movement / collision / targeting)
+live_play_20261026_233436	4922	open:body in the reader, none near in the sim (play missed / late / unit not made)
+live_play_20261026_233957	5461	open:body in the reader, none near in the sim (play missed / late / unit not made)
+live_play_20261026_233957	5725	cmp:torn_cmd_3x
+live_play_20261026_234837	1053	open:body position (movement / collision / targeting)
+live_play_20261026_235355	2681	open:projectile only (launch timing / flight)
+live_play_20261026_235355	3321	open:body in the reader, none near in the sim (play missed / late / unit not made)
+live_play_20261026_235355	4915	ext:hero_cast:Balloon
+live_play_20261026_235915	3048	ext:hero_cast:Balloon
+live_play_20261027_000233	593	open:projectile only (launch timing / flight)
+live_play_20261027_000233	1470	open:hp only: sim less/mixed damage at the same points
+live_play_20261027_000233	4599	open:body position (movement / collision / targeting)
+live_play_20261027_000233	6001	cmp:step_clock
+live_play_20261027_001141	963	cmp:step_clock
+live_play_20261027_001141	989	open:body position (movement / collision / targeting)
+live_play_20261027_001702	715	ext:valk_charge
+live_play_20261027_001702	2492	open:body in the sim, none near in the reader
+live_play_20261027_001702	2512	open:projectile only (launch timing / flight)
+live_play_20261027_001702	2528	open:projectile only (launch timing / flight)
+live_play_20261027_001702	2544	open:projectile only (launch timing / flight)
+live_play_20261027_001702	2560	open:projectile only (launch timing / flight)
+live_play_20261027_001702	2576	open:projectile only (launch timing / flight)
+live_play_20261027_001702	2592	open:projectile only (launch timing / flight)
+live_play_20261027_001702	2608	open:projectile only (launch timing / flight)
+live_play_20261027_001702	2624	open:projectile only (launch timing / flight)
+live_play_20261027_001702	2640	open:projectile only (launch timing / flight)
+live_play_20261027_001702	2656	open:projectile only (launch timing / flight)
+live_play_20261027_001702	2672	open:other: 
+live_play_20261027_001702	2688	open:other: 
+live_play_20261027_001702	2704	open:other: 
+live_play_20261027_001702	2720	open:other: 
+live_play_20261027_001702	2736	open:other: 
+live_play_20261027_002021	4391	open:body in the reader, none near in the sim (play missed / late / unit not made)
+live_play_20261027_002429	2189	cmp:step_clock
+live_play_20261027_004031	2083	ext:own_press
+live_play_20261027_004031	3482	cmp:tower_label
+live_play_20261027_004031	4977	cmp:torn_cmd_3x
+live_play_20261027_004031	5826	cmp:step_clock
+live_play_20261027_005727	5148	open:body position (movement / collision / targeting)
+live_play_20261027_005727	6001	cmp:step_clock
+live_play_20261027_010245	573	open:hp only: sim less/mixed damage at the same points
+live_play_20261027_010613	2187	open:body in the reader, none near in the sim (play missed / late / unit not made)
+live_play_20261027_011738	2013	open:body position (movement / collision / targeting)
+live_play_20261027_014151	1268	ext:hero_cast:IceWizard
+live_play_20261027_014928	3125	cmp:step_clock
+live_play_20261027_014928	5183	open:body position (movement / collision / targeting)
+live_play_20261027_014928	6214	open:other: S0_elixir
+live_play_20261027_020134	2497	partial:crf:rage_chain
+live_play_20261027_020134	4672	partial:crf:rage_chain
+live_play_20261027_022821	3205	cmp:step_clock
+live_play_20261027_030315	650	open:body position (movement / collision / targeting)
+live_play_20261027_032352	4921	cmp:torn_cmd_3x
+live_play_20261027_033729	3773	ext:valk_charge
+live_play_20261027_040302	5483	cmp:torn_cmd_3x
+live_play_20261027_040302	5493	cmp:step_clock
+live_play_20261027_040821	2115	open:body position (movement / collision / targeting)
+live_play_20261027_041602	2276	open:projectile only (launch timing / flight)
