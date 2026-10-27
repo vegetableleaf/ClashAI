@@ -432,6 +432,54 @@ component is fixed in the next round (no-discard rule).
 - L5: predicted live interval.
 - L6: live, which the owner starts. A 60-match block with alarms, then 300 matches.
 
+## Pillar 4: Scale and speed (owner additions 10-26 evening; started 10-27 04:00)
+The owner wants these "as soon as possible", not after 8 days. They run in parallel with the engine pilot.
+
+**4a. Learner model size.**
+- Today: CLXIII = 1.76 M params (d 128, 4 layers). Owner target 5-15 M.
+- Live decision time today (full decide, 2,213 decisions): p50 79 ms, p90 91 ms, p99 113 ms.
+- Gate: FULL decision p99 < 100 ms on the owner's PC (RTX 5050).
+- Steps:
+  1. Profile the 79 ms first (expected: mostly Python preprocessing + decode rules, not the forward pass).
+  2. Choose the size from the scaling curve (4c), not from the target range.
+  3. Grow CLXIII into the bigger net by a FUNCTION-PRESERVING expansion, so it starts identical (CPU identity test). No re-base: the pro-imitation re-base cost -26 pp and RL never recovered it (pattern 10).
+- Note: learner time per update scales with size (~42 s at 1.76 M).
+
+**4b. Simulator throughput: target 200-300k matches/h on a double pod (128 vCPU).**
+- Today ~4,600 matches/h per pod.
+- The engine is NOT the bottleneck (a): RoyaleSim ~0.35 core-s per match, crforge ~0.65, i.e. ~1.3 M / ~0.7 M matches/h engine-only on 128 cores. Most of the ~13 actor-s per match is Python orchestration, observation building and small-batch policy calls.
+- Build an ENGINE-AGNOSTIC batched rollout layer: thousands of matches stepped in parallel, vectorized observations, one GPU batch per decision step for each side. Prototype it on fin16; crforge plugs in after D1. Nothing is wasted whichever engine wins.
+- Gates:
+  - decisions identical to the single `decide()` on recorded rows (P1 / L0);
+  - measured matches/h;
+  - identical update-0 rows.
+- Compute budget (b, estimate): 250k matches/h ~ 200 M policy calls/h. A ~10 M learner + a ~10-20 M opponent roughly fill two 4090s. A 50 M rollout opponent would need ~4-5 GPUs. The budget therefore caps the ROLLOUT opponent's size.
+- "Tens of millions of games/hour" is NOT a target: with transformer policies it would need ~70 GPUs or a ~100x smaller model. Projects that report it use tiny nets or simplified rules, which conflicts with Pillar 1.
+
+**4c. Scaling curve.** Imitation models at ~2 / 5 / 10 / 20 M (plus larger for an opponent teacher):
+- v0: on the existing 3.5 M pro rows (gen_v32), from day 0-2.
+- v1: on HF rows once they are re-driven.
+- Held-out NLL per size, plus closed-loop checks for the sizes that matter. The curve decides 4a and the opponent size.
+
+**4d. Generalist opponent (Pillar 2 unchanged in design; size set here).**
+- The rollout opponent is sized by the 4b budget (est. 10-20 M) and trained directly. **No plan step depends on distillation.**
+- Distillation failed three times (a):
+  - search -> S1: privileged-teacher gap;
+  - deployed player -> plain model: -8.33 pp;
+  - DAgger: -9.17 pp.
+  The causes were teacher information the student lacked, rule-driven one-hot labels (overconfidence), and agreement rising while play fell.
+- A big (50-100 M) generalist is built only as a teacher / yardstick, if the data supports it. It is distilled only as a scorecard-gated experiment: same inputs, soft targets, judged closed-loop by levels B-C.
+- Persona variety (style latent z) and per-band strength calibration stay, so the learner cannot overfit one fixed opponent.
+
+**4e. IL data beyond 252k replays (owner: well over 1 M).** Investigate:
+- other public replay datasets;
+- RoyaleAPI-scale crawling (Cloudflare block since 10-08; terms / rate limits are the owner's call);
+- TV Royale (high quality but ~800/day, so it cannot reach 1 M);
+- the official API (decks / results only: meta census, not imitation).
+1 M replays ~ 70 M actions supports a much larger model than today's 17.8 M actions.
+
+**Pods (10-27):** 32657 = A1 fin16; 33920 = A2 crforge / G0 / G1; 30408 (new, 120 GB) = 4b throughput prototype + 4c curve. The CPU jobs on 32657 / 33920 leave their GPUs for the curve too.
+
 ## How the pillars share one live data stream (recommended)
 - While pillars 1-2 are built, the owner runs ONE fixed live config: **CLXIII NOLEAK with today's LIVE_OPTIONS, through
   the unified `decide()`**. The SIM mirrors every option, so this is a pure code change, and L0 shows it is a no-op on
