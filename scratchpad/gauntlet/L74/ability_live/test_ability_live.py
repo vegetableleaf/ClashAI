@@ -313,8 +313,14 @@ class TestLivePlay(unittest.TestCase):
         for mode in ({}, {"iw_press": "rule"}, {"iw_press": "never"}):
             got = [self.run_match(mod=m, pilot=FakePilot(), **mode) for m in (lp, head)]
             (t1, e1, c1), (t2, e2, c2) = got
-            strip = lambda ev: [{k: v for k, v in e.items() if k not in WALL} for e in ev]  # noqa: E731
-            self.assertEqual((t1, strip(e1), c1), (t2, strip(e2), c2), mode)
+            # adb taps and should_press calls byte-identical; events compared on PRE's keys (newer fields such as
+            # start.ui_guard / deploy_end and end.towers were added after PRE and are logging only). reader_closed's
+            # last_tick races the reader thread (-1 or 150 in BOTH modules, 5 of 24 runs 10-27): not compared.
+            self.assertEqual([e["event"] for e in e1], [e["event"] for e in e2], mode)
+            strip = lambda ev, ref: [{k: v for k, v in e.items() if k not in WALL and k in r   # noqa: E731
+                                      and not (e["event"] == "reader_closed" and k == "last_tick")}
+                                     for e, r in zip(ev, ref)]
+            self.assertEqual((t1, strip(e1, e2), c1), (t2, strip(e2, e2), c2), mode)
             self.assertTrue(c1)                                       # the rule ran
             self.assertNotIn("iw_press", e1[0])
 

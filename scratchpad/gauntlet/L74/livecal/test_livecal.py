@@ -146,3 +146,29 @@ def test_mixed_eras_collapse_without_extra_rank_votes():
     assert groups[0]['win_rate'] == pytest.approx(40/60)
     assert groups[0]['n'] == 60 and len(groups[0]['eras']) == 2
     assert groups[0]['reportable'] and not groups[1]['reportable']
+
+
+def test_sim_decision_config_is_the_deployed_live_options_file(tmp_path):
+    """plan1026 P1: LIVE / LV are generated from L70/live/LIVE_OPTIONS (decision flags only) and LIVECAL's worker refuses
+    a command whose decision options differ from it."""
+    from pipeline.decision_options import DecisionOptions
+    from pipeline.live_options import EXTRA_LIVE_FLAGS
+    assert L.LIVE == L.live_decision_options() and L.LV == L.render(L.LIVE)
+    assert set(L.LIVE) <= set(DecisionOptions.__dataclass_fields__)
+    assert not {f[2:].replace('-', '_') for f, _ in EXTRA_LIVE_FLAGS} & set(L.LIVE)
+    job = dict(seeds=[1, 2], checkpoint='c.pt', opponent=dict(path='o.pt', temperature=.1), fast=False)
+    cmd = L.command(job, 'census.json', tmp_path)
+    assert cmd[-len(L.LV) - 1:] == ['--own-effects', *L.LV] and L.live_options_diff(cmd[3:]) == {}
+    i = cmd.index('--lethal-quiet')
+    assert L.live_options_diff(cmd[3:i] + cmd[i + 2:]) == {'lethal_quiet': (0.0, L.LIVE['lethal_quiet'])}
+    f = tmp_path / 'LIVE_OPTIONS'
+    f.write_text('--tau-phase 0.3 0.4 0.5 --own-effects --iw-press head\n', encoding='utf-8')
+    assert L.live_decision_options(f) == {'tau_phase': [0.3, 0.4, 0.5]}
+    assert set(L.live_options_diff(cmd[3:], f)) >= {'tau_phase', 'xbow_class', 'lethal_rocket'}
+    argv = sys.argv
+    try:
+        sys.argv = ['livecal.py', '--worker', *cmd[3:i], *cmd[i + 2:]]
+        with pytest.raises(ValueError, match='refusing: SIM decision options differ'):
+            L.worker(require_live=True)
+    finally:
+        sys.argv = argv

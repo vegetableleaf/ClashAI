@@ -1970,140 +1970,316 @@ def rocket_tornado_choice(options, names, allowed, bs, grid, pending=False, min_
     return rockets[0], tornados[0], int(cell), plan, value, order
 
 
-@torch.no_grad()
-def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options, rngs, card_names,
-                 t_sec=None, enemy_alive=None, grid=None, projectiles=None, step_s=None, elixir=None,
-                 enemy_units=None, lethal=None, threatened=None, rocket_boards=None, tau_threat=None, tau_delta=None,
-                 log_air_boards=None, rocket_value=None, barrel_goblins=None):
-    """Optional branch of e1_eval's live decision; default branch remains untouched.
-    ``t_sec`` (tau_phase) and ``enemy_alive`` [(K, L, R) alive] + ``grid`` (xbow_class) are per-row match context;
-    ``projectiles`` (log_aim) = each row's model projectile tokens, decoded with the model's own card vocabulary.
-    ``lethal`` (lethal_rocket) = per row (raw crown towers, my side, a card pending) for ``lethal_rocket_choice``.
-    ``rocket_value`` = per row (the decision BoardState, a card pending, the match keeping the lead history) for ``rocket_value_choice``."""
-    if options.card_levels is not None:             # card_levels is LIVE-ONLY: the SIM's own (level-11) cards decide
-        options = replace(options, card_levels=None)
-    base_tau = tau = gate_taus(options, tau, t_sec, len(allowed))
-    tau = threat_taus(options, tau, tau_threat)
-    if tau_delta is not None:                       # pipeline_decisions: a per-row threshold shift while a play is pending
-        tau = tau + np.asarray(tau_delta, dtype=np.float64)
-    playing = allowed.any(axis=1) & ((np.asarray(p) > tau) | stalled)
-    if options.gate_decode != 'threshold':
-        if step_s is None:
-            raise ValueError('hazard gate decoding requires the decision step (seconds)')
-        if options.gate_decode == 'hazard':
-            playing = allowed.any(axis=1) & stalled
-        for r in np.flatnonzero(allowed.any(axis=1) & ~playing):   # a draw only where a play is possible
-            playing[r] = hazard_draw(options, p[r], step_s[r] if np.ndim(step_s) else step_s, rngs[r],
-                                     elixir=None if elixir is None else elixir[r],
-                                     enemy_units=None if enemy_units is None else enemy_units[r],
-                                     threatened=None if threatened is None else threatened[r])
-    slots = [choose_slot(heads['card'][r], allowed[r], options, rngs[r], playing=bool(playing[r]))
-             for r in range(len(allowed))]
-    cells = np.full(len(slots), -1, dtype=np.int64)
-    ids = np.flatnonzero(playing)
-    log_air_rows = set()                            # rows log_air re-aimed or blocked (why='log_air')
-    while len(ids):
+# plan1026 Pillar 3 P1 (ticket B): the rules a SAMPLED decide (training rollouts) runs -- the finishers and barrel_lane
+# (owner 10-25: it covers a reader issue training cannot fix). Every other option is a greedy-decoder rule (live / SIM eval).
+SAMPLE_RULES = ('lethal_rocket', 'lethal_log', 'lethal_quiet', 'card_levels', 'barrel_lane')
+
+
+def sample_rules(options):
+    """``options`` reduced to SAMPLE_RULES (the rest at their defaults)."""
+    return DecisionOptions(**{k: getattr(options, k) for k in SAMPLE_RULES})
+
+
+def model_cell_logits(model, enc, device):
+    """-> cell_logits(ids, slots): the card-conditioned cell logits of rows ``ids`` (one batched call per use)."""
+    def cell_logits(ids, slots):
         index = torch.as_tensor(ids, device=device)
-        sub_enc = {k: v[index] for k, v in enc.items()}
-        slot_tensor = torch.tensor([slots[r] for r in ids], device=device)
-        logits = model.cell_logits(sub_enc, slot_tensor)
-        names = [card_names[r][slots[r]] for r in ids] if card_names is not None else [''] * len(ids)
-        if (options.spell_aim != 'argmax' or options.xbow_class != 'argmax' or options.log_aim != 'argmax'
-                or options.xbow_dead_lane != 'allow' or options.rocket_dead_target != 'allow') and card_names is None:
-            raise ValueError('Rocket aim / X-Bow class / Log aim / dead-lane / dead-target blocks require explicit '
-                             'public card identities')
-        barrels = None
-        if options.uses_barrels:
-            if projectiles is None:
-                raise ValueError('log_barrel / log_air require the model projectile tokens of every row')
-            barrel_id = getattr(model, 'gid', {}).get(BARREL_KEY)
-            barrels = [barrel_landings(projectiles[r], barrel_id) for r in ids]
-        moved = []
-        gob = None if barrel_goblins is None else [barrel_goblins[r] for r in ids]
-        cells[ids] = choose_cells(logits, names, options, rngs=[rngs[r] for r in ids], grid=grid, barrels=barrels,
-                                  barrel_goblins=gob,
-                                  enemy_alive=None if enemy_alive is None else [enemy_alive[r] for r in ids],
-                                  rocket_boards=None if rocket_boards is None else [rocket_boards[r] for r in ids],
-                                  log_air_boards=None if log_air_boards is None else [log_air_boards[r] for r in ids],
-                                  log_air_moved=moved).cpu().numpy()
-        log_air_rows.update(int(ids[j]) for j in moved)
-        for r in ids[cells[ids] == LOG_AIR_BLOCKED]:    # block: WAIT, never another card
-            playing[r], cells[r] = False, -1
-        # xbow_dead_lane / rocket_dead_target left an X-Bow / Rocket no cell (-1): it is not chosen; the next card by the
-        # model's own ranking is (choose_slot without it), else WAIT. Never reached with unmasked SIM logits (neither
-        # block ever covers the board).
-        ids = ids[(cells[ids] < 0) & playing[ids]]
-        if len(ids):
-            allowed = allowed.copy()
-        for r in ids:
-            allowed[r, slots[r]] = False
-            nxt = choose_slot(heads['card'][r], allowed[r], options, rngs[r], playing=True)
-            if nxt < 0:
-                playing[r] = False
-            else:
-                slots[r] = nxt
-        ids = ids[playing[ids]]
-    tau, base_tau = np.broadcast_to(tau, len(slots)), np.broadcast_to(base_tau, len(slots))
-    out = [dict(play=bool(playing[r]), slot=slots[r], cell=int(cells[r]),
-                why=('no_affordable' if slots[r] < 0 else 'wait' if not playing[r]
-                     else 'stall' if stalled[r] and p[r] <= tau[r] else
-                     'tau_threat' if p[r] > tau[r] and p[r] <= base_tau[r] and options.tau_threatened is not None
-                     else 'gate' if p[r] > tau[r] else 'hazard'))
-           for r in range(len(slots))]
-    for r in log_air_rows:
-        out[r]['why'] = 'log_air'
-    if options.rocket_value > 0:    # before lethal_rocket, which overrides it
+        return model.cell_logits({k: v[index] for k, v in enc.items()}, torch.tensor(slots, device=device))
+    return cell_logits
+
+
+@torch.no_grad()
+def decide(heads, p, allowed, stalled, *, tau, options, rngs, cell_logits, card_names=None, decode='greedy',
+           sampler=None, cell_guard=None, follow_up=None, trace=None, choose=None,
+           t_sec=None, enemy_alive=None, grid=None, projectiles=None, barrel_id=None, step_s=None, elixir=None,
+           enemy_units=None, lethal=None, threatened=None, rocket_boards=None, tau_threat=None, tau_delta=None,
+           log_air_boards=None, rocket_value=None, barrel_goblins=None):
+    """THE decision (plan1026 Pillar 3 P1). SIM eval / forks (``decide_batch``), live (``live_gen_v2.GenPilot.decide``)
+    and training rollouts (``e1_eval.sample_decide_batch``, decode 'sample') all run this one function; the callers only
+    build the per-row context. Rows are independent (each draws only from its own rng); per row, in order:
+      1. gate. greedy: p > tau (tau_phase / tau_threatened / tau_delta) or stalled, + the hazard draw (gate_decode).
+         sample: Bernoulli(sigmoid((z - logit tau) / T_gate)) from ``sampler['rngs'][r]`` (stalled = forced play).
+      2. the finishers (lethal_rocket / lethal_log, lethal_quiet's skip): gate, card and cell.
+      3. greedy only: rocket_value / rocket_tornado (the combo's second card via ``follow_up``).
+      4. card: choose_slot (greedy) | categorical at T (sample); cell: choose_cells with every option (greedy) |
+         categorical at T + barrel_lane (sample). xbow_dead_lane / rocket_dead_target leaving no
+         cell drop that card for the model's next (greedy), else WAIT; a log_air block = WAIT.
+    ``cell_logits(ids, slots)`` -> [len(ids), N_CELLS] logits; ``cell_guard(r, slot, logits)`` (live: the reader's
+    legal / failed-spot / UI masks) is applied to every playing row's logits before aiming; ``follow_up(r, first,
+    second, cell, after, within, order, value)`` -> the follow-up entry or None (None: no combo, the model decides);
+    ``choose`` replaces choose_cells for the playing rows' aim (live passes its module's name);
+    ``trace`` (a list, live) gets one dict per row: the tau, hazard draw, rule data, dropped card, log_air flags, the
+    final logits and a WAIT row's logged cell. -> per row dict(play, slot, cell, why[, follow_ups]) (+ the sample
+    record: allowed, stalled, gate_sampled, lp_gate, lp_card, lp_cell, p_gate, T, and with any SAMPLE_RULES option on,
+    ``forced``: a finisher / barrel_lane chose, not the sampled policy -- rl_royale leaves those rows out of PPO)."""
+    allowed = np.asarray(allowed, dtype=bool)
+    n = len(allowed)
+    any_allowed = allowed.any(axis=1)
+    p = np.asarray(p, dtype=np.float64)
+    sample = decode == 'sample'
+    if decode not in ('greedy', 'sample'):
+        raise ValueError(f'decode must be greedy or sample, got {decode!r}')
+    if sample and options != sample_rules(options):
+        raise ValueError('a sampled decide runs only the SAMPLE_RULES options (sample_rules)')
+    tr = [dict() for _ in range(n)] if trace is not None else None
+    hazard = [None] * n
+    # ---- 1. gate ----
+    if sample:
+        s = sampler
+        tau_r, T, T_gate, heads_sampled = s['tau_r'], s['T'], s['T_gate'], s['heads']
+        gate_sampled = any_allowed & ~stalled                      # forced (stalled) or impossible (no card) -> not sampled
+        logit_tau = math.log(tau / (1.0 - tau)) if tau_r is None else np.log(tau_r / (1.0 - tau_r))
+        z_gate = heads['gate'].detach().cpu().numpy().astype(np.float64)
+        with np.errstate(over='ignore'):
+            p_b = 1.0 / (1.0 + np.exp(-(z_gate - logit_tau) / T_gate))
+        g = np.zeros(n, dtype=bool)
+        lp_gate = np.zeros(n, dtype=np.float64)
+        for r in range(n):
+            if gate_sampled[r] and 'gate' not in heads_sampled:
+                g[r] = p[r] > (tau if tau_r is None else tau_r[r])  # greedy gate, as live_decide
+            elif gate_sampled[r]:
+                g[r] = s['rngs'][r].random() < p_b[r]
+                lp_gate[r] = math.log(p_b[r] if g[r] else 1.0 - p_b[r])
+        playing = any_allowed & (stalled | g)
+        lp_card = np.zeros(n, dtype=np.float64)
+        lp_cell = np.zeros(n, dtype=np.float64)
+        base_tau = tau = np.broadcast_to(np.float64(tau) if tau_r is None else tau_r, n)
+    else:
+        base_tau = tau = gate_taus(options, tau, t_sec, n)
+        tau = threat_taus(options, tau, tau_threat)
+        if tau_delta is not None:                   # pipeline_decisions / posture: a per-row threshold shift
+            tau = tau + np.asarray(tau_delta, dtype=np.float64)
+        playing = any_allowed & ((p > tau) | stalled)
+        if options.gate_decode != 'threshold':
+            if step_s is None:
+                raise ValueError('hazard gate decoding requires the decision step (seconds)')
+            if options.gate_decode == 'hazard':
+                playing = any_allowed & stalled
+            for r in np.flatnonzero(any_allowed & ~playing):   # a draw only where a play is possible
+                playing[r] = hazard[r] = hazard_draw(options, p[r], step_s[r] if np.ndim(step_s) else step_s, rngs[r],
+                                                     elixir=None if elixir is None else elixir[r],
+                                                     enemy_units=None if enemy_units is None else enemy_units[r],
+                                                     threatened=None if threatened is None else threatened[r])
+        tau, base_tau = np.broadcast_to(tau, n), np.broadcast_to(base_tau, n)
+    if tr is not None:
+        for r in range(n):
+            tr[r].update(tau=float(tau[r]), hazard=hazard[r])
+    out = [None] * n
+    # ---- 2. the finishers ----
+    if options.lethal_rocket != 'off':
+        if lethal is None or t_sec is None or grid is None or card_names is None:
+            raise ValueError('lethal_rocket requires per-row crown towers, decision times, the grid and card names')
+        for r in np.flatnonzero(any_allowed):
+            towers, side, pending, *rest = lethal[r]
+            hit = lethal_rocket_choice(options, t_sec[r], card_names[r], allowed[r], towers, side, grid, pending=pending,
+                                       own=rest[0] if rest else None, skip=rest[1] if len(rest) > 1 else ())
+            if hit is not None:
+                out[r] = dict(play=True, slot=hit[0], cell=hit[1],
+                              why='lethal_log' if hit[2].get('card') == 'Log' else 'lethal_rocket')
+                if sample:
+                    out[r]['forced'] = True
+                if tr is not None:
+                    tr[r].update(rule=out[r]['why'], target=hit[2])
+    # ---- 3. rocket_value / rocket_tornado (greedy) ----
+    if options.rocket_value > 0:
         if rocket_value is None or grid is None or card_names is None:
             raise ValueError('rocket_value requires per-row boards, the grid and card names')
-        hits, lone = {}, {}
-        for r in range(len(out)):
+        hits, lone, combos = {}, {}, {}
+        for r in range(n):
+            if out[r] is not None:                  # a finisher fired: the rule is not asked (live order)
+                continue
             hit = rocket_value_choice(options, card_names[r], allowed[r], rocket_value[r][0], grid, pending=rocket_value[r][1],
                                       holder=rocket_value[r][2], playing=bool(playing[r]))
             if hit is not None and options.rocket_tornado not in ('only', 'rocket_only'):      # those modes: the combo trigger alone
                 hits[r] = hit
             elif hit is not None:
                 lone[r] = hit                       # ... unless rocket_tornado_lone best picks it over the combo (below)
-        combos = {}
-        if options.rocket_tornado != 'off':     # the combo: one card at the pull centre now, the other as a pipelined follow-up (e1_eval.follow_up_spec)
-            for r in range(len(out)):
-                bs, pending, holder = rocket_value[r]
-                if (r in hits and options.rocket_tornado_lone == 'skip') or (options.rocket_value_idle == 'on' and bool(playing[r])) or (
-                        options.rocket_value_threat == 'on' and not getattr(holder, 'rv_threatened', False)):
-                    continue
-                hit = rocket_tornado_choice(options, card_names[r], allowed[r], bs, grid, pending)
-                if hit is None:
-                    continue
-                if hit[5] == 'lone':                # rocket_tornado_lone best: the lone Rocket (rocket_value_choice's hit) is the better play
-                    if r in lone:
-                        hits[r] = lone[r]
-                    continue
-                hits.pop(r, None)
-                combos[r] = hit
+            if options.rocket_tornado == 'off' or not any_allowed[r]:
+                continue
+            bs, pending, holder = rocket_value[r]
+            if (r in hits and options.rocket_tornado_lone == 'skip') or (options.rocket_value_idle == 'on' and bool(playing[r])) or (
+                    options.rocket_value_threat == 'on' and not getattr(holder, 'rv_threatened', False)):
+                continue
+            hit = rocket_tornado_choice(options, card_names[r], allowed[r], bs, grid, pending)
+            if hit is None:
+                continue
+            if hit[5] == 'lone':                    # rocket_tornado_lone best: the lone Rocket (rocket_value_choice's hit) is the better play
+                if r in lone:
+                    hits[r] = lone[r]
+                continue
+            hits.pop(r, None)
+            combos[r] = hit
         if hits:
             ids = sorted(hits)
-            logits = model.cell_logits({k: v[torch.as_tensor(ids, device=device)] for k, v in enc.items()},
-                                       torch.tensor([hits[r][0] for r in ids], device=device))
+            logits = cell_logits(ids, [hits[r][0] for r in ids])
             for j, r in enumerate(ids):
-                out[r] = dict(play=True, slot=hits[r][0], cell=rocket_value_cell(logits[j], hits[r][1]), why='rocket_value')
-        if combos:
-            from .e1_eval import follow_up_spec
+                lg = logits[j] if cell_guard is None else cell_guard(r, hits[r][0], logits[j:j + 1])
+                out[r] = dict(play=True, slot=hits[r][0], cell=rocket_value_cell(lg, hits[r][1]), why='rocket_value')
+                if tr is not None:
+                    tr[r].update(rule='rocket_value', value=hits[r][2])
         for r, hit in combos.items():
             after, within = rocket_tornado_timing(hit[3])
             first, second = (hit[0], hit[1]) if hit[5] == 'rocket' else (hit[1], hit[0])    # order 'tornado': the Rocket follows
-            out[r] = dict(play=True, slot=first, cell=hit[2], why='rocket_tornado')
+            d = dict(play=True, slot=first, cell=hit[2], why='rocket_tornado')
             if options.rocket_tornado != 'rocket_only':
-                out[r]['follow_ups'] = [follow_up_spec(second, hit[2], after, within)]
-    if options.lethal_rocket != 'off':
-        if lethal is None or t_sec is None or grid is None or card_names is None:
-            raise ValueError('lethal_rocket requires per-row crown towers, decision times, the grid and card names')
-        for r in range(len(out)):
-            towers, side, pending, *own = lethal[r]
-            hit = lethal_rocket_choice(options, t_sec[r], card_names[r], allowed[r], towers, side, grid, pending=pending,
-                                       own=own[0] if own else None)
-            if hit is not None:
-                out[r] = dict(play=True, slot=hit[0], cell=hit[1],
-                              why='lethal_log' if hit[2].get('card') == 'Log' else 'lethal_rocket')
-    return out
+                f = (follow_up or _sim_follow_up)(r, first, second, hit[2], after, within, hit[5], hit[4])
+                if f is None:                       # the second card left the hand: no combo, the model decides
+                    continue
+                d['follow_ups'] = [f]
+            out[r] = d
+            if tr is not None:
+                tr[r].update(rule='rocket_tornado', value=hit[4], window=hit[3], order=hit[5])
+    # ---- 4. the model's card and cell ----
+    model_rows = [r for r in range(n) if out[r] is None]
+    slots = [-1] * n
+    cells = np.full(n, -1, dtype=np.int64)
+    if sample:
+        with torch.no_grad():
+            card_logits = heads['card'].clone()
+            card_logits = card_logits.masked_fill(~torch.from_numpy(allowed).to(card_logits.device), float('-inf'))
+            card_probs = torch.softmax(card_logits.double() / T, dim=-1).cpu().numpy()
+            for r in model_rows:
+                if playing[r] and 'card' not in heads_sampled:
+                    slots[r] = int(card_logits[r].argmax().item())  # greedy card, as live_decide
+                elif playing[r]:
+                    probs = card_probs[r]
+                    c = int(s['rngs'][r].choice(len(probs), p=probs))
+                    slots[r] = c
+                    lp_card[r] = math.log(probs[c])
+            play_idx = [r for r in model_rows if playing[r]]
+            if play_idx:
+                cl = cell_logits(play_idx, [slots[r] for r in play_idx])
+                cell_probs = torch.softmax(cl.double() / T, dim=-1).cpu().numpy()
+                gob = []
+                for j, r in enumerate(play_idx):
+                    if 'cell' not in heads_sampled:
+                        cells[r] = int(cell_probs[j].argmax())      # greedy cell, as live_decide
+                    else:
+                        probs = cell_probs[j]
+                        cells[r] = x = int(s['rngs'][r].choice(len(probs), p=probs))
+                        lp_cell[r] = math.log(probs[x])
+                    if options.barrel_lane == 'on' and card_names is not None and is_barrel_answer(card_names[r][slots[r]]):
+                        gob.append((j, r))
+                for j, r in gob:                    # barrel_lane: the answer goes to the barrel's lane (forced)
+                    pts = [(bx * 18.0, by * 32.0) for bx, by in barrel_landings(projectiles[r], barrel_id)] \
+                        if projectiles is not None else []
+                    pts += list(barrel_goblins[r]) if barrel_goblins is not None else []
+                    c = barrel_lane_cell(cl[j], pts, int(cells[r]), grid)
+                    if c is not None and c != int(cells[r]):
+                        cells[r] = c
+                        out[r] = 'forced'
+    else:
+        for r in model_rows:
+            slots[r] = choose_slot(heads['card'][r], allowed[r], options, rngs[r], playing=bool(playing[r]))
+        ids = np.array([r for r in model_rows if playing[r]], dtype=np.int64)
+        log_air_rows = set()                        # rows log_air re-aimed or blocked (why='log_air')
+        blocked = set()
+        while len(ids):
+            names = [card_names[r][slots[r]] for r in ids] if card_names is not None else [''] * len(ids)
+            if (options.spell_aim != 'argmax' or options.xbow_class != 'argmax' or options.log_aim != 'argmax'
+                    or options.xbow_dead_lane != 'allow' or options.rocket_dead_target != 'allow') and card_names is None:
+                raise ValueError('Rocket aim / X-Bow class / Log aim / dead-lane / dead-target blocks require explicit '
+                                 'public card identities')
+            logits = cell_logits(ids, [slots[r] for r in ids])
+            if cell_guard is not None:
+                logits = torch.cat([cell_guard(int(r), slots[r], logits[j:j + 1]) for j, r in enumerate(ids)])
+            barrels = None
+            if options.uses_barrels:
+                if projectiles is None:
+                    raise ValueError('log_barrel / log_air require the model projectile tokens of every row')
+                barrels = [barrel_landings(projectiles[r], barrel_id) for r in ids]
+            moved = []
+            ctx = dict(rngs=[rngs[r] for r in ids], grid=grid, barrels=barrels,
+                       barrel_goblins=None if barrel_goblins is None else [barrel_goblins[r] for r in ids],
+                       enemy_alive=None if enemy_alive is None else [enemy_alive[r] for r in ids],
+                       # only the rows that read them (live builds these boards lazily: a Rocket / a Log row)
+                       rocket_boards=None if rocket_boards is None else [
+                           rocket_boards[r] if str(nm).lower() == 'rocket' else None for r, nm in zip(ids, names)],
+                       log_air_boards=None if log_air_boards is None else [
+                           log_air_boards[r] if is_log(nm) else None for r, nm in zip(ids, names)])
+            cells[ids] = (choose or choose_cells)(logits, names, options, log_air_moved=moved, **ctx).cpu().numpy()
+            log_air_rows.update(int(ids[j]) for j in moved)
+            if tr is not None:
+                for j, r in enumerate(ids):
+                    tr[r].update(logits=logits[j:j + 1], name=names[j], moved=j in moved)
+            for j, r in enumerate(ids):
+                if cells[r] == LOG_AIR_BLOCKED:     # block: WAIT, never another card
+                    playing[r], cells[r] = False, -1
+                    blocked.add(int(r))
+                    if tr is not None:              # live logs the Log's aim without log_air
+                        one = {k: (v[j:j + 1] if isinstance(v, list) else v) for k, v in ctx.items()}
+                        tr[r]['blocked_cell'] = int(choose_cells(logits[j:j + 1], [names[j]],
+                                                                 replace(options, log_air='off'), **one)[0])
+            # xbow_dead_lane / rocket_dead_target left an X-Bow / Rocket no cell (-1): it is not chosen; the next card by
+            # the model's own ranking is (choose_slot without it), else WAIT.
+            ids = ids[(cells[ids] < 0) & playing[ids]]
+            if len(ids):
+                allowed = allowed.copy()
+            for r in ids:
+                if tr is not None:
+                    tr[r]['dropped'] = 'xbow_dead_lane' if is_xbow(card_names[r][slots[r]]) else 'rocket_dead_target'
+                allowed[r, slots[r]] = False
+                nxt = choose_slot(heads['card'][r], allowed[r], options, rngs[r], playing=True)
+                if nxt < 0:
+                    playing[r] = False
+                else:
+                    slots[r] = nxt
+            ids = ids[playing[ids]]
+        if tr is not None:                          # live logs a WAIT's aim: argmax, no RNG-drawing or blocking option
+            waits = [r for r in model_rows if not playing[r] and slots[r] >= 0 and r not in blocked]
+            if waits:
+                plain = replace(options, xbow_class='argmax', xbow_dead_lane='allow', rocket_dead_target='allow',
+                                log_air='off')
+                logits = cell_logits(waits, [slots[r] for r in waits])
+                names = [card_names[r][slots[r]] if card_names is not None else '' for r in waits]
+                barrels = [barrel_landings(projectiles[r], barrel_id) for r in waits] if plain.uses_barrels else None
+                got = choose_cells(logits, names, plain, grid=grid, barrels=barrels,
+                                   barrel_goblins=None if barrel_goblins is None else [barrel_goblins[r] for r in waits])
+                for j, r in enumerate(waits):
+                    tr[r]['wait_cell'] = int(got[j])
+    res = [None] * n
+    for r in range(n):
+        if isinstance(out[r], dict):
+            res[r] = out[r]
+            continue
+        res[r] = dict(play=bool(playing[r]), slot=slots[r], cell=int(cells[r]),
+                      why=('no_affordable' if not any_allowed[r] else 'wait' if not playing[r]
+                           else 'stall' if stalled[r] and (sample or p[r] <= tau[r]) else
+                           'gate' if sample else
+                           'tau_threat' if p[r] > tau[r] and p[r] <= base_tau[r] and options.tau_threatened is not None
+                           else 'gate' if p[r] > tau[r] else 'hazard'))
+        if out[r] == 'forced':
+            res[r]['forced'] = True
+    if not sample:
+        for r in log_air_rows:
+            res[r]['why'] = 'log_air'
+    if sample:                                      # the rollout record; a forced row keeps its draws' log-probs
+        rules = options != DecisionOptions()        # (rl_royale leaves forced rows out of PPO)
+        for r in range(n):
+            d = res[r]
+            d.update(allowed=allowed[r].copy(), stalled=bool(stalled[r]), gate_sampled=bool(gate_sampled[r]),
+                     lp_gate=float(lp_gate[r]), lp_card=float(lp_card[r]), lp_cell=float(lp_cell[r]), p_gate=float(p[r]),
+                     T=T)
+            if rules:
+                d['forced'] = bool(d.get('forced', False))
+    if trace is not None:
+        trace.extend(tr)
+    return res
+
+
+def _sim_follow_up(r, first, second, cell, after, within, order, value):
+    from .e1_eval import follow_up_spec
+    return follow_up_spec(second, cell, after, within)
+
+
+def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options, rngs, card_names, **context):
+    """The SIM's greedy decide (e1_eval.live_decide_batch with decision options; forks; SIM eval): ``decide`` on the
+    model's batched cell logits. card_levels is LIVE-ONLY: the SIM's own cards decide."""
+    if options.card_levels is not None:
+        options = replace(options, card_levels=None)
+    barrel_id = getattr(model, 'gid', {}).get(BARREL_KEY) if options.uses_barrels else None
+    return decide(heads, p, allowed, stalled, tau=tau, options=options, rngs=rngs, card_names=card_names,
+                  cell_logits=model_cell_logits(model, enc, device), barrel_id=barrel_id, **context)
 
 
 def match_kwargs(matches):
@@ -2158,12 +2334,17 @@ def match_kwargs(matches):
         out.update(t_sec=[float(m._cur[1].t_sec) for m in matches], grid=cfg['grid'],
                    lethal=[(((m.state or {}).get('episode') or {}).get('crown_towers', []), int(m.side),
                             getattr(m, 'pending', None) is not None or bool(getattr(m, 'pend', None))) for m in matches])
-        if options.lethal_log == 'on':  # + my accepted plays (landing tick, deck slot, my-frame xy) for the in-flight guard
-            for row, m in zip(out['lethal'], matches):   # public tower HP per decision tick -> the HP each spell landed on
+        if options.lethal_log == 'on' or options.lethal_quiet > 0:   # public tower HP per decision tick (live's history)
+            for row, m in zip(out['lethal'], matches):
                 m._lethal_hp_hist = record_hp(getattr(m, '_lethal_hp_hist', None), int(m._cur[0]),
                                               enemy_princess_hps(row[0], row[1]))
+        if options.lethal_log == 'on':  # + my accepted plays (landing tick, deck slot, my-frame xy) for the in-flight guard
             out['lethal'] = [row + ([(m.deck.cards[s], x, y, land * 0.05, hp_after(m._lethal_hp_hist, land))
                                      for land, s, x, y in m.done_plays[-8:]],)
+                             for row, m in zip(out['lethal'], matches)]
+        if options.lethal_quiet > 0:    # owner 10-25 (live_gen_v2.lethal_rocket): no finisher on a princess something else is hitting
+            out['lethal'] = [(row + (None,) if len(row) == 3 else row)
+                             + (recently_hit(m._lethal_hp_hist, m._lethal_hp_hist[-1][0], round(options.lethal_quiet / 0.05)),)
                              for row, m in zip(out['lethal'], matches)]
     if options.log_air != 'off':        # the enemy board the Log's corridor is judged on (the decision BoardState, my frame)
         out.update(grid=cfg['grid'], log_air_boards=[

@@ -11,12 +11,11 @@ from .e1_eval import allowed_slots
 from .model_v3 import cell_xy
 from dataclasses import replace
 
-from .decision_options import (BARREL_KEY, DecisionOptions, barrel_landings, choose_cells, choose_slot, enemy_unit_count,
-                               gate_taus, hazard_draw, is_xbow, lethal_rocket_choice, tau_threat_state,
-                               threat_on, threat_taus, tower_threat, xbow_dead_lane_cells, enemy_body_tiles,
-                               princess_dead_state, rocket_covers_king, rocket_kills_king, log_air_board, LOG_AIR_BLOCKED,
-                               log_air_ground_child_tiles, is_log, recently_hit, barrel_goblin_tiles)
-from .decision_options import rocket_tornado_choice, rocket_tornado_timing, rocket_value_cell, rocket_value_choice
+from .decision_options import (BARREL_KEY, DecisionOptions, barrel_landings, choose_cells, decide, enemy_unit_count,
+                               is_xbow, lethal_rocket_choice, tau_threat_state, threat_on, tower_threat,
+                               xbow_dead_lane_cells, enemy_body_tiles, princess_dead_state, rocket_covers_king,
+                               rocket_kills_king, log_air_board, log_air_ground_child_tiles, recently_hit,
+                               barrel_goblin_tiles)
 from .live_mem import my_side_of
 from .decision_options import enemy_princess_hps, hp_after, record_hp
 
@@ -180,16 +179,14 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
         self._lethal_hp_hist = record_hp(getattr(self, '_lethal_hp_hist', None), tick, enemy_princess_hps(towers, side))
         return self._lethal_hp_hist
 
-    def lethal_rocket(self, frame, info, allowed):
-        """decision_options.lethal_rocket_choice on the live frame: the decision board's time (bs.t_sec, as tau_phase),
-        the raw frame's absolute tower HP (public), my hand by position. live_play never decides with a card pending."""
+    def _lethal_context(self, frame, info):
+        """The finisher's per-row context for decision_options.decide: (raw crown towers, my side, a play pending, my
+        plays in flight (lethal_log), the princesses something else is hitting (lethal_quiet)). The raw frame's absolute
+        tower HP (public); live_play never decides with a card pending."""
         options = self.decision_options
-        if getattr(options, 'lethal_rocket', 'off') == 'off':
-            return None
         from .live_mem import to_observe
         side = my_side_of(frame)
         towers = to_observe(frame, side, info['names'])['episode']['crown_towers']
-        names = [info['names'][di] if di >= 0 else None for di in info['hand_deck_indices']]
         own, skip = None, ()
         if getattr(options, 'lethal_log', 'off') == 'on' or getattr(options, 'lethal_quiet', 0.0) > 0:
             hist = self._lethal_snapshot(frame, towers, side)   # + the public tower HP each spell landed on
@@ -198,36 +195,35 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
         if getattr(options, 'lethal_log', 'off') == 'on':   # my confirmed plays (card, model xy, landing t): in flight
             key = {v: k for k, v in getattr(self, 'gid', {}).items()}
             own = [(key.get(c), x, y, t, hp_after(hist, round(t / 0.05))) for c, f, x, y, t in getattr(self, 'past', [])[-8:]]
-        return lethal_rocket_choice(options, info['bs'].t_sec, names, allowed, towers, side, self.grid, own=own,
-                                    pending=bool(info.get('pending')), skip=skip)   # --pipeline-decisions: never fires with a play pending
+        return towers, side, bool(info.get('pending')), own, skip   # --pipeline-decisions: never fires with a play pending
 
-    def rocket_value(self, info, allowed, playing=False):
-        """decision_options.rocket_value_choice on the live board (info['bs']: the reader's bodies with hp_frac; live_play never
-        decides with a card pending) -> (hand position, eligible cells, value) or None. Called at EVERY decision when on (the
-        lead history), as SIM decide_batch."""
-        options = self.decision_options
-        if getattr(options, 'rocket_value', 0.0) <= 0:
+    def lethal_rocket(self, frame, info, allowed):
+        """decision_options.lethal_rocket_choice on the live frame (the decision board's time bs.t_sec, as tau_phase)."""
+        if getattr(self.decision_options, 'lethal_rocket', 'off') == 'off':
             return None
+        towers, side, pending, own, skip = self._lethal_context(frame, info)
         names = [info['names'][di] if di >= 0 else None for di in info['hand_deck_indices']]
-        hit = rocket_value_choice(options, names, allowed, info['bs'], self.grid, holder=self, playing=bool(playing))
-        self._rv_lone = hit                                           # rocket_tornado_lone best may still play it in 'only' mode
-        return None if options.rocket_tornado == 'only' else hit      # 'only': the combo without the lone rule (state still kept above)
+        return lethal_rocket_choice(self.decision_options, info['bs'].t_sec, names, allowed, towers, side, self.grid,
+                                    own=own, pending=pending, skip=skip)
 
-    def rocket_tornado(self, info, allowed, playing=False):
-        """decision_options.rocket_tornado_choice on the live board -> (Rocket hand position, cell, (earliest, latest), value, order,
-        Tornado hand position) or None; order 'lone' (rocket_tornado_lone best) = play the lone Rocket instead (cell / window None).
-        The lone rule has priority (the caller asks it first); idle / threat gates as the lone rule (threat from the state it kept)."""
-        options = self.decision_options
-        if options.rocket_tornado == 'off' or (options.rocket_value_idle == 'on' and playing):
-            return None
-        if options.rocket_value_threat == 'on' and not getattr(self, 'rv_threatened', False):
-            return None
-        names = [info['names'][di] if di >= 0 else None for di in info['hand_deck_indices']]
-        hit = rocket_tornado_choice(options, names, allowed, info['bs'], self.grid)
-        return None if hit is None else (hit[0], hit[2], hit[3], hit[4], hit[5], hit[1])
+    def _policy_forward(self, b):
+        """ONE trunk pass per decision -> (the policy heads + g, cell(card, form) -> [1, N_CELLS] logits from that same
+        encoding). A plain GenModel forward is exactly encode_gen -> heads_gen (+ cell_logits_gen), so this is
+        bit-identical to calling the model twice (S1 SPEED.md a1: the second pass was ~85% of a live decide); any other
+        model (an overridden forward, a test stub) keeps the two calls."""
+        from .model_gen import GenModel
+        m = self.model
+        if isinstance(m, GenModel) and type(m).forward is GenModel.forward:
+            enc = m.encode_gen(b)
+            out = m.heads_gen(enc, b)
+            out['g'] = enc['g']
+            return out, lambda card, form: m.cell_logits_gen(enc, card, form)
+        return m(b), lambda card, form: m(b, card=card, form=form)['cell']
 
     @torch.no_grad()
     def decide(self, frame):
+        """decision_options.decide (plan1026 P1: the ONE decision of SIM eval, rollouts and live) on this reader frame:
+        this method only builds the row's context and the live decision dict (+ its log-only tags)."""
         options = self.decision_options
         if not options.active:
             return self._audited(super().decide(frame))
@@ -238,7 +234,7 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
             from .match_memory import S, S1C_FIELDS, S_V2   # (live_gen.decide does the same; this path had dropped it)
             if b["mem_summary"].shape[-1] == S_V2:
                 lookahead["xb_lock_p"] = round(float(b["mem_summary"][0, S + S1C_FIELDS.index("xb_lock_p")]), 4)
-        out = self.model(b)
+        out, cell_head = self._policy_forward(b)
         if getattr(self, 'ability', None) is not None:   # live_play --iw-press head (B6): this decision's trunk g
             self.last_g = (int(frame['game_tick']), out['g'])
         p = float(torch.sigmoid(out['gate'][0]))
@@ -248,10 +244,10 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
         allowed = allowed_slots(np.array([h[0] > 0 for h in info['hand']]), info['costs'],
                                 info.get('el_afford', info['el_int']))     # --afford-ticks; default = el_int
         hazard_on = options.gate_decode != 'threshold'  # off: the frame / pilot state are not even read
+        threatened = step = None
         if hazard_on:
             tick = int(frame['game_tick'])              # the reader's game clock; a frame without it raises
             step = hazard_step_s(getattr(self, '_hazard_prev', None), tick)
-            threatened = None
             if threat_on(options):                      # every decision (as SIM match_kwargs), affordable or not
                 self._threat_state, threatened = tower_threat(options, getattr(self, '_threat_state', None),
                                                               info['bs'])
@@ -264,178 +260,150 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
         if getattr(options, 'lethal_rocket', 'off') != 'off' and (getattr(options, 'lethal_log', 'off') == 'on'
                                                                   or getattr(options, 'lethal_quiet', 0.0) > 0):
             self._lethal_snapshot(frame, names=info['names'])  # every decision (as SIM match_kwargs), affordable or not
-        if not allowed.any():
-            self.rocket_value(info, allowed)        # nothing affordable: only the per-match state the rule keeps (SIM decide_batch sees it too)
-            if hazard_on:
-                self._hazard_prev = (tick, False)
-            return self._audited(dict(play=False, no_affordable=True, p_play=p, hand_pos=-1, deck_index=-1, card=0,
-                        form=FORM_PAD, bs=info['bs'], name=None, el_int=info['el_int'], stalled=stalled,
-                        **lookahead))
-        # tau_phase: the gate threshold of the phase of the board the model sees (bs.t_sec, tick + extrapolation),
-        # as SIM's match_kwargs reads it from the prepared (extrapolated) BoardState.
         bs = info['bs']
-        tau = (float(gate_taus(options, self.gate_tau, [bs.t_sec], 1)[0]) if options.tau_phase is not None
-               else self.gate_tau)
-        tau = float(threat_taus(options, tau, tau_threat))   # tau_threatened: X while threatened, else unchanged
         delta = None
         if info.get('pending'):                         # --pipeline-decisions: cfg["pipeline_tau_delta"], only while a play is pending
             delta = float(getattr(self, 'pipeline_tau_delta', 0.0) or 0.0)
         if dtau is not None:                            # C1: SIM decide_batch's tau_delta = (pipeline delta or 0) + dtau
             delta = (delta or 0.0) + dtau
-        if delta is not None:
-            tau += delta
-        playing = p > tau or stalled                    # SIM decide_batch: (p > tau) | stalled
-        hazard = None
-        if hazard_on:                                   # SIM decide_batch: the same hazard_draw on the same context
-            if options.gate_decode == 'hazard':
-                playing = bool(stalled)
-            if not playing:
-                playing = hazard = hazard_draw(options, p, step, self.rng_decisions, elixir=bs.my_elixir,
-                                               enemy_units=enemy_unit_count(bs), threatened=threatened)
-        lethal = self.lethal_rocket(frame, info, allowed)
-        if lethal is not None:                          # SIM decide_batch: the same rule overrides gate, card and cell
-            pos, cell, target = lethal
-            card, form = info['hand'][pos]
-            why = 'lethal_log' if target.get('card') == 'Log' else 'lethal_rocket'
-            d = dict(play=True, p_play=p, hand_pos=pos, no_affordable=False, stalled=stalled, why=why,
-                     lethal_rocket=target, deck_index=info['hand_deck_indices'][pos], card=card, form=form, bs=bs,
-                     name=info['names'][info['hand_deck_indices'][pos]], xy=cell_xy(cell, self.grid), **lookahead)
-            if options.tau_phase is not None or options.tau_threatened is not None:
-                d['gate_tau'] = tau
-            if tau_threat is not None:
-                d['tau_threat'] = tau_threat
-            if hazard_on:                               # a play was made: no hazard accrues over its landing
-                d.update(hazard_step_s=step, hazard_play=False)
-                self._hazard_prev = (tick, False)
-            return self._audited(d)
-        rocket = self.rocket_value(info, allowed, playing)
-        combo = None
-        if rocket is None or getattr(options, 'rocket_tornado_lone', 'skip') != 'skip':
-            combo = self.rocket_tornado(info, allowed, playing)
-            if combo is not None and combo[4] == 'lone':    # rocket_tornado_lone best: the lone Rocket is the better play (SIM decide_batch)
-                rocket, combo = rocket or getattr(self, '_rv_lone', None), None
-            elif combo is not None:
-                rocket = None
-        if rocket is not None:                          # SIM decide_batch: the same rule, below the lethal rule
-            pos, eligible, value = rocket
-            card, form = info['hand'][pos]
-            d = dict(play=True, p_play=p, hand_pos=pos, no_affordable=False, stalled=stalled, why='rocket_value',
-                     rocket_value=round(value, 3), deck_index=info['hand_deck_indices'][pos], card=card, form=form, bs=bs,
-                     name=info['names'][info['hand_deck_indices'][pos]], **lookahead)
-            logits = self.guard_cells(frame, d, self.model(b, card=torch.tensor([card], device=self.dev),
-                                                           form=torch.tensor([form], device=self.dev))['cell'])
-            d['xy'] = cell_xy(rocket_value_cell(logits, eligible), self.grid)
-            if options.tau_phase is not None or options.tau_threatened is not None:
-                d['gate_tau'] = tau
-            if tau_threat is not None:
-                d['tau_threat'] = tau_threat
-            if hazard_on:                               # a play was made: no hazard accrues over its landing
-                d.update(hazard_step_s=step, hazard_play=False)
-                self._hazard_prev = (tick, False)
-            return self._audited(d)
-        if combo is not None:                           # the SIM runs the same rule in decide_batch (follow_up_spec); here the second card is the pipelined second tap (plan_follow_up)
-            pos, cell, (lo, hi), value, order, tpos = combo
-            pos = pos if order == 'rocket' else tpos    # order 'tornado' (rocket_tornado_order either): Tornado now, the Rocket follows
-            card, form = info['hand'][pos]
-            xy = cell_xy(cell, self.grid)
-            d = dict(play=True, p_play=p, hand_pos=pos, no_affordable=False, stalled=stalled, why='rocket_tornado',
-                     rocket_value=round(value, 3), deck_index=info['hand_deck_indices'][pos], card=card, form=form, bs=bs,
-                     name=info['names'][info['hand_deck_indices'][pos]], xy=xy, **lookahead)
-            after, within = rocket_tornado_timing((lo, hi))     # the middle of the window (SIM decide_batch asks for the same timing)
-            follow = self.plan_follow_up(frame, d, 'Tornado' if order == 'rocket' else 'Rocket', xy, after_ticks=after,
-                                         within_ticks=within)
-            if follow is not None:                      # the second card left the hand since: no combo, fall through to the model
-                d['follow_ups'] = [follow]
-                d['rocket_tornado_window'] = (lo, hi)
-                if order != 'rocket':
-                    d['rocket_tornado_order'] = order
-                if options.tau_phase is not None or options.tau_threatened is not None:
-                    d['gate_tau'] = tau
-                if tau_threat is not None:
-                    d['tau_threat'] = tau_threat
-                if hazard_on:
-                    d.update(hazard_step_s=step, hazard_play=False)
-                    self._hazard_prev = (tick, False)
-                return self._audited(d)
-        pos = choose_slot(out['card'][0], allowed, options, self.rng_decisions, playing=playing)
-        dropped = None                                  # the block that left an X-Bow / Rocket no cell (SIM decide_batch)
-        while True:
-            card, form = info['hand'][pos]
-            name = info['names'][info['hand_deck_indices'][pos]] if card > 0 else None
-            d = dict(play=playing and card > 0, p_play=p, hand_pos=pos, no_affordable=False, stalled=stalled,
-                     deck_index=info['hand_deck_indices'][pos], card=card, form=form, bs=bs, name=name, **lookahead)
-            if options.tau_phase is not None or options.tau_threatened is not None:
-                d['gate_tau'] = tau
-            if tau_threat is not None:
-                d['tau_threat'] = tau_threat
-            if hazard_on:
-                d.update(hazard_step_s=step, hazard_play=bool(hazard and d['play']))
-                if threatened is not None:
-                    d['threatened'] = threatened
-                self._hazard_prev = (tick, not d['play'])
-            if dropped:
-                d['why'] = dropped
-            if card <= 0:
-                break
-            logits = self.model(b, card=torch.tensor([card], device=self.dev),
-                                form=torch.tensor([form], device=self.dev))['cell']
-            # SIM aims only playing rows: a WAIT's logged xy keeps the plain X-Bow argmax and draws no RNG.
-            cell_options = options if d['play'] else replace(options, xbow_class='argmax', xbow_dead_lane='allow',
-                                                             rocket_dead_target='allow', log_air='off')
-            context = {}
-            if (cell_options.xbow_class != 'argmax' or cell_options.xbow_dead_lane != 'allow'
-                    or cell_options.rocket_dead_target != 'allow'):
-                # enemy K, L, R alive in my board frame, as SIM's match_kwargs
-                context = dict(rngs=[self.rng_decisions], grid=self.grid,
-                               enemy_alive=[tuple(bool(t.alive) for t in bs.towers[3:6])])
-                if cell_options.rocket_dead_target != 'allow':      # as SIM match_kwargs: glitch-filtered towers,
-                    kills_king = False                              # the model board's bodies, the raw king HP
-                    if str(name).lower() == 'rocket':
-                        from .live_mem import to_observe
-                        side = my_side_of(frame)
-                        towers = to_observe(frame, side, info['names'])['episode']['crown_towers']
-                        kills_king = (rocket_kills_king(towers, side, dict(options.card_levels)) if options.card_levels
-                                      else rocket_kills_king(towers, side))
-                    context['rocket_boards'] = [(self._princess_alive, enemy_body_tiles(bs), kills_king)]
-            if cell_options.uses_barrels:              # the model's own projectile tokens, as SIM's match_kwargs
-                context.update(grid=self.grid, barrels=[barrel_landings(b['projectiles'][0], self.gid.get(BARREL_KEY))])
-            if getattr(cell_options, 'barrel_lane', 'off') == 'on':   # owner 10-25: goblins on my half, as SIM's match_kwargs
-                context.update(grid=self.grid, barrel_goblins=[barrel_goblin_tiles(bs)])
-            if cell_options.log_air != 'off' and is_log(name):   # the decision board's enemy units / towers, as SIM's match_kwargs
-                from .live_mem import to_observe        # the raw bodies: an egg is ground whatever class it wears
-                side = my_side_of(frame)
-                context.update(grid=self.grid, log_air_boards=[log_air_board(
-                    bs, log_air_ground_child_tiles(to_observe(frame, side, info['names'])['entities'], side))])
+        names = [info['names'][di] if di >= 0 else None for di in info['hand_deck_indices']]
+        hand = lambda pos: info['hand'][pos]            # noqa: E731 -- (card, form) at a hand position
+        name_at = lambda pos: info['names'][info['hand_deck_indices'][pos]]   # noqa: E731
+
+        def cell_logits(ids, slots):                    # the card-conditioned cell head on THIS decision's encoding
+            card, form = hand(slots[0])
+            return cell_head(torch.tensor([card], device=self.dev), torch.tensor([form], device=self.dev))
+        notes = {}
+
+        def guard(r, pos, logits):                      # the reader guards on a play's logits; their log keys kept
+            d = dict(play=True, deck_index=info['hand_deck_indices'][pos], name=name_at(pos))
             logits = self.guard_cells(frame, d, logits)
-            moved = []
-            cell = int(choose_cells(logits, [name], cell_options, log_air_moved=moved, **context)[0])
-            if moved:
-                d['why'] = 'log_air'                    # live log only: this Log was re-aimed (or blocked) by log_air
-            if cell == LOG_AIR_BLOCKED:                 # block: WAIT (as SIM decide_batch), never another card
-                d['play'] = False
-                if hazard_on:
-                    d['hazard_play'] = False
-                    self._hazard_prev = (tick, True)
-                cell = int(choose_cells(logits, [name], replace(cell_options, log_air='off'), **context)[0])
-            if cell < 0:                                # SIM decide_batch: next card by the model's ranking, else WAIT
-                allowed = allowed.copy()
-                dropped = 'xbow_dead_lane' if is_xbow(name) else 'rocket_dead_target'
-                allowed[pos] = False
-                nxt = choose_slot(out['card'][0], allowed, options, self.rng_decisions, playing=True)
-                if nxt < 0:
-                    playing = False                     # nothing else affordable: wait (never forced)
-                else:
-                    pos = nxt
-                continue
-            if cell_options.xbow_dead_lane == 'block' and is_xbow(name) and xbow_dead_lane_cells(
-                    context['enemy_alive'][0], self.grid)[int(logits.reshape(-1).argmax())]:
-                d['why'] = 'xbow_dead_lane'             # the model's top X-Bow cell was blocked (live log only)
-            if cell_options.rocket_dead_target == 'block' and str(name).lower() == 'rocket':   # live log only, no RNG
-                if cell != int(choose_cells(logits, [name], replace(cell_options, rocket_dead_target='allow'),
-                                            **context)[0]):
-                    d['why'] = 'rocket_dead_target'     # the usual Rocket aim was blocked and re-aimed
-                elif kills_king and rocket_covers_king(cell, self.grid):
-                    d['why'] = 'rocket_king_lethal'     # the explicit never-the-king exception: this Rocket finishes it
-            d['xy'] = cell_xy(cell, self.grid)
-            break
+            notes.clear()
+            notes.update((k, v) for k, v in d.items() if k not in ('play', 'deck_index', 'name'))
+            return logits
+
+        def first_play(pos, why, cell, **kw):           # a rule's play dict
+            card, form = hand(pos)
+            return dict(play=True, p_play=p, hand_pos=pos, no_affordable=False, stalled=stalled, why=why, **kw,
+                        deck_index=info['hand_deck_indices'][pos], card=card, form=form, bs=bs, name=name_at(pos),
+                        xy=cell_xy(cell, self.grid), **lookahead)
+        combo = {}
+
+        def follow_up(r, first, second, cell, after, within, order, value):   # the pipelined second tap (plan_follow_up)
+            combo['d'] = first_play(first, 'rocket_tornado', cell, rocket_value=round(value, 3))
+            return self.plan_follow_up(frame, combo['d'], 'Tornado' if order == 'rocket' else 'Rocket', combo['d']['xy'],
+                                       after_ticks=after, within_ticks=within)
+
+        def kills_king():                               # as SIM match_kwargs: the raw king HP (a Rocket row only)
+            from .live_mem import to_observe
+            side = my_side_of(frame)
+            towers = to_observe(frame, side, info['names'])['episode']['crown_towers']
+            return (rocket_kills_king(towers, side, dict(options.card_levels)) if options.card_levels
+                    else rocket_kills_king(towers, side))
+
+        def log_air_row():                              # the raw bodies: an egg is ground whatever class it wears
+            from .live_mem import to_observe
+            side = my_side_of(frame)
+            return log_air_board(bs, log_air_ground_child_tiles(to_observe(frame, side, info['names'])['entities'], side))
+        ctx = dict(grid=self.grid, tau_threat=None if tau_threat is None else [tau_threat],
+                   tau_delta=None if delta is None else [delta])
+        if options.tau_phase is not None or getattr(options, 'lethal_rocket', 'off') != 'off':
+            ctx['t_sec'] = [bs.t_sec]                   # the board the model sees (tick + extrapolation), as SIM
+        if options.xbow_class != 'argmax' or options.xbow_dead_lane != 'allow' or options.rocket_dead_target != 'allow':
+            ctx['enemy_alive'] = [tuple(bool(t.alive) for t in bs.towers[3:6])]   # enemy K, L, R alive, my board frame
+        if hazard_on:
+            ctx.update(step_s=[step], elixir=[bs.my_elixir], enemy_units=[enemy_unit_count(bs)], threatened=[threatened])
+        if getattr(options, 'lethal_rocket', 'off') != 'off':
+            ctx['lethal'] = [self._lethal_context(frame, info) if allowed.any() else None]
+        if options.rocket_value > 0:                    # called at EVERY decision (the lead history), as SIM
+            ctx['rocket_value'] = [(bs, False, self)]
+        if options.rocket_dead_target != 'allow':       # glitch-filtered towers, the model board's bodies, the raw king HP
+            ctx['rocket_boards'] = _Lazy(lambda: (self._princess_alive, enemy_body_tiles(bs), kills_king()))
+        if options.uses_barrels:                        # the model's own projectile tokens, as SIM's match_kwargs
+            ctx.update(projectiles=[b['projectiles'][0]], barrel_id=self.gid.get(BARREL_KEY))
+        if getattr(options, 'barrel_lane', 'off') == 'on':   # owner 10-25: goblins on my half, as SIM's match_kwargs
+            ctx['barrel_goblins'] = [barrel_goblin_tiles(bs)]
+        if options.log_air != 'off':                    # the decision board's enemy units / towers (a Log row only)
+            ctx['log_air_boards'] = _Lazy(log_air_row)
+        trace = []
+        res = decide({'card': out['card']}, [p], allowed[None], np.array([bool(stalled)]), tau=self.gate_tau,
+                     options=options, rngs=[self.rng_decisions], cell_logits=cell_logits, card_names=[names],
+                     cell_guard=guard, follow_up=follow_up, trace=trace, choose=choose_cells, **ctx)[0]
+        tr = trace[0]
+        if not allowed.any():
+            if hazard_on:
+                self._hazard_prev = (tick, False)
+            return self._audited(dict(play=False, no_affordable=True, p_play=p, hand_pos=-1, deck_index=-1, card=0,
+                        form=FORM_PAD, bs=bs, name=None, el_int=info['el_int'], stalled=stalled, **lookahead))
+        pos = res['slot']
+        card, form = hand(pos)
+        d = dict(play=res['play'] and card > 0, p_play=p, hand_pos=pos, no_affordable=False, stalled=stalled,
+                 deck_index=info['hand_deck_indices'][pos], card=card, form=form, bs=bs,
+                 name=name_at(pos) if card > 0 else None, **lookahead)
+        rule = tr.get('rule')
+        if rule in ('lethal_rocket', 'lethal_log'):
+            d = first_play(pos, rule, res['cell'], lethal_rocket=tr['target'])
+        elif rule == 'rocket_value':
+            d = first_play(pos, 'rocket_value', res['cell'], rocket_value=round(tr['value'], 3))
+            d.update(notes)
+        elif rule == 'rocket_tornado':
+            d = combo['d']
+            d.update(follow_ups=res['follow_ups'], rocket_tornado_window=tuple(tr['window']))
+            if tr['order'] != 'rocket':
+                d['rocket_tornado_order'] = tr['order']
+        if options.tau_phase is not None or options.tau_threatened is not None:
+            d['gate_tau'] = tr['tau']
+        if tau_threat is not None:
+            d['tau_threat'] = tau_threat
+        if rule is not None:                            # a rule played: no hazard accrues over its landing
+            if hazard_on:
+                d.update(hazard_step_s=step, hazard_play=False)
+                self._hazard_prev = (tick, False)
+            return self._audited(d)
+        if hazard_on:
+            d.update(hazard_step_s=step, hazard_play=bool(tr['hazard'] and d['play']))
+            if threatened is not None:
+                d['threatened'] = threatened
+            self._hazard_prev = (tick, not d['play'])
+        if tr.get('dropped'):                           # the block that left an X-Bow / Rocket no cell
+            d['why'] = tr['dropped']
+        if card <= 0:
+            return self._audited(d)
+        if 'blocked_cell' in tr:                        # log_air block: WAIT (live log: the Log's plain aim)
+            d.update(notes, why='log_air', xy=cell_xy(tr['blocked_cell'], self.grid))
+            return self._audited(d)
+        if not d['play']:                               # a WAIT's logged xy: the plain argmax aim, no RNG
+            d['xy'] = cell_xy(tr['wait_cell'], self.grid)
+            return self._audited(d)
+        d.update(notes)
+        cell, logits = res['cell'], tr['logits']
+        if tr.get('moved'):
+            d['why'] = 'log_air'                        # live log only: this Log was re-aimed by log_air
+        if options.xbow_dead_lane == 'block' and is_xbow(d['name']) and xbow_dead_lane_cells(
+                ctx['enemy_alive'][0], self.grid)[int(logits.reshape(-1).argmax())]:
+            d['why'] = 'xbow_dead_lane'                 # the model's top X-Bow cell was blocked (live log only)
+        if options.rocket_dead_target == 'block' and str(d['name']).lower() == 'rocket':   # live log only, no RNG
+            plain = {k: ctx[k] for k in ('grid', 'enemy_alive', 'barrel_goblins') if k in ctx}
+            if options.uses_barrels:
+                plain['barrels'] = [barrel_landings(ctx['projectiles'][0], ctx['barrel_id'])]
+            if cell != int(choose_cells(logits, [d['name']], replace(options, rocket_dead_target='allow'),
+                                        rngs=[self.rng_decisions], **plain)[0]):
+                d['why'] = 'rocket_dead_target'         # the usual Rocket aim was blocked and re-aimed
+            elif ctx['rocket_boards'][0][2] and rocket_covers_king(cell, self.grid):
+                d['why'] = 'rocket_king_lethal'         # the explicit never-the-king exception: this Rocket finishes it
+        d['xy'] = cell_xy(cell, self.grid)
         return self._audited(d)
+
+
+class _Lazy:
+    """A one-row context list whose element is built on first use (decide reads it only for a Rocket / Log row)."""
+
+    def __init__(self, build):
+        self.build, self.value = build, None
+
+    def __getitem__(self, i):
+        if i != 0:
+            raise IndexError(i)
+        if self.value is None:
+            self.value = self.build()
+        return self.value

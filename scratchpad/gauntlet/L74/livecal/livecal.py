@@ -15,6 +15,8 @@ import sys
 import traceback
 import numpy as np
 from live_truth import HERE, ROOT, digest, wilson
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 BACKUP = Path('C:/Users/benpe/pod_backup_weekend/pod3/x_ADAPT/wk_adapt')
 GEN = 'icebow/data/pipeline/gen_v1_s0/gen_s0.pt'
@@ -25,12 +27,57 @@ RUNTIME_FILES = ['pipeline/'+name+'.py' for name in (
     'search_s0', 'e1_eval', 'royale_env', 'rl_royale', 'decision_options', 'obs_contract',
     'public_observation', 'extrapolate', 'model_gen', 'dataset_gen')]
 RUNTIME_FILES += ['scratchpad/gauntlet/L70/abilities/ability_policy.py',
-                  'scratchpad/gauntlet/L70/abilities/ability_models_v2.json']
-LIVE = dict(xbow_class='class_sample', xbow_class_floor=.3, tau_phase=[.35, .45, .55],
-            spell_aim='rocket_area',     # 10-23 owner: the 9-elixir hazard play is stripped from live -> from the eval too
-            log_aim='log_barrel', lethal_rocket='ot_behind', xbow_dead_lane='block',
-            rocket_dead_target='block', tau_threatened=.2, lethal_log='on')
-LV = [arg for k, v in LIVE.items() for arg in ['--'+k.replace('_', '-'), *map(str, v if isinstance(v, list) else [v])]]
+                  'scratchpad/gauntlet/L70/abilities/ability_models_v2.json',
+                  'scratchpad/gauntlet/L70/live/LIVE_OPTIONS']
+LIVE_OPTIONS = ROOT/'scratchpad/gauntlet/L70/live/LIVE_OPTIONS'
+
+
+def _decision_parser():
+    from pipeline.decision_options import add_arguments
+    parser = argparse.ArgumentParser(add_help=False, allow_abbrev=False)
+    add_arguments(parser)
+    return parser
+
+
+def render(live):
+    """{dest: value} -> the flags (a list value = its items; True = a bare store_true flag)."""
+    return [arg for k, v in live.items() for arg in (['--'+k.replace('_', '-')] if v is True else
+                                                     ['--'+k.replace('_', '-'), *map(str, v if isinstance(v, list) else [v])])]
+
+
+def live_decision_options(path=LIVE_OPTIONS):
+    """plan1026 P1: the SIM decision config IS the deployed LIVE_OPTIONS file -- its decision-option flags
+    (decision_options.add_arguments) -> {dest: value}, file order. The file's live-only EXTRA_LIVE_FLAGS (own effects,
+    look-ahead, input path, IW press head, logging) are not decision options and stay out; an unknown or bad flag
+    refuses (argparse exit 2), as live_play."""
+    import shlex
+    from pipeline.live_options import EXTRA_LIVE_FLAGS
+    decision, full = _decision_parser(), _decision_parser()
+    for flag, kw in EXTRA_LIVE_FLAGS:
+        full.add_argument(flag, **kw)
+    tokens = shlex.split(Path(path).read_text(encoding='utf-8-sig'), comments=True)
+    parsed = full.parse_args(tokens)
+    dests = [decision._option_string_actions[t.split('=', 1)[0]].dest for t in tokens
+             if t.startswith('--') and t.split('=', 1)[0] in decision._option_string_actions]
+    live = {d: getattr(parsed, d) for d in dests}
+    again = vars(decision.parse_args(render(live)))
+    if again != {d: getattr(parsed, d) for d in again}:   # every decision field, defaults included
+        raise ValueError('LIVE_OPTIONS decision flags do not round-trip through render()')
+    return live
+
+
+def live_options_diff(argv, path=LIVE_OPTIONS):
+    """-> {field: (the run's, the deployed file's)} for every DecisionOptions field a SIM command line ``argv`` sets
+    differently from LIVE_OPTIONS (decision_seed excluded: the SIM's own stream). {} = the deployed decision stack."""
+    from pipeline.decision_options import config_from_args
+    decision = _decision_parser()
+    got = config_from_args(decision.parse_known_args(argv)[0])
+    want = config_from_args(decision.parse_args(render(live_decision_options(path))))
+    return {k: (got[k], want[k]) for k in want if k != 'decision_seed' and got[k] != want[k]}
+
+
+LIVE = live_decision_options()
+LV = render(LIVE)
 
 
 def dump(path, value):
@@ -109,7 +156,7 @@ def prepare(truth_path, out, backup=BACKUP, root=ROOT):
                     protocol='S2/CAL bundle + recorded pipeline_decisions. Distinct eras audited; pooled per checkpoint/fast for scoring.',
                     assumptions=['S2/CAL tau .35, own effects, forms deck, hero abilities v2; no anti-stall.',
                                  'SIM fixed 26-tick action delay and extrapolation; device timing/identity/emotes not modeled.',
-                                 'Later live Rocket/Tornado, Log-air, card-level and follow-up options are outside S2/CAL.',
+                                 'Decision options = the deployed LIVE_OPTIONS decision flags (plan1026 P1; card_levels is live-only).',
                                  'Earlier era decision differences and historical anti-leak are standardized to S2/CAL, not reproduced.',
                                  'No claim of exact live execution parity. Era-specific truth is in truth.json.'])
     dump(out/'manifest.json', manifest)
@@ -234,8 +281,14 @@ def run(plan, directory, out, workers, root=ROOT):
         executor.shutdown(wait=True, cancel_futures=True)
 
 
-def worker():
+def worker(require_live=False):
+    """One SIM worker. ``require_live`` (LIVECAL's own --worker): refuse a run whose decision options differ from the
+    deployed LIVE_OPTIONS (plan1026 P1); gap.py's ablation arms call this without it."""
     sys.path.insert(0, str(ROOT))
+    if require_live:
+        diff = live_options_diff(sys.argv[2:])
+        if diff:
+            raise ValueError(f'refusing: SIM decision options differ from the deployed {LIVE_OPTIONS}: {diff}')
     from pipeline import search_s0 as S
     original = S.live_cfg
     def no_stall(*args, **kwargs):
@@ -300,7 +353,7 @@ def merge(directories):
 
 def main():
     if len(sys.argv) > 1 and sys.argv[1] == '--worker':
-        return worker()
+        return worker(require_live=True)
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--prepare', action='store_true')
     ap.add_argument('--truth', type=Path, default=HERE/'truth.json')

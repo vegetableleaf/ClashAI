@@ -579,8 +579,9 @@ def posture_live(matches: Sequence, enc, cfg: dict, tau, kw: dict) -> tuple:
 
 def sample_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.ndarray, matches: Sequence,
                          cfg: dict) -> list[dict]:
-    """rl_plan.md 'Behaviour policy', batched: the tensor work (masked softmaxes, ONE ``cell_logits`` call for
-    every playing row) is shared across the round; each row's Bernoulli/categorical draws come from ITS OWN
+    """rl_plan.md 'Behaviour policy', batched: ``decision_options.decide`` with decode 'sample' (plan1026 P1: the ONE
+    decide of live, SIM eval and rollouts). The tensor work (masked softmaxes, ONE ``cell_logits`` call for every
+    playing row) is shared across the round; each row's Bernoulli/categorical draws come from ITS OWN
     ``matches[r].rng_behave``, so a row's sampled action never depends on which other matches share the round.
     ``matches[r]`` needs only a ``.rng_behave`` (an ``np.random.Generator``); ``run_batch`` passes ``Match``
     instances, the single-row caller (``Match.decide_row``) passes ``[self]``.
@@ -588,83 +589,38 @@ def sample_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.n
     allowed, stalled, gate_sampled, lp_gate, lp_card, lp_cell (float64), p_gate (untempered sigmoid), T.
     ``cfg['sample_heads']`` (default all three = unchanged): a head left out takes the live greedy choice instead of a
     draw (gate: p > tau; card/cell: argmax) and its log-prob stays 0 -- an EVAL-ONLY decomposition (10-13 GAP), not for
-    PPO rows."""
-    import torch
+    PPO rows. The finishers (lethal_rocket / lethal_log / lethal_quiet) and barrel_lane in ``cfg`` run as in live
+    (decision_options.SAMPLE_RULES); their rows carry ``forced`` True (left out of PPO). No such key in cfg = as before."""
+    from dataclasses import replace
+    from .decision_options import (BARREL_KEY, DecisionOptions, decide, match_kwargs, model_cell_logits,
+                                   options_from_config, sample_rules)
     tau, T = float(cfg["tau"]), float(cfg.get("T", 0.5))
-    heads_sampled = frozenset(cfg.get("sample_heads", ("gate", "card", "cell")))
-    T_gate = float(cfg.get("T_gate") or T)                     # 10-13 GAP: the gate's own temperature (default = T)
-    B = allowed.shape[0]
     p = np.asarray(p, dtype=np.float64)
-    any_allowed = allowed.any(axis=1)
-    gate_sampled = any_allowed & ~stalled                      # forced (stalled) or impossible (no card) -> not sampled
-    logit_tau = math.log(tau / (1.0 - tau))
     dt = posture_dtau(matches, enc, cfg)                       # rl_royale C1 (None = no posture: all as before)
     tau_r = None
     if cfg.get("tau_phase") is not None:                       # rl_royale tau_phase: live's threshold of the row's phase
         from .decision_options import phase_index              # (decision_options.gate_taus, the board's t_sec) + dtau
         tau_r = np.asarray(cfg["tau_phase"], dtype=np.float64)[phase_index([float(m._cur[1].t_sec) for m in matches])]
         tau_r = tau_r if dt is None else tau_r + dt
-        logit_tau = np.log(tau_r / (1.0 - tau_r))
     elif dt is not None:
         tau_r = tau + dt                                       # the threshold of each row's posture in force
-        logit_tau = np.log(tau_r / (1.0 - tau_r))
-    z_gate = heads["gate"].detach().cpu().numpy().astype(np.float64)
-    with np.errstate(over="ignore"):
-        p_b = 1.0 / (1.0 + np.exp(-(z_gate - logit_tau) / T_gate))
-    g = np.zeros(B, dtype=bool)
-    lp_gate = np.zeros(B, dtype=np.float64)
-    for r in range(B):
-        if gate_sampled[r] and "gate" not in heads_sampled:
-            g[r] = p[r] > (tau if tau_r is None else tau_r[r])  # greedy gate, as live_decide
-        elif gate_sampled[r]:
-            g[r] = matches[r].rng_behave.random() < p_b[r]
-            lp_gate[r] = math.log(p_b[r] if g[r] else 1.0 - p_b[r])
-    play = any_allowed & (stalled | g)
-    slot = np.full(B, -1, dtype=np.int64)
-    cell = np.full(B, -1, dtype=np.int64)
-    lp_card = np.zeros(B, dtype=np.float64)
-    lp_cell = np.zeros(B, dtype=np.float64)
-    with torch.no_grad():
-        card_logits = heads["card"].clone()
-        card_logits = card_logits.masked_fill(~torch.from_numpy(allowed).to(card_logits.device), float("-inf"))
-        card_probs = torch.softmax(card_logits.double() / T, dim=-1).cpu().numpy()          # [B, 8]
-        for r in range(B):
-            if play[r] and "card" not in heads_sampled:
-                slot[r] = int(card_logits[r].argmax().item())  # greedy card, as live_decide
-            elif play[r]:
-                probs = card_probs[r]
-                c = int(matches[r].rng_behave.choice(N_SLOTS, p=probs))
-                slot[r] = c
-                lp_card[r] = math.log(probs[c])
-        play_idx = [r for r in range(B) if play[r]]
-        if play_idx:
-            idx_t = torch.tensor(play_idx, device=card_logits.device)
-            sub_enc = {k: v[idx_t] for k, v in enc.items()}
-            slot_t = torch.tensor(slot[play_idx], device=card_logits.device)
-            cell_logits = model.cell_logits(sub_enc, slot_t)
-            cell_probs = torch.softmax(cell_logits.double() / T, dim=-1).cpu().numpy()      # [len(play_idx), 2304]
-            for j, r in enumerate(play_idx):
-                if "cell" not in heads_sampled:
-                    cell[r] = int(cell_probs[j].argmax())          # greedy cell, as live_decide
-                    continue
-                probs = cell_probs[j]
-                x = int(matches[r].rng_behave.choice(N_CELLS, p=probs))
-                cell[r] = x
-                lp_cell[r] = math.log(probs[x])
-    out: list[Optional[dict]] = [None] * B
-    for r in range(B):
-        if not any_allowed[r]:
-            why = "no_affordable"
-        elif not play[r]:
-            why = "wait"
-        elif stalled[r]:
-            why = "stall"
-        else:
-            why = "gate"
-        out[r] = {"play": bool(play[r]), "slot": int(slot[r]), "cell": int(cell[r]), "why": why,
-                  "allowed": allowed[r].copy(), "stalled": bool(stalled[r]), "gate_sampled": bool(gate_sampled[r]),
-                  "lp_gate": float(lp_gate[r]), "lp_card": float(lp_card[r]), "lp_cell": float(lp_cell[r]),
-                  "p_gate": float(p[r]), "T": T}
+    rules = sample_rules(options_from_config(cfg))
+    context = {}
+    if rules != DecisionOptions():                             # the finishers / barrel_lane: live's per-row context
+        kw = match_kwargs(matches)
+        context = {k: v for k, v in kw.items() if k in ("t_sec", "grid", "lethal", "projectiles", "barrel_goblins")}
+        if rules.card_levels is not None:                      # card_levels is LIVE-ONLY (the SIM's own cards)
+            rules = sample_rules(replace(rules, card_levels=None))
+        if rules.uses_barrels:
+            context["barrel_id"] = getattr(model, "gid", {}).get(BARREL_KEY)
+    dev = heads["card"].device
+    out = decide(heads, p, allowed, stalled, tau=tau, options=rules, rngs=[None] * len(allowed), decode="sample",
+                 sampler={"tau_r": tau_r, "T": T, "T_gate": float(cfg.get("T_gate") or T),
+                          "heads": frozenset(cfg.get("sample_heads", ("gate", "card", "cell"))),
+                          "rngs": [m.rng_behave for m in matches]},
+                 cell_logits=model_cell_logits(model, enc, dev),
+                 card_names=[list(m.deck.cards) for m in matches] if context else None, **context)
+    for r in range(len(out)):
         if dt is not None:                                     # C1: the posture in force; its log-prob if chosen now
             m = matches[r]
             out[r].update(posture=int(m._posture[0]), posture_dtau=float(dt[r]), posture_new=m._posture_new is not None,
@@ -673,7 +629,7 @@ def sample_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.n
             out[r]["gate_tau"] = float(tau_r[r])
     ab = ability_decide(matches, enc, cfg)                     # rl_royale ability_head (None = off: rows unchanged)
     if ab is not None:
-        for r in range(B):
+        for r in range(len(out)):
             out[r].update(ab[r])
     return out
 
@@ -1471,6 +1427,8 @@ class Match:
                 row = {**row, **{k: d[k] for k in ("posture", "posture_dtau", "posture_lp", "posture_new")}}
             if "gate_tau" in d:                               # rl_royale tau_phase: the row's sampled gate threshold
                 row = {**row, "gate_tau": d["gate_tau"]}
+            if "forced" in d:                                 # plan1026 P1: a finisher / barrel_lane chose (no PPO row)
+                row = {**row, "forced": d["forced"]}
             if "ab_sampled" in d:                             # rl_royale ability_head: the press decision / label
                 row = {**row, **{k: d[k] for k in ability_defaults()}}
             self.traj.append({**row, "allowed": d["allowed"],
@@ -1656,6 +1614,8 @@ class Match:
                 out[key] = stack(key).astype(np.float32)
         if tj and "cue" in tj[0]:                            # step c: the cue rows the model saw
             out["cue"] = stack("cue").astype(np.float32)
+        if tj and "forced" in tj[0]:                         # plan1026 P1: rule-forced rows (sample decide SAMPLE_RULES)
+            out["forced"] = scalar("forced", bool)
         if tj and "phi_state" in tj[0]:                      # cfg["record_phi"]: reward_shaping.phi_record rows
             out["phi_state"] = stack("phi_state").astype(np.float64)
         if tj and "tick" in tj[0]:                           # cfg["record_tick"]: each row's decision tick
