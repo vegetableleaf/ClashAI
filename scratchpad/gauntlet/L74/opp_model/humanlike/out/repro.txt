@@ -1,4 +1,4 @@
-THRESHOLDS.json sha256 0ba3aa32763dc3812d55fcaedd827f8fea482605945b2ca2a0cd364d6c5e2802 (matches HUMANLIKE.md)
+THRESHOLDS.json sha256 0c42e9142d70842b1c59623b7fbe71ea4da890192e55bb3c2f677916712ec703 (matches HUMANLIKE.md)
 | quantity | reference | scorecard | match |
 |---|---|---|---|
 | human floor sqrt(1/n+1/n), n=748 | 0.05 | 0.052 | OK |

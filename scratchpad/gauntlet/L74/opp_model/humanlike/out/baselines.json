@@ -471,8 +471,8 @@
      "push_max": 0.7819351519434028
     },
     "b3": {
-     "ppm_1x": false,
-     "ppm_2x": false,
+     "ppm_1x": true,
+     "ppm_2x": true,
      "react_s": true,
      "react_3s": false,
      "push_mean": false,
@@ -686,16 +686,16 @@
     },
     "b3": {
      "ppm_1x": true,
-     "ppm_2x": false,
+     "ppm_2x": true,
      "react_s": true,
-     "react_3s": false,
+     "react_3s": true,
      "push_mean": true,
      "push_max": true
     },
     "positions": false,
     "pass_rms": false,
     "pass_tost": false,
-    "pass_b3": false,
+    "pass_b3": true,
     "passed": false
    },
    "ranked": {
@@ -882,7 +882,7 @@
      "push_max": 0.7601506143791186
     },
     "b3": {
-     "ppm_1x": false,
+     "ppm_1x": true,
      "ppm_2x": true,
      "react_s": true,
      "react_3s": false,
@@ -1147,10 +1147,10 @@
      "push_max": 0.9057504895428286
     },
     "b3": {
-     "ppm_1x": false,
+     "ppm_1x": true,
      "ppm_2x": false,
      "react_s": true,
-     "react_3s": false,
+     "react_3s": true,
      "push_mean": true,
      "push_max": true
     },
@@ -1346,8 +1346,8 @@
     "b3": {
      "ppm_1x": true,
      "ppm_2x": true,
-     "react_s": false,
-     "react_3s": false,
+     "react_s": true,
+     "react_3s": true,
      "push_mean": false,
      "push_max": false
     },
@@ -1610,16 +1610,16 @@
     },
     "b3": {
      "ppm_1x": true,
-     "ppm_2x": false,
+     "ppm_2x": true,
      "react_s": true,
      "react_3s": true,
-     "push_mean": false,
-     "push_max": false
+     "push_mean": true,
+     "push_max": true
     },
     "positions": false,
     "pass_rms": false,
     "pass_tost": false,
-    "pass_b3": false,
+    "pass_b3": true,
     "passed": false
    },
    "ranked": {
@@ -1808,8 +1808,8 @@
     "b3": {
      "ppm_1x": true,
      "ppm_2x": true,
-     "react_s": false,
-     "react_3s": false,
+     "react_s": true,
+     "react_3s": true,
      "push_mean": false,
      "push_max": false
     },
@@ -2074,14 +2074,14 @@
      "ppm_1x": true,
      "ppm_2x": true,
      "react_s": true,
-     "react_3s": false,
-     "push_mean": false,
+     "react_3s": true,
+     "push_mean": true,
      "push_max": true
     },
     "positions": false,
     "pass_rms": false,
     "pass_tost": false,
-    "pass_b3": false,
+    "pass_b3": true,
     "passed": false
    },
    "ranked": {
@@ -2268,10 +2268,10 @@
      "push_max": 0.784806970913004
     },
     "b3": {
-     "ppm_1x": false,
-     "ppm_2x": false,
-     "react_s": false,
-     "react_3s": false,
+     "ppm_1x": true,
+     "ppm_2x": true,
+     "react_s": true,
+     "react_3s": true,
      "push_mean": false,
      "push_max": false
     },
@@ -2536,8 +2536,8 @@
      "ppm_1x": true,
      "ppm_2x": false,
      "react_s": true,
-     "react_3s": false,
-     "push_mean": false,
+     "react_3s": true,
+     "push_mean": true,
      "push_max": true
     },
     "positions": false,
@@ -2730,17 +2730,17 @@
      "push_max": 0.8286499803507492
     },
     "b3": {
-     "ppm_1x": false,
+     "ppm_1x": true,
      "ppm_2x": true,
      "react_s": true,
-     "react_3s": false,
-     "push_mean": false,
-     "push_max": false
+     "react_3s": true,
+     "push_mean": true,
+     "push_max": true
     },
     "positions": false,
     "pass_rms": false,
     "pass_tost": false,
-    "pass_b3": false,
+    "pass_b3": true,
     "passed": false
    }
   },

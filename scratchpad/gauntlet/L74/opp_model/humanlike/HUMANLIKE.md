@@ -63,3 +63,27 @@ Finding that led to v2: `first_tick` SD ratio between two human halves was 0.76-
 - (a) Live archetype is classified from cards SEEN, SIM from the full deck (known confound from `opp_behaviour`).
 - (a) Live reference is icebow-vs-human at 12-14k; SIM opponents are not band-conditioned, so H cells take their archetype's pass (stated in `coverage()`).
 - (a) Public-info rule held: live enters only through detected plays and the reader's public counter.
+
+## 5. v3 update (coordinator decision on concern 1)
+**Rule change (human controls only; v3 sha logged above before re-scoring).** B3 no longer uses the point ratio. It uses the kurtosis-aware 90% CI of SD_model / SD_live (SE of log SD = sqrt((kurt - 1) / (4 n))) and passes unless that CI lies wholly outside [0.9, 1.1]. TOST is unchanged. (a) measured, 50 random halves of the 12k live set (seeds 100-149, about 960 per side, 15 stats): RMS 50/50, TOST 48/50, B3 50/50, **full B 48/50 = 96%** (v2: 15/20). Two failures are TOST on single stats. Planted speed bug and planted spread collapse (ratio 0.31) still fail; the level A controls are unchanged. `repro` is still OK.
+Caveat: the rule is an overlap test, so B3 can only reject a clear spread mismatch; it cannot certify a ratio of exactly 1.0 +- 0.1. (a) At n ~ 960 per side a rule that certified that would fail humans, which is the finding.
+
+**Baselines re-scored under v3: all six still FAIL B** (`out/baselines.txt`). The margin is the RMS line, not the spread rule:
+
+| model | RMS d vs 13k / Ranked | times the 0.10 limit | TOST (all stats < 0.20) | B3 vs 13k / Ranked |
+|---|---|---|---|---|
+| E4 (13 stats) | 0.93 / 0.86 | 9.3x / 8.6x | fail | fail / fail |
+| E4, CLX learner | 0.70 / 0.58 | 7.0x / 5.8x | fail | pass / fail |
+| gen_v32_s0 | 0.79 / 0.65 | 7.9x / 6.5x | fail | fail / fail |
+| O2b | 0.65 / 0.54 | 6.5x / 5.4x | fail | pass / fail |
+| I u40 | 0.88 / 0.78 | 8.8x / 7.8x | fail | pass / fail |
+| B u20 | 0.66 / 0.53 | 6.6x / 5.3x | fail | fail / pass |
+
+Closest to passing is B u20 vs Ranked at 0.53, still 5.3x over; the human 12k-vs-13k control is 0.07 (9 stats) / 0.106 (13 stats).
+
+## 6. Owed
+- **D1 u60**: skipped (pod 33458 is gone). Needs a CLX-vs-D1 run with `o3_plays` telemetry when a pod is available.
+- **Level A baselines need a per-decision probability dump for every model: E4 (`rdef_e4_u0020`, graft 430faaee), gen_v32_s0 (61011b6c), O2b (`icebow/data/pipeline/o2/gen_live_b.pt`, 0882374c), I u40 (`pod_backup_weekend/w14/rlarm_oppW14I_otstartE_s74_u0040.pt`), B u20 (`.../rlarm_oppW14B_gatefree_s74_u0020.pt`), D1 u60 (checkpoint was on the pod; recover first).**
+  No script that writes the dump exists yet (checked `pipeline/*.py` and `opp_model/pod/o2_finetune.py`; the latter only logs aggregate val NLL). The intended command, to write as `humanlike/dump_probs.py` (not built, outside this ticket's scope):
+  `icebow/.venv/Scripts/python.exe -I scratchpad/gauntlet/L74/opp_model/humanlike/dump_probs.py --ckpt CKPT --data scratchpad/gauntlet/L74/opp_model/out/o1_holdout_v32.npz --out humanlike/out/probs_NAME.npz`
+  with outputs `p_true`, `top1`, `p_top`, `correct_top`, `gaps_rescaled` (the `level_a()` inputs). The holdout is the time-ordered 15,885 live opponent rows O2 used; E4 / RL checkpoints were not trained on it, O2 / O2b were fine-tuned on the earlier part only.
