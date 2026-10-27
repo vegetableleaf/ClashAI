@@ -34,3 +34,13 @@ Read in order: this file -> PLAN.md (owner-approved) -> the HEAD HANDOFF top ent
 - Fork-credit WIP: wip_cf_credit/ (patch + cf_credit.py; git apply at the cf_credit review, days 8-22; 6 test failures unsorted).
 - brT10_s121 / s122 / brT05_s123 "DRIFT FAIL" = startup crash (shaping_critic_scale 3.5 < 3.7 bound), not drift.
 - ~15k dirty files in the tree: stage explicit paths only; HANDOFF only via codex1018/stage_handoff.sh.
+
+## 10-27 ENGINE VERDICT (lead; owner: "switch to it upon your verdict"): crforge
+- J7 crown sequence on 401 RNG-free post-patch live matches: crforge 0.808 vs fin16 0.599 vs fin15 0.586; paired crforge - fin16
+  +0.209 [+0.165, +0.254] (forced; whole CI above the +0.15 bar). Gated +0.145..+0.239 by subset (crforge/pilot/j7/J7.md, acc83e1).
+- Cost 0.87 core-s/match engine-only incl. JVM start (PILOT.md); steady-state + policy-in-loop under ticket S3.
+- SME: recorded match 2,065/2,068 frames exact (3 torn reader frames); live-log pilot FAILS 13/109 (target 45/50), 11 mechanism
+  classes (SME.md) -> fix loop on OUR crforge fork (ticket A2c: Lightning 1-tick-early, Earthquake timing, body-position dossier).
+- fin16 (1cf1879, c22 normalised 0.933) stays the fallback runtime; no further RoyaleSim law rounds.
+- Live: game build 160635001 since 10-27 05:22; reader ported (local, untracked; TV replay 0 failures); live restart waits for the
+  unified-decide verifier (b8d4902).
