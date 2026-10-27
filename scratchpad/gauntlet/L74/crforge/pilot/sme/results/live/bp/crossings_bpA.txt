@@ -1,0 +1,1 @@
+bridge crossings (unflagged matches): 5032 | before the first divergence: 3897

@@ -1,0 +1,303 @@
+events with a game re-acquire frame: 7773 | crforge later than the game: 170
+IceWizardHeroFloatingCube    n=1506 late= 30  crforge waits {6: 1487, 12: 10, 15: 8, 16: 1}
+Tesla                        n=1045 late= 45  crforge waits {6: 1034, 12: 4, 15: 7}
+Knight                       n= 908 late=  7  crforge waits {6: 890, 7: 5, 12: 2, 15: 9, 20: 1, 27: 1}
+Skeleton                     n= 627 late=  8  crforge waits {6: 626, 7: 1}
+IceWizardHero                n= 418 late=  4  crforge waits {6: 408, 12: 3, 15: 7}
+Knight_EV1                   n= 410 late=  2  crforge waits {6: 402, 12: 2, 15: 4, 28: 1, 76: 1}
+Tesla_EV1                    n= 398 late= 27  crforge waits {6: 394, 12: 3, 15: 1}
+Xbow                         n= 355 late= 26  crforge waits {6: 351, 12: 2, 15: 1, 16: 1}
+Bat                          n= 170 late=  1  crforge waits {6: 170}
+Barbarian                    n= 111 late=  3  crforge waits {6: 110, 40: 1}
+MightyMiner                  n=  75 late=  0  crforge waits {6: 74, 12: 1}
+MegaKnight                   n=  71 late=  0  crforge waits {6: 69, 7: 1, 16: 1}
+SkeletonWarrior              n=  69 late=  0  crforge waits {6: 69}
+Ronin                        n=  61 late=  0  crforge waits {3: 1, 6: 59, 15: 1}
+Firecracker                  n=  60 late=  0  crforge waits {6: 53, 7: 1, 10: 2, 11: 1, 12: 1, 16: 2}
+Furnace_rework               n=  60 late=  0  crforge waits {6: 59, 13: 1}
+RageBarbarian                n=  52 late=  0  crforge waits {6: 52}
+BossBandit                   n=  52 late=  0  crforge waits {6: 52}
+GoldenKnight                 n=  49 late=  0  crforge waits {4: 1, 5: 1, 6: 45, 12: 1, 15: 1}
+Prince                       n=  47 late=  0  crforge waits {6: 46, 12: 1}
+Ghost                        n=  46 late=  1  crforge waits {6: 46}
+AngryBarbarian               n=  45 late=  0  crforge waits {6: 45}
+Pekka                        n=  42 late=  0  crforge waits {6: 42}
+KnightHero                   n=  41 late=  0  crforge waits {2: 1, 6: 40}
+MiniPekkaHero                n=  32 late=  0  crforge waits {6: 32}
+Bat_EV1                      n=  31 late=  0  crforge waits {6: 31}
+HogRider                     n=  30 late=  0  crforge waits {6: 30}
+MegaKnight_EV1               n=  30 late=  0  crforge waits {6: 30}
+RascalBoy                    n=  30 late=  0  crforge waits {6: 30}
+MiniPekka                    n=  28 late=  1  crforge waits {6: 28}
+EliteArcherHero              n=  28 late=  0  crforge waits {6: 27, 16: 1}
+SpearGoblin                  n=  27 late=  0  crforge waits {6: 27}
+Monk                         n=  27 late=  0  crforge waits {2: 1, 5: 1, 6: 24, 12: 1}
+BabyDragon                   n=  26 late=  0  crforge waits {6: 25, 108: 1}
+Skeleton_EV1                 n=  26 late=  0  crforge waits {6: 26}
+Goblin_Stab                  n=  25 late=  0  crforge waits {6: 25}
+DarkPrinceHero               n=  24 late=  0  crforge waits {6: 23, 7: 1}
+RoyalHog                     n=  22 late=  0  crforge waits {6: 22}
+Firecracker_EV1              n=  21 late=  0  crforge waits {6: 20, 12: 1}
+Assassin                     n=  21 late=  0  crforge waits {6: 21}
+Mortar                       n=  19 late=  1  crforge waits {6: 18, 20: 1}
+ElixirGolem4                 n=  19 late=  0  crforge waits {6: 19}
+BarrelGoblin                 n=  18 late=  0  crforge waits {6: 18}
+GoblinBrawler                n=  17 late=  0  crforge waits {6: 17}
+Pekka_EV1                    n=  17 late=  0  crforge waits {6: 17}
+BlowdartGoblin               n=  16 late=  1  crforge waits {6: 16}
+InfernoDragon                n=  16 late=  0  crforge waits {6: 16}
+Phoenix                      n=  16 late=  0  crforge waits {6: 16}
+Fisherman                    n=  16 late=  0  crforge waits {6: 16}
+SpearGoblin_Dummy            n=  14 late=  0  crforge waits {6: 14}
+SkeletonArmy_EV1_Spectral    n=  14 late=  0  crforge waits {6: 13, 15: 1}
+Musketeer                    n=  13 late=  0  crforge waits {6: 13}
+RascalGirl                   n=  13 late=  0  crforge waits {6: 13}
+Recruit                      n=  13 late=  0  crforge waits {6: 13}
+BombTower                    n=  13 late=  0  crforge waits {6: 13}
+AngryBarbarian_EV1_2         n=  12 late=  0  crforge waits {6: 12}
+Furnace_EV1                  n=  12 late=  2  crforge waits {6: 12}
+SkeletonTrooper              n=  12 late=  1  crforge waits {6: 12}
+AngryBarbarian_EV1           n=  11 late=  0  crforge waits {6: 11}
+GoblinCage                   n=  11 late=  0  crforge waits {6: 11}
+BalloonHero                  n=  11 late=  2  crforge waits {6: 11}
+BerserkerHero                n=  11 late=  0  crforge waits {6: 11}
+ElectroGiant                 n=  11 late=  0  crforge waits {6: 11}
+Graveyard_rework_Skeleton    n=  10 late=  0  crforge waits {6: 10}
+Goblin                       n=  10 late=  0  crforge waits {6: 10}
+Cannon                       n=   9 late=  0  crforge waits {6: 9}
+RoyalHog_EV1_Grounded        n=   9 late=  0  crforge waits {6: 9}
+goblinstein_doctor           n=   9 late=  0  crforge waits {6: 9}
+Berserker                    n=   9 late=  0  crforge waits {6: 9}
+InfernoTower                 n=   9 late=  0  crforge waits {6: 8, 7: 1}
+Barbarian_EV1                n=   8 late=  0  crforge waits {6: 8}
+BarbLogBarbarianHero         n=   8 late=  0  crforge waits {6: 8}
+Mortar_EV1                   n=   8 late=  1  crforge waits {6: 8}
+MovingCannon                 n=   8 late=  0  crforge waits {6: 8}
+Balloon                      n=   8 late=  0  crforge waits {6: 8}
+WizardHero                   n=   8 late=  0  crforge waits {6: 8}
+TombstoneHeroSkeleton        n=   8 late=  0  crforge waits {6: 8}
+BrokenCannon                 n=   7 late=  0  crforge waits {6: 7}
+BlowdartGoblin_EV1           n=   7 late=  0  crforge waits {6: 7}
+goblinstein                  n=   7 late=  0  crforge waits {6: 7}
+BabyDragon_EV1               n=   6 late=  1  crforge waits {6: 6}
+Witch                        n=   6 late=  0  crforge waits {6: 6}
+Golemite                     n=   6 late=  0  crforge waits {6: 6}
+DarkPrince                   n=   6 late=  0  crforge waits {6: 6}
+Ram                          n=   6 late=  0  crforge waits {6: 6}
+InfernoDragon_EV1            n=   6 late=  0  crforge waits {6: 6}
+Witch_EV1_Skeleton_Interval  n=   6 late=  0  crforge waits {6: 6}
+Miner                        n=   6 late=  1  crforge waits {6: 6}
+GiantHero                    n=   5 late=  0  crforge waits {6: 4, 15: 1}
+GiantSkeleton                n=   5 late=  0  crforge waits {6: 5}
+ElixirGolem2                 n=   5 late=  0  crforge waits {6: 5}
+ArcherQueen                  n=   5 late=  0  crforge waits {6: 5}
+FireSpirits                  n=   4 late=  0  crforge waits {6: 4}
+SkeletonArmy_EV1_Soldier     n=   4 late=  0  crforge waits {6: 4}
+IceWizard                    n=   4 late=  1  crforge waits {6: 4}
+GoblinDemolisher             n=   4 late=  0  crforge waits {6: 4}
+WitchMother                  n=   4 late=  1  crforge waits {6: 4}
+ElectroGiant_EV1             n=   4 late=  0  crforge waits {6: 4}
+Archer                       n=   4 late=  0  crforge waits {6: 4}
+Recruit_EV1                  n=   4 late=  0  crforge waits {6: 4}
+BattleHealer                 n=   4 late=  0  crforge waits {6: 4}
+Musketeer_EV1                n=   3 late=  0  crforge waits {1: 1, 6: 2}
+Bomber                       n=   3 late=  0  crforge waits {6: 3}
+SkeletonArmy_EV1_General     n=   3 late=  0  crforge waits {6: 3}
+DartBarrell                  n=   3 late=  0  crforge waits {6: 3}
+RageBarbarian_EV1            n=   3 late=  0  crforge waits {6: 3}
+GoblinCage_EV1_GoblinBrawler n=   3 late=  0  crforge waits {6: 3}
+MegaMinionHero               n=   3 late=  0  crforge waits {6: 3}
+Ghost_EV1                    n=   2 late=  0  crforge waits {6: 2}
+Golem                        n=   2 late=  0  crforge waits {6: 2}
+Minion                       n=   2 late=  0  crforge waits {6: 2}
+RageBarbarianEvoGhost        n=   2 late=  0  crforge waits {6: 2}
+RamRider                     n=   2 late=  2  crforge waits {6: 2}
+AxeMan_EV1                   n=   2 late=  0  crforge waits {6: 2}
+Witch_EV1                    n=   2 late=  0  crforge waits {6: 2}
+MinionGiant                  n=   2 late=  0  crforge waits {6: 2}
+DarkPrinceHero_Mount         n=   2 late=  0  crforge waits {6: 2}
+GoblinGiant                  n=   2 late=  0  crforge waits {6: 2}
+SpearGoblinGiant_EV1         n=   2 late=  0  crforge waits {6: 2}
+Archer_EV1                   n=   2 late=  0  crforge waits {6: 2}
+Cannon_EV1                   n=   1 late=  0  crforge waits {6: 1}
+AxeMan                       n=   1 late=  0  crforge waits {6: 1}
+WizardHero_air               n=   1 late=  0  crforge waits {6: 1}
+ElixirGolem1                 n=   1 late=  0  crforge waits {6: 1}
+ElectroSpirit                n=   1 late=  1  crforge waits {6: 1}
+PhoenixEgg                   n=   1 late=  0  crforge waits {6: 1}
+BattleRam_EV1                n=   1 late=  0  crforge waits {6: 1}
+Witch_EV1_Healing_Skeleton   n=   1 late=  0  crforge waits {6: 1}
+RoyalHog_EV1                 n=   1 late=  0  crforge waits {6: 1}
+IceGolemiteHero              n=   1 late=  0  crforge waits {6: 1}
+GoblinGiant_EV1              n=   1 late=  0  crforge waits {6: 1}
+late events:
+   20261026_082025 Tesla t0 5465 S 5471 G 5467 Gprev 5465 atk 3300 load 700
+   20261026_082025 Tesla t0 5551 S 5557 G 5553 Gprev 5551 atk 1100 load 700
+   20261026_082025 Tesla t0 5572 S 5578 G 5573 Gprev 5571 atk 1100 load 700
+   20261026_082025 Tesla t0 5593 S 5599 G 5595 Gprev 5593 atk 1100 load 700
+   20261026_084110 Xbow t0 535 S 541 G 537 Gprev 535 atk 6200 load 0
+   20261026_084110 Xbow t0 559 S 565 G 561 Gprev 559 atk 950 load 0
+   20261026_084110 Xbow t0 2748 S 2754 G 2750 Gprev 2748 atk 1650 load 0
+   20261026_084110 Xbow t0 2784 S 2790 G 2786 Gprev 2784 atk 1550 load 0
+   20261026_084110 Tesla t0 3056 S 3062 G 3061 Gprev 3058 atk 1100 load 700
+   20261026_084110 BlowdartGoblin t0 3074 S 3080 G 3076 Gprev 3074 atk 1100 load 150
+   20261026_084110 Tesla t0 3077 S 3083 G 3078 Gprev 3076 atk 1100 load 700
+   20261026_084110 Tesla t0 3098 S 3104 G 3099 Gprev 3097 atk 1100 load 700
+   20261026_084110 Tesla t0 3119 S 3125 G 3120 Gprev 3118 atk 1100 load 700
+   20261026_084110 Tesla t0 3140 S 3146 G 3141 Gprev 3139 atk 1100 load 700
+   20261026_084110 Tesla t0 3387 S 3393 G 3388 Gprev 3386 atk 2200 load 700
+   20261026_084438 Tesla t0 1523 S 1529 G 1524 Gprev 1522 atk 5500 load 700
+   20261026_084438 Xbow t0 2757 S 2763 G 2758 Gprev 2756 atk 4300 load 0
+   20261026_084438 Tesla t0 3457 S 3463 G 3458 Gprev 3456 atk 5500 load 700
+   20261026_090406 IceWizardHeroFloatingCube t0 1270 S 1276 G 1271 Gprev 1269 atk 7600 load 400
+   20261026_090406 Barbarian t0 2603 S 2609 G 2604 Gprev 2602 atk 1400 load 1000
+   20261026_090406 Barbarian t0 2630 S 2636 G 2632 Gprev 2630 atk 1400 load 1000
+   20261026_090406 IceWizardHeroFloatingCube t0 2641 S 2647 G 2642 Gprev 2640 atk 2150 load 750
+   20261026_090406 IceWizardHeroFloatingCube t0 2659 S 2665 G 2660 Gprev 2658 atk 1400 load 600
+   20261026_090406 Xbow t0 3591 S 3597 G 3593 Gprev 3591 atk 7250 load 0
+   20261026_090406 Tesla_EV1 t0 3782 S 3788 G 3783 Gprev 3781 atk 2200 load 700
+   20261026_090406 Tesla_EV1 t0 3825 S 3831 G 3827 Gprev 3825 atk 2200 load 700
+   20261026_090406 IceWizardHeroFloatingCube t0 4508 S 4514 G 4510 Gprev 4508 atk 3850 load 750
+   20261026_090406 Knight t0 4508 S 4514 G 4510 Gprev 4508 atk 2750 load 350
+   20261026_100018 Mortar_EV1 t0 3289 S 3295 G 3291 Gprev 3289 atk 5400 load 3000
+   20261026_101112 IceWizardHeroFloatingCube t0 1150 S 1156 G 1152 Gprev 1150 atk 3250 load 0
+   20261026_101112 Xbow t0 5081 S 5087 G 5082 Gprev 5080 atk 1750 load 0
+   20261026_101112 IceWizardHero t0 5081 S 5087 G 5082 Gprev 5080 atk 2040 load 750
+   20261026_101112 IceWizardHeroFloatingCube t0 5081 S 5087 G 5082 Gprev 5080 atk 2040 load 750
+   20261026_101112 IceWizardHeroFloatingCube t0 5141 S 5147 G 5142 Gprev 5140 atk 2225 load 700
+   20261026_145247 Skeleton t0 358 S 364 G 363 Gprev 362 atk 2350 load 450
+   20261026_160930 Barbarian t0 5460 S 5466 G 5461 Gprev 5459 atk 3150 load 650
+   20261026_160930 Tesla t0 5609 S 5615 G 5610 Gprev 5608 atk 1450 load 350
+   20261026_160930 Tesla t0 5627 S 5633 G 5629 Gprev 5627 atk 1300 load 500
+   20261026_160930 Mortar t0 5671 S 5677 G 5672 Gprev 5670 atk 8500 load 0
+   20261026_161448 Xbow t0 1001 S 1007 G 1003 Gprev 1001 atk 1300 load 0
+   20261026_161448 Tesla t0 1692 S 1698 G 1694 Gprev 1692 atk 5200 load 0
+   20261026_161448 MiniPekka t0 2197 S 2203 G 2198 Gprev 2196 atk 1600 load 1100
+   20261026_161448 Furnace_EV1 t0 3093 S 3099 G 3095 Gprev 3093 atk 1150 load 700
+   20261026_161448 Furnace_EV1 t0 3106 S 3112 G 3107 Gprev 3105 atk 1200 load 850
+   20261026_164130 Xbow t0 1904 S 1910 G 1906 Gprev 1904 atk 1500 load 0
+   20261026_164130 Tesla t0 1904 S 1910 G 1906 Gprev 1904 atk 2200 load 700
+   20261026_164130 Tesla_EV1 t0 2600 S 2606 G 2602 Gprev 2600 atk 6300 load 0
+   20261026_164130 Xbow t0 3159 S 3165 G 3160 Gprev 3158 atk 4050 load 0
+   20261026_164130 Tesla t0 3178 S 3184 G 3179 Gprev 3177 atk 750 load 700
+   20261026_165839 Tesla_EV1 t0 2886 S 2892 G 2887 Gprev 2885 atk 7700 load 700
+   20261026_170600 Bat t0 2152 S 2158 G 2157 Gprev 2156 atk 1200 load 600
+   20261026_171753 Tesla t0 3660 S 3666 G 3661 Gprev 3659 atk 2200 load 700
+   20261026_171753 Xbow t0 3893 S 3899 G 3894 Gprev 3892 atk 100 load 0
+   20261026_171753 Xbow t0 3901 S 3907 G 3902 Gprev 3900 atk 150 load 0
+   20261026_171753 Xbow t0 4026 S 4032 G 4028 Gprev 4026 atk 6000 load 0
+   20261026_171753 IceWizardHeroFloatingCube t0 4234 S 4240 G 4236 Gprev 4234 atk 1500 load 950
+   20261026_171753 IceWizardHeroFloatingCube t0 5854 S 5860 G 5856 Gprev 5854 atk 1300 load 1150
+   20261026_171753 Tesla t0 5978 S 5984 G 5980 Gprev 5978 atk 1100 load 700
+   20261026_174147 IceWizardHeroFloatingCube t0 442 S 448 G 444 Gprev 442 atk 5400 load 900
+   20261026_174147 IceWizardHeroFloatingCube t0 477 S 483 G 479 Gprev 477 atk 2100 load 800
+   20261026_174147 IceWizardHeroFloatingCube t0 714 S 720 G 715 Gprev 713 atk 2885 load 0
+   20261026_174147 Tesla t0 816 S 822 G 818 Gprev 816 atk 1100 load 700
+   20261026_174147 Tesla t0 837 S 843 G 838 Gprev 836 atk 1100 load 700
+   20261026_174147 Tesla t0 858 S 864 G 860 Gprev 858 atk 1100 load 700
+   20261026_174147 Tesla_EV1 t0 2625 S 2631 G 2630 Gprev 2627 atk 1100 load 700
+   20261026_180652 RamRider t0 5878 S 5884 G 5879 Gprev 5877 atk 5845 load 250
+   20261026_183750 Skeleton t0 2724 S 2730 G 2725 Gprev 2723 atk 3800 load 100
+   20261026_183750 Knight_EV1 t0 2724 S 2730 G 2725 Gprev 2723 atk 3500 load 0
+   20261026_183750 IceWizardHeroFloatingCube t0 2724 S 2730 G 2725 Gprev 2723 atk 2150 load 750
+   20261026_183750 Xbow t0 2802 S 2808 G 2803 Gprev 2801 atk 13800 load 0
+   20261026_183750 Xbow t0 2813 S 2819 G 2815 Gprev 2813 atk 300 load 0
+   20261026_183750 Tesla_EV1 t0 3001 S 3007 G 3006 Gprev 3004 atk 1050 load 0
+   20261026_183750 Tesla_EV1 t0 3016 S 3022 G 3020 Gprev 3018 atk 1100 load 700
+   20261026_183750 Xbow t0 3021 S 3027 G 3022 Gprev 3020 atk 850 load 0
+   20261026_183750 Tesla_EV1 t0 3037 S 3043 G 3042 Gprev 3040 atk 1100 load 700
+   20261026_185736 Knight t0 2775 S 2781 G 2777 Gprev 2775 atk 1350 load 550
+   20261026_185736 Tesla_EV1 t0 3345 S 3351 G 3347 Gprev 3345 atk 1150 load 650
+   20261026_185736 Tesla_EV1 t0 3369 S 3375 G 3371 Gprev 3369 atk 1100 load 700
+   20261026_185736 ElectroSpirit t0 3562 S 3568 G 3564 Gprev 3562 atk 150 load 100
+   20261026_190255 Tesla t0 776 S 782 G 778 Gprev 776 atk 2950 load 0
+   20261026_190255 Knight t0 1242 S 1248 G 1243 Gprev 1241 atk 3600 load 700
+   20261026_190255 Skeleton t0 1242 S 1248 G 1243 Gprev 1241 atk 1000 load 250
+   20261026_190255 Skeleton t0 1242 S 1248 G 1243 Gprev 1241 atk 1650 load 50
+   20261026_190255 Xbow t0 3116 S 3122 G 3118 Gprev 3116 atk 5200 load 0
+   20261026_202455 Tesla t0 4034 S 4040 G 4038 Gprev 4036 atk 1100 load 700
+   20261026_202455 Tesla t0 4055 S 4061 G 4056 Gprev 4054 atk 1100 load 700
+   20261026_202455 Tesla t0 4073 S 4079 G 4074 Gprev 4072 atk 950 load 100
+   20261026_202455 Tesla t0 4117 S 4123 G 4118 Gprev 4116 atk 2200 load 700
+   20261026_203234 Tesla t0 632 S 638 G 634 Gprev 632 atk 2900 load 0
+   20261026_203234 Xbow t0 1960 S 1966 G 1961 Gprev 1959 atk 5650 load 0
+   20261026_203234 Tesla_EV1 t0 2696 S 2702 G 2697 Gprev 2695 atk 2200 load 700
+   20261026_203234 Tesla_EV1 t0 2717 S 2723 G 2719 Gprev 2717 atk 1100 load 700
+   20261026_203234 Xbow t0 2919 S 2925 G 2923 Gprev 2921 atk 1550 load 0
+   20261026_203234 Xbow t0 2985 S 2991 G 2986 Gprev 2984 atk 3050 load 0
+   20261026_203752 Knight t0 4413 S 4419 G 4418 Gprev 4416 atk 2400 load 700
+   20261026_204518 Tesla_EV1 t0 3091 S 3097 G 3093 Gprev 3091 atk 750 load 700
+   20261026_204837 Tesla t0 1799 S 1805 G 1801 Gprev 1799 atk 5500 load 700
+   20261026_204837 Tesla_EV1 t0 2861 S 2867 G 2863 Gprev 2861 atk 2200 load 700
+   20261026_204837 Xbow t0 2904 S 2910 G 2905 Gprev 2903 atk 11700 load 0
+   20261026_204837 Tesla_EV1 t0 2904 S 2910 G 2905 Gprev 2903 atk 2200 load 700
+   20261026_204837 Xbow t0 2946 S 2952 G 2947 Gprev 2945 atk 750 load 0
+   20261026_204837 Tesla_EV1 t0 2946 S 2952 G 2947 Gprev 2945 atk 1100 load 700
+   20261026_204837 Xbow t0 3283 S 3289 G 3284 Gprev 3282 atk 600 load 0
+   20261026_204837 Knight t0 3433 S 3439 G 3435 Gprev 3433 atk 2650 load 450
+   20261026_210720 Knight_EV1 t0 2933 S 2939 G 2938 Gprev 2937 atk 850 load 600
+   20261026_211239 IceWizardHero t0 1527 S 1533 G 1532 Gprev 1530 atk 7850 load 150
+   20261026_212111 Skeleton t0 1666 S 1672 G 1671 Gprev 1670 atk 800 load 0
+   20261026_212111 Skeleton t0 1666 S 1672 G 1671 Gprev 1670 atk 2500 load 300
+   20261026_212111 Skeleton t0 1666 S 1672 G 1671 Gprev 1670 atk 2200 load 600
+   20261026_213436 IceWizardHeroFloatingCube t0 799 S 805 G 800 Gprev 798 atk 5400 load 900
+   20261026_213436 IceWizardHeroFloatingCube t0 1982 S 1988 G 1983 Gprev 1981 atk 5050 load 0
+   20261026_213436 Ghost t0 2209 S 2215 G 2211 Gprev 2209 atk 2200 load 800
+   20261026_213436 IceWizardHeroFloatingCube t0 3049 S 3055 G 3054 Gprev 3052 atk 3950 load 650
+   20261026_213436 IceWizardHeroFloatingCube t0 3151 S 3157 G 3152 Gprev 3150 atk 3950 load 650
+   20261026_213436 Tesla_EV1 t0 3386 S 3392 G 3388 Gprev 3386 atk 2750 load 150
+   20261026_213436 Tesla_EV1 t0 3465 S 3471 G 3467 Gprev 3465 atk 1100 load 700
+   20261026_213436 Tesla t0 3868 S 3874 G 3869 Gprev 3867 atk 1100 load 700
+   20261026_213436 Tesla t0 3988 S 3994 G 3989 Gprev 3987 atk 4000 load 0
+   20261026_213436 WitchMother t0 4624 S 4630 G 4625 Gprev 4623 atk 750 load 700
+   20261026_213436 Tesla_EV1 t0 4724 S 4730 G 4726 Gprev 4724 atk 2200 load 700
+   20261026_213436 Tesla_EV1 t0 4767 S 4773 G 4768 Gprev 4766 atk 2200 load 700
+   20261026_224856 Skeleton t0 859 S 865 G 860 Gprev 858 atk 4650 load 350
+   20261026_224856 Knight t0 859 S 865 G 860 Gprev 858 atk 4650 load 0
+   20261026_230512 Knight t0 5038 S 5044 G 5040 Gprev 5038 atk 2275 load 0
+   20261026_230512 Miner t0 5062 S 5068 G 5064 Gprev 5062 atk 2150 load 0
+   20261026_232957 Xbow t0 673 S 679 G 674 Gprev 672 atk 12450 load 0
+   20261026_232957 Tesla t0 865 S 871 G 867 Gprev 865 atk 7200 load 50
+   20261026_232957 IceWizardHeroFloatingCube t0 865 S 871 G 867 Gprev 865 atk 5450 load 850
+   20261026_232957 Tesla t0 2057 S 2063 G 2058 Gprev 2056 atk 4400 load 700
+   20261026_232957 Tesla t0 3536 S 3542 G 3541 Gprev 3539 atk 1250 load 550
+   20261026_232957 Xbow t0 3536 S 3542 G 3537 Gprev 3535 atk 3750 load 0
+   20261026_233436 Tesla_EV1 t0 5094 S 5100 G 5096 Gprev 5094 atk 1100 load 700
+   20261026_233436 Tesla_EV1 t0 5110 S 5116 G 5111 Gprev 5109 atk 850 load 200
+   20261026_233436 Tesla_EV1 t0 5318 S 5324 G 5319 Gprev 5317 atk 1100 load 700
+   20261026_233436 Tesla t0 5598 S 5604 G 5599 Gprev 5597 atk 5500 load 700
+   20261026_235355 BalloonHero t0 4940 S 4946 G 4945 Gprev 4943 atk 2860 load 700
+   20261026_235355 SkeletonTrooper t0 4940 S 4946 G 4945 Gprev 4943 atk 1115 load 800
+   20261026_235355 IceWizardHeroFloatingCube t0 5218 S 5224 G 5219 Gprev 5217 atk 1500 load 950
+   20261026_235915 BabyDragon_EV1 t0 3196 S 3202 G 3201 Gprev 3199 atk 4420 load 0
+   20261027_003506 IceWizardHeroFloatingCube t0 2723 S 2729 G 2725 Gprev 2723 atk 5600 load 700
+   20261027_003506 Tesla t0 3513 S 3519 G 3514 Gprev 3512 atk 5500 load 700
+   20261027_010245 BalloonHero t0 3893 S 3899 G 3896 Gprev 3894 atk 6000 load 1800
+   20261027_010245 IceWizard t0 3893 S 3899 G 3894 Gprev 3892 atk 15900 load 600
+   20261027_010613 Tesla_EV1 t0 3471 S 3477 G 3473 Gprev 3471 atk 800 load 250
+   20261027_010613 Tesla_EV1 t0 3484 S 3490 G 3485 Gprev 3483 atk 1100 load 700
+   20261027_011738 RamRider t0 1580 S 1586 G 1581 Gprev 1579 atk 2950 load 0
+   20261027_014928 Tesla t0 5275 S 5281 G 5279 Gprev 5277 atk 1130 load 700
+   20261027_014928 Tesla t0 5366 S 5372 G 5371 Gprev 5369 atk 3310 load 700
+   20261027_014928 IceWizardHero t0 5366 S 5372 G 5371 Gprev 5369 atk 2350 load 550
+   20261027_014928 IceWizardHeroFloatingCube t0 5366 S 5372 G 5371 Gprev 5369 atk 2350 load 550
+   20261027_014928 Tesla t0 5394 S 5406 G 5398 Gprev 5396 atk 1105 load 700
+   20261027_014928 Tesla t0 5423 S 5429 G 5428 Gprev 5426 atk 1140 load 700
+   20261027_014928 IceWizardHeroFloatingCube t0 5462 S 5468 G 5464 Gprev 5462 atk 5500 load 800
+   20261027_014928 Xbow t0 5752 S 5758 G 5756 Gprev 5754 atk 3500 load 0
+   20261027_014928 Tesla t0 5914 S 5920 G 5916 Gprev 5914 atk 1350 load 450
+   20261027_015759 IceWizardHero t0 2481 S 2487 G 2486 Gprev 2485 atk 1550 load 900
+   20261027_015759 IceWizardHeroFloatingCube t0 2481 S 2487 G 2486 Gprev 2485 atk 1550 load 900
+   20261027_015759 Tesla t0 2481 S 2487 G 2486 Gprev 2485 atk 1100 load 700
+   20261027_022149 Tesla_EV1 t0 2914 S 2920 G 2915 Gprev 2913 atk 3900 load 100
+   20261027_023451 Tesla t0 1415 S 1421 G 1416 Gprev 1414 atk 3300 load 700
+   20261027_023451 Tesla_EV1 t0 2751 S 2757 G 2753 Gprev 2751 atk 4400 load 700
+   20261027_023451 IceWizardHeroFloatingCube t0 2885 S 2891 G 2887 Gprev 2885 atk 1500 load 950
+   20261027_023451 IceWizardHeroFloatingCube t0 3260 S 3266 G 3262 Gprev 3260 atk 2050 load 850
+   20261027_023839 Tesla t0 707 S 713 G 709 Gprev 707 atk 3300 load 700
+   20261027_023839 Tesla t0 809 S 815 G 811 Gprev 809 atk 1100 load 700
+   20261027_023839 IceWizardHeroFloatingCube t0 3309 S 3315 G 3310 Gprev 3308 atk 550 load 1050
+   20261027_023839 IceWizardHeroFloatingCube t0 3328 S 3334 G 3329 Gprev 3327 atk 1150 load 550
+   20261027_023839 IceWizardHeroFloatingCube t0 3340 S 3346 G 3345 Gprev 3343 atk 1300 load 900
+   20261027_023839 IceWizardHeroFloatingCube t0 3357 S 3363 G 3358 Gprev 3356 atk 1200 load 650
+   20261027_023839 IceWizardHeroFloatingCube t0 3371 S 3377 G 3374 Gprev 3372 atk 1300 load 800

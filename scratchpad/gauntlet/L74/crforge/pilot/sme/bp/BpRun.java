@@ -116,7 +116,7 @@ public class BpRun {
         .append(",\"over\":").append(b.getBattle().getMode().isOver()).append(",\"E\":[");
     boolean first = true;
     for (BattleEntity e : b.getBattle().getHolder().entities()) {
-      String cls, name, buffs = "", tm = ""; int side, x, y, hp = -1, mx = -1, ax = 0, ay = 0, tgt = -2, st = -1;
+      String cls, name, buffs = "", tm = "", rt = ""; int side, x, y, hp = -1, mx = -1, ax = 0, ay = 0, tgt = -2, st = -1;
       if (e instanceof WorldEntity we) {
         cls = we instanceof TowerEntity ? "T" : "C"; name = we.getData().name(); side = we.side(); x = we.x(); y = we.y();
         HitPoints h = we.getHitPoints();
@@ -127,6 +127,13 @@ public class BpRun {
           buffs = bs.toString();
         }
         if (we instanceof CharacterEntity ce && ce.getView() != null) st = ce.getView().getState();
+
+        if (we instanceof CharacterEntity ce2 && ce2.getUnit() != null && ce2.getUnit().movement() != null) {
+          int[] nd = ce2.getUnit().movement().getRoute().toArray();
+          StringBuilder rb = new StringBuilder();
+          for (int k = nd.length - 1; k >= Math.max(0, nd.length - 4); k--) rb.append(rb.length() > 0 ? ";" : "").append(nd[k]);
+          rt = nd.length + ":" + rb + ":" + ce2.getUnit().movement().getTargetX() + "," + ce2.getUnit().movement().getTargetY();
+        }
         if (TGT) { var tg = we.getTargeting(); var rf = tg == null ? null : tg.getReference(); tgt = rf == null ? -1 : rf.id();
           if (tg != null) tm = tg.getAttackTimerMs() + "/" + tg.getLoadTimerMs() + "/" + tg.getRetargetCooldownMs() + "/" + tg.getTargetLostTimerMs() + "/" + tg.getAttackSequenceIndex(); }
       } else if (e instanceof ProjectileEntity p) {
@@ -139,7 +146,7 @@ public class BpRun {
       o.append('[').append(e.getId()).append(',').append(q(cls)).append(',').append(q(name)).append(',').append(side)
           .append(',').append(x).append(',').append(y).append(',').append(hp).append(',').append(mx).append(',')
           .append(q(src.getOrDefault(e.getId(), ""))).append(',').append(ax).append(',').append(ay).append(',').append(q(buffs));
-      if (tgt != -2) o.append(',').append(tgt).append(',').append(st).append(',').append(q(tm));
+      if (tgt != -2) o.append(',').append(tgt).append(',').append(st).append(',').append(q(tm)).append(',').append(q(rt));
       o.append(']');
     }
     o.append("],\"S\":[");

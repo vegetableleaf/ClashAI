@@ -1,0 +1,36 @@
+20261026_090406 IceWizardHeroFloatingCube 1270 S 1276 G 1271 Gprev 1269 atk 7600 clean False
+20261026_090406 IceWizardHeroFloatingCube 2641 S 2647 G 2642 Gprev 2640 atk 2150 clean False
+20261026_090406 IceWizardHeroFloatingCube 4508 S 4514 G 4510 Gprev 4508 atk 3850 clean False
+20261026_101112 IceWizardHeroFloatingCube 1150 S 1156 G 1152 Gprev 1150 atk 3250 clean False
+20261026_101112 IceWizardHero 5081 S 5087 G 5082 Gprev 5080 atk 2040 clean False
+20261026_101112 IceWizardHeroFloatingCube 5081 S 5087 G 5082 Gprev 5080 atk 2040 clean False
+20261026_101112 IceWizardHeroFloatingCube 5141 S 5147 G 5142 Gprev 5140 atk 2225 clean False
+20261026_174147 IceWizardHeroFloatingCube 442 S 448 G 444 Gprev 442 atk 5400 clean True
+20261026_174147 IceWizardHeroFloatingCube 477 S 483 G 479 Gprev 477 atk 2100 clean True
+20261026_174147 IceWizardHeroFloatingCube 714 S 720 G 715 Gprev 713 atk 2885 clean True
+20261026_183750 IceWizardHeroFloatingCube 2724 S 2730 G 2725 Gprev 2723 atk 2150 clean False
+20261026_211239 IceWizardHero 1527 S 1533 G 1532 Gprev 1530 atk 7850 clean False
+20261026_213436 IceWizardHeroFloatingCube 799 S 805 G 800 Gprev 798 atk 5400 clean False
+20261026_213436 IceWizardHeroFloatingCube 1982 S 1988 G 1983 Gprev 1981 atk 5050 clean False
+20261026_213436 IceWizardHeroFloatingCube 3049 S 3055 G 3054 Gprev 3052 atk 3950 clean False
+20261026_213436 IceWizardHeroFloatingCube 3151 S 3157 G 3152 Gprev 3150 atk 3950 clean False
+20261026_232957 IceWizardHeroFloatingCube 865 S 871 G 867 Gprev 865 atk 5450 clean False
+20261027_003506 IceWizardHeroFloatingCube 2723 S 2729 G 2725 Gprev 2723 atk 5600 clean False
+20261027_014928 IceWizardHero 5366 S 5372 G 5371 Gprev 5369 atk 2350 clean False
+20261027_014928 IceWizardHeroFloatingCube 5366 S 5372 G 5371 Gprev 5369 atk 2350 clean False
+20261027_014928 IceWizardHeroFloatingCube 5462 S 5468 G 5464 Gprev 5462 atk 5500 clean False
+20261027_023451 IceWizardHeroFloatingCube 3260 S 3266 G 3262 Gprev 3260 atk 2050 clean False
+('IceWizardHero', 'held', 'clean', 'agree') 264
+('IceWizardHero', 'held', 'diverged', 'agree') 78
+('IceWizardHero', 'held', 'diverged', 'late') 3
+('IceWizardHero', 'running', 'clean', 'agree') 54
+('IceWizardHero', 'running', 'clean', 'late') 1
+('IceWizardHero', 'running', 'diverged', 'agree') 18
+('IceWizardHeroFloatingCube', 'held', 'clean', 'agree') 922
+('IceWizardHeroFloatingCube', 'held', 'clean', 'late') 3
+('IceWizardHeroFloatingCube', 'held', 'diverged', 'agree') 324
+('IceWizardHeroFloatingCube', 'held', 'diverged', 'late') 16
+('IceWizardHeroFloatingCube', 'running', 'clean', 'agree') 181
+('IceWizardHeroFloatingCube', 'running', 'clean', 'late') 1
+('IceWizardHeroFloatingCube', 'running', 'diverged', 'agree') 49
+('IceWizardHeroFloatingCube', 'running', 'diverged', 'late') 10

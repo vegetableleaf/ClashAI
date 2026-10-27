@@ -1,0 +1,14 @@
+(clean, late) counts: {(True, False): 5590, (False, False): 1957, (False, True): 151, (True, True): 12}
+clean late by unit: {'Skeleton': 4, 'Bat': 1, 'RamRider': 2, 'Knight': 1, 'Knight_EV1': 1, 'IceWizardHero': 1, 'IceWizardHeroFloatingCube': 1, 'Tesla': 1}
+   20261026_145247 Skeleton t0 358 S 364 G 363 Gprev 362 atk 2350 load 450
+   20261026_170600 Bat t0 2152 S 2158 G 2157 Gprev 2156 atk 1200 load 600
+   20261026_180652 RamRider t0 5878 S 5884 G 5879 Gprev 5877 atk 5845 load 250
+   20261026_203752 Knight t0 4413 S 4419 G 4418 Gprev 4416 atk 2400 load 700
+   20261026_210720 Knight_EV1 t0 2933 S 2939 G 2938 Gprev 2937 atk 850 load 600
+   20261026_212111 Skeleton t0 1666 S 1672 G 1671 Gprev 1670 atk 800 load 0
+   20261026_212111 Skeleton t0 1666 S 1672 G 1671 Gprev 1670 atk 2500 load 300
+   20261026_212111 Skeleton t0 1666 S 1672 G 1671 Gprev 1670 atk 2200 load 600
+   20261027_011738 RamRider t0 1580 S 1586 G 1581 Gprev 1579 atk 2950 load 0
+   20261027_015759 IceWizardHero t0 2481 S 2487 G 2486 Gprev 2485 atk 1550 load 900
+   20261027_015759 IceWizardHeroFloatingCube t0 2481 S 2487 G 2486 Gprev 2485 atk 1550 load 900
+   20261027_015759 Tesla t0 2481 S 2487 G 2486 Gprev 2485 atk 1100 load 700

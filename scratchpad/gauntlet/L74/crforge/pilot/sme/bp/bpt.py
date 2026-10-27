@@ -16,7 +16,7 @@ wd = '/workspace/pilot/bp/work/bpt_%d' % os.getpid()
 os.makedirs(wd, exist_ok=True)
 json.dump(p, open(wd + '/p.json', 'w'))
 open(wd + '/jobs.txt', 'w').write('%s/p.json %d %s/o.jsonl %d\n' % (wd, hi + 1, wd, lo))
-r = subprocess.run(['java', '-Xmx8g', '-cp', '/workspace/pilot/lib_008aa626/*:/workspace/pilot/bp/build_bpx', 'BpRun',
+r = subprocess.run(['java', '-Xmx8g', '-cp', '/workspace/pilot/lib_008aa626/*:' + os.environ.get('BPT_BUILD', '/workspace/pilot/bp/build_bpx'), 'BpRun',
                     '/workspace/crforge_cache/tables/16.402.22', wd + '/jobs.txt', '1'], capture_output=True, text=True)
 if 'failed=0' not in r.stdout:
     print(r.stdout, r.stderr[-2000:])
@@ -33,7 +33,7 @@ for l in open(wd + '/o.jsonl'):
         continue
     for e in o['E']:
         if e[1] == 'C' and any(n in e[2] for n in names) and (not IDS or e[0] in IDS):
-            print('S %d %d %s (%d,%d) hp%d tgt%s st%s tm%s %s' % (t, e[0], e[2], e[4], e[5], e[6], e[12], e[13], e[14], e[11]))
+            print('S %d %d %s (%d,%d) hp%d tgt%s st%s tm%s %s %s' % (t, e[0], e[2], e[4], e[5], e[6], e[12], e[13], e[14], e[11], e[15] if len(e) > 15 else ''))
     for g in [g for g in rec.get(t, []) if not IDS or g[5] in IDS]:
         print('R %d gen%s (%d,%d) hp%d tgt%s st%s att%s %s' % (t, g[5], g[1], g[2], g[4], g[6], g[7], g[8], ','.join(g[9] or [])))
     if o['ab']:

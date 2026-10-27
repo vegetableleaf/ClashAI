@@ -1,0 +1,4 @@
+{"match": "live_play_20261026_142027", "t": 3037, "base": "torn_mixed", "ph1": "div", "live1": "div", "ph_xy": "div", "hp1": "div", "el1": "div"}
+{"match": "live_play_20261026_233436", "t": 1182, "base": "torn_mixed", "ph1": "div", "live1": "div", "ph_xy": "div", "hp1": "div", "el1": "div"}
+{"match": "live_play_20261027_005727", "t": 5148, "base": "torn_mixed", "ph1": "div", "live1": "div", "ph_xy": "div", "hp1": "div", "el1": "div"}
+caught (div) / planted: {"ph1": [3, 3], "live1": [3, 3], "ph_xy": [3, 3], "hp1": [3, 3], "el1": [3, 3]}
