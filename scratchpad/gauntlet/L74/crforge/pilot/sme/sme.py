@@ -14,7 +14,7 @@ run tick R is first visible at line R + 1.
 import argparse, collections, json, os, subprocess, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-LIB = '/workspace/crforge/env/build/install/env/lib'
+LIB = os.environ.get('SME_LIB', '/workspace/crforge/env/build/install/env/lib')  # the pin; a fork build via env
 TABLES = '/workspace/crforge_cache/tables/16.402.22'
 SHIFTS = (1, -1, 2, -2)
 TIE_WINDOW = 120
@@ -192,7 +192,7 @@ def run_batch(jobs, workdir):
         lines.append('%s %d %s %d' % (pp, ticks, os.path.join(workdir, 'o%d.jsonl' % i), frm))
     jf = os.path.join(workdir, 'jobs.txt')
     open(jf, 'w').write('\n'.join(lines) + '\n')
-    r = subprocess.run(['java', '-Xmx16g', '-cp', LIB + '/*:' + os.path.join(HERE, 'build'), 'SmeRun', TABLES, jf,
+    r = subprocess.run(['java', '-Xmx16g', '-cp', LIB + '/*:' + os.environ.get('SME_BUILD', os.path.join(HERE, 'build')), 'SmeRun', TABLES, jf,
                         str(THREADS)], capture_output=True, text=True)
     if 'jobs=' not in r.stdout:
         raise SystemExit('SmeRun failed: ' + r.stdout + r.stderr[-3000:])

@@ -186,3 +186,42 @@ Menu facts are from `plan1026/devcheck/REPORT.md`. **Only the first frame matter
   - `.foreman/scratch/seeds/jobs/` (223 jobs, manifest, deck pairs);
   - `.foreman/scratch/seeds/pod/` (g0_live.tsv, batch.log, rec jobs).
 - Pod: `/workspace/crforge`, `/workspace/crforge_cache`, `/workspace/seeds` (build/, jobs/, live/).
+
+## Pin update 2026-10-27: upstream sync passed the gate (a)
+Procedure: `crforge/fork/upstream_sync.sh`, rerunnable weekly. Outputs on pod 33920 are in
+`/workspace/upstream_sync/20261027/`.
+
+**New pin: `008aa626ef465003dff429505b741be06b25f9e2`** (upstream `main`, 2026-10-27 19:00 +0800). It sits on fork
+branch `clashbot-upstream-20261027` in `/workspace/crforge_fork`. The determinism hash is unchanged:
+**`a0bd88c41f98b46d`**, IDENTICAL on 1 vs 4 threads.
+
+**Upstream since `ad8ef3a`: 5 commits, none touching mechanics.**
+
+| commit | what it changes | type |
+|---|---|---|
+| `4b235e52` (#731) | client range minimum checked 10-26 | docs |
+| `c52b76c8` (#732) | play / replay guide in the README | docs |
+| `1d32619a` (#733) | closes the 16.402 client range, records client 16.635.1 | docs |
+| `51b5bd14` (#734) | builds the tables of data version 16.635.3: `data-versions.json`, `schema/16.635.1.json` (+12,689 lines), `crforge-data.lock`, `ClientSchemaTest` | tables |
+| `008aa626` (#735) | splits the version tables | docs |
+
+- The `core` and `env` sources are unchanged.
+- The merge onto `clashbot-fix` was conflict-free; `clashbot-fix` carries no patch yet. Round 3.2's Valkyrie case
+  needed none (`pilot/sme/SME.md`).
+
+**Gate, all three passed:**
+1. **Core tests:** 2,140 tests, 0 failures, 0 errors, 2 skipped.
+2. **SME live pilot**, current extract (`/workspace/pilot/inputs_v2`) against pin run12:
+   - 31 / 109 → 31 / 109, 0 regressions, 0 gained;
+   - exact frames 220,450 → 220,450;
+   - 138 / 138 matches identical.
+3. **J7 crown sequence**, crforge_force arm on the deck8 subset (401): **0.808 [0.768, 0.845]**, as on the pin.
+   The crforge_force lo / hi run files are byte-identical to the pin's (sha `e5b09a00…` / `0a68da92…`).
+
+**What changes for us:** nothing on the 16.402.22 tables our pre-update matches use. The gain is the 16.635.3
+table build for the new client (160635001); building it needs `-Pcrforge.assetSource` pointed at the 16.635
+assets, which this sync did not run.
+
+**Not done:** `/workspace/crforge` itself was left at `ad8ef3a` (never modify the pin directory). J7 / SME workers
+still load it, which is identical in behaviour on 16.402.22. Switching the runtime path to the fork build is a
+one-line `SME_LIB` / J7 `L=` change, left to the lead.
