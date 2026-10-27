@@ -1,0 +1,72 @@
+core tests 2140 failures 47 errors 0 skipped 2
+[('UnsupportedOperationException', 38), ('IllegalArgumentException', 8), ('AssertionError', 1)]
+[('BattleGiantHeroAbilityTest', 8), ('BattleUppercutWindTest', 7), ('GoldenKnightChargeTest', 4), ('BattleTravellingHitDrainTest', 3), ('BalloonHeroAbilityTest', 2), ('BattleChargeTest', 2), ('BattleExecuteIfTrueTest', 2), ('BattleHunterEvoTest', 2), ('BattleValkyrieHeroTauntTest', 2), ('DamageEntryReductionTest', 2), ('ActionRowsTest', 1), ('AttackSequenceEntryFormsTest', 1), ('BattleAttackSequenceTest', 1), ('BattleElectroGiantTest', 1), ('BattleEvolutionTest', 1), ('BattleHeldDasherStunTest', 1), ('BattleImpactAreaInsetTest', 1), ('BattleSlapPushPhaseTest', 1), ('HunterDeflectTest', 1), ('HunterVolleyQueuedTotalTest', 1), ('SpellDeflectTest', 1), ('UppercutAvoidanceTest', 1), ('ValkyrieHeroAbilityTest', 1)]
+
+[11] UnsupportedOperationException | java.lang.UnsupportedOperationException: MegaKnight_EV1_uppercut, an ActionMegaKnightUppercut, sets GameTagsToSet, which is not modelled | 
+      BattleExecuteIfTrueTest > ExecuteIfTrue "0"
+      BattleExecuteIfTrueTest > ExecuteIfTrue "1"
+      BattleHeldDasherStunTest > a dasher held standing under NO_MOVE never shows the moving state when a stun drops its reference: the gate at the end o
+      BattleSlapPushPhaseTest > an evolved Mega Knight whose last hit uppercut uppercuts again when a slap's push is queued on it behind its hit's actio
+      BattleUppercutWindTest > the push point of a target as near one princess tower of its side as the other is taken from the first: it is pushed tow
+      BattleUppercutWindTest > with OnlyRunActionOnPushback off, a push refused on a NO_PUSHBACK target still schedules the row's action on it; the run
+      BattleUppercutWindTest > the uppercut does not push a target already switching lanes: the push refused, nothing scheduled on it, so no knock star
+      BattleUppercutWindTest > an uppercut on a target without a movement component ends as it starts, the unit held for one step and nothing pushed
+      BattleUppercutWindTest > the uppercut's push on a target carrying NO_PUSHBACK is refused: the target is not pushed, nothing is scheduled on it, a
+      BattleUppercutWindTest > the uppercut's hold ends as the unit attacks another target in range: the push, then the end
+      UppercutAvoidanceTest > the uppercut's push clears the pushed unit's avoidance blend
+
+[8] IllegalArgumentException | java.lang.IllegalArgumentException: the game tables have no global V16_PROJECTILE_DAMAGE_BUG | 
+      BattleElectroGiantTest > every pellet of one Hunter attack re-applies the buff, and only the first deals the damage
+      BattleHunterEvoTest > a Giant (radius 750) takes the large snare, and the next net waits the cooldown, the attack gate and the cast
+      BattleHunterEvoTest > the net is thrown at a Musketeer as it comes into range and snares it with the small snare (its radius 500) for the snar
+      BattleTravellingHitDrainTest > a Hunter volley's damage lands at the drain: the walking ram dies after its step and its Barbarians ring the point it wa
+      BattleTravellingHitDrainTest > a damage-taking action's hit queued for the ram adds nothing to its queued total: the volley's pellets hit it as they do
+      BattleTravellingHitDrainTest > a projectile's hit queued for the ram counts in its queued total: the volley's first pellet marks it and every later one
+      HunterDeflectTest > the Hunter's pellets are deflected one by one, each sent back at the Hunter
+      HunterVolleyQueuedTotalTest > a hit queued before the hit points' visit does not doom the target for the volley
+
+[8] UnsupportedOperationException | java.lang.UnsupportedOperationException: GiantHero_ability_delivered is an ActionAbilityDelivered, which the battle does not have | 
+      BattleGiantHeroAbilityTest > a Knight played before the Giant, listed ahead of it, and the Giant leaving in the same removal before the push: the pus
+      BattleGiantHeroAbilityTest > a Giant killed between the pick and the push: the Knight is still pushed along the width, away from where the Giant stoo
+      BattleGiantHeroAbilityTest > a Giant and the Knight it picked leaving in the same removal before the push: the push is let go with its cause leaving 
+      BattleGiantHeroAbilityTest > a Giant killed between the push and the landing: the Knight lands on an area effect of the Giant's side, which hurts it 
+      BattleGiantHeroAbilityTest > a Giant moved across the centre line after the pick and then killed before the push: the Knight is pushed away from wher
+      BattleGiantHeroAbilityTest > a Giant killed after the pick and then the Knight before the push: the push is let go with its cause gone, nothing follo
+      BattleGiantHeroAbilityTest > a Knight killed between the pick and the push: the push's failure action on the Giant starts the selector again, which s
+      BattleGiantHeroAbilityTest > the slap casts in the casting state's entry and the Giant walks on; it stops for the slap, the Knight it picked is pushe
+
+[5] UnsupportedOperationException | java.lang.UnsupportedOperationException: ValkyrieHero_ability_delivered is an ActionAbilityDelivered, which the battle does not have | 
+      BattleValkyrieHeroTauntTest > a taunt armed before the whirlwind ends steps before the chain's end on its last step, so nothing is marked, the re-sele
+      BattleValkyrieHeroTauntTest > the attack chain is listed before the interval its begin starts at once, as the game lists a run before calling its star
+      DamageEntryReductionTest > a Zap on the Valkyrie hero under its whirlwind's damage reduction takes the reduction off in the damage type's stage and
+      DamageEntryReductionTest > a Poison's damage over time on the Valkyrie hero under its whirlwind's damage reduction takes the reduction off as the b
+      ValkyrieHeroAbilityTest > the hero charges the closest enemy under the phase buff, then holds still at it while the whirlwind's area effect spawns
+
+[4] UnsupportedOperationException | java.lang.UnsupportedOperationException: GoldenKnight_ability_delivered is an ActionAbilityDelivered, which the battle does not have | 
+      GoldenKnightChargeTest > a chain whose next target is a crown tower stops there, with another target in reach
+      GoldenKnightChargeTest > the charge dashes at the closest enemy and the knight's own chain goes on to the others; once it stops dashing the charg
+      GoldenKnightChargeTest > a chain stops at its row's dash count with targets left in reach
+      GoldenKnightChargeTest > a tap with no enemy within the dash range does not dash: the knight walks faster under the charge buff until an enemy co
+
+[3] UnsupportedOperationException | java.lang.UnsupportedOperationException: BattleRam_EV1_PushBack sets PushBackDamage to a table of BaseDamage, Flags where a number is read, which is not modelled | Caused by: org.crforge.core.battle.data.ActionRows$MistypedField: sets PushBackDamage to a table of BaseDamage, Flags where a number is read, which is not modelled
+      ActionRowsTest > the evolved Battle Ram's carried push reads its push, its damage, its side push, its offset and both filters, with its d
+      BattleChargeTest > the evolved Battle Ram's push run goes on through its recoil and ends with its charge
+      BattleChargeTest > an evolved Battle Ram's direct hit on a tower recoils it by its AttackPushBack, away from where the tower stood, in the 
+
+[2] UnsupportedOperationException | java.lang.UnsupportedOperationException: ElectroWizardHero sets columns the battle does not model: [AttackSequenceList] | 
+      AttackSequenceEntryFormsTest > [3] "ElectroWizardHero"
+      BattleAttackSequenceTest > the hero Electro Wizard's entries, each with its hit speed multiplier, build
+
+[2] UnsupportedOperationException | java.lang.UnsupportedOperationException: BalloonHero_ability_delivered is an ActionAbilityDelivered, which the battle does not have | 
+      BalloonHeroAbilityTest > the trooper falls on the enemy closest to the hero, not the one of the most hit points: its projectile starts its spawn'
+      BalloonHeroAbilityTest > with nobody in the circle the selector finishes without a pick, and its finishing action's failsafe launches the project
+
+[2] UnsupportedOperationException | java.lang.UnsupportedOperationException: the buff Cannon_EV1_barrage_damage_buff sets columns not modelled: [CastIdSpecificBuff] | 
+      BattleEvolutionTest > an evolution slot's spell and building cards count their plays as a troop card does and are cast as their evolved rows o
+      SpellDeflectTest > an evolved Cannon's bomb falling within an enemy Deflect is sent back at its own area effect, still its root and target,
+
+[1] UnsupportedOperationException | java.lang.UnsupportedOperationException: the buff FirecrackerFireworks_EV1 sets columns not modelled: [CastIdSpecificBuff] | 
+      BattleImpactAreaInsetTest > the evolved Firecracker's shrapnel that fly past the arena's side make their area effects the creation's inset inside it
+
+[1] AssertionError | java.lang.AssertionError:  | 
+      BattleUppercutWindTest > an uppercut started with no current target is refused: the run would read the targeting component's previous reference

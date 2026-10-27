@@ -278,3 +278,91 @@ one-line `SME_LIB` / J7 `L=` change, left to the lead.
   - The pin's own tests on 16.402.22 are unchanged (2,140 / 0 failures, gate of 2026-10-27).
 - **What it takes next:** an upstream crforge release for the 16.635 range (watch `docs/compatibility.md`), then the
   same gate (core tests, SME pilot, J7). Extraction of today's matches is not the blocker.
+
+## A2c round 6.4-6.5 (2026-10-27): no RageDamage fork patch (diagnosis contradicted); 16.635 measured in a scratch copy
+Files: `crforge/fork/r6465/`. Pod 33920 scratch dir `/workspace/r64/` (`/workspace/crforge_fork` and the pin untouched;
+no branch was added to the fork, since no patch was written).
+
+### 6.4: RageDamage is not created a tick late by crforge; our Rage casts were dated a tick late (a)
+- **Game rule, from the reader's countdowns (a, `chaintally.py`).** All 16 Rage areas in the 138 matches, at first sighting:
+  - remaining 4,500 ms (not yet updated): **RageDamage absent on that frame, 6 / 6**;
+  - remaining 4,450 ms (one update done): **RageDamage present (remaining 1 ms, the next generation id), 10 / 10**.
+  - So the game, like crforge, creates the chained area on the parent's **first update**, not when the parent is made.
+    A chain-at-creation patch would add a RageDamage to the 6 frames where the game has none: **(c) for the ticket's cause**.
+- **crforge on `200616` (a, `simareas.py`, run20 plan):** at 2545 the sim shows Rage at 4,500 and no RageDamage; at 2546
+  Rage 4,450 plus RageDamage. The game shows Rage 4,450 plus RageDamage at 2545. The whole Rage is one tick late, not
+  its chained area. At 1014 (game 4,500 first, no RageDamage) the sim matches the game.
+- **Cause: extraction (a).** `extract.table_shims.life('Rage')` returns None, because Rage has no `AreaEffectObject`: its
+  area comes from `RageBottle`'s `DeathAreaEffect`. `fights.deployments` then dates the area at its first sighting
+  instead of `first - (4500 - remaining)/50`. That is 1 tick late whenever the first frame is 4,450 (10 of 16 casts).
+- **Measured (a), input-only, run `r64_rage`** (`shift_inputs.py`: inputs_v5 with those 10 Rage commands 1 tick earlier;
+  same engine `lib_008aa626`, `repr_v2`, `SME_TORN_STEP=1`):
+  **40 / 109 -> 43 / 109, exact frames 227,262 -> 228,990, 0 regressions.** Gained: `200616`, `224041`, `020134`.
+  The 3 "Rage RageDamage 1 tick late" onsets of run20 are gone. Traces deleted.
+- **Not done (outside this ticket's write set):** the extract fix. In `table_shims.life`, for a spell without
+  `AreaEffectObject`, follow `SummonCharacter` -> `buildings.DeathAreaEffect` -> `LifeDuration`. Then regenerate the inputs.
+  `bottle_lag` stays as it is. Core tests and J7 do not apply: no crforge change.
+
+### 6.5: crforge on the 16.635.3 tables, guard bypassed in a scratch clone (measurement only, nothing adopted)
+Scratch: `git clone /workspace/crforge_fork /workspace/r64/cf635` at `008aa626`; `GameVersions.CLIENT_16_402_17_DATA`
+gets `"16.635.3"` (`r6465/guard_bypass_SCRATCH_ONLY.diff`, first hunk).
+
+**(a) Core tests, `-Pcrforge.dataVersion=16.635.3`, guard bypassed: 2,140 tests, 47 failures, 0 errors, 2 skipped**
+(`r6465/coretest_16635_bypass.txt`), against 1,053 with the guard. So **1,006 of the 1,053 were the guard**. The 47 left
+are all crforge refusing a changed table row as "not modelled". None is a wrong value:
+
+| n | table change (16.402.22 -> 16.635.3) | crforge |
+|---:|---|---|
+| 19 | new action class `ActionAbilityDelivered` (`*_ability_delivered` added to the hero Giant / Valkyrie / Golden Knight / Balloon / Ice Wizard ability groups) | "the battle does not have" |
+| 12 | `MegaKnight_EV1_uppercut` sets `GameTagsToSet` NO_ATTACK, NO_MOVE_ALLOW_ATTRACT (the root: NO_MOVE -> NO_MOVE_ALLOW_ATTRACT); 11 refusals + 1 assertion | not modelled |
+| 8 | global `V16_PROJECTILE_DAMAGE_BUG` removed (crforge reads it, `BattleWorld.java:822`: Hunter volley damage) | "no global" |
+| 3 | `BattleRam_EV1_PushBack.PushBackDamage` 83 -> {BaseDamage 83, Flags NoCounter} | mistyped field |
+| 3 | buffs `Cannon_EV1_barrage_damage_buff`, `FirecrackerFireworks_EV1`: PlayerSpecificBuff -> `CastIdSpecificBuff` | not modelled |
+| 2 | `ElectroWizardHero` attack sequence entries add `CustomBuffOnDamageTime` 600 | not modelled |
+
+**Rule content of 16.635 (a, `tdiff.py` / `adiff.py`):** 19 rows added, 4 removed, 18 changed across 28 tables, plus 46
+actions added, 1 removed (`ElectroWizardHero_Forbid_Movement`) and 13 changed.
+- **No stat change:** 0 changed rows in buildings, projectiles, spells_buildings, spells_hero_form, damage_types or
+  card_groups.
+- **New content:** Giant evolution (`Giant_EV1`, 5 `GiantEvoRage*` areas, 35 `giant_evo_*` / `Giant_EV1_*` actions, 4 variables)
+  and Mirror evolution.
+- **Hero abilities:** `RefundWindow` 50 -> none, `RefundUntilDelivered` true, on 5 hero abilities.
+  - crforge reads `RefundWindow` and falls back to the trigger delay. No test catches this, so it is a **silent change (b)**.
+- **Bug globals:** `V16_AEO_OWNERSHIP_BUG`, `V16_PROJECTILE_DAMAGE_BUG` and `V16_RUNE_GIANT_VISUAL_BUG` removed. New flags
+  `FIX_RESET_CHARGE_DURING_PUSHBACK_WHEN_MOVEMENT_DISABLED` and `LOGIC_SKIP_KAMIKAZE_ON_DISCARDED_HIT` (true).
+  - crforge reads none of the new flags, so they are **game-code rule changes the core does not model (b)**.
+- **Small changes:**
+  - `ElectroGiant_EV1_Pulse_AEO` filter: NoClones -> plain;
+  - `SkeletonDuplication_EV1` `NotCloned`;
+  - `PassiveForcedHitGroundCharacters` adds DashImmune;
+  - Electro Wizard hero `ForbidMovement` link removed;
+  - Mega Knight evolution uppercut tags.
+- **Ranked mode:** `Ranked1v1_NewArena2` arena -> `Arena_competitive`.
+
+**(b) Extraction and SME on client-160635001 matches (a).**
+- `extract.py` (unedited; `r6465/ext635.py` swaps its `TABLES` to 16.635.3) extracted **91 / 91** Ranked battles since
+  10-27 06:58. All are build 160635001, with 0 skips. 47 are RNG-free, 33 of them unflagged. Inputs stay local and on the
+  pod (`/workspace/r64/inputs635_rngfree.jsonl`), not in git.
+- **SME, guard bypass only (`sme635_run`): 47 / 47 matches refused.**
+  - 42 on `IceWizardHero_ability_delivered`: our own hero Ice Wizard press, so every match with a press refuses;
+  - 2 on the Mega Knight evolution;
+  - 1 each on Golden Knight, Valkyrie and Firecracker evolution.
+- **SME with two scratch stubs (`sme635_stub`)**: `ActionAbilityDelivered` as an inert action, `CastIdSpecificBuff` as a
+  known column; the second and third hunks of the diff.
+  - **17 / 33 unflagged exact apart from torn, 66,363 exact frames**; 7 matches still refuse on the Mega Knight evolution.
+  - First divergence of the 14 failing: 4 body position, 3 body missing in the sim, 3 own elixir 1 frame early, 2 hp only,
+    1 spell area timing, 1 sim body missing in the reader (`cmp_635_vs_402.txt`).
+- **Control, the same 47 matches on the unpatched fork with the 16.402.22 tables (`ctl402`): 47 / 47 run, 17 / 33 exact,
+  69,314 exact frames.**
+  - **On the 40 matches both ran: 40 / 40 identical** (counts and first divergence).
+  - The 7 Mega Knight evolution matches all diverge early on 16.402.22 (first divergence at 178-654).
+
+**(c) How much rule change 16.635 holds (a for these 47 matches; b beyond them):** for our matches, very little.
+- Swapping 16.402.22 for 16.635.3 tables changes nothing on 40 / 40 matches.
+- The 160635001 matches are as exact under 16.402.17 rules as under the new tables: 17 / 33.
+- What 16.635 adds:
+  - new evolutions (Giant, Mirror) and the hero `ability_delivered` refund hook;
+  - the Mega Knight evolution uppercut tags (7 / 47 of our matches);
+  - the removed bug globals and new fix flags, whose game-code effect only an upstream core change can model.
+- The pin stays on 16.402.22. This bypass is not exactness for those 7 or for any match where the refund or flag rules
+  bite (b), and nothing here is adopted.

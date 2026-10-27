@@ -1,0 +1,96 @@
+actions.json               rows    0 ->    0  added   0 removed   0 changed   0
+area_effect_objects.json   rows  165 ->  170  added   5 removed   0 changed   1
+battle_timelines.json      rows   29 ->   30  added   1 removed   0 changed   0
+buildings.json             rows  112 ->  112  added   0 removed   0 changed   0
+card_groups.json           rows   12 ->   12  added   0 removed   0 changed   0
+character_abilities.json   rows   38 ->   38  added   0 removed   0 changed   5
+character_buffs.json       rows  176 ->  176  added   0 removed   0 changed   3
+characters.json            rows  247 ->  248  added   1 removed   0 changed   2
+damage_types.json          rows    5 ->    5  added   0 removed   0 changed   0
+game_modes.json            rows  537 ->  538  added   1 removed   0 changed   2
+game_object_filters.json   rows   61 ->   60  added   0 removed   1 changed   1
+game_tags.json             rows   62 ->   62  added   0 removed   0 changed   0
+globals.json               rows  548 ->  550  added   5 removed   3 changed   0
+locations.json             rows  209 ->  211  added   2 removed   0 changed   0
+projectiles.json           rows  179 ->  179  added   0 removed   0 changed   0
+rarities.json              rows    6 ->    6  added   0 removed   0 changed   0
+shapes.json                rows   11 ->   11  added   0 removed   0 changed   0
+spawn_groups.json          rows   18 ->   18  added   0 removed   0 changed   0
+spells_buildings.json      rows   18 ->   18  added   0 removed   0 changed   0
+spells_characters.json     rows  108 ->  108  added   0 removed   0 changed   1
+spells_evolved.json        rows  109 ->  109  added   0 removed   0 changed   2
+spells_hero_form.json      rows  113 ->  113  added   0 removed   0 changed   0
+spells_other.json          rows   27 ->   27  added   0 removed   0 changed   1
+support_cards.json         rows    5 ->    5  added   0 removed   0 changed   0
+support_rarities.json      rows    5 ->    5  added   0 removed   0 changed   0
+target_resolvers.json      rows    8 ->    8  added   0 removed   0 changed   0
+variables.json             rows   45 ->   49  added   4 removed   0 changed   0
+total {'added': 19, 'removed': 4, 'changed': 18}
+== actions.json
+== area_effect_objects.json
+  + GiantEvoRage1
+  + GiantEvoRage2
+  + GiantEvoRage3
+  + GiantEvoRage4
+  + GiantEvoRageBase
+  ~ ElectroGiant_EV1_Pulse_AEO: Filter "CommonAreaDamageFilterNoClones" -> "CommonAreaDamageFilter"
+== battle_timelines.json
+  + Puzzle
+== buildings.json
+== card_groups.json
+== character_abilities.json
+  ~ BalloonHero_Ability: RefundUntilDelivered null -> true; RefundWindow 50 -> null
+  ~ GiantHero_Ability: RefundUntilDelivered null -> true; RefundWindow 50 -> null
+  ~ GoldenKnightChain: RefundUntilDelivered null -> true; RefundWindow 50 -> null
+  ~ IceWizardHero_ability: RefundUntilDelivered null -> true; RefundWindow 50 -> null
+  ~ ValkyrieHero_Ability: RefundUntilDelivered null -> true; RefundWindow 50 -> null
+== character_buffs.json
+  ~ Cannon_EV1_barrage_damage_buff: CastIdSpecificBuff null -> true; PlayerSpecificBuff true -> null
+  ~ FirecrackerFireworks_EV1: CastIdSpecificBuff null -> true; PlayerSpecificBuff true -> null
+  ~ SkeletonDuplication_EV1: NotCloned null -> true
+== characters.json
+  + Giant_EV1
+  ~ ElectroWizardHero: AttackSequenceList [{"Damage": 46, "VisualHitSpeed": 1800, "HitSpeedMultiplier": 100, "CustomMultip -> [{"Damage": 46, "VisualHitSpeed": 1800, "HitSpeedMultiplier": 100, "CustomMultip; AttackStartEffect "electro_wizard_attack_start" -> "vfx_electrowizard_hero_attack_start"
+  ~ Princess_EV1: HealthBar "Small" -> "Small_EV1"
+== damage_types.json
+== game_modes.json
+  + Puzzle
+  ~ Competitive_Multideck: CardLevelAdjustment "Friendly" -> "CompetitiveLeagues"
+  ~ Ranked1v1_NewArena2: FixedArena "Arena_minionacademy" -> "Arena_competitive"
+== game_object_filters.json
+  - CommonAreaDamageFilterNoClones
+  ~ PassiveForcedHitGroundCharacters: Filters ["Hidden", "Underground", "NoHitpointComponent", "Flying", "Jumping"] -> ["Hidden", "Underground", "NoHitpointComponent", "Flying", "Jumping", "DashImmun
+== game_tags.json
+== globals.json
+  + FIX_RESET_CHARGE_DURING_PUSHBACK_WHEN_MOVEMENT_DISABLED
+  + LOGIC_SKIP_KAMIKAZE_ON_DISCARDED_HIT
+  + MAX_PLAYER_MARKS
+  + MIRROR_EVO_LEVEL_OFFSET
+  + SHOP_TRADE_UNLOCK_ARENA
+  - V16_AEO_OWNERSHIP_BUG
+  - V16_PROJECTILE_DAMAGE_BUG
+  - V16_RUNE_GIANT_VISUAL_BUG
+== locations.json
+  + PvP_competitive
+  + TeamVsTeam_competitive
+== projectiles.json
+== rarities.json
+== shapes.json
+== spawn_groups.json
+== spells_buildings.json
+== spells_characters.json
+  ~ Giant: EvolvedSpells ["Giant_hero"] -> ["Giant_hero", "Giant_EV1"]
+== spells_evolved.json
+  ~ Giant_EV1: HighresImageFilename "" -> "image/chr_evolution/giant_evolution.png"; HighresPlaceholderAsset "sc/ui_card_info_fx.sc#card_info_fx_common" -> "sc/ui_card_info_fx.sc#card_info_fx_evolution"; IconFile "knight" -> "giant_evolution_card"; IconSWF "" -> "sc/ui_card_giant_evolution.sc"; Rarity "Common" -> "Rare"; Stats null -> "giant_evo"; SummonCharacter "Knight" -> ""; SummonCharactersList null -> ["Giant_EV1"]; SummonCharactersOffsetsX null -> [0]; SummonCharactersOffsetsY null -> [0]; TID "TID_SPELL_KNIGHT" -> "TID_SPELL_GIANT"; TID_INFO "TID_SPELL_INFO_KNIGHT" -> "TID_SPELL_INFO_EVO_GIANT"
+  ~ Mirror_EV1: BattleIconFile null -> "mirror_evolution_card"; CanDeployOnEnemySide false -> true; CanPlaceOnBuildings false -> true; CastSound "" -> "soundbanks/ui_battle_general/ui_battle_general_spellcasting"; DarkElixirCost 1 -> 2; Effect "CharacterDeploy" -> "vfx_mirror_evo_deploy"; HighresImageFilename "" -> "image/chr_evolution/mirror_evolution.png"; HighresPlaceholderAsset "sc/ui_card_info_fx.sc#card_info_fx_common" -> "sc/ui_card_info_fx.sc#card_info_fx_evolution"; IconFile "knight" -> "mirror_evolution_card_menu"; IconSWF "" -> "sc/ui_card_mirror_evolution.sc"; Mirror false -> true; PveDefenseType "Defender" -> "Range"; Rarity "Common" -> "Epic"; SummonCharacter "Knight" -> ""; TID "TID_SPELL_KNIGHT" -> "TID_SPELL_MIRROR"; TID_INFO "TID_SPELL_INFO_KNIGHT" -> "TID_SPELL_INFO_EVO_MIRROR"; UnlockArena "Arena_L10" -> "Arena_L1"
+== spells_hero_form.json
+== spells_other.json
+  ~ Mirror: EvolvedSpells [] -> ["Mirror_EV1"]
+== support_cards.json
+== support_rarities.json
+== target_resolvers.json
+== variables.json
+  + giant_evo_attack_amount
+  + giant_evo_current_attack_sequence
+  + giant_evo_started_rage
+  + giant_rage_offset
