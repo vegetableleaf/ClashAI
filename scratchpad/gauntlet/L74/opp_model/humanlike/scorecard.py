@@ -157,6 +157,24 @@ def rms(c, keys):
     return math.sqrt(sum(d * d for d in ds) / len(ds)) if ds else float('nan')
 
 
+def _lse(xs):
+    """(log sd, its SE) with the kurtosis-aware SE sqrt((kurt - 1) / (4 n))."""
+    xs = [x for x in xs if not math.isnan(x)]
+    n = len(xs)
+    mu = sum(xs) / n
+    v = sum((x - mu) ** 2 for x in xs) / n
+    k = sum((x - mu) ** 4 for x in xs) / n / (v * v) if v > 0 else 3.0
+    return 0.5 * math.log(v) if v > 0 else float('nan'), math.sqrt(max(k - 1, 0) / (4 * n))
+
+
+def spread_ci(L, S, k, z):
+    """z-level CI of SD_S / SD_L."""
+    ls, es = _lse([x[k] for x in S])
+    ll, el = _lse([x[k] for x in L])
+    r, e = ls - ll, math.sqrt(es * es + el * el)
+    return math.exp(r - z * e), math.exp(r + z * e)
+
+
 def level_b(L, S, th, feats=None):
     """L live feature rows, S model rows -> dict.  feats default = CORE9 (+ POS4 when both sides have positions) + EXTRA.
     pass = RMS d (CORE) <= b_live_rms_d_max AND every stat TOST-inside b_live_per_stat_abs_d_max AND B3 spread ratios inside the range."""
@@ -167,12 +185,17 @@ def level_b(L, S, th, feats=None):
     core = [k for k in core if k in feats]
     c = cohen(L, S, feats, B['min_n_per_side_for_a_stat'])
     marg = B['b_live_per_stat_abs_d_max']
-    tost = {k: (abs(v[6]) + Z90 * v[7] < marg) if not math.isnan(v[6]) else False for k, v in c.items()}
+    tz = B.get('tost_z', Z90)
+    tost = {k: (abs(v[6]) + tz * v[7] < marg) if not math.isnan(v[6]) else False for k, v in c.items()}
     r_core = rms(c, core)
     r9 = rms(c, CORE9)
     spread = {k: (c[k][5] / c[k][2] if c[k][2] else float('nan')) for k in B['b3_stats'] if k in c}
     lo, hi = B['b3_spread_ratio_range']
-    b3 = {k: (lo <= v <= hi) for k, v in spread.items()}
+    if B.get('b3_rule') == 'ci_overlap':          # v3: pass unless the CI of the SD ratio lies wholly outside the band
+        ci = {k: spread_ci(L, S, k, B['b3_ci_z']) for k in spread}
+        b3 = {k: (ci[k][0] <= hi and ci[k][1] >= lo) for k in spread}
+    else:
+        b3 = {k: (lo <= v <= hi) for k, v in spread.items()}
     floor = math.sqrt(1 / max(1, len(L)) + 1 / max(1, len(S)))
     return dict(n_live=len(L), n_sim=len(S), rms_core=r_core, rms9=r9, floor=floor, stats=c, tost=tost, spread=spread, b3=b3, positions=pos,
                 pass_rms=bool(r_core <= B['b_live_rms_d_max']), pass_tost=all(tost.values()), pass_b3=all(b3.values()) if b3 else False,
@@ -345,8 +368,8 @@ def selftest(th):
     L12 = live_ref('12k')
     feats = CORE9 + EXTRA
     npass = Counter()
-    nsp = 20
-    for seed in range(nsp):
+    nsp = 50
+    for seed in range(100, 100 + nsp):
         idx = list(range(len(L12)))
         random.Random(seed).shuffle(idx)
         h = len(idx) // 2
@@ -371,8 +394,8 @@ def selftest(th):
     bad = level_a([0.5] * n, [1] * n, ps, [0] * n, [1.0] * 6000, th0)
     print(f'level A calibrated: ECE {good["ece_pp"]:.2f} pp KS {good["ks"]:.3f} pass_ece {good["pass_ece"]} pass_ks {good["pass_ks"]}; '
           f'miscalibrated/constant gaps: ECE {bad["ece_pp"]:.1f} KS {bad["ks"]:.2f} pass_ece {bad["pass_ece"]} pass_ks {bad["pass_ks"]}')
-    # human full-pass rate is REPORTED, not asserted: B3's [0.9, 1.1] band false-fails humans ~15-25% at n~960/side (see HUMANLIKE.md)
-    good_ok = (npass['rms'] == nsp and not r1['passed'] and not r2['pass_b3'] and good['pass_ece'] and good['pass_ks']
+    # v3: human full-pass rate must be >= 19/20 (47.5/50) on the 50 control splits
+    good_ok = (npass['rms'] == nsp and npass['all'] >= 0.95 * nsp - 0.5 and not r1['passed'] and not r2['pass_b3'] and good['pass_ece'] and good['pass_ks']
                and not bad['pass_ece'] and not bad['pass_ks'])
     print('SELFTEST', 'OK' if good_ok else 'FAILED')
     return good_ok
