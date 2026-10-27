@@ -1,0 +1,131 @@
+{
+ "envs": 16,
+ "steps": 600,
+ "warm_steps": 600,
+ "names_resolved": 263,
+ "matches_done": 48,
+ "plays_per_side": 27.260416666666668,
+ "unmapped_units": [
+  "AngryBarbarian",
+  "AngryBarbarian_EV1",
+  "AngryBarbarian_EV1_2",
+  "BarbLogBarbarianHero",
+  "Barbarian_EV1",
+  "BarrelGoblin",
+  "Bat",
+  "Bat_EV1",
+  "BrokenCannon",
+  "BushGoblin",
+  "ElixirGolem1",
+  "ElixirGolem2",
+  "ElixirGolem4",
+  "Furnace_rework",
+  "Ghost_EV1_Summon_Left",
+  "Ghost_EV1_Summon_Right",
+  "Goblin",
+  "GoblinBrawler",
+  "GoblinCage_EV1_GoblinBrawler",
+  "GoblinCage_EV1_TEMPNAME",
+  "GoblinDemolisher_kamikaze_form",
+  "GoblinDummy",
+  "GoblinHero",
+  "GoblinHero_Flag_Building",
+  "GoblinHut_Rework",
+  "Goblin_Stab",
+  "Graveyard_rework_Skeleton",
+  "MiniZapMachine",
+  "Minion",
+  "PhoenixEgg",
+  "PhoenixNoRespawn",
+  "RageBarbarianEvoGhost",
+  "Ram",
+  "RascalBoy",
+  "RascalGirl",
+  "RoyalHog",
+  "SkeletonArmy_EV1_General",
+  "SkeletonArmy_EV1_Soldier",
+  "SkeletonArmy_EV1_Spectral",
+  "SkeletonWarrior",
+  "Skeleton_EV1",
+  "SpearGoblin",
+  "SpearGoblin_Dummy",
+  "TombstoneHeroSkeleton",
+  "TombstoneHero_Monster_Passive",
+  "TombstoneHero_visual_dummy",
+  "Wallbreaker",
+  "Wallbreaker_EV1",
+  "Wallbreaker_mini",
+  "electro_dragon_ev1",
+  "goblinstein_doctor"
+ ],
+ "spells_mapped": [
+  "Earthquake",
+  "Freeze",
+  "Lightning",
+  "Poison",
+  "Rage",
+  "Tornado"
+ ],
+ "identity": {
+  "rows": 38400,
+  "rows_equal": 38400,
+  "tok_diff": 0,
+  "mask_diff": 0,
+  "sc_diff": 0,
+  "form_diff": 0,
+  "sc_hand_diff_seat1": 0,
+  "first_diffs": []
+ },
+ "us_per_seat_row": {
+  "java_step_env_us": {
+   "n": 600,
+   "mean": 557.5946004804185,
+   "p50": 517.6642807782628,
+   "p90": 836.8367401999424
+  },
+  "p3_call_us": {
+   "n": 4800,
+   "mean": 23.97927867908341,
+   "p50": 21.090032532811165,
+   "p90": 30.98193556070329
+  },
+  "p2_dump_us": {
+   "n": 9600,
+   "mean": 53.17774593750306,
+   "p50": 47.63174999933284,
+   "p90": 75.46305000056819
+  },
+  "p2_raw_us": {
+   "n": 9600,
+   "mean": 19.977582187493496,
+   "p50": 16.410500000674233,
+   "p90": 23.3539999997312
+  },
+  "p2_tensors_fv4_us": {
+   "n": 19200,
+   "mean": 136.31823281250604,
+   "p50": 126.64700000009077,
+   "p90": 183.08499999957212
+  },
+  "p2_tensors_fvT_us": {
+   "n": 19200,
+   "mean": 198.545277187494,
+   "p50": 181.16450000071893,
+   "p90": 292.0049999982412
+  },
+  "p1_reads_us": {
+   "n": 2400,
+   "mean": 196.42983750000027,
+   "p50": 178.72275000030413,
+   "p90": 266.729649999231
+  },
+  "p1_tensors_fv4_us": {
+   "n": 2400,
+   "mean": 127.64481458331534,
+   "p50": 118.84299999964654,
+   "p90": 167.70104999999091
+  }
+ },
+ "fv_time": 6,
+ "note": "per seat-row except java_step_env_us (one env decision on 1 Java thread: 10 ticks + both seats' P3 obs). P2 = p2_dump_us (Java dump + JPype + list) + p2_raw_us (raw dict) + p2_tensors_fv4_us (from_engine fv4 + to_tokens + to_unit_forms); p2_tensors_fvT_us = the same at fv_time. P1 = p1_reads_us (JPype per-field) + p1_tensors_fv4_us. p3_call_us = CfSpeed.Match.obs via one JPype call (wall). Times are thread CPU (time.thread_time) except the two *_call/step wall ones."
+}

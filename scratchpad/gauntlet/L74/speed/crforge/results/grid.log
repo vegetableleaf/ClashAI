@@ -1,0 +1,35 @@
+{"label": "g_1x48", "jvms": 1, "threads": 48, "matches": 12002, "matches_per_h": 638552, "core_s_per_match": 0.1952, "plays_per_side": 29.0, "ticks_per_match": 3540, "gc_s": 4.9, "rss_mb": 8071, "wall_s": 67.66}
+{"label": "g_2x24", "jvms": 2, "threads": 24, "matches": 12001, "matches_per_h": 1103549, "core_s_per_match": 0.125, "plays_per_side": 29.0, "ticks_per_match": 3540, "gc_s": 4.0, "rss_mb": 8842, "wall_s": 41.3}
+{"label": "g_4x12", "jvms": 4, "threads": 12, "matches": 12002, "matches_per_h": 1277811, "core_s_per_match": 0.1168, "plays_per_side": 29.0, "ticks_per_match": 3536, "gc_s": 7.4, "rss_mb": 6900, "wall_s": 34.38}
+{"label": "g_12x4", "jvms": 12, "threads": 4, "matches": 12000, "matches_per_h": 1573898, "core_s_per_match": 0.1055, "plays_per_side": 28.9, "ticks_per_match": 3528, "gc_s": 7.7, "rss_mb": 14056, "wall_s": 28.23}
+{"label": "g_48x1", "jvms": 48, "threads": 1, "matches": 12002, "matches_per_h": 1347821, "core_s_per_match": 0.1405, "plays_per_side": 28.9, "ticks_per_match": 3534, "gc_s": 27.5, "rss_mb": 18457, "wall_s": 33.64}
+{"label": "g_1x8", "jvms": 1, "threads": 8, "matches": 2400, "matches_per_h": 242262, "core_s_per_match": 0.1074, "plays_per_side": 28.9, "ticks_per_match": 3532, "gc_s": 1.6, "rss_mb": 1479, "wall_s": 35.66}
+{"label": "g_1x24", "jvms": 1, "threads": 24, "matches": 7001, "matches_per_h": 563669, "core_s_per_match": 0.1239, "plays_per_side": 28.8, "ticks_per_match": 3523, "gc_s": 2.0, "rss_mb": 4584, "wall_s": 44.71}
+{"label": "g_1x48_e2", "jvms": 1, "threads": 48, "matches": 6000, "matches_per_h": 217500, "core_s_per_match": 0.257, "plays_per_side": 29.0, "ticks_per_match": 3542, "gc_s": 1.7, "rss_mb": 1596, "wall_s": 99.31}
+{"label": "g_1x48_pargc", "jvms": 1, "threads": 48, "matches": 12000, "matches_per_h": 799908, "core_s_per_match": 0.1666, "plays_per_side": 28.9, "ticks_per_match": 3531, "gc_s": 2.4, "rss_mb": 4782, "wall_s": 54.01}
+{"label": "g_12x4_pargc", "jvms": 12, "threads": 4, "matches": 12002, "matches_per_h": 1498388, "core_s_per_match": 0.1106, "plays_per_side": 28.9, "ticks_per_match": 3527, "gc_s": 14.4, "rss_mb": 19644, "wall_s": 31.35}
+Traceback (most recent call last):
+  File "<string>", line 3, in <module>
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "<string>", line 3, in <module>
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+{"label": "g_1x1_obs", "jvms": 1, "threads": 1, "matches": 400, "matches_per_h": 30176, "core_s_per_match": 0.1281, "plays_per_side": 28.9, "ticks_per_match": 3519, "gc_s": 7.8, "rss_mb": 1113, "wall_s": 47.72}
+{"label": "g_1x1", "jvms": 1, "threads": 1, "matches": 400, "matches_per_h": 42103, "core_s_per_match": 0.0894, "plays_per_side": 28.9, "ticks_per_match": 3524, "gc_s": 0.6, "rss_mb": 451, "wall_s": 34.2}
+GRID_DONE

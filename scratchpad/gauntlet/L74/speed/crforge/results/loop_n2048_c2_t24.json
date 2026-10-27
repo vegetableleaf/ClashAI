@@ -1,0 +1,21 @@
+{
+ "envs_per_cohort": 2048,
+ "cohorts": 2,
+ "threads_per_cohort": 24,
+ "warm_s": 60.0,
+ "wall_s": 90.031135612051,
+ "matches": 18006,
+ "matches_per_h": 719990.9182454363,
+ "core_s_per_match": 0.2044349341330667,
+ "python_main_core_s_per_match": 9.495092819060309e-05,
+ "cores_busy": 40.88647109664222,
+ "rows_per_s": 145130.23645845288,
+ "rows_per_match": 725.660335443741,
+ "ticks_per_match": 3528.15772520271,
+ "plays_per_side": 28.882122625791403,
+ "decisions_per_match": 362.74541819393534,
+ "rounds": 3190,
+ "round_ms": 28.22292652415392,
+ "python_wait_frac": 0.9819545532389761,
+ "python_serve_frac": 0.01792492373391793
+}

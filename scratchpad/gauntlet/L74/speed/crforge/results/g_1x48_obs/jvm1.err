@@ -1,0 +1,10 @@
+Exception in thread "main" java.lang.RuntimeException: java.util.concurrent.ExecutionException: java.lang.OutOfMemoryError: Java heap space
+	at CfSpeed$Rollout.step(CfSpeed.java:396)
+	at CfSpeed.core(CfSpeed.java:513)
+	at CfSpeed.main(CfSpeed.java:499)
+Caused by: java.util.concurrent.ExecutionException: java.lang.OutOfMemoryError: Java heap space
+	at java.base/java.util.concurrent.FutureTask.report(FutureTask.java:122)
+	at java.base/java.util.concurrent.FutureTask.get(FutureTask.java:191)
+	at CfSpeed$Rollout.step(CfSpeed.java:394)
+	... 2 more
+Caused by: java.lang.OutOfMemoryError: Java heap space

@@ -1,0 +1,1 @@
+{"mode":"env","threads":48,"envs":768,"decision_ticks":5,"p_play":0.30,"matches":6000,"steps":5823,"wall_s":134.81,"cpu_s":3242.29,"core_s_per_match":0.5404,"matches_per_h":160226,"decisions_per_match":745.3,"us_per_env_decision_cpu":725.0,"gc_s":4.46,"faults":{},"rss_hwm_mb":6809}

@@ -1,0 +1,81 @@
+{
+ "envs": 4,
+ "steps": 20,
+ "warm_steps": 30,
+ "names_resolved": 26,
+ "matches_done": 0,
+ "plays_per_side": 0.0,
+ "unmapped_units": [
+  "Barbarian",
+  "IceWizardHero",
+  "IceWizardHeroFloatingCube",
+  "Skeleton"
+ ],
+ "spells_mapped": [
+  "Freeze",
+  "Poison",
+  "Tornado"
+ ],
+ "identity": {
+  "rows": 400,
+  "rows_equal": 400,
+  "tok_diff": 0,
+  "mask_diff": 0,
+  "sc_diff": 0,
+  "form_diff": 0,
+  "sc_hand_diff_seat1": 0,
+  "first_diffs": []
+ },
+ "us_per_seat_row": {
+  "java_step_env_us": {
+   "n": 20,
+   "mean": 3183.2841486902907,
+   "p50": 2900.1350048929453,
+   "p90": 4351.249503088185
+  },
+  "p3_call_us": {
+   "n": 160,
+   "mean": 51.08930708956905,
+   "p50": 44.914952013641596,
+   "p90": 68.35294188931584
+  },
+  "p2_dump_us": {
+   "n": 80,
+   "mean": 105.1365562500059,
+   "p50": 101.56799999999633,
+   "p90": 146.21009999997713
+  },
+  "p2_raw_us": {
+   "n": 80,
+   "mean": 38.43888124999695,
+   "p50": 33.440499999981554,
+   "p90": 46.44300000002932
+  },
+  "p2_tensors_fv4_us": {
+   "n": 160,
+   "mean": 245.06496249999537,
+   "p50": 245.35499999989162,
+   "p90": 300.1340999999602
+  },
+  "p2_tensors_fvT_us": {
+   "n": 160,
+   "mean": 378.14068124999994,
+   "p50": 359.2739999999095,
+   "p90": 561.0930999999207
+  },
+  "p1_reads_us": {
+   "n": 40,
+   "mean": 374.21015000000114,
+   "p50": 375.7725000000378,
+   "p90": 525.8947499999999
+  },
+  "p1_tensors_fv4_us": {
+   "n": 40,
+   "mean": 205.49428750000487,
+   "p50": 217.00699999999128,
+   "p90": 250.31759999996072
+  }
+ },
+ "fv_time": 6,
+ "note": "per seat-row except java_step_env_us (one env decision on 1 Java thread: 10 ticks + both seats' P3 obs). P2 = p2_dump_us (Java dump + JPype + list) + p2_raw_us (raw dict) + p2_tensors_fv4_us (from_engine fv4 + to_tokens + to_unit_forms); p2_tensors_fvT_us = the same at fv_time. P1 = p1_reads_us (JPype per-field) + p1_tensors_fv4_us. p3_call_us = CfSpeed.Match.obs via one JPype call (wall). Times are thread CPU (time.thread_time) except the two *_call/step wall ones."
+}

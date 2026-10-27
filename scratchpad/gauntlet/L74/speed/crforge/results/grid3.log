@@ -1,0 +1,6 @@
+{"label": "o_1x48_obs", "jvms": 1, "threads": 48, "matches": 12001, "matches_per_h": 661615, "core_s_per_match": 0.1947, "plays_per_side": 28.9, "ticks_per_match": 3530, "gc_s": 4.6, "rss_mb": 7470, "wall_s": 65.3}
+{"label": "o_12x4_obs", "jvms": 12, "threads": 4, "matches": 12001, "matches_per_h": 1448539, "core_s_per_match": 0.1153, "plays_per_side": 28.8, "ticks_per_match": 3522, "gc_s": 8.0, "rss_mb": 14117, "wall_s": 31.26}
+{"label": "o_12x4", "jvms": 12, "threads": 4, "matches": 12001, "matches_per_h": 1508704, "core_s_per_match": 0.1104, "plays_per_side": 28.8, "ticks_per_match": 3527, "gc_s": 7.6, "rss_mb": 14088, "wall_s": 30.46}
+{"label": "o_1x1_obs", "jvms": 1, "threads": 1, "matches": 400, "matches_per_h": 42150, "core_s_per_match": 0.0903, "plays_per_side": 28.8, "ticks_per_match": 3517, "gc_s": 0.5, "rss_mb": 444, "wall_s": 34.16}
+{"label": "o_1x1", "jvms": 1, "threads": 1, "matches": 400, "matches_per_h": 43085, "core_s_per_match": 0.088, "plays_per_side": 28.8, "ticks_per_match": 3521, "gc_s": 0.6, "rss_mb": 454, "wall_s": 33.42}
+GRID3_DONE

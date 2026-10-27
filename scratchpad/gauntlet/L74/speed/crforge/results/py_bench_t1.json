@@ -1,0 +1,32 @@
+[
+  {
+    "engine": "ladder",
+    "count": 1,
+    "threads": 1,
+    "steps": 2000,
+    "seconds": 0.9625696309376508,
+    "env_steps_per_s": 2077.771763952054,
+    "ticks_per_s": 20672.790165440958,
+    "us_per_call": 481.2848154688254,
+    "us_per_env_step": 481.2848154688254,
+    "draw_us_per_call": 32.985192723572254,
+    "obs_mb_per_step": 0.056192,
+    "repeats": 3,
+    "spread_pct": 42.26281787131032
+  },
+  {
+    "engine": "ladder",
+    "count": 16,
+    "threads": 1,
+    "steps": 2000,
+    "seconds": 9.499267337028868,
+    "env_steps_per_s": 3368.6808534445136,
+    "ticks_per_s": 33534.37572582677,
+    "us_per_call": 4749.633668514434,
+    "us_per_env_step": 296.85210428215214,
+    "draw_us_per_call": 100.11486272560433,
+    "obs_mb_per_step": 0.899072,
+    "repeats": 3,
+    "spread_pct": 7.04606760828433
+  }
+]

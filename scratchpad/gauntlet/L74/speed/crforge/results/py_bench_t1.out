@@ -1,0 +1,6 @@
+# crforge-env bench: ladder, threads 1, 2000 steps x 3, play rate 0.3, python 3.12.3 numpy 2.5.4 on x86_64
+| engine | envs | threads | env steps/s | ticks/s | us per call | us per env step | draw us per call | obs MB | spread |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| ladder | 1 | 1 | 2,078 | 20,673 | 481.3 | 481.28 | 33.0 | 0.06 | 42% |
+| ladder | 16 | 1 | 3,369 | 33,534 | 4,749.6 | 296.85 | 100.1 | 0.90 | 7% |
+# median spread over repeats 25%

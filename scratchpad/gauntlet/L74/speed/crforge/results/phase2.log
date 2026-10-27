@@ -1,0 +1,25 @@
+{"mode":"env","threads":48,"envs":768,"decision_ticks":10,"p_play":0.30,"matches":6000,"steps":2886,"wall_s":89.44,"cpu_s":2419.93,"core_s_per_match":0.4033,"matches_per_h":241510,"decisions_per_match":369.4,"us_per_env_decision_cpu":1091.8,"gc_s":3.97,"faults":{},"rss_hwm_mb":6438}
+{"mode":"env","threads":48,"envs":768,"decision_ticks":5,"p_play":0.30,"matches":6000,"steps":5823,"wall_s":134.81,"cpu_s":3242.29,"core_s_per_match":0.5404,"matches_per_h":160226,"decisions_per_match":745.3,"us_per_env_decision_cpu":725.0,"gc_s":4.46,"faults":{},"rss_hwm_mb":6809}
+{"mode":"env","threads":1,"envs":16,"decision_ticks":10,"p_play":0.30,"matches":200,"steps":4455,"wall_s":27.11,"cpu_s":31.29,"core_s_per_match":0.1565,"matches_per_h":26554,"decisions_per_match":356.4,"us_per_env_decision_cpu":439.0,"gc_s":0.27,"faults":{},"rss_hwm_mb":675}
+# crforge-env bench: ladder, threads 48, 400 steps x 3, play rate 0.3, python 3.12.3 numpy 2.5.4 on x86_64
+| engine | envs | threads | env steps/s | ticks/s | us per call | us per env step | draw us per call | obs MB | spread |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| ladder | 64 | 48 | 16,683 | 166,168 | 3,836.2 | 59.94 | 350.9 | 3.60 | 58% |
+| ladder | 768 | 48 | 34,272 | 341,283 | 22,409.1 | 29.18 | 3,584.2 | 43.16 | 21% |
+# median spread over repeats 39%
+# crforge-env bench: ladder, threads 1, 2000 steps x 3, play rate 0.3, python 3.12.3 numpy 2.5.4 on x86_64
+| engine | envs | threads | env steps/s | ticks/s | us per call | us per env step | draw us per call | obs MB | spread |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| ladder | 1 | 1 | 2,078 | 20,673 | 481.3 | 481.28 | 33.0 | 0.06 | 42% |
+| ladder | 16 | 1 | 3,369 | 33,534 | 4,749.6 | 296.85 | 100.1 | 0.90 | 7% |
+# median spread over repeats 25%
+   "p50": 118.84299999964654,
+   "p90": 167.70104999999091
+  }
+ }
+}
+{"envs_per_cohort": 2048, "cohorts": 2, "threads_per_cohort": 24, "warm_s": 60.0, "wall_s": 90.031135612051, "matches": 18006, "matches_per_h": 719990.9182454363, "core_s_per_match": 0.2044349341330667, "python_main_core_s_per_match": 9.495092819060309e-05, "cores_busy": 40.88647109664222, "rows_per_s": 145130.23645845288, "rows_per_match": 725.660335443741, "ticks_per_match": 3528.15772520271, "plays_per_side": 28.882122625791403, "decisions_per_match": 362.74541819393534, "rounds": 3190, "round_ms": 28.22292652415392, "python_wait_frac": 0.9819545532389761, "python_serve_frac": 0.01792492373391793}
+{"envs_per_cohort": 512, "cohorts": 2, "threads_per_cohort": 24, "warm_s": 60.0, "wall_s": 90.01379582297523, "matches": 15810, "matches_per_h": 632303.0762077105, "core_s_per_match": 0.1970075422517394, "python_main_core_s_per_match": 0.00018610927843137252, "cores_busy": 34.60235416719315, "rows_per_s": 123998.7703879398, "rows_per_match": 705.9835547122075, "ticks_per_match": 3524.188425047438, "plays_per_side": 28.792409867172676, "decisions_per_match": 352.9831119544592, "rounds": 10900, "round_ms": 8.258146405777545, "python_wait_frac": 0.9668550018184947, "python_serve_frac": 0.03290785847812534}
+{"envs_per_cohort": 2048, "cohorts": 1, "threads_per_cohort": 48, "warm_s": 60.0, "wall_s": 90.02549239096697, "matches": 16553, "matches_per_h": 661932.5084189071, "core_s_per_match": 0.20143621736241166, "python_main_core_s_per_match": 0.00012311695130792, "cores_busy": 37.03810573475482, "rows_per_s": 129806.4324852562, "rows_per_match": 705.967981634749, "ticks_per_match": 3534.565818884794, "plays_per_side": 28.91533256811454, "decisions_per_match": 352.97323747961093, "rounds": 2853, "round_ms": 31.554676617934444, "python_wait_frac": 0.9791424640944495, "python_serve_frac": 0.02072554693736316}
+{"envs_per_cohort": 4096, "cohorts": 2, "threads_per_cohort": 24, "warm_s": 60.0, "wall_s": 90.10657356400043, "matches": 18468, "matches_per_h": 737846.2788042597, "core_s_per_match": 0.20856828893220705, "python_main_core_s_per_match": 7.142144422785355e-05, "cores_busy": 42.74759329588907, "rows_per_s": 159645.97732464646, "rows_per_match": 778.9231102447477, "ticks_per_match": 3537.029348061512, "plays_per_side": 29.021577864414123, "decisions_per_match": 389.6707818930041, "rounds": 1756, "round_ms": 51.31353847608225, "python_wait_frac": 0.9842408119796343, "python_serve_frac": 0.015674936761394313}
+PHASE2_DONE
