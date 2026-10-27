@@ -797,6 +797,11 @@ clash with another worker's runs). Each row is cumulative on the one before. **0
 | **6.2 (r62)** | command-pass read at triple elixir | reader (comparator rule) | `cmd_pass_read` also accepts a 537 regen (`SME_TORN_CMD3=1`) | **48 / 109** | 227,262 | `144057`, `210720`, `032352`, `040302` |
 | **6.3a (r63a)** | Rage dated a tick late | extractor | `table_shims.life` follows SummonCharacter -> DeathAreaEffect -> LifeDuration (10 Rage commands -1; inputs_v8) | **51 / 109** | **228,990** | `200616`, `224041`, `020134` |
 | **6.3b (r63b)** | our own Ice Wizard press dated from the reader's cast | extractor | `own_press_elixir` also for our `cast_seen` presses (`SME_OWN_CAST=1`; 10 of 125 moved; inputs_v9) | **54 / 109** | **229,357** | `154839`, `175027`, `182050` |
+| **6.6 (r66)** | a troop row with an unmapped id (card -1) read as a tower | comparator (`canon_live`) | a card -1 row is a tower only with the reader's building kind 12/13 (`SME_KIND_T=1`) | **57 / 109** | **230,987** | `183750`, `200941`, `201701` |
+| 6.7 (r67) | hero IW deploy area taken for an ability cast | extractor | drop it (`iw_deploy_cast`, `SME_IW_DEPLOY=1`; 10 casts; inputs_v10) | 57 / 109 | 231,646 | 0 |
+| **6.8 (r68)** | opponent hero IW cast 2-3 ticks late | extractor | date it from the ability's 50 ms area (`iw_area_cast`, `SME_IW_AREA=1`; 2 casts; inputs_v11) | **58 / 109** | **233,238** | `014151` |
+| 6.9 (r69) | hero Goblins / hero Tombstone plays dropped as role-children | extractor | `own_unit` also exact from `unit_hp.tsv` (`SME_UNIT_HP=1`; 33 plays added in 9 matches; inputs_v12) | 58 / 109 | **239,565** | 0 on the 109; 7 flagged matches lose `opp_no_fitting_deal` (116 unflagged by v12's own flags) |
+| BP merge check (r6bp) | body position (other worker, 1d8badc) | extractor | `bp_rules.apply` hook in `extract.match`, SME_BP_VALK/GK/GIANT/RASCALS on, on inputs_v9 (inputs_v13) with r63b's comparator | **67 / 109** vs r63b | **245,973** | 13, the same set as the worker's bpA; 0 lost |
 
 ## 6.0: all 69 failures of run20, classified (a)
 Tools (all on run20's plans, `SME_TORN_STEP=1`):
@@ -879,3 +884,33 @@ the open classes, not more input dating.
   | one live unit moved 1 unit | 12 / 12 |
 
 - Outputs: `results/live/{steptest6,cmdtest6,kindtest6}_run20.txt`.
+
+## 6.6-6.9 (owner 10-27: no fin16 fallback; iterate every class but body position, which another worker owns)
+- **6.6, a troop read as a tower (a).** `canon_live` called every card -1 row a tower. Across all 138 matches' frames:
+  - card -1 rows on the 6 tower points: 1,881,839, all with kind 12 or 13;
+  - card -1 rows anywhere else: 1,426, all with kind 14 or 15 (troops).
+
+  At the 4 run20 onsets those troops were the Witch Mother's VoodooHog: same (side, x, y, hp) as the sim's unit.
+  - Rule: a tower is card -1 **and** kind 12 / 13.
+  - Planted checks (`kind_test6.py`): the relabelled row moved 1 unit, 13 / 13 div; its hp +1, 13 / 13 div.
+- **6.7, hero IW deploy area (a for the area; the onsets stay).** `iwfx6.py` lists every 203000023 area on the 138
+  matches:
+  - **a real cast** makes a 50 ms area at R+4 (or 0 ms at R+5), then a ~1,000,000 ms area at R+7..8;
+  - **10 areas sit on an Ice Wizard play's point on its first frame:** 9 with no countdown, 1 at 1 ms. Each made a bogus
+    `cast_seen` cast 1-2 ticks before the deploy.
+
+  Dropping those casts is right: +659 exact frames, 0 regressions. **But the 5 onsets on those frames stay.** They are
+  the hero IW's cube on its deploy frame, not the cast. The body-position worker's census (906e414) covers the cube.
+- **6.8, opponent IW cast dated from its area (a).** On 16 of 18 opponent casts the 50 ms area is first seen at
+  `cast_seen` + 4 (50 ms left) or + 5 (0 ms left). The other 2 sit 2-3 ticks late (`014151`@1266, `211239`@5544), and
+  the sweep fixes both at exactly made - 4. Our own casts keep the elixir dating.
+- **6.9, hero Goblins / hero Tombstone plays (a).** The `own_unit` shim (">= 45% of the card's biggest body") could not
+  tell a hero's units from children of its larger ability object. So every opponent hero Goblins and hero Tombstone play
+  was dropped. That is extract.py's own ponytail note.
+  - `224856`: 4 goblins at 323 hp, never played. Its first divergence moves from 365 to 493, and div frames fall from
+    1,659 to 36.
+  - With `unit_hp.tsv` (exact max hp per level, base and hero rows) the shim also accepts an exact unit hp. 33 plays come
+    back in 9 matches.
+  - **7 of those matches lose `opp_no_fitting_deal`:** the deal now fits, so the missing plays were the reason. Scored
+    on v12's own flags, 116 matches are unflagged and 58 are exact. The 7 new ones all still diverge (first at 550-4012).
+- **Zero-gain sub-rounds: 6.7 and 6.9, not consecutive.** Exact frames still rose: +659 and +6,327.

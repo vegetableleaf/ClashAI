@@ -20,7 +20,7 @@ Per match (the ScenarioPlan fields crforge ReplayBattle.build reads, plus what t
   rng_free    no deck holds Arrows / Princess / Hunter / SkeletonKing (crforge/live_attr.py rule, G0)
 Never read: the opponent's hand or elixir (live logs carry an elixir estimate; it is not opened here).
 """
-import argparse, collections, datetime as dt, itertools, json, re, sys
+import argparse, collections, datetime as dt, itertools, json, os, re, sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -312,7 +312,19 @@ def match(path, bl=None, names=None, cat=None, shims=None, tt=None, uhp=None, by
     # gates H-NEARPARENT second plays (kept) and the Hero-Goblins exemption (lost: their goblins read as children of the
     # 3720-hp ability object; 4 opponent Hero Goblins decks in the battle log). Exact via crforge unit hp if it matters.
     # A looser "any first-seen hp" shim made the Hero IW's ice cube a play (10-26 validation: 1 extra own play).
-    events, delay = fights.deployments(m, cat, life, own_unit=lambda n, h: h >= .45 * top.get(n, 0) > 0, stats=stats)
+    # round 6.9 (SME_UNIT_HP=1): a body whose max hp is the card's unit at some level (crforge unit_hp.tsv, base or hero
+    # row) is also the card's own unit. That restores the Hero-Goblins exemption: 224856's opponent Hero Goblins (4 x 323
+    # hp under the ability object) was dropped as role-children and never played (its first divergence, never healed).
+    exact = collections.defaultdict(set)
+    if os.environ.get('SME_UNIT_HP') == '1':
+        for s, cid, mx in first.values():
+            c = cat.get(cid)
+            b0 = c and names.get(c['card_id'])
+            for row in ((b0, b0 + '_hero') if b0 else ()):
+                for hs in uhp.get(row, {}).values():
+                    exact[c['display_name']] |= hs
+    events, delay = fights.deployments(m, cat, life, own_unit=lambda n, h: h >= .45 * top.get(n, 0) > 0 or h in exact.get(n, ()),
+                                       stats=stats)
     derived = derive_sides(path, m, events, first, my, hp, names, cat, by_name, uhp, tt)
     if b:
         sides = {my: side_info(b['team'][0], names, cat, tt, hp.get((my, True)), hp.get((my, False))),
@@ -352,6 +364,12 @@ def match(path, bl=None, names=None, cat=None, shims=None, tt=None, uhp=None, by
             row['inferred'] = True
         (plays if k is not None else unplaced).append(row)
     plays = crforge_casts(path, plays, sides, my, m.get('fx'))
+    # A2c-BP (sme/bp_rules.py, SME_BP_* flags, all off by default): hero Valkyrie / Golden Knight / hero Giant casts
+    # dated from the reader's charge / stun buff countdowns, Golden Knight pushes dropped, Rascals point from its girls
+    import bp_rules  # crforge_casts put sme/ on sys.path
+    if bp_rules.VALK or bp_rules.GK or bp_rules.GIANT or bp_rules.RASCALS:
+        import live_frames
+        plays = bp_rules.apply(path, plays, sides, {f['t']: f for f in live_frames.convert(path)})
     build = next(((json.loads(r).get('phase2') or {}).get('build') for r in open(path, 'rb') if b'"phase2"' in r), None)
     # RNG-free: no deck card is a drawer. Without the API only seen cards are known; an unseen slot was never played (it
     # is unseen because no play of it was extracted), and G0's drawers draw only when played (crforge: Arrows / Princess
