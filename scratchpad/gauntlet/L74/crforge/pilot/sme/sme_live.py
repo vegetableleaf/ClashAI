@@ -86,6 +86,32 @@ GK_DASH = int(os.environ.get('SME_GK', '0'))          # round 2.2: Golden Knight
 GK_ID, GK_STEP, GK_LAG = 26000074, 100, 2               # card id; dash = > 100 units a tick; crforge: run R moves at R+2
 
 
+CHAMP_BUFF = int(os.environ.get('SME_CHAMP', '0'))  # round 3.1
+# ability buff -> (champion card, unit of its play that takes the command, crforge run-to-first-buff-line delay)
+CHAMP_BUFFS = {'ArcherQueenRapid': ('ArcherQueen', 0, 4), 'BossBandit_ability_buff': ('BossBandit', 0, 4),
+               'goblinstein_doctor_aura': ('Goblinstein', 1, 1)}
+
+
+def buff_casts(frames):
+    """Archer Queen / Boss Bandit / Goblinstein ability casts from the reader's phase-2 buff rows (frames 'B'): a buff
+    instance's start = first sighting - (duration - remaining)/50; crforge shows the buff on R + delay (probe), so
+    R in [start - delay - 1, start - delay + 1]. One cast per (side, buff) per 40 ticks."""
+    out, last = [], {}
+    for t in sorted(frames):
+        for side, unit, buff, rem, dur in frames[t].get('B', []):
+            if buff not in CHAMP_BUFFS or rem is None or dur is None:
+                continue
+            start = t - (dur - rem) // 50
+            if start - last.get((side, buff), -10 ** 6) <= 40:
+                continue
+            last[(side, buff)] = start
+            card, ui, lag = CHAMP_BUFFS[buff]
+            R = start - lag
+            out.append({'side': side, 'kind': 'ability', 'card': card, 'tick': R, 'run_ticks': [R - 1, R + 1],
+                        'source': 'buff_seen', 'unit_index': ui})
+    return out
+
+
 def gk_dashes(frames):
     """Golden Knight ability casts, which A2b-1 never extracts (champions are not in seen_casts): the first frame of
     each dash burst, a GK body moving more than GK_STEP units a tick (walk ~30). Run tick window: the movement began
@@ -136,6 +162,11 @@ def plan_from(rec, opp_deal, frames=None):
     cmds, last = [], {}
     fx = fx_spells() if FX_SHIFT else set()
     plays = []
+    if CHAMP_BUFF and frames:
+        for g in buff_casts(frames):
+            deck = sides[str(g['side'])]['deck']
+            if g['card'] in deck:
+                plays.append(dict(g, deck_index=deck.index(g['card']), name=g['card'], form=0))
     if GK_DASH and frames:
         for g in gk_dashes(frames):
             deck = sides[str(g['side'])]['deck']
@@ -159,7 +190,7 @@ def plan_from(rec, opp_deal, frames=None):
                          "level": sides[str(s)]['levels'][d], "x": p['x'], "y": p['y']})
         elif (s, d) in last:
             cmds.append({"kind": "ability", "given": p['tick'] - 20, "run": p['tick'], "side": s,
-                         "unit": "cmd%d_0" % last[(s, d)]})
+                         "unit": "cmd%d_%d" % (last[(s, d)], p.get('unit_index', 0))})
         else:
             continue
         cmds[-1]['_src'] = {'lo': p['run_ticks'][0], 'hi': p['run_ticks'][1], 'tick': p['tick'],

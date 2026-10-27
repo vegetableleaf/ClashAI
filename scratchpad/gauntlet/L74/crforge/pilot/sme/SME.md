@@ -544,3 +544,39 @@ The three 13000xxx ids are evolved forms (Bats / Witch / Skeleton-type in the on
   1. Archer Queen, Boss Bandit and Goblinstein ability casts: 0 extracted against 23 / 21 / 16 plays.
   2. The hero Valkyrie spin starting late in crforge, 9 of 33 clean casts. That is a fork patch candidate.
   3. A dossier rerun of the 44 body-position onsets on run9.
+
+# Fix loop round 3
+
+| sub-round | mechanism | change | exact apart from torn (unflagged) | exact frames | regressions |
+|---|---|---|---:|---:|---|
+| start (run9) | | | 28 / 109 | 204,647 | |
+| 3.1 (run10) | Archer Queen / Boss Bandit / Goblinstein ability casts never extracted | input: casts dated from the reader's phase-2 ability buffs (`SME_CHAMP=1`) | **31 / 109** | 220,450 | 0 (+3) |
+
+## 3.1: champion casts from ability buffs (a)
+These three champions show no dash, unlike the Golden Knight. **Their cast shows in the reader's phase-2 unit buff
+rows**, with remaining and duration in ms:
+- `ArcherQueenRapid` on the Archer Queen;
+- `BossBandit_ability_buff` on the Boss Bandit (`Invisible: 1`, 1,000 ms);
+- `goblinstein_doctor_aura` on the doctor.
+
+**Converter:** `live_frames.py` now keeps them as `B` rows, and all 138 matches were re-converted to
+`/workspace/pilot/sme_live/frames2`. The board rows are unchanged, so run10 vs run9 is a clean comparison.
+
+**crforge probe, `useAbility` at run 310, buff first shown at:**
+
+| champion | buff line | unit that takes the command |
+|---|---:|---|
+| Archer Queen | 314 | the play's unit 0 |
+| Boss Bandit | 314 | the play's unit 0 |
+| Goblinstein | 311 | the doctor, the play's unit 1 |
+
+To read buffs, `SmeRun` now writes each body's buff names as row field 11.
+
+**Rule (`buff_casts`):**
+- A cast's start is the first sighting - (duration - remaining)/50.
+- R = start - delay, with window ±1.
+- One cast per side and buff per 40 ticks.
+
+**Result:** 3 of the 10 unflagged matches with these champions became exact (`020913`, `220317`, `180015`), and
+`172835`, `210720` and `000233` gained 2,000+ exact frames each. One first divergence sits on a cast: at `180015`/407 the sim fired an Archer Queen
+arrow 20 ticks before the game, and her extracted cast is at 405. With it, the match is exact.

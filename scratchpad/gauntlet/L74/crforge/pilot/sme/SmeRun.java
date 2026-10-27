@@ -114,11 +114,16 @@ public class SmeRun {
         .append(",\"over\":").append(b.getBattle().getMode().isOver()).append(",\"E\":[");
     boolean first = true;
     for (BattleEntity e : b.getBattle().getHolder().entities()) {
-      String cls, name; int side, x, y, hp = -1, mx = -1, ax = 0, ay = 0;
+      String cls, name, buffs = ""; int side, x, y, hp = -1, mx = -1, ax = 0, ay = 0;
       if (e instanceof WorldEntity we) {
         cls = we instanceof TowerEntity ? "T" : "C"; name = we.getData().name(); side = we.side(); x = we.x(); y = we.y();
         HitPoints h = we.getHitPoints();
         if (h != null) { hp = h.getHitPoints(); mx = h.getMaximum(); }
+        if (we.getBuffs() != null) {  // buff row names, '|'-joined: index 11 of the row
+          StringBuilder bs = new StringBuilder();
+          for (var bi : we.getBuffs().items()) bs.append(bs.length() > 0 ? "|" : "").append(bi.getBuff().name());
+          buffs = bs.toString();
+        }
       } else if (e instanceof ProjectileEntity p) {
         cls = "P"; name = p.getData().name(); side = p.side(); x = p.x(); y = p.y(); ax = p.getAimX(); ay = p.getAimY();
       } else if (e instanceof AreaEffectEntity ae) {
@@ -128,7 +133,7 @@ public class SmeRun {
       first = false;
       o.append('[').append(e.getId()).append(',').append(q(cls)).append(',').append(q(name)).append(',').append(side)
           .append(',').append(x).append(',').append(y).append(',').append(hp).append(',').append(mx).append(',')
-          .append(q(src.getOrDefault(e.getId(), ""))).append(',').append(ax).append(',').append(ay).append(']');
+          .append(q(src.getOrDefault(e.getId(), ""))).append(',').append(ax).append(',').append(ay).append(',').append(q(buffs)).append(']');
     }
     o.append("],\"S\":[");
     for (int s = 0; s < 2; s++) {

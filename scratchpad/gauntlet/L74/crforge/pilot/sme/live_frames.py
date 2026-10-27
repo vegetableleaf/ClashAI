@@ -11,6 +11,10 @@ addr,gen,source,target], fx [side,x,y,card,remaining_ms,level,addr,gen]; decisio
 import argparse, json, os
 
 
+# champion ability buffs the reader's phase-2 unit rows carry (round 3.1): "B": [[side, unit, buff, remaining ms, duration ms]]
+ABILITY_BUFFS = {'ArcherQueenRapid', 'BossBandit_ability_buff', 'goblinstein_doctor_aura'}
+
+
 def convert(path):
     frames, hands = {}, {}
     for line in open(path, 'rb'):
@@ -20,7 +24,10 @@ def convert(path):
             t = d['tick']
             if t is None or t < 0 or t in frames:
                 continue
-            frames[t] = {'t': t, 'E': [[e[0], e[1], e[2], e[3], e[4], e[6]] for e in d['ents']],
+            buffs = [[u.get('side'), u.get('name'), b.get('name'), b.get('remaining_ms_raw'), b.get('duration_ms_raw')]
+                     for u in (d.get('phase2') or {}).get('units', []) for b in u.get('buffs') or []
+                     if isinstance(b, dict) and b.get('name') in ABILITY_BUFFS]
+            frames[t] = {'t': t, 'B': buffs, 'E': [[e[0], e[1], e[2], e[3], e[4], e[6]] for e in d['ents']],
                          'P': [[p[0], p[1], p[2], p[3]] for p in d['proj']],
                          'A': [[a[0], a[1], a[2], a[3]] for a in d['fx']],
                          'el': int(round(d['elixir'] * 10000)), 'hand': None}
