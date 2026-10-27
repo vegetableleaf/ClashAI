@@ -139,6 +139,52 @@ class JavaMain:
                 "_n_bodies_moved": int(m.movedLast), "_n_rows_moved": int(m.movedLast > 0)}
 
 
+class JavaIdent:
+    """S3b-3b: CfIdent on the facade battle: past + the hand / next / deck / slot identity arrays. Its inputs: the facade
+    (deck card ids and forms by deal index, hand, queue, tick), the deal -> slot map, a card id -> checkpoint id table
+    (filled here from the policy's gid, as slot_ident looks it up) and the plays the facade GAVE, logged by the
+    ``Match._land`` hook (main) with the facade's tick at the act, the decided slot and cell."""
+    ID_KEYS = (("hand_slot", 4), ("hand_card", 4), ("hand_form", 4), ("next_card", 0), ("next_form", 0),
+               ("deck_card", 8), ("deck_form", 8), ("slot_card", 9), ("slot_form", 9))
+
+    def __init__(self, policy):
+        self.Ident, self.gid, self.ident = jpype.JClass("CfIdent"), policy.gid, {}   # id(core) -> CfIdent
+        BB = jpype.JClass("java.nio.ByteBuffer")
+        order = jpype.JClass("java.nio.ByteOrder").nativeOrder()
+        self.bi, self.bp = BB.allocateDirect(8 * 48).order(order), BB.allocateDirect(4 * 15).order(order)
+        self.ids, self.past = self.bi.asLongBuffer(), self.bp.asFloatBuffer()
+        self.vi, self.vp = np.frombuffer(memoryview(self.bi), np.int64), np.frombuffer(memoryview(self.bp), np.float32)
+        self.Int = jpype.JArray(jpype.JInt)
+
+    def of(self, s):
+        """The CfIdent of ``s``'s core (cfg and the gid table set on first sight)."""
+        from pipeline.dataset_gen import card_key
+        core = s.env.core
+        j = self.ident.get(id(core))
+        if j is None:
+            j = self.ident[id(core)] = self.Ident()
+            j.extrap = int(s.cfg.get("extrapolate_ticks") or 0)
+            j.cellOff = 0.5 if s.cfg["grid"] == "floor" else 0.0
+        for cid, nm in zip(s.env.deck_ids[s.side], s.engine_deck):     # env deck order, slot_ident's names
+            if card_key(nm) in self.gid:
+                j.putGid(int(cid), int(self.gid[card_key(nm)]))
+        return j
+
+    def played(self, s, d) -> None:
+        self.of(s).played(s.env.core._cf, int(s.side), int(s.env.core._cf.tick()), int(d["slot"]), int(d["cell"]))
+
+    def __call__(self, s) -> dict:
+        slot_of = {i: slot for slot, i in s.deck_index_of_slot.items()}
+        decks, deal = s.env.decks[s.side], s.env.deal[s.side]
+        inv = [slot_of.get(list(decks).index(n), 8) for n in deal]
+        self.of(s).build(s.env.core._cf, int(s.side), self.Int(inv), self.ids, 0, self.past, 0)
+        out, o = {"past": self.vp.reshape(3, 5).copy()}, 0
+        for k, n in self.ID_KEYS:
+            out[k] = self.vi[o:o + n].copy() if n else np.int64(self.vi[o])
+            o += max(n, 1)
+        return out
+
+
 BUILDERS: list = []   # filled in main (they need the JVM); a later ticket appends one builder per ported key
 
 
@@ -229,12 +275,27 @@ def main():
     assert ENGINE == "crforge", ENGINE
     BUILDERS.append(JavaMain())
     model, info = E.load_policy(CLXIII)
+    ident = JavaIdent(model)
+    BUILDERS.append(ident)
     cfg = S.live_cfg(0.5, info["grid"])
     cfg.update(action_delay_ticks=26, feature_version=6)
     over = {k: json.loads(v) for k, v in (x.split("=", 1) for x in a.set)}
     cfg.update(over)
     rep = Report(a.first_diffs)
     orig = E.Match.gen_row
+    orig_land = E.Match._land
+    from pipeline.dataset_gen import opponent_past
+    # S3b-3b: opp_past vs the delivered-play log; rows whose past / opp_past hold a play AND a look-ahead view tick
+    # (dt = view tick - play tick: those keys move with extrapolate_ticks)
+    odiag = dict(rows=0, equal=0, cards_equal=0, prod_nonempty=0, past_view_ahead=0, opp_past_view_ahead=0)
+
+    def _land(self, p, d, land, landed, cur=None):
+        acc = orig_land(self, p, d, land, landed, cur)
+        if acc:                                           # the facade gave it: CfIdent's play log (past)
+            ident.played(self, d)
+        return acc
+
+    E.Match._land = _land
 
     def gen_row(self, policy):
         row = orig(self, policy)
@@ -247,6 +308,16 @@ def main():
         for b in BUILDERS:
             java.update(b(self))
         rep.add(self, row, java, self._obs[2])
+        # diagnostic only, no builder: opp_past from the env's DELIVERED opponent plays (public_plays) vs production fv6
+        # (PublicObserver.plays, detected from the public board)
+        dl = opponent_past(self.env.public_plays, self._view_tick, self.side, policy.gid)
+        odiag["rows"] += 1
+        odiag["equal"] += int(dl.tobytes() == row["opp_past"].tobytes())
+        odiag["cards_equal"] += int(dl[:, :2].tobytes() == row["opp_past"][:, :2].tobytes())
+        odiag["prod_nonempty"] += int(bool((row["opp_past"][:, 0] > 0).any()))
+        ahead = self._view_tick != self._cur[0]
+        odiag["past_view_ahead"] += int(ahead and bool((row["past"][:, 0] > 0).any()))
+        odiag["opp_past_view_ahead"] += int(ahead and bool((row["opp_past"][:, 0] > 0).any()))
         return row
 
     E.Match.gen_row = gen_row
@@ -270,6 +341,7 @@ def main():
                          on_skip=lambda spec, exc: skips.append((spec["tag"], repr(exc))))
     keys = rep.result()
     core4 = ("tok", "mask", "sc", "unit_form")
+    ident_keys = ("past",) + tuple(k for k, _ in JavaIdent.ID_KEYS)
     out = dict(
         ticket="S3b-3e", matches=len(done), skipped=skips, seat_rows=rep.rows, tick_mismatch=rep.tick_mismatch,
         diag=rep.diag,
@@ -277,10 +349,11 @@ def main():
         gen_row_keys=list(E.gen_row_keys(model.model)),
         acceptance=dict(min_rows=a.min_rows, rows_ok=rep.rows >= a.min_rows,
                         core_keys_identical={k: keys.get(k, {}).get("status") == "IDENTICAL" for k in core4},
+                        ident_keys_identical={k: keys.get(k, {}).get("status") == "IDENTICAL" for k in ident_keys},
                         # sc at every index but OPP_EL (the counter, not ported): only that index may differ
                         sc_identical_except_opp_elixir=bool(keys.get("sc")) and keys["sc"]["dtype_shape_diff"] == 0
                         and set(keys["sc"]["rows_diff_at_last_axis_index"]) <= {OPP_EL}),
-        status_by_key={k: v["status"] for k, v in sorted(keys.items())}, keys=keys,
+        status_by_key={k: v["status"] for k, v in sorted(keys.items())}, keys=keys, opp_past_delivered=odiag,
         stamp=envs[0].core.card_table_stamp() if envs else None, facade_hero_rule=BUILDERS[0].facade_hero_rule,
         facade_src_sha256=shas,
         note=("prod = e1_eval prepare + gen_row; java = BUILDERS on the same facade battle and tick. Keys starting '_' "

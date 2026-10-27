@@ -1,0 +1,364 @@
+{
+ "ticket": "S3b-3e",
+ "matches": 56,
+ "skipped": [],
+ "seat_rows": 49816,
+ "tick_mismatch": 0,
+ "diag": {
+  "rows_lookahead": 0,
+  "rows_pend": 0,
+  "rows_own_pending": 0,
+  "rows_opp_pending": 0,
+  "rows_own_fx": 0,
+  "rows_drops": 0,
+  "bodies_moved": 0,
+  "rows_moved": 0
+ },
+ "wall_s": 531.6,
+ "cfg_overrides": {
+  "extrapolate_ticks": 0
+ },
+ "feature_version": 6,
+ "gen_row_keys": [
+  "tok",
+  "mask",
+  "sc",
+  "past",
+  "hand_card",
+  "hand_form",
+  "next_card",
+  "next_form",
+  "deck_card",
+  "deck_form",
+  "hand_slot",
+  "slot_card",
+  "slot_form",
+  "unit_form",
+  "opp_past",
+  "opp_cycle",
+  "projectiles",
+  "effects",
+  "own_ability",
+  "cue"
+ ],
+ "acceptance": {
+  "min_rows": 38400,
+  "rows_ok": true,
+  "core_keys_identical": {
+   "tok": true,
+   "mask": true,
+   "sc": false,
+   "unit_form": true
+  },
+  "ident_keys_identical": {
+   "past": true,
+   "hand_slot": true,
+   "hand_card": true,
+   "hand_form": true,
+   "next_card": true,
+   "next_form": true,
+   "deck_card": true,
+   "deck_form": true,
+   "slot_card": true,
+   "slot_form": true
+  },
+  "sc_identical_except_opp_elixir": true
+ },
+ "status_by_key": {
+  "_sc_prepare": "IDENTICAL",
+  "cue": "NOT_PORTED",
+  "deck_card": "IDENTICAL",
+  "deck_form": "IDENTICAL",
+  "effects": "NOT_PORTED",
+  "hand_card": "IDENTICAL",
+  "hand_form": "IDENTICAL",
+  "hand_slot": "IDENTICAL",
+  "mask": "IDENTICAL",
+  "next_card": "IDENTICAL",
+  "next_form": "IDENTICAL",
+  "opp_cycle": "NOT_PORTED",
+  "opp_past": "NOT_PORTED",
+  "own_ability": "NOT_PORTED",
+  "past": "IDENTICAL",
+  "projectiles": "NOT_PORTED",
+  "sc": "DIFF",
+  "slot_card": "IDENTICAL",
+  "slot_form": "IDENTICAL",
+  "tok": "IDENTICAL",
+  "unit_form": "IDENTICAL"
+ },
+ "keys": {
+  "cue": {
+   "status": "NOT_PORTED",
+   "rows": 49816,
+   "equal": 0,
+   "not_ported": 49816,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "deck_card": {
+   "status": "IDENTICAL",
+   "rows": 49816,
+   "equal": 49816,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "deck_form": {
+   "status": "IDENTICAL",
+   "rows": 49816,
+   "equal": 49816,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "effects": {
+   "status": "NOT_PORTED",
+   "rows": 49816,
+   "equal": 0,
+   "not_ported": 49816,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "hand_card": {
+   "status": "IDENTICAL",
+   "rows": 49816,
+   "equal": 49816,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "hand_form": {
+   "status": "IDENTICAL",
+   "rows": 49816,
+   "equal": 49816,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "hand_slot": {
+   "status": "IDENTICAL",
+   "rows": 49816,
+   "equal": 49816,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "mask": {
+   "status": "IDENTICAL",
+   "rows": 49816,
+   "equal": 49816,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "next_card": {
+   "status": "IDENTICAL",
+   "rows": 49816,
+   "equal": 49816,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "next_form": {
+   "status": "IDENTICAL",
+   "rows": 49816,
+   "equal": 49816,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "opp_cycle": {
+   "status": "NOT_PORTED",
+   "rows": 49816,
+   "equal": 0,
+   "not_ported": 49816,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "opp_past": {
+   "status": "NOT_PORTED",
+   "rows": 49816,
+   "equal": 0,
+   "not_ported": 49816,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "own_ability": {
+   "status": "NOT_PORTED",
+   "rows": 49816,
+   "equal": 0,
+   "not_ported": 49816,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "past": {
+   "status": "IDENTICAL",
+   "rows": 49816,
+   "equal": 49816,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "projectiles": {
+   "status": "NOT_PORTED",
+   "rows": 49816,
+   "equal": 0,
+   "not_ported": 49816,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "sc": {
+   "status": "DIFF",
+   "rows": 49816,
+   "equal": 0,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {
+    "5": 49816
+   },
+   "first_diffs": [
+    {
+     "tag": "obsid0",
+     "side": 0,
+     "tick": 90,
+     "index": [
+      [
+       5
+      ]
+     ]
+    },
+    {
+     "tag": "obsid0:opp",
+     "side": 1,
+     "tick": 90,
+     "index": [
+      [
+       5
+      ]
+     ]
+    },
+    {
+     "tag": "obsid1:opp",
+     "side": 0,
+     "tick": 90,
+     "index": [
+      [
+       5
+      ]
+     ]
+    },
+    {
+     "tag": "obsid1",
+     "side": 1,
+     "tick": 90,
+     "index": [
+      [
+       5
+      ]
+     ]
+    },
+    {
+     "tag": "obsid2",
+     "side": 0,
+     "tick": 90,
+     "index": [
+      [
+       5
+      ]
+     ]
+    }
+   ]
+  },
+  "slot_card": {
+   "status": "IDENTICAL",
+   "rows": 49816,
+   "equal": 49816,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "slot_form": {
+   "status": "IDENTICAL",
+   "rows": 49816,
+   "equal": 49816,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "tok": {
+   "status": "IDENTICAL",
+   "rows": 49816,
+   "equal": 49816,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "unit_form": {
+   "status": "IDENTICAL",
+   "rows": 49816,
+   "equal": 49816,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "_sc_prepare": {
+   "status": "IDENTICAL",
+   "rows": 49816,
+   "equal": 49816,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  }
+ },
+ "opp_past_delivered": {
+  "rows": 49816,
+  "equal": 13208,
+  "cards_equal": 38414,
+  "prod_nonempty": 36491,
+  "past_view_ahead": 0,
+  "opp_past_view_ahead": 0
+ },
+ "stamp": {
+  "engine": "crforge",
+  "crforge": "ad8ef3a532ada8dea732bf1ecdeb01beef0fb4b0",
+  "tables": "16.402.22",
+  "tables_sha": "97869d43e0745841430d11d7b4286ac0f8057363",
+  "body_map_sha256": "47c7c71390ace5225673beae4255a7dacb76ae384f60a677dddcb734873326d5",
+  "catalogue": {
+   "cards_json_fnv1a64": "803ec02c7eac9fd3",
+   "cards_vintage": "15.535.29 client (2026, LIVE build family)",
+   "cards_json_hash_source": "embedded"
+  }
+ },
+ "facade_hero_rule": "heroBody",
+ "facade_src_sha256": {
+  "CfCore.java": "1fa04dc235151280388bdcdb5f8745fc08b5ec02ff6b6fde9a29dba1b259460d",
+  "pipeline/crforge_core.py": "ab29a40740973f54c02fca71f0f27b4beb4acf7d0266db5c387961c3959c4fd4",
+  "pipeline/royale_env.py": "5125e31742df791bc5da44fed1bc4b7a5df6b9915455a1b786e22371c34703a0",
+  "pipeline/e1_eval.py": "0af6eb5f4c98d22334644452e19dd6e73f7558897c4879962bfeb156fce5a14f",
+  "pipeline/obs_contract.py": "953a15d913f1b646de4f6f9559c7d29c0ba0e546795776bca25e53e6ab8dc3b2",
+  "pipeline/body_identity.py": "120150eda21c958871c932f9090aba74a80c4058018a53aec4e1c5db11305114"
+ },
+ "note": "prod = e1_eval prepare + gen_row; java = BUILDERS on the same facade battle and tick. Keys starting '_' are aux checks, not GenModel keys: _sc_prepare = prepare()'s sc before GenPolicy.row zeroes the hand one-hots. sc[5] (opponent elixir) of the Java builder is the engine truth: replaced by -1, never compared as equal and never logged."
+}

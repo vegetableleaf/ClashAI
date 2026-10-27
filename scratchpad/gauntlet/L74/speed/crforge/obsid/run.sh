@@ -11,6 +11,6 @@ B=${OBSID_BUILD:-$HERE/build}
 L=${CRFORGE_LIB:-/workspace/cfspeed/crforge/env/build/install/env/lib}
 OUT=$1; shift
 mkdir -p "$B"
-javac -Xlint:all -d "$B" -cp "$L/*" "$OBSID_CFCORE" "$HERE/../CfSpeed.java" "$HERE/CfObsBind.java"
+javac -Xlint:all -d "$B" -cp "$L/*" "$OBSID_CFCORE" "$HERE/../CfSpeed.java" "$HERE/CfObsBind.java" "$HERE/CfIdent.java"
 CRFORGE_FACADE_BUILD="$B" ROYALE_RUNTIME=fin16-linux ROYALE_ENGINE=crforge \
   exec /workspace/venvf16/bin/python -I "$HERE/obs_id.py" --build "$B" --out "$OUT" "$@"

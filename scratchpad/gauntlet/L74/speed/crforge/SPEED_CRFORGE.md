@@ -360,3 +360,37 @@ python -I project.py results/loop_n2048_c2_t24.json --extra-core-s 0.05   # lapt
   | extrapolate 0 (`results/x0.json`, regression) | 49,816 | 0 | 0 | identical | identical | identical | identical |
 
   S3b-3a2's live / x0 JSONs are in git at 4a8075f.
+
+## S3b-3b: past plays and the hand / deck identity arrays in Java (`obsid/CfIdent.java`)
+
+- **Keys.** `past`, `hand_slot`, `hand_card`, `hand_form`, `next_card`, `next_form`, `deck_card`, `deck_form`,
+  `slot_card`, `slot_form` (int64 / float32 as `GenPolicy.slot_ident` + `GenPolicy.row` + `dataset._past` give them).
+- **Inputs (a, code).** From the facade: the deck's catalogue card ids and forms by deal index (`St.deckIds`,
+  `St.forms`), the hand and queue, the tick. From the loop: the deal index -> deck slot map (as `CfObsBind.bind`
+  takes), a catalogue id -> checkpoint card id table (filled once per deck from the policy's gid; JPype boxes a
+  Python int key as a Long, hence `putGid`), and the plays the facade GAVE: `played(seat, facade tick at the act,
+  slot, decided cell)`, logged by a hook on `e1_eval.Match._land`. x / y come from the cell in Java
+  (`model_v3.cell_xy`, lattice or floor); dt from the view tick. The facade keeps no play log of tick / position
+  (CfCore.play records only the play name -> card), and its x / y are the request // 18 (lossy), so the loop that
+  decides the cell is the log's source.
+- **Extrapolation (c: the ticket expected none).** `past` (and production's `opp_past`) take dt = view tick - play
+  tick, and the view tick is tick + h (`Match.prepare`: `_past(..., tick + h)`; `public.features(match._view_tick)`).
+  At the live cfg 35,900 of 48,751 rows have a past play and h = 26, i.e. every such row's dt is 1.3 s larger than
+  at h = 0. `CfIdent` applies the same rule as `FacadeMatch.lookahead` (h = extrapolate_ticks from a seat's second
+  decision); the identity arrays do not depend on h.
+- **Result (a), facade 3531b83, sources pinned (`facade_src_sha256`), 56 matches each, all 10 keys identical:**
+
+  | code | cfg | seat-rows | 10 keys |
+  |---|---|---:|---|
+  | S3b-3e (fa3b8ee) + S3b-3b (`results/ident_live.json`) | live | 48,751 | **identical** |
+  | S3b-3e (fa3b8ee) + S3b-3b (`results/ident_x0.json`) | extrapolate 0 | 49,816 | **identical** |
+  | 4a8075f + S3b-3b (before the rebase onto S3b-3e; JSONs not kept) | live / extrapolate 0 | 48,751 / 49,816 | identical |
+
+- **`opp_past` not ported (c: the ticket's source is not production's).** At feature version >= 4 production's
+  `opp_past` is `PublicObserver.features`: plays DETECTED from the public board at the seat's decision frames
+  (`PlayDetector` bodies + spell sightings, the first-sighting tick and the body / spell position), not the
+  delivered plays. Measured on the same rows (a, `opp_past_delivered`): `opponent_past(env.public_plays)` (the
+  delivered log) equals production on 12,757 of 48,751 live rows (12,920 rows are empty in production), card /
+  form columns on 35,026. A delivered-play builder would therefore change the feature, and a byte-identical one
+  needs `PlayDetector` + `public_frame` (sim source) + the spell dedup + the native card-id / card_db tables in Java.
+  Owner / foreman call; not done.
