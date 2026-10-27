@@ -1,0 +1,12 @@
+{"match": "live_play_20261026_101112", "t0": 660, "cmd": 11, "dR": 2, "card": "ability:cmd10_0", "side": 0, "run": 658, "lo": 658, "hi": 659, "src": "cast_seen", "first": 662, "div": 200}
+{"match": "live_play_20261026_101112", "t0": 660, "cmd": 11, "dR": 3, "card": "ability:cmd10_0", "side": 0, "run": 658, "lo": 658, "hi": 659, "src": "cast_seen", "first": 662, "div": 200}
+{"match": "live_play_20261026_171753", "t0": 1770, "cmd": 19, "dR": 2, "card": "Knight", "side": 0, "run": 1768, "lo": 1768, "hi": 1768, "src": "own_tap", "first": 1789, "div": 190}
+{"match": "live_play_20261026_171753", "t0": 1770, "cmd": 19, "dR": 3, "card": "Knight", "side": 0, "run": 1768, "lo": 1768, "hi": 1768, "src": "own_tap", "first": 1789, "div": 190}
+{"match": "live_play_20261026_183044", "t0": 2978, "cmd": 35, "dR": -3, "card": "ability:cmd32_0", "side": 1, "run": 2915, "lo": 2914, "hi": 2915, "src": "cast_seen", "first": null, "div": 0}
+{"match": "live_play_20261026_183044", "t0": 2978, "cmd": 35, "dR": -2, "card": "ability:cmd32_0", "side": 1, "run": 2915, "lo": 2914, "hi": 2915, "src": "cast_seen", "first": null, "div": 0}
+{"match": "live_play_20261026_235915", "t0": 3048, "cmd": 38, "dR": 1, "card": "ability:cmd35_0", "side": 1, "run": 3045, "lo": 3044, "hi": 3045, "src": "cast_seen", "first": null, "div": 0}
+{"match": "live_play_20261026_235915", "t0": 3048, "cmd": 38, "dR": 2, "card": "ability:cmd35_0", "side": 1, "run": 3045, "lo": 3044, "hi": 3045, "src": "cast_seen", "first": 3050, "div": 80}
+{"match": "live_play_20261026_235915", "t0": 3048, "cmd": 38, "dR": 3, "card": "ability:cmd35_0", "side": 1, "run": 3045, "lo": 3044, "hi": 3045, "src": "cast_seen", "first": 3050, "div": 105}
+{"match": "live_play_20261027_004031", "t0": 2083, "cmd": 30, "dR": -3, "card": "ability:cmd26_0", "side": 0, "run": 2084, "lo": 2084, "hi": 2084, "src": "cast_seen", "first": null, "div": 0}
+{"match": "live_play_20261027_004031", "t0": 2083, "cmd": 30, "dR": -2, "card": "ability:cmd26_0", "side": 0, "run": 2084, "lo": 2084, "hi": 2084, "src": "cast_seen", "first": null, "div": 0}
+{"match": "live_play_20261027_004031", "t0": 2083, "cmd": 30, "dR": -1, "card": "ability:cmd26_0", "side": 0, "run": 2084, "lo": 2084, "hi": 2084, "src": "cast_seen", "first": null, "div": 0}

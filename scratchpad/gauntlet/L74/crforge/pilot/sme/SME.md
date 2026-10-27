@@ -802,6 +802,9 @@ clash with another worker's runs). Each row is cumulative on the one before. **0
 | **6.8 (r68)** | opponent hero IW cast 2-3 ticks late | extractor | date it from the ability's 50 ms area (`iw_area_cast`, `SME_IW_AREA=1`; 2 casts; inputs_v11) | **58 / 109** | **233,238** | `014151` |
 | 6.9 (r69) | hero Goblins / hero Tombstone plays dropped as role-children | extractor | `own_unit` also exact from `unit_hp.tsv` (`SME_UNIT_HP=1`; 33 plays added in 9 matches; inputs_v12) | 58 / 109 | **239,565** | 0 on the 109; 7 flagged matches lose `opp_no_fitting_deal` (116 unflagged by v12's own flags) |
 | BP merge check (r6bp) | body position (other worker, 1d8badc) | extractor | `bp_rules.apply` hook in `extract.match`, SME_BP_VALK/GK/GIANT/RASCALS on, on inputs_v9 (inputs_v13) with r63b's comparator | **67 / 109** vs r63b | **245,973** | 13, the same set as the worker's bpA; 0 lost |
+| **combined A (r6xa)** | all extractor rules | extractor | inputs_v14 = all of 6.3a-6.9 + bp_rules (VALK/GK/GIANT/RASCALS); comparator 6.1/6.2/6.6 | **71 / 109** vs r69 | **256,184** | 13 |
+| **combined B (r6xb)** | placeholder in torn_mixed | comparator | `SME_BP_MIXPH=1` (BP worker's diff, planted 15 / 15 there) | **73 / 109** | 256,184 | 2 |
+| **combined C (r6xc)** | read inside a step, matched against crforge's own in-step states | comparator | `SME_BP_SNAP=1` with SnapRun (BP worker's diff, planted 35 / 35 there) | **79 / 109** | 256,184 | 6 |
 
 ## 6.0: all 69 failures of run20, classified (a)
 Tools (all on run20's plans, `SME_TORN_STEP=1`):
@@ -914,3 +917,12 @@ the open classes, not more input dating.
   - **7 of those matches lose `opp_no_fitting_deal`:** the deal now fits, so the missing plays were the reason. Scored
     on v12's own flags, 116 matches are unflagged and 58 are exact. The 7 new ones all still diverge (first at 550-4012).
 - **Zero-gain sub-rounds: 6.7 and 6.9, not consecutive.** Exact frames still rose: +659 and +6,327.
+
+## Combined run (r6xa-c) and the second pod
+- **r6xc = 79 / 109 with 0 regressions** against r69 (my line), r6bp, bpA, bpB and bpC.
+- **Against bpD (BP worker, 76 / 109) it lacks `154319` and `233957`.** bpD's in-step SNAP uses SnapRun2 on the
+  clashbot-bp TickProbe build (`fork/bp/clashbot-bp_0001_TickProbe.patch`). That build is not on pod 33920 or 33308
+  yet; r6xc used SnapRun on the frozen `lib_008aa626`.
+- **Pod 33308** (JDK 17.0.20.1 from apt, as `pod_setup.sh`): lib, SmeRun / SnapRun builds, frames2, inputs_v12 / v14,
+  the original inputs, the tables and `pilot/sme` are sha-identical to 33920 (one tree hash, `ce83e863...`).
+  **r6xa run there is byte-identical to 33920's r6xa** (results.jsonl sha256 `98a1cb9d9c524253...`).

@@ -1,0 +1,10 @@
+exact apart from torn: 58/109 -> 71/109 | exact frames 239565 -> 256184 | regressions 0 | gained 13
+torn frames after: {'torn_step': 64, 'torn_t1': 107, 'torn_cmd': 67, 'torn_mixed': 26}
+  12  body position (movement / collision / targeting)
+   8  body in the reader, none near in the sim (play missed / late / unit not made)
+   7  projectile only (launch timing / flight)
+   4  body in the sim, none near in the reader
+   3  hp only: sim less/mixed damage at the same points
+   1  hp only: sim more damage at the same points
+   1  Earthquake pulse timing
+   1  live client: own elixir down a card cost 1 frame before the sim
