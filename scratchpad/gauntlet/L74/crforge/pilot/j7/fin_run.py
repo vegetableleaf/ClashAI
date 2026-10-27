@@ -67,15 +67,23 @@ def run(plan, key):
     finally:
         if any(troops):
             b.set_tower_troops(None, None)
-    # catalogue id -> engine internal id (fights.run_fight's mapping, H-DECKMAP)
+    # catalogue id -> engine internal id. A tick-0 reset deals each deck in its input order (public hand + next = the first
+    # five input cards), so input order pairs with the save's hand + queue. fights.run_fight's H-DECKMAP rule (sorted
+    # catalogue ids <-> sorted internal ids) is wrong on full decks whose evo / hero records break the order: A2b-2b probe,
+    # 20261026_160930: Fireball -> Mortar's evo record 104, so every opponent Fireball tried to place a Mortar
+    # (OUT_OF_TERRITORY). The old rule is kept as a fallback when the deal is not in input order.
     sv = json.loads(b.save()); pub = json.loads(b.state_json())
     internal = {}
     for t in (0, 1):
         pp, sp = pub['players'][t], sv['players'][t]
-        mono = dict(zip(sorted(pp['deck']), sorted(sp['hand'] + sp['queue'])))
-        mono.update(dict(zip(pp['hand'] + ([pp['next_card']] if pp.get('next_card') is not None else []), sp['hand'] + sp['queue'][:1])))
-        internal[t] = mono
-    NO_CARD = getattr(sim, 'NO_CARD', None)
+        seen = pp['hand'] + ([pp['next_card']] if pp.get('next_card') is not None else [])
+        if seen == decks[t][:len(seen)] and len(sp['hand'] + sp['queue']) == 8:
+            internal[t] = dict(zip(decks[t], sp['hand'] + sp['queue']))
+        else:
+            mono = dict(zip(sorted(pp['deck']), sorted(sp['hand'] + sp['queue'])))
+            mono.update(dict(zip(seen, sp['hand'] + sp['queue'][:1])))
+            internal[t] = mono; refused['deckmap_fallback_sorted'] += 1
+    from scratchpad.gauntlet.L74.parity.fights import NO_CARD   # 65535, the empty-slot id (was getattr(sim, ...) = None: a bug)
 
     def play(e):
         before = json.loads(b.save()); after = json.loads(json.dumps(before))
@@ -94,7 +102,8 @@ def run(plan, key):
         r = b.step([(e['side'], slot, round(e['x'] * 18) if 'x' in e else 0, round(e['y'] * 18) if 'y' in e else 0)], 0)[0]
         return sim.DEPLOY_REASONS[r[1]]
 
-    cmds = sorted(plan['cmds'], key=lambda c: c[key])
+    cmds = sorted(({**c, '_k': k} for k, c in enumerate(plan['cmds'])), key=lambda c: c[key])
+    lost = []                  # [plan cmd index, tick, reason, card]: the plays / abilities the engine refused
     rows, prev, i, stop = [], None, 0, 'end'
     n_play = sum(c['kind'] == 'play' for c in cmds); ok = 0
     while True:
@@ -114,6 +123,7 @@ def run(plan, key):
                 ok += c['kind'] == 'play'
             else:
                 refused[('ability:' if c['kind'] != 'play' else '') + why] += 1
+                lost.append([c['_k'], tick, why, c['display']])
         b.step([], 1)
         st = json.loads(b.state_json())
         r = [st['tick']] + towers(st, eng)
@@ -123,7 +133,7 @@ def run(plan, key):
     refused['never_run_after_end'] += len(cmds) - i
     return dict(match=plan['match'], engine=eng.stamp, table=eng.b.card_table() if hasattr(eng.b, 'card_table') else None,
                 mode='force', tick=key, stop=stop, end=prev[0] if prev else 0, plays_n=n_play, plays_ok=ok,
-                refused=dict(refused), rows=rows)
+                refused=dict(refused), refused_cmds=lost, rows=rows)
 
 
 def one(job):

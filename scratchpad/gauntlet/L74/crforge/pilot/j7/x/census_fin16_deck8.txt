@@ -1,0 +1,46 @@
+seq matches 401
+seq refusal_before_fin_div=no 291
+seq refusal_before_fin_div=no, fin_seq=False, cf_seq=False 51
+seq refusal_before_fin_div=no, fin_seq=False, cf_seq=True 62
+seq refusal_before_fin_div=no, fin_seq=True, cf_seq=False 7
+seq refusal_before_fin_div=no, fin_seq=True, cf_seq=True 171
+seq refusal_before_fin_div=yes 110
+seq refusal_before_fin_div=yes, fin_seq=False, cf_seq=False 15
+seq refusal_before_fin_div=yes, fin_seq=False, cf_seq=True 33
+seq refusal_before_fin_div=yes, fin_seq=True, cf_seq=False 4
+seq refusal_before_fin_div=yes, fin_seq=True, cf_seq=True 58
+('ABILITY_SPENT', 'after_div') 57
+('ABILITY_SPENT', 'before_div') 52
+('NO_DEPLOY', 'after_div') 14
+('NO_DEPLOY', 'before_div') 24
+('NO_HERO', 'after_div') 104
+('NO_HERO', 'before_div') 71
+('OUT_OF_TERRITORY', 'after_div') 42
+('OUT_OF_TERRITORY', 'before_div') 8
+('WATER', 'after_div') 5
+('WATER', 'before_div') 2
+OOT enemy half: live L-princess down, fin down 2
+OOT enemy half: live L-princess down, fin up 24
+OOT enemy half: live R-princess down, fin down 10
+OOT enemy half: live R-princess down, fin up 14
+ability card Berserker NO_HERO 3
+ability card Bowler NO_HERO 4
+ability card ElectroWizard NO_HERO 16
+ability card EliteArcher NO_HERO 2
+ability card Giant NO_HERO 1
+ability card Goblins NO_HERO 1
+ability card IceGolemite ABILITY_SPENT 12
+ability card IceGolemite NO_HERO 21
+ability card IceWizard ABILITY_SPENT 14
+ability card IceWizard NO_HERO 58
+ability card Knight ABILITY_SPENT 1
+ability card Knight NO_HERO 3
+ability card MegaMinion NO_HERO 2
+ability card MightyMiner NO_HERO 1
+ability card MiniPekka NO_HERO 3
+ability card Monk NO_HERO 7
+ability card Musketeer NO_HERO 2
+ability card Valkyrie ABILITY_SPENT 80
+ability card Valkyrie NO_HERO 20
+ability card Wizard ABILITY_SPENT 2
+ability card Wizard NO_HERO 31

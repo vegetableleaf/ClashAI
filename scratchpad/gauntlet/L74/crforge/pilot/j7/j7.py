@@ -19,7 +19,9 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[5]
 sys.path.insert(0, str(ROOT))
 IDS = ('T0L', 'T0R', 'T0K', 'T1L', 'T1R', 'T1K')
-END = 6000                  # fights.TIME_OUT_TICK: J7 grades live frames before it (the whole-match selector's t1)
+# fillers for unseen opponent slots: plain non-champion troops, same row name in crforge and RoyaleSim (a: name pairs)
+FILLERS = ('Musketeer', 'Wizard', 'Bats', 'Minions', 'Cannon', 'Pekka', 'Prince', 'BabyDragon', 'MiniPekka', 'Bowler')
+END = 6000                 # fights.TIME_OUT_TICK: J7 grades live frames before it (the whole-match selector's t1)
 
 
 def cycle_fail(deal, seq):
@@ -97,8 +99,18 @@ def plans(inputs, out):
             else:   # ability: the unit of its card's last play on that side (crforge names it cmd<k>_0)
                 cmds.append(dict(kind='ability', side=p['side'], display=p['name'], unit_cmd=last.get((p['side'], p['name'])),
                                  lo=p['run_ticks'][0], hi=p['run_ticks'][1], tick=p['tick']))
-        S = r['sides']
-        plan = dict(match=r['match'], my_side=my, seed=0, words=[S['0']['word'], S['1']['word']],
+        S = {s: dict(r['sides'][s]) for s in '01'}
+        filled = {}
+        for s in '01':                    # A2b-1b log-only decks: an unseen slot (None) gets a never-played filler card
+            spare = [c for c in FILLERS if c not in S[s]['deck']]
+            for k in range(8):
+                if S[s]['deck'][k] is None:
+                    c = spare.pop(0); filled.setdefault(s, []).append(c)
+                    S[s]['deck'] = S[s]['deck'][:k] + [c] + S[s]['deck'][k + 1:]
+                    S[s]['display'] = S[s]['display'][:k] + [c] + S[s]['display'][k + 1:]
+                    S[s]['levels'] = S[s]['levels'][:k] + [16] + S[s]['levels'][k + 1:]
+        plan = dict(match=r['match'], my_side=my, seed=0, filled=filled,
+                    words=[S['0']['word'] or 0, S['1']['word'] or 0],   # words only seed the shuffle; the deal replaces it
                     decks=[S['0']['deck'], S['1']['deck']], display=[S['0']['display'], S['1']['display']],
                     levels=[S['0']['levels'], S['1']['levels']], slots=[S['0']['slot_flags'], S['1']['slot_flags']],
                     towers=[[S[s]['towers']['group'], S[s]['towers']['king_level'] or S[s]['towers']['level'], S[s]['towers']['level']] for s in '01'],
@@ -106,7 +118,8 @@ def plans(inputs, out):
                     deal_fail=[deal[0]['fail'], deal[1]['fail']], cmds=cmds)
         (out / (r['match'] + '.json')).write_text(json.dumps(plan))
         idx.append(r['match'])
-    (out / 'index.txt').write_text('\n'.join(idx) + '\n')
+    with open(out / 'index.txt', 'w', newline='\n') as w:     # LF: the pod's shell loops read it
+        w.write('\n'.join(idx) + '\n')
     print(len(idx), 'plans')
 
 
@@ -156,8 +169,11 @@ def score(truth_path, runs, inputs, out):
     if inputs:
         for line in open(inputs):
             r = json.loads(line)
-            meta[r['match']] = dict(nofit=r['opp_fitting_deals'] == 0, flags=r['flags'],
-                                    noflag=not r['flags'])
+            cyc = r['own_cycle_fail'] is None and r['opp_fitting_deals'] > 0
+            meta[r['match']] = dict(nofit=r['opp_fitting_deals'] == 0, flags=r['flags'], noflag=not r['flags'],
+                                    api=r.get('source') != 'live_only', cycle_ok=cyc,
+                                    deck8=cyc and not any(':deck_seen:' in f for f in r['flags']),
+                                    opp16=r['sides'][str(1 - r['my_side'])]['towers']['level'] == 16)
     arms = sorted(p.name for p in Path(runs).iterdir() if p.is_dir())
     res = {}                       # arm -> match -> j7 dict (+ refused)
     for arm in arms:
@@ -186,10 +202,24 @@ def score(truth_path, runs, inputs, out):
     CQ = dict(seq=lambda r, c: float(c['seq_same']), result=lambda r, c: float(c['result'] == r['result_sim']),
               timing=lambda r, c: float(c['seq_timing']), traj=lambda r, c: c['traj_ok'] / max(1, c['traj_n']),
               king=lambda r, c: mean([king_ok(r['king_sim'][s], c['king'][s]) for s in (0, 1)]))
-    subsets = {'all': lambda m: True, 'no-flag': lambda m: meta.get(m, {}).get('noflag', False),
-               'all but opp-deal misfits': lambda m: not meta.get(m, {}).get('nofit', False),
-               'opp-deal misfits only': lambda m: meta.get(m, {}).get('nofit', False)} if meta else {'all': lambda m: True}
     fell = {m for d in res.values() for m, r in d.items() if r.get('falls_live')}
+    g = lambda m, k: meta.get(m, {}).get(k, False)
+    if meta and not any(g(m, 'api') is False for m in meta):     # the A2b-2 set (API only): its original subsets
+        subsets = {'all': lambda m: True, 'no-flag': lambda m: g(m, 'noflag'),
+                   'all but opp-deal misfits': lambda m: not g(m, 'nofit'), 'opp-deal misfits only': lambda m: g(m, 'nofit')}
+    elif meta:                                                   # A2b-2b tiers (EXTRACT.md A2b-1b) and splits
+        subsets = {'deck8 (PRIMARY)': lambda m: g(m, 'deck8'),
+                   'deck8, API-backed (API levels)': lambda m: g(m, 'deck8') and g(m, 'api'),
+                   'deck8, log-only (hp-derived levels)': lambda m: g(m, 'deck8') and not g(m, 'api'),
+                   'deck8, opponent towers L16': lambda m: g(m, 'deck8') and g(m, 'opp16'),
+                   'deck8, opponent towers below L16': lambda m: g(m, 'deck8') and not g(m, 'opp16'),
+                   'deck8, live >= 1 tower fall': lambda m: g(m, 'deck8') and m in fell,
+                   'cycle_ok': lambda m: g(m, 'cycle_ok'),
+                   'any (every RNG-free match)': lambda m: True,
+                   'any, log-only': lambda m: not g(m, 'api'),
+                   'any, opponent-deal misfits only': lambda m: g(m, 'nofit')}
+    else:
+        subsets = {'all': lambda m: True}
     # a match with no live tower fall agrees on the crown sequence whenever the engine fells none: grade the rest apart
     subsets['live >= 1 tower fall'] = lambda m: m in fell
     common = set.intersection(*[{m for m, r in d.items() if 'seq_same' in r} for d in res.values()]) if res else set()
