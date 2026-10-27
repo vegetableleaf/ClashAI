@@ -13,6 +13,7 @@
 //   {"t":tick,"rng":u32,"E":[[id,cls,name,side,x,y,hp,maxhp,src,aimX,aimY]...],"S":[[elixir,[hand],[queue]]x2],
 //    "plays":[[name,tick,placed,units]...new this tick],"ab":[[name,tick,outcome]...new]}
 // cls: T tower, C character (other than tower), P projectile, A area effect. src = the play that made the unit or "".
+// Env SME_TGT=1 (dossier runs only): each T/C row gets a 13th field, the id of its targeting reference (-1 none).
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,6 +29,7 @@ import org.crforge.core.pathfinding.combat.HitPoints;
 
 public class SmeRun {
   static GameTables tables;
+  static final boolean TGT = "1".equals(System.getenv("SME_TGT"));
 
   public static void main(String[] a) throws Exception {
     tables = GameTables.load(Path.of(a[0]));
@@ -114,7 +116,7 @@ public class SmeRun {
         .append(",\"over\":").append(b.getBattle().getMode().isOver()).append(",\"E\":[");
     boolean first = true;
     for (BattleEntity e : b.getBattle().getHolder().entities()) {
-      String cls, name, buffs = ""; int side, x, y, hp = -1, mx = -1, ax = 0, ay = 0;
+      String cls, name, buffs = ""; int side, x, y, hp = -1, mx = -1, ax = 0, ay = 0, tgt = -2;
       if (e instanceof WorldEntity we) {
         cls = we instanceof TowerEntity ? "T" : "C"; name = we.getData().name(); side = we.side(); x = we.x(); y = we.y();
         HitPoints h = we.getHitPoints();
@@ -124,6 +126,7 @@ public class SmeRun {
           for (var bi : we.getBuffs().items()) bs.append(bs.length() > 0 ? "|" : "").append(bi.getBuff().name());
           buffs = bs.toString();
         }
+        if (TGT) { var tg = we.getTargeting(); var rf = tg == null ? null : tg.getReference(); tgt = rf == null ? -1 : rf.id(); }
       } else if (e instanceof ProjectileEntity p) {
         cls = "P"; name = p.getData().name(); side = p.side(); x = p.x(); y = p.y(); ax = p.getAimX(); ay = p.getAimY();
       } else if (e instanceof AreaEffectEntity ae) {
@@ -133,7 +136,9 @@ public class SmeRun {
       first = false;
       o.append('[').append(e.getId()).append(',').append(q(cls)).append(',').append(q(name)).append(',').append(side)
           .append(',').append(x).append(',').append(y).append(',').append(hp).append(',').append(mx).append(',')
-          .append(q(src.getOrDefault(e.getId(), ""))).append(',').append(ax).append(',').append(ay).append(',').append(q(buffs)).append(']');
+          .append(q(src.getOrDefault(e.getId(), ""))).append(',').append(ax).append(',').append(ay).append(',').append(q(buffs));
+      if (tgt != -2) o.append(',').append(tgt);
+      o.append(']');
     }
     o.append("],\"S\":[");
     for (int s = 0; s < 2; s++) {

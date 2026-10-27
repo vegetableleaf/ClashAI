@@ -1,0 +1,132 @@
+== 20261026_083722 t0 2467 tp 2465 unpaired 0 
+  ValkyrieHero           s1 cmd25  age33   off[-65, -134]  rec[-18, -276]  sim[47, -142]   v0.0   stgt ['Knight_EV1', 'Skeleton'] rtgt ['Knight_EV1', 'Skeleton'] fx ['A:ValkyrieHero_AEO'] near []
+== 20261026_141505 t0 1808 tp 1806 unpaired 0 
+  RascalBoy              s1 cmd17  age62   off[0, -60]     rec[1, -180]    sim[1, -120]    v43    stgt ['Xbow', 'Xbow'] rtgt ['Xbow', 'Xbow'] fx ['P:xbow_projectile'] near []
+== 20261026_142027 t0 1684 tp 1682 unpaired 2 
+== 20261026_142345 t0 2282 tp 2280 unpaired 0 
+  ValkyrieHero           s1 cmd26  age62   off[8, 2]       rec[30, -114]   sim[22, -116]   v72    stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near []
+== 20261026_144057 t0 2792 tp 2791 unpaired 0 
+  BabyDragon             s0 cmd28  age61   off[309, 187]   rec[55, 77]     sim[-254, -110] v188   stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx ['A:Tornado', 'P:RocketSpell'] near [(278, 'DarkPrinceHero'), (738, 'BlowdartGoblin')]
+== 20261026_144615 t0 534 tp 532 unpaired 0 
+  ValkyrieHero           s0 cmd4   age62   off[-3, 150]    rec[-5, 300]    sim[-2, 150]    v0.0   stgt ['Knight', 'Xbow'] rtgt ['Knight', 'Xbow'] fx ['A:ValkyrieHero_AEO'] near []
+== 20261026_145939 t0 3187 tp 3186 unpaired 1 
+  Knight                 s0 cmd38  age35   off[42, 42]     rec[84, 84]     sim[42, 42]     v0.0   stgt ['-', 'ElectroWizardHero'] rtgt ['-', 'ElectroWizardHero'] fx ['P:TowerPrincessProjectile'] near []
+  SpearGoblin_Dummy      s1        age35   off[-59, -59]   rec[-118, -118] sim[-59, -59]   v118   stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx ['P:IceWizardHeroProjectile'] near []
+== 20261026_154319 t0 3112 tp 3111 unpaired 0 
+  Skeleton_EV1           s1 cmd47  age45   off[-41, -89]   rec[-82, -177]  sim[-41, -88]   v130   stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near [(1367, 'Skeleton_EV1'), (1407, 'Skeleton_EV1')]
+  Skeleton_EV1           s1 cmd47  age45   off[-52, -101]  rec[-104, -200] sim[-52, -99]   v142   stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx ['P:xbow_projectile'] near [(1156, 'Skeleton_EV1'), (1367, 'Skeleton_EV1')]
+  Skeleton_EV1           s1 cmd47  age45   off[-64, -62]   rec[-128, -124] sim[-64, -62]   v126   stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near [(1156, 'Skeleton_EV1'), (1407, 'Skeleton_EV1')]
+== 20261026_162012 t0 517 tp 515 unpaired 2 
+  ValkyrieHero           s1 cmd2   age62   off[-9, -59]    rec[-16, -178]  sim[-7, -119]   v62    stgt ['Knight', 'Knight'] rtgt ['Knight', 'Knight'] fx [] near []
+== 20261026_164443 t0 744 tp 742 unpaired 0 
+  GoldenKnight           s0 cmd5   age62   off[1, 0]       rec[1, 84]      sim[0, 84]      v42    stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near []
+== 20261026_170600 t0 2157 tp 2156 unpaired 2 
+  DarkWitch              s0 cmd20  age61   off[22, 55]     rec[44, 110]    sim[22, 55]     v66    stgt ['Skeleton', 'Skeleton'] rtgt ['Skeleton', 'Skeleton'] fx [] near []
+  Bat                    s0        age61   off[-40, 112]   rec[-40, 112]   sim[0, 0]       v0.0   stgt ['-', '-'] rtgt ['-', 'Skeleton'] fx [] near []
+== 20261026_170912 t0 745 tp 743 unpaired 2 
+  Skeleton               s1 cmd6   age33   off[2, -19]     rec[-174, -45]  sim[-176, -26]  v116   stgt ['Firecracker', 'Firecracker'] rtgt ['Firecracker', 'Firecracker'] fx [] near [(1424, 'Skeleton')]
+== 20261026_171232 t0 961 tp 960 unpaired 0 
+  ElectroDragon          s0 cmd4   age61   off[-113, 184]  rec[-225, 368]  sim[-112, 184]  v30    stgt ['Knight', 'Knight'] rtgt ['Knight', 'Knight'] fx ['A:Tornado'] near []
+  ElixirGolem2           s0        age61   off[5, -64]     rec[14, -128]   sim[9, -64]     v28    stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near [(1057, 'ElixirGolem4')]
+  ElixirGolem4           s0        age18   off[27, -157]   rec[29, -318]   sim[2, -161]    v25    stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near [(1057, 'ElixirGolem2')]
+  ElixirGolem4           s0        age18   off[-80, -313]  rec[-160, -626] sim[-80, -313]  v51    stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near []
+== 20261026_172314 t0 1789 tp 1788 unpaired 2 
+  Knight                 s0 cmd15  age61   off[-26, -53]   rec[-30, -112]  sim[-4, -59]    v0.0   stgt ['-', 'HogRider'] rtgt ['-', 'HogRider'] fx ['P:FirecrackerProjectile'] near []
+  Firecracker            s1 cmd19  age61   off[48, -75]    rec[96, -150]   sim[48, -75]    v82    stgt ['Knight', 'Knight'] rtgt ['Knight', 'Knight'] fx [] near []
+== 20261026_175027 t0 1868 tp 1866 unpaired 2 
+  Goblin_Stab            s0 cmd19  age62   off[25, 1]      rec[193, -2]    sim[168, -3]    v103   stgt ['Tesla', 'Tesla'] rtgt ['Tesla', 'Tesla'] fx [] near [(1307, 'Goblin_Stab'), (1489, 'Goblin_Stab')]
+  Goblin_Stab            s0 cmd19  age62   off[25, -3]     rec[193, -5]    sim[168, -2]    v74    stgt ['Tesla', 'Tesla'] rtgt ['Tesla', 'Tesla'] fx ['P:SpearGoblinProjectile'] near [(1307, 'Goblin_Stab')]
+  Goblin_Stab            s0 cmd19  age62   off[3, 6]       rec[3, 6]       sim[0, 0]       v0.0   stgt ['Tesla', 'Tesla'] rtgt ['Tesla', 'Tesla'] fx ['P:SpearGoblinProjectile'] near [(1489, 'Goblin_Stab')]
+== 20261026_180336 t0 2911 tp 2909 unpaired 0 
+  EliteArcherHero        s1 cmd37  age49   off[-9, -23]    rec[109, -38]   sim[118, -15]   v47    stgt ['Knight', 'Knight'] rtgt ['Knight', 'Knight'] fx [] near []
+== 20261026_180652 t0 5308 tp 5306 unpaired 2 
+  Knight                 s1 cmd89  age62   off[-58, -13]   rec[-99, -55]   sim[-41, -42]   v78    stgt ['GoldenKnight', 'GoldenKnight'] rtgt ['GoldenKnight', 'GoldenKnight'] fx ['P:Furnace_Rework_Projectile'] near []
+  GoldenKnight           s0 cmd90  age56   off[-85, -102]  rec[40, 112]    sim[125, 214]   v53    stgt ['Knight', 'Knight'] rtgt ['Knight', 'Knight'] fx ['P:Furnace_Rework_Projectile', 'P:LogProjectileRolling'] near []
+== 20261026_182050 t0 2933 tp 2931 unpaired 2 
+  Skeleton               s0 cmd35  age62   off[15, 4]      rec[-9, 165]    sim[-24, 161]   v98    stgt ['KingTower', 'KingTower'] rtgt ['KingTower', 'KingTower'] fx [] near [(1179, 'IceWizardHero'), (1179, 'IceWizardHeroFloatingCube')]
+== 20261026_184912 t0 413 tp 411 unpaired 2 
+  GoldenKnight           s1 cmd1   age62   off[-24, -59]   rec[13, -174]   sim[37, -115]   v74    stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near []
+== 20261026_200616 t0 1016 tp 1014 unpaired 2 
+  InfernoDragon          s0 cmd3   age62   off[-6, 16]     rec[-48, 128]   sim[-42, 112]   v77    stgt ['Tesla', 'Tesla'] rtgt ['Tesla', 'Tesla'] fx [] near []
+  MiniPekkaHero          s0 cmd9   age62   off[-11, 15]    rec[-87, 113]   sim[-76, 98]    v86    stgt ['Tesla', 'Tesla'] rtgt ['Tesla', 'Tesla'] fx [] near []
+== 20261026_205934 t0 3357 tp 3355 unpaired 2 
+  ZapMachine             s1 cmd29  age62   off[1, 2]       rec[-6, -112]   sim[-7, -114]   v20    stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near []
+  ValkyrieHero           s1 cmd37  age52   off[48, -72]    rec[0, -180]    sim[-48, -108]  v66    stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near []
+== 20261026_210249 t0 3181 tp 3180 unpaired 2 
+  RascalBoy              s0 cmd37  age61   off[-2, 60]     rec[-4, 120]    sim[-2, 60]     v61    stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near []
+  RascalGirl             s0 cmd37  age61   off[-11, 58]    rec[-22, 116]   sim[-11, 58]    v73    stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near [(1458, 'RascalGirl')]
+  RascalGirl             s0 cmd37  age61   off[-5, 64]     rec[-10, 129]   sim[-5, 65]     v71    stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near [(1458, 'RascalGirl')]
+  Barbarian              s0        age61   off[10, 40]     rec[20, 80]     sim[10, 40]     v53    stgt ['IceWizardHero', 'IceWizardHero'] rtgt ['unpaired', 'unpaired'] fx [] near []
+== 20261026_211239 t0 1532 tp 1530 unpaired 2 
+== 20261026_211757 t0 3477 tp 3476 unpaired 1 
+  Bat                    s0 cmd46  age61   off[-7, 122]    rec[-15, 243]   sim[-8, 121]    v129   stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near [(1236, 'Bat')]
+  Bat                    s0 cmd46  age61   off[-2, 119]    rec[-4, 238]    sim[-2, 119]    v120   stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near []
+  Bat                    s0 cmd46  age61   off[10, 118]    rec[20, 236]    sim[10, 118]    v126   stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near [(1077, 'Bat')]
+  Bat                    s0 cmd46  age61   off[9, 118]     rec[19, 236]    sim[10, 118]    v127   stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near [(1077, 'Bat')]
+  Bat                    s0 cmd46  age61   off[-1, 120]    rec[-2, 240]    sim[-1, 120]    v121   stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near [(1236, 'Bat')]
+  MegaKnight             s0 cmd47  age45   off[-1, 250]    rec[-2, 500]    sim[-1, 250]    v75    stgt ['Tesla_EV1', '-'] rtgt ['Tesla_EV1', '-'] fx [] near [(1156, 'SkeletonArmy_EV1_Spectral'), (1467, 'SkeletonArmy_EV1_Soldier')]
+  SkeletonArmy_EV1_Soldier s0 cmd48  age25   off[34, 107]    rec[75, 214]    sim[41, 107]    v69    stgt ['KingTower', 'Tesla_EV1'] rtgt ['KingTower', 'Tesla_EV1'] fx [] near [(1175, 'SkeletonArmy_EV1_Soldier'), (1273, 'SkeletonArmy_EV1_Soldier'), (1450, 'SkeletonArmy_EV1_General')]
+  SkeletonArmy_EV1_Soldier s0 cmd48  age25   off[-13, 88]    rec[-21, 178]   sim[-8, 90]     v38    stgt ['KingTower', 'KingTower'] rtgt ['KingTower', 'KingTower'] fx [] near [(1175, 'SkeletonArmy_EV1_Soldier'), (1425, 'SkeletonArmy_EV1_Soldier')]
+  SkeletonArmy_EV1_Soldier s0 cmd48  age25   off[-8, 89]     rec[-16, 178]   sim[-8, 89]     v49    stgt ['KingTower', 'KingTower'] rtgt ['KingTower', 'KingTower'] fx [] near [(1425, 'SkeletonArmy_EV1_Soldier'), (1433, 'SkeletonArmy_EV1_Soldier')]
+  SkeletonArmy_EV1_Soldier s0 cmd48  age25   off[19, 121]    rec[43, 242]    sim[24, 121]    v91    stgt ['Tesla_EV1', 'Tesla_EV1'] rtgt ['Tesla_EV1', 'Tesla_EV1'] fx [] near [(1222, 'SkeletonArmy_EV1_Soldier'), (1366, 'SkeletonArmy_EV1_Soldier'), (1433, 'SkeletonArmy_EV1_Soldier')]
+  SkeletonArmy_EV1_Soldier s0 cmd48  age25   off[8, 123]     rec[17, 245]    sim[9, 122]     v95    stgt ['Tesla_EV1', 'Tesla_EV1'] rtgt ['Tesla_EV1', 'Tesla_EV1'] fx [] near [(1222, 'SkeletonArmy_EV1_Soldier'), (1265, 'SkeletonArmy_EV1_Soldier')]
+  SkeletonArmy_EV1_Soldier s0 cmd48  age25   off[0, 6]       rec[2, 96]      sim[2, 90]      v50    stgt ['Tesla_EV1', 'Tesla_EV1'] rtgt ['Tesla_EV1', '-'] fx [] near [(1126, 'SkeletonArmy_EV1_Spectral'), (1137, 'SkeletonArmy_EV1_Soldier'), (1265, 'SkeletonArmy_EV1_Soldier')]
+  SkeletonArmy_EV1_Soldier s0 cmd48  age25   off[10, 101]    rec[22, 194]    sim[12, 93]     v50    stgt ['Tesla_EV1', 'Tesla_EV1'] rtgt ['Tesla_EV1', 'Tesla_EV1'] fx [] near [(1137, 'SkeletonArmy_EV1_Soldier'), (1273, 'SkeletonArmy_EV1_Soldier'), (1366, 'SkeletonArmy_EV1_Soldier')]
+  SkeletonArmy_EV1_Soldier s0 cmd48  age25   off[-12, 68]    rec[-4, 158]    sim[8, 90]      v51    stgt ['Tesla_EV1', 'Tesla_EV1'] rtgt ['Tesla_EV1', 'Tesla_EV1'] fx [] near [(1395, 'SkeletonArmy_EV1_Soldier'), (1402, 'SkeletonArmy_EV1_Soldier')]
+  SkeletonArmy_EV1_Soldier s0 cmd48  age25   off[0, 90]      rec[0, 180]     sim[0, 90]      v45    stgt ['Tesla_EV1', 'Tesla_EV1'] rtgt ['Tesla_EV1', 'Tesla_EV1'] fx [] near [(1402, 'SkeletonArmy_EV1_Soldier')]
+  SkeletonArmy_EV1_Soldier s0 cmd48  age25   off[-65, 61]    rec[-130, 122]  sim[-65, 61]    v63    stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near []
+  SkeletonArmy_EV1_General s0 cmd48  age25   off[-8, 89]     rec[-16, 178]   sim[-8, 89]     v53    stgt ['Tesla_EV1', 'Tesla_EV1'] rtgt ['Tesla_EV1', 'Tesla_EV1'] fx [] near [(1450, 'SkeletonArmy_EV1_Soldier')]
+  SkeletonArmy_EV1_Spectral s0        age4    off[15, 19]     rec[-10, 33]    sim[-25, 14]    v33    stgt ['-', '-'] rtgt ['-', '-'] fx [] near [(1192, 'SkeletonArmy_EV1_Spectral'), (1261, 'SkeletonArmy_EV1_Spectral'), (1400, 'SkeletonArmy_EV1_Soldier')]
+  SkeletonArmy_EV1_Spectral s0        age3    off[-34, 47]    rec[-35, 48]    sim[-1, 1]      v86    stgt ['-', '-'] rtgt ['-', '-'] fx [] near [(1192, 'SkeletonArmy_EV1_Spectral'), (1396, 'SkeletonArmy_EV1_Soldier')]
+  SkeletonArmy_EV1_Spectral s0        age2    off[0, 6]       rec[-10, 83]    sim[-10, 77]    v141   stgt ['Tesla_EV1', '-'] rtgt ['Tesla_EV1', '-'] fx [] near [(1126, 'SkeletonArmy_EV1_Soldier')]
+  SkeletonArmy_EV1_Spectral s0        age2    off[4, -2]      rec[31, -15]    sim[27, -13]    v79    stgt ['Tesla_EV1', '-'] rtgt ['Tesla_EV1', '-'] fx [] near [(1156, 'MegaKnight'), (1261, 'SkeletonArmy_EV1_Spectral'), (1411, 'SkeletonArmy_EV1_Soldier')]
+== 20261026_212917 t0 4564 tp 4562 unpaired 0 
+  GoldenKnight           s0 cmd62  age62   off[-73, -94]   rec[71, 94]     sim[144, 188]   v71    stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx ['P:LogProjectileRolling', 'P:TowerPrincessProjectile', 'P:xbow_projectile'] near []
+== 20261026_233436 t0 1182 tp 1181 unpaired 2 
+  BalloonHero            s0 cmd11  age61   off[7, 41]      rec[14, 82]     sim[7, 41]      v48    stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near []
+== 20261026_233957 t0 3090 tp 3088 unpaired 4 
+== 20261026_234837 t0 1053 tp 1051 unpaired 2 
+  GiantHero              s1 cmd9   age62   off[-1, 0]      rec[-3, -104]   sim[-2, -104]   v54    stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near []
+  Knight                 s0 cmd10  age62   off[-1, 3]      rec[17, -80]    sim[18, -83]    v53    stgt ['GiantHero', 'GiantHero'] rtgt ['GiantHero', 'GiantHero'] fx [] near []
+== 20261027_001141 t0 963 tp 962 unpaired 1 
+  WizardHero             s0 cmd5   age61   off[-17, 57]    rec[-34, 114]   sim[-17, 57]    v77    stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near []
+== 20261027_001702 t0 715 tp 713 unpaired 2 
+  ValkyrieHero           s0 cmd5   age35   off[21, 57]     rec[31, 175]    sim[10, 118]    v66    stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near []
+== 20261027_002429 t0 2189 tp 2188 unpaired 2 
+  Valkyrie               s1 cmd21  age61   off[38, -45]    rec[76, -90]    sim[38, -45]    v83    stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near []
+== 20261027_004901 t0 2998 tp 2996 unpaired 0 
+  ValkyrieHero           s1 cmd34  age62   off[-125, 0]    rec[-226, 0]    sim[-101, 0]    v69    stgt ['Knight', 'Knight'] rtgt ['Knight', '-'] fx ['A:Tornado', 'A:ValkyrieHero_AEO'] near []
+== 20261027_005727 t0 5148 tp 5147 unpaired 11 
+  TombstoneHeroSkeleton  s0        age47   off[64, 62]     rec[128, 124]   sim[64, 62]     v126   stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near []
+  TombstoneHeroSkeleton  s0        age37   off[-90, 0]     rec[-180, 0]    sim[-90, 0]     v91    stgt ['Knight_EV1', 'Knight_EV1'] rtgt ['Knight_EV1', 'Knight_EV1'] fx [] near []
+== 20261027_011738 t0 544 tp 542 unpaired 2 
+  ValkyrieHero           s0 cmd6   age62   off[-25, 110]   rec[136, 242]   sim[161, 132]   v82    stgt ['Knight', 'Xbow'] rtgt ['Knight', 'Xbow'] fx ['A:ValkyrieHero_AEO'] near []
+== 20261027_014928 t0 3125 tp 3124 unpaired 1 
+  Knight                 s0 cmd47  age61   off[0, 60]      rec[-1, 120]    sim[-1, 60]     v61    stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near []
+== 20261027_020134 t0 1615 tp 1613 unpaired 0 
+  Ronin                  s1 cmd17  age62   off[-18, -21]   rec[-134, -156] sim[-116, -135] v37    stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx ['P:LogProjectileRolling'] near []
+== 20261027_021852 t0 1523 tp 1522 unpaired 2 
+  MiniPekka              s1 cmd19  age61   off[-2, 0]      rec[21, -86]    sim[23, -86]    v34    stgt ['Skeleton', 'Skeleton'] rtgt ['Skeleton', 'Skeleton'] fx [] near [(1029, 'FireSpirits')]
+  Skeleton               s0 cmd20  age61   off[-4, 90]     rec[-19, 178]   sim[-15, 88]    v112   stgt ['FireSpirits', 'FireSpirits'] rtgt ['FireSpirits', 'FireSpirits'] fx ['P:IceWizardHeroProjectile'] near [(1097, 'Skeleton')]
+  Skeleton               s1 cmd21  age41   off[-51, 46]    rec[-109, 91]   sim[-58, 45]    v86    stgt ['Skeleton', 'Skeleton'] rtgt ['Skeleton', 'Skeleton'] fx ['P:IceWizardHeroProjectile'] near [(1362, 'Skeleton')]
+  FireSpirits            s1 cmd23  age19   off[-17, -15]   rec[20, -39]    sim[37, -24]    v47    stgt ['-', '-'] rtgt ['-', 'Skeleton'] fx ['P:IceWizardHeroProjectile'] near [(1029, 'MiniPekka'), (1038, 'Skeleton'), (1108, 'Skeleton')]
+== 20261027_030315 t0 650 tp 648 unpaired 0 
+  GoldenKnight           s1 cmd3   age62   off[37, 47]     rec[-56, -61]   sim[-93, -108]  v55    stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx ['P:LogProjectileRolling', 'P:xbow_projectile'] near []
+== 20261027_030951 t0 1120 tp 1118 unpaired 2 
+  Skeleton               s1 cmd13  age54   off[-49, 7]     rec[-95, -41]   sim[-46, -48]   v61    stgt ['IceWizardHero', 'IceWizardHero'] rtgt ['unpaired', 'unpaired'] fx ['P:IceWizardHeroProjectile', 'P:xbow_projectile'] near [(1162, 'Skeleton'), (1287, 'Skeleton')]
+  Skeleton               s1 cmd13  age54   off[25, -110]   rec[-21, -317]  sim[-46, -207]  v64    stgt ['IceWizardHero', 'IceWizardHero'] rtgt ['unpaired', 'unpaired'] fx ['P:IceWizardHeroProjectile', 'P:xbow_projectile'] near [(1135, 'Skeleton'), (1183, 'Skeleton'), (1184, 'Skeleton')]
+  Skeleton               s1 cmd13  age54   off[-9, -8]     rec[-68, 20]    sim[-59, 28]    v69    stgt ['IceWizardHero', 'IceWizardHero'] rtgt ['unpaired', 'unpaired'] fx ['P:IceWizardHeroProjectile'] near [(1135, 'Skeleton'), (1287, 'Skeleton'), (1448, 'Skeleton')]
+  Skeleton               s1 cmd13  age54   off[57, -50]    rec[200, -81]   sim[143, -31]   v75    stgt ['IceWizardHero', 'IceWizardHero'] rtgt ['unpaired', 'unpaired'] fx [] near [(854, 'Skeleton'), (1192, 'Skeleton'), (1239, 'Skeleton')]
+  Skeleton               s1 cmd13  age54   off[-36, -146]  rec[-102, -436] sim[-66, -290]  v115   stgt ['IceWizardHero', 'IceWizardHero'] rtgt ['unpaired', 'unpaired'] fx ['P:IceWizardHeroProjectile'] near [(930, 'Skeleton'), (1428, 'IceWizardHero'), (1428, 'IceWizardHeroFloatingCube')]
+  Skeleton               s1 cmd13  age54   off[30, -57]    rec[40, -194]   sim[10, -137]   v81    stgt ['IceWizardHero', 'IceWizardHero'] rtgt ['unpaired', 'unpaired'] fx [] near [(1189, 'Skeleton'), (1277, 'Skeleton')]
+  Skeleton               s1 cmd13  age54   off[-30, -137]  rec[-57, -364]  sim[-27, -227]  v125   stgt ['IceWizardHero', 'IceWizardHero'] rtgt ['unpaired', 'unpaired'] fx ['P:IceWizardHeroProjectile'] near [(930, 'Skeleton'), (1164, 'Skeleton'), (1192, 'Skeleton')]
+  Skeleton               s1 cmd13  age54   off[11, -25]    rec[5, -51]     sim[-6, -26]    v67    stgt ['IceWizardHero', 'IceWizardHero'] rtgt ['unpaired', 'unpaired'] fx ['P:xbow_projectile'] near [(821, 'Skeleton'), (854, 'Skeleton'), (1189, 'Skeleton')]
+== 20261027_033729 t0 307 tp 305 unpaired 2 
+  ValkyrieHero           s0 cmd1   age62   off[0, -5]      rec[118, -9]    sim[118, -4]    v48    stgt ['Skeleton', 'Skeleton'] rtgt ['Skeleton', 'Skeleton'] fx [] near []
+== 20261027_040821 t0 2115 tp 2113 unpaired 5 
+  SkeletonArmy_EV1_Soldier s1 cmd25  age62   off[274, 98]    rec[298, -206]  sim[24, -304]   v116   stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near [(1235, 'SkeletonArmy_EV1_Soldier'), (1297, 'SkeletonArmy_EV1_Soldier')]
+  SkeletonArmy_EV1_Soldier s1 cmd25  age62   off[49, 132]    rec[-221, 11]   sim[-270, -121] v110   stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near [(1235, 'SkeletonArmy_EV1_Soldier'), (1256, 'SkeletonArmy_EV1_Soldier')]
+  SkeletonArmy_EV1_Soldier s1 cmd25  age62   off[8, 394]     rec[291, 73]    sim[283, -321]  v122   stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near [(1207, 'SkeletonArmy_EV1_General'), (1297, 'SkeletonArmy_EV1_Soldier')]
+  SkeletonArmy_EV1_Soldier s1 cmd25  age62   off[-13, 34]    rec[30, -233]   sim[43, -267]   v125   stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near [(1195, 'SkeletonArmy_EV1_Soldier'), (1258, 'SkeletonArmy_EV1_Soldier')]
+  SkeletonArmy_EV1_Soldier s1 cmd25  age62   off[-5, 36]     rec[-1, -238]   sim[4, -274]    v112   stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near [(1258, 'SkeletonArmy_EV1_Soldier')]
+  SkeletonArmy_EV1_Soldier s1 cmd25  age62   off[-48, 55]    rec[-193, -340] sim[-145, -395] v124   stgt ['PrincessTower', 'PrincessTower'] rtgt ['PrincessTower', 'PrincessTower'] fx [] near [(1195, 'SkeletonArmy_EV1_Soldier'), (1256, 'SkeletonArmy_EV1_Soldier')]

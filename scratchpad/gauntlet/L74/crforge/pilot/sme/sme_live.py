@@ -49,19 +49,24 @@ def canon_live(f, my_side):
 REPR = json.load(open(os.environ['SME_REPR'])) if os.environ.get('SME_REPR') else {'drop': [], 'as': {}}
 
 
+def repr_rows(o):
+    """The sim's entity rows as the reader represents them (REPR: dropped rows, remapped classes)."""
+    if not (REPR['drop'] or REPR['as'] or REPR.get('drop_no_hp')):
+        return o['E']
+    es = []
+    for e in o['E']:
+        if e[2] in REPR['drop'] or (REPR.get('drop_no_hp') and e[1] == 'C' and e[6] == -1 and e[2] not in REPR['as']):
+            continue
+        k = REPR['as'].get(e[2])
+        if k:
+            e = list(e)
+            e[1] = {'U': 'C'}.get(k, k)
+        es.append(e)
+    return es
+
+
 def sim_canon(o, my_side):
-    if REPR['drop'] or REPR['as'] or REPR.get('drop_no_hp'):
-        es = []
-        for e in o['E']:
-            if e[2] in REPR['drop'] or (REPR.get('drop_no_hp') and e[1] == 'C' and e[6] == -1 and e[2] not in REPR['as']):
-                continue
-            k = REPR['as'].get(e[2])
-            if k:
-                e = list(e)
-                e[1] = {'U': 'C'}.get(k, k)
-            es.append(e)
-        o = dict(o, E=es)
-    c = canon_sim(o)
+    c = canon_sim(dict(o, E=repr_rows(o)))
     c.pop('S%d' % (1 - my_side))
     return c
 
@@ -138,6 +143,19 @@ def gk_dashes(frames):
     return out
 
 
+VALK_LAG = int(os.environ.get('SME_VALK', '0'))  # round 4.2
+
+
+def valk_shift(p):
+    """A hero Valkyrie cast dated from its first state-10 frame (seen_casts: RoyaleSim starts a cast on R+1, so R in
+    [prev frame, first - 1]) goes 1 tick earlier for crforge, whose Valkyrie takes the ability's buffs on R+1 and starts
+    its charge on R+2 (probe, SME.md round 4.2): R in [prev - 1, first - 2]. Over-fit probe on run13: 12 Valkyrie casts
+    better at lo-1, no other hero's."""
+    if p['kind'] == 'ability' and p['card'] == 'Valkyrie' and p.get('source') == 'cast_seen':
+        return dict(p, tick=p['tick'] - 1, run_ticks=[p['run_ticks'][0] - 1, p['run_ticks'][1] - 1], dated='valk_charge')
+    return p
+
+
 GOLEM_DEATH = int(os.environ.get('SME_GOLEM', '0'))  # round 2.3
 GOLEM_HERO_ID = 203000038
 
@@ -178,6 +196,8 @@ def plan_from(rec, opp_deal, frames=None):
         if FX_SHIFT and p['kind'] == 'play' and p.get('source') == 'spell_seen' and p['card'] in fx \
                 and p['run_ticks'][0] == p['run_ticks'][1]:
             p = dict(p, tick=p['tick'] + FX_SHIFT, run_ticks=[p['run_ticks'][0] + FX_SHIFT, p['run_ticks'][1] + FX_SHIFT])
+        if VALK_LAG:
+            p = valk_shift(p)
         plays.append(p)
     if GOLEM_DEATH and frames:
         plays = [p for p in plays if not golem_death_cast(p, frames)]
@@ -239,6 +259,78 @@ TORN_CMD = int(os.environ.get('SME_TORN_CMD', '0'))  # round 2.1
 
 
 HP_PH = int(os.environ.get('SME_HP_PLACEHOLDER', '0'))  # round 2.4
+TORN_STEP = int(os.environ.get('SME_TORN_STEP', '0'))  # round 4.1
+STEP_MOVE = 200  # game units: more than one step of the fastest walker read here (~180 per tick)
+
+
+def _no(why, *msg):
+    if why is not None:
+        why.append(msg)
+    return False
+
+
+def step_read(f, ot, ot1, me, why=None):
+    """A read inside step t+1 (SME.md round 4.1): the board has moved but the step's hits, removals, spawns and regen
+    are not all in yet. True when every sim body that moves between t and t+1 is read at its t+1 point (at least two
+    move; analyse also requires the frame to be isolated), every recorded body sits at the t+1 point of a sim body with that body's hp at t or t+1 (or the reader's
+    placeholder -1), or at the t point of a body the step removes (hp 0 / -1 / its hp at t; hp 0 / -1 also within
+    STEP_MOVE of it), every sim t+1 body not read is made in step t+1, every recorded projectile / area effect is at a
+    t or t+1 point (a projectile the step removes also at a body's point, its impact) and every one not read is new in
+    step t+1, and our elixir and hand are those of t or t+1."""
+    rows = lambda o: {e[0]: e for e in repr_rows(o)}  # noqa: E731
+    a, b = rows(ot), rows(ot1)
+    bod = lambda d: {i: e for i, e in d.items() if e[1] in 'TC'}  # noqa: E731
+    ba, bb = bod(a), bod(b)
+    moving = [i for i in ba if i in bb and ba[i][4:6] != bb[i][4:6]]
+    if len(moving) < 2:  # one mover cannot tell a step read from that body's own 1-tick lead (run15 audit, 4.1b)
+        return _no(why, 'fewer than 2 bodies move')
+    at1, at0 = collections.defaultdict(list), collections.defaultdict(list)
+    for i, e in bb.items():
+        at1[(e[3], e[4], e[5])].append(i)
+    for i, e in ba.items():
+        if i not in bb:
+            at0[(e[3], e[4], e[5])].append(i)
+    used = set()
+    for side, x, y, card, hp, kind in f['E']:
+        k = (side, x, y)
+        i = next((i for i in at1.get(k, []) if i not in used and
+                  (hp == -1 or hp == bb[i][6] or (i in ba and hp == ba[i][6]))), None)
+        if i is None:
+            i = next((i for i in at0.get(k, []) if i not in used and hp in (0, -1, ba[i][6])), None)
+        if i is None and hp in (0, -1):  # killed in step t+1 after its move: read at hp 0 within a step of its t point
+            i = next((i for i in ba if i not in bb and i not in used and ba[i][3] == side and
+                      abs(ba[i][4] - x) + abs(ba[i][5] - y) <= STEP_MOVE), None)
+        if i is None:
+            return _no(why, 'recorded body unmatched', (side, x, y, hp))
+        used.add(i)
+    left = [bb[i][2:7] for i in bb if i not in used and i in ba]
+    if left:
+        return _no(why, 'sim body not read', left)
+    for cls, key in (('P', 'P'), ('A', 'A')):
+        pa = {i: e for i, e in a.items() if e[1] == cls}
+        pb = {i: e for i, e in b.items() if e[1] == cls}
+        pts = collections.defaultdict(list)
+        for i, e in list(pa.items()) + list(pb.items()):
+            pts[(e[3], e[4], e[5])].append(i)
+        seen = set()
+        gone = [i for i in pa if i not in pb]
+        for r in f[key]:
+            i = next((i for i in pts.get((r[0], r[1], r[2]), []) if i not in seen), None)
+            if i is None and cls == 'P':  # a projectile read at its impact point (a body's point) in the step it hits
+                hit = any((e[4], e[5]) == (r[1], r[2]) for e in list(ba.values()) + list(bb.values()))
+                i = next((i for i in gone if i not in seen and pa[i][3] == r[0]), None) if hit else None
+            if i is None:
+                return _no(why, 'recorded %s unmatched' % cls, r)
+            seen.add(i)
+        left = [pb[i][2:6] for i in pb if i not in seen and i in pa]
+        if left:
+            return _no(why, 'sim %s not read' % cls, left)
+    els = (ot['S'][me][0], ot1['S'][me][0])
+    if f['el'] not in els:
+        return _no(why, 'elixir', (f['el'], els))
+    if f['hand'] and tuple(f['hand']) not in (tuple(ot['S'][me][1]), tuple(ot1['S'][me][1])):
+        return _no(why, 'hand')
+    return True
 
 
 def fill_placeholder(r, s):
@@ -279,6 +371,8 @@ def analyse(obs, frames, me, lo=0, hi=10 ** 9):
             cls[t] = 'torn_t1'
         elif TORN_CMD and cmd_pass_read(d, by, t, me):
             cls[t] = 'torn_cmd'
+        elif TORN_STEP and t + 1 in by and step_read(frames[t], by[t], by[t + 1], me):
+            cls[t] = 'torn_step'
         else:
             cls[t] = 'div'
     for i, t in enumerate(ts):  # isolated frames whose every object is held by sim t or t+1
@@ -292,6 +386,9 @@ def analyse(obs, frames, me, lo=0, hi=10 ** 9):
                 all(r[k] in (a.get(k), b.get(k)) or r[k][0] in (a.get(k, (None,))[0], b.get(k, (None,))[0])
                     for k in r if k.startswith('S')):
             cls[t] = 'torn_mixed'
+    for i, t in enumerate(ts):  # 4.1b: a step read is isolated; a run of them is a persistent lead (run15 audit)
+        if cls[t] == 'torn_step' and any(cls.get(ts[j]) in ('div', 'torn_step') for j in (i - 1, i + 1) if 0 <= j < len(ts)):
+            cls[t] = 'div'
     first = next((t for t in ts if cls[t] == 'div'), None)
     cnt = collections.Counter(cls.values())
     return {'frames': len(ts), 'counts': dict(cnt), 'first': first, 'first_diff': ds.get(first), 'cls': cls,

@@ -225,3 +225,34 @@ assets, which this sync did not run.
 **Not done:** `/workspace/crforge` itself was left at `ad8ef3a` (never modify the pin directory). J7 / SME workers
 still load it, which is identical in behaviour on 16.402.22. Switching the runtime path to the fork build is a
 one-line `SME_LIB` / J7 `L=` change, left to the lead.
+- **SME runs now use the fork build (A2c round 4, 2026-10-27):** `/workspace/pilot/lib_008aa626` (a frozen copy of
+  `crforge_fork/env/build/install/env/lib` at `008aa626`). run13 on it equals run12 on the pin on 138 / 138 matches.
+
+## Tables for client 16.635 (build 160635001): what a build needs (no build run; 2026-10-27)
+- **Our matches since 10-27 ~06:58 are client 160635001 (a):** every live log from `live_play_20261027_065824` on
+  reads phase-2 `build` 160635001 (117 logs that day, the last 40 all 160635001). The logs carry **no data version or
+  content sha (a)**, so whether a match ran data 16.635.1 (shipped, `5ad888ef…`) or 16.635.3 (update, `dae6c6cc…`)
+  is not known from them. 16.635.3 is the likely one (b): first seen the same day as the client.
+- **crforge side, at `008aa626` (a):** `data-versions.json` pairs 16.635.3 with client schema 16.635.1 and content sha
+  `dae6c6cc7e9126338da0c606e47e48a9ef80462c`; the schema file is in the tree. **16.635.1 (shipped) is not paired**, so
+  it cannot be built without adding it. `crforge-data.lock` still says `version=16.402.22`, and the battle rules still
+  follow client 16.402.17: upstream says moving the battle core to 16.635 is "a later step". Whether the core runs on
+  16.635.3 tables at all (new classes, `PushBackDamage` now a damage-type reference) is untested (b): the first check
+  is `:core:test -Pcrforge.dataVersion=16.635.3`.
+- **Which assets:** the files under `csv_logic/`, `csv_client/` and `data_manifest.toml` that the content sha's
+  `fingerprint.json` lists, each SHA-1-checked against it. For 16.402.22 that is **425** of the fingerprint's 10,720
+  files, all of them in the laptop cache `C:/Users/benpe/crforge_eval/cache/assets` (a).
+- **From where, two routes:**
+  1. `-Pcrforge.assetSource=cdn`: the game's asset CDN by content sha. That is how the 16.402 tables were built on the
+     laptop (EVAL.md: about 28 MB from `game-assets.clashroyaleapp.com`). One gradle call:
+     `:tables:gameTables -Pcrforge.dataVersion=16.635.3 -Pcrforge.assetSource=cdn -Pcrforge.cache=...`. It is an
+     outbound download, so it needs the owner's go.
+  2. `file://` source laid out as the CDN: `<dae6c6cc…>/fingerprint.json` plus `<dae6c6cc…>/<path>` for the 425-odd
+     files, built from a device pull plus the 160635001 APK.
+- **Does the reader's device pull cover it? Not alone (a).** `apktables/pull_device_update.sh` pulls the game's
+  `update/` folder. The 10-22 pull (data 16.402.22) has the right `fingerprint.json` (version 16.402.22, sha
+  `97869d43…`) and its table files match the fingerprint's SHA-1s (81 / 81), but it holds **82 of the 425** files
+  crforge needs; the rest come from the APK (apktables: "APK fallback"). No 160635001 APK kit is on the laptop
+  (`share/` has none), and no device pull since the update exists. So route 2 needs a fresh pull **and** the
+  160635001 APK's `csv_*` assets, with their SHA-1s checked against the pulled fingerprint (untested, b: the APK
+  files may be stored in the same LZMA form the CDN serves).

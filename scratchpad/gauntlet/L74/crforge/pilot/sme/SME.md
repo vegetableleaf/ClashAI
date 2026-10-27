@@ -614,3 +614,99 @@ To read buffs, `SmeRun` now writes each body's buff names as row field 11.
 **Result:** 3 of the 10 unflagged matches with these champions became exact (`020913`, `220317`, `180015`), and
 `172835`, `210720` and `000233` gained 2,000+ exact frames each. One first divergence sits on a cast: at `180015`/407 the sim fired an Archer Queen
 arrow 20 ticks before the game, and her extracted cast is at 405. With it, the match is exact.
+
+# Fix loop round 4 (ticket A2c round 4)
+
+Engine: the upstream-sync fork build **`008aa626`** (branch `clashbot-upstream-20261027`), frozen for these runs at
+pod `/workspace/pilot/lib_008aa626` (core jar sha256 `e94447c0…`); SmeRun built against it in `build_008aa626`.
+Runs: `run_fork.sh RUN LIB BUILD [VAR=val ...]` (pod `/workspace/pilot/sme_live/`, inputs `inputs_v2`, frames2).
+No crforge patch in this round: `clashbot-fix` / `clashbot-upstream-20261027` still carry none.
+
+| sub-round | mechanism | change | exact apart from torn (unflagged) | exact frames | regressions |
+|---|---|---|---:|---:|---|
+| 4.0 (run13) | engine switch to `008aa626` | none (SME_LIB / SME_BUILD only) | 31 / 109 | 220,450 | 0; **138 / 138 matches identical to run12** (counts, first divergence, every episode; 138 / 138 plans byte-identical) |
+| (run14, superseded) | reader read inside a step | comparator `torn_step`, first version | 39 / 109 | 220,450 | 0 (+8); **unsafe, see 4.1** |
+| **4.1 (run16)** | reader read inside a step | comparator `torn_step` (`SME_TORN_STEP=1`): two movers, isolated frame | **38 / 109** | 220,450 | **0 (+7)** |
+| **4.2 (run17)** | hero Valkyrie cast dated 1 tick late for crforge | input: `cast_seen` Valkyrie ability window -1 (`SME_VALK=1`) | **39 / 109** | **224,126** | **0 (+1)** |
+
+**Not reached: 45 / 109.** Neither stop rule fired (+7, +1). The round stops here: the remaining body-position
+onsets split into small classes (table below) that each need their own investigation; no third fix is staged.
+
+## 4.0-1: the 41 body-position onsets, classified (a; `dossier2.py`, `t1check.py`, `tgt_frames.py`)
+Method, per onset t0 with previous recorded frame tp (exact or torn):
+- `dossier2.py` (SmeRun with `SME_TGT=1`: each body row gets its targeting reference id) gives every displaced body's
+  recorded and sim motion tp → t0, its sim target and its recorded target (phase-3 `attack.target_gen`, laptop
+  `tgt_frames.py`, mapped to the sim id by position at tp), the nearest bodies and the area effects / projectiles near.
+- `t1check.py`: the onset frame's diff against sim t0, t0+1 and t0+2, and the frames after it.
+- The over-fit probe of each run (run ticks 1-2 outside the window), aggregated over all 138 matches.
+
+| n | mechanism | evidence | side |
+|---:|---|---|---|
+| 16 | **reader read inside step t0+1** | the frame equals sim t0+1 apart from what the step adds last: bodies killed in the step still listed at hp 0 / -1, a death spawn's parent still listed, a projectile at its impact point with the hp not yet taken, our elixir before the step's regen. The next frames are exact again in 15 / 16. Bodies show 2 ticks of motion over a 1-tick frame gap | reader |
+| 5 | **hero Valkyrie ability 1 tick late** | 12 Valkyrie `cast_seen` casts (of 73) move a divergence later at lo-1; no other hero's ability shows that (IceWizard, Balloon, Bowler, IceGolemite: 1-2 each, both directions). crforge: buffs on R+1, charge (150 / tick) and `ValkyrieHero_AEO` on R+2 (probe on `144615`, `033729`) | input dating |
+| 4 | hero Valkyrie, other | walking or charging faster in the game (178 vs 119 units over 2 ticks); no ability-probe hit | open (b) |
+| 4 | Golden Knight dash | sim dash 144-214 units over 2 ticks against the game's 71-112; moving the dash command by -2..+2 fixes 0 of 4 (`212917`, `030315`, `180652`, `001141`; `184912` at -2) | open (b): dash length, not its tick |
+| 5 | small steering offsets (1-25 units) | same target in both, no body within 1,000, no area effect / projectile near | open (b): pathing / steering rounding |
+| 3 | hero Ice Wizard and its cube | hero and cube at one point (the pairing skips them); 16 / 60 unit offsets | open (b) |
+| 2 | game body ~1.15x faster | `200616` Inferno Dragon and hero Mini PEKKA both 2.29 ticks of motion in 2 ticks; `020134` Ronin 2.31 | open (b) |
+| 2 | swarm collision / push | Goblin Gang, evolved Skeleton Army: lateral moves up to 300 units, a stationary goblin moved (3, 6) | crforge candidate (b) |
+
+- **Retarget: 0 onsets (a).** On every paired body the sim target equals the recorded target at tp; 4 bodies differ at
+  t0, all on frames classed above.
+- **Not seen (0 each, a): path / bridge choice, knockback, spawn offset, extraction gap.** No displaced body was near a
+  Log / Tornado / pushback object except on frames already classed (reader / Valkyrie).
+- The run3 dossier's collision/push reading of the small offsets (hero Ice Wizard -6,+7; Knight 0,-9) is **not
+  supported (c for collision on those two)**: no body is near either at the offset, and the Knight's onset has moved
+  (run12: 5148), where it is a step read.
+
+## 4.1: comparator rule `torn_step` (a)
+A frame t is torn (`step_read`, `SME_TORN_STEP=1`) when it is a read inside step t+1:
+- **at least two** sim bodies move between t and t+1, and **every** one is read at its t+1 point;
+- every recorded body sits at the t+1 point of a sim body with that body's hp at t or t+1 (or the -1 placeholder), or
+  at (or within 200 units of) the t point of a body the step removes, with hp 0 / -1 / its t hp;
+- every sim t+1 body not read is new in step t+1. Projectiles / areas: every recorded one sits at a t or t+1 point (a
+  projectile the step removes also at a body's point), and every one not read is new in the step;
+- our elixir and hand are those of t or t+1;
+- the frame is **isolated**: no div or torn_step neighbour frame.
+
+**Why the first version (run14) was unsafe (c for it).** It needed one mover and no isolation. The Valkyrie fix (run15
+vs run14) then turned 7 + 10 of its torn_step frames (`083722`, `162012`) into exact frames: they had been a hero
+Valkyrie one tick ahead, which one mover cannot tell from a step read. Audit on run15 (`ts_movers.py`): 27 of 67
+torn_step frames had one mover, 12 of them one run of consecutive frames (`183044`, one Knight). With two movers and
+isolation (run16) the gain is +7 instead of +8 (`002429` drops out) and the torn_step frames are 38.
+
+**Planted checks (`step_test.py`, the 8 onsets classed torn_step):** one stepping body moved by 1 unit gives `div`
+8 / 8; our elixir +1 gives `div` 8 / 8.
+
+**Gained (run16):** `145939`, `170600`, `172314`, `210249`, `211757`, `021852`, `025651`.
+
+**Reader fix (b, not in my write set):** as for round 2.1 and the 10-26 replay: read `game_tick` again after the
+frame and flag the frame when it changed.
+
+## 4.2: hero Valkyrie dating for crforge (a, input)
+- `seen_casts` dates a state-10 hero cast for RoyaleSim (cast starts on R+1): R in [prev frame, first - 1].
+- crforge's Valkyrie takes `ValkyrieHero_Damage_Reduction_Buff` / `AttackChain` on R+1 and starts its charge on R+2,
+  as its Golden Knight moves on R+2 (round 2.2). Rule (`valk_shift`): R and its window 1 tick earlier, Valkyrie
+  `cast_seen` only.
+- Other heroes keep their dating: the over-fit probe shows no lo-1 preference for them (Knight 9, Dark Prince 9,
+  Wizard 20, Mini PEKKA 7 casts).
+- Gained: `004901` (720 div frames → 0). Also `154319` 959 → 3 div frames, `083722` 896 → 90 (run15 vs run14).
+- (b) Whether the game's state 10 marks the charge start (so the lag is crforge's own) or crforge's Valkyrie is a
+  tick slow cannot be told without a recorded command stream; the input rule fits the frames either way.
+- **Owed:** the rule lives in `sme_live.valk_shift` behind `SME_VALK`. `extract.crforge_casts` does not call it yet,
+  because `inputs_v2` would then be shifted twice. Moving it needs an inputs_v3 regeneration with `SME_VALK` off.
+
+## What fails now (run17): first true divergence of the 70 failing unflagged matches
+33 body position, 9 body missing in the sim, 7 projectile only, 7 own elixir (other arithmetic), 5 + 1 hp only,
+4 sim body missing in the reader, 3 spell / area timing (`results/live/run17_cmp.txt`).
+
+**Next candidates, one mechanism each (b):** the Golden Knight dash length (4), the hero Valkyrie walk / charge speed
+(4), swarm collision (2, a fork-patch candidate), the ~1.15x speed pair (2). None alone reaches 45.
+
+## Files (round 4)
+- `dossier2.py` (all-match dossier), `tgt_frames.py` (laptop: reader targets), `t1check.py`, `step_test.py`,
+  `step_why.py`, `ts_movers.py`, `run_fork.sh`.
+- `sme_live.py`: `repr_rows`, `step_read` and its isolation pass (`SME_TORN_STEP`), `valk_shift` (`SME_VALK`).
+- `SmeRun.java`: an optional 13th row field, the targeting reference id (`SME_TGT=1`; off in every scored run).
+- Results: `results/live/run16_{results.jsonl,cmp.txt}`, `run17_{results.jsonl,cmp.txt}`, `dossier2_run12.{jsonl,txt}`,
+  `dossier2_run14.jsonl`, `t1check_run13.jsonl`.
