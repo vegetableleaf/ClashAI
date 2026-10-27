@@ -91,3 +91,68 @@ Other facts:
 2. **36/227 matches have no opponent deal that fits.** Each such match has at least one wrong opponent play. Driver policy is owed: skip them, or relax to misfit ≤ 1.
 3. **`own_unit` shim:** Hero Goblins bodies may be dropped (4 opponent decks). Not measured.
 4. **Not checked here:** whether hand-slot order matters to any mechanic (CRFORGE_S0 2c, b).
+
+# A2b-1b: matches with no battle-log entry (2026-10-27)
+`extract.py batch_noapi` (`match(api=False)` -> `derive_sides`). Every API-backed record also carries `derived` (the same derivation from the log alone); `check_levels` scores it against the API (`check_levels.json`).
+
+## Rules
+- **Levels (per-card mapping).**
+  - Each body's first-seen max hp is looked up in crforge's unit table for that card row and form: `unit_hp.tsv`, from `LagProbe unithp` on the pod. It covers 276 rows × levels 1-16, and every body the play makes, children included.
+  - Only a hit at exactly one level counts as a vote. The card takes the level most of its bodies vote for.
+  - A card with no body (spells) takes its side's modal body level (`level_src: mode`).
+  - Our own side is read the same way.
+- **Our deck:** exact, from our own `own_hand` (deck_index, name, form): slot order and forms.
+- **Opponent deck:** the cards its extracted plays show, in first-seen order; inferred Zaps do not count.
+  - An unseen slot is `None`, flagged `deck_seen:<n>`.
+  - Deck indices are first-seen order, not the real slot order. Nothing reads the opponent's slot order except the deal, which J7 fits anyway (`opp_deal_fit`).
+- **Slot flags:** the highest form a card was seen in, from plays or bodies (1 evo, 2 hero). A form never seen reads 0. That cannot matter (b): an evo that never evolved live, or a hero never played, behaves like flag 0 over the match.
+- **Towers:** the tick-0 max hp looked up in crforge's tower table.
+- **Words:** ours from our tag; the opponent's is unknown (null).
+- **RNG-free rule:** no SEEN card of either side is a drawer (Arrows, Princess, Hunter, Skeleton King).
+  - An unseen slot was never played, and G0's drawers draw only when they act. So an unseen drawer cannot draw, unless one of its plays was missed (b).
+  - A missed play shows as `opp_no_fitting_deal` or `own_cycle_fail`. The stricter rules below exclude those.
+
+## Validation on the 226 API-backed matches (a, `check_levels.json`)
+| item | us | opponent |
+|---|---:|---:|
+| card levels from body hp | 1126/1126 exact | **1307/1307 exact** |
+| card levels from side mode (spells) | 682/682 | **348/377 = 92.3%** (misses: 28 one level low, 3 two low; Arrows, Graveyard, Fireball, ...) |
+| slot flags | 1808/1808 | 1623/1684 = 96.4% |
+| towers (group, level, king level) | 226/226 | 226/226 |
+| deck complete (8 seen) | 226/226 | 132/226 |
+| seen card not in the API deck | 0 | 0 |
+| API cards never seen / of them flagged evo-hero | 0 | 124 / 29 |
+
+The match logged as `151416` has no end-of-match towers, so the derived pass skipped it; the API set stays the 227 already on the pod.
+
+RNG-free, live-seen rule vs the API deck rule, over 226 matches:
+
+| live rule | API rule | n |
+|---|---|---:|
+| free | free | 138 |
+| free | not free | 16 |
+| not free | free | 0 |
+| not free | not free | 72 |
+
+- The 16 are mostly an unseen Arrows (13). Under crforge's RNG model an unplayed drawer does not draw, so these are RNG-free unless a play was missed (b).
+- With `cycle_ok` (both cycle checks pass): 123 live-free, of which 109 are API-free.
+- With `deck8` (cycle_ok + all 8 opponent cards seen): 72 live-free, of which **72/72 are API-free** (a).
+
+## Batch (a, `noapi_stats.json`), written to pod `/workspace/pilot/inputs/inputs_expanded.jsonl`
+1,002 matches, sha256 bdfc877e…:
+- 1,451 live logs on or after 10-19 06:00. 228 are claimed by a battle-log entry, leaving 1,223 to try.
+- Skipped: 118 no frames, 101 not the main account (princess ≠ 4858), 1 no end-of-match towers, 1 corrupt JSON line.
+
+Usable for J7, RNG-free under each flag rule (expanded + API-backed):
+
+| rule | expanded | API-backed (A2b-1) | total |
+|---|---:|---:|---:|
+| any (RNG-free by seen cards) | 673 | 138 | 811 |
+| cycle_ok (own cycle legal and ≥ 1 opponent deal fits) | 475 | 109 | 584 |
+| deck8 (cycle_ok + all 8 opponent cards seen) = no flags | **292** | 109 | **401** |
+
+## Caveats
+- **Game mode unknown (b).** These logs carry no battle-log entry, so they may hold ladder matches as well as Ranked ones. Opponent towers below L16 occur in 79/1,002 matches, against 2/227 in the Ranked set.
+- **11 records have `game_build` None.** Their first `phase2` row is null. The other 991 are on build 160402012.
+- **Short logs:** 44 matches have < 10 opponent plays, and 18 have their last play before tick 2000. They are not filtered out.
+- **Spell levels by mode** are 92.3% right on the opponent side. J7 should treat a spell level as ±1 (b).

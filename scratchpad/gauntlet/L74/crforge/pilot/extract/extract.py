@@ -34,6 +34,7 @@ from scratchpad.gauntlet.L74.parity.core import load_catalog  # noqa: E402
 TABLES = Path(r'C:\Users\benpe\crforge_eval\cache\tables\16.402.22')
 DRAWERS = {'Arrows', 'Princess', 'Hunter', 'SkeletonKing'}      # G0: the only Ladder cards that draw after the deal
 OWN_PRINCESS = 4858                                             # main account, level-16 towers
+OWN_TAG = "#20Q0UV0GPQ"                                         # live account (own-player-tag memory)
 GROUPS = {'Tower Princess': 'King_PrincessTowers', 'Cannoneer': 'King_CannonTowers',
           'Dagger Duchess': 'King_KnifeTowers', 'Royal Chef': 'King_ChefTowers'}
 
@@ -129,13 +130,90 @@ def deals_fitting(seq):
     return n, ex
 
 
-def match(path, bl=None, names=None, cat=None, shims=None, tt=None):
-    """-> (record, None) or (None, skip reason)."""
+def unit_hp_table():
+    """card row (base, _EV1, _hero) -> {level: set of body max hp} (crforge, LagProbe unithp -> unit_hp.tsv)."""
+    out = collections.defaultdict(dict)
+    for line in open(HERE / 'unit_hp.tsv'):
+        row, lv, hps = line.split()
+        out[row][int(lv)] = {int(h) for h in hps.split(',')}
+    return out
+
+
+FORM_SUFFIX = {1: '_EV1', 2: '_hero'}
+
+
+def derive_sides(path, m, events, first, my, hp, names, cat, by_name, uhp, tt):
+    """A2b-1b, no battle-log entry: both sides' deck / levels / flags / towers from the live log alone.
+    Deck: ours exact from own_hand (deck_index + name + form, our own public data); the opponent's = the cards its
+    extracted plays show (seen order; None for an unseen slot; inferred Zaps not counted). Slot flags: the highest form
+    a card was seen in (1 evo, 2 hero); an unseen form reads 0. Levels: each body's first max hp looked up in crforge's
+    unit table for its card row and form (unit_hp.tsv); the level most bodies of the card agree on; a card with no
+    body (a spell) takes its side's modal body level ('mode'). Towers: tick-0 max hp in crforge's tower table."""
+    base = lambda disp: names.get((by_name.get(disp) or {}).get('card_id'))
+    own = {}
+    for raw in open(path, 'rb'):
+        if b'"decision"' in raw[:40]:
+            for h in (json.loads(raw).get('public') or {}).get('own_hand', []):
+                k = h['deck_index']
+                own[k] = (h['name'], max(int(h.get('form', 0)), own.get(k, ('', 0))[1]))
+    votes = collections.defaultdict(collections.Counter)
+    bform = collections.Counter()       # (side, base card) -> highest form any of its bodies shows (spell plays carry 0)
+    for s, cid, mx in first.values():
+        c = cat.get(cid)
+        if c is None:
+            continue
+        b0 = names.get(c['card_id'])
+        if b0 is None:
+            continue
+        f = fights.form_of(cid, c)
+        bform[s, b0] = max(bform[s, b0], f)
+        row = b0 + FORM_SUFFIX[f] if f and (b0 + FORM_SUFFIX.get(f, '')) in uhp else b0
+        lv = [L for L, hs in uhp.get(row, {}).items() if mx in hs]
+        if len(lv) == 1:
+            votes[s, b0][lv[0]] += 1
+    out = {}
+    for s in (0, 1):
+        if s == my:
+            deck = [base(own[k][0]) if k in own else None for k in range(8)]
+            disp = [own[k][0] if k in own else None for k in range(8)]
+            form = [own[k][1] if k in own else 0 for k in range(8)]
+        else:
+            seen = {}
+            for e in events:
+                if e['side'] == s and e['kind'] == 'play' and not e.get('inferred') and base(e['name']):
+                    seen[e['name']] = max(seen.get(e['name'], 0), e.get('form', 0))
+            disp = list(seen)[:8] + [None] * (8 - min(8, len(seen)))
+            deck = [base(d) if d else None for d in disp]
+            form = [max(seen.get(d, 0), bform[s, base(d)]) if d else 0 for d in disp]
+        mode = collections.Counter(v.most_common(1)[0][0] for (ss, _), v in votes.items() if ss == s).most_common(1)
+        mode = mode[0][0] if mode else 16
+        lv = [votes[s, d].most_common(1)[0][0] if votes.get((s, d)) else (mode if d else None) for d in deck]
+        src = ['hp' if votes.get((s, d)) else ('mode' if d else None) for d in deck]
+        k_hp, p_hp = hp.get((s, True)), hp.get((s, False))
+        tw = [(g, L) for (g, L), (k, p) in tt.items() if p == p_hp]
+        king = next((L for (g, L), (k, _) in tt.items() if k == k_hp), None)
+        flags = [] if len(tw) == 1 and king else [f'towers_unmatched:{k_hp}/{p_hp}:{len(tw)}']
+        n = sum(d is not None for d in deck)
+        if n < 8:
+            flags.append(f'deck_seen:{n}')
+        out[s] = dict(deck=deck, display=disp, levels=lv, level_src=src, slot_flags=[{1: 1, 2: 2}.get(f, 0) for f in form],
+                      towers=dict(group=tw[0][0] if len(tw) == 1 else None, king_level=king,
+                                  level=tw[0][1] if len(tw) == 1 else None, king_hp=k_hp, princess_hp=p_hp),
+                      word=word(OWN_TAG) if s == my else None, flags=flags, deck_seen=n)
+    return out
+
+
+def match(path, bl=None, names=None, cat=None, shims=None, tt=None, uhp=None, by_name=None, api=True):
+    """-> (record, None) or (None, skip reason). api=False (A2b-1b): no battle-log entry; sides from derive_sides.
+    With an entry, the record also carries 'derived' (derive_sides on the same log) to validate A2b-1b against."""
     path = Path(path)
-    bl = bl if bl is not None else battles()
-    gap, b = battle_for(path, bl)
-    if b is None:
-        return None, 'no_battle_log_entry'
+    if api:
+        bl = bl if bl is not None else battles()
+        gap, b = battle_for(path, bl)
+        if b is None:
+            return None, 'no_battle_log_entry'
+    else:
+        gap, b = None, None
     m, why = fights.read_match(path)
     if m is None:
         return None, why
@@ -145,20 +223,16 @@ def match(path, bl=None, names=None, cat=None, shims=None, tt=None):
     if hp.get((my, False)) != OWN_PRINCESS:
         return None, f'not_main_account:{hp.get((my, False))}'
     end = next((json.loads(r) for r in open(path, 'rb') if b'"end"' in r[:20]), {})
+    if not api and not end.get('towers'):
+        return None, 'no_end_towers'          # an aborted log: no finished match
     crowns = ((end.get('towers') or {}).get('crowns_me'), (end.get('towers') or {}).get('crowns_opp'))
-    api = (b['team'][0]['crowns'], b['opponent'][0]['crowns'])
+    api = (b['team'][0]['crowns'], b['opponent'][0]['crowns']) if b else None
     names = names or id_names(TABLES)
-    cat = cat or load_catalog()[0]
+    if cat is None:
+        cat, by_name = load_catalog()
     tt = tt or tower_table()
+    uhp = uhp or unit_hp_table()
     life, stats = shims or table_shims(TABLES)
-    sides = {my: side_info(b['team'][0], names, cat, tt, hp.get((my, True)), hp.get((my, False))),
-             1 - my: side_info(b['opponent'][0], names, cat, tt, hp.get((1 - my, True)), hp.get((1 - my, False)))}
-    sides[my]['role'], sides[1 - my]['role'] = 'us', 'opp'
-    flags = [f'{s}:{f}' for s in sides for f in sides[s].pop('flags')]
-    if any(len(sides[s]['deck']) != 8 for s in sides):
-        return None, 'deck_size'
-    if None not in crowns and crowns != api:
-        flags.append(f'crowns_mismatch:live{crowns}_api{api}')
     # Plays the log began after (the reader starts at ~tick 150): a tick-0 frame holding only the towers makes the
     # first frame's bodies new, so deployments keeps them with the gap [0, first frame - 1] (flag pre_log).
     m['frames'] = [(0, [bd for bd in t0 if bd['tower']])] + m['frames']
@@ -178,8 +252,20 @@ def match(path, bl=None, names=None, cat=None, shims=None, tt=None):
     # 3720-hp ability object; 4 opponent Hero Goblins decks in the battle log). Exact via crforge unit hp if it matters.
     # A looser "any first-seen hp" shim made the Hero IW's ice cube a play (10-26 validation: 1 extra own play).
     events, delay = fights.deployments(m, cat, life, own_unit=lambda n, h: h >= .45 * top.get(n, 0) > 0, stats=stats)
+    derived = derive_sides(path, m, events, first, my, hp, names, cat, by_name, uhp, tt)
+    if b:
+        sides = {my: side_info(b['team'][0], names, cat, tt, hp.get((my, True)), hp.get((my, False))),
+                 1 - my: side_info(b['opponent'][0], names, cat, tt, hp.get((1 - my, True)), hp.get((1 - my, False)))}
+    else:
+        sides = derived
+    sides[my]['role'], sides[1 - my]['role'] = 'us', 'opp'
+    flags = [f'{s}:{f}' for s in sides for f in sides[s].pop('flags')]
+    if b and any(len(sides[s]['deck']) != 8 for s in sides):
+        return None, 'deck_size'
+    if b and None not in crowns and crowns != api:
+        flags.append(f'crowns_mismatch:live{crowns}_api{api}')
     plays, unplaced = [], []
-    idx = {s: {d: k for k, d in enumerate(sides[s]['display'])} for s in sides}
+    idx = {s: {d: k for k, d in enumerate(sides[s]['display']) if d} for s in sides}
     for e in events:
         k = idx[e['side']].get(e['name'])
         row = dict(side=e['side'], kind=e['kind'], card=None if k is None else sides[e['side']]['deck'][k], deck_index=k,
@@ -192,7 +278,11 @@ def match(path, bl=None, names=None, cat=None, shims=None, tt=None):
         if e.get('inferred'):
             row['inferred'] = True
         (plays if k is not None else unplaced).append(row)
-    build = next((json.loads(r).get('phase2', {}).get('build') for r in open(path, 'rb') if b'"phase2"' in r), None)
+    build = next(((json.loads(r).get('phase2') or {}).get('build') for r in open(path, 'rb') if b'"phase2"' in r), None)
+    # RNG-free: no deck card is a drawer. Without the API only seen cards are known; an unseen slot was never played (it
+    # is unseen because no play of it was extracted), and G0's drawers draw only when played (crforge: Arrows / Princess
+    # / Hunter shots, Skeleton King's soul pick), so it cannot draw -- unless a play of it was missed (opp_no_fitting_deal
+    # and the missed-play rate on the 227 bound that).
     drawers = sorted(DRAWERS & (set(sides[0]['deck']) | set(sides[1]['deck'])))
     order = own_order(path)
     seq = {s: [p['deck_index'] for p in sorted(plays, key=lambda p: p['tick']) if p['side'] == s and p['kind'] == 'play']
@@ -203,7 +293,9 @@ def match(path, bl=None, names=None, cat=None, shims=None, tt=None):
     n_opp, opp_fit = deals_fitting(seq[1 - my])
     if not n_opp:
         flags.append(f'{1 - my}:opp_no_fitting_deal:0')
-    return dict(own_cycle_fail=own_fail, opp_fitting_deals=n_opp, opp_deal_fit=opp_fit,match=path.stem, battle_time=b['battleTime'], gap_s=gap, my_side=my, game_build=build,
+    extra = dict(derived={str(s): derived[s] for s in (0, 1)}) if b else dict(source='live_only')
+    return dict(extra, own_cycle_fail=own_fail, opp_fitting_deals=n_opp, opp_deal_fit=opp_fit, match=path.stem,
+                battle_time=b['battleTime'] if b else None, gap_s=gap, my_side=my, game_build=build,
                 era='post_1019' if path.stem[10:23] >= fights.TABLE_1019_FROM else 'pre_1019', tables=TABLES.name,
                 ext=m['ext'], phase3_births=bool(m['births']), first_frame_tick=m['frames'][1][0], own_delay=delay,
                 sides={str(s): sides[s] for s in (0, 1)},
@@ -291,7 +383,7 @@ def validate(live, rec):
 
 def batch(out, since):
     bl = battles()
-    names, cat, shims, tt = id_names(TABLES), load_catalog()[0], table_shims(TABLES), tower_table()
+    names, (cat, by_name), shims, tt, uhp = id_names(TABLES), load_catalog(), table_shims(TABLES), tower_table(), unit_hp_table()
     """Per Ranked battle at or after `since` (EDT stamp): the live log that played it (battle_for, the gen_jobs rule),
     extracted. Writes every extracted match; counts skips by reason."""
     stats, rows, skips = collections.Counter(), [], []
@@ -308,7 +400,7 @@ def batch(out, since):
             stats['no_live_log'] += 1; skips.append((b['battleTime'], 'no_live_log')); continue
         p = min(c, key=lambda x: x[0])[1]
         try:
-            r, why = match(p, [b], names, cat, shims, tt)
+            r, why = match(p, [b], names, cat, shims, tt, uhp, by_name)
         except Exception as e:      # one bad log must not stop the batch; counted and named
             r, why = None, f'error:{type(e).__name__}:{e}'[:160]
         if r is None:
@@ -328,9 +420,88 @@ def batch(out, since):
     return dict(stats)
 
 
+_CTX = None
+
+
+def _noapi(p):
+    global _CTX
+    if _CTX is None:
+        names, (cat, by_name) = id_names(TABLES), load_catalog()
+        _CTX = dict(names=names, cat=cat, by_name=by_name, shims=table_shims(TABLES), tt=tower_table(), uhp=unit_hp_table())
+    try:
+        return match(p, api=False, **_CTX)
+    except Exception as e:      # one bad log must not stop the batch; counted and named
+        return None, f'error:{type(e).__name__}:{e}'[:160]
+
+
+def batch_noapi(out, since, workers):
+    """A2b-1b: every post-`since` live log that no battle-log entry claims (battle_for: battle end 60..600 s after the log's
+    start), extracted from the log alone (match api=False). Non-Ranked / short / other-account logs fall out on
+    read_match, the 4858 main-account check or the missing end-of-match towers."""
+    from concurrent.futures import ProcessPoolExecutor
+    bl = battles()
+    logs = sorted(p for p in LIVE.glob('live_play_2026*.jsonl') if re.match(r'live_play_\d{8}_\d{6}\.jsonl$', p.name)
+                  and p.stem[10:23] >= since)
+    claimed = {p for p in logs if battle_for(p, bl)[1] is not None}
+    todo = [p for p in logs if p not in claimed]
+    stats, rows = collections.Counter(logs=len(logs), api_claimed=len(claimed), todo=len(todo)), []
+    with ProcessPoolExecutor(workers) as ex:
+        for p, (r, why) in zip(todo, ex.map(_noapi, todo, chunksize=4)):
+            if r is None:
+                stats['skip:' + why.split(':')[0]] += 1
+            else:
+                rows.append(r)
+    with open(out, 'w') as f:
+        for r in rows:
+            f.write(json.dumps(r) + '\n')
+    return dict(stats, extracted=len(rows))
+
+
+def usable(r, rule):
+    """J7 usability of a record under a flag rule (EXTRACT.md table)."""
+    opp = r['sides'][str(1 - r['my_side'])]
+    clean_cycle = r['own_cycle_fail'] is None and r['opp_fitting_deals'] > 0
+    return r['rng_free'] and {'any': True, 'cycle_ok': clean_cycle, 'deck8': clean_cycle and opp.get('deck_seen', 8) == 8,
+                              'no_flags': not r['flags']}[rule]
+
+
+def check_levels(api_jsonl):
+    """A2b-1b validation on the API-backed records: derive_sides (log only) vs the battle log, per card."""
+    R = [json.loads(l) for l in open(api_jsonl)]
+    c, out = collections.Counter(), {}
+    bad = collections.Counter()
+    for r in R:
+        for s in ('0', '1'):
+            A, D = r['sides'][s], r['derived'][s]
+            role = 'us' if int(s) == r['my_side'] else 'opp'
+            api = dict(zip(A['deck'], zip(A['levels'], A['slot_flags'])))
+            for d, lv, src, fl in zip(D['deck'], D['levels'], D['level_src'], D['slot_flags']):
+                if d is None:
+                    continue
+                if d not in api:
+                    c[role, 'seen_not_in_api_deck'] += 1; bad['not_in_deck', d] += 1; continue
+                c[role, src, 'n'] += 1
+                c[role, src, 'level_ok'] += lv == api[d][0]
+                if lv != api[d][0]:
+                    bad[role, src, d, lv - api[d][0]] += 1
+                c[role, 'flag_ok'] += fl == api[d][1]; c[role, 'flag_n'] += 1
+            c[role, 'decks'] += 1; c[role, 'deck8'] += D['deck_seen'] == 8
+            c[role, 'towers_ok'] += (D['towers']['group'], D['towers']['level'], D['towers']['king_level']) == \
+                (A['towers']['group'], A['towers']['level'], A['towers']['king_level'])
+            c[role, 'unseen_api_cards'] += sum(x not in D['deck'] for x in A['deck'])
+            c[role, 'unseen_flagged_slots'] += sum(x not in D['deck'] and api[x][1] != 0 for x in A['deck'])
+        seen = set(x for s in '01' for x in r['derived'][s]['deck'] if x)
+        live_rule = not (DRAWERS & seen)
+        c['rng', live_rule, r['rng_free']] += 1
+    out['counts'] = {' '.join(map(str, k)): v for k, v in sorted(c.items(), key=str)}
+    out['worst'] = [(list(map(str, k)), v) for k, v in bad.most_common(15)]
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('cmd', choices=('match', 'validate', 'batch'))
+    ap.add_argument('cmd', choices=('match', 'validate', 'batch', 'batch_noapi', 'check_levels'))
+    ap.add_argument('--workers', type=int, default=4); ap.add_argument('--api')
     ap.add_argument('--live'); ap.add_argument('--rec'); ap.add_argument('--out'); ap.add_argument('--since', default='20261019_0600')
     a = ap.parse_args()
     if a.cmd == 'match':
@@ -338,6 +509,10 @@ def main():
         print(json.dumps(r if r else dict(skip=why)))
     elif a.cmd == 'validate':
         print(json.dumps(validate(a.live, a.rec), default=str))
+    elif a.cmd == 'batch_noapi':
+        print(json.dumps(batch_noapi(a.out, a.since, a.workers)))
+    elif a.cmd == 'check_levels':
+        print(json.dumps(check_levels(a.api)))
     else:
         print(json.dumps(batch(a.out, a.since)))
 

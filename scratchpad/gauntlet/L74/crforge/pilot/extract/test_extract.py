@@ -20,4 +20,10 @@ for role, n in (('us', 37), ('opp', 35)):
     assert s['truth'] == s['matched'] == n and s['extra'] == 0, (role, s)
 assert v['us']['window_ok'] >= 36 and v['opp']['window_ok'] == 35, (v['us'], v['opp'])
 assert v['us']['tap_exact'] == 37 and v['opp']['tile_ok'] == 35, (v['us'], v['opp'])
-print('ok', {r: {k: v[r][k] for k in ('matched', 'window_ok', 'exact_tick', 'tile_ok')} for r in ('us', 'opp')})
+# A2b-1b: the log-only derivation reproduces the API's levels and towers on this match (opponent's IceSpirits L15 included)
+r, _ = extract.match(ROOT / 'scratchpad/gauntlet/L68/live_reader/live_play_20261026_130453.jsonl')
+for s in ('0', '1'):
+    A, D = r['sides'][s], r['derived'][s]
+    assert sorted(zip(A['deck'], A['levels'])) == sorted(zip(D['deck'], D['levels'])), (s, A['levels'], D['levels'])
+    assert A['towers'] == D['towers'], s
+print('ok',{r: {k: v[r][k] for k in ('matched', 'window_ok', 'exact_tick', 'tile_ok')} for r in ('us', 'opp')})

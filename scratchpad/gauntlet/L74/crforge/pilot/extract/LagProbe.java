@@ -9,6 +9,27 @@ import org.crforge.core.battle.unit.Standard1v1Battle;
 public class LagProbe {
   public static void main(String[] a) throws Exception {
     GameTables tables = GameTables.load(Path.of(a[0]));
+    if (a[1].equals("unithp")) {   // A2b-1b: card row (incl. _EV1 / _hero) x level -> the max hp of every body it makes
+      // (side 0 at (9000, 8000), run tick 20, passive towers, bodies sampled ticks 21-120); a row a level refuses is skipped
+      for (int i = 2; i < a.length; i++)
+        for (int lv = 1; lv <= 16; lv++) {
+          java.util.TreeSet<Integer> hp = new java.util.TreeSet<>();
+          try {
+            var m = new Standard1v1Battle(tables, 16, false);
+            m.play(20, m.getWorld().getRecords().card(a[i]), lv, 0, 9000, 8000, "P");
+            for (int t = 0; t < 120; t++) {
+              m.getBattle().step();
+              for (var e : m.getBattle().getHolder().entities())
+                if (e instanceof org.crforge.core.battle.unit.CharacterEntity c && !(e instanceof org.crforge.core.battle.unit.TowerEntity))
+                  hp.add(c.getHitPoints().getMaximum());
+            }
+          } catch (Throwable t) {
+            continue;
+          }
+          if (!hp.isEmpty()) System.out.println(a[i] + "\t" + lv + "\t" + hp.toString().replaceAll("[\\[\\] ]", ""));
+        }
+      return;
+    }
     if (a[1].equals("towers")) {   // side 0's tower max hp (x:hp) per spawn group and level
       for (String g : new String[] {"King_PrincessTowers", "King_CannonTowers", "King_KnifeTowers", "King_ChefTowers"})
         for (int lv = 1; lv <= 16; lv++) {
