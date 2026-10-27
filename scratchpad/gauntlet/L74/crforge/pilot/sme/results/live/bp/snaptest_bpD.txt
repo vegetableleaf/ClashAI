@@ -1,0 +1,14 @@
+{"match": "live_play_20261026_080929", "t": 1602, "base": true, "live1": "caught", "hp1": "caught", "ph1": "n/a", "proj1": "caught", "el1": "caught"}
+{"match": "live_play_20261026_094126", "t": 2533, "base": true, "live1": "caught", "hp1": "caught", "ph1": "n/a", "proj1": "n/a", "el1": "caught"}
+{"match": "live_play_20261026_141505", "t": 1808, "base": true, "live1": "caught", "hp1": "caught", "ph1": "n/a", "proj1": "caught", "el1": "caught"}
+{"match": "live_play_20261026_144615", "t": 1996, "base": true, "live1": "caught", "hp1": "caught", "ph1": "n/a", "proj1": "caught", "el1": "caught"}
+{"match": "live_play_20261026_154319", "t": 5997, "base": true, "live1": "caught", "hp1": "caught", "ph1": "n/a", "proj1": "caught", "el1": "caught"}
+{"match": "live_play_20261026_160930", "t": 1538, "base": true, "live1": "caught", "hp1": "caught", "ph1": "n/a", "proj1": "caught", "el1": "caught"}
+{"match": "live_play_20261026_171232", "t": 961, "base": true, "live1": "caught", "hp1": "caught", "ph1": "caught", "proj1": "n/a", "el1": "caught"}
+{"match": "live_play_20261026_220728", "t": 3007, "base": true, "live1": "caught", "hp1": "caught", "ph1": "n/a", "proj1": "caught", "el1": "caught"}
+{"match": "live_play_20261026_233957", "t": 5461, "base": true, "live1": "caught", "hp1": "caught", "ph1": "n/a", "proj1": "n/a", "el1": "caught"}
+{"match": "live_play_20261026_235355", "t": 3321, "base": true, "live1": "caught", "hp1": "caught", "ph1": "n/a", "proj1": "caught", "el1": "caught"}
+{"match": "live_play_20261027_000233", "t": 593, "base": true, "live1": "caught", "hp1": "caught", "ph1": "n/a", "proj1": "caught", "el1": "caught"}
+{"match": "live_play_20261027_000233", "t": 1470, "base": true, "live1": "caught", "hp1": "caught", "ph1": "n/a", "proj1": "caught", "el1": "caught"}
+{"match": "live_play_20261027_002021", "t": 4391, "base": true, "live1": "caught", "hp1": "caught", "ph1": "n/a", "proj1": "caught", "el1": "caught"}
+caught / planted: {"live1": [13, 13], "hp1": [13, 13], "proj1": [10, 10], "el1": [13, 13], "ph1": [1, 1]}

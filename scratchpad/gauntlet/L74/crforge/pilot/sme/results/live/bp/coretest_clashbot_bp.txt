@@ -1,0 +1,42 @@
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :env:processResources NO-SOURCE
+> Task :tables:compileJava UP-TO-DATE
+> Task :tables:processResources UP-TO-DATE
+> Task :tables:classes UP-TO-DATE
+
+> Task :tables:gameTables
+/workspace/crforge_cache/tables/16.402.18
+/workspace/crforge_cache/tables/16.402.19
+/workspace/crforge_cache/tables/16.402.21
+/workspace/crforge_cache/tables/16.402.22
+
+> Task :core:compileJava
+> Task :core:processResources UP-TO-DATE
+> Task :core:classes
+> Task :core:jar
+> Task :core:compileTestFixturesJava
+> Task :core:processTestFixturesResources NO-SOURCE
+> Task :core:testFixturesClasses
+> Task :core:testFixturesJar UP-TO-DATE
+> Task :env:compileJava
+> Task :env:classes
+> Task :env:jar UP-TO-DATE
+> Task :env:startScripts
+> Task :env:installDist
+> Task :core:compileTestJava
+> Task :core:processTestResources UP-TO-DATE
+> Task :core:testClasses
+> Task :core:test
+
+[Incubating] Problems report is available at: file:///workspace/crforge_fork/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.7.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 14s
+15 actionable tasks: 9 executed, 6 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.1/userguide/configuration_cache_enabling.html
+EXIT 0

@@ -1,0 +1,111 @@
+From 7ea925af151107289b3a971fedebf338a75a364d Mon Sep 17 00:00:00 2001
+From: a2c-bp <bp@local>
+Date: Tue, 27 Oct 2026 20:22:50 +0000
+Subject: [PATCH] clashbot-bp: TickProbe instrumentation (no behaviour change)
+
+---
+ .../java/org/crforge/core/battle/Battle.java  |  1 +
+ .../org/crforge/core/battle/EntityHolder.java |  7 ++++
+ .../org/crforge/core/battle/TickProbe.java    | 36 +++++++++++++++++++
+ 3 files changed, 44 insertions(+)
+ create mode 100644 core/src/main/java/org/crforge/core/battle/TickProbe.java
+
+diff --git a/core/src/main/java/org/crforge/core/battle/Battle.java b/core/src/main/java/org/crforge/core/battle/Battle.java
+index c93ff46b..36952e12 100644
+--- a/core/src/main/java/org/crforge/core/battle/Battle.java
++++ b/core/src/main/java/org/crforge/core/battle/Battle.java
+@@ -123,6 +123,7 @@ public class Battle {
+       return;
+     }
+     executeDueCommands();
++    TickProbe.tell("commands", -1, -1);
+     boolean ticked = runUpdate();
+     mode.afterTick(this, ticked);
+     tick++;
+diff --git a/core/src/main/java/org/crforge/core/battle/EntityHolder.java b/core/src/main/java/org/crforge/core/battle/EntityHolder.java
+index def5a2cc..8b7dad26 100644
+--- a/core/src/main/java/org/crforge/core/battle/EntityHolder.java
++++ b/core/src/main/java/org/crforge/core/battle/EntityHolder.java
+@@ -405,8 +405,10 @@ public class EntityHolder {
+     pendingPassesDone = false;
+     try {
+       cleanup();
++      TickProbe.tell("cleanup", -1, -1);
+       List<BattleEntity> snapshot = new ArrayList<>(live);
+       passes.prePass(tick, snapshot);
++      TickProbe.tell("prePass", -1, -1);
+       for (BattleEntity entity : snapshot) {
+         entity.preHook();
+       }
+@@ -420,21 +422,26 @@ public class EntityHolder {
+           component.refresh();
+           if (entity.isActive(slot)) {
+             component.visit();
++            TickProbe.tell("visit", slot, entity.getId());
+           }
+         }
+       }
+       for (BattleEntity entity : snapshot) {
+         entity.actions().runPass(tick);
++        TickProbe.tell("action", -1, entity.getId());
+       }
+       pendingPass(snapshot, EntityActions.PHASE_POST_COMPONENT_TICK);
+       for (BattleEntity entity : snapshot) {
+         entity.postHook();
++        TickProbe.tell("postHook", -1, entity.getId());
+       }
+       passes.afterPostHooks();
+       pendingPass(snapshot, EntityActions.PHASE_POST_GAME_OBJECT_TICK);
+       pendingPassesDone = true;
+       passes.postPass(tick);
++      TickProbe.tell("postPass", -1, -1);
+       cleanup();
++      TickProbe.tell("endCleanup", -1, -1);
+       for (BattleEntity entity : live) {
+         entity.actions().endOfTick();
+       }
+diff --git a/core/src/main/java/org/crforge/core/battle/TickProbe.java b/core/src/main/java/org/crforge/core/battle/TickProbe.java
+new file mode 100644
+index 00000000..8bbbdd03
+--- /dev/null
++++ b/core/src/main/java/org/crforge/core/battle/TickProbe.java
+@@ -0,0 +1,36 @@
++/*
++ * crforge - https://github.com/voonhous/crforge
++ * SPDX-License-Identifier: Apache-2.0
++ * Porting this code? Please cite this file and the commit you read: see the README.
++ */
++
++package org.crforge.core.battle;
++
++/**
++ * Instrumentation only (clashbot-bp, A2c-BP): when {@link #current} is set, it is told of each point inside a step, so
++ * a caller can read the battle's state between the step's parts. Unset (the default), nothing calls it and the battle
++ * runs as before.
++ */
++@FunctionalInterface
++public interface TickProbe {
++
++  /** The probe in use, or null for none. */
++  TickProbe[] CURRENT = {null};
++
++  /**
++   * A point inside a step.
++   *
++   * @param point the part just done: commands, cleanup, prePass, preHook, visit, action, postHook, postPass, endTick
++   * @param slot the component slot of a visit, else -1
++   * @param entityId the entity just visited, else -1
++   */
++  void at(String point, int slot, int entityId);
++
++  /** Tells the probe in use, if any. */
++  static void tell(String point, int slot, int entityId) {
++    TickProbe p = CURRENT[0];
++    if (p != null) {
++      p.at(point, slot, entityId);
++    }
++  }
++}
+-- 
+2.43.0
+

@@ -1,6 +1,7 @@
 """A2c-BP comparator rule SME_BP_SNAP: a read taken inside a game step. An isolated div frame t (no div neighbour) is
 'torn_snap' when its board equals, by the SME comparison, crforge's own state at one in-step event of step t+1
-(SnapRun: after the pre-pass, each hit, launch, impact, spawn, removal, the post-hooks pass), and our elixir equals that
+(SnapRun: after the pre-pass, each hit, launch, impact, spawn, removal, the post-hooks pass; SnapRun2 on the clashbot-bp
+engine also after the command pass, each cleanup and every entity visit / action / post-hook), and our elixir equals that
 state's or an earlier one's (the reader reads our elixir before the board). Exact: no tolerance, crforge's own states
 only. Probe: 141505@1808 = the state at a spawn event of step 1809; 171232@961 = the state after a hit in step 962."""
 import collections, json, os, subprocess
@@ -9,6 +10,7 @@ from sme import diff
 from sme_live import canon_live, sim_canon, fill_placeholder, HP_PH
 
 SNAP_BUILD = os.environ.get('SME_SNAP_BUILD', '/workspace/pilot/bp/build_snap')
+SNAP_CLASS = os.environ.get('SME_SNAP_CLASS', 'SnapRun')  # SnapRun2 (clashbot-bp TickProbe): every point inside the step
 
 
 def snapshots(plan, ticks, end, workdir):
@@ -19,7 +21,7 @@ def snapshots(plan, ticks, end, workdir):
     jf = os.path.join(workdir, 'snap_jobs.txt')
     open(jf, 'w').write('%s %d %s %d\n' % (pf, end, of, end))
     env = dict(os.environ, SNAP_TICKS=','.join(str(T) for T in sorted(ticks)))
-    subprocess.run(['java', '-Xmx8g', '-cp', sme.LIB + '/*:' + SNAP_BUILD, 'SnapRun', sme.TABLES, jf, '1'],
+    subprocess.run(['java', '-Xmx8g', '-cp', sme.LIB + '/*:' + SNAP_BUILD, SNAP_CLASS, sme.TABLES, jf, '1'],
                    capture_output=True, text=True, env=env)
     out = collections.defaultdict(list)
     if os.path.exists(of + '.snap.jsonl'):

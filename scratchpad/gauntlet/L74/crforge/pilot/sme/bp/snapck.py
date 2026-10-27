@@ -29,7 +29,7 @@ for m, t in items:
     of = os.path.join(WD, 'o.jsonl')
     open(os.path.join(WD, 'jobs.txt'), 'w').write('%s %d %s %d\n' % (pf, t + 2, of, t - 1))
     env = dict(os.environ, SNAP_TICKS=str(t + 1))
-    r = subprocess.run(['java', '-Xmx8g', '-cp', '/workspace/pilot/lib_008aa626/*:/workspace/pilot/bp/build_snap', 'SnapRun',
+    r = subprocess.run(['java', '-Xmx8g', '-cp', os.environ.get('SNAP_LIB', '/workspace/pilot/lib_008aa626') + '/*:' + os.environ.get('SNAP_BUILD', '/workspace/pilot/bp/build_snap'), os.environ.get('SNAP_CLASS', 'SnapRun'),
                         '/workspace/crforge_cache/tables/16.402.22', os.path.join(WD, 'jobs.txt'), '1'], capture_output=True, text=True, env=env)
     lines = {o['t']: o for o in map(json.loads, open(of))}
     snaps = [json.loads(l) for l in open(of + '.snap.jsonl')] if os.path.exists(of + '.snap.jsonl') else []
