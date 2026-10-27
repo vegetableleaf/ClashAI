@@ -529,29 +529,28 @@ python -I project.py results/loop_n2048_c2_t24.json --extra-core-s 0.05   # lapt
   tok / mask are JavaMain's buffers for the row. Python `round(x, 3)` = `BigDecimal` HALF_EVEN; a body's x / y =
   `a / 1000` (= `round(a * 18 / 18000, 3)`, checked for a in -100..40,000); `np.hypot` = `Math.hypot` (no difference
   seen).
-- **Result (a), facade 0446ab3 (`CfCore.java` sha256 57e3755b...), 56 matches each, `cue` byte-identical on every row:**
+- **Result (a), facade 0446ab3 (`CfCore.java` sha256 57e3755b...), 56 matches each, `cue` byte-identical on every row.**
+  `cue_live` / `cue_x0` = the harness as committed at 93e718f (S3b-3c + S3b-3d + this; `builder/obs_id.py` sha256
+  f9e23afc... pinned in the JSON): **all 20 GenModel keys IDENTICAL** at both cfgs. The pre-merge runs (harness at
+  0446ab3 + this builder only) gave the same seat-rows, rows / tokens with a cue and per-column counts, cue identical.
 
   | cfg | JSON | seat-rows | rows with a cue | tokens with a cue | cue |
   |---|---|---:|---:|---:|---|
   | live | `results/cue_live.json` | 49,822 | 31,297 | 177,603 | **identical** |
   | extrapolate 0 | `results/cue_x0.json` | 50,353 | 31,312 | 181,374 | **identical** |
-  | live, census pairs with Miner / Goblin Drill / hero Knight / Monk / Mighty Miner (pod wrapper, 14 matches) | `results/cue_cover.json` | 11,454 | 8,221 | 45,435 | identical |
+  | live, census pairs 74 92 112 141 149 152 158 195 211 217 50 55 76 0 (Miner / Goblin Drill / hero Knight / Monk / Mighty Miner; pre-merge harness via a pod wrapper over `census`) | `results/cue_cover.json` | 11,454 | 8,221 | 45,435 | identical |
 
   Tokens with each column set (live; `diag.cue_colNN`): every column but state=tunnelling (col 6) and state=casting
   (col 7) is set on 150+ tokens. Tunnelling: 0 live, 126 in the coverage run (identical). **Casting: 0 tokens in all
-  three runs (b: untested)**; it is the same flag test as tunnelling, on `abilityBits` bit 64.
-- **Cost per seat-row (a, in-process on the same rows, pod under load ~14, two runs at once):**
+  runs (b: untested)**; it is the same flag test as tunnelling, on `abilityBits` bit 64. Measuring it needs a match
+  where a casting champion / hero body (hero Knight, Monk, Mighty Miner) is pressed and stands within 3 tiles of its token.
+- **Cost per seat-row (a, in-process on the same rows; the merged runs, two at once on a pod under load ~10):**
 
   | path | live | extrapolate 0 |
   |---|---:|---:|
-  | production `e1_eval.sim_cue_rows` | 791 us | 767 us |
-  | `fast_obs.sim_cue_rows` (S1b; timed on a copy of the memo) | 389 us | 376 us |
-  | `CfCue.build` inside the JVM | 15.5 us | 13.9 us |
-  | the same call from Python (JPype) | 21.7 us | 20.3 us |
+  | production `e1_eval.sim_cue_rows` | 805 us | 794 us |
+  | `fast_obs.sim_cue_rows` (S1b; timed on a copy of the memo) | 400 us | 383 us |
+  | `CfCue.build` inside the JVM | 15.3 us | 14.5 us |
+  | the same call from Python (JPype) | 24.8 us | 24.3 us |
 
   The Java path takes tok / mask as built; the first-sight table fills are left out of its time.
-- **Seen on the way (not this ticket's key).** On facade 0446ab3 the Java `unit_form` is no longer identical (a:
-  39,156 / 49,822 live rows equal, 40,846 / 50,353 at extrapolate 0; first diffs prod form 1, Java 0). Cause (b, from
-  the code, not traced row by row): that facade sets STATUS_EVOLVED (8) from the body's `_EV` row (`evolvedBit`), and
-  `FacadeMatch.unitCode` still takes the form from the body_map flags alone. tok / mask / the 10 identity keys stay identical; sc differs at index 5 only (the counter,
-  S3b-3c).

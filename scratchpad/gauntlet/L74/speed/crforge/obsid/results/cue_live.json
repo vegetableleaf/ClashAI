@@ -1,5 +1,64 @@
 {
- "ticket": "S3b-3e",
+ "ticket": "S3b-3c",
+ "opp_spells": true,
+ "census_pairs": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20,
+  21,
+  22,
+  23,
+  24,
+  25,
+  26,
+  27,
+  28,
+  29,
+  30,
+  31,
+  32,
+  33,
+  34,
+  35,
+  36,
+  37,
+  38,
+  39,
+  40,
+  41,
+  42,
+  43,
+  44,
+  45,
+  46,
+  47,
+  48,
+  49,
+  50,
+  51,
+  52,
+  53,
+  54,
+  55
+ ],
  "matches": 56,
  "skipped": [],
  "seat_rows": 49822,
@@ -13,10 +72,10 @@
   "rows_drops": 0,
   "bodies_moved": 93466,
   "rows_moved": 27780,
-  "cue_py_ns": 39424876552,
-  "cue_fast_ns": 19368931630,
-  "cue_java_ns": 773467957,
-  "cue_jcall_ns": 1079382450,
+  "cue_py_ns": 40113629888,
+  "cue_fast_ns": 19904377595,
+  "cue_java_ns": 762773632,
+  "cue_jcall_ns": 1233340775,
   "rows_cue_active": 31297,
   "cue_tokens": 177603,
   "cue_col00": 177603,
@@ -40,9 +99,17 @@
   "cue_col18": 510,
   "cue_col19": 1711,
   "cue_col20": 5044,
-  "cue_col21": 13051
+  "cue_col21": 13051,
+  "view_tick_mismatch": 0,
+  "own_events_mismatch": 0,
+  "own_events": 679193,
+  "rows_proj": 13365,
+  "rows_eff": 3030,
+  "rows_abil": 16009,
+  "rows_abil_known": 16009,
+  "rows_cycle": 36903
  },
- "wall_s": 580.7,
+ "wall_s": 603.9,
  "cfg_overrides": {},
  "feature_version": 6,
  "gen_row_keys": [
@@ -73,8 +140,8 @@
   "core_keys_identical": {
    "tok": true,
    "mask": true,
-   "sc": false,
-   "unit_form": false
+   "sc": true,
+   "unit_form": true
   },
   "ident_keys_identical": {
    "past": true,
@@ -89,32 +156,64 @@
    "slot_form": true
   },
   "sc_identical_except_opp_elixir": true,
+  "opp_past_identical": true,
+  "pub_keys_identical": {
+   "projectiles": true,
+   "effects": true,
+   "own_ability": true,
+   "opp_cycle": true
+  },
+  "sc_nospell_opp": null,
+  "opp_counter_tallies": {
+   "_opp_plays": "IDENTICAL",
+   "_opp_spawns": "IDENTICAL"
+  },
   "cue_identical": true
  },
  "status_by_key": {
+  "_opp_plays": "IDENTICAL",
+  "_opp_spawns": "IDENTICAL",
   "_sc_prepare": "IDENTICAL",
   "cue": "IDENTICAL",
   "deck_card": "IDENTICAL",
   "deck_form": "IDENTICAL",
-  "effects": "NOT_PORTED",
+  "effects": "IDENTICAL",
   "hand_card": "IDENTICAL",
   "hand_form": "IDENTICAL",
   "hand_slot": "IDENTICAL",
   "mask": "IDENTICAL",
   "next_card": "IDENTICAL",
   "next_form": "IDENTICAL",
-  "opp_cycle": "NOT_PORTED",
-  "opp_past": "NOT_PORTED",
-  "own_ability": "NOT_PORTED",
+  "opp_cycle": "IDENTICAL",
+  "opp_past": "IDENTICAL",
+  "own_ability": "IDENTICAL",
   "past": "IDENTICAL",
-  "projectiles": "NOT_PORTED",
-  "sc": "DIFF",
+  "projectiles": "IDENTICAL",
+  "sc": "IDENTICAL",
   "slot_card": "IDENTICAL",
   "slot_form": "IDENTICAL",
   "tok": "IDENTICAL",
-  "unit_form": "DIFF"
+  "unit_form": "IDENTICAL"
  },
  "keys": {
+  "_opp_plays": {
+   "status": "IDENTICAL",
+   "rows": 49822,
+   "equal": 49822,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "_opp_spawns": {
+   "status": "IDENTICAL",
+   "rows": 49822,
+   "equal": 49822,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
   "cue": {
    "status": "IDENTICAL",
    "rows": 49822,
@@ -143,10 +242,10 @@
    "first_diffs": []
   },
   "effects": {
-   "status": "NOT_PORTED",
+   "status": "IDENTICAL",
    "rows": 49822,
-   "equal": 0,
-   "not_ported": 49822,
+   "equal": 49822,
+   "not_ported": 0,
    "dtype_shape_diff": 0,
    "rows_diff_at_last_axis_index": {},
    "first_diffs": []
@@ -206,28 +305,28 @@
    "first_diffs": []
   },
   "opp_cycle": {
-   "status": "NOT_PORTED",
+   "status": "IDENTICAL",
    "rows": 49822,
-   "equal": 0,
-   "not_ported": 49822,
+   "equal": 49822,
+   "not_ported": 0,
    "dtype_shape_diff": 0,
    "rows_diff_at_last_axis_index": {},
    "first_diffs": []
   },
   "opp_past": {
-   "status": "NOT_PORTED",
+   "status": "IDENTICAL",
    "rows": 49822,
-   "equal": 0,
-   "not_ported": 49822,
+   "equal": 49822,
+   "not_ported": 0,
    "dtype_shape_diff": 0,
    "rows_diff_at_last_axis_index": {},
    "first_diffs": []
   },
   "own_ability": {
-   "status": "NOT_PORTED",
+   "status": "IDENTICAL",
    "rows": 49822,
-   "equal": 0,
-   "not_ported": 49822,
+   "equal": 49822,
+   "not_ported": 0,
    "dtype_shape_diff": 0,
    "rows_diff_at_last_axis_index": {},
    "first_diffs": []
@@ -242,75 +341,22 @@
    "first_diffs": []
   },
   "projectiles": {
-   "status": "NOT_PORTED",
+   "status": "IDENTICAL",
    "rows": 49822,
-   "equal": 0,
-   "not_ported": 49822,
+   "equal": 49822,
+   "not_ported": 0,
    "dtype_shape_diff": 0,
    "rows_diff_at_last_axis_index": {},
    "first_diffs": []
   },
   "sc": {
-   "status": "DIFF",
+   "status": "IDENTICAL",
    "rows": 49822,
-   "equal": 0,
+   "equal": 49822,
    "not_ported": 0,
    "dtype_shape_diff": 0,
-   "rows_diff_at_last_axis_index": {
-    "5": 49822
-   },
-   "first_diffs": [
-    {
-     "tag": "obsid0",
-     "side": 0,
-     "tick": 90,
-     "index": [
-      [
-       5
-      ]
-     ]
-    },
-    {
-     "tag": "obsid0:opp",
-     "side": 1,
-     "tick": 90,
-     "index": [
-      [
-       5
-      ]
-     ]
-    },
-    {
-     "tag": "obsid1:opp",
-     "side": 0,
-     "tick": 90,
-     "index": [
-      [
-       5
-      ]
-     ]
-    },
-    {
-     "tag": "obsid1",
-     "side": 1,
-     "tick": 90,
-     "index": [
-      [
-       5
-      ]
-     ]
-    },
-    {
-     "tag": "obsid2",
-     "side": 0,
-     "tick": 90,
-     "index": [
-      [
-       5
-      ]
-     ]
-    }
-   ]
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
   },
   "slot_card": {
    "status": "IDENTICAL",
@@ -340,270 +386,13 @@
    "first_diffs": []
   },
   "unit_form": {
-   "status": "DIFF",
+   "status": "IDENTICAL",
    "rows": 49822,
-   "equal": 39156,
+   "equal": 49822,
    "not_ported": 0,
    "dtype_shape_diff": 0,
-   "rows_diff_at_last_axis_index": {
-    "0": 3081,
-    "1": 2724,
-    "2": 2343,
-    "3": 1967,
-    "4": 1656,
-    "5": 1300,
-    "6": 973,
-    "7": 669,
-    "8": 389,
-    "9": 301,
-    "10": 227,
-    "11": 152,
-    "12": 125,
-    "13": 93,
-    "14": 85,
-    "15": 79,
-    "16": 89,
-    "17": 72,
-    "18": 71,
-    "19": 67,
-    "20": 52,
-    "21": 42,
-    "22": 29,
-    "23": 13,
-    "24": 12
-   },
-   "first_diffs": [
-    {
-     "tag": "obsid0",
-     "side": 0,
-     "tick": 2520,
-     "index": [
-      [
-       3
-      ]
-     ],
-     "prod": [
-      0,
-      2,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-     ],
-     "java": [
-      0,
-      2,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-     ]
-    },
-    {
-     "tag": "obsid0:opp",
-     "side": 1,
-     "tick": 2520,
-     "index": [
-      [
-       3
-      ]
-     ],
-     "prod": [
-      0,
-      2,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-     ],
-     "java": [
-      0,
-      2,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-     ]
-    },
-    {
-     "tag": "obsid0",
-     "side": 0,
-     "tick": 2530,
-     "index": [
-      [
-       3
-      ]
-     ],
-     "prod": [
-      0,
-      2,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-     ],
-     "java": [
-      0,
-      2,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-     ]
-    },
-    {
-     "tag": "obsid0:opp",
-     "side": 1,
-     "tick": 2530,
-     "index": [
-      [
-       3
-      ]
-     ],
-     "prod": [
-      0,
-      2,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-     ],
-     "java": [
-      0,
-      2,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-     ]
-    },
-    {
-     "tag": "obsid0:opp",
-     "side": 1,
-     "tick": 2540,
-     "index": [
-      [
-       3
-      ]
-     ],
-     "prod": [
-      0,
-      2,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-     ],
-     "java": [
-      0,
-      2,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-     ]
-    }
-   ]
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
   },
   "_sc_prepare": {
    "status": "IDENTICAL",
@@ -622,6 +411,27 @@
   "prod_nonempty": 36903,
   "past_view_ahead": 36972,
   "opp_past_view_ahead": 36903
+ },
+ "pub_counters": {
+  "motion_estimated": 4141,
+  "landed": 13729,
+  "expired": 345,
+  "press_tick_mismatch": 0
+ },
+ "opp_counter_edges": {
+  "swarm_join": 197,
+  "spawn_parent": 318,
+  "spawn_death": 25,
+  "spawn_both": 0,
+  "body_play_spell_visible": 98,
+  "spell_new_sighting": 819,
+  "spell_still_visible": 2220,
+  "window_skip": 0,
+  "spell_body_skip": 0,
+  "play_body": 3844,
+  "play_spell": 819,
+  "play_no_cost": 0,
+  "rebase": 66
  },
  "stamp": {
   "engine": "crforge",
@@ -643,10 +453,18 @@
   "pipeline/e1_eval.py": "0af6eb5f4c98d22334644452e19dd6e73f7558897c4879962bfeb156fce5a14f",
   "pipeline/obs_contract.py": "953a15d913f1b646de4f6f9559c7d29c0ba0e546795776bca25e53e6ab8dc3b2",
   "pipeline/body_identity.py": "120150eda21c958871c932f9090aba74a80c4058018a53aec4e1c5db11305114",
+  "pipeline/public_observation.py": "1bb832fa51f3f89e3c51b08ef0782d60fae112c15d21771d7dc494e5f7bb6495",
+  "pipeline/opp_elixir_count.py": "abf7b3f91327d023599b75d619bf483bccf0eddf54aaa6c9b3c581e095f10296",
+  "pipeline/vocab.py": "bf3fcbf5d8fb2e75df97b1a9a312cde727016e365ed3eea7cd476e1aecb01647",
+  "builder/CfSpeed.java": "4ca14c0b1cd8ff09ea7835b32519f835e5469d5a99f3b5010ebf9ad04523f814",
+  "builder/CfObsBind.java": "a6e7cd7cedafa2324c51247de2c61232aca6ab450eb4cceef7e9fcb5e3fb7ebe",
+  "builder/CfOppElixir.java": "b4bfc1e68878250b1dfc45df93f7f3592778ad2a715ce09e279ec2dfe5b4418b",
+  "builder/CfPubObj.java": "a8ce581b60584365473fb0e2ecdbbb4b7e9a5d7dbc3d43f927b94ed50945c890",
+  "builder/obs_id.py": "f9e23afc233306683f6178b54a13c20231500a8f7302a8764e3aa4773823eac2",
   "pipeline/sim_unit_state.py": "8d5260c5b6fc5ee711b2e4b43807aa9fe826a79c834198cc92b09c459fa43496",
   "pipeline/fast_obs.py": "7391e4ff7c8d22a250ee58fd8b47e94d3af0edfb0e498ca28ced00b97234d9d2",
   "pipeline/model_gen.py": "efbe8676700544552d2632a55a8417c5975a33510286c321de31ecd2226ed053",
   "builder/CfCue.java": "ce190434b90273ad05be8d39a829a92a0678ab3a2d29c695a2edb84b227f916f"
  },
- "note": "prod = e1_eval prepare + gen_row; java = BUILDERS on the same facade battle and tick. Keys starting '_' are aux checks, not GenModel keys: _sc_prepare = prepare()'s sc before GenPolicy.row zeroes the hand one-hots. sc[5] (opponent elixir) of the Java builder is the engine truth: replaced by -1, never compared as equal and never logged."
+ "note": "prod = e1_eval prepare + gen_row; java = BUILDERS on the same facade battle and tick. Keys starting '_' are aux checks, not GenModel keys: _sc_prepare = prepare()'s sc before GenPolicy.row zeroes the hand one-hots. sc[5] (opponent elixir) is production's PUBLIC estimate on both sides (S3b-3c: CfOppElixir), compared like every index; no engine truth is read or logged. sc@nospell_opp = sc on the rows whose opponent deck has no spell card; _opp_plays / _opp_spawns = PublicObserver's play / spawn tallies."
 }
