@@ -1,0 +1,22 @@
+--- a/scratchpad/gauntlet/L74/crforge/pilot/sme/sme_live.py (436d6f4)
++++ b/scratchpad/gauntlet/L74/crforge/pilot/sme/sme_live.py (A2c-BP SME_BP_MIXPH)
+@@ -345,6 +345,7 @@
+ TORN_STEP = int(os.environ.get('SME_TORN_STEP', '0'))  # round 4.1
+ STEP_MOVE = 200  # game units: more than one step of the fastest walker read here (~180 per tick)
+ STEP_CLOCK = int(os.environ.get('SME_STEP_CLOCK', '0'))  # round 6.1: our elixir as the step clock
++MIX_PH = int(os.environ.get('SME_BP_MIXPH', '0'))  # A2c-BP: torn_mixed reads the hp -1 placeholder as the main comparison does (round 2.4)
+ 
+ 
+ def _no(why, *msg):
+@@ -470,7 +471,10 @@
+         if any(c == 'div' for c in nb):
+             continue
+         r, a, b = canon_live(frames[t], me), sim_canon(by[t], me), sim_canon(by[t + 1], me)
+-        if all(x in a[k] or x in b[k] for k in 'TUPA' for x in r[k]) and \
++        # A2c-BP (SME_BP_MIXPH): a recorded body at hp -1 is the reader's placeholder (round 2.4), held by a sim body at
++        # its very (side, x, y) at t or t+1, whatever that body's hp; the main comparison already fills it the same way
++        pos = {k: {y[:3] for y in a[k] + b[k]} for k in 'TU'} if MIX_PH else {}
++        if all(x in a[k] or x in b[k] or (k in pos and x[3] == -1 and x[:3] in pos[k]) for k in 'TUPA' for x in r[k]) and \
+                 all(r[k] in (a.get(k), b.get(k)) or r[k][0] in (a.get(k, (None,))[0], b.get(k, (None,))[0])
+                     for k in r if k.startswith('S')):
+             cls[t] = 'torn_mixed'

@@ -1,0 +1,15 @@
+--- a/scratchpad/gauntlet/L74/crforge/pilot/extract/extract.py (436d6f4)
++++ b/scratchpad/gauntlet/L74/crforge/pilot/extract/extract.py (A2c-BP hook)
+@@ -352,6 +352,12 @@
+             row['inferred'] = True
+         (plays if k is not None else unplaced).append(row)
+     plays = crforge_casts(path, plays, sides, my, m.get('fx'))
++    # A2c-BP (sme/bp_rules.py, SME_BP_* flags, all off by default): hero Valkyrie / Golden Knight / hero Giant casts
++    # dated from the reader's charge / stun buff countdowns, Golden Knight pushes dropped, Rascals point from its girls
++    import bp_rules  # crforge_casts put sme/ on sys.path
++    if bp_rules.VALK or bp_rules.GK or bp_rules.GIANT or bp_rules.RASCALS:
++        import live_frames
++        plays = bp_rules.apply(path, plays, sides, {f['t']: f for f in live_frames.convert(path)})
+     build = next(((json.loads(r).get('phase2') or {}).get('build') for r in open(path, 'rb') if b'"phase2"' in r), None)
+     # RNG-free: no deck card is a drawer. Without the API only seen cards are known; an unseen slot was never played (it
+     # is unseen because no play of it was extracted), and G0's drawers draw only when played (crforge: Arrows / Princess
