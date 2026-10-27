@@ -12,9 +12,10 @@ in=$(cat)
 cp='(^|[;&|(]|[\]n|"command":")[[:space:]]*(([A-Za-z_][A-Za-z0-9_]*=[^[:space:]]*|timeout|nohup|env|time|[0-9]+[smh]?)[[:space:]]+)*'
 interp='[\]?"?([^[:space:];&|"=]*[/\])?(python(3([.][0-9]+)?)?|py)([.]exe)?[\]?"?'   # optional quotes: "C:/x/python.exe" - slipped by 10-17   # no '=': `PY=/x/python;` assigns, it does not run
 var='[\]?"?[$][{]?[A-Za-z_][A-Za-z0-9_]*[}]?[\]?"?'
+opts='([[:space:]]+-[A-Za-z]+)*'   # 10-27: option flags before the dash (`python -I -` slipped twice)
 dash='[[:space:]]+-([[:space:]]|[\]n|"|<)'
 bare='([[:space:]]+[0-9]?[<>]+&?[^[:space:];&|"]*)*[[:space:]]*([;&|]|[\]n|"[,}])'
-if printf '%s' "$in" | grep -Eq "$cp($interp|$var)($dash|$bare)"; then
+if printf '%s' "$in" | grep -Eq "$cp($interp|$var)($opts$dash|$bare)"; then
   echo 'Blocked: Python reading its script from stdin (`python -`, `$PY -`, or an interpreter with no script) hangs as a REPL on this laptop. Write the script to a file (scratchpad) and run `python file.py`.' >&2
   exit 2
 fi

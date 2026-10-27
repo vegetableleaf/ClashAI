@@ -32,3 +32,17 @@
 0	{"tool_name":"Bash","tool_input":{"command":"x\nPY=/workspace/venv35/bin/python3\ny","description":"x"}}
 2	{"tool_name":"Bash","tool_input":{"command":"\"C:/Users/benpe/x/python.exe\" - <<EOF\nEOF","description":"x"}}
 0	{"tool_name":"Bash","tool_input":{"command":"\"C:/Users/benpe/x/python.exe\" a.py","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"python -I -","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"python -I - <<'EOF'\nprint(1)\nEOF","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"python -IB -","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"python3 -u -","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"$PY -I -","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"python -","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"cd x; python -I -","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"python -c \"print(1)\"","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"python -V","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"python --version","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"python -m pip list","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"python file.py","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"python -I file.py","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"python -B -m pytest -q","description":"x"}}
