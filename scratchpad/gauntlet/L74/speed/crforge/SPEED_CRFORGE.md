@@ -281,3 +281,27 @@ python -I project.py results/loop_n2048_c2_t24.json --extra-core-s 0.05   # lapt
   parent for every spawn (Play.units() covers direct units) is untested (b).
 - **Forms (b).** RoyaleSim showed status_flags 0 on every probed body, evolved and hero slots included, so `form` comes
   from the crforge row name (_EV1 / Hero) and is not checked against RoyaleSim.
+
+## S3b-3a: byte-identity harness, Java builders vs the production GenModel row (`obsid/`)
+
+- **Harness.** `obsid/run.sh OUT.json [--n 56] [--set k=v]` (pod 32657) compiles CfCore (the work tree's HEAD copy),
+  `CfSpeed.java` and `obsid/CfObsBind.java` into `obsid/build`, starts the facade's JVM with them, and runs
+  `e1_eval.run_selfplay_batch` (ROYALE_ENGINE=crforge, CLXIII both seats, `search_s0.live_cfg` + delay 26 + fv6, as
+  accept_f1 obs). A hook on `Match.gen_row` builds every `BUILDERS` entry on the SAME facade battle and tick and
+  compares each GenModel key (dtype, shape, bytes). Keys no builder makes: NOT_PORTED. A port adds one builder.
+  The Java builder's opponent-elixir slot (sc[5], the engine truth) is replaced by -1 before comparing, never logged.
+- **Result (a), `obsid/results/live.json`: 56 matches, 49,229 seat-rows, Java tick = production tick on all.**
+  tok equal 17,842 / 49,229, mask 43,528, unit_form 24,440, sc 0 (sc[5] by construction). 15 keys NOT_PORTED.
+  So S3's 38,400 / 38,400 does **not** carry over (c): S3 compared against from_engine **fv4** without the live cfg.
+- **Why (a: per-column counts; b: the attribution of shifted rows).** `results/x0.json` = the same with
+  `--set extrapolate_ticks=0` (48,451 rows): sc[0..2] then match on all rows, tok's position columns 4 / 5 drop from
+  ~28k to 5.5k rows (= the spell rows). What the Java builder does that production fv6 does not:
+  1. **26-tick extrapolated view** (`extrapolate`): positions, hp, t (sc[0..2]). Not ported.
+  2. **fv>=4 `body_only_board`**: no spell tokens (cols 12 / 13, 5.5-5.7k rows; mask), deploying and age empty
+     (cols 8-11, ~31k rows). The builder still writes fv4's.
+  3. **My elixir sc[3]** (31-34k rows): the facade reports `getElixir() / 10` milli (CfCore.java:477, truncated),
+     the builder `getElixir() / 10000.0`.
+  4. **Opponent elixir sc[5]**: production = the public counter estimate; the builder reads the truth (port the counter).
+  5. **Identity / form**: the builder's name table (body_map first entry) gives the Hero Ice Wizard body cls 110 form 2,
+     production gives cls 7 form 0 (facade status flags 0 -> fv6 `resolve_board`); tok col 0 13.3k rows at x0,
+     unit_form 24k. The table must come from production's identity rule (and the 9 by-root names from the root play).
