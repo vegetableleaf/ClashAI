@@ -1,0 +1,48 @@
+THRESHOLDS.json sha256 0ba3aa32763dc3812d55fcaedd827f8fea482605945b2ca2a0cd364d6c5e2802 (matches HUMANLIKE.md)
+
+### E4  (960 model matches with plays; positions: True)
+B vs 13k    n_live  748  RMS d (core13) 0.93  RMS d CORE9 1.09  floor 0.05 | RMS<=.10 False  TOST<.20 all False  B3 False  => B FAIL
+B vs ranked n_live  233  RMS d (core13) 0.86  RMS d CORE9 0.93  floor 0.07 | RMS<=.10 False  TOST<.20 all False  B3 False  => B FAIL
+per-archetype CORE9 RMS d vs 13k: golem 1.31 (n 97/22), hog 0.98 (n 98/140), hyperbait 1.25 (n 60/50), lava_hound 1.28 (n 44/14), other 1.06 (n 227/167), pekka_bridge 1.54 (n 19/17), royal_giant 1.93 (n 28/30), royal_giant_monk 1.84 (n 7/15), weak_other 1.39 (n 380/293)
+signature stats d (SIM-live): hog: sig_per_min 0.80 sig_first_s 0.75 (n 98/140); hyperbait: sig_per_min 0.03 sig_first_s 0.41 (n 60/50); golem: sig_per_min -0.14 sig_first_s 0.70 (n 97/22); lava_hound: sig_per_min -1.42 sig_first_s 1.03 (n 44/14); pekka_bridge: sig_per_min 1.24 sig_first_s -0.31 (n 19/17); royal_giant: sig_per_min 0.99 sig_first_s -0.14 (n 28/30); royal_giant_monk: sig_per_min 0.65 sig_first_s 1.57 (n 7/15)
+H (B-only, A/C/D absent => H_ABC = 0): H_B 0.000 over 21 cells (live n 2271); H_ABC 0.000 (A, C not scored)
+
+### E4_clx_fin15  (1920 model matches with plays, 3840 raw rows; positions: False)
+B vs 13k    n_live  748  RMS d (core9) 0.70  RMS d CORE9 0.70  floor 0.04 | RMS<=.10 False  TOST<.20 all False  B3 False  => B FAIL
+B vs ranked n_live  233  RMS d (core9) 0.58  RMS d CORE9 0.58  floor 0.07 | RMS<=.10 False  TOST<.20 all False  B3 False  => B FAIL
+per-archetype CORE9 RMS d vs 13k: golem 0.90 (n 118/22), hog 0.52 (n 327/140), hyperbait 0.86 (n 154/50), lava_hound 0.77 (n 51/14), other 0.69 (n 521/167), pekka_bridge 1.03 (n 45/17), royal_giant 1.36 (n 49/30), royal_giant_monk 0.82 (n 24/15), weak_other 0.86 (n 631/293)
+signature stats d (SIM-live): hog: sig_per_min 0.07 sig_first_s 0.11 (n 327/140); hyperbait: sig_per_min 0.28 sig_first_s -0.00 (n 154/50); golem: sig_per_min -0.47 sig_first_s -0.04 (n 118/22); lava_hound: sig_per_min -0.36 sig_first_s 0.03 (n 51/14); pekka_bridge: sig_per_min 0.84 sig_first_s -0.90 (n 45/17); royal_giant: sig_per_min 0.63 sig_first_s -0.33 (n 49/30); royal_giant_monk: sig_per_min 1.07 sig_first_s -0.06 (n 24/15)
+D (pooled, Ranked-233, NOT the sealed block): SIM win 68.2% (n 3840) vs live 48.1% (n 233): +20.1 pp [+13.5, +26.6]  enough_live(>=1500) False  => D FAIL
+H (B-only, A/C/D absent => H_ABC = 0): H_B 0.000 over 21 cells (live n 2271); H_ABC 0.000 (A, C not scored)
+
+### gen_v32_s0  (480 model matches with plays, 480 raw rows; positions: False)
+B vs 13k    n_live  748  RMS d (core9) 0.79  RMS d CORE9 0.79  floor 0.06 | RMS<=.10 False  TOST<.20 all False  B3 False  => B FAIL
+B vs ranked n_live  233  RMS d (core9) 0.65  RMS d CORE9 0.65  floor 0.08 | RMS<=.10 False  TOST<.20 all False  B3 False  => B FAIL
+per-archetype CORE9 RMS d vs 13k: golem 1.20 (n 32/22), hog 0.80 (n 77/140), hyperbait 0.75 (n 41/50), lava_hound 0.85 (n 11/14), other 0.79 (n 139/167), pekka_bridge 1.31 (n 11/17), royal_giant 1.66 (n 11/30), royal_giant_monk 1.22 (n 10/15), weak_other 0.83 (n 148/293)
+signature stats d (SIM-live): hog: sig_per_min -0.18 sig_first_s 0.83 (n 77/140); hyperbait: sig_per_min 0.25 sig_first_s -0.03 (n 41/50); golem: sig_per_min -1.39 sig_first_s 1.39 (n 32/22); lava_hound: sig_per_min -0.73 sig_first_s 0.30 (n 11/14); pekka_bridge: sig_per_min 0.94 sig_first_s -0.04 (n 11/17); royal_giant: sig_per_min 0.88 sig_first_s -0.50 (n 11/30); royal_giant_monk: sig_per_min 1.12 sig_first_s 0.53 (n 10/15)
+D (pooled, Ranked-233, NOT the sealed block): SIM win 74.8% (n 480) vs live 48.1% (n 233): +26.7 pp [+19.1, +34.0]  enough_live(>=1500) False  => D FAIL
+H (B-only, A/C/D absent => H_ABC = 0): H_B 0.000 over 21 cells (live n 2271); H_ABC 0.000 (A, C not scored)
+
+### O2b  (480 model matches with plays, 480 raw rows; positions: False)
+B vs 13k    n_live  748  RMS d (core9) 0.65  RMS d CORE9 0.65  floor 0.06 | RMS<=.10 False  TOST<.20 all False  B3 False  => B FAIL
+B vs ranked n_live  233  RMS d (core9) 0.54  RMS d CORE9 0.54  floor 0.08 | RMS<=.10 False  TOST<.20 all False  B3 False  => B FAIL
+per-archetype CORE9 RMS d vs 13k: golem 1.36 (n 32/22), hog 0.51 (n 77/140), hyperbait 0.69 (n 41/50), lava_hound 0.77 (n 11/14), other 0.71 (n 139/167), pekka_bridge 0.73 (n 11/17), royal_giant 1.48 (n 11/30), royal_giant_monk 1.19 (n 10/15), weak_other 0.68 (n 148/293)
+signature stats d (SIM-live): hog: sig_per_min 0.00 sig_first_s 0.28 (n 77/140); hyperbait: sig_per_min 0.39 sig_first_s -0.18 (n 41/50); golem: sig_per_min -0.67 sig_first_s 0.47 (n 32/22); lava_hound: sig_per_min -0.26 sig_first_s -0.00 (n 11/14); pekka_bridge: sig_per_min 0.91 sig_first_s -0.62 (n 11/17); royal_giant: sig_per_min 0.79 sig_first_s -0.44 (n 11/30); royal_giant_monk: sig_per_min 0.14 sig_first_s -0.36 (n 10/15)
+D (pooled, Ranked-233, NOT the sealed block): SIM win 83.8% (n 480) vs live 48.1% (n 233): +35.7 pp [+28.4, +42.7]  enough_live(>=1500) False  => D FAIL
+H (B-only, A/C/D absent => H_ABC = 0): H_B 0.000 over 21 cells (live n 2271); H_ABC 0.000 (A, C not scored)
+
+### I_u40  (2880 model matches with plays, 2880 raw rows; positions: False)
+B vs 13k    n_live  748  RMS d (core9) 0.88  RMS d CORE9 0.88  floor 0.04 | RMS<=.10 False  TOST<.20 all False  B3 False  => B FAIL
+B vs ranked n_live  233  RMS d (core9) 0.78  RMS d CORE9 0.78  floor 0.07 | RMS<=.10 False  TOST<.20 all False  B3 False  => B FAIL
+per-archetype CORE9 RMS d vs 13k: golem 0.92 (n 162/22), hog 0.72 (n 476/140), hyperbait 0.98 (n 243/50), lava_hound 0.86 (n 69/14), other 0.90 (n 774/167), pekka_bridge 1.26 (n 66/17), royal_giant 1.64 (n 78/30), royal_giant_monk 1.23 (n 37/15), weak_other 1.02 (n 975/293)
+signature stats d (SIM-live): hog: sig_per_min 0.42 sig_first_s -0.01 (n 476/140); hyperbait: sig_per_min 0.44 sig_first_s -0.06 (n 243/50); golem: sig_per_min -0.27 sig_first_s -0.31 (n 162/22); lava_hound: sig_per_min -0.26 sig_first_s -0.24 (n 69/14); pekka_bridge: sig_per_min 0.86 sig_first_s -0.89 (n 66/17); royal_giant: sig_per_min 0.83 sig_first_s -0.81 (n 78/30); royal_giant_monk: sig_per_min 1.40 sig_first_s 0.45 (n 37/15)
+D (pooled, Ranked-233, NOT the sealed block): SIM win 48.8% (n 2880) vs live 48.1% (n 233): +0.8 pp [-5.9, +7.3]  enough_live(>=1500) False  => D FAIL
+H (B-only, A/C/D absent => H_ABC = 0): H_B 0.000 over 21 cells (live n 2271); H_ABC 0.000 (A, C not scored)
+
+### B_u20  (1920 model matches with plays, 1920 raw rows; positions: False)
+B vs 13k    n_live  748  RMS d (core9) 0.66  RMS d CORE9 0.66  floor 0.04 | RMS<=.10 False  TOST<.20 all False  B3 False  => B FAIL
+B vs ranked n_live  233  RMS d (core9) 0.53  RMS d CORE9 0.53  floor 0.07 | RMS<=.10 False  TOST<.20 all False  B3 False  => B FAIL
+per-archetype CORE9 RMS d vs 13k: golem 0.87 (n 118/22), hog 0.49 (n 327/140), hyperbait 0.71 (n 154/50), lava_hound 0.87 (n 51/14), other 0.66 (n 521/167), pekka_bridge 1.32 (n 45/17), royal_giant 1.42 (n 49/30), royal_giant_monk 0.92 (n 24/15), weak_other 0.81 (n 631/293)
+signature stats d (SIM-live): hog: sig_per_min -0.04 sig_first_s 0.13 (n 327/140); hyperbait: sig_per_min 0.26 sig_first_s -0.00 (n 154/50); golem: sig_per_min -0.23 sig_first_s -0.10 (n 118/22); lava_hound: sig_per_min 0.09 sig_first_s -0.15 (n 51/14); pekka_bridge: sig_per_min 0.90 sig_first_s -0.78 (n 45/17); royal_giant: sig_per_min 0.70 sig_first_s -0.32 (n 49/30); royal_giant_monk: sig_per_min 1.25 sig_first_s 0.32 (n 24/15)
+D (pooled, Ranked-233, NOT the sealed block): SIM win 57.0% (n 1920) vs live 48.1% (n 233): +9.0 pp [+2.2, +15.7]  enough_live(>=1500) False  => D FAIL
+H (B-only, A/C/D absent => H_ABC = 0): H_B 0.000 over 21 cells (live n 2271); H_ABC 0.000 (A, C not scored)

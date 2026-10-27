@@ -201,11 +201,8 @@ def per_arch(L, S, th):
 
 # ------------------------------------------------------------------ level D (pooled version for baselines; the real test needs the sealed block)
 def newcombe(k1, n1, k2, n2):
-    import analyze as AN
-    p1, l1, u1 = AN.wilson(k1, n1)
-    p2, l2, u2 = AN.wilson(k2, n2)
-    d = p1 - p2
-    return d, d - math.sqrt((p1 - l1) ** 2 + (u2 - p2) ** 2), d + math.sqrt((u1 - p1) ** 2 + (p2 - l2) ** 2)
+    import o4r_table as T
+    return T.newcombe(k1, n1, k2, n2)
 
 
 def level_d(raw, th, live_rows=None):
@@ -343,27 +340,40 @@ def repro(th):
 
 
 def selftest(th):
-    """Planted-bug test (pattern 8): the instrument must pass humans against humans and fail a planted slow-down / spread collapse."""
-    L = live_ref('13k')
-    rng = random.Random(0)
-    idx = list(range(len(L)))
-    rng.shuffle(idx)
-    A_, B_ = [L[i] for i in idx[::2]], [L[i] for i in idx[1::2]]
-    ok = level_b(A_, B_, th, feats=CORE9 + EXTRA)
+    """Instrument controls (pattern 8).  Humans vs humans must pass RMS and B3 (and TOST in most random splits); a planted speed bug and a
+    planted spread collapse must fail; level A passes a calibrated model with Exp(1) gaps and fails a miscalibrated / constant-gap one."""
+    L12 = live_ref('12k')
+    feats = CORE9 + EXTRA
+    npass = Counter()
+    nsp = 20
+    for seed in range(nsp):
+        idx = list(range(len(L12)))
+        random.Random(seed).shuffle(idx)
+        h = len(idx) // 2
+        r = level_b([L12[i] for i in idx[:h]], [L12[i] for i in idx[h:]], th, feats=feats)
+        npass['rms'] += r['pass_rms']; npass['tost'] += r['pass_tost']; npass['b3'] += r['pass_b3']; npass['all'] += r['passed']
+    print(f'human control: {nsp} random halves of the 12k live set (n ~960/side): RMS<=.10 {npass["rms"]}/{nsp}, TOST all stats {npass["tost"]}/{nsp}, '
+          f'B3 {npass["b3"]}/{nsp}, full B pass {npass["all"]}/{nsp}')
+    idx = list(range(len(L12)))
+    random.Random(0).shuffle(idx)
+    A_, B_ = [L12[i] for i in idx[::2]], [L12[i] for i in idx[1::2]]
     bad1 = [dict(x, ppm_2x=x['ppm_2x'] * 1.3, react_3s=x['react_3s'] * 1.5) for x in B_]                       # planted: busier + faster answers
     mu = sum(x['push_mean'] for x in B_) / len(B_)
     bad2 = [dict(x, push_mean=mu + 0.3 * (x['push_mean'] - mu)) for x in B_]                                  # planted: right mean, collapsed spread
-    r1, r2 = level_b(A_, bad1, th, feats=CORE9 + EXTRA), level_b(A_, bad2, th, feats=CORE9 + EXTRA)
-    print(f'human split-half: RMS {f2(ok["rms9"])} passed={ok["passed"]} (B3 {ok["spread"] and {k: round(v, 2) for k, v in ok["spread"].items()}})')
-    print(f'planted speed bug: RMS {f2(r1["rms9"])} passed={r1["passed"]}; planted spread collapse: passed={r2["passed"]} push_mean ratio {f2(r2["spread"]["push_mean"])}')
-    # level A: calibrated + Exp(1) gaps pass, a miscalibrated / constant-gap model fails
+    r1, r2 = level_b(A_, bad1, th, feats=feats), level_b(A_, bad2, th, feats=feats)
+    print(f'planted speed bug: RMS {f2(r1["rms9"])} passed={r1["passed"]}; planted spread collapse: passed={r2["passed"]} (push_mean ratio {f2(r2["spread"]["push_mean"])})')
+    rng = random.Random(0)
+    n = 300000
+    ps = [rng.random() for _ in range(n)]
     g = [rng.expovariate(1.0) for _ in range(6000)]
-    ps = [rng.random() for _ in range(6000)]
-    good = level_a([0.5] * 6000, [1] * 6000, ps, [1 if rng.random() < p else 0 for p in ps], g, dict(th, A=dict(th['A'], agreement_card_min=0.0)))
-    bad = level_a([0.5] * 6000, [1] * 6000, ps, [0] * 6000, [1.0] * 6000, th)
-    print(f'level A good: ece {good["ece_pp"]:.2f} pp KS {good["ks"]:.3f} pass_ece {good["pass_ece"]} pass_ks {good["pass_ks"]}; bad: ece {bad["ece_pp"]:.1f} KS {bad["ks"]:.2f} '
-          f'pass_ece {bad["pass_ece"]} pass_ks {bad["pass_ks"]}')
-    good_ok = ok['pass_rms'] and not r1['passed'] and not r2['pass_b3'] and good['pass_ece'] and good['pass_ks'] and not bad['pass_ece'] and not bad['pass_ks']
+    th0 = dict(th, A=dict(th['A'], agreement_card_min=0.0))
+    good = level_a([0.5] * n, [1] * n, ps, [1 if rng.random() < p else 0 for p in ps], g, th0)
+    bad = level_a([0.5] * n, [1] * n, ps, [0] * n, [1.0] * 6000, th0)
+    print(f'level A calibrated: ECE {good["ece_pp"]:.2f} pp KS {good["ks"]:.3f} pass_ece {good["pass_ece"]} pass_ks {good["pass_ks"]}; '
+          f'miscalibrated/constant gaps: ECE {bad["ece_pp"]:.1f} KS {bad["ks"]:.2f} pass_ece {bad["pass_ece"]} pass_ks {bad["pass_ks"]}')
+    # human full-pass rate is REPORTED, not asserted: B3's [0.9, 1.1] band false-fails humans ~15-25% at n~960/side (see HUMANLIKE.md)
+    good_ok = (npass['rms'] == nsp and not r1['passed'] and not r2['pass_b3'] and good['pass_ece'] and good['pass_ks']
+               and not bad['pass_ece'] and not bad['pass_ks'])
     print('SELFTEST', 'OK' if good_ok else 'FAILED')
     return good_ok
 

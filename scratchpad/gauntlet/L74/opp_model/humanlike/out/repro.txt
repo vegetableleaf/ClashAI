@@ -1,0 +1,19 @@
+THRESHOLDS.json sha256 0ba3aa32763dc3812d55fcaedd827f8fea482605945b2ca2a0cd364d6c5e2802 (matches HUMANLIKE.md)
+| quantity | reference | scorecard | match |
+|---|---|---|---|
+| human floor sqrt(1/n+1/n), n=748 | 0.05 | 0.052 | OK |
+| 12k vs 13k humans, 13 stats (opp_behaviour feature set) | 0.1 | 0.106 | OK |
+| 12k vs 13k humans, CORE9 (no positions) | - | 0.072 |  |
+| E4 (ECON_r1, 960) vs 13k, 13 stats | 0.93 | 0.935 | OK |
+| E4 (ECON_r1) vs 13k, CORE9 (the form every o3 row set uses) | - | 1.095 |  |
+| O2b (o3_liveoppB T.1 d40, 480) vs 13k | 0.65 | 0.654 | OK |
+|    same set via o4r_table.style_dist | 0.65 | 0.654 | OK |
+| gen_v32_s0 (o3_gen_s0 T.1 d40, 480) vs 13k | 0.79 | 0.789 | OK |
+|    same set via o4r_table.style_dist | 0.79 | 0.789 | OK |
+| I u40 (w14F_Iu40, 2880) vs Ranked-233 | 0.78 | 0.776 | OK |
+|    same set via o4r_table.style_dist | 0.78 | 0.776 | OK |
+| B u20 (w14O4_Bu20, 1920) vs Ranked-233 | 0.53 | 0.525 | OK |
+|    same set via o4r_table.style_dist | 0.53 | 0.525 | OK |
+| human-human card agreement ceiling (saved L67 run) | 43.7 | 43.720 | OK |
+| human-human cell agreement ceiling (saved L67 run) | 27.5 | 27.520 | OK |
+REPRO OK

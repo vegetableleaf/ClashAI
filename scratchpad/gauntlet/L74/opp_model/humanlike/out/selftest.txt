@@ -1,0 +1,5 @@
+THRESHOLDS.json sha256 0ba3aa32763dc3812d55fcaedd827f8fea482605945b2ca2a0cd364d6c5e2802 (matches HUMANLIKE.md)
+human control: 20 random halves of the 12k live set (n ~960/side): RMS<=.10 20/20, TOST all stats 18/20, B3 17/20, full B pass 15/20
+planted speed bug: RMS 0.46 passed=False; planted spread collapse: passed=False (push_mean ratio 0.31)
+level A calibrated: ECE 0.20 pp KS 0.010 pass_ece True pass_ks True; miscalibrated/constant gaps: ECE 50.0 KS 0.63 pass_ece False pass_ks False
+SELFTEST OK
