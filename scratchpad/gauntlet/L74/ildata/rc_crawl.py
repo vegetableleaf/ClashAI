@@ -354,7 +354,7 @@ class Crawler:
             pass                                    # never let an alert failure kill the crawl
 
     def _gate(self) -> None:
-        wait = self.last + MIN_INTERVAL + self.rng.uniform(0, JITTER) - self.clock()
+        wait = self.last + getattr(self.a, "min_gap", MIN_INTERVAL) + self.rng.uniform(0, JITTER) - self.clock()
         if wait > 0:
             self.sleep(wait)
         self.last = self.clock()
@@ -370,15 +370,21 @@ class Crawler:
         msg = (f"RoyaleAPI crawl PAUSED ({kind}): {why.rstrip('.')}. Nothing is retried until you fix the Chrome window "
                f"(clear the check / log in / wait) and create the RESUME file. Cooldown {int(cool)}s. "
                f"Done so far: {self.cnt['replays']} replays this run.")
-        self._alert(msg)
+        # owner 10-27 overnight: --auto-resume-rate continues after a 429 cooldown by itself; challenge / login /
+        # block / network pauses still wait for the owner's RESUME
+        auto = kind == "rate" and getattr(self.a, "auto_resume_rate", False)
+        if auto:
+            print(f"[crawl] 429: cooling down {int(cool)}s, then continuing (consecutive {self.consec})", flush=True)
+        else:
+            self._alert(msg)
         t0 = last_alert = self.clock()
         while True:
             self._stop()
-            if (self.out / "RESUME").exists() and self.clock() - t0 >= cool:
-                (self.out / "RESUME").unlink()
+            if (auto or (self.out / "RESUME").exists()) and self.clock() - t0 >= cool:
+                (self.out / "RESUME").unlink(missing_ok=True)
                 (self.out / "PAUSED.json").unlink(missing_ok=True)
                 return
-            if self.clock() - last_alert >= REMIND:
+            if not auto and self.clock() - last_alert >= REMIND:
                 last_alert = self.clock()
                 self._alert("Still paused: " + msg)
             self.sleep(POLL)
@@ -625,6 +631,10 @@ def main(argv=None) -> int:
     ap.add_argument("--no-local-seed", action="store_true", help="do not seed from the old crawls' battles.csv")
     ap.add_argument("--no-raw", action="store_true", help="do not keep the raw replay HTML (gz shards)")
     ap.add_argument("--min-free-gb", type=float, default=10.0)
+    ap.add_argument("--min-gap", type=float, default=MIN_INTERVAL,
+                    help="seconds between request starts (jitter added); raise it if the site answers 429")
+    ap.add_argument("--auto-resume-rate", action="store_true",
+                    help="after a 429 cooldown (doubling per consecutive 429, max 1 h) continue without RESUME")
     a = ap.parse_args(argv)
     a.seed_url = a.seed_url if a.seed_url is not None else ["/players"]
     out = Path(a.out)
