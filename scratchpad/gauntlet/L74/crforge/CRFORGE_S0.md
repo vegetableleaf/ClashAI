@@ -256,3 +256,25 @@ one-line `SME_LIB` / J7 `L=` change, left to the lead.
   (`share/` has none), and no device pull since the update exists. So route 2 needs a fresh pull **and** the
   160635001 APK's `csv_*` assets, with their SHA-1s checked against the pulled fingerprint (untested, b: the APK
   files may be stored in the same LZMA form the CDN serves).
+
+## 16.635.3 tables built; crforge's core refuses them (A2c round 5, owner go 2026-10-27)
+- **Built (a):** pod 33920, fork `008aa626`, `./gradlew :tables:dataVersionTables -Pcrforge.dataVersion=16.635.3
+  -Pcrforge.assetSource=cdn -Pcrforge.cache=/workspace/crforge_cache` (3 min 35 s; log `/workspace/t16635/build.log`).
+  - `tables/16.635.3/build.properties`: data_version 16.635.3, client_version 16.635.1, content_sha
+    `dae6c6cc7e9126338da0c606e47e48a9ef80462c`, decoder 1. 28 table files (4.6 MB), as for 16.402.22.
+  - Fingerprint `fingerprints/dae6c6cc….json`: version 16.635.3, 11,467 files, 433 of them table files
+    (`csv_logic/`, `csv_client/`, `data_manifest.toml`); 423 asset files in the pod cache (SHA-1 named, shared files
+    once).
+- **Our client runs 16.635.3 (a):** the MuMu live instance's `update/fingerprint.json` (read-only `adb shell`) says
+  version 16.635.3, sha `dae6c6cc…`, the same content sha as the built tables. 16.635.1 (shipped) is not what it runs.
+- **Core on 16.635.3: refused by design (a).** `:core:test -Pcrforge.dataVersion=16.635.3`: 2,140 tests, **1,053
+  failures**, 0 errors, 2 skipped (`/workspace/t16635/coretest.txt`). 986 failure messages are the core's version guard:
+  "the battle models the rules of game client 16.402.17, which runs data versions [16.402.18, 16.402.19, 16.402.21,
+  16.402.22]; it does not play tables of data version 16.6…". One more is the schema change upstream named:
+  `BattleRam_EV1_PushBack sets PushBackDamage to a table of BaseDamage, Flags where a number is read`.
+  - So **no SME on the 160635001 matches is possible on this core** (b for anything after the guard): crforge refuses
+    to battle on 16.635 data until upstream moves the battle core to client 16.635. Bypassing the guard would run
+    16.402.17 rules on 16.635 data, which is not exactness.
+  - The pin's own tests on 16.402.22 are unchanged (2,140 / 0 failures, gate of 2026-10-27).
+- **What it takes next:** an upstream crforge release for the 16.635 range (watch `docs/compatibility.md`), then the
+  same gate (core tests, SME pilot, J7). Extraction of today's matches is not the blocker.

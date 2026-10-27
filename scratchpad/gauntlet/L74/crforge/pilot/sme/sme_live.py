@@ -89,6 +89,8 @@ def fx_spells():
 FX_SHIFT = int(os.environ.get('SME_FX_SHIFT', '0'))  # round 1: +1 run tick on fx-dated spell plays
 GK_DASH = int(os.environ.get('SME_GK', '0'))          # round 2.2: Golden Knight ability casts from its dashes
 GK_ID, GK_STEP, GK_LAG = 26000074, 100, 2               # card id; dash = > 100 units a tick; crforge: run R moves at R+2
+GK_ACCEL = 63                                           # round 5.4: 1.5x the Golden Knight's ~42-unit walk
+GK_FROM_ACCEL = int(os.environ.get('SME_GK_ACCEL', '0'))  # round 5.4: rejected (run21: 1 regression, -2,146 frames); off
 
 
 CHAMP_BUFF = int(os.environ.get('SME_CHAMP', '0'))  # round 3.1
@@ -122,7 +124,7 @@ def gk_dashes(frames):
     each dash burst, a GK body moving more than GK_STEP units a tick (walk ~30). Run tick window: the movement began
     in (t_prev, t], and crforge moves a GK on R+2 (probe), so R in [t_prev - 1, t - 2]."""
     out, ts = [], sorted(frames)
-    dashing, lastcast = {}, {}
+    dashing, lastcast, accel = {}, {}, {}
     for a, b in zip(ts, ts[1:]):
         dt = b - a
         if dt <= 0:
@@ -134,11 +136,19 @@ def gk_dashes(frames):
                 if not pa:
                     continue
                 q = min(pa, key=lambda f: abs(f[1] - e[1]) + abs(f[2] - e[2]))
-                fast = (abs(q[1] - e[1]) + abs(q[2] - e[2])) / dt > GK_STEP
+                v = (abs(q[1] - e[1]) + abs(q[2] - e[2])) / dt
+                fast = v > GK_STEP
+                # round 5.4: the dash starts below GK_STEP (84 a tick on its first frame, 164443@746): it begins at the
+                # first frame of the run of frames faster than GK_ACCEL (1.5x the ~42 walk) that leads to the burst
+                if v > GK_ACCEL:
+                    accel.setdefault(side, (a, b))
+                else:
+                    accel.pop(side, None)
                 if fast and not dashing.get(side) and b - lastcast.get(side, -10 ** 6) > 100:
                     lastcast[side] = b  # one cast per chain: a pause inside a dash chain is not a new cast
-                    out.append({'side': side, 'kind': 'ability', 'card': 'GoldenKnight', 'tick': b - 2,
-                                'run_ticks': [a - 1, b - 2], 'source': 'gk_dash'})
+                    a0, b0 = accel.get(side, (a, b)) if GK_FROM_ACCEL else (a, b)
+                    out.append({'side': side, 'kind': 'ability', 'card': 'GoldenKnight', 'tick': b0 - 2,
+                                'run_ticks': [a0 - 1, b0 - 2], 'source': 'gk_dash'})
                 dashing[side] = fast
     return out
 
@@ -154,6 +164,23 @@ def valk_shift(p):
     if p['kind'] == 'ability' and p['card'] == 'Valkyrie' and p.get('source') == 'cast_seen':
         return dict(p, tick=p['tick'] - 1, run_ticks=[p['run_ticks'][0] - 1, p['run_ticks'][1] - 1], dated='valk_charge')
     return p
+
+
+def own_press_elixir(p, frames):
+    """Our own ability press dated by our elixir (SME.md round 5.1): crforge takes the cost on the run tick R and shows
+    it on line R+1, so the press runs in [prev, first - 1] of the frame pair where our elixir drops by >= 1.5 elixir,
+    the drop nearest the tap-dated tick within 15 ticks. The tap-dated tick is kept when it is inside that window,
+    else the window end nearest it. run17: the tap-dated tick lies outside the drop window on 6 of 15 presses."""
+    if p['kind'] != 'ability' or p.get('source') != 'own_press' or not frames:
+        return p
+    ts = sorted(frames)
+    R = p['tick']
+    drops = [(a, b) for a, b in zip(ts, ts[1:]) if R - 15 <= b <= R + 15 and frames[a]['el'] - frames[b]['el'] >= 15000]
+    if not drops:
+        return p
+    a, b = min(drops, key=lambda ab: min(abs(ab[0] - R), abs(ab[1] - 1 - R)))
+    lo, hi = a, max(a, b - 1)
+    return dict(p, tick=min(max(R, lo), hi), run_ticks=[lo, hi], dated='own_elixir')
 
 
 GOLEM_DEATH = int(os.environ.get('SME_GOLEM', '0'))  # round 2.3

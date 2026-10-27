@@ -216,19 +216,34 @@ def summoning_spells():
     return _SUMMON
 
 
+def bottle_lag(card):
+    """Ticks from a summoning spell's command to its area for crforge, when the summoned character is a bottle (a
+    building whose DeathAreaEffect is the spell's area) that waits its DeployTime: Rage's RageBottle, 500 ms = 10.
+    SME.md round 5.3: the reader lists no bottle, and the area's countdown dates the area (made); crforge makes the
+    area on R + 10. None for every other card."""
+    rows = json.load(open(Path(TABLES) / 'spells_other.json'))['rows']
+    ch = ((rows.get(card) or {}).get('columns') or {}).get('SummonCharacter')
+    b = (json.load(open(Path(TABLES) / 'buildings.json'))['rows'].get(ch) or {}).get('columns') or {}
+    return b['DeployTime'] // 50 if ch and b.get('DeathAreaEffect') and b.get('DeployTime') else None
+
+
 def crforge_casts(path, plays, sides):
     """Ability casts seen_casts does not give, dated for crforge (SME.md fix rounds 2.2 / 2.3 / 3.1; the rules live in
     crforge/pilot/sme so the SME layer and this extractor share one copy):
     - Golden Knight: one cast per dash burst (sme_live.gk_dashes);
     - Archer Queen / Boss Bandit / Goblinstein: from the phase-2 ability buffs (sme_live.buff_casts);
-    - a hero Ice Golem 'cast' that is its death (same area card id) is dropped (sme_live.golem_death_cast)."""
+    - a hero Ice Golem 'cast' that is its death (same area card id) is dropped (sme_live.golem_death_cast);
+    - a hero Valkyrie cast_seen cast goes 1 tick earlier (sme_live.valk_shift, round 4.2);
+    - our own ability presses are dated by our elixir drop (sme_live.own_press_elixir, round 5.1)."""
     sme_dir = str(HERE.parent / 'sme')
     if sme_dir not in sys.path:
         sys.path.insert(0, sme_dir)
     import live_frames
     import sme_live
     frames = {f['t']: f for f in live_frames.convert(path)}
-    out = [p for p in plays if not sme_live.golem_death_cast(p, frames)]
+    # hero Valkyrie cast_seen casts 1 tick earlier for crforge (charge on R+2; SME.md round 4.2, sme_live.valk_shift)
+    # our own ability presses dated by our elixir drop (round 5.1, sme_live.own_press_elixir)
+    out = [sme_live.own_press_elixir(sme_live.valk_shift(p), frames) for p in plays if not sme_live.golem_death_cast(p, frames)]
     for g in sme_live.gk_dashes(frames) + sme_live.buff_casts(frames):
         deck = sides[g['side']]['deck']
         if g['card'] in deck:
@@ -312,6 +327,10 @@ def match(path, bl=None, names=None, cat=None, shims=None, tt=None, uhp=None, by
             row['tick'] = e['made']
             row['run_ticks'] = [e['made'], e['made']]
             row['dated'] = 'fx_made'
+        elif e.get('source') == 'spell_seen' and e.get('made') is not None and row['run_ticks'][0] == row['run_ticks'][1]                 and bottle_lag(row['card']):
+            row['tick'] = e['made'] - bottle_lag(row['card'])
+            row['run_ticks'] = [row['tick'], row['tick']]
+            row['dated'] = 'bottle_made'
         if e['kind'] != 'ability':
             row.update(x=e['x'], y=e['y'], tile=[int(e['x']) // 1000, int(e['y']) // 1000], n=e.get('n'))
         if row['run_ticks'][0] == 0:
