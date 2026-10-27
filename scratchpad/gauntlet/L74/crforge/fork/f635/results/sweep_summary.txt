@@ -1,0 +1,24 @@
+== C:/Users/benpe/ClashBot/.foreman/scratch/f635/sw402.tsv: 2230 episodes over 223 pairs; outcome kinds {'none': 2230}
+== C:/Users/benpe/ClashBot/.foreman/scratch/f635/sw635.tsv: 2230 episodes over 223 pairs; outcome kinds {'none': 2050, 'REFUSAL': 110, 'BUG': 70}
+opp decks  12/223 | episodes   28 | pairs   7 | opponent forms common to all: battle_ram (evo; BattleRam_EV1)
+    java.lang.UnsupportedOperationException: BattleRam_EV#_PushBack sets PushBackDamage to a table of BaseDamage, Flags where a number is read, which is not modelled
+opp decks   9/223 | episodes   82 | pairs   9 | opponent forms common to all: electro_wizard (hero; ElectroWizard_hero)
+    java.lang.UnsupportedOperationException: ElectroWizardHero sets columns the battle does not model: [AttackSequenceList]
+opp decks   0/223 | episodes   70 | pairs   9 | opponent forms common to all: none (our deck, or several)
+    java.lang.IllegalArgumentException: the game tables have no global V#_PROJECTILE_DAMAGE_BUG
+== C:/Users/benpe/ClashBot/.foreman/scratch/f635/swk_census402.tsv: 2230 episodes over 223 pairs; outcome kinds {'none': 2230}
+== C:/Users/benpe/ClashBot/.foreman/scratch/f635/swk_census635.tsv: 2230 episodes over 223 pairs; outcome kinds {'none': 2047, 'REFUSAL': 115, 'BUG': 68}
+opp decks  12/223 | episodes   34 | pairs   8 | opponent forms common to all: battle_ram (evo; BattleRam_EV1)
+    java.lang.UnsupportedOperationException: BattleRam_EV#_PushBack sets PushBackDamage to a table of BaseDamage, Flags where a number is read, which is not modelled
+opp decks   9/223 | episodes   81 | pairs   9 | opponent forms common to all: electro_wizard (hero; ElectroWizard_hero)
+    java.lang.UnsupportedOperationException: ElectroWizardHero sets columns the battle does not model: [AttackSequenceList]
+opp decks   0/223 | episodes   68 | pairs   9 | opponent forms common to all: none (our deck, or several)
+    java.lang.IllegalArgumentException: the game tables have no global V#_PROJECTILE_DAMAGE_BUG
+== C:/Users/benpe/ClashBot/.foreman/scratch/f635/swk_forms402.tsv: 1620 episodes over 27 pairs; outcome kinds {'none': 1620}
+== C:/Users/benpe/ClashBot/.foreman/scratch/f635/swk_forms635.tsv: 1620 episodes over 27 pairs; outcome kinds {'none': 1389, 'BUG': 113, 'REFUSAL': 118}
+opp decks   2/27 | episodes  117 | pairs   2 | opponent forms common to all: electro_wizard (hero; ElectroWizard_hero)
+    java.lang.UnsupportedOperationException: ElectroWizardHero sets columns the battle does not model: [AttackSequenceList]
+opp decks   2/27 | episodes    1 | pairs   1 | opponent forms common to all: elite_barbarians (evo; AngryBarbarians_EV1), battle_ram (evo; BattleRam_EV1), electro_wizard (hero; ElectroWizard_hero)
+    java.lang.UnsupportedOperationException: BattleRam_EV#_PushBack sets PushBackDamage to a table of BaseDamage, Flags where a number is read, which is not modelled
+opp decks   0/27 | episodes  113 | pairs   2 | opponent forms common to all: none (our deck, or several)
+    java.lang.IllegalArgumentException: the game tables have no global V#_PROJECTILE_DAMAGE_BUG

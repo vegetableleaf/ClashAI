@@ -1,0 +1,239 @@
+From 220230b2484c5d5675532dc7608af7f6c3f81a23 Mon Sep 17 00:00:00 2001
+From: vegetableleaf <benzhu2029@u.northwestern.edu>
+Date: Tue, 27 Oct 2026 19:20:00 +0000
+Subject: [PATCH 2/2] F635-2: the evolved Mega Knight uppercut row's own
+ GameTagsToSet (data 16.635.3)
+
+A row that sets its tags (NO_ATTACK, NO_MOVE_ALLOW_ATTRACT) holds the unit with them while its run is listed,
+in place of the coded NO_ATTACK and NO_MOVE; LOCK_TARGET at the push stays coded. Inferred from the tables
+(the same update turned the root's NO_MOVE into NO_MOVE_ALLOW_ATTRACT); the 7 recorded matches diverge
+before it shows, coded and row hold alike (b).
+Core tests: 16.402.22 2143/0; 16.635.3 (guard bypassed for the run) 28 -> 16 failures. Three tests read the
+hold from the row: anUppercutOnATowerEndsAtOnce, aPushOnANoPushbackTargetIsRefused; the held-dasher scene
+takes the row's tags off to keep its NO_MOVE hold.
+---
+ .../crforge/core/battle/data/ActionRows.java  |  9 ++-
+ .../crforge/core/battle/unit/UppercutRun.java | 19 +++++-
+ .../battle/unit/BattleHeldDasherStunTest.java |  6 ++
+ .../battle/unit/BattleUppercutWindTest.java   | 68 +++++++++++++++++--
+ 4 files changed, 91 insertions(+), 11 deletions(-)
+
+diff --git a/core/src/main/java/org/crforge/core/battle/data/ActionRows.java b/core/src/main/java/org/crforge/core/battle/data/ActionRows.java
+index d3e297fd..cedb2404 100644
+--- a/core/src/main/java/org/crforge/core/battle/data/ActionRows.java
++++ b/core/src/main/java/org/crforge/core/battle/data/ActionRows.java
+@@ -2485,7 +2485,14 @@ public final class ActionRows {
+      */
+     private MegaKnightUppercut uppercut(String name, ActionRow shared, JsonNode f) {
+       // The start gate is the runtime's: asked as the uppercut starts, before its hold and target.
+-      refuseUnread(name, f, true, true);
++      // Data 16.635.3 writes the hold's tags in the row (NO_ATTACK, NO_MOVE_ALLOW_ATTRACT): its run
++      // carries them while listed, in place of the coded NO_ATTACK and NO_MOVE (clashbot F635).
++      JsonNode unread = f;
++      if (f.has("GameTagsToSet")) {
++        unread = f.deepCopy();
++        ((com.fasterxml.jackson.databind.node.ObjectNode) unread).remove("GameTagsToSet");
++      }
++      refuseUnread(name, unread, true, true);
+       if (!bool(f, "IgnorePushbackChecks", false)) {
+         throw new UnsupportedOperationException(
+             name + " pushes through the pushback request's gates, which is not modelled");
+diff --git a/core/src/main/java/org/crforge/core/battle/unit/UppercutRun.java b/core/src/main/java/org/crforge/core/battle/unit/UppercutRun.java
+index 7681ab33..f277ac84 100644
+--- a/core/src/main/java/org/crforge/core/battle/unit/UppercutRun.java
++++ b/core/src/main/java/org/crforge/core/battle/unit/UppercutRun.java
+@@ -84,6 +84,14 @@ final class UppercutRun extends ActionInstance {
+   /** The point this update pushed away from and the vector from the tower, or null for none. */
+   private int[] pushPoint;
+ 
++  /**
++   * The hold's tags the run raises each step: NO_ATTACK and NO_MOVE, or none for a row that sets
++   * its own tags (data 16.635.3: NO_ATTACK, NO_MOVE_ALLOW_ATTRACT), which the run carries while it
++   * is listed instead. Clashbot fork F635, inferred from the tables: the same change turned the
++   * root's NO_MOVE into NO_MOVE_ALLOW_ATTRACT (b).
++   */
++  private final long hold;
++
+   /**
+    * The start: the hold for one step and the target kept, the run finished for a target without a
+    * movement component.
+@@ -97,7 +105,10 @@ final class UppercutRun extends ActionInstance {
+     super(row);
+     this.row = row;
+     this.unit = unit;
+-    unit.raiseWatched(bits().noAttack() | bits().noMove());
++    hold = row.tags() != 0 ? 0 : bits().noAttack() | bits().noMove();
++    if (hold != 0) {
++      unit.raiseWatched(hold);
++    }
+     target = unit.currentTarget();
+     if (target == null) {
+       throw new UnsupportedOperationException(
+@@ -126,7 +137,7 @@ final class UppercutRun extends ActionInstance {
+         outcome = "push refused";
+         finish();
+       } else {
+-        unit.raiseWatched(bits().noAttack() | bits().noMove() | bits().lockTarget());
++        unit.raiseWatched(hold | bits().lockTarget());
+         delay = row.getDashFollowUpDelayMs();
+         if (delay != 0) {
+           outcome = "pushed";
+@@ -159,7 +170,9 @@ final class UppercutRun extends ActionInstance {
+     }
+     delay -= STEP_MS;
+     if (delay > 0) {
+-      unit.raiseWatched(bits().noMove() | bits().noAttack());
++      if (hold != 0) {
++        unit.raiseWatched(hold);
++      }
+       return "waiting";
+     }
+     // Without the follow-up dash, which the row refuses, the run ends with the delay.
+diff --git a/core/src/test/java/org/crforge/core/battle/unit/BattleHeldDasherStunTest.java b/core/src/test/java/org/crforge/core/battle/unit/BattleHeldDasherStunTest.java
+index cff95b17..af0ab5b1 100644
+--- a/core/src/test/java/org/crforge/core/battle/unit/BattleHeldDasherStunTest.java
++++ b/core/src/test/java/org/crforge/core/battle/unit/BattleHeldDasherStunTest.java
+@@ -103,6 +103,12 @@ class BattleHeldDasherStunTest {
+                 .put("HitSpeedMultiplier", -100)
+                 .put("SpeedMultiplier", -100)
+                 .put("SpawnSpeedMultiplier", -100));
++    // The hold under NO_MOVE is the uppercut's coded one: a row that sets its own tags (data
++    // 16.635.3: NO_MOVE_ALLOW_ATTRACT) holds without NO_MOVE, so they are taken off (F635).
++    GameData.alterLoaded(
++        folder,
++        "actions",
++        rows -> GameData.fields(rows, "MegaKnight_EV1_uppercut").remove("GameTagsToSet"));
+     GameData.writeTowers(folder);
+     return GameTables.load(folder);
+   }
+diff --git a/core/src/test/java/org/crforge/core/battle/unit/BattleUppercutWindTest.java b/core/src/test/java/org/crforge/core/battle/unit/BattleUppercutWindTest.java
+index e328f02b..7cf6b7ab 100644
+--- a/core/src/test/java/org/crforge/core/battle/unit/BattleUppercutWindTest.java
++++ b/core/src/test/java/org/crforge/core/battle/unit/BattleUppercutWindTest.java
+@@ -9,6 +9,8 @@ package org.crforge.core.battle.unit;
+ import static org.assertj.core.api.Assertions.assertThat;
+ import static org.assertj.core.api.Assertions.assertThatThrownBy;
+ 
++import java.io.IOException;
++import java.nio.file.Path;
+ import java.util.ArrayList;
+ import java.util.List;
+ import java.util.function.Function;
+@@ -20,12 +22,14 @@ import org.crforge.core.battle.action.BattleAction;
+ import org.crforge.core.battle.action.InertAction;
+ import org.crforge.core.battle.action.MegaKnightUppercut;
+ import org.crforge.core.battle.data.GameRow;
++import org.crforge.core.battle.data.GameTables;
+ import org.crforge.core.pathfinding.EntityFlags;
+ import org.crforge.core.pathfinding.GridEntityState;
+ import org.crforge.core.pathfinding.move.MovementState;
+ import org.crforge.core.pathfinding.target.TargetView;
+ import org.junit.jupiter.api.DisplayName;
+ import org.junit.jupiter.api.Test;
++import org.junit.jupiter.api.io.TempDir;
+ 
+ /**
+  * The evolved Mega Knight's uppercut, the knock it gives, and the evolved Baby Dragon's wind where
+@@ -41,6 +45,13 @@ class BattleUppercutWindTest {
+ 
+   private static final int LEVEL = Standard1v1Battle.DEFAULT_LEVEL;
+ 
++  /**
++   * The hold's tags the uppercut raises, as the watched part of the tag word shows them: the coded
++   * NO_ATTACK and NO_MOVE, or none for a row that sets its own tags (data 16.635.3), whose run then
++   * carries them while it is listed and only their watched NO_ATTACK shows (clashbot F635).
++   */
++  private static final String ROW_TAGS = Shipped.text("MegaKnight_EV1_uppercut", "GameTagsToSet");
++
+   /** The knock the uppercut gives. */
+   private static final String KNOCK = "MegaKnight_EV1_uppercut_send_flying";
+ 
+@@ -62,10 +73,15 @@ class BattleUppercutWindTest {
+ 
+   /** A battle with the towers passive, and what the uppercut, the knock and the wind did. */
+   private static final class Scene {
+-    final Standard1v1Battle match = new Standard1v1Battle(GameData.tables(), LEVEL, false);
++    final Standard1v1Battle match;
+     final List<String> log = new ArrayList<>();
+ 
+     Scene() {
++      this(GameData.tables());
++    }
++
++    Scene(GameTables tables) {
++      match = new Standard1v1Battle(tables, LEVEL, false);
+       match
+           .getWorld()
+           .addObserver(
+@@ -199,11 +215,16 @@ class BattleUppercutWindTest {
+     mk.actionHolder().start(scene.row("MegaKnight_EV1_uppercut", mk), tower.actionHolder());
+     scene.step(2);
+ 
+-    assertThat(scene.log)
+-        .containsExactly(
+-            "start mk " + tower.name() + " true",
+-            "tags mk " + Long.toHexString(BITS.noMove() | BITS.noAttack()),
+-            "tags mk 0");
++    if (ROW_TAGS == null) {
++      assertThat(scene.log)
++          .containsExactly(
++              "start mk " + tower.name() + " true",
++              "tags mk " + Long.toHexString(BITS.noMove() | BITS.noAttack()),
++              "tags mk 0");
++    } else {
++      // Nothing raised, so no word is watched: the run carries the row's tags while listed.
++      assertThat(scene.log).containsExactly("start mk " + tower.name() + " true");
++    }
+   }
+ 
+   @Test
+@@ -318,7 +339,9 @@ class BattleUppercutWindTest {
+   void aPushOnANoPushbackTargetIsRefused() {
+     Uppercut pushed = uppercutOnAKnight(false, null);
+     String hold =
+-        "tags mk " + Long.toHexString(BITS.noAttack() | BITS.noMove() | BITS.lockTarget());
++        "tags mk "
++            + Long.toHexString(
++                BITS.noAttack() | (ROW_TAGS == null ? BITS.noMove() : 0) | BITS.lockTarget());
+     // Without the tag, as the reference battles hold: pushed, the action on the Knight, the hold.
+     assertThat(pushed.updates()).containsExactly("update mk pushed 1000", "update mk waiting 950");
+     assertThat(pushed.knight().getUnit().movement().getAttackPushback()).isEqualTo(1);
+@@ -1075,4 +1098,35 @@ class BattleUppercutWindTest {
+         .isNotEmpty()
+         .containsOnly("listed [bd, ahead]");
+   }
++
++  @Test
++  @DisplayName(
++      "clashbot F635: an uppercut row that sets its own tags, as data 16.635.3 does, holds the unit"
++          + " with them while its run is listed: NO_MOVE_ALLOW_ATTRACT and NO_ATTACK, no NO_MOVE")
++  void theRowsOwnTagsHoldTheUnit(@TempDir Path folder) throws IOException {
++    GameTables tables =
++        GameData.altered(
++            folder,
++            "actions",
++            rows ->
++                GameData.fields(rows, "MegaKnight_EV1_uppercut")
++                    .put("GameTagsToSet", "NO_ATTACK,NO_MOVE_ALLOW_ATTRACT"));
++    Scene scene = new Scene(tables);
++    CharacterEntity mk = scene.unit(0, "MegaKnight_EV1", 3500, 14000, "mk");
++    CharacterEntity knight = scene.unit(1, "Knight", 3500, 15600, "k");
++    scene.step(22);
++    mk.setActive(CharacterEntity.MOVEMENT_SLOT, false);
++    mk.getUnit().targeting().setReference(knight.getTargetView());
++    scene.log.clear();
++
++    mk.actionHolder().start(scene.row("MegaKnight_EV1_uppercut", mk), knight.actionHolder());
++    scene.step(3);
++
++    assertThat(scene.log.stream().filter(line -> line.startsWith("update")))
++        .containsExactly("update mk pushed 1000", "update mk waiting 950", "update mk waiting 900");
++    long word = mk.getView().getFlags();
++    assertThat(word & BITS.noMoveAllowAttract()).as("NO_MOVE_ALLOW_ATTRACT").isNotZero();
++    assertThat(word & BITS.noAttack()).as("NO_ATTACK").isNotZero();
++    assertThat(word & BITS.noMove()).as("NO_MOVE").isZero();
++  }
+ }
+-- 
+2.43.0
+

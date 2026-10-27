@@ -1,0 +1,27 @@
+core tests 2143 failures 16 errors 0 skipped 2
+[('UnsupportedOperationException', 8), ('IllegalArgumentException', 8)]
+[('BattleTravellingHitDrainTest', 3), ('BattleChargeTest', 2), ('BattleHunterEvoTest', 2), ('ActionRowsTest', 1), ('AttackSequenceEntryFormsTest', 1), ('BattleAttackSequenceTest', 1), ('BattleElectroGiantTest', 1), ('BattleEvolutionTest', 1), ('BattleImpactAreaInsetTest', 1), ('HunterDeflectTest', 1), ('HunterVolleyQueuedTotalTest', 1), ('SpellDeflectTest', 1)]
+
+[8] IllegalArgumentException | java.lang.IllegalArgumentException: the game tables have no global V16_PROJECTILE_DAMAGE_BUG | 
+      BattleElectroGiantTest > every pellet of one Hunter attack re-applies the buff, and only the first deals the damage
+      BattleHunterEvoTest > a Giant (radius 750) takes the large snare, and the next net waits the cooldown, the attack gate and the cast
+      BattleHunterEvoTest > the net is thrown at a Musketeer as it comes into range and snares it with the small snare (its radius 500) for the snar
+      BattleTravellingHitDrainTest > a Hunter volley's damage lands at the drain: the walking ram dies after its step and its Barbarians ring the point it wa
+      BattleTravellingHitDrainTest > a damage-taking action's hit queued for the ram adds nothing to its queued total: the volley's pellets hit it as they do
+      BattleTravellingHitDrainTest > a projectile's hit queued for the ram counts in its queued total: the volley's first pellet marks it and every later one
+
+[3] UnsupportedOperationException | java.lang.UnsupportedOperationException: BattleRam_EV1_PushBack sets PushBackDamage to a table of BaseDamage, Flags where a number is read, which is not modelled | Caused by: org.crforge.core.battle.data.ActionRows$MistypedField: sets PushBackDamage to a table of BaseDamage, Flags where a number is read, which is not modelled
+      ActionRowsTest > the evolved Battle Ram's carried push reads its push, its damage, its side push, its offset and both filters, with its d
+      BattleChargeTest > the evolved Battle Ram's push run goes on through its recoil and ends with its charge
+      BattleChargeTest > an evolved Battle Ram's direct hit on a tower recoils it by its AttackPushBack, away from where the tower stood, in the 
+
+[2] UnsupportedOperationException | java.lang.UnsupportedOperationException: ElectroWizardHero sets columns the battle does not model: [AttackSequenceList] | 
+      AttackSequenceEntryFormsTest > [3] "ElectroWizardHero"
+      BattleAttackSequenceTest > the hero Electro Wizard's entries, each with its hit speed multiplier, build
+
+[2] UnsupportedOperationException | java.lang.UnsupportedOperationException: the buff Cannon_EV1_barrage_damage_buff sets columns not modelled: [CastIdSpecificBuff] | 
+      BattleEvolutionTest > an evolution slot's spell and building cards count their plays as a troop card does and are cast as their evolved rows o
+      SpellDeflectTest > an evolved Cannon's bomb falling within an enemy Deflect is sent back at its own area effect, still its root and target,
+
+[1] UnsupportedOperationException | java.lang.UnsupportedOperationException: the buff FirecrackerFireworks_EV1 sets columns not modelled: [CastIdSpecificBuff] | 
+      BattleImpactAreaInsetTest > the evolved Firecracker's shrapnel that fly past the arena's side make their area effects the creation's inset inside it

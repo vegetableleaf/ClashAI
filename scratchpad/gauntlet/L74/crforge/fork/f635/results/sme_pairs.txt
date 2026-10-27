@@ -1,0 +1,12 @@
+== sme/base_old -> sme/f1_old
+matches in both 138: identical 138, different 0
+== sme/base_old -> sme/f2_old
+matches in both 138: identical 138, different 0
+== r64/sme635_stub -> sme/s635_new
+matches in both 47: identical 45, different 2
+== sme/s635_new -> sme/f1_new
+matches in both 47: identical 39, different 8
+== sme/f1_new -> sme/f2_new
+matches in both 47: identical 40, different 7
+== sme/f2A_mk -> sme/f2B_mk
+matches in both 7: identical 7, different 0

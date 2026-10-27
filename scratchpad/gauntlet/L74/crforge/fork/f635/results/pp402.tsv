@@ -1,0 +1,178 @@
+form	outcome	tick
+AngryBarbarians	OK	1199
+AngryBarbarians_EV1	OK	1199
+Archer	OK	1199
+ArcherQueen	UnsupportedOperationException: ab0: an ability command outside a match, which has no champion slots	50
+Archer_EV1	OK	1199
+Arrows	OK	1199
+Assassin	OK	1199
+AxeMan	OK	1199
+AxeMan_EV1	OK	1199
+BabyDragon	OK	1199
+BabyDragon_EV1	OK	1199
+Balloon	OK	1199
+Balloon_hero	UnsupportedOperationException: ab0: an ability command outside a match, which has no champion slots	50
+BarbLog	OK	1199
+BarbLog_hero	UnsupportedOperationException: BarbLogHero_override_ability_button_when_rolling outside a match, which has no champion slots	20
+Barbarians	OK	1199
+Barbarians_EV1	OK	1199
+Bats	OK	1199
+Bats_EV1	OK	1199
+BattleHealer	OK	1199
+BattleRam	OK	1199
+BattleRam_EV1	OK	1199
+Berserker	OK	1199
+Berserker_hero	UnsupportedOperationException: ab0: an ability command outside a match, which has no champion slots	50
+BlowdartGoblin	OK	1199
+BlowdartGoblin_EV1	OK	1199
+BombTower	OK	1199
+Bomber	OK	1199
+Bomber_EV1	OK	1199
+BossBandit	UnsupportedOperationException: ab0: an ability command outside a match, which has no champion slots	50
+Bowler	OK	1199
+Bowler_hero	UnsupportedOperationException: ab0: an ability command outside a match, which has no champion slots	50
+Cannon	OK	1199
+Cannon_EV1	OK	1199
+Clone	OK	1199
+DarkMagic	OK	1199
+DarkPrince	OK	1199
+DarkPrince_hero	UnsupportedOperationException: ab0: an ability command outside a match, which has no champion slots	50
+DarkWitch	OK	1199
+DartBarrell	OK	1199
+Earthquake	OK	1199
+ElectroDragon	OK	1199
+ElectroDragon_EV1	OK	1199
+ElectroGiant	OK	1199
+ElectroGiant_EV1	OK	1199
+ElectroSpirit	OK	1199
+ElectroWizard	OK	1199
+ElectroWizard_hero	UnsupportedOperationException: ab0: an ability command outside a match, which has no champion slots	50
+EliteArcher	OK	1199
+EliteArcher_hero	UnsupportedOperationException: ab0: an ability command outside a match, which has no champion slots	50
+Elixir Collector	UnsupportedOperationException: A_0 collects elixir outside a match, where no king holds any	39
+ElixirGolem	OK	1199
+FireSpirits	OK	1199
+Fireball	OK	1199
+Firecracker	OK	1199
+Firecracker_EV1	OK	1199
+FirespiritHut	OK	1199
+FirespiritHut_EV1	OK	1199
+Fisherman	OK	1199
+Freeze	OK	1199
+Ghost	OK	1199
+Ghost_EV1	OK	1199
+Giant	OK	1199
+GiantBuffer	UnsupportedOperationException: ab0: an ability command outside a match, which has no champion slots	50
+GiantSkeleton	OK	1199
+Giant_hero	UnsupportedOperationException: ab0: an ability command outside a match, which has no champion slots	50
+GoblinBarrel	OK	1199
+GoblinBarrel_EV1	OK	1199
+GoblinCage	OK	1199
+GoblinCage_EV1	OK	1199
+GoblinCurse	OK	1199
+GoblinDemolisher	OK	1199
+GoblinDrill	OK	1199
+GoblinDrill_EV1	OK	1199
+GoblinGang	OK	1199
+GoblinGiant_EV1	OK	1199
+GoblinHut	OK	1199
+Goblins	OK	1199
+Goblins_hero	UnsupportedOperationException: GoblinHero_Reset_Ability_Charges outside a match, which has no champion slots	20
+Goblinstein	UnsupportedOperationException: ab0: an ability command outside a match, which has no champion slots	50
+GoldenKnight	UnsupportedOperationException: ab0: an ability command outside a match, which has no champion slots	50
+Golem	OK	1199
+Graveyard	OK	1199
+Heal	OK	1199
+HogRider	OK	1199
+Hunter	OK	1199
+Hunter_EV1	OK	1199
+IceGolemite	OK	1199
+IceGolemite_hero	UnsupportedOperationException: ab0: an ability command outside a match, which has no champion slots	50
+IceSpirits	OK	1199
+IceSpirits_EV1	OK	1199
+IceWizard	OK	1199
+IceWizard_hero	UnsupportedOperationException: ab0: an ability command outside a match, which has no champion slots	50
+InfernoDragon	OK	1199
+InfernoDragon_EV1	OK	1199
+InfernoTower	OK	1199
+Knight	OK	1199
+Knight_EV1	OK	1199
+Knight_hero	UnsupportedOperationException: ab0: an ability command outside a match, which has no champion slots	50
+LavaHound	OK	1199
+Lightning	OK	1199
+LittlePrince	UnsupportedOperationException: ab0: an ability command outside a match, which has no champion slots	50
+Log	OK	1199
+MegaKnight	OK	1199
+MegaKnight_EV1	OK	1199
+MegaMinion_hero	UnsupportedOperationException: MegaMinion_hero_hide_ability_button outside a match, which has no champion slots	20
+MightyMiner	UnsupportedOperationException: ab0: an ability command outside a match, which has no champion slots	50
+Miner	OK	1199
+MiniPekka	OK	1199
+MiniPekka_hero	UnsupportedOperationException: ab0: an ability command outside a match, which has no champion slots	50
+MiniSparkys	OK	1199
+MinionGiant	OK	1199
+MinionHorde	OK	1199
+MinionHorde_EV1	OK	1199
+Minions	OK	1199
+Mirror	IllegalArgumentException: Mirror summons no character	-1
+Monk	UnsupportedOperationException: ab0: an ability command outside a match, which has no champion slots	50
+Mortar_EV1	OK	1199
+MovingCannon	OK	1199
+Musketeer	OK	1199
+Musketeer_EV1	OK	1199
+Musketeer_hero	UnsupportedOperationException: ab0: an ability command outside a match, which has no champion slots	50
+Pekka	OK	1199
+Pekka_EV1	OK	1199
+Phoenix	OK	1199
+Poison	OK	1199
+Prince	OK	1199
+Princess	OK	1199
+Princess_EV1	OK	1199
+Rage	OK	1199
+RageBarbarian	OK	1199
+RageBarbarian_EV1	OK	1199
+RamRider	OK	1199
+Rascals	OK	1199
+Rocket	OK	1199
+Ronin	OK	1199
+RoyalDelivery	OK	1199
+RoyalGiant	OK	1199
+RoyalGiant_EV1	OK	1199
+RoyalHogs	OK	1199
+RoyalHogs_EV1	OK	1199
+RoyalRecruits	OK	1199
+RoyalRecruits_EV1	OK	1199
+SkeletonArmy	OK	1199
+SkeletonArmy_EV1	OK	1199
+SkeletonBalloon	OK	1199
+SkeletonBalloon_EV1	OK	1199
+SkeletonDragons	OK	1199
+SkeletonKing	UnsupportedOperationException: ab0: an ability command outside a match, which has no champion slots	50
+SkeletonWarriors	OK	1199
+Skeletons	OK	1199
+Skeletons_EV1	OK	1199
+Snowball	OK	1199
+Snowball_EV1	OK	1199
+SpearGoblins	OK	1199
+SuspiciousBush	OK	1199
+Tesla	OK	1199
+Tesla_EV1	OK	1199
+Tombstone	OK	1199
+Tombstone_hero	UnsupportedOperationException: ab0: an ability command outside a match, which has no champion slots	50
+Tornado	OK	1199
+Valkyrie	OK	1199
+Valkyrie_EV1	OK	1199
+Valkyrie_hero	UnsupportedOperationException: ab0: an ability command outside a match, which has no champion slots	50
+Vines	OK	1199
+Wallbreakers	OK	1199
+Wallbreakers_EV1	OK	1199
+Witch	OK	1199
+WitchMother	OK	1199
+Witch_EV1	OK	1199
+Wizard	OK	1199
+Wizard_EV1	OK	1199
+Wizard_hero	UnsupportedOperationException: ab0: an ability command outside a match, which has no champion slots	50
+Xbow	OK	1199
+Zap	OK	1199
+ZapMachine	OK	1199
+Zap_EV1	OK	1199

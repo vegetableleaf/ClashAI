@@ -1,0 +1,17 @@
+new-client live logs from live_play_20261027_065824: 120; with a Ranked battle-log deck: 116
+ 23/116  mega_knight evo: uppercut GameTagsToSet
+ 14/116  valkyrie hero: delivery mark (F635-1 done)
+ 11/116  firecracker evo: CastIdSpecificBuff
+  8/116  cannon evo: CastIdSpecificBuff
+  7/116  balloon hero: delivery mark (F635-1 done)
+  5/116  golden_knight: delivery mark (F635-1 done)
+  3/116  electro_wizard hero: CustomBuffOnDamageTime
+  3/116  giant hero: delivery mark (F635-1 done)
+  3/116  barbarian_barrel hero: button untested
+  2/116  hunter (any form): V16_PROJECTILE_DAMAGE_BUG gone
+  2/116  magic_archer hero: triple shot without root (16.402 too)
+  2/116  goblins hero: button untested
+  1/116  battle_ram evo: PushBackDamage table
+  0/116  giant evo: new evolution (giant_evo_* rows)
+  0/116  mirror evo: new evolution
+  0/116  rune_giant hero: button untested

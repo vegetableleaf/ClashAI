@@ -1,0 +1,366 @@
+From f7ae440e209c74d8e31da580eb1618aae2107c29 Mon Sep 17 00:00:00 2001
+From: vegetableleaf <benzhu2029@u.northwestern.edu>
+Date: Tue, 27 Oct 2026 18:57:46 +0000
+Subject: [PATCH 1/2] F635-1: ActionAbilityDelivered and RefundUntilDelivered
+ (data 16.635.3)
+
+A use of an ability whose row sets RefundUntilDelivered waits for an ActionAbilityDelivered row run on a
+followed copy; the last copy leaving before it gives the cost back once. Inferred from the tables (b).
+Core tests: 16.402.22 2142/0; 16.635.3 (guard bypassed for the run) 47 -> 28 failures.
+BattleGiantHeroAbilityTest reads the slap stop as the group's last part (16.635.3 puts the mark first).
+---
+ .../core/battle/action/AbilityDelivered.java  | 42 +++++++++
+ .../core/battle/action/ActionOwner.java       | 11 +++
+ .../crforge/core/battle/data/ActionRows.java  |  5 ++
+ .../core/battle/data/BattleRecords.java       |  2 +
+ .../crforge/core/battle/unit/AbilityData.java |  4 +
+ .../core/battle/unit/ChampionController.java  | 20 ++++-
+ .../core/battle/unit/CharacterEntity.java     | 10 +++
+ .../battle/unit/BattleChampionRefundTest.java | 87 +++++++++++++++++--
+ .../unit/BattleGiantHeroAbilityTest.java      | 11 ++-
+ 9 files changed, 180 insertions(+), 12 deletions(-)
+ create mode 100644 core/src/main/java/org/crforge/core/battle/action/AbilityDelivered.java
+
+diff --git a/core/src/main/java/org/crforge/core/battle/action/AbilityDelivered.java b/core/src/main/java/org/crforge/core/battle/action/AbilityDelivered.java
+new file mode 100644
+index 00000000..5c8a8ba9
+--- /dev/null
++++ b/core/src/main/java/org/crforge/core/battle/action/AbilityDelivered.java
+@@ -0,0 +1,42 @@
++/*
++ * crforge - https://github.com/voonhous/crforge
++ * SPDX-License-Identifier: Apache-2.0
++ * Porting this code? Please cite this file and the commit you read: see the README.
++ */
++
++package org.crforge.core.battle.action;
++
++import org.crforge.core.fidelity.Fidelity;
++import org.crforge.core.fidelity.FidelityStatus;
++
++/**
++ * The hero ability's delivery mark (ActionAbilityDelivered, data 16.635.3): the champion slot of the
++ * owner's side that follows the character it runs on stops waiting for the delivery, so the use's
++ * cost is no longer given back when the last copy leaves. Nothing without such a slot. It has no
++ * run: it does what it does as it starts, and its next action follows as for any row.
++ *
++ * <p>Clashbot fork F635: the rows came with RefundUntilDelivered on the five hero abilities and
++ * RefundWindow taken off them; the class's code is not read, so the mark is inferred from the
++ * tables (b).
++ */
++@Fidelity(
++    status = FidelityStatus.PARTIAL,
++    note =
++        "Inferred from the 16.635.3 tables (clashbot fork F635): the slot that follows the"
++            + " character stops waiting for the delivery; held by BattleChampionRefundTest. Refused"
++            + " on an owner other than a character.")
++public final class AbilityDelivered extends RowAction {
++
++  /**
++   * @param row the row's shared columns
++   */
++  public AbilityDelivered(ActionRow row) {
++    super(row);
++  }
++
++  @Override
++  public ActionInstance start(ActionHolder holder) {
++    holder.getOwner().abilityDelivered(this);
++    return null;
++  }
++}
+diff --git a/core/src/main/java/org/crforge/core/battle/action/ActionOwner.java b/core/src/main/java/org/crforge/core/battle/action/ActionOwner.java
+index f2819801..53c35f58 100644
+--- a/core/src/main/java/org/crforge/core/battle/action/ActionOwner.java
++++ b/core/src/main/java/org/crforge/core/battle/action/ActionOwner.java
+@@ -518,6 +518,17 @@ public interface ActionOwner {
+         action.name() + " on an owner other than a character, not modelled");
+   }
+ 
++  /**
++   * The delivery mark on the owner: the champion slot of the owner's side that follows it stops
++   * waiting for the delivery; nothing without such a slot. Only a character answers it.
++   *
++   * @param action the row
++   */
++  default void abilityDelivered(AbilityDelivered action) {
++    throw new UnsupportedOperationException(
++        action.name() + " on an owner other than a character, not modelled");
++  }
++
+   /**
+    * The button state override's first write, as the row is performed: the same as every later write
+    * of its run for an owner that is its own player's, a character or a building. A projectile hands
+diff --git a/core/src/main/java/org/crforge/core/battle/data/ActionRows.java b/core/src/main/java/org/crforge/core/battle/data/ActionRows.java
+index 2ed7a817..d3e297fd 100644
+--- a/core/src/main/java/org/crforge/core/battle/data/ActionRows.java
++++ b/core/src/main/java/org/crforge/core/battle/data/ActionRows.java
+@@ -20,6 +20,7 @@ import java.util.function.IntSupplier;
+ import java.util.function.IntUnaryOperator;
+ import java.util.stream.Stream;
+ import org.crforge.core.battle.EntityActions;
++import org.crforge.core.battle.action.AbilityDelivered;
+ import org.crforge.core.battle.action.ActionContext;
+ import org.crforge.core.battle.action.ActionRow;
+ import org.crforge.core.battle.action.AirToGround;
+@@ -383,6 +384,9 @@ public final class ActionRows {
+           Map.entry(
+               "ActionReadyChampionAbility",
+               Set.of("ReadyAbility", "ForceCooldown", "RecoverCharge", "AbilityCanResetAfter")),
++          // The hero ability's delivery mark (data 16.635.3, clashbot fork F635) reads no column of
++          // its own.
++          Map.entry("ActionAbilityDelivered", Set.of()),
+           // The tether's columns; the tags it sets on both ends are read by no battle code, and
+           // the effects only show something.
+           Map.entry(
+@@ -1498,6 +1502,7 @@ public final class ActionRows {
+               }
+               yield new ReadyChampionAbility(shared, bool(f, "ForceCooldown"));
+             }
++            case "ActionAbilityDelivered" -> new AbilityDelivered(shared);
+             case "ActionRunActionIfUnitGroupContains" ->
+                 new RunIfUnitGroupContains(
+                     shared,
+diff --git a/core/src/main/java/org/crforge/core/battle/data/BattleRecords.java b/core/src/main/java/org/crforge/core/battle/data/BattleRecords.java
+index 7650cdb9..4435f8b6 100644
+--- a/core/src/main/java/org/crforge/core/battle/data/BattleRecords.java
++++ b/core/src/main/java/org/crforge/core/battle/data/BattleRecords.java
+@@ -2395,6 +2395,8 @@ public final class BattleRecords {
+             ability.intValue("RefundWindow") > 0
+                 ? ability.intValue("RefundWindow")
+                 : ability.intValue("TriggerDelay"))
++        // Data 16.635.3 drops RefundWindow for RefundUntilDelivered (clashbot fork F635).
++        .refundUntilDelivered(ability.bool("RefundUntilDelivered"))
+         .cooldownMs(ability.intValue("Cooldown"))
+         .maxCharges(ability.intValue("MaxCharges"))
+         .dashRange(ability.intValue("DashRange"))
+diff --git a/core/src/main/java/org/crforge/core/battle/unit/AbilityData.java b/core/src/main/java/org/crforge/core/battle/unit/AbilityData.java
+index ae92f7e0..ecf122b3 100644
+--- a/core/src/main/java/org/crforge/core/battle/unit/AbilityData.java
++++ b/core/src/main/java/org/crforge/core/battle/unit/AbilityData.java
+@@ -33,6 +33,9 @@ import lombok.Builder;
+  * @param manaCost the elixir a player pays to use the ability, in whole elixir
+  * @param refundWindowMs how long after a use its controller gives the cost back when no live copy
+  *     is left: the row's RefundWindow, or its trigger delay when that is not positive
++ * @param refundUntilDelivered the row's RefundUntilDelivered (data 16.635.3, clashbot fork F635): a
++ *     use's cost is given back when no live copy is left before an ActionAbilityDelivered row runs
++ *     on a copy, however long that takes; the timed window is not opened
+  * @param cooldownMs how long after a use its controller refuses the next
+  * @param maxCharges how many uses one play of the champion allows; 0 for no limit
+  * @param dashRange for an ability that does nothing else as it fires, the reach, centre to centre,
+@@ -80,6 +83,7 @@ public record AbilityData(
+     int buffTimeMs,
+     int manaCost,
+     int refundWindowMs,
++    boolean refundUntilDelivered,
+     int cooldownMs,
+     int maxCharges,
+     int dashRange,
+diff --git a/core/src/main/java/org/crforge/core/battle/unit/ChampionController.java b/core/src/main/java/org/crforge/core/battle/unit/ChampionController.java
+index 000d1af0..41e679ce 100644
+--- a/core/src/main/java/org/crforge/core/battle/unit/ChampionController.java
++++ b/core/src/main/java/org/crforge/core/battle/unit/ChampionController.java
+@@ -179,6 +179,14 @@ public final class ChampionController extends ActionInstance {
+   /** The refund window: what is left of the ability's RefundWindow since the last use, in ms. */
+   @Getter private int triggerMs;
+ 
++  /**
++   * True from a use of an ability that refunds until delivered (its row's RefundUntilDelivered, data
++   * 16.635.3) until an ActionAbilityDelivered row runs on a copy: while it is set, the last copy
++   * leaving gives the cost back once. Clashbot fork F635, inferred from the tables (the column and
++   * the delivered rows came in together, RefundWindow left out); no game code read (b).
++   */
++  @Getter private boolean awaitingDelivery;
++
+   /** The cost of the last use, which a refund gives back, in whole elixir. */
+   @Getter private int paidMana;
+ 
+@@ -330,6 +338,10 @@ public final class ChampionController extends ActionInstance {
+       }
+       // Otherwise it holds: no copy casts.
+     }
++    if (awaitingDelivery && champions.isEmpty()) {
++      world.championRefund(this, paidMana);
++      awaitingDelivery = false;
++    }
+     if (before > 0 && cooldownMs == 0) {
+       world.championCooldownOut(this);
+     }
+@@ -386,6 +398,11 @@ public final class ChampionController extends ActionInstance {
+     cooldownMs = cooldownFullMs;
+   }
+ 
++  /** An ActionAbilityDelivered row ran on a copy: the use's cost is no longer given back. */
++  void delivered() {
++    awaitingDelivery = false;
++  }
++
+   /** Refills the charges to the champion's most, as an action asks: its row's value as it is. */
+   void refillCharges() {
+     charges = champion.ability().maxCharges();
+@@ -421,7 +438,8 @@ public final class ChampionController extends ActionInstance {
+       copy.requestAbility();
+     }
+     AbilityData ability = champion.ability();
+-    triggerMs = ability.refundWindowMs();
++    awaitingDelivery = ability.refundUntilDelivered();
++    triggerMs = awaitingDelivery ? 0 : ability.refundWindowMs();
+     paidMana = ability.manaCost();
+     cooldownMs = cooldownFullMs;
+     if (charges > 0) {
+diff --git a/core/src/main/java/org/crforge/core/battle/unit/CharacterEntity.java b/core/src/main/java/org/crforge/core/battle/unit/CharacterEntity.java
+index 953eda03..2dd0ee0b 100644
+--- a/core/src/main/java/org/crforge/core/battle/unit/CharacterEntity.java
++++ b/core/src/main/java/org/crforge/core/battle/unit/CharacterEntity.java
+@@ -19,6 +19,7 @@ import lombok.Setter;
+ import org.crforge.core.battle.BattleComponent;
+ import org.crforge.core.battle.BattleEntity;
+ import org.crforge.core.battle.TargetLocks;
++import org.crforge.core.battle.action.AbilityDelivered;
+ import org.crforge.core.battle.action.ActionContext;
+ import org.crforge.core.battle.action.ActionHolder;
+ import org.crforge.core.battle.action.ActionInstance;
+@@ -4750,6 +4751,15 @@ public class CharacterEntity extends WorldEntity {
+     }
+   }
+ 
++  /** The delivery mark on the character: the slot that follows it stops waiting for delivery. */
++  @Override
++  public void abilityDelivered(AbilityDelivered action) {
++    ChampionController slot = followingSlot();
++    if (slot != null) {
++      slot.delivered();
++    }
++  }
++
+   /**
+    * What a mark's run, or its hand-over's, on the character asks of the battle: the objects its
+    * resolver's filter lets through, the character's position, the cooldown of the champion slot
+diff --git a/core/src/test/java/org/crforge/core/battle/unit/BattleChampionRefundTest.java b/core/src/test/java/org/crforge/core/battle/unit/BattleChampionRefundTest.java
+index 572be506..76386a71 100644
+--- a/core/src/test/java/org/crforge/core/battle/unit/BattleChampionRefundTest.java
++++ b/core/src/test/java/org/crforge/core/battle/unit/BattleChampionRefundTest.java
+@@ -60,11 +60,18 @@ class BattleChampionRefundTest {
+     final List<String> refunds = new ArrayList<>();
+ 
+     Scene(Path folder, Consumer<ObjectNode> ability) throws IOException {
+-      GameTables tables =
+-          GameData.altered(
+-              folder,
+-              "character_abilities",
+-              rows -> ability.accept(GameData.columns(rows, abilityName())));
++      this(folder, ability, rows -> {});
++    }
++
++    /** As above, with the actions table's rows altered too. */
++    Scene(Path folder, Consumer<ObjectNode> ability, Consumer<ObjectNode> actions)
++        throws IOException {
++      GameData.altered(folder, "actions", actions);
++      GameData.alterLoaded(
++          folder,
++          "character_abilities",
++          rows -> ability.accept(GameData.columns(rows, abilityName())));
++      GameTables tables = GameTables.load(folder);
+       Standard1v1Battle made = null;
+       LadderMatch started = null;
+       // The first player's word whose shuffle deals her into the opening hand.
+@@ -282,4 +289,74 @@ class BattleChampionRefundTest {
+     assertThat(Integer.parseInt(refund[2]) - Integer.parseInt(refund[1]))
+         .isEqualTo(cost * KingElixir.SCALE);
+   }
++
++  /** An ability row as data 16.635.3 writes the hero abilities': no RefundWindow, refunded until delivered. */
++  private static Consumer<ObjectNode> untilDelivered(int triggerDelay, String onActivation) {
++    return row -> {
++      row.remove("RefundWindow");
++      row.put("RefundUntilDelivered", true).put("TriggerDelay", triggerDelay).put("CastTime", 2000);
++      if (onActivation != null) {
++        row.put("OnActivationAction", onActivation);
++      }
++    };
++  }
++
++  /** The delivery mark, as data 16.635.3 writes the hero abilities' *_ability_delivered rows. */
++  private static final String DELIVERED = "Test_ability_delivered";
++
++  private static void addDelivered(ObjectNode rows) {
++    ObjectNode row = rows.putObject(DELIVERED);
++    row.put("class", "LogicActionAbilityDeliveredData");
++    row.put("ClassType", "ActionAbilityDelivered");
++    row.putObject("fields").put("ClassType", "ActionAbilityDelivered");
++  }
++
++  @Test
++  @DisplayName(
++      "clashbot F635: an ability row refunded until delivered, with no delivery, gives the cost"
++          + " back at a death long past its trigger delay")
++  void untilDeliveredHoldsPastTheTriggerDelay(@TempDir Path folder) throws IOException {
++    Scene scene = new Scene(folder, untilDelivered(200, null));
++    CharacterEntity queen = scene.playQueen(0);
++    scene.afterDeployWithElixir();
++    scene.useAbility();
++    // 1,000 ms on she still casts: a window of the trigger delay would have run out.
++    scene.step(20);
++    assertThat(queen.getView().getState()).isEqualTo(ChampionController.CASTING);
++    scene.kill(queen);
++    int cost = scene.battle.getWorld().getRecords().unit(QUEEN).ability().manaCost();
++    assertThat(scene.refunds).hasSize(1);
++    assertThat(scene.refunds.get(0)).startsWith(cost + " ");
++  }
++
++  @Test
++  @DisplayName(
++      "clashbot F635: the delivery mark run as the ability fires shuts the window: a death before"
++          + " it is refunded, a death after it is not")
++  void theDeliveryMarkShutsTheWindow(@TempDir Path folder) throws IOException {
++    Scene before =
++        new Scene(
++            Files.createDirectories(folder.resolve("before")),
++            untilDelivered(500, DELIVERED),
++            BattleChampionRefundTest::addDelivered);
++    CharacterEntity queen = before.playQueen(0);
++    before.afterDeployWithElixir();
++    before.useAbility();
++    before.kill(queen);
++    assertThat(before.refunds).hasSize(1);
++
++    Scene after =
++        new Scene(
++            Files.createDirectories(folder.resolve("after")),
++            untilDelivered(100, DELIVERED),
++            BattleChampionRefundTest::addDelivered);
++    queen = after.playQueen(0);
++    after.afterDeployWithElixir();
++    after.useAbility();
++    // Past the trigger delay: the ability fired and ran the mark; she still casts.
++    after.step(6);
++    assertThat(queen.getView().getState()).isEqualTo(ChampionController.CASTING);
++    after.kill(queen);
++    assertThat(after.refunds).isEmpty();
++  }
+ }
+diff --git a/core/src/test/java/org/crforge/core/battle/unit/BattleGiantHeroAbilityTest.java b/core/src/test/java/org/crforge/core/battle/unit/BattleGiantHeroAbilityTest.java
+index 633d8717..d9c2c160 100644
+--- a/core/src/test/java/org/crforge/core/battle/unit/BattleGiantHeroAbilityTest.java
++++ b/core/src/test/java/org/crforge/core/battle/unit/BattleGiantHeroAbilityTest.java
+@@ -83,12 +83,11 @@ class BattleGiantHeroAbilityTest {
+ 
+     // The slap holds the Giant for its stop's duration, the push comes its delay after the pick,
+     // and the Knight lands the knock up's duration after the push.
+-    int stop =
+-        Shipped.number(
+-            Shipped.actionNames(
+-                    Shipped.actionName(SELECTOR, "ActionOnSelfWhenTriggeredLeft"), "SubActions")
+-                .get(1),
+-            "ActionDuration");
++    // The stop is the group's last part: data 16.635.3 puts the delivery mark first (F635).
++    List<String> slapParts =
++        Shipped.actionNames(
++            Shipped.actionName(SELECTOR, "ActionOnSelfWhenTriggeredLeft"), "SubActions");
++    int stop = Shipped.number(slapParts.get(slapParts.size() - 1), "ActionDuration");
+     int lastStanding = PICK + Shipped.ticks(stop) + 1;
+     int push = PICK + Shipped.ticks(Shipped.number(PUSH, "PushbackDelay"));
+     // The knock up lands on the update that finds its duration out, counted down 50 ms an update.
+-- 
+2.43.0
+

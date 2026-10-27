@@ -1,0 +1,13 @@
+diff --git a/core/src/main/java/org/crforge/core/battle/data/GameVersions.java b/core/src/main/java/org/crforge/core/battle/data/GameVersions.java
+index aaec4392..0820613b 100644
+--- a/core/src/main/java/org/crforge/core/battle/data/GameVersions.java
++++ b/core/src/main/java/org/crforge/core/battle/data/GameVersions.java
+@@ -60,7 +60,7 @@ public final class GameVersions {
+    * 16.402.19 from 2026-10-06, then 16.402.21 from 2026-10-09, then 16.402.22 from 2026-10-19.
+    */
+   public static final Set<String> CLIENT_16_402_17_DATA =
+-      Set.of(DATA_16_402_18, DATA_16_402_19, DATA_16_402_21, DATA_16_402_22);
++      Set.of(DATA_16_402_18, DATA_16_402_19, DATA_16_402_21, DATA_16_402_22, "16.635.3"); // r64 SCRATCH: guard bypass, measurement only
+ 
+   private GameVersions() {
+     // Constants only

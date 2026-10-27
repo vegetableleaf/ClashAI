@@ -1,0 +1,87 @@
+A rows 2288 clean 2218 | B rows 2339 clean 2229
+
+== clean on A, refused or deferred on B: 25
+  action                   BalloonHero_Ability_Activation_Group             UnsupportedOperationException: BalloonHero_ability_delivered is an ActionAbilityDelivered, which the battle does not have
+  action                   BalloonHero_Failsafe_Spawn                       UnsupportedOperationException: BalloonHero_ability_delivered is an ActionAbilityDelivered, which the battle does not have
+  action                   BalloonHero_Failsafe_Spawn_Delayer               UnsupportedOperationException: BalloonHero_ability_delivered is an ActionAbilityDelivered, which the battle does not have
+  action                   BalloonHero_Skeletrooper_Spawner                 UnsupportedOperationException: BalloonHero_ability_delivered is an ActionAbilityDelivered, which the battle does not have
+  action                   BattleRam_EV1_PushBack                           UnsupportedOperationException: BattleRam_EV1_PushBack sets PushBackDamage to a table of BaseDamage, Flags where a number is read, which is not modelled
+  action                   GiantHero_Slap_Group_On_Self_Left                UnsupportedOperationException: GiantHero_ability_delivered is an ActionAbilityDelivered, which the battle does not have
+  action                   GiantHero_Slap_Group_On_Self_Right               UnsupportedOperationException: GiantHero_ability_delivered is an ActionAbilityDelivered, which the battle does not have
+  action                   GoldenKnight_Start_Ability_Group                 UnsupportedOperationException: GoldenKnight_ability_delivered is an ActionAbilityDelivered, which the battle does not have
+  action                   IceWizardHero_ability_actions                    UnsupportedOperationException: IceWizardHero_ability_delivered is an ActionAbilityDelivered, which the battle does not have
+  action                   IceWizardHero_ability_activation_actions         UnsupportedOperationException: IceWizardHero_ability_delivered is an ActionAbilityDelivered, which the battle does not have
+  action                   IceWizardHero_ability_from_kill_actions          UnsupportedOperationException: IceWizardHero_ability_delivered is an ActionAbilityDelivered, which the battle does not have
+  action                   IceWizardHero_spawn_cube                         UnsupportedOperationException: IceWizardHero_ability_delivered is an ActionAbilityDelivered, which the battle does not have
+  action                   IceWizardHero_spawn_cube_on_false                UnsupportedOperationException: IceWizardHero_ability_delivered is an ActionAbilityDelivered, which the battle does not have
+  action                   IceWizardHero_spawn_cube_on_true                 UnsupportedOperationException: IceWizardHero_ability_delivered is an ActionAbilityDelivered, which the battle does not have
+  action                   IceWizardHero_spawn_dummy_cube                   UnsupportedOperationException: IceWizardHero_ability_delivered is an ActionAbilityDelivered, which the battle does not have
+  action                   IceWizardHero_wait_to_activate_ability           UnsupportedOperationException: IceWizardHero_ability_delivered is an ActionAbilityDelivered, which the battle does not have
+  action                   MegaKnight_EV1_uppercut                          UnsupportedOperationException: MegaKnight_EV1_uppercut, an ActionMegaKnightUppercut, sets GameTagsToSet, which is not modelled
+  action                   MegaKnight_EV1_uppercut_start_group              UnsupportedOperationException: MegaKnight_EV1_uppercut, an ActionMegaKnightUppercut, sets GameTagsToSet, which is not modelled
+  action                   ValkyrieHero_Execute_Charge_Group                UnsupportedOperationException: ValkyrieHero_ability_delivered is an ActionAbilityDelivered, which the battle does not have
+  action                   ice_wizard_hero_set_spawned_cube_true            UnsupportedOperationException: IceWizardHero_ability_delivered is an ActionAbilityDelivered, which the battle does not have
+  action                   ice_wizard_run_on_killed_troop                   UnsupportedOperationException: IceWizardHero_ability_delivered is an ActionAbilityDelivered, which the battle does not have
+  buff                     Cannon_EV1_barrage_damage_buff                   OK unmodelledColumns=[CastIdSpecificBuff]
+  buff                     FirecrackerFireworks_EV1                         OK unmodelledColumns=[CastIdSpecificBuff]
+  card:spells_evolved      Mirror_EV1                                       IllegalArgumentException: Mirror_EV1 summons no character
+  unit                     ElectroWizardHero                                OK unmodelledColumns=[AttackSequenceList]
+
+== new in B, refused or deferred: 15
+  action                   BalloonHero_ability_delivered                    UnsupportedOperationException: BalloonHero_ability_delivered is an ActionAbilityDelivered, which the battle does not have
+  action                   GiantHero_ability_delivered                      UnsupportedOperationException: GiantHero_ability_delivered is an ActionAbilityDelivered, which the battle does not have
+  action                   GoldenKnight_ability_delivered                   UnsupportedOperationException: GoldenKnight_ability_delivered is an ActionAbilityDelivered, which the battle does not have
+  action                   IceWizardHero_ability_delivered                  UnsupportedOperationException: IceWizardHero_ability_delivered is an ActionAbilityDelivered, which the battle does not have
+  action                   ValkyrieHero_ability_delivered                   UnsupportedOperationException: ValkyrieHero_ability_delivered is an ActionAbilityDelivered, which the battle does not have
+  action                   giant_evo_actions_at_health                      UnsupportedOperationException: giant_evo_spawn_tower_rage_1 spawns an area effect and sets ActionToRunOnSpawned, which is not modelled
+  action                   giant_evo_choose_rage_to_spawn                   UnsupportedOperationException: giant_evo_spawn_tower_rage_1 spawns an area effect and sets ActionToRunOnSpawned, which is not modelled
+  action                   giant_evo_on_on_health                           UnsupportedOperationException: giant_evo_spawn_tower_rage_1 spawns an area effect and sets ActionToRunOnSpawned, which is not modelled
+  action                   giant_evo_spawn_tower_rage_1                     UnsupportedOperationException: giant_evo_spawn_tower_rage_1 spawns an area effect and sets ActionToRunOnSpawned, which is not modelled
+  action                   giant_evo_spawn_tower_rage_2                     UnsupportedOperationException: giant_evo_spawn_tower_rage_2 spawns an area effect and sets ActionToRunOnSpawned, which is not modelled
+  action                   giant_evo_spawn_tower_rage_3                     UnsupportedOperationException: giant_evo_spawn_tower_rage_3 spawns an area effect and sets ActionToRunOnSpawned, which is not modelled
+  action                   giant_evo_spawn_tower_rage_4                     UnsupportedOperationException: giant_evo_spawn_tower_rage_4 spawns an area effect and sets ActionToRunOnSpawned, which is not modelled
+  action                   giant_evo_start_interval                         UnsupportedOperationException: giant_evo_spawn_tower_rage_1 spawns an area effect and sets ActionToRunOnSpawned, which is not modelled
+  action                   giant_hero_on_starting_actions                   UnsupportedOperationException: giant_evo_spawn_tower_rage_1 spawns an area effect and sets ActionToRunOnSpawned, which is not modelled
+  unit                     Giant_EV1                                        OK unmodelledColumns=[AttackSequenceList]
+
+== removed in B: 1
+  action                   ElectroWizardHero_Forbid_Movement                OK
+
+== new in B, clean: 37
+  action                   Giant_EV1_Play_Ability_Activated_Sfx             OK
+  action                   Giant_EV1_Play_Aura_On_Character                 OK
+  action                   Giant_EV1_Play_Rage_Buff_Sfx                     OK
+  action                   IceWizardHero_death_ability_delivered            OK
+  action                   giant_Evo_register_rage_y                        OK
+  action                   giant_evo_rage_actions                           OK
+  action                   giant_evo_rage_destroy                           OK
+  action                   giant_evo_rage_register_rage_data                OK
+  action                   giant_evo_rage_wait_to_destroy                   OK
+  action                   giant_evo_register_attack_sequence               OK
+  action                   giant_evo_register_hit                           OK
+  action                   giant_evo_register_rage_globalID                 OK
+  action                   giant_evo_register_rage_radius                   OK
+  action                   giant_evo_register_rage_x                        OK
+  action                   giant_evo_register_started_rage                  OK
+  action                   giant_evo_select_attack                          OK
+  action                   giant_evo_set_attack_index_0                     OK
+  action                   giant_evo_set_attack_index_1                     OK
+  action                   giant_evo_set_attack_index_2                     OK
+  action                   giant_evo_set_attack_index_3                     OK
+  action                   giant_evo_set_attack_kill                        OK
+  action                   giant_evo_set_attack_normal                      OK
+  action                   giant_evo_set_attack_rage_left_punch             OK
+  action                   giant_evo_set_attack_rage_right_punch            OK
+  action                   giant_evo_set_current_attack_index_var_0         OK
+  action                   giant_evo_set_current_attack_index_var_1         OK
+  action                   giant_evo_set_current_attack_index_var_2         OK
+  action                   giant_evo_set_current_attack_index_var_3         OK
+  action                   vfx_giant_evo_outro_1                            OK
+  action                   vfx_giant_evo_outro_2                            OK
+  action                   vfx_giant_evo_outro_3                            OK
+  action                   vfx_giant_evo_outro_4                            OK
+  aeo                      GiantEvoRage1                                    OK
+  aeo                      GiantEvoRage2                                    OK
+  aeo                      GiantEvoRage3                                    OK
+  aeo                      GiantEvoRage4                                    OK
+  aeo                      GiantEvoRageBase                                 OK
