@@ -22,10 +22,15 @@ import org.crforge.core.battle.match.MatchSide;
 import org.crforge.core.battle.projectile.ProjectileEntity;
 import org.crforge.core.battle.unit.*;
 import org.crforge.core.battle.spawn.SpawnHost;
+import org.crforge.core.battle.deploy.PlacementSearch;
 import org.crforge.core.pathfinding.GridEntity;
+import org.crforge.core.pathfinding.GridEntityState;
+import org.crforge.core.pathfinding.grid.PathfindingGlobals;
 import org.crforge.core.pathfinding.combat.HitPoints;
 import org.crforge.core.pathfinding.combat.RarityTable;
+import org.crforge.core.pathfinding.target.SightRange;
 import org.crforge.core.pathfinding.target.TargetView;
+import org.crforge.core.pathfinding.target.TargetingState;
 import org.crforge.core.util.DeepCopy;
 
 public final class CfCore {
@@ -371,6 +376,17 @@ public final class CfCore {
 
   public static synchronized String[] unitTypes() { return unitType.keySet().toArray(new String[0]); }
 
+  /**
+   * unitTypes() after giving every alive body's row its id: a body first seen since the last state() has none yet, and
+   * sim_unit_state.extract reads the names BEFORE state_json (an index past the list's end otherwise).
+   */
+  public String[] unitTypesNow() {
+    if (s != null)
+      for (BattleEntity e : s.std.getBattle().getHolder().entities())
+        if (e instanceof WorldEntity w && w.getView().isAlive()) typeOf(w.getData().name());
+    return unitTypes();
+  }
+
   static void str(StringBuilder b, String v) {
     b.append('"');
     for (int i = 0; i < v.length(); i++) { char c = v.charAt(i); if (c == '"' || c == '\\') b.append('\\'); b.append(c); }
@@ -383,21 +399,148 @@ public final class CfCore {
     b.append(']');
   }
 
+  // ---------------------------------------------------------------------------------------------- cue values (F1c-2)
+  // Each value below is read from crforge's own view / targeting / buff / movement state and put in RoyaleSim's
+  // encoding; F1c-2 measures each against RoyaleSim fin16 on matched scenarios (facade/cues/cue_ab.py -> results/f1c2).
+
+  /**
+   * The reference as RoyaleSim's target: crforge also holds the DEFAULT target (the tower a unit walks at, a tower's
+   * fallback) as its reference while nothing is in sight; RoyaleSim holds none then. Kept: any reference while the
+   * owner attacks, else one inside crforge's own selection reach (CandidateSelector: the target's radius + the sight
+   * range + the owner's radius, + the crown-tower / building extra); else none.
+   */
+  static TargetView acquired(WorldEntity w) {
+    TargetingState t = w.getTargeting();
+    TargetView ref = t.getReference();
+    if (ref == null || w.getView().getState() == GridEntityState.ATTACKING) return ref;
+    long reach = ref.radius() + SightRange.sightRange(t)
+        + (PathfindingGlobals.ADD_CHARACTER_RANGE_TO_RADIUS ? t.getConfig().collisionRadius() : 0)
+        + (ref.crownTower() ? PathfindingGlobals.EXTRA_SIGHT_RANGE_TO_CROWN_TOWERS
+            : ref.building() ? PathfindingGlobals.EXTRA_SIGHT_RANGE_TO_BUILDING : 0);
+    long dx = ref.x() - w.x(), dy = ref.y() - w.y();
+    return dx * dx + dy * dy <= reach * reach ? ref : null;
+  }
+
+  /**
+   * RoyaleSim attack phase from crforge's attacking state: 0 Idle (not attacking), 2 Cooldown (attacking with the attack
+   * timer standing on a hit-speed multiple: the tick a hit lands, and the hold after it while the target is gone), else
+   * 1 Windup. Traced tick by tick (trace.py) on a Tesla and a princess tower against a Knight: the same ticks in both
+   * engines. crforge's hitInProgress is not used: it also drops the tick after a ranged hit, where RoyaleSim is in Windup.
+   */
+  static int phase(WorldEntity w) {
+    if (w.getView().getState() != GridEntityState.ATTACKING) return 0;
+    int at = w.getTargeting().getAttackTimerMs(), hs = w.getData().hitSpeedMs();
+    return at > 0 && hs > 0 && at % hs == 0 ? 2 : 1;
+  }
+
+  /** RoyaleSim's one stun flag in ticks: the longest buff with speed or hit speed -100 (Freeze, Zap, stun buffs). */
+  static int stunTicks(WorldEntity w) {
+    int ms = 0;
+    for (BuffInstance bi : w.getBuffs().items()) {
+      BuffData d = bi.getBuff();
+      if (d.speedMultiplier() <= -100 || d.hitSpeedMultiplier() <= -100) ms = Math.max(ms, bi.getRemaining());
+    }
+    return (ms + 49) / 50;
+  }
+
+  /** crforge charge progress (0..10000, -1 none) as RoyaleSim's charge (0..1000; 1000 once charged). */
+  static int charge(WorldEntity w) {
+    if (!(w instanceof CharacterEntity c)) return 0;
+    GridEntity v = w.getView();
+    if ((v.getFlags() & v.getFlagBits().charging()) != 0) return 1000;
+    int p = c.getUnit().movement().getChargeProgress();
+    return p <= 0 ? 0 : Math.min(1000, p / 10);
+  }
+
+  /**
+   * A pushback in flight as RoyaleSim's knockback ticks: its budget drops 25 per visit (MovementState.pushbackBudget),
+   * RoyaleSim counts the visit that ends it too (traced: budget 200 -> 9, 175 -> 8 ... a Firecracker's recoil).
+   */
+  static int knockTicks(WorldEntity w) {
+    if (!(w instanceof CharacterEntity c)) return 0;
+    var mv = c.getUnit().movement();
+    return mv.getPushbackInFlight() == 1 ? mv.getPushbackBudget() / 25 + 1 : 0;
+  }
+
+  /**
+   * Tesla-type hide cue: RoyaleSim reads Hidden from the first tick the hide counter leaves 0 going down until it rises
+   * (crforge 0 < counter <= hide time), and Up while it comes back up attacking (counter past the hide time, or turned
+   * back below 0) and while up (traced). RoyaleSim's rare Rising has no crforge state found to match.
+   */
+  static String hide(WorldEntity w) {
+    if (!(w instanceof CharacterEntity c) || !w.getData().hidesWhenNotAttacking()) return "Up";
+    int k = c.getUnit().timers().getHideCounterMs(), h = w.getData().hideTimeMs();
+    return k > 0 && k <= h ? "Hidden" : "Up";
+  }
+
+  /** RoyaleSim's footprint [x0, y0, x1, y1] (subtiles) of a tower or building: crforge's placement footprint in tiles. */
+  static String footprint(WorldEntity w) {
+    if (!(w instanceof TowerEntity) && !w.getData().building()) return "null";
+    int half = PlacementSearch.footprint(w.getData()) * 500;
+    return "[" + (w.x() - half) * K + "," + (w.y() - half) * K + "," + (w.x() + half) * K + "," + (w.y() + half) * K + "]";
+  }
+
+  /**
+   * STATUS_ABILITY_WINDUP (64) / STATUS_ABILITY_ACTIVE (128) from the champion / hero body's view state, as fin16 sets
+   * them (traced on the hero Knight and the Monk, trace.py --press): casting = 64, plus 128 once its warning has run
+   * out; the ability's follow-up = 64 | 128. An ability crforge runs without a cast state (hero Ice Wizard, hero
+   * Valkyrie: the body keeps walking / attacking) has no crforge view state to read: no bit (fin16 sets 128 there).
+   */
+  static int abilityBits(WorldEntity w) {
+    if (!(w instanceof CharacterEntity c)) return 0;
+    int st = w.getView().getState();
+    if (st == GridEntityState.CASTING) return c.getUnit().timers().getAbilityWarningCountdown() >= 1 ? 64 : 64 | 128;
+    return st == GridEntityState.ABILITY_FOLLOW_UP ? 64 | 128 : 0;
+  }
+
+  /** STATUS_EVOLVED (8): the body runs an evolution row of crforge's tables (Knight_EV1, AngryBarbarian_EV1_2 ...). */
+  static int evolvedBit(WorldEntity w) {
+    return w instanceof TowerEntity || !w.getData().name().toUpperCase().contains("_EV") ? 0 : 8;   // electro_dragon_ev1
+  }
+
+  /**
+   * The Mighty Miner's dropped bomb. crforge: a 0-hp building body counting its deploy down (+30 .. +50 after the
+   * press), then a blast area for one tick. fin16: a FLIGHT spell row of the Mighty Miner card at the bomb, delay = the
+   * countdown in ticks, and no area (traced tick by tick, cues/mm_bomb.py). The facade reports it the fin16 way: the
+   * body as that row, its MightyMinerExplosion area (source null in crforge) dropped.
+   * ponytail: this one row by name; other 0-hp bombs (Giant Skeleton's, the Balloon's) were not traced.
+   */
+  /** The bomb's blast (crforge names its source null; the row is the bomb's alone). */
+  static boolean bombBlast(AreaEffectEntity a) { return a.getData().name().equals("MightyMinerExplosion"); }
+
+  static boolean bombAsSpell(Object o) {
+    return o instanceof WorldEntity w && w.getData().name().equals("MightyMinerBomb");
+  }
+
+  static final String[] PHASES = {"\"Idle\"", "\"Windup\"", "\"Cooldown\""};
+
   /**
    * The part of RoyaleSim's Battle.save() JSON that pipeline/sim_unit_state.extract reads, entity rows in state()'s
-   * order (all alive). ponytail: the cue adapter's values are crforge's nearest fields (attack / load timers, movement
-   * flag, charge bit); jumping, dash, hide, firer refs and buffs on shots are not read from crforge (fixed defaults).
+   * order (all alive), from crforge's own state (the helpers above): attack / load timers, acquired-target phase,
+   * river jump and dash (the view's state), base walk speed, the hide counter, the charge flag; shots carry their
+   * firer (the index of its row here), their target buff's time at their level and their damage.
    */
   public String cueSave() {
     StringBuilder a = new StringBuilder(), pos = new StringBuilder(), at = new StringBuilder(), ld = new StringBuilder(),
-        kind = new StringBuilder(), ph = new StringBuilder(), sp = new StringBuilder(), ch = new StringBuilder();
+        kind = new StringBuilder(), ph = new StringBuilder(), sp = new StringBuilder(), ch = new StringBuilder(),
+        jp = new StringBuilder(), ds = new StringBuilder(), hd = new StringBuilder();
     StringBuilder spells = new StringBuilder(), shots = new StringBuilder();
     String[] motions = {"Flight", "Airborne", "Rolling", "Area", "Pulsing", "Fuse", "Strikes", "Scheduled"};
+    HashMap<Integer, Integer> row = new HashMap<>();      // entity id -> its row index (a shot's firer ref)
+    for (BattleEntity e : s.std.getBattle().getHolder().entities())
+      if (e instanceof WorldEntity w && w.getView().isAlive() && !bombAsSpell(w)) row.put(w.getId(), row.size());
     int n = 0;
     for (BattleEntity e : s.std.getBattle().getHolder().entities()) {
       if (e instanceof WorldEntity w) {
         GridEntity v = w.getView();
         if (!v.isAlive()) continue;
+        if (bombAsSpell(w)) {
+          if (cardIndex().get(rootCard(w.name())) == null) continue;
+          if (spells.length() > 0) spells.append(',');
+          spells.append("{\"motion\":{\"Flight\":{\"pos\":{\"x\":").append(w.x() * K).append(",\"y\":")
+              .append(w.y() * K).append("}}}}");
+          continue;
+        }
         String sep = n++ > 0 ? "," : "";
         var tg = w.getTargeting();
         a.append(sep).append("true");
@@ -406,9 +549,12 @@ public final class CfCore {
         ld.append(sep).append(tg.getLoadTimerMs());
         kind.append(sep).append(w instanceof TowerEntity t ? (t.getData().king() ? "\"KingTower\"" : "\"PrincessTower\"")
             : w.getData().building() ? "\"Building\"" : "\"Troop\"");
-        ph.append(sep).append(tg.getReference() != null && tg.getAttackTimerMs() > 0 ? "\"Windup\"" : "\"Idle\"");
-        sp.append(sep).append(v.isMovementActive() ? 1 : 0);
+        ph.append(sep).append(PHASES[phase(w)]);
+        sp.append(sep).append(w instanceof CharacterEntity && !w.getData().building() ? w.getData().speed() * K : 0);
         ch.append(sep).append((v.getFlags() & v.getFlagBits().charging()) != 0);
+        jp.append(sep).append(v.getState() == GridEntityState.JUMPING);
+        ds.append(sep).append(v.getState() == GridEntityState.DASHING ? "\"Dashing\"" : "\"None\"");
+        hd.append(sep).append('"').append(hide(w)).append('"');
       } else if (e instanceof ProjectileEntity p) {
         Integer so = spellObj.get(p.getData().name());
         if (so != null) {
@@ -417,22 +563,37 @@ public final class CfCore {
               .append(",\"y\":").append(p.getY() * K).append("}}}}");
         } else {
           if (shots.length() > 0) shots.append(',');
-          shots.append("{\"firer\":null,\"buff\":null,\"damage\":0}");
+          WorldEntity o = p.getOwner() != null ? p.getOwner() : p.getRoot();   // a spark / split shot: its root body
+          Integer fi = o == null ? null : row.get(o.getId());
+          String buff = p.getData().targetBuff();
+          shots.append("{\"firer\":").append(fi == null ? "null" : "{\"index\":" + fi + ",\"generation\":0}")
+              .append(",\"buff\":");
+          if (buff == null) shots.append("null");
+          else {
+            shots.append("{\"buff\":");
+            str(shots, buff);
+            shots.append(",\"time_ms\":").append(p.getData().buffTime(p.getPackedLevel())).append('}');
+          }
+          shots.append(",\"damage\":").append(p.damage()).append('}');
         }
       } else if (e instanceof AreaEffectEntity ae) {
         Integer so = areaCard(ae);
-        if (so == null) continue;
+        if (so == null || bombBlast(ae)) continue;
+        int motion = so & 15;
+        // an area a troop / evolution / spell's second object makes: Pulsing when it hits every HitSpeed, as spell_objects
+        if (motion == 3 && !spellObj.containsKey(ae.getData().name()) && ae.getData().hitSpeedMs() > 0) motion = 4;
+        // an area riding on a body (the Ice Wizard's aura ...): fin16's save calls it Attached (no state_json code)
+        String mname = ae.getFollow() != null || ae.getData().followsParent() ? "Attached" : motions[motion];
         if (spells.length() > 0) spells.append(',');
-        spells.append("{\"motion\":{\"").append(motions[so & 15]).append("\":{\"pos\":{\"x\":").append(ae.x() * K)
+        spells.append("{\"motion\":{\"").append(mname).append("\":{\"pos\":{\"x\":").append(ae.x() * K)
             .append(",\"y\":").append(ae.y() * K).append("},\"life_ms\":").append(Math.max(0, ae.getCountdown()))
             .append("}}}");
       }
     }
-    String zeros = n == 0 ? "" : "0" + ",0".repeat(n - 1), fals = n == 0 ? "" : "false" + ",false".repeat(n - 1),
-        none = n == 0 ? "" : "\"None\"" + ",\"None\"".repeat(n - 1), up = n == 0 ? "" : "\"Up\"" + ",\"Up\"".repeat(n - 1);
+    String zeros = n == 0 ? "" : "0" + ",0".repeat(n - 1);
     return "{\"ents\":{\"alive\":[" + a + "],\"pos\":[" + pos + "],\"attack_ms\":[" + at + "],\"attack_load_ms\":[" + ld
-        + "],\"jumping\":[" + fals + "],\"dash_state\":[" + none + "],\"attack_phase\":[" + ph + "],\"kind\":[" + kind
-        + "],\"speed\":[" + sp + "],\"hide\":[" + up + "],\"charged\":[" + ch + "],\"generation\":[" + zeros
+        + "],\"jumping\":[" + jp + "],\"dash_state\":[" + ds + "],\"attack_phase\":[" + ph + "],\"kind\":[" + kind
+        + "],\"speed\":[" + sp + "],\"hide\":[" + hd + "],\"charged\":[" + ch + "],\"generation\":[" + zeros
         + "]},\"projectiles\":[" + shots + "],\"spells\":[" + spells + "]}";
   }
 
@@ -453,10 +614,21 @@ public final class CfCore {
     boolean[] kingActive = new boolean[2];
     StringBuilder ents = new StringBuilder(4096), spells = new StringBuilder(), shots = new StringBuilder();
     List<BattleEntity> list = std.getBattle().getHolder().entities();
+    HashMap<Integer, Integer> mount = new HashMap<>();     // rider id -> the id of the body it rides (Ram Rider ...)
+    for (BattleEntity e : list)
+      if (e instanceof CharacterEntity c) for (CharacterEntity r : c.riders()) mount.put(r.getId(), c.getId());
     for (BattleEntity e : list) {
       if (e instanceof WorldEntity w) {
         GridEntity v = w.getView();
         if (!v.isAlive()) continue;
+        if (bombAsSpell(w)) {                     // the fin16 row: [team, card, FLIGHT, at, aim = at, delay ticks, ...]
+          Integer cid = cardIndex().get(rootCard(w.name()));
+          if (cid == null) continue;
+          if (spells.length() > 0) spells.append(',');
+          ints(spells, w.side(), cid, 0, w.x() * K, w.y() * K, w.x() * K, w.y() * K, (v.getDeployCountdown() + 49) / 50,
+              0, 0, 0, 0);
+          continue;
+        }
         HitPoints h = w.getHitPoints();
         int hp = h == null ? 0 : h.getHitPoints(), mhp = h == null ? 0 : h.getMaximum();
         int kind, card = -1, slot = -1, flags = 0;
@@ -476,26 +648,43 @@ public final class CfCore {
             if (heroBody(c)) flags |= 16;
           }
         }
+        if ((v.getFlags() & v.getFlagBits().charging()) != 0) flags |= 256;          // STATUS charged
+        if (hide(w).equals("Hidden")) flags |= 4;                                   // STATUS hidden, as the hide cue
+        flags |= abilityBits(w) | evolvedBit(w);                                    // STATUS ability_* / evolved
         int target = -1;
-        TargetView ref = w.getTargeting().getReference();
+        TargetView ref = acquired(w);
         if (ref != null) { WorldEntity te = world.entityOf(ref.getEntity()); if (te != null) target = te.getId(); }
         int deployMs = w instanceof CharacterEntity ? v.getDeployCountdown() : 0;
         if (ents.length() > 0) ents.append(',');
         ents.append('[').append(w.getId()).append(',').append(w.side()).append(',').append(kind).append(',').append(card)
             .append(',').append(slot).append(',').append(w.x() * K).append(',').append(w.y() * K).append(',').append(hp)
             .append(',').append(mhp).append(',').append(v.getCollisionRadius() * K).append(',').append(w.getData().air())
-            .append(',').append((deployMs + 49) / 50).append(",0,0,null,").append(target).append(",-1,");
-        ints(ents, v.getDirX() * K, v.getDirY() * K);
+            .append(',').append((deployMs + 49) / 50).append(',').append(stunTicks(w)).append(',').append(knockTicks(w))
+            .append(',').append(footprint(w)).append(',').append(target).append(',').append(phase(w)).append(',');
+        ints(ents, v.getDirX(), v.getDirY());
         ents.append(',').append(h == null ? 0 : h.getShield()).append(",[");
+        LinkedHashMap<String, Integer> buffs = new LinkedHashMap<>();   // RoyaleSim lists a buff once: its longest time
+        String idle = w.getData().buffWhenNotAttacking();   // fin16 applies it implicitly, lists no buff for it
+        for (BuffInstance bi : w.getBuffs().items())        // FOREVER (-1): RoyaleSim's owner-lifetime sentinel
+          if (!bi.getBuff().name().equals(idle))
+            buffs.merge(bi.getBuff().name(), bi.getRemaining() == BuffInstance.FOREVER ? 999999 : bi.getRemaining(), Math::max);
         boolean first = true;
-        for (BuffInstance bi : w.getBuffs().items()) {
+        for (Map.Entry<String, Integer> bf : buffs.entrySet()) {
           if (!first) ents.append(',');
           first = false;
           ents.append('[');
-          str(ents, bi.getBuff().name());
-          ents.append(',').append(bi.getRemaining()).append(']');
+          str(ents, bf.getKey());
+          ents.append(',').append(bf.getValue()).append(']');
         }
-        ents.append("],").append(flags).append(',').append(w.level()).append(",-1,-1,-1,-1,-1,")
+        // ability ticks: fin16 counts the follow-up only, one more than crforge's countdown (traced on the Monk)
+        int ability = w instanceof CharacterEntity c && v.getState() == GridEntityState.ABILITY_FOLLOW_UP
+            ? c.getUnit().timers().getAbilityCountdown() + 1 : 0;
+        int[] dest = {-1, -1};                     // an explicit move destination (a tunnel / dig / ability point)
+        if (w instanceof CharacterEntity c && c.getUnit().movement().getExplicitX() >= 0)
+          dest = new int[] {c.getUnit().movement().getExplicitX() * K, c.getUnit().movement().getExplicitY() * K};
+        ents.append("],").append(flags).append(',').append(w.level()).append(',').append(mount.getOrDefault(w.getId(), -1))
+            .append(',').append(charge(w)).append(',').append(dest[0]).append(',').append(dest[1]).append(',')
+            .append(Math.max(0, ability)).append(',')
             .append(typeOf(w.getData().name())).append(']');
       } else if (e instanceof ProjectileEntity p) {
         Integer so = spellObj.get(p.getData().name());
@@ -511,6 +700,7 @@ public final class CfCore {
               tgt == null || !tgt.getView().isAlive() ? -1 : tgt.getId(), 0, firer);
         }
       } else if (e instanceof AreaEffectEntity a) {
+        if (bombBlast(a)) continue;               // the bomb's blast: fin16 has no area for it
         Integer so = areaCard(a);
         if (so == null) { bump(missing, "area:" + a.getData().name() + "|" + a.name().replaceAll("[0-9]+", "#")); continue; }
         int motion = so & 15;

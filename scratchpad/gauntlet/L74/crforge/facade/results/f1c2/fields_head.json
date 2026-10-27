@@ -1,0 +1,9943 @@
+{
+ "part": "fields",
+ "n": 223,
+ "ticks": 3600,
+ "every": 5,
+ "result": {
+  "scenarios": 223,
+  "compared": 214,
+  "counts": {
+   "units_rs": 1092919,
+   "units_cf": 1124937,
+   "paired": 1057812,
+   "shots_cf": 59884,
+   "areas_cf": 39073,
+   "samples": 129338,
+   "shots_rs": 57095,
+   "shots_paired": 48866,
+   "press_same": 14983,
+   "press_ok_rs": 877,
+   "press_ok_cf": 910,
+   "areas_rs": 28116,
+   "areas_paired": 25203,
+   "press_differs": 639
+  },
+  "cards": [
+   "AngryBarbarians",
+   "Archer",
+   "ArcherQueen",
+   "Arrows",
+   "Assassin",
+   "AxeMan",
+   "BabyDragon",
+   "Balloon",
+   "BarbLog",
+   "Barbarians",
+   "Bats",
+   "BattleHealer",
+   "BattleRam",
+   "Berserker",
+   "BlowdartGoblin",
+   "BombTower",
+   "Bomber",
+   "BossBandit",
+   "Bowler",
+   "Cannon",
+   "Clone",
+   "DarkMagic",
+   "DarkPrince",
+   "DarkWitch",
+   "DartBarrell",
+   "Earthquake",
+   "ElectroDragon",
+   "ElectroGiant",
+   "ElectroSpirit",
+   "ElectroWizard",
+   "EliteArcher",
+   "Elixir Collector",
+   "ElixirGolem",
+   "FireSpirits",
+   "Fireball",
+   "Firecracker",
+   "FirespiritHut",
+   "Fisherman",
+   "Freeze",
+   "Ghost",
+   "Giant",
+   "GiantBuffer",
+   "GiantSkeleton",
+   "GoblinBarrel",
+   "GoblinCage",
+   "GoblinCurse",
+   "GoblinDemolisher",
+   "GoblinDrill",
+   "GoblinGang",
+   "GoblinGiant",
+   "GoblinHut",
+   "Goblins",
+   "Goblinstein",
+   "GoldenKnight",
+   "Golem",
+   "Graveyard",
+   "Heal",
+   "HogRider",
+   "Hunter",
+   "IceGolemite",
+   "IceSpirits",
+   "IceWizard",
+   "InfernoDragon",
+   "InfernoTower",
+   "Knight",
+   "LavaHound",
+   "Lightning",
+   "LittlePrince",
+   "Log",
+   "MegaKnight",
+   "MegaMinion",
+   "MightyMiner",
+   "Miner",
+   "MiniPekka",
+   "MiniSparkys",
+   "MinionGiant",
+   "MinionHorde",
+   "Minions",
+   "Mirror",
+   "Monk",
+   "Mortar",
+   "MovingCannon",
+   "Musketeer",
+   "Pekka",
+   "Phoenix",
+   "Poison",
+   "Prince",
+   "Princess",
+   "Rage",
+   "RageBarbarian",
+   "RamRider",
+   "Rascals",
+   "Rocket",
+   "Ronin",
+   "RoyalDelivery",
+   "RoyalGiant",
+   "RoyalHogs",
+   "RoyalRecruits",
+   "SkeletonArmy",
+   "SkeletonBalloon",
+   "SkeletonDragons",
+   "SkeletonKing",
+   "SkeletonWarriors",
+   "Skeletons",
+   "Snowball",
+   "SpearGoblins",
+   "SuspiciousBush",
+   "Tesla",
+   "Tombstone",
+   "Tornado",
+   "Valkyrie",
+   "Vines",
+   "Wallbreakers",
+   "Witch",
+   "WitchMother",
+   "Wizard",
+   "Xbow",
+   "Zap",
+   "ZapMachine"
+  ],
+  "fields": [
+   {
+    "field": "area.frac",
+    "all": {
+     "n": 25203,
+     "equal": 22608,
+     "rate": 0.897
+    },
+    "sync": {
+     "n": 24012,
+     "equal": 21417,
+     "rate": 0.8919
+    },
+    "body_sync": {
+     "n": 24012,
+     "equal": 21417,
+     "rate": 0.8919
+    },
+    "top_mismatch": [
+     [
+      "rs=0.81 cf=0.762 | Tornado",
+      398
+     ],
+     [
+      "rs=0.571 cf=0.524 | Tornado",
+      398
+     ],
+     [
+      "rs=0.333 cf=0.286 | Tornado",
+      398
+     ],
+     [
+      "rs=0.095 cf=0.048 | Tornado",
+      398
+     ],
+     [
+      "rs=null cf=0.95 | Earthquake",
+      28
+     ],
+     [
+      "rs=null cf=0.867 | Earthquake",
+      28
+     ],
+     [
+      "rs=null cf=0.783 | Earthquake",
+      28
+     ],
+     [
+      "rs=null cf=0.7 | Earthquake",
+      28
+     ],
+     [
+      "rs=null cf=0.617 | Earthquake",
+      27
+     ],
+     [
+      "rs=null cf=0.533 | Earthquake",
+      27
+     ],
+     [
+      "rs=null cf=0.45 | Earthquake",
+      27
+     ],
+     [
+      "rs=null cf=0.367 | Earthquake",
+      27
+     ]
+    ]
+   },
+   {
+    "field": "area.motion",
+    "all": {
+     "n": 25203,
+     "equal": 14612,
+     "rate": 0.5798
+    },
+    "sync": {
+     "n": 24012,
+     "equal": 13794,
+     "rate": 0.5745
+    },
+    "body_sync": {
+     "n": 24012,
+     "equal": 13794,
+     "rate": 0.5745
+    },
+    "top_mismatch": [
+     [
+      "rs=\"Attached\" cf=\"Area\" | IceWizard",
+      4895
+     ],
+     [
+      "rs=\"Attached\" cf=\"Area\" | Firecracker",
+      1174
+     ],
+     [
+      "rs=\"Airborne\" cf=\"Flight\" | Log",
+      618
+     ],
+     [
+      "rs=\"Pulsing\" cf=\"Area\" | RageBarbarian",
+      598
+     ],
+     [
+      "rs=\"Scheduled\" cf=\"Area\" | Graveyard",
+      579
+     ],
+     [
+      "rs=\"Flight\" cf=\"Area\" | Cannon",
+      546
+     ],
+     [
+      "rs=\"Pulsing\" cf=\"Area\" | Rage",
+      454
+     ],
+     [
+      "rs=\"Pulsing\" cf=\"Area\" | AngryBarbarians",
+      402
+     ],
+     [
+      "rs=\"Hidden\" cf=\"Area\" | Earthquake",
+      328
+     ],
+     [
+      "rs=\"Strikes\" cf=\"Pulsing\" | Lightning",
+      318
+     ],
+     [
+      "rs=\"Strikes\" cf=\"Pulsing\" | Vines",
+      95
+     ],
+     [
+      "rs=\"Attached\" cf=\"Area\" | Princess",
+      88
+     ]
+    ]
+   },
+   {
+    "field": "area.remaining_ms",
+    "all": {
+     "n": 25203,
+     "equal": 20901,
+     "rate": 0.8293
+    },
+    "sync": {
+     "n": 24012,
+     "equal": 19923,
+     "rate": 0.8297
+    },
+    "body_sync": {
+     "n": 24012,
+     "equal": 19923,
+     "rate": 0.8297
+    },
+    "top_mismatch": [
+     [
+      "rs=850 cf=800 | Tornado",
+      398
+     ],
+     [
+      "rs=600 cf=550 | Tornado",
+      398
+     ],
+     [
+      "rs=350 cf=300 | Tornado",
+      398
+     ],
+     [
+      "rs=100 cf=50 | Tornado",
+      398
+     ],
+     [
+      "rs=null cf=1100 | Cannon",
+      52
+     ],
+     [
+      "rs=null cf=850 | Cannon",
+      52
+     ],
+     [
+      "rs=null cf=600 | Cannon",
+      52
+     ],
+     [
+      "rs=null cf=350 | Cannon",
+      52
+     ],
+     [
+      "rs=null cf=100 | Cannon",
+      52
+     ],
+     [
+      "rs=null cf=900 | Cannon",
+      39
+     ],
+     [
+      "rs=null cf=650 | Cannon",
+      39
+     ],
+     [
+      "rs=null cf=400 | Cannon",
+      39
+     ]
+    ]
+   },
+   {
+    "field": "attack.frac",
+    "all": {
+     "n": 1057812,
+     "equal": 1020126,
+     "rate": 0.9644
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1008704,
+     "rate": 0.9692
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 298651,
+     "rate": 0.9564
+    },
+    "top_mismatch": [
+     [
+      "rs=null cf=0.188 | PrincessTower",
+      176
+     ],
+     [
+      "rs=null cf=0.25 | PrincessTower",
+      169
+     ],
+     [
+      "rs=null cf=0.062 | PrincessTower",
+      167
+     ],
+     [
+      "rs=0.062 cf=null | PrincessTower",
+      166
+     ],
+     [
+      "rs=0.125 cf=null | PrincessTower",
+      163
+     ],
+     [
+      "rs=null cf=0.125 | PrincessTower",
+      161
+     ],
+     [
+      "rs=null cf=0.438 | PrincessTower",
+      155
+     ],
+     [
+      "rs=0.188 cf=null | PrincessTower",
+      155
+     ],
+     [
+      "rs=0.625 cf=null | PrincessTower",
+      148
+     ],
+     [
+      "rs=0.375 cf=null | PrincessTower",
+      148
+     ],
+     [
+      "rs=null cf=0.312 | PrincessTower",
+      146
+     ],
+     [
+      "rs=0.688 cf=null | PrincessTower",
+      145
+     ]
+    ]
+   },
+   {
+    "field": "attack.has_target",
+    "all": {
+     "n": 1057812,
+     "equal": 315498,
+     "rate": 0.2983
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 301899,
+     "rate": 0.2901
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 204922,
+     "rate": 0.6562
+    },
+    "top_mismatch": [
+     [
+      "rs=false cf=true | PrincessTower",
+      402240
+     ],
+     [
+      "rs=false cf=true | KingTower",
+      228807
+     ],
+     [
+      "rs=false cf=true | Tesla",
+      28165
+     ],
+     [
+      "rs=false cf=true | Skeleton",
+      15810
+     ],
+     [
+      "rs=false cf=true | Xbow",
+      13731
+     ],
+     [
+      "rs=false cf=true | IceWizardHero",
+      6474
+     ],
+     [
+      "rs=false cf=true | Knight",
+      5422
+     ],
+     [
+      "rs=false cf=true | Cannon",
+      4070
+     ],
+     [
+      "rs=false cf=true | Knight_EV1",
+      1870
+     ],
+     [
+      "rs=false cf=true | Tesla_EV1",
+      1674
+     ],
+     [
+      "rs=false cf=true | Bat",
+      1453
+     ],
+     [
+      "rs=false cf=true | SpearGoblin",
+      1265
+     ]
+    ]
+   },
+   {
+    "field": "attack.hit_speed_ms",
+    "all": {
+     "n": 1057812,
+     "equal": 1057812,
+     "rate": 1.0
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1040775,
+     "rate": 1.0
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 312275,
+     "rate": 1.0
+    },
+    "top_mismatch": []
+   },
+   {
+    "field": "attack.load_ms",
+    "all": {
+     "n": 1057812,
+     "equal": 1035762,
+     "rate": 0.9792
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1024916,
+     "rate": 0.9848
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 300221,
+     "rate": 0.9614
+    },
+    "top_mismatch": [
+     [
+      "rs=100 cf=0 | KingTower",
+      201
+     ],
+     [
+      "rs=350 cf=0 | KingTower",
+      200
+     ],
+     [
+      "rs=0 cf=350 | KingTower",
+      194
+     ],
+     [
+      "rs=0 cf=100 | KingTower",
+      182
+     ],
+     [
+      "rs=0 cf=150 | KingTower",
+      181
+     ],
+     [
+      "rs=500 cf=0 | KingTower",
+      176
+     ],
+     [
+      "rs=0 cf=400 | KingTower",
+      174
+     ],
+     [
+      "rs=0 cf=250 | KingTower",
+      165
+     ],
+     [
+      "rs=0 cf=50 | KingTower",
+      164
+     ],
+     [
+      "rs=0 cf=450 | KingTower",
+      162
+     ],
+     [
+      "rs=0 cf=300 | KingTower",
+      160
+     ],
+     [
+      "rs=0 cf=200 | KingTower",
+      157
+     ]
+    ]
+   },
+   {
+    "field": "attack.phase",
+    "all": {
+     "n": 1057812,
+     "equal": 1040211,
+     "rate": 0.9834
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1026560,
+     "rate": 0.9863
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 307533,
+     "rate": 0.9848
+    },
+    "top_mismatch": [
+     [
+      "rs=\"windup\" cf=\"idle\" | PrincessTower",
+      2138
+     ],
+     [
+      "rs=\"idle\" cf=\"windup\" | PrincessTower",
+      2077
+     ],
+     [
+      "rs=\"idle\" cf=\"windup\" | KingTower",
+      1319
+     ],
+     [
+      "rs=\"windup\" cf=\"hit\" | PrincessTower",
+      902
+     ],
+     [
+      "rs=\"hit\" cf=\"windup\" | PrincessTower",
+      886
+     ],
+     [
+      "rs=\"windup\" cf=\"idle\" | KingTower",
+      846
+     ],
+     [
+      "rs=\"windup\" cf=\"idle\" | Skeleton",
+      539
+     ],
+     [
+      "rs=\"windup\" cf=\"idle\" | Tesla",
+      447
+     ],
+     [
+      "rs=\"idle\" cf=\"windup\" | Skeleton",
+      338
+     ],
+     [
+      "rs=\"idle\" cf=\"windup\" | Tesla",
+      335
+     ],
+     [
+      "rs=\"hit\" cf=\"idle\" | PrincessTower",
+      311
+     ],
+     [
+      "rs=\"idle\" cf=\"hit\" | PrincessTower",
+      301
+     ]
+    ]
+   },
+   {
+    "field": "attack.progress_ms",
+    "all": {
+     "n": 1057812,
+     "equal": 1015833,
+     "rate": 0.9603
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1005654,
+     "rate": 0.9663
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 296465,
+     "rate": 0.9494
+    },
+    "top_mismatch": [
+     [
+      "rs=50 cf=0 | PrincessTower",
+      56
+     ],
+     [
+      "rs=1100 cf=0 | Tesla",
+      54
+     ],
+     [
+      "rs=0 cf=150 | PrincessTower",
+      52
+     ],
+     [
+      "rs=0 cf=85 | GoldenKnight",
+      52
+     ],
+     [
+      "rs=0 cf=2050 | PrincessTower",
+      48
+     ],
+     [
+      "rs=0 cf=50 | PrincessTower",
+      47
+     ],
+     [
+      "rs=0 cf=200 | PrincessTower",
+      47
+     ],
+     [
+      "rs=0 cf=1250 | Fisherman",
+      46
+     ],
+     [
+      "rs=700 cf=0 | Skeleton",
+      45
+     ],
+     [
+      "rs=150 cf=0 | PrincessTower",
+      44
+     ],
+     [
+      "rs=650 cf=0 | Skeleton",
+      43
+     ],
+     [
+      "rs=0 cf=400 | PrincessTower",
+      42
+     ]
+    ]
+   },
+   {
+    "field": "attack.target",
+    "all": {
+     "n": 1057812,
+     "equal": 297251,
+     "rate": 0.281
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 286307,
+     "rate": 0.2751
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 200026,
+     "rate": 0.6405
+    },
+    "top_mismatch": [
+     [
+      "rs=null cf=5000002 | KingTower",
+      110898
+     ],
+     [
+      "rs=null cf=5000002 | PrincessTower",
+      100787
+     ],
+     [
+      "rs=null cf=5000001 | PrincessTower",
+      94310
+     ],
+     [
+      "rs=null cf=5000005 | KingTower",
+      91755
+     ],
+     [
+      "rs=null cf=5000005 | PrincessTower",
+      85412
+     ],
+     [
+      "rs=null cf=5000004 | PrincessTower",
+      78322
+     ],
+     [
+      "rs=null cf=5000000 | PrincessTower",
+      40877
+     ],
+     [
+      "rs=null cf=5000004 | KingTower",
+      24624
+     ],
+     [
+      "rs=null cf=5000005 | Tesla",
+      12335
+     ],
+     [
+      "rs=null cf=5000004 | Tesla",
+      11575
+     ],
+     [
+      "rs=null cf=5000004 | Xbow",
+      6869
+     ],
+     [
+      "rs=null cf=5000005 | Xbow",
+      6119
+     ]
+    ]
+   },
+   {
+    "field": "bit.ability_active",
+    "all": {
+     "n": 5302,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "sync": {
+     "n": 4649,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "body_sync": {
+     "n": 4649,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "top_mismatch": [
+     [
+      "rs=true cf=false | IceWizardHero",
+      3534
+     ],
+     [
+      "rs=true cf=false | ValkyrieHero",
+      650
+     ],
+     [
+      "rs=true cf=false | GiantHero",
+      229
+     ],
+     [
+      "rs=true cf=false | KnightHero",
+      150
+     ],
+     [
+      "rs=true cf=false | EliteArcherHero",
+      140
+     ],
+     [
+      "rs=true cf=false | Monk",
+      128
+     ],
+     [
+      "rs=true cf=false | ArcherQueen",
+      103
+     ],
+     [
+      "rs=true cf=false | SkeletonKing",
+      82
+     ],
+     [
+      "rs=true cf=false | GoldenKnight",
+      75
+     ],
+     [
+      "rs=true cf=false | BossBandit",
+      66
+     ],
+     [
+      "rs=true cf=false | MegaMinionHero",
+      46
+     ],
+     [
+      "rs=true cf=false | WizardHero",
+      27
+     ]
+    ]
+   },
+   {
+    "field": "bit.ability_windup",
+    "all": {
+     "n": 1091,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "sync": {
+     "n": 962,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "body_sync": {
+     "n": 962,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "top_mismatch": [
+     [
+      "rs=true cf=false | KnightHero",
+      393
+     ],
+     [
+      "rs=true cf=false | Monk",
+      154
+     ],
+     [
+      "rs=true cf=false | MightyMiner",
+      123
+     ],
+     [
+      "rs=true cf=false | BossBandit",
+      69
+     ],
+     [
+      "rs=true cf=false | MiniPekkaHero",
+      64
+     ],
+     [
+      "rs=true cf=false | SkeletonKing",
+      57
+     ],
+     [
+      "rs=true cf=false | ArcherQueen",
+      40
+     ],
+     [
+      "rs=true cf=false | GiantHero",
+      33
+     ],
+     [
+      "rs=true cf=false | goblinstein_doctor",
+      33
+     ],
+     [
+      "rs=true cf=false | EliteArcherHero",
+      31
+     ],
+     [
+      "rs=true cf=false | MusketeerHero",
+      30
+     ],
+     [
+      "rs=true cf=false | BarbLogBarbarianHero",
+      24
+     ]
+    ]
+   },
+   {
+    "field": "bit.charged",
+    "all": {
+     "n": 623,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "sync": {
+     "n": 580,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "body_sync": {
+     "n": 580,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "top_mismatch": [
+     [
+      "rs=true cf=false | BattleRam",
+      183
+     ],
+     [
+      "rs=true cf=false | Prince",
+      132
+     ],
+     [
+      "rs=true cf=false | DarkPrinceHero",
+      81
+     ],
+     [
+      "rs=true cf=false | DarkPrince",
+      78
+     ],
+     [
+      "rs=true cf=false | Ram",
+      63
+     ],
+     [
+      "rs=true cf=false | Recruit_EV1",
+      58
+     ],
+     [
+      "rs=true cf=false | BattleRam_EV1",
+      28
+     ]
+    ]
+   },
+   {
+    "field": "bit.clone",
+    "all": {
+     "n": 9,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "sync": {
+     "n": 6,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "body_sync": {
+     "n": 6,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "top_mismatch": [
+     [
+      "rs=true cf=false | Skeleton",
+      9
+     ]
+    ]
+   },
+   {
+    "field": "bit.evolved",
+    "all": {
+     "n": 31347,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "sync": {
+     "n": 27824,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "body_sync": {
+     "n": 27824,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "top_mismatch": [
+     [
+      "rs=true cf=false | Knight_EV1",
+      9741
+     ],
+     [
+      "rs=true cf=false | SkeletonArmy_EV1_Soldier",
+      3246
+     ],
+     [
+      "rs=true cf=false | Tesla_EV1",
+      2261
+     ],
+     [
+      "rs=true cf=false | SkeletonArmy_EV1_Spectral",
+      1402
+     ],
+     [
+      "rs=true cf=false | Recruit_EV1",
+      1080
+     ],
+     [
+      "rs=true cf=false | MegaKnight_EV1",
+      994
+     ],
+     [
+      "rs=true cf=false | Bat_EV1",
+      943
+     ],
+     [
+      "rs=true cf=false | MinionHorde_EV1",
+      916
+     ],
+     [
+      "rs=true cf=false | Cannon_EV1",
+      772
+     ],
+     [
+      "rs=true cf=false | Mortar_EV1",
+      654
+     ],
+     [
+      "rs=true cf=false | Witch_EV1",
+      631
+     ],
+     [
+      "rs=true cf=false | Skeleton_EV1",
+      487
+     ]
+    ]
+   },
+   {
+    "field": "bit.hero",
+    "all": {
+     "n": 41452,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "sync": {
+     "n": 38673,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "body_sync": {
+     "n": 38673,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "top_mismatch": [
+     [
+      "rs=true cf=false | IceWizardHero",
+      27908
+     ],
+     [
+      "rs=true cf=false | ValkyrieHero",
+      2936
+     ],
+     [
+      "rs=true cf=false | KnightHero",
+      2280
+     ],
+     [
+      "rs=true cf=false | MiniPekkaHero",
+      1070
+     ],
+     [
+      "rs=true cf=false | TombstoneHero",
+      947
+     ],
+     [
+      "rs=true cf=false | BalloonHero",
+      940
+     ],
+     [
+      "rs=true cf=false | GoblinHero",
+      676
+     ],
+     [
+      "rs=true cf=false | GiantHero",
+      590
+     ],
+     [
+      "rs=true cf=false | MusketeerHero",
+      580
+     ],
+     [
+      "rs=true cf=false | BowlerHero",
+      577
+     ],
+     [
+      "rs=true cf=false | WizardHero",
+      541
+     ],
+     [
+      "rs=true cf=false | DarkPrinceHero",
+      530
+     ]
+    ]
+   },
+   {
+    "field": "bit.hidden",
+    "all": {
+     "n": 30721,
+     "equal": 26945,
+     "rate": 0.8771
+    },
+    "sync": {
+     "n": 30680,
+     "equal": 26930,
+     "rate": 0.8778
+    },
+    "body_sync": {
+     "n": 30680,
+     "equal": 26930,
+     "rate": 0.8778
+    },
+    "top_mismatch": [
+     [
+      "rs=true cf=false | Tesla",
+      2583
+     ],
+     [
+      "rs=false cf=true | Tesla",
+      303
+     ],
+     [
+      "rs=true cf=false | Tesla_EV1",
+      204
+     ],
+     [
+      "rs=false cf=true | SpearGoblin",
+      156
+     ],
+     [
+      "rs=false cf=true | Bat",
+      116
+     ],
+     [
+      "rs=false cf=true | MightyMiner",
+      109
+     ],
+     [
+      "rs=false cf=true | GoblinDrillDig",
+      50
+     ],
+     [
+      "rs=false cf=true | Tesla_EV1",
+      32
+     ],
+     [
+      "rs=false cf=true | Minion",
+      30
+     ],
+     [
+      "rs=false cf=true | Recruit",
+      27
+     ],
+     [
+      "rs=false cf=true | GoblinDrill_EV1_Dig",
+      25
+     ],
+     [
+      "rs=false cf=true | GoblinHero",
+      24
+     ]
+    ]
+   },
+   {
+    "field": "bit.invisible",
+    "all": {
+     "n": 4514,
+     "equal": 3150,
+     "rate": 0.6978
+    },
+    "sync": {
+     "n": 3830,
+     "equal": 2611,
+     "rate": 0.6817
+    },
+    "body_sync": {
+     "n": 3830,
+     "equal": 2611,
+     "rate": 0.6817
+    },
+    "top_mismatch": [
+     [
+      "rs=true cf=false | TombstoneHero_Monster_Passive",
+      1006
+     ],
+     [
+      "rs=true cf=false | GoblinHero_Flag_Building",
+      98
+     ],
+     [
+      "rs=true cf=false | Ghost",
+      95
+     ],
+     [
+      "rs=true cf=false | BarbLogBarbarianHero",
+      24
+     ],
+     [
+      "rs=true cf=false | SkeletonArmy_EV1_Spectral",
+      22
+     ],
+     [
+      "rs=true cf=false | Knight_EV1",
+      19
+     ],
+     [
+      "rs=true cf=false | ArcherQueen",
+      19
+     ],
+     [
+      "rs=false cf=true | BossBandit",
+      16
+     ],
+     [
+      "rs=false cf=true | ArcherQueen",
+      14
+     ],
+     [
+      "rs=true cf=false | BossBandit",
+      13
+     ],
+     [
+      "rs=true cf=false | Ghost_EV1_Summon_Right",
+      11
+     ],
+     [
+      "rs=false cf=true | Ghost",
+      8
+     ]
+    ]
+   },
+   {
+    "field": "bit.underground",
+    "all": {
+     "n": 238,
+     "equal": 171,
+     "rate": 0.7185
+    },
+    "sync": {
+     "n": 229,
+     "equal": 164,
+     "rate": 0.7162
+    },
+    "body_sync": {
+     "n": 229,
+     "equal": 164,
+     "rate": 0.7162
+    },
+    "top_mismatch": [
+     [
+      "rs=false cf=true | GoblinDrill_EV1",
+      36
+     ],
+     [
+      "rs=false cf=true | MightyMiner",
+      31
+     ]
+    ]
+   },
+   {
+    "field": "buffs.ms",
+    "all": {
+     "n": 1057812,
+     "equal": 1034228,
+     "rate": 0.9777
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1020257,
+     "rate": 0.9803
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 295315,
+     "rate": 0.9457
+    },
+    "top_mismatch": [
+     [
+      "rs=[50] cf=[50, 99750] | Knight_EV1",
+      164
+     ],
+     [
+      "rs=[50] cf=[50, 99500] | Knight_EV1",
+      164
+     ],
+     [
+      "rs=[50] cf=[50, 99250] | Knight_EV1",
+      164
+     ],
+     [
+      "rs=[50] cf=[50, 99000] | Knight_EV1",
+      159
+     ],
+     [
+      "rs=[50] cf=[50, 98750] | Knight_EV1",
+      126
+     ],
+     [
+      "rs=[50] cf=[50, 98500] | Knight_EV1",
+      114
+     ],
+     [
+      "rs=[50] cf=[50, 98250] | Knight_EV1",
+      100
+     ],
+     [
+      "rs=[50] cf=[] | Knight_EV1",
+      96
+     ],
+     [
+      "rs=[50] cf=[50, 98000] | Knight_EV1",
+      92
+     ],
+     [
+      "rs=[50] cf=[50, 97750] | Knight_EV1",
+      87
+     ],
+     [
+      "rs=[50] cf=[50, 97500] | Knight_EV1",
+      83
+     ],
+     [
+      "rs=[50] cf=[50, 97250] | Knight_EV1",
+      66
+     ]
+    ]
+   },
+   {
+    "field": "buffs.names",
+    "all": {
+     "n": 1057812,
+     "equal": 1037820,
+     "rate": 0.9811
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1023182,
+     "rate": 0.9831
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 297619,
+     "rate": 0.9531
+    },
+    "top_mismatch": [
+     [
+      "rs=[\"Knight_Fortify_EV1\"] cf=[\"Knight_Fortify_EV1\", \"Knight_Fortify_EV1\"] | Knight_EV1",
+      4770
+     ],
+     [
+      "rs=[\"Tombstone_hero_Ability wait\"] cf=[\"Tombstone_hero_Monster_NoAttacksBuff\"] | TombstoneHero_Monster_Passive",
+      901
+     ],
+     [
+      "rs=[] cf=[\"Invisibility\"] | Ghost",
+      813
+     ],
+     [
+      "rs=[\"IceWizardHeroSlow\"] cf=[\"IceWizardHeroSlow\", \"IceWizardHeroSlow\"] | PrincessTower",
+      602
+     ],
+     [
+      "rs=[] cf=[\"Knight_Fortify_EV1\"] | Knight_EV1",
+      461
+     ],
+     [
+      "rs=[\"IceWizardHeroSlow\", \"IceWizardHero_FreezeBuff\"] cf=[\"IceWizardHeroSlow\", \"IceWizardHeroSlow\", \"IceWizardHero_Fr | PrincessTower",
+      450
+     ],
+     [
+      "rs=[] cf=[\"RecruitsCharge_EV1\"] | Recruit_EV1",
+      374
+     ],
+     [
+      "rs=[\"IceWizardHeroSlow\"] cf=[] | PrincessTower",
+      312
+     ],
+     [
+      "rs=[] cf=[\"Knight_hero_IsTauntedBuff\"] | IceWizardHero",
+      311
+     ],
+     [
+      "rs=[] cf=[\"Knight_hero_IsTauntedBuff\"] | PrincessTower",
+      310
+     ],
+     [
+      "rs=[] cf=[\"BushInvisibility\"] | SuspiciousBush",
+      277
+     ],
+     [
+      "rs=[] cf=[\"IceWizardHeroSlow\"] | PrincessTower",
+      253
+     ]
+    ]
+   },
+   {
+    "field": "charge_frac",
+    "all": {
+     "n": 1057812,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "top_mismatch": [
+     [
+      "rs=0.0 cf=-0.001 | PrincessTower",
+      469917
+     ],
+     [
+      "rs=0.0 cf=-0.001 | KingTower",
+      258583
+     ],
+     [
+      "rs=0.0 cf=-0.001 | Skeleton",
+      50785
+     ],
+     [
+      "rs=0.0 cf=-0.001 | Tesla",
+      36794
+     ],
+     [
+      "rs=0.0 cf=-0.001 | Xbow",
+      31710
+     ],
+     [
+      "rs=0.0 cf=-0.001 | IceWizardHero",
+      27908
+     ],
+     [
+      "rs=0.0 cf=-0.001 | Knight",
+      25915
+     ],
+     [
+      "rs=0.0 cf=-0.001 | Knight_EV1",
+      9741
+     ],
+     [
+      "rs=0.0 cf=-0.001 | Bat",
+      5394
+     ],
+     [
+      "rs=0.0 cf=-0.001 | Cannon",
+      5153
+     ],
+     [
+      "rs=0.0 cf=-0.001 | SpearGoblin",
+      4729
+     ],
+     [
+      "rs=0.0 cf=-0.001 | Minion",
+      4086
+     ]
+    ]
+   },
+   {
+    "field": "charging",
+    "all": {
+     "n": 1057812,
+     "equal": 1057750,
+     "rate": 0.9999
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1040718,
+     "rate": 0.9999
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 312218,
+     "rate": 0.9998
+    },
+    "top_mismatch": [
+     [
+      "rs=true cf=false | BattleRam",
+      14
+     ],
+     [
+      "rs=true cf=false | DarkPrinceHero",
+      13
+     ],
+     [
+      "rs=true cf=false | DarkPrince",
+      10
+     ],
+     [
+      "rs=false cf=true | DarkPrinceHero",
+      5
+     ],
+     [
+      "rs=true cf=false | BattleRam_EV1",
+      3
+     ],
+     [
+      "rs=true cf=false | Recruit_EV1",
+      3
+     ],
+     [
+      "rs=false cf=true | Prince",
+      3
+     ],
+     [
+      "rs=false cf=true | DarkPrince",
+      3
+     ],
+     [
+      "rs=false cf=true | Recruit_EV1",
+      3
+     ],
+     [
+      "rs=false cf=true | BattleRam",
+      2
+     ],
+     [
+      "rs=true cf=false | Prince",
+      1
+     ],
+     [
+      "rs=false cf=true | BattleRam_EV1",
+      1
+     ]
+    ]
+   },
+   {
+    "field": "hide",
+    "all": {
+     "n": 1057812,
+     "equal": 1027994,
+     "rate": 0.9718
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1010985,
+     "rate": 0.9714
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 282485,
+     "rate": 0.9046
+    },
+    "top_mismatch": [
+     [
+      "rs=\"hidden\" cf=\"up\" | Tesla",
+      28031
+     ],
+     [
+      "rs=\"hidden\" cf=\"up\" | Tesla_EV1",
+      1668
+     ],
+     [
+      "rs=\"rising\" cf=\"up\" | Tesla",
+      116
+     ],
+     [
+      "rs=\"rising\" cf=\"up\" | Tesla_EV1",
+      3
+     ]
+    ]
+   },
+   {
+    "field": "name",
+    "all": {
+     "n": 1057812,
+     "equal": 1057812,
+     "rate": 1.0
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1040775,
+     "rate": 1.0
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 312275,
+     "rate": 1.0
+    },
+    "top_mismatch": []
+   },
+   {
+    "field": "row.ability_ticks",
+    "all": {
+     "n": 1057812,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "top_mismatch": [
+     [
+      "rs=0 cf=-1 | PrincessTower",
+      469917
+     ],
+     [
+      "rs=0 cf=-1 | KingTower",
+      258583
+     ],
+     [
+      "rs=0 cf=-1 | Skeleton",
+      50785
+     ],
+     [
+      "rs=0 cf=-1 | Tesla",
+      36794
+     ],
+     [
+      "rs=0 cf=-1 | Xbow",
+      31710
+     ],
+     [
+      "rs=0 cf=-1 | IceWizardHero",
+      27908
+     ],
+     [
+      "rs=0 cf=-1 | Knight",
+      25915
+     ],
+     [
+      "rs=0 cf=-1 | Knight_EV1",
+      9741
+     ],
+     [
+      "rs=0 cf=-1 | Bat",
+      5394
+     ],
+     [
+      "rs=0 cf=-1 | Cannon",
+      5153
+     ],
+     [
+      "rs=0 cf=-1 | SpearGoblin",
+      4729
+     ],
+     [
+      "rs=0 cf=-1 | Minion",
+      4086
+     ]
+    ]
+   },
+   {
+    "field": "row.attack_phase",
+    "all": {
+     "n": 1057812,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "top_mismatch": [
+     [
+      "rs=0 cf=-1 | PrincessTower",
+      402541
+     ],
+     [
+      "rs=0 cf=-1 | KingTower",
+      247187
+     ],
+     [
+      "rs=1 cf=-1 | PrincessTower",
+      63648
+     ],
+     [
+      "rs=0 cf=-1 | Skeleton",
+      43704
+     ],
+     [
+      "rs=0 cf=-1 | Tesla",
+      29507
+     ],
+     [
+      "rs=0 cf=-1 | Xbow",
+      18675
+     ],
+     [
+      "rs=1 cf=-1 | IceWizardHero",
+      17057
+     ],
+     [
+      "rs=0 cf=-1 | Knight",
+      14945
+     ],
+     [
+      "rs=1 cf=-1 | Xbow",
+      11603
+     ],
+     [
+      "rs=1 cf=-1 | KingTower",
+      10703
+     ],
+     [
+      "rs=0 cf=-1 | IceWizardHero",
+      10190
+     ],
+     [
+      "rs=1 cf=-1 | Knight",
+      10061
+     ]
+    ]
+   },
+   {
+    "field": "row.charge",
+    "all": {
+     "n": 1057812,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "top_mismatch": [
+     [
+      "rs=0 cf=-1 | PrincessTower",
+      469917
+     ],
+     [
+      "rs=0 cf=-1 | KingTower",
+      258583
+     ],
+     [
+      "rs=0 cf=-1 | Skeleton",
+      50785
+     ],
+     [
+      "rs=0 cf=-1 | Tesla",
+      36794
+     ],
+     [
+      "rs=0 cf=-1 | Xbow",
+      31710
+     ],
+     [
+      "rs=0 cf=-1 | IceWizardHero",
+      27908
+     ],
+     [
+      "rs=0 cf=-1 | Knight",
+      25915
+     ],
+     [
+      "rs=0 cf=-1 | Knight_EV1",
+      9741
+     ],
+     [
+      "rs=0 cf=-1 | Bat",
+      5394
+     ],
+     [
+      "rs=0 cf=-1 | Cannon",
+      5153
+     ],
+     [
+      "rs=0 cf=-1 | SpearGoblin",
+      4729
+     ],
+     [
+      "rs=0 cf=-1 | Minion",
+      4086
+     ]
+    ]
+   },
+   {
+    "field": "row.deploy_ticks",
+    "all": {
+     "n": 1057812,
+     "equal": 1057043,
+     "rate": 0.9993
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1040152,
+     "rate": 0.9994
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 311652,
+     "rate": 0.998
+    },
+    "top_mismatch": [
+     [
+      "rs=21 cf=0 | Bat",
+      58
+     ],
+     [
+      "rs=23 cf=0 | Bat",
+      58
+     ],
+     [
+      "rs=21 cf=0 | SpearGoblin",
+      52
+     ],
+     [
+      "rs=23 cf=0 | SpearGoblin",
+      52
+     ],
+     [
+      "rs=25 cf=0 | SpearGoblin",
+      52
+     ],
+     [
+      "rs=20 cf=0 | GoblinDrillDig",
+      50
+     ],
+     [
+      "rs=20 cf=0 | GoblinDrill_EV1_Dig",
+      25
+     ],
+     [
+      "rs=1 cf=0 | Skeleton",
+      21
+     ],
+     [
+      "rs=20 cf=0 | Miner",
+      18
+     ],
+     [
+      "rs=6 cf=0 | Skeleton",
+      16
+     ],
+     [
+      "rs=0 cf=5 | Skeleton",
+      12
+     ],
+     [
+      "rs=21 cf=0 | RoyalHog",
+      11
+     ]
+    ]
+   },
+   {
+    "field": "row.dest_x",
+    "all": {
+     "n": 1057812,
+     "equal": 1057641,
+     "rate": 0.9998
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1040611,
+     "rate": 0.9998
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 312111,
+     "rate": 0.9995
+    },
+    "top_mismatch": [
+     [
+      "rs=126000 cf=-1 | GoblinDrillDig",
+      25
+     ],
+     [
+      "rs=180000 cf=-1 | GoblinDrillDig",
+      20
+     ],
+     [
+      "rs=126000 cf=-1 | GoblinDrill_EV1_Dig",
+      20
+     ],
+     [
+      "rs=67986 cf=-1 | MightyMiner",
+      9
+     ],
+     [
+      "rs=265140 cf=-1 | MightyMiner",
+      9
+     ],
+     [
+      "rs=63000 cf=-1 | Miner",
+      9
+     ],
+     [
+      "rs=261000 cf=-1 | Miner",
+      9
+     ],
+     [
+      "rs=58860 cf=-1 | MightyMiner",
+      6
+     ],
+     [
+      "rs=265050 cf=-1 | MightyMiner",
+      6
+     ],
+     [
+      "rs=58842 cf=-1 | MightyMiner",
+      6
+     ],
+     [
+      "rs=90000 cf=-1 | GoblinDrillDig",
+      5
+     ],
+     [
+      "rs=180000 cf=-1 | GoblinDrill_EV1_Dig",
+      5
+     ]
+    ]
+   },
+   {
+    "field": "row.dest_y",
+    "all": {
+     "n": 1057812,
+     "equal": 1057641,
+     "rate": 0.9998
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1040611,
+     "rate": 0.9998
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 312111,
+     "rate": 0.9995
+    },
+    "top_mismatch": [
+     [
+      "rs=378000 cf=-1 | GoblinDrillDig",
+      50
+     ],
+     [
+      "rs=378000 cf=-1 | GoblinDrill_EV1_Dig",
+      25
+     ],
+     [
+      "rs=333000 cf=-1 | Miner",
+      18
+     ],
+     [
+      "rs=258210 cf=-1 | MightyMiner",
+      15
+     ],
+     [
+      "rs=259632 cf=-1 | MightyMiner",
+      12
+     ],
+     [
+      "rs=269928 cf=-1 | MightyMiner",
+      6
+     ],
+     [
+      "rs=258192 cf=-1 | MightyMiner",
+      6
+     ],
+     [
+      "rs=297144 cf=-1 | MightyMiner",
+      6
+     ],
+     [
+      "rs=261810 cf=-1 | MightyMiner",
+      3
+     ],
+     [
+      "rs=286470 cf=-1 | MightyMiner",
+      3
+     ],
+     [
+      "rs=258156 cf=-1 | MightyMiner",
+      3
+     ],
+     [
+      "rs=226098 cf=-1 | MightyMiner",
+      3
+     ]
+    ]
+   },
+   {
+    "field": "row.facing",
+    "all": {
+     "n": 1057812,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 0,
+     "rate": 0.0
+    },
+    "top_mismatch": [
+     [
+      "rs=[0, -256] cf=[0, 0] | KingTower",
+      129204
+     ],
+     [
+      "rs=[0, -256] cf=[0, 0] | PrincessTower",
+      103198
+     ],
+     [
+      "rs=[0, 256] cf=[0, 0] | KingTower",
+      97300
+     ],
+     [
+      "rs=[0, 256] cf=[0, 0] | PrincessTower",
+      42928
+     ],
+     [
+      "rs=[8, -255] cf=[0, 0] | PrincessTower",
+      16507
+     ],
+     [
+      "rs=[-8, -255] cf=[0, 0] | PrincessTower",
+      13434
+     ],
+     [
+      "rs=[0, 256] cf=[0, 4608] | Tesla",
+      12733
+     ],
+     [
+      "rs=[0, 256] cf=[0, 4608] | Xbow",
+      8497
+     ],
+     [
+      "rs=[21, -255] cf=[0, 0] | PrincessTower",
+      8103
+     ],
+     [
+      "rs=[-7, 255] cf=[0, 0] | PrincessTower",
+      7069
+     ],
+     [
+      "rs=[7, 255] cf=[0, 0] | PrincessTower",
+      6839
+     ],
+     [
+      "rs=[22, -255] cf=[0, 0] | PrincessTower",
+      6586
+     ]
+    ]
+   },
+   {
+    "field": "row.flying",
+    "all": {
+     "n": 1057812,
+     "equal": 1057458,
+     "rate": 0.9997
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1040592,
+     "rate": 0.9998
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 312092,
+     "rate": 0.9994
+    },
+    "top_mismatch": [
+     [
+      "rs=false cf=true | RoyalHog_EV1_Grounded",
+      354
+     ]
+    ]
+   },
+   {
+    "field": "row.footprint",
+    "all": {
+     "n": 1057812,
+     "equal": 242216,
+     "rate": 0.229
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 225281,
+     "rate": 0.2165
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 225281,
+     "rate": 0.7214
+    },
+    "top_mismatch": [
+     [
+      "rs=[126000, 486000, 198000, 558000] cf=null | KingTower",
+      129338
+     ],
+     [
+      "rs=[36000, 432000, 90000, 486000] cf=null | PrincessTower",
+      129276
+     ],
+     [
+      "rs=[126000, 18000, 198000, 90000] cf=null | KingTower",
+      129245
+     ],
+     [
+      "rs=[234000, 432000, 288000, 486000] cf=null | PrincessTower",
+      129167
+     ],
+     [
+      "rs=[234000, 90000, 288000, 144000] cf=null | PrincessTower",
+      109883
+     ],
+     [
+      "rs=[36000, 90000, 90000, 144000] cf=null | PrincessTower",
+      101591
+     ],
+     [
+      "rs=[162000, 108000, 198000, 144000] cf=null | Tesla",
+      16556
+     ],
+     [
+      "rs=[108000, 108000, 144000, 144000] cf=null | Tesla",
+      15374
+     ],
+     [
+      "rs=[108000, 108000, 162000, 162000] cf=null | Xbow",
+      11039
+     ],
+     [
+      "rs=[162000, 108000, 216000, 162000] cf=null | Xbow",
+      8940
+     ],
+     [
+      "rs=[162000, 144000, 216000, 198000] cf=null | Xbow",
+      5174
+     ],
+     [
+      "rs=[108000, 144000, 162000, 198000] cf=null | Xbow",
+      5032
+     ]
+    ]
+   },
+   {
+    "field": "row.hp",
+    "all": {
+     "n": 1057812,
+     "equal": 960223,
+     "rate": 0.9077
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 948615,
+     "rate": 0.9115
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 299311,
+     "rate": 0.9585
+    },
+    "top_mismatch": [
+     [
+      "rs=4246 cf=4144 | PrincessTower",
+      1250
+     ],
+     [
+      "rs=4202 cf=4125 | PrincessTower",
+      1019
+     ],
+     [
+      "rs=2257 cf=2127 | PrincessTower",
+      922
+     ],
+     [
+      "rs=4659 cf=4516 | PrincessTower",
+      808
+     ],
+     [
+      "rs=3352 cf=3275 | PrincessTower",
+      794
+     ],
+     [
+      "rs=4373 cf=4516 | PrincessTower",
+      781
+     ],
+     [
+      "rs=4858 cf=4715 | PrincessTower",
+      778
+     ],
+     [
+      "rs=2647 cf=2517 | PrincessTower",
+      676
+     ],
+     [
+      "rs=4858 cf=4789 | PrincessTower",
+      669
+     ],
+     [
+      "rs=4000 cf=4858 | PrincessTower",
+      646
+     ],
+     [
+      "rs=4516 cf=4802 | PrincessTower",
+      636
+     ],
+     [
+      "rs=4746 cf=4603 | PrincessTower",
+      633
+     ]
+    ]
+   },
+   {
+    "field": "row.knockback_ticks",
+    "all": {
+     "n": 1057812,
+     "equal": 1056851,
+     "rate": 0.9991
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1039874,
+     "rate": 0.9991
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 311374,
+     "rate": 0.9971
+    },
+    "top_mismatch": [
+     [
+      "rs=7 cf=0 | Firecracker",
+      43
+     ],
+     [
+      "rs=2 cf=0 | Firecracker",
+      42
+     ],
+     [
+      "rs=5 cf=0 | Firecracker",
+      31
+     ],
+     [
+      "rs=6 cf=0 | Knight",
+      30
+     ],
+     [
+      "rs=1 cf=0 | Knight",
+      30
+     ],
+     [
+      "rs=6 cf=0 | Firecracker",
+      29
+     ],
+     [
+      "rs=1 cf=0 | Firecracker",
+      29
+     ],
+     [
+      "rs=8 cf=0 | Firecracker",
+      23
+     ],
+     [
+      "rs=3 cf=0 | Firecracker",
+      22
+     ],
+     [
+      "rs=4 cf=0 | Firecracker",
+      21
+     ],
+     [
+      "rs=9 cf=0 | Firecracker",
+      20
+     ],
+     [
+      "rs=7 cf=0 | HogRider",
+      20
+     ]
+    ]
+   },
+   {
+    "field": "row.level",
+    "all": {
+     "n": 1057812,
+     "equal": 1057707,
+     "rate": 0.9999
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1040712,
+     "rate": 0.9999
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 312212,
+     "rate": 0.9998
+    },
+    "top_mismatch": [
+     [
+      "rs=17 cf=16 | MiniPekkaHero",
+      44
+     ],
+     [
+      "rs=16 cf=17 | MiniPekkaHero",
+      34
+     ],
+     [
+      "rs=17 cf=18 | MiniPekkaHero",
+      15
+     ],
+     [
+      "rs=18 cf=17 | MiniPekkaHero",
+      6
+     ],
+     [
+      "rs=16 cf=18 | MiniPekkaHero",
+      3
+     ],
+     [
+      "rs=16 cf=15 | Knight_EV1",
+      2
+     ],
+     [
+      "rs=16 cf=15 | Xbow",
+      1
+     ]
+    ]
+   },
+   {
+    "field": "row.max_hp",
+    "all": {
+     "n": 1057812,
+     "equal": 1057703,
+     "rate": 0.9999
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1040709,
+     "rate": 0.9999
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 312209,
+     "rate": 0.9998
+    },
+    "top_mismatch": [
+     [
+      "rs=2443 cf=2220 | MiniPekkaHero",
+      44
+     ],
+     [
+      "rs=2220 cf=2443 | MiniPekkaHero",
+      34
+     ],
+     [
+      "rs=2443 cf=2687 | MiniPekkaHero",
+      15
+     ],
+     [
+      "rs=2687 cf=2443 | MiniPekkaHero",
+      6
+     ],
+     [
+      "rs=1 cf=130 | Skeleton",
+      4
+     ],
+     [
+      "rs=2220 cf=2687 | MiniPekkaHero",
+      3
+     ],
+     [
+      "rs=2822 cf=2566 | Knight_EV1",
+      2
+     ],
+     [
+      "rs=2556 cf=2325 | Xbow",
+      1
+     ]
+    ]
+   },
+   {
+    "field": "row.mount_uid",
+    "all": {
+     "n": 1057812,
+     "equal": 1057256,
+     "rate": 0.9995
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1040228,
+     "rate": 0.9995
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 311728,
+     "rate": 0.9982
+    },
+    "top_mismatch": [
+     [
+      "rs=5000008 cf=-1 | SpearGoblinGiant",
+      334
+     ],
+     [
+      "rs=5000046 cf=-1 | RamRider",
+      87
+     ],
+     [
+      "rs=5000023 cf=-1 | RamRider",
+      36
+     ],
+     [
+      "rs=5000032 cf=-1 | RamRider",
+      35
+     ],
+     [
+      "rs=5000021 cf=-1 | RamRider",
+      31
+     ],
+     [
+      "rs=5000015 cf=-1 | RamRider",
+      17
+     ],
+     [
+      "rs=5000022 cf=-1 | RamRider",
+      16
+     ]
+    ]
+   },
+   {
+    "field": "row.radius",
+    "all": {
+     "n": 1057812,
+     "equal": 1057812,
+     "rate": 1.0
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1040775,
+     "rate": 1.0
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 312275,
+     "rate": 1.0
+    },
+    "top_mismatch": []
+   },
+   {
+    "field": "row.shield",
+    "all": {
+     "n": 1057812,
+     "equal": 1057346,
+     "rate": 0.9996
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1040619,
+     "rate": 0.9999
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 312119,
+     "rate": 0.9995
+    },
+    "top_mismatch": [
+     [
+      "rs=0 cf=250 | Recruit",
+      47
+     ],
+     [
+      "rs=0 cf=384 | Recruit_EV1",
+      37
+     ],
+     [
+      "rs=0 cf=384 | Recruit",
+      29
+     ],
+     [
+      "rs=384 cf=0 | Recruit",
+      22
+     ],
+     [
+      "rs=250 cf=0 | Recruit",
+      20
+     ],
+     [
+      "rs=384 cf=33 | Recruit",
+      18
+     ],
+     [
+      "rs=152 cf=0 | Recruit",
+      17
+     ],
+     [
+      "rs=745 cf=422 | KnightHero",
+      16
+     ],
+     [
+      "rs=0 cf=124 | Recruit",
+      15
+     ],
+     [
+      "rs=384 cf=0 | Recruit_EV1",
+      14
+     ],
+     [
+      "rs=0 cf=409 | SkeletonWarrior",
+      10
+     ],
+     [
+      "rs=0 cf=188 | Recruit",
+      9
+     ]
+    ]
+   },
+   {
+    "field": "row.status_flags",
+    "all": {
+     "n": 1057812,
+     "equal": 979306,
+     "rate": 0.9258
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 968816,
+     "rate": 0.9309
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 240316,
+     "rate": 0.7696
+    },
+    "top_mismatch": [
+     [
+      "rs=16 cf=0 | IceWizardHero",
+      24374
+     ],
+     [
+      "rs=8 cf=0 | Knight_EV1",
+      9722
+     ],
+     [
+      "rs=144 cf=0 | IceWizardHero",
+      3534
+     ],
+     [
+      "rs=8 cf=0 | SkeletonArmy_EV1_Soldier",
+      3246
+     ],
+     [
+      "rs=4 cf=0 | Tesla",
+      2583
+     ],
+     [
+      "rs=16 cf=0 | ValkyrieHero",
+      2286
+     ],
+     [
+      "rs=16 cf=0 | KnightHero",
+      1879
+     ],
+     [
+      "rs=12 cf=4 | Tesla_EV1",
+      1464
+     ],
+     [
+      "rs=10 cf=2 | SkeletonArmy_EV1_Spectral",
+      1380
+     ],
+     [
+      "rs=8 cf=0 | Recruit_EV1",
+      1013
+     ],
+     [
+      "rs=16 cf=0 | MiniPekkaHero",
+      1006
+     ],
+     [
+      "rs=2 cf=0 | TombstoneHero_Monster_Passive",
+      1006
+     ]
+    ]
+   },
+   {
+    "field": "row.stun_ticks",
+    "all": {
+     "n": 1057812,
+     "equal": 1050378,
+     "rate": 0.993
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1033719,
+     "rate": 0.9932
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 307083,
+     "rate": 0.9834
+    },
+    "top_mismatch": [
+     [
+      "rs=5 cf=0 | PrincessTower",
+      70
+     ],
+     [
+      "rs=19999 cf=0 | PrincessTower",
+      63
+     ],
+     [
+      "rs=19994 cf=0 | PrincessTower",
+      63
+     ],
+     [
+      "rs=19989 cf=0 | PrincessTower",
+      63
+     ],
+     [
+      "rs=19984 cf=0 | PrincessTower",
+      63
+     ],
+     [
+      "rs=19979 cf=0 | PrincessTower",
+      63
+     ],
+     [
+      "rs=19974 cf=0 | PrincessTower",
+      63
+     ],
+     [
+      "rs=19969 cf=0 | PrincessTower",
+      63
+     ],
+     [
+      "rs=19964 cf=0 | PrincessTower",
+      52
+     ],
+     [
+      "rs=19959 cf=0 | PrincessTower",
+      47
+     ],
+     [
+      "rs=19954 cf=0 | PrincessTower",
+      46
+     ],
+     [
+      "rs=19949 cf=0 | PrincessTower",
+      46
+     ]
+    ]
+   },
+   {
+    "field": "shot.damage",
+    "all": {
+     "n": 48866,
+     "equal": 369,
+     "rate": 0.0076
+    },
+    "sync": {
+     "n": 45121,
+     "equal": 326,
+     "rate": 0.0072
+    },
+    "body_sync": {
+     "n": 45121,
+     "equal": 326,
+     "rate": 0.0072
+    },
+    "top_mismatch": [
+     [
+      "rs=173 cf=0 | TowerPrincessProjectile",
+      28239
+     ],
+     [
+      "rs=98 cf=0 | xbow_projectile",
+      6756
+     ],
+     [
+      "rs=143 cf=0 | IceWizardHeroProjectile",
+      3134
+     ],
+     [
+      "rs=173 cf=0 | KingProjectile",
+      2082
+     ],
+     [
+      "rs=102 cf=0 | FirecrackerProjectile",
+      1340
+     ],
+     [
+      "rs=130 cf=0 | SpearGoblinProjectile",
+      701
+     ],
+     [
+      "rs=134 cf=0 | HunterProjectile",
+      446
+     ],
+     [
+      "rs=269 cf=0 | PrincessProjectileDeco",
+      431
+     ],
+     [
+      "rs=286 cf=0 | AxeManProjectile",
+      326
+     ],
+     [
+      "rs=229 cf=0 | BlowdartGoblinProjectile",
+      299
+     ],
+     [
+      "rs=425 cf=0 | MortarProjectile",
+      274
+     ],
+     [
+      "rs=462 cf=0 | BowlerProjectile",
+      257
+     ]
+    ]
+   },
+   {
+    "field": "shot.effect",
+    "all": {
+     "n": 48866,
+     "equal": 45235,
+     "rate": 0.9257
+    },
+    "sync": {
+     "n": 45121,
+     "equal": 41806,
+     "rate": 0.9265
+    },
+    "body_sync": {
+     "n": 45121,
+     "equal": 41806,
+     "rate": 0.9265
+    },
+    "top_mismatch": [
+     [
+      "rs={\"buff\": null, \"ms\": 2500} cf=null | IceWizardHeroProjectile",
+      3134
+     ],
+     [
+      "rs={\"buff\": \"VoodooCurse\", \"ms\": 5000} cf=null | VoodooProjectile",
+      147
+     ],
+     [
+      "rs={\"buff\": null, \"ms\": 2500} cf=null | None",
+      122
+     ],
+     [
+      "rs={\"buff\": null, \"ms\": 500} cf=null | None",
+      92
+     ],
+     [
+      "rs={\"buff\": null, \"ms\": 1100} cf=null | None",
+      35
+     ],
+     [
+      "rs={\"buff\": \"ZapFreeze\", \"ms\": 500} cf=null | ElectroDragonProjectile",
+      30
+     ],
+     [
+      "rs={\"buff\": \"IceWizardSlowDown\", \"ms\": 2500} cf=null | ice_wizardProjectile",
+      22
+     ],
+     [
+      "rs={\"buff\": null, \"ms\": 2000} cf=null | None",
+      17
+     ],
+     [
+      "rs={\"buff\": null, \"ms\": 1200} cf=null | None",
+      17
+     ],
+     [
+      "rs={\"buff\": null, \"ms\": 1000} cf=null | PrincessProjectileDeco",
+      10
+     ],
+     [
+      "rs={\"buff\": null, \"ms\": 5000} cf=null | None",
+      4
+     ],
+     [
+      "rs={\"buff\": null, \"ms\": 3000} cf=null | Hunter_EV1_shotgun_projectile",
+      1
+     ]
+    ]
+   },
+   {
+    "field": "shot.source",
+    "all": {
+     "n": 48866,
+     "equal": 839,
+     "rate": 0.0172
+    },
+    "sync": {
+     "n": 45121,
+     "equal": 728,
+     "rate": 0.0161
+    },
+    "body_sync": {
+     "n": 45121,
+     "equal": 728,
+     "rate": 0.0161
+    },
+    "top_mismatch": [
+     [
+      "rs=5000002 cf=null | TowerPrincessProjectile",
+      10254
+     ],
+     [
+      "rs=5000001 cf=null | TowerPrincessProjectile",
+      9708
+     ],
+     [
+      "rs=5000005 cf=null | TowerPrincessProjectile",
+      4309
+     ],
+     [
+      "rs=5000004 cf=null | TowerPrincessProjectile",
+      3956
+     ],
+     [
+      "rs=5000000 cf=null | KingProjectile",
+      2075
+     ],
+     [
+      "rs=5000006 cf=null | FirecrackerProjectile",
+      818
+     ],
+     [
+      "rs=5000014 cf=null | xbow_projectile",
+      480
+     ],
+     [
+      "rs=5000009 cf=null | IceWizardHeroProjectile",
+      433
+     ],
+     [
+      "rs=5000016 cf=null | xbow_projectile",
+      408
+     ],
+     [
+      "rs=5000015 cf=null | xbow_projectile",
+      395
+     ],
+     [
+      "rs=5000018 cf=null | xbow_projectile",
+      293
+     ],
+     [
+      "rs=5000021 cf=null | xbow_projectile",
+      283
+     ]
+    ]
+   },
+   {
+    "field": "shot.target",
+    "all": {
+     "n": 48866,
+     "equal": 43653,
+     "rate": 0.8933
+    },
+    "sync": {
+     "n": 45121,
+     "equal": 40916,
+     "rate": 0.9068
+    },
+    "body_sync": {
+     "n": 45121,
+     "equal": 40916,
+     "rate": 0.9068
+    },
+    "top_mismatch": [
+     [
+      "rs=5000007 cf=null | FirecrackerProjectile",
+      510
+     ],
+     [
+      "rs=5000002 cf=null | HunterProjectile",
+      221
+     ],
+     [
+      "rs=5000007 cf=null | AxeManProjectile",
+      216
+     ],
+     [
+      "rs=5000009 cf=null | FirecrackerProjectile",
+      95
+     ],
+     [
+      "rs=5000002 cf=null | FirecrackerProjectile",
+      85
+     ],
+     [
+      "rs=5000001 cf=null | FirecrackerProjectile",
+      85
+     ],
+     [
+      "rs=\"unpaired\" cf=5000010 | TowerPrincessProjectile",
+      78
+     ],
+     [
+      "rs=\"unpaired\" cf=5000027 | TowerPrincessProjectile",
+      76
+     ],
+     [
+      "rs=\"unpaired\" cf=5000011 | TowerPrincessProjectile",
+      72
+     ],
+     [
+      "rs=5000002 cf=null | None",
+      65
+     ],
+     [
+      "rs=\"unpaired\" cf=5000013 | TowerPrincessProjectile",
+      65
+     ],
+     [
+      "rs=\"unpaired\" cf=5000008 | TowerPrincessProjectile",
+      61
+     ]
+    ]
+   },
+   {
+    "field": "shot.type",
+    "all": {
+     "n": 48866,
+     "equal": 1500,
+     "rate": 0.0307
+    },
+    "sync": {
+     "n": 45121,
+     "equal": 1301,
+     "rate": 0.0288
+    },
+    "body_sync": {
+     "n": 45121,
+     "equal": 1301,
+     "rate": 0.0288
+    },
+    "top_mismatch": [
+     [
+      "rs=\"TowerPrincessProjectile\" cf=null | TowerPrincessProjectile",
+      28239
+     ],
+     [
+      "rs=\"xbow_projectile\" cf=null | xbow_projectile",
+      6767
+     ],
+     [
+      "rs=\"IceWizardHeroProjectile\" cf=null | IceWizardHeroProjectile",
+      3134
+     ],
+     [
+      "rs=\"KingProjectile\" cf=null | KingProjectile",
+      2082
+     ],
+     [
+      "rs=\"FirecrackerProjectile\" cf=null | FirecrackerProjectile",
+      1623
+     ],
+     [
+      "rs=\"SpearGoblinProjectile\" cf=null | SpearGoblinProjectile",
+      701
+     ],
+     [
+      "rs=\"HunterProjectile\" cf=null | HunterProjectile",
+      446
+     ],
+     [
+      "rs=\"PrincessProjectileDeco\" cf=null | PrincessProjectileDeco",
+      431
+     ],
+     [
+      "rs=\"AxeManProjectile\" cf=null | AxeManProjectile",
+      326
+     ],
+     [
+      "rs=\"BlowdartGoblinProjectile\" cf=null | BlowdartGoblinProjectile",
+      299
+     ],
+     [
+      "rs=\"MortarProjectile\" cf=null | MortarProjectile",
+      274
+     ],
+     [
+      "rs=\"BowlerProjectile\" cf=null | BowlerProjectile",
+      260
+     ]
+    ]
+   },
+   {
+    "field": "state",
+    "all": {
+     "n": 1057812,
+     "equal": 1042080,
+     "rate": 0.9851
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1028302,
+     "rate": 0.988
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 307015,
+     "rate": 0.9832
+    },
+    "top_mismatch": [
+     [
+      "rs=\"engaged\" cf=\"idle\" | PrincessTower",
+      2449
+     ],
+     [
+      "rs=\"idle\" cf=\"engaged\" | PrincessTower",
+      2378
+     ],
+     [
+      "rs=\"idle\" cf=\"engaged\" | KingTower",
+      1463
+     ],
+     [
+      "rs=\"engaged\" cf=\"idle\" | KingTower",
+      923
+     ],
+     [
+      "rs=\"engaged\" cf=\"moving\" | Skeleton",
+      575
+     ],
+     [
+      "rs=\"engaged\" cf=\"idle\" | Tesla",
+      470
+     ],
+     [
+      "rs=\"casting\" cf=\"moving\" | KnightHero",
+      393
+     ],
+     [
+      "rs=\"idle\" cf=\"engaged\" | Tesla",
+      358
+     ],
+     [
+      "rs=\"moving\" cf=\"engaged\" | Skeleton",
+      342
+     ],
+     [
+      "rs=\"moving\" cf=\"engaged\" | IceWizardHero",
+      295
+     ],
+     [
+      "rs=\"engaged\" cf=\"moving\" | IceWizardHero",
+      265
+     ],
+     [
+      "rs=\"jumping\" cf=\"moving\" | MegaKnight",
+      207
+     ]
+    ]
+   },
+   {
+    "field": "status.frozen",
+    "all": {
+     "n": 1057812,
+     "equal": 1056210,
+     "rate": 0.9985
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1039508,
+     "rate": 0.9988
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 311449,
+     "rate": 0.9974
+    },
+    "top_mismatch": [
+     [
+      "rs=false cf=true | PrincessTower",
+      250
+     ],
+     [
+      "rs=true cf=false | PrincessTower",
+      112
+     ],
+     [
+      "rs=true cf=false | Monk",
+      95
+     ],
+     [
+      "rs=false cf=true | IceWizardHero",
+      87
+     ],
+     [
+      "rs=true cf=false | BossBandit",
+      70
+     ],
+     [
+      "rs=true cf=false | IceWizardHero",
+      70
+     ],
+     [
+      "rs=false cf=true | KingTower",
+      58
+     ],
+     [
+      "rs=true cf=false | ValkyrieHero",
+      53
+     ],
+     [
+      "rs=false cf=true | Xbow",
+      47
+     ],
+     [
+      "rs=true cf=false | MiniPekkaHero",
+      46
+     ],
+     [
+      "rs=false cf=true | Tesla",
+      44
+     ],
+     [
+      "rs=true cf=false | TombstoneHero_Monster_Passive",
+      36
+     ]
+    ]
+   },
+   {
+    "field": "status.invisible",
+    "all": {
+     "n": 1057812,
+     "equal": 1056448,
+     "rate": 0.9987
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1039556,
+     "rate": 0.9988
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 311056,
+     "rate": 0.9961
+    },
+    "top_mismatch": [
+     [
+      "rs=true cf=false | TombstoneHero_Monster_Passive",
+      1006
+     ],
+     [
+      "rs=true cf=false | GoblinHero_Flag_Building",
+      98
+     ],
+     [
+      "rs=true cf=false | Ghost",
+      95
+     ],
+     [
+      "rs=true cf=false | BarbLogBarbarianHero",
+      24
+     ],
+     [
+      "rs=true cf=false | SkeletonArmy_EV1_Spectral",
+      22
+     ],
+     [
+      "rs=true cf=false | Knight_EV1",
+      19
+     ],
+     [
+      "rs=true cf=false | ArcherQueen",
+      19
+     ],
+     [
+      "rs=false cf=true | BossBandit",
+      16
+     ],
+     [
+      "rs=false cf=true | ArcherQueen",
+      14
+     ],
+     [
+      "rs=true cf=false | BossBandit",
+      13
+     ],
+     [
+      "rs=true cf=false | Ghost_EV1_Summon_Right",
+      11
+     ],
+     [
+      "rs=false cf=true | Ghost",
+      8
+     ]
+    ]
+   },
+   {
+    "field": "status.raged",
+    "all": {
+     "n": 1057812,
+     "equal": 1056082,
+     "rate": 0.9984
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1039635,
+     "rate": 0.9989
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 311135,
+     "rate": 0.9963
+    },
+    "top_mismatch": [
+     [
+      "rs=true cf=false | SkeletonArmy_EV1_Spectral",
+      1402
+     ],
+     [
+      "rs=true cf=false | BossBandit",
+      95
+     ],
+     [
+      "rs=true cf=false | ValkyrieHero",
+      91
+     ],
+     [
+      "rs=false cf=true | GoldenKnight",
+      39
+     ],
+     [
+      "rs=false cf=true | ValkyrieHero",
+      32
+     ],
+     [
+      "rs=true cf=false | ArcherQueen",
+      19
+     ],
+     [
+      "rs=false cf=true | ArcherQueen",
+      14
+     ],
+     [
+      "rs=false cf=true | WizardHero",
+      7
+     ],
+     [
+      "rs=true cf=false | AngryBarbarian_EV1",
+      6
+     ],
+     [
+      "rs=false cf=true | AngryBarbarian_EV1_2",
+      6
+     ],
+     [
+      "rs=true cf=false | AngryBarbarian_EV1_2",
+      4
+     ],
+     [
+      "rs=true cf=false | WizardHero",
+      3
+     ]
+    ]
+   },
+   {
+    "field": "status.shielded",
+    "all": {
+     "n": 1057812,
+     "equal": 1056787,
+     "rate": 0.999
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1040138,
+     "rate": 0.9994
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 311638,
+     "rate": 0.998
+    },
+    "top_mismatch": [
+     [
+      "rs=false cf=true | Knight_EV1",
+      592
+     ],
+     [
+      "rs=false cf=true | Recruit",
+      117
+     ],
+     [
+      "rs=true cf=false | Knight_EV1",
+      110
+     ],
+     [
+      "rs=true cf=false | Recruit",
+      61
+     ],
+     [
+      "rs=false cf=true | Recruit_EV1",
+      38
+     ],
+     [
+      "rs=false cf=true | KnightHero",
+      36
+     ],
+     [
+      "rs=true cf=false | KnightHero",
+      25
+     ],
+     [
+      "rs=true cf=false | Recruit_EV1",
+      19
+     ],
+     [
+      "rs=false cf=true | SkeletonWarrior",
+      12
+     ],
+     [
+      "rs=true cf=false | SkeletonArmy_EV1_General",
+      6
+     ],
+     [
+      "rs=false cf=true | Wizard_EV1",
+      4
+     ],
+     [
+      "rs=true cf=false | SkeletonWarrior",
+      3
+     ]
+    ]
+   },
+   {
+    "field": "status.slow_frac",
+    "all": {
+     "n": 1057812,
+     "equal": 1051281,
+     "rate": 0.9938
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1035344,
+     "rate": 0.9948
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 308545,
+     "rate": 0.9881
+    },
+    "top_mismatch": [
+     [
+      "rs=0.5 cf=0.625 | Knight_EV1",
+      73
+     ],
+     [
+      "rs=0.5 cf=null | Knight_EV1",
+      48
+     ],
+     [
+      "rs=0.86 cf=0.925 | PrincessTower",
+      42
+     ],
+     [
+      "rs=0.76 cf=0.8 | PrincessTower",
+      42
+     ],
+     [
+      "rs=0.66 cf=0.675 | PrincessTower",
+      42
+     ],
+     [
+      "rs=0.667 cf=null | IceWizardHero",
+      38
+     ],
+     [
+      "rs=null cf=1.0 | PrincessTower",
+      29
+     ],
+     [
+      "rs=0.875 cf=1.0 | KingTower",
+      22
+     ],
+     [
+      "rs=0.5 cf=null | PrincessTower",
+      21
+     ],
+     [
+      "rs=0.5 cf=0.625 | PrincessTower",
+      20
+     ],
+     [
+      "rs=0.6 cf=0.9 | MightyMiner",
+      16
+     ],
+     [
+      "rs=0.517 cf=0.775 | MightyMiner",
+      16
+     ]
+    ]
+   },
+   {
+    "field": "status.slowed",
+    "all": {
+     "n": 1057812,
+     "equal": 1055869,
+     "rate": 0.9982
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1039296,
+     "rate": 0.9986
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 311646,
+     "rate": 0.998
+    },
+    "top_mismatch": [
+     [
+      "rs=false cf=true | PrincessTower",
+      395
+     ],
+     [
+      "rs=true cf=false | PrincessTower",
+      377
+     ],
+     [
+      "rs=true cf=false | IceWizardHero",
+      118
+     ],
+     [
+      "rs=false cf=true | IceWizardHero",
+      94
+     ],
+     [
+      "rs=false cf=true | KingTower",
+      77
+     ],
+     [
+      "rs=true cf=false | Knight_EV1",
+      52
+     ],
+     [
+      "rs=false cf=true | GoblinGiant_EV1",
+      42
+     ],
+     [
+      "rs=true cf=false | Monk",
+      40
+     ],
+     [
+      "rs=false cf=true | Goblin",
+      38
+     ],
+     [
+      "rs=false cf=true | Tesla",
+      36
+     ],
+     [
+      "rs=false cf=true | SkeletonArmy_EV1_Spectral",
+      26
+     ],
+     [
+      "rs=false cf=true | SpearGoblinGiant",
+      26
+     ]
+    ]
+   },
+   {
+    "field": "status.stunned",
+    "all": {
+     "n": 1057812,
+     "equal": 1057789,
+     "rate": 1.0
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1040755,
+     "rate": 1.0
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 312255,
+     "rate": 0.9999
+    },
+    "top_mismatch": [
+     [
+      "rs=false cf=true | IceWizardHero",
+      10
+     ],
+     [
+      "rs=false cf=true | Knight",
+      9
+     ],
+     [
+      "rs=true cf=false | Knight",
+      2
+     ],
+     [
+      "rs=true cf=false | Skeleton",
+      1
+     ],
+     [
+      "rs=true cf=false | Knight_EV1",
+      1
+     ]
+    ]
+   },
+   {
+    "field": "status.taunted",
+    "all": {
+     "n": 1057812,
+     "equal": 1057030,
+     "rate": 0.9993
+    },
+    "sync": {
+     "n": 1040775,
+     "equal": 1039993,
+     "rate": 0.9992
+    },
+    "body_sync": {
+     "n": 312275,
+     "equal": 311819,
+     "rate": 0.9985
+    },
+    "top_mismatch": [
+     [
+      "rs=false cf=true | IceWizardHero",
+      311
+     ],
+     [
+      "rs=false cf=true | PrincessTower",
+      310
+     ],
+     [
+      "rs=false cf=true | Knight",
+      58
+     ],
+     [
+      "rs=false cf=true | Xbow",
+      54
+     ],
+     [
+      "rs=false cf=true | Tesla",
+      33
+     ],
+     [
+      "rs=false cf=true | KingTower",
+      16
+     ]
+    ]
+   }
+  ],
+  "scenarios_rows": [
+   {
+    "i": 0,
+    "opp": [
+     "Firecracker",
+     "MightyMiner",
+     "Tesla",
+     "HogRider",
+     "Earthquake",
+     "Skeletons",
+     "ElectroSpirit",
+     "BarbLog"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 41,
+     "4": 3
+    }
+   },
+   {
+    "i": 1,
+    "opp": [
+     "BattleRam",
+     "ElectroWizard",
+     "AngryBarbarians",
+     "Valkyrie",
+     "Log",
+     "Freeze",
+     "GoblinCage",
+     "Musketeer"
+    ],
+    "skipped": "ValueError('ElectroWizard has no loadable hero form: ability ElectroWizardHero_Ability: effect surge is not simulated')"
+   },
+   {
+    "i": 2,
+    "opp": [
+     "MegaKnight",
+     "MegaMinion",
+     "BabyDragon",
+     "RageBarbarian",
+     "DarkWitch",
+     "Princess",
+     "Poison",
+     "Zap"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 38,
+     "4": 6
+    }
+   },
+   {
+    "i": 3,
+    "opp": [
+     "SkeletonArmy",
+     "SkeletonKing",
+     "Witch",
+     "ElixirGolem",
+     "DarkWitch",
+     "DarkMagic",
+     "Arrows",
+     "Rage"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 4,
+    "opp": [
+     "Firecracker",
+     "BarbLog",
+     "MegaKnight",
+     "Vines",
+     "Lightning",
+     "BlowdartGoblin",
+     "GoblinGang",
+     "RamRider"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 38,
+     "4": 6
+    }
+   },
+   {
+    "i": 5,
+    "opp": [
+     "AxeMan",
+     "MiniPekka",
+     "Valkyrie",
+     "Vines",
+     "GoblinHut",
+     "HogRider",
+     "Arrows",
+     "Minions"
+    ],
+    "forms": [
+     1,
+     2,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 440,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 4
+    }
+   },
+   {
+    "i": 6,
+    "opp": [
+     "SkeletonArmy",
+     "Valkyrie",
+     "GoblinBarrel",
+     "Princess",
+     "Cannon",
+     "BlowdartGoblin",
+     "Wallbreakers",
+     "IceSpirits"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 7,
+    "opp": [
+     "Valkyrie",
+     "Firecracker",
+     "Witch",
+     "ElixirGolem",
+     "Arrows",
+     "Freeze",
+     "Fireball",
+     "SkeletonArmy"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 8,
+    "opp": [
+     "AngryBarbarians",
+     "Valkyrie",
+     "Wallbreakers",
+     "BlowdartGoblin",
+     "ElectroSpirit",
+     "Log",
+     "Tesla",
+     "Lightning"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 9,
+    "opp": [
+     "BlowdartGoblin",
+     "MightyMiner",
+     "Skeletons",
+     "Log",
+     "Bats",
+     "SuspiciousBush",
+     "Wallbreakers",
+     "ElectroSpirit"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 41,
+     "4": 3
+    }
+   },
+   {
+    "i": 10,
+    "opp": [
+     "RageBarbarian",
+     "BossBandit",
+     "Wizard",
+     "Balloon",
+     "Prince",
+     "SkeletonWarriors",
+     "Minions",
+     "Zap"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 2760,
+    "why": "game_over",
+    "plays": {
+     "0": 27,
+     "4": 7
+    }
+   },
+   {
+    "i": 11,
+    "opp": [
+     "MegaKnight",
+     "EliteArcher",
+     "MinionHorde",
+     "GoblinBarrel",
+     "Log",
+     "Knight",
+     "HogRider",
+     "Arrows"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 1920,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 19,
+     "4": 4
+    }
+   },
+   {
+    "i": 12,
+    "opp": [
+     "GoblinBarrel",
+     "Valkyrie",
+     "SkeletonArmy",
+     "Wallbreakers",
+     "Princess",
+     "BlowdartGoblin",
+     "IceSpirits",
+     "Cannon"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 13,
+    "opp": [
+     "AxeMan",
+     "Valkyrie",
+     "GoldenKnight",
+     "Fireball",
+     "BarbLog",
+     "ElectroWizard",
+     "MiniPekka",
+     "Ronin"
+    ],
+    "forms": [
+     1,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 440,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 4
+    }
+   },
+   {
+    "i": 14,
+    "opp": [
+     "GoblinCage",
+     "GoldenKnight",
+     "InfernoDragon",
+     "ElectroGiant",
+     "MegaKnight",
+     "DarkPrince",
+     "Bats",
+     "Arrows"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3425,
+    "why": "game_over",
+    "plays": {
+     "0": 35,
+     "4": 7
+    }
+   },
+   {
+    "i": 15,
+    "opp": [
+     "BattleRam",
+     "GoldenKnight",
+     "ElectroWizard",
+     "Ronin",
+     "Ghost",
+     "FirespiritHut",
+     "Assassin",
+     "Zap"
+    ],
+    "skipped": "ValueError('ElectroWizard has no loadable hero form: ability ElectroWizardHero_Ability: effect surge is not simulated')"
+   },
+   {
+    "i": 16,
+    "opp": [
+     "Firecracker",
+     "MightyMiner",
+     "GoblinCage",
+     "Lightning",
+     "BarbLog",
+     "MiniSparkys",
+     "Assassin",
+     "Bowler"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 2820,
+    "why": "game_over",
+    "plays": {
+     "0": 28,
+     "4": 6
+    }
+   },
+   {
+    "i": 17,
+    "opp": [
+     "ElectroDragon",
+     "Wizard",
+     "Valkyrie",
+     "Lightning",
+     "ElixirGolem",
+     "Ronin",
+     "DarkWitch",
+     "Arrows"
+    ],
+    "forms": [
+     1,
+     2,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 2780,
+    "why": "game_over",
+    "plays": {
+     "0": 27,
+     "4": 7
+    }
+   },
+   {
+    "i": 18,
+    "opp": [
+     "AngryBarbarians",
+     "Balloon",
+     "Valkyrie",
+     "RageBarbarian",
+     "Tesla",
+     "Firecracker",
+     "Witch",
+     "Vines"
+    ],
+    "forms": [
+     1,
+     2,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 600,
+    "why": "status [4, 16, 14] vs [0, 16, 4]",
+    "plays": {
+     "0": 5,
+     "4": 1
+    }
+   },
+   {
+    "i": 19,
+    "opp": [
+     "Knight",
+     "IceWizard",
+     "BabyDragon",
+     "Tornado",
+     "BarbLog",
+     "Graveyard",
+     "Tombstone",
+     "Poison"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 20,
+    "opp": [
+     "SkeletonBalloon",
+     "Goblins",
+     "Mortar",
+     "MovingCannon",
+     "Fireball",
+     "Minions",
+     "Rascals",
+     "BarbLog"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 2040,
+    "why": "status [4] vs [0]",
+    "plays": {
+     "0": 21,
+     "4": 3
+    }
+   },
+   {
+    "i": 21,
+    "opp": [
+     "Musketeer",
+     "IceGolemite",
+     "Cannon",
+     "IceSpirits",
+     "Skeletons",
+     "HogRider",
+     "Fireball",
+     "Log"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 41,
+     "4": 3
+    }
+   },
+   {
+    "i": 22,
+    "opp": [
+     "Ghost",
+     "EliteArcher",
+     "BattleRam",
+     "ElectroWizard",
+     "Assassin",
+     "Fireball",
+     "Zap",
+     "Pekka"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 23,
+    "opp": [
+     "Cannon",
+     "IceGolemite",
+     "Musketeer",
+     "HogRider",
+     "Skeletons",
+     "IceSpirits",
+     "Log",
+     "Fireball"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 41,
+     "4": 3
+    }
+   },
+   {
+    "i": 24,
+    "opp": [
+     "Hunter",
+     "Valkyrie",
+     "LittlePrince",
+     "GiantBuffer",
+     "FirespiritHut",
+     "MinionGiant",
+     "DartBarrell",
+     "Arrows"
+    ],
+    "forms": [
+     1,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 440,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 4
+    }
+   },
+   {
+    "i": 25,
+    "opp": [
+     "RoyalHogs",
+     "BarbLog",
+     "Firecracker",
+     "Knight",
+     "Witch",
+     "Tesla",
+     "SkeletonArmy",
+     "GoblinBarrel"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 26,
+    "opp": [
+     "GoblinBarrel",
+     "Valkyrie",
+     "SkeletonArmy",
+     "Wallbreakers",
+     "Princess",
+     "BlowdartGoblin",
+     "IceSpirits",
+     "Cannon"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 27,
+    "opp": [
+     "Mortar",
+     "Berserker",
+     "SkeletonBalloon",
+     "MovingCannon",
+     "Fireball",
+     "BlowdartGoblin",
+     "Rascals",
+     "BarbLog"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 28,
+    "opp": [
+     "BabyDragon",
+     "Valkyrie",
+     "Bats",
+     "Bomber",
+     "ElectroSpirit",
+     "Golem",
+     "Ghost",
+     "Lightning"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 38,
+     "4": 6
+    }
+   },
+   {
+    "i": 29,
+    "opp": [
+     "Firecracker",
+     "Valkyrie",
+     "Tesla",
+     "IceSpirits",
+     "Skeletons",
+     "HogRider",
+     "Log",
+     "Earthquake"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 30,
+    "opp": [
+     "SkeletonArmy",
+     "SkeletonKing",
+     "Wizard",
+     "ElixirGolem",
+     "Lightning",
+     "DarkWitch",
+     "Arrows",
+     "Rage"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 31,
+    "opp": [
+     "FirespiritHut",
+     "Knight",
+     "Cannon",
+     "Poison",
+     "Log",
+     "ElectroSpirit",
+     "Skeletons",
+     "Graveyard"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 32,
+    "opp": [
+     "RageBarbarian",
+     "DarkPrince",
+     "Wizard",
+     "GoblinGang",
+     "Arrows",
+     "Mirror",
+     "Hunter",
+     "MegaKnight"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 37,
+     "4": 7
+    }
+   },
+   {
+    "i": 33,
+    "opp": [
+     "GoblinBarrel",
+     "MightyMiner",
+     "IceSpirits",
+     "Cannon",
+     "Princess",
+     "Rocket",
+     "GoblinGang",
+     "Log"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 34,
+    "opp": [
+     "BlowdartGoblin",
+     "DarkPrince",
+     "GoblinCage",
+     "Log",
+     "Golem",
+     "BabyDragon",
+     "Lightning",
+     "Tornado"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 38,
+     "4": 6
+    }
+   },
+   {
+    "i": 35,
+    "opp": [
+     "AxeMan",
+     "BossBandit",
+     "Valkyrie",
+     "Fireball",
+     "Log",
+     "SkeletonWarriors",
+     "GoblinBarrel",
+     "HogRider"
+    ],
+    "forms": [
+     1,
+     0,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 920,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 9,
+     "4": 1
+    }
+   },
+   {
+    "i": 36,
+    "opp": [
+     "MegaKnight",
+     "MiniPekka",
+     "Zap",
+     "Bats",
+     "HogRider",
+     "Fireball",
+     "ElectroWizard",
+     "Assassin"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 38,
+     "4": 6
+    }
+   },
+   {
+    "i": 37,
+    "opp": [
+     "Firecracker",
+     "Cannon",
+     "MegaKnight",
+     "BlowdartGoblin",
+     "ElectroWizard",
+     "GoblinBarrel",
+     "SkeletonArmy",
+     "Lightning"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 38,
+     "4": 6
+    }
+   },
+   {
+    "i": 38,
+    "opp": [
+     "BlowdartGoblin",
+     "ElectroWizard",
+     "RoyalRecruits",
+     "Assassin",
+     "Bats",
+     "Tombstone",
+     "Arrows",
+     "AxeMan"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3320,
+    "why": "status [0] vs [10]",
+    "plays": {
+     "0": 35,
+     "4": 5
+    }
+   },
+   {
+    "i": 39,
+    "opp": [
+     "BabyDragon",
+     "Bowler",
+     "ElectroWizard",
+     "Tornado",
+     "Lightning",
+     "BarbLog",
+     "GoblinHut",
+     "ElectroGiant"
+    ],
+    "skipped": "ValueError('ElectroWizard has no loadable hero form: ability ElectroWizardHero_Ability: effect surge is not simulated')"
+   },
+   {
+    "i": 40,
+    "opp": [
+     "GoblinBarrel",
+     "Knight",
+     "SkeletonArmy",
+     "Log",
+     "Princess",
+     "BlowdartGoblin",
+     "Tesla",
+     "IceSpirits"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 41,
+     "4": 3
+    }
+   },
+   {
+    "i": 41,
+    "opp": [
+     "FirespiritHut",
+     "Goblins",
+     "Musketeer",
+     "Minions",
+     "SuspiciousBush",
+     "Arrows",
+     "BattleHealer",
+     "Valkyrie"
+    ],
+    "forms": [
+     1,
+     2,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 600,
+    "why": "status [4, 16, 14] vs [0, 16, 0]",
+    "plays": {
+     "0": 6
+    }
+   },
+   {
+    "i": 42,
+    "opp": [
+     "Bats",
+     "Bowler",
+     "RageBarbarian",
+     "Balloon",
+     "Skeletons",
+     "Vines",
+     "Phoenix",
+     "Arrows"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 2735,
+    "why": "game_over",
+    "plays": {
+     "0": 29,
+     "4": 5
+    }
+   },
+   {
+    "i": 43,
+    "opp": [
+     "FirespiritHut",
+     "Bats",
+     "Ghost",
+     "Earthquake",
+     "MegaKnight",
+     "Firecracker",
+     "Tesla",
+     "SkeletonBalloon"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 44,
+    "opp": [
+     "RoyalHogs",
+     "Bowler",
+     "Valkyrie",
+     "Wallbreakers",
+     "BarbLog",
+     "Princess",
+     "Firecracker",
+     "Tesla"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 38,
+     "4": 6
+    }
+   },
+   {
+    "i": 45,
+    "opp": [
+     "Zap",
+     "Giant",
+     "Wizard",
+     "ZapMachine",
+     "MiniPekka",
+     "Minions",
+     "Heal",
+     "Tornado"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3240,
+    "why": "game_over",
+    "plays": {
+     "0": 34,
+     "4": 6
+    }
+   },
+   {
+    "i": 46,
+    "opp": [
+     "Firecracker",
+     "GiantSkeleton",
+     "MegaKnight",
+     "DarkWitch",
+     "Minions",
+     "HogRider",
+     "Zap",
+     "Arrows"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 38,
+     "4": 6
+    }
+   },
+   {
+    "i": 47,
+    "opp": [
+     "Skeletons",
+     "Valkyrie",
+     "FirespiritHut",
+     "Poison",
+     "Graveyard",
+     "IceSpirits",
+     "GoblinHut",
+     "BarbLog"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 48,
+    "opp": [
+     "Cannon",
+     "Musketeer",
+     "Skeletons",
+     "Fireball",
+     "IceGolemite",
+     "MinionGiant",
+     "Log",
+     "IceSpirits"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 42,
+     "4": 2
+    }
+   },
+   {
+    "i": 49,
+    "opp": [
+     "SkeletonBalloon",
+     "Rascals",
+     "MegaKnight",
+     "Wallbreakers",
+     "BarbLog",
+     "BlowdartGoblin",
+     "GoblinHut",
+     "Fireball"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 2810,
+    "why": "game_over",
+    "plays": {
+     "0": 30,
+     "4": 4
+    }
+   },
+   {
+    "i": 50,
+    "opp": [
+     "SkeletonArmy",
+     "Knight",
+     "IceWizard",
+     "GoblinGang",
+     "AxeMan",
+     "HogRider",
+     "Log",
+     "FirespiritHut"
+    ],
+    "forms": [
+     1,
+     2,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 38,
+     "4": 6
+    }
+   },
+   {
+    "i": 51,
+    "opp": [
+     "Ghost",
+     "GoldenKnight",
+     "Pekka",
+     "ElectroWizard",
+     "Assassin",
+     "Arrows",
+     "Fisherman",
+     "Balloon"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3385,
+    "why": "game_over",
+    "plays": {
+     "0": 36,
+     "4": 6
+    }
+   },
+   {
+    "i": 52,
+    "opp": [
+     "BlowdartGoblin",
+     "Knight",
+     "SkeletonBalloon",
+     "GoblinBarrel",
+     "InfernoTower",
+     "Log",
+     "GoblinGang",
+     "Princess"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 53,
+    "opp": [
+     "Mortar",
+     "Goblinstein",
+     "Ghost",
+     "Minions",
+     "IceWizard",
+     "BarbLog",
+     "Bowler",
+     "Fireball"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 38,
+     "4": 6
+    }
+   },
+   {
+    "i": 54,
+    "opp": [
+     "FirespiritHut",
+     "MegaMinion",
+     "Valkyrie",
+     "IceSpirits",
+     "Fireball",
+     "Zap",
+     "MiniPekka",
+     "ElectroGiant"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 55,
+    "opp": [
+     "Firecracker",
+     "Monk",
+     "Valkyrie",
+     "ElectroWizard",
+     "GoblinBarrel",
+     "Prince",
+     "Zap",
+     "Log"
+    ],
+    "forms": [
+     1,
+     0,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 38,
+     "4": 6
+    }
+   },
+   {
+    "i": 56,
+    "opp": [
+     "Firecracker",
+     "Wizard",
+     "Skeletons",
+     "Valkyrie",
+     "MiniPekka",
+     "Pekka",
+     "HogRider",
+     "Log"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 57,
+    "opp": [
+     "MegaKnight",
+     "ArcherQueen",
+     "Wallbreakers",
+     "Arrows",
+     "Prince",
+     "Minions",
+     "Assassin",
+     "Zap"
+    ],
+    "forms": [
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 2765,
+    "why": "game_over",
+    "plays": {
+     "0": 28,
+     "4": 6
+    }
+   },
+   {
+    "i": 58,
+    "opp": [
+     "InfernoDragon",
+     "BossBandit",
+     "Barbarians",
+     "LavaHound",
+     "Lightning",
+     "Arrows",
+     "SkeletonDragons",
+     "Tombstone"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3000,
+    "why": "game_over",
+    "plays": {
+     "0": 29,
+     "4": 8
+    }
+   },
+   {
+    "i": 59,
+    "opp": [
+     "Valkyrie",
+     "Wizard",
+     "Firecracker",
+     "GoblinBarrel",
+     "AngryBarbarians",
+     "Arrows",
+     "SkeletonArmy",
+     "InfernoTower"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 38,
+     "4": 6
+    }
+   },
+   {
+    "i": 60,
+    "opp": [
+     "Knight",
+     "Tombstone",
+     "IceWizard",
+     "Graveyard",
+     "Poison",
+     "Skeletons",
+     "GoblinDemolisher",
+     "BarbLog"
+    ],
+    "forms": [
+     1,
+     2,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 440,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 4
+    }
+   },
+   {
+    "i": 61,
+    "opp": [
+     "MegaKnight",
+     "GoldenKnight",
+     "Wizard",
+     "DartBarrell",
+     "AngryBarbarians",
+     "GoblinDemolisher",
+     "DarkPrince",
+     "RamRider"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 2420,
+    "why": "game_over",
+    "plays": {
+     "0": 21,
+     "4": 9
+    }
+   },
+   {
+    "i": 62,
+    "opp": [
+     "RoyalGiant",
+     "BarbLog",
+     "Ghost",
+     "Hunter",
+     "ElectroSpirit",
+     "Skeletons",
+     "Fireball",
+     "Fisherman"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 1880,
+    "why": "status [4] vs [0]",
+    "plays": {
+     "0": 21,
+     "4": 1
+    }
+   },
+   {
+    "i": 63,
+    "opp": [
+     "AxeMan",
+     "GoldenKnight",
+     "Hunter",
+     "RamRider",
+     "Vines",
+     "Bats",
+     "MegaKnight",
+     "Tombstone"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 37,
+     "4": 7
+    }
+   },
+   {
+    "i": 64,
+    "opp": [
+     "Musketeer",
+     "Valkyrie",
+     "GoblinBarrel",
+     "GiantSkeleton",
+     "Fireball",
+     "BabyDragon",
+     "ElectroWizard",
+     "SkeletonWarriors"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 37,
+     "4": 7
+    }
+   },
+   {
+    "i": 65,
+    "opp": [
+     "Witch",
+     "Bowler",
+     "Snowball",
+     "Graveyard",
+     "Giant",
+     "SkeletonWarriors",
+     "MiniSparkys",
+     "Arrows"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 1920,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 19,
+     "4": 4
+    }
+   },
+   {
+    "i": 66,
+    "opp": [
+     "Golem",
+     "DarkPrince",
+     "BabyDragon",
+     "Prince",
+     "DarkWitch",
+     "Lightning",
+     "Tornado",
+     "Log"
+    ],
+    "forms": [
+     0,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 35,
+     "4": 9
+    }
+   },
+   {
+    "i": 67,
+    "opp": [
+     "Firecracker",
+     "MightyMiner",
+     "Tesla",
+     "Skeletons",
+     "ElectroSpirit",
+     "Earthquake",
+     "BarbLog",
+     "HogRider"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 41,
+     "4": 3
+    }
+   },
+   {
+    "i": 68,
+    "opp": [
+     "AxeMan",
+     "BarbLog",
+     "ElectroDragon",
+     "Lightning",
+     "InfernoDragon",
+     "ElixirGolem",
+     "Ronin",
+     "Tornado"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 2935,
+    "why": "game_over",
+    "plays": {
+     "0": 31,
+     "4": 5
+    }
+   },
+   {
+    "i": 69,
+    "opp": [
+     "Mortar",
+     "IceWizard",
+     "Goblinstein",
+     "Fireball",
+     "MovingCannon",
+     "GoblinGang",
+     "Log",
+     "SkeletonBalloon"
+    ],
+    "forms": [
+     1,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 440,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 4
+    }
+   },
+   {
+    "i": 70,
+    "opp": [
+     "Tesla",
+     "MightyMiner",
+     "Firecracker",
+     "ElectroSpirit",
+     "Earthquake",
+     "HogRider",
+     "BarbLog",
+     "Skeletons"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 41,
+     "4": 3
+    }
+   },
+   {
+    "i": 71,
+    "opp": [
+     "Firecracker",
+     "Wizard",
+     "BossBandit",
+     "Witch",
+     "ElectroDragon",
+     "MegaKnight",
+     "Fireball",
+     "WitchMother"
+    ],
+    "forms": [
+     1,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 36,
+     "4": 8
+    }
+   },
+   {
+    "i": 72,
+    "opp": [
+     "Cannon",
+     "Berserker",
+     "Princess",
+     "GoblinBarrel",
+     "Fireball",
+     "Log",
+     "IceSpirits",
+     "BlowdartGoblin"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 41,
+     "4": 3
+    }
+   },
+   {
+    "i": 73,
+    "opp": [
+     "Witch",
+     "DarkPrince",
+     "SkeletonBalloon",
+     "Musketeer",
+     "Ghost",
+     "Tesla",
+     "Arrows",
+     "MegaKnight"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 38,
+     "4": 6
+    }
+   },
+   {
+    "i": 74,
+    "opp": [
+     "GoblinDrill",
+     "IceWizard",
+     "Snowball",
+     "Poison",
+     "FireSpirits",
+     "Tesla",
+     "Skeletons",
+     "Knight"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 41,
+     "4": 3
+    }
+   },
+   {
+    "i": 75,
+    "opp": [
+     "GoblinBarrel",
+     "Valkyrie",
+     "RoyalRecruits",
+     "Log",
+     "BlowdartGoblin",
+     "Cannon",
+     "IceSpirits",
+     "Princess"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 76,
+    "opp": [
+     "Valkyrie",
+     "Monk",
+     "ElectroDragon",
+     "Rage",
+     "Skeletons",
+     "Lightning",
+     "Bats",
+     "GoblinGang"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 77,
+    "opp": [
+     "Firecracker",
+     "MightyMiner",
+     "Cannon",
+     "HogRider",
+     "Skeletons",
+     "Lightning",
+     "Log",
+     "FireSpirits"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 78,
+    "opp": [
+     "RoyalHogs",
+     "ArcherQueen",
+     "Cannon",
+     "IceSpirits",
+     "Earthquake",
+     "Skeletons",
+     "RoyalDelivery",
+     "Log"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 79,
+    "opp": [
+     "Valkyrie",
+     "EliteArcher",
+     "RageBarbarian",
+     "Minions",
+     "BlowdartGoblin",
+     "Prince",
+     "Log",
+     "Balloon"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 37,
+     "4": 7
+    }
+   },
+   {
+    "i": 80,
+    "opp": [
+     "MegaKnight",
+     "GoldenKnight",
+     "AngryBarbarians",
+     "FirespiritHut",
+     "RamRider",
+     "Bats",
+     "Elixir Collector",
+     "Zap"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 1920,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 18,
+     "4": 5
+    }
+   },
+   {
+    "i": 81,
+    "opp": [
+     "MegaKnight",
+     "MiniPekka",
+     "BlowdartGoblin",
+     "IceSpirits",
+     "ZapMachine",
+     "Vines",
+     "HogRider",
+     "Fireball"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 1920,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 19,
+     "4": 4
+    }
+   },
+   {
+    "i": 82,
+    "opp": [
+     "BattleRam",
+     "ElectroWizard",
+     "Ghost",
+     "GiantSkeleton",
+     "Assassin",
+     "FirespiritHut",
+     "Arrows",
+     "Heal"
+    ],
+    "skipped": "ValueError('ElectroWizard has no loadable hero form: ability ElectroWizardHero_Ability: effect surge is not simulated')"
+   },
+   {
+    "i": 83,
+    "opp": [
+     "Golem",
+     "MegaMinion",
+     "Musketeer",
+     "Log",
+     "RageBarbarian",
+     "ZapMachine",
+     "Elixir Collector",
+     "Tornado"
+    ],
+    "forms": [
+     0,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 1240,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 11,
+     "4": 3
+    }
+   },
+   {
+    "i": 84,
+    "opp": [
+     "Witch",
+     "Berserker",
+     "Goblinstein",
+     "HogRider",
+     "Pekka",
+     "Bats",
+     "Arrows",
+     "Firecracker"
+    ],
+    "forms": [
+     1,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 440,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 4
+    }
+   },
+   {
+    "i": 85,
+    "opp": [
+     "GoblinBarrel",
+     "IceWizard",
+     "Valkyrie",
+     "BlowdartGoblin",
+     "Cannon",
+     "GoblinGang",
+     "Wallbreakers",
+     "Arrows"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 41,
+     "4": 3
+    }
+   },
+   {
+    "i": 86,
+    "opp": [
+     "ElectroGiant",
+     "Bowler",
+     "BabyDragon",
+     "Lightning",
+     "BarbLog",
+     "Tornado",
+     "GoblinHut",
+     "SkeletonWarriors"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 36,
+     "4": 8
+    }
+   },
+   {
+    "i": 87,
+    "opp": [
+     "BabyDragon",
+     "Valkyrie",
+     "MegaMinion",
+     "Tombstone",
+     "Arrows",
+     "SkeletonArmy",
+     "Prince",
+     "GoblinBarrel"
+    ],
+    "forms": [
+     1,
+     2,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 440,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 4
+    }
+   },
+   {
+    "i": 88,
+    "opp": [
+     "Mortar",
+     "MiniPekka",
+     "Wallbreakers",
+     "ElectroSpirit",
+     "GoblinGang",
+     "IceGolemite",
+     "Bats",
+     "WitchMother"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 42,
+     "4": 2
+    }
+   },
+   {
+    "i": 89,
+    "opp": [
+     "GoblinCage",
+     "Knight",
+     "Witch",
+     "BattleRam",
+     "Rage",
+     "Heal",
+     "Arrows",
+     "Prince"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 90,
+    "opp": [
+     "Cannon",
+     "Valkyrie",
+     "SkeletonArmy",
+     "HogRider",
+     "Zap",
+     "Bats",
+     "Princess",
+     "BlowdartGoblin"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 91,
+    "opp": [
+     "ElectroGiant",
+     "ElectroWizard",
+     "GoldenKnight",
+     "GoblinCage",
+     "Phoenix",
+     "BarbLog",
+     "Lightning",
+     "Tornado"
+    ],
+    "skipped": "ValueError('ElectroWizard has no loadable hero form: ability ElectroWizardHero_Ability: effect surge is not simulated')"
+   },
+   {
+    "i": 92,
+    "opp": [
+     "AxeMan",
+     "MiniPekka",
+     "Witch",
+     "Ghost",
+     "SkeletonArmy",
+     "Miner",
+     "HogRider",
+     "Arrows"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 93,
+    "opp": [
+     "Archer",
+     "Tombstone",
+     "FirespiritHut",
+     "IceSpirits",
+     "Prince",
+     "ElectroSpirit",
+     "Lightning",
+     "Log"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 760,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 8
+    }
+   },
+   {
+    "i": 94,
+    "opp": [
+     "AngryBarbarians",
+     "MiniPekka",
+     "AxeMan",
+     "BarbLog",
+     "WitchMother",
+     "SuspiciousBush",
+     "Ronin",
+     "SkeletonBalloon"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 95,
+    "opp": [
+     "Princess",
+     "BossBandit",
+     "AngryBarbarians",
+     "Rage",
+     "FirespiritHut",
+     "Tombstone",
+     "ElectroSpirit",
+     "GoblinCurse"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 96,
+    "opp": [
+     "SkeletonBalloon",
+     "Valkyrie",
+     "AngryBarbarians",
+     "Log",
+     "Rascals",
+     "Fireball",
+     "Princess",
+     "SkeletonWarriors"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 2285,
+    "why": "game_over",
+    "plays": {
+     "0": 23,
+     "4": 5
+    }
+   },
+   {
+    "i": 97,
+    "opp": [
+     "RoyalGiant",
+     "FireSpirits",
+     "Barbarians",
+     "Zap",
+     "Bomber",
+     "Archer",
+     "Princess",
+     "InfernoTower"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 98,
+    "opp": [
+     "Witch",
+     "Wizard",
+     "Valkyrie",
+     "MiniPekka",
+     "HogRider",
+     "Arrows",
+     "Lightning",
+     "Goblins"
+    ],
+    "forms": [
+     1,
+     2,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 37,
+     "4": 7
+    }
+   },
+   {
+    "i": 99,
+    "opp": [
+     "MegaKnight",
+     "Lightning",
+     "SkeletonBalloon",
+     "Wallbreakers",
+     "Bats",
+     "SkeletonArmy",
+     "Log",
+     "BlowdartGoblin"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 1920,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 20,
+     "4": 3
+    }
+   },
+   {
+    "i": 100,
+    "opp": [
+     "Mortar",
+     "SkeletonKing",
+     "SkeletonBalloon",
+     "InfernoDragon",
+     "GoblinGang",
+     "Log",
+     "Poison",
+     "BlowdartGoblin"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 101,
+    "opp": [
+     "GoblinGiant",
+     "Knight",
+     "Witch",
+     "DartBarrell",
+     "Barbarians",
+     "Arrows",
+     "FirespiritHut",
+     "Assassin"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 2300,
+    "why": "game_over",
+    "plays": {
+     "0": 21,
+     "4": 7
+    }
+   },
+   {
+    "i": 102,
+    "opp": [
+     "MegaKnight",
+     "GoldenKnight",
+     "Witch",
+     "Ronin",
+     "Vines",
+     "Mirror",
+     "GoblinGang",
+     "GoblinBarrel"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3480,
+    "why": "status [0] vs [10]",
+    "plays": {
+     "0": 34,
+     "4": 8
+    }
+   },
+   {
+    "i": 103,
+    "opp": [
+     "Bats",
+     "MegaMinion",
+     "Balloon",
+     "LavaHound",
+     "MiniPekka",
+     "Tombstone",
+     "SkeletonWarriors",
+     "Arrows"
+    ],
+    "forms": [
+     1,
+     2,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 2560,
+    "why": "status [0] vs [10]",
+    "plays": {
+     "0": 24,
+     "4": 7
+    }
+   },
+   {
+    "i": 104,
+    "opp": [
+     "MegaKnight",
+     "ArcherQueen",
+     "AngryBarbarians",
+     "GoblinBarrel",
+     "Rocket",
+     "Zap",
+     "GoblinGang",
+     "Vines"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 1920,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 18,
+     "4": 5
+    }
+   },
+   {
+    "i": 105,
+    "opp": [
+     "SkeletonBalloon",
+     "Goblinstein",
+     "Mortar",
+     "IceSpirits",
+     "BlowdartGoblin",
+     "Zap",
+     "FirespiritHut",
+     "Arrows"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 106,
+    "opp": [
+     "RoyalRecruits",
+     "BarbLog",
+     "GoblinCage",
+     "RoyalHogs",
+     "MiniSparkys",
+     "DartBarrell",
+     "WitchMother",
+     "Arrows"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 1080,
+    "why": "status [4] vs [0]",
+    "plays": {
+     "0": 10,
+     "4": 2
+    }
+   },
+   {
+    "i": 107,
+    "opp": [
+     "Mortar",
+     "Princess",
+     "Valkyrie",
+     "Log",
+     "Skeletons",
+     "IceSpirits",
+     "Archer",
+     "Poison"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 41,
+     "4": 3
+    }
+   },
+   {
+    "i": 108,
+    "opp": [
+     "SkeletonBalloon",
+     "MiniPekka",
+     "InfernoDragon",
+     "BarbLog",
+     "MegaKnight",
+     "ElectroSpirit",
+     "Wallbreakers",
+     "Rage"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3320,
+    "why": "status [0] vs [10]",
+    "plays": {
+     "0": 35,
+     "4": 5
+    }
+   },
+   {
+    "i": 109,
+    "opp": [
+     "Wallbreakers",
+     "BossBandit",
+     "Tesla",
+     "WitchMother",
+     "HogRider",
+     "MiniPekka",
+     "Log",
+     "ElectroSpirit"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 110,
+    "opp": [
+     "Pekka",
+     "Wizard",
+     "Tombstone",
+     "Log",
+     "IceGolemite",
+     "Poison",
+     "ElectroWizard",
+     "HogRider"
+    ],
+    "forms": [
+     1,
+     2,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 600,
+    "why": "status [4, 16, 14] vs [0, 16, 4]",
+    "plays": {
+     "0": 5,
+     "4": 1
+    }
+   },
+   {
+    "i": 111,
+    "opp": [
+     "Mortar",
+     "Goblinstein",
+     "MinionHorde",
+     "MovingCannon",
+     "WitchMother",
+     "GoblinGang",
+     "Fireball",
+     "BarbLog"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 36,
+     "4": 8
+    }
+   },
+   {
+    "i": 112,
+    "opp": [
+     "GoblinDrill",
+     "Tombstone",
+     "FirespiritHut",
+     "Arrows",
+     "Earthquake",
+     "SkeletonArmy",
+     "MiniSparkys",
+     "Rascals"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 113,
+    "opp": [
+     "Tesla",
+     "Knight",
+     "Archer",
+     "Skeletons",
+     "Xbow",
+     "ElectroSpirit",
+     "Log",
+     "Fireball"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 114,
+    "opp": [
+     "Princess",
+     "Valkyrie",
+     "BlowdartGoblin",
+     "InfernoTower",
+     "GoblinBarrel",
+     "SkeletonBalloon",
+     "Skeletons",
+     "Log"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 115,
+    "opp": [
+     "SkeletonBalloon",
+     "Goblins",
+     "BlowdartGoblin",
+     "SuspiciousBush",
+     "Ghost",
+     "Rascals",
+     "Freeze",
+     "Log"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 41,
+     "4": 3
+    }
+   },
+   {
+    "i": 116,
+    "opp": [
+     "BattleRam",
+     "DarkPrince",
+     "EliteArcher",
+     "ElectroWizard",
+     "Log",
+     "Prince",
+     "Fireball",
+     "Pekka"
+    ],
+    "forms": [
+     1,
+     2,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 440,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 4
+    }
+   },
+   {
+    "i": 117,
+    "opp": [
+     "GoblinCage",
+     "IceWizard",
+     "Knight",
+     "Graveyard",
+     "BabyDragon",
+     "Skeletons",
+     "Poison",
+     "BarbLog"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 118,
+    "opp": [
+     "ElectroDragon",
+     "Knight",
+     "Pekka",
+     "Lightning",
+     "Zap",
+     "Tornado",
+     "ElectroGiant",
+     "Log"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 36,
+     "4": 8
+    }
+   },
+   {
+    "i": 119,
+    "opp": [
+     "ElectroDragon",
+     "Tombstone",
+     "SkeletonBalloon",
+     "GiantSkeleton",
+     "ZapMachine",
+     "Clone",
+     "Zap",
+     "WitchMother"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 37,
+     "4": 7
+    }
+   },
+   {
+    "i": 120,
+    "opp": [
+     "Wizard",
+     "Tombstone",
+     "BossBandit",
+     "RoyalRecruits",
+     "Lightning",
+     "GoblinGang",
+     "Arrows",
+     "GoblinCage"
+    ],
+    "forms": [
+     1,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 2520,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 21,
+     "4": 9
+    }
+   },
+   {
+    "i": 121,
+    "opp": [
+     "MegaKnight",
+     "Valkyrie",
+     "Witch",
+     "ZapMachine",
+     "BlowdartGoblin",
+     "ElectroWizard",
+     "HogRider",
+     "Tornado"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 1920,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 17,
+     "4": 6
+    }
+   },
+   {
+    "i": 122,
+    "opp": [
+     "SkeletonBalloon",
+     "IceWizard",
+     "Mortar",
+     "MovingCannon",
+     "Fireball",
+     "GoblinGang",
+     "Rascals",
+     "BarbLog"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 38,
+     "4": 6
+    }
+   },
+   {
+    "i": 123,
+    "opp": [
+     "Cannon",
+     "ArcherQueen",
+     "Knight",
+     "Log",
+     "Xbow",
+     "Rocket",
+     "ElectroSpirit",
+     "Skeletons"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 124,
+    "opp": [
+     "BabyDragon",
+     "IceWizard",
+     "Pekka",
+     "Balloon",
+     "RageBarbarian",
+     "Freeze",
+     "Tornado",
+     "BarbLog"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 37,
+     "4": 7
+    }
+   },
+   {
+    "i": 125,
+    "opp": [
+     "SkeletonArmy",
+     "MightyMiner",
+     "SkeletonBalloon",
+     "MegaKnight",
+     "GoblinBarrel",
+     "Zap",
+     "Bats",
+     "ElectroWizard"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3295,
+    "why": "game_over",
+    "plays": {
+     "0": 35,
+     "4": 5
+    }
+   },
+   {
+    "i": 126,
+    "opp": [
+     "AxeMan",
+     "Knight",
+     "Tesla",
+     "Firecracker",
+     "Log",
+     "HogRider",
+     "Valkyrie",
+     "GoblinBarrel"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 38,
+     "4": 6
+    }
+   },
+   {
+    "i": 127,
+    "opp": [
+     "ElectroGiant",
+     "Valkyrie",
+     "AngryBarbarians",
+     "Arrows",
+     "HogRider",
+     "MovingCannon",
+     "Minions",
+     "Vines"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3160,
+    "why": "status [0] vs [10]",
+    "plays": {
+     "0": 29,
+     "4": 9
+    }
+   },
+   {
+    "i": 128,
+    "opp": [
+     "ElectroGiant",
+     "GoldenKnight",
+     "GoblinCage",
+     "Phoenix",
+     "ElectroWizard",
+     "Lightning",
+     "Tornado",
+     "BarbLog"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 36,
+     "4": 8
+    }
+   },
+   {
+    "i": 129,
+    "opp": [
+     "AxeMan",
+     "MiniPekka",
+     "BattleRam",
+     "WitchMother",
+     "Ronin",
+     "Zap",
+     "Ghost",
+     "Assassin"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 38,
+     "4": 6
+    }
+   },
+   {
+    "i": 130,
+    "opp": [
+     "Mortar",
+     "Goblinstein",
+     "Bats",
+     "BarbLog",
+     "IceGolemite",
+     "Arrows",
+     "InfernoDragon",
+     "SkeletonWarriors"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 131,
+    "opp": [
+     "Princess",
+     "Knight",
+     "BlowdartGoblin",
+     "InfernoTower",
+     "Poison",
+     "GoblinGang",
+     "GoblinBarrel",
+     "Log"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 132,
+    "opp": [
+     "RoyalHogs",
+     "BarbLog",
+     "RoyalRecruits",
+     "MiniSparkys",
+     "DartBarrell",
+     "GoblinCage",
+     "Fireball",
+     "Firecracker"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3570,
+    "why": "game_over",
+    "plays": {
+     "0": 37,
+     "4": 7
+    }
+   },
+   {
+    "i": 133,
+    "opp": [
+     "Firecracker",
+     "Monk",
+     "MegaKnight",
+     "IceSpirits",
+     "Skeletons",
+     "ZapMachine",
+     "Arrows",
+     "Hunter"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3475,
+    "why": "game_over",
+    "plays": {
+     "0": 36,
+     "4": 6
+    }
+   },
+   {
+    "i": 134,
+    "opp": [
+     "Ghost",
+     "GoldenKnight",
+     "BattleRam",
+     "Pekka",
+     "FirespiritHut",
+     "Assassin",
+     "ElectroWizard",
+     "Arrows"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3040,
+    "why": "status [0] vs [10]",
+    "plays": {
+     "0": 31,
+     "4": 6
+    }
+   },
+   {
+    "i": 135,
+    "opp": [
+     "RoyalHogs",
+     "Valkyrie",
+     "Witch",
+     "Knight",
+     "Firecracker",
+     "Ghost",
+     "Tesla",
+     "Fireball"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 2480,
+    "why": "game_over",
+    "plays": {
+     "0": 23,
+     "4": 7
+    }
+   },
+   {
+    "i": 136,
+    "opp": [
+     "Archer",
+     "Goblinstein",
+     "RoyalHogs",
+     "Lightning",
+     "Skeletons",
+     "BarbLog",
+     "BombTower",
+     "ElectroSpirit"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 137,
+    "opp": [
+     "FirespiritHut",
+     "Monk",
+     "Witch",
+     "ElixirGolem",
+     "ElectroGiant",
+     "BattleHealer",
+     "SkeletonArmy",
+     "Poison"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 2860,
+    "why": "game_over",
+    "plays": {
+     "0": 29,
+     "4": 6
+    }
+   },
+   {
+    "i": 138,
+    "opp": [
+     "MinionHorde",
+     "Giant",
+     "MiniPekka",
+     "Valkyrie",
+     "BabyDragon",
+     "SkeletonArmy",
+     "SpearGoblins",
+     "Arrows"
+    ],
+    "forms": [
+     1,
+     2,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 2650,
+    "why": "game_over",
+    "plays": {
+     "0": 25,
+     "4": 7
+    }
+   },
+   {
+    "i": 139,
+    "opp": [
+     "ElectroGiant",
+     "ElectroWizard",
+     "LittlePrince",
+     "GoblinHut",
+     "Tornado",
+     "BarbLog",
+     "Lightning",
+     "SkeletonWarriors"
+    ],
+    "skipped": "ValueError('ElectroWizard has no loadable hero form: ability ElectroWizardHero_Ability: effect surge is not simulated')"
+   },
+   {
+    "i": 140,
+    "opp": [
+     "MegaKnight",
+     "MiniPekka",
+     "BlowdartGoblin",
+     "Earthquake",
+     "HogRider",
+     "Snowball",
+     "SkeletonWarriors",
+     "Bomber"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 1920,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 20,
+     "4": 3
+    }
+   },
+   {
+    "i": 141,
+    "opp": [
+     "BabyDragon",
+     "Balloon",
+     "Snowball",
+     "GiantSkeleton",
+     "BombTower",
+     "Tornado",
+     "SkeletonWarriors",
+     "Miner"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 38,
+     "4": 6
+    }
+   },
+   {
+    "i": 142,
+    "opp": [
+     "AngryBarbarians",
+     "Berserker",
+     "Bomber",
+     "Zap",
+     "Golem",
+     "Phoenix",
+     "DarkWitch",
+     "Arrows"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3345,
+    "why": "game_over",
+    "plays": {
+     "0": 35,
+     "4": 6
+    }
+   },
+   {
+    "i": 143,
+    "opp": [
+     "Skeletons",
+     "IceGolemite",
+     "Musketeer",
+     "ElectroSpirit",
+     "BombTower",
+     "Earthquake",
+     "MinionGiant",
+     "Log"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 41,
+     "4": 3
+    }
+   },
+   {
+    "i": 144,
+    "opp": [
+     "Wallbreakers",
+     "Valkyrie",
+     "SkeletonArmy",
+     "Princess",
+     "GoblinBarrel",
+     "BlowdartGoblin",
+     "ElectroSpirit",
+     "Cannon"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 145,
+    "opp": [
+     "FirespiritHut",
+     "EliteArcher",
+     "Pekka",
+     "Tombstone",
+     "SkeletonWarriors",
+     "Fireball",
+     "Zap",
+     "SkeletonBalloon"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 38,
+     "4": 6
+    }
+   },
+   {
+    "i": 146,
+    "opp": [
+     "Zap",
+     "DarkPrince",
+     "MegaKnight",
+     "Prince",
+     "HogRider",
+     "BarbLog",
+     "Rage",
+     "Assassin"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 147,
+    "opp": [
+     "BlowdartGoblin",
+     "Valkyrie",
+     "Archer",
+     "Lightning",
+     "HogRider",
+     "Cannon",
+     "BarbLog",
+     "Arrows"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 38,
+     "4": 6
+    }
+   },
+   {
+    "i": 148,
+    "opp": [
+     "Pekka",
+     "Goblins",
+     "Wizard",
+     "Freeze",
+     "Vines",
+     "Prince",
+     "Zap",
+     "ElectroWizard"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 2200,
+    "why": "status [4] vs [0]",
+    "plays": {
+     "0": 21,
+     "4": 5
+    }
+   },
+   {
+    "i": 149,
+    "opp": [
+     "GoblinDrill",
+     "Knight",
+     "Snowball",
+     "ElectroSpirit",
+     "FirespiritHut",
+     "FireSpirits",
+     "Poison",
+     "Cannon"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 41,
+     "4": 3
+    }
+   },
+   {
+    "i": 150,
+    "opp": [
+     "GoblinBarrel",
+     "Knight",
+     "Princess",
+     "IceSpirits",
+     "BlowdartGoblin",
+     "Log",
+     "GoblinGang",
+     "InfernoTower"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 41,
+     "4": 3
+    }
+   },
+   {
+    "i": 151,
+    "opp": [
+     "MinionHorde",
+     "Giant",
+     "MiniPekka",
+     "Zap",
+     "Bats",
+     "Arrows",
+     "SkeletonArmy",
+     "ZapMachine"
+    ],
+    "forms": [
+     1,
+     2,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3160,
+    "why": "status [0] vs [10]",
+    "plays": {
+     "0": 32,
+     "4": 6
+    }
+   },
+   {
+    "i": 152,
+    "opp": [
+     "Musketeer",
+     "Balloon",
+     "Knight",
+     "Snowball",
+     "BombTower",
+     "BarbLog",
+     "Skeletons",
+     "Miner"
+    ],
+    "forms": [
+     1,
+     2,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 440,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 4
+    }
+   },
+   {
+    "i": 153,
+    "opp": [
+     "GoblinBarrel",
+     "Knight",
+     "Tesla",
+     "Log",
+     "Rocket",
+     "IceSpirits",
+     "GoblinGang",
+     "Princess"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 154,
+    "opp": [
+     "GoblinBarrel",
+     "Valkyrie",
+     "SkeletonArmy",
+     "Princess",
+     "BlowdartGoblin",
+     "IceSpirits",
+     "Cannon",
+     "Wallbreakers"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 155,
+    "opp": [
+     "GoblinBarrel",
+     "Knight",
+     "Cannon",
+     "BlowdartGoblin",
+     "GoblinGang",
+     "Log",
+     "Princess",
+     "IceSpirits"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 41,
+     "4": 3
+    }
+   },
+   {
+    "i": 156,
+    "opp": [
+     "MegaKnight",
+     "DarkPrince",
+     "Firecracker",
+     "SkeletonBalloon",
+     "Bats",
+     "Ronin",
+     "GoblinCurse",
+     "Vines"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 1920,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 19,
+     "4": 4
+    }
+   },
+   {
+    "i": 157,
+    "opp": [
+     "ElectroGiant",
+     "MiniPekka",
+     "RageBarbarian",
+     "Tornado",
+     "Mirror",
+     "Phoenix",
+     "Elixir Collector",
+     "Goblins"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 37,
+     "4": 7
+    }
+   },
+   {
+    "i": 158,
+    "opp": [
+     "Musketeer",
+     "Balloon",
+     "Skeletons",
+     "BombTower",
+     "BarbLog",
+     "Miner",
+     "Snowball",
+     "IceGolemite"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 41,
+     "4": 3
+    }
+   },
+   {
+    "i": 159,
+    "opp": [
+     "ElectroDragon",
+     "IceWizard",
+     "Monk",
+     "Fireball",
+     "RamRider",
+     "Tornado",
+     "ElectroSpirit",
+     "BarbLog"
+    ],
+    "forms": [
+     1,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 440,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 4
+    }
+   },
+   {
+    "i": 160,
+    "opp": [
+     "Tesla",
+     "IceWizard",
+     "Knight",
+     "Log",
+     "Tornado",
+     "Rocket",
+     "Xbow",
+     "Skeletons"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 161,
+    "opp": [
+     "BabyDragon",
+     "Giant",
+     "MegaMinion",
+     "Berserker",
+     "Lightning",
+     "GoblinHut",
+     "Knight",
+     "Bowler"
+    ],
+    "forms": [
+     1,
+     2,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 440,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 4
+    }
+   },
+   {
+    "i": 162,
+    "opp": [
+     "Firecracker",
+     "Balloon",
+     "MegaKnight",
+     "Bats",
+     "Witch",
+     "SkeletonArmy",
+     "HogRider",
+     "Zap"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 38,
+     "4": 6
+    }
+   },
+   {
+    "i": 163,
+    "opp": [
+     "RageBarbarian",
+     "Balloon",
+     "BabyDragon",
+     "IceWizard",
+     "MiniPekka",
+     "Lightning",
+     "SkeletonWarriors",
+     "Snowball"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 37,
+     "4": 7
+    }
+   },
+   {
+    "i": 164,
+    "opp": [
+     "Skeletons",
+     "IceGolemite",
+     "ArcherQueen",
+     "Fireball",
+     "Log",
+     "HogRider",
+     "Cannon",
+     "ElectroSpirit"
+    ],
+    "forms": [
+     1,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 2200,
+    "why": "status [4] vs [0]",
+    "plays": {
+     "0": 24,
+     "4": 2
+    }
+   },
+   {
+    "i": 165,
+    "opp": [
+     "Tesla",
+     "Musketeer",
+     "Knight",
+     "Skeletons",
+     "HogRider",
+     "Lightning",
+     "Arrows",
+     "IceSpirits"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 166,
+    "opp": [
+     "AxeMan",
+     "Wizard",
+     "GoldenKnight",
+     "Knight",
+     "Barbarians",
+     "Valkyrie",
+     "Firecracker",
+     "Prince"
+    ],
+    "forms": [
+     1,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 37,
+     "4": 7
+    }
+   },
+   {
+    "i": 167,
+    "opp": [
+     "RoyalGiant",
+     "Valkyrie",
+     "Wizard",
+     "Ronin",
+     "Zap",
+     "GoblinBarrel",
+     "SkeletonArmy",
+     "ElectroWizard"
+    ],
+    "forms": [
+     1,
+     2,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 600,
+    "why": "status [4, 16, 14] vs [0, 16, 14]",
+    "plays": {
+     "0": 5,
+     "4": 1
+    }
+   },
+   {
+    "i": 168,
+    "opp": [
+     "Tesla",
+     "IceWizard",
+     "Bats",
+     "Fireball",
+     "Knight",
+     "BarbLog",
+     "Skeletons",
+     "MinionGiant"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 41,
+     "4": 3
+    }
+   },
+   {
+    "i": 169,
+    "opp": [
+     "Valkyrie",
+     "Wizard",
+     "RageBarbarian",
+     "GoblinGang",
+     "Rocket",
+     "HogRider",
+     "MinionHorde",
+     "Cannon"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 38,
+     "4": 6
+    }
+   },
+   {
+    "i": 170,
+    "opp": [
+     "Cannon",
+     "MightyMiner",
+     "Firecracker",
+     "Earthquake",
+     "SkeletonWarriors",
+     "Log",
+     "ElectroSpirit",
+     "HogRider"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 41,
+     "4": 3
+    }
+   },
+   {
+    "i": 171,
+    "opp": [
+     "Ronin",
+     "Tombstone",
+     "Balloon",
+     "BabyDragon",
+     "RageBarbarian",
+     "Log",
+     "Vines",
+     "Phoenix"
+    ],
+    "forms": [
+     0,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 38,
+     "4": 6
+    }
+   },
+   {
+    "i": 172,
+    "opp": [
+     "BattleRam",
+     "MegaMinion",
+     "Skeletons",
+     "Lightning",
+     "ElectroSpirit",
+     "Log",
+     "WitchMother",
+     "Fisherman"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 173,
+    "opp": [
+     "Archer",
+     "Knight",
+     "Tesla",
+     "Xbow",
+     "Log",
+     "ElectroSpirit",
+     "Skeletons",
+     "Fireball"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 174,
+    "opp": [
+     "SkeletonBalloon",
+     "Valkyrie",
+     "Mortar",
+     "MovingCannon",
+     "Fireball",
+     "GoblinGang",
+     "Rascals",
+     "BarbLog"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 37,
+     "4": 7
+    }
+   },
+   {
+    "i": 175,
+    "opp": [
+     "RoyalGiant",
+     "BarbLog",
+     "Ghost",
+     "Fisherman",
+     "Hunter",
+     "Skeletons",
+     "Arrows",
+     "Lightning"
+    ],
+    "forms": [
+     0,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 176,
+    "opp": [
+     "Knight",
+     "IceWizard",
+     "Tombstone",
+     "BarbLog",
+     "BabyDragon",
+     "Poison",
+     "Tornado",
+     "Graveyard"
+    ],
+    "forms": [
+     1,
+     2,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 2360,
+    "why": "status [4] vs [0]",
+    "plays": {
+     "0": 22,
+     "4": 6
+    }
+   },
+   {
+    "i": 177,
+    "opp": [
+     "Pekka",
+     "Balloon",
+     "BabyDragon",
+     "IceWizard",
+     "Zap",
+     "Freeze",
+     "RageBarbarian",
+     "Tornado"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 37,
+     "4": 7
+    }
+   },
+   {
+    "i": 178,
+    "opp": [
+     "SkeletonBalloon",
+     "DarkPrince",
+     "Wallbreakers",
+     "Rascals",
+     "BarbLog",
+     "BlowdartGoblin",
+     "GoblinHut",
+     "Fireball"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 179,
+    "opp": [
+     "BabyDragon",
+     "MiniPekka",
+     "Valkyrie",
+     "ElixirGolem",
+     "FirespiritHut",
+     "SkeletonArmy",
+     "Arrows",
+     "Log"
+    ],
+    "forms": [
+     1,
+     2,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 960,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 10,
+     "4": 1
+    }
+   },
+   {
+    "i": 180,
+    "opp": [
+     "RoyalGiant",
+     "BarbLog",
+     "Ghost",
+     "Hunter",
+     "Fisherman",
+     "Fireball",
+     "Skeletons",
+     "ElectroSpirit"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 1880,
+    "why": "status [4] vs [0]",
+    "plays": {
+     "0": 21,
+     "4": 1
+    }
+   },
+   {
+    "i": 181,
+    "opp": [
+     "MegaKnight",
+     "Valkyrie",
+     "Firecracker",
+     "Freeze",
+     "Minions",
+     "RamRider",
+     "Witch",
+     "SkeletonBalloon"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 1920,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 18,
+     "4": 5
+    }
+   },
+   {
+    "i": 182,
+    "opp": [
+     "SkeletonArmy",
+     "Valkyrie",
+     "GoblinBarrel",
+     "Wallbreakers",
+     "FireSpirits",
+     "Cannon",
+     "Princess",
+     "BlowdartGoblin"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 183,
+    "opp": [
+     "Wallbreakers",
+     "MightyMiner",
+     "RoyalRecruits",
+     "GoblinDemolisher",
+     "WitchMother",
+     "Lightning",
+     "GoblinGang",
+     "Arrows"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 2440,
+    "why": "game_over",
+    "plays": {
+     "0": 23,
+     "4": 7
+    }
+   },
+   {
+    "i": 184,
+    "opp": [
+     "MegaKnight",
+     "Musketeer",
+     "AxeMan",
+     "Vines",
+     "Minions",
+     "MiniPekka",
+     "Arrows",
+     "HogRider"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 37,
+     "4": 7
+    }
+   },
+   {
+    "i": 185,
+    "opp": [
+     "Firecracker",
+     "MiniPekka",
+     "Knight",
+     "IceSpirits",
+     "HogRider",
+     "Rage",
+     "Skeletons",
+     "Princess"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 42,
+     "4": 2
+    }
+   },
+   {
+    "i": 186,
+    "opp": [
+     "Tesla",
+     "IceWizard",
+     "Knight",
+     "Xbow",
+     "Rocket",
+     "Tornado",
+     "Skeletons",
+     "Log"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 38,
+     "4": 6
+    }
+   },
+   {
+    "i": 187,
+    "opp": [
+     "Wallbreakers",
+     "MightyMiner",
+     "SkeletonBalloon",
+     "RoyalRecruits",
+     "Arrows",
+     "BlowdartGoblin",
+     "GoblinGang",
+     "Minions"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 188,
+    "opp": [
+     "FirespiritHut",
+     "IceWizard",
+     "Skeletons",
+     "Knight",
+     "Graveyard",
+     "BarbLog",
+     "GoblinHut",
+     "Poison"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 189,
+    "opp": [
+     "GoblinBarrel",
+     "Valkyrie",
+     "Cannon",
+     "BarbLog",
+     "Princess",
+     "Log",
+     "BlowdartGoblin",
+     "Rocket"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 190,
+    "opp": [
+     "FirespiritHut",
+     "Tombstone",
+     "Firecracker",
+     "HogRider",
+     "Ronin",
+     "Lightning",
+     "Bats",
+     "Bowler"
+    ],
+    "forms": [
+     1,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 37,
+     "4": 7
+    }
+   },
+   {
+    "i": 191,
+    "opp": [
+     "Valkyrie",
+     "Wizard",
+     "SkeletonBalloon",
+     "Ronin",
+     "ElixirGolem",
+     "Fireball",
+     "Balloon",
+     "Rage"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 2970,
+    "why": "game_over",
+    "plays": {
+     "0": 31,
+     "4": 5
+    }
+   },
+   {
+    "i": 192,
+    "opp": [
+     "Pekka",
+     "DarkPrince",
+     "BattleRam",
+     "Tornado",
+     "Ghost",
+     "FirespiritHut",
+     "Zap",
+     "ElectroWizard"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 2950,
+    "why": "game_over",
+    "plays": {
+     "0": 30,
+     "4": 6
+    }
+   },
+   {
+    "i": 193,
+    "opp": [
+     "SkeletonArmy",
+     "BossBandit",
+     "Firecracker",
+     "Log",
+     "HogRider",
+     "Musketeer",
+     "Ronin",
+     "GoblinHut"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3060,
+    "why": "game_over",
+    "plays": {
+     "0": 33,
+     "4": 5
+    }
+   },
+   {
+    "i": 194,
+    "opp": [
+     "BattleRam",
+     "ElectroWizard",
+     "Ghost",
+     "Pekka",
+     "Arrows",
+     "EliteArcher",
+     "Assassin",
+     "Fireball"
+    ],
+    "skipped": "ValueError('ElectroWizard has no loadable hero form: ability ElectroWizardHero_Ability: effect surge is not simulated')"
+   },
+   {
+    "i": 195,
+    "opp": [
+     "Snowball",
+     "LittlePrince",
+     "GoblinDrill",
+     "Cannon",
+     "Skeletons",
+     "FireSpirits",
+     "MiniPekka",
+     "Poison"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 41,
+     "4": 3
+    }
+   },
+   {
+    "i": 196,
+    "opp": [
+     "MegaKnight",
+     "ElectroWizard",
+     "ArcherQueen",
+     "Fireball",
+     "SkeletonWarriors",
+     "HogRider",
+     "Zap",
+     "RoyalDelivery"
+    ],
+    "skipped": "ValueError('ElectroWizard has no loadable hero form: ability ElectroWizardHero_Ability: effect surge is not simulated')"
+   },
+   {
+    "i": 197,
+    "opp": [
+     "Tesla",
+     "Musketeer",
+     "Zap",
+     "IceGolemite",
+     "HogRider",
+     "Fireball",
+     "ElectroSpirit",
+     "Skeletons"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 41,
+     "4": 3
+    }
+   },
+   {
+    "i": 198,
+    "opp": [
+     "Tesla",
+     "IceWizard",
+     "Bats",
+     "Knight",
+     "BarbLog",
+     "Poison",
+     "Skeletons",
+     "Graveyard"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 41,
+     "4": 3
+    }
+   },
+   {
+    "i": 199,
+    "opp": [
+     "ElectroDragon",
+     "Bowler",
+     "MegaKnight",
+     "HogRider",
+     "Arrows",
+     "ElectroSpirit",
+     "Lightning",
+     "InfernoDragon"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 36,
+     "4": 8
+    }
+   },
+   {
+    "i": 200,
+    "opp": [
+     "Pekka",
+     "EliteArcher",
+     "BattleRam",
+     "Ghost",
+     "Zap",
+     "Fireball",
+     "ElectroWizard",
+     "Assassin"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 2870,
+    "why": "game_over",
+    "plays": {
+     "0": 30,
+     "4": 5
+    }
+   },
+   {
+    "i": 201,
+    "opp": [
+     "Archer",
+     "Tombstone",
+     "Knight",
+     "Elixir Collector",
+     "Graveyard",
+     "DarkMagic",
+     "Fireball",
+     "Log"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 120,
+    "why": "hand_differs",
+    "plays": {}
+   },
+   {
+    "i": 202,
+    "opp": [
+     "Musketeer",
+     "IceGolemite",
+     "Cannon",
+     "Skeletons",
+     "HogRider",
+     "IceSpirits",
+     "Log",
+     "Fireball"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 41,
+     "4": 3
+    }
+   },
+   {
+    "i": 203,
+    "opp": [
+     "SkeletonArmy",
+     "SkeletonKing",
+     "SkeletonBalloon",
+     "Wallbreakers",
+     "Fireball",
+     "Log",
+     "BlowdartGoblin",
+     "Tesla"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 204,
+    "opp": [
+     "Firecracker",
+     "Balloon",
+     "Monk",
+     "Arrows",
+     "GoblinHut",
+     "Fireball",
+     "RamRider",
+     "SkeletonBalloon"
+    ],
+    "forms": [
+     1,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 440,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 4
+    }
+   },
+   {
+    "i": 205,
+    "opp": [
+     "Tesla",
+     "Knight",
+     "Archer",
+     "Skeletons",
+     "Log",
+     "Fireball",
+     "Xbow",
+     "ElectroSpirit"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 206,
+    "opp": [
+     "Bats",
+     "IceWizard",
+     "Tesla",
+     "Knight",
+     "Graveyard",
+     "Skeletons",
+     "Poison",
+     "BarbLog"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 41,
+     "4": 3
+    }
+   },
+   {
+    "i": 207,
+    "opp": [
+     "MegaKnight",
+     "GoblinBarrel",
+     "Firecracker",
+     "Arrows",
+     "InfernoTower",
+     "SpearGoblins",
+     "SkeletonArmy",
+     "IceSpirits"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 2790,
+    "why": "game_over",
+    "plays": {
+     "0": 30,
+     "4": 4
+    }
+   },
+   {
+    "i": 208,
+    "opp": [
+     "GoblinGiant",
+     "Musketeer",
+     "GoldenKnight",
+     "Bats",
+     "GoblinGang",
+     "SkeletonWarriors",
+     "SpearGoblins",
+     "Rage"
+    ],
+    "forms": [
+     1,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 209,
+    "opp": [
+     "SkeletonBalloon",
+     "Firecracker",
+     "Ghost",
+     "SuspiciousBush",
+     "Princess",
+     "Bats",
+     "Assassin",
+     "RoyalRecruits"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 2915,
+    "why": "game_over",
+    "plays": {
+     "0": 33,
+     "4": 3
+    }
+   },
+   {
+    "i": 210,
+    "opp": [
+     "SkeletonArmy",
+     "DarkPrince",
+     "MegaKnight",
+     "MinionHorde",
+     "GoblinBarrel",
+     "RageBarbarian",
+     "ElectroWizard",
+     "Fireball"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 37,
+     "4": 7
+    }
+   },
+   {
+    "i": 211,
+    "opp": [
+     "MegaKnight",
+     "Tombstone",
+     "ElectroWizard",
+     "GoblinDrill",
+     "AxeMan",
+     "Lightning",
+     "ZapMachine",
+     "Arrows"
+    ],
+    "skipped": "ValueError('ElectroWizard has no loadable hero form: ability ElectroWizardHero_Ability: effect surge is not simulated')"
+   },
+   {
+    "i": 212,
+    "opp": [
+     "Bats",
+     "Tombstone",
+     "Bowler",
+     "SkeletonWarriors",
+     "Wizard",
+     "Ronin",
+     "ElectroWizard",
+     "Poison"
+    ],
+    "forms": [
+     1,
+     2,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 440,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 4
+    }
+   },
+   {
+    "i": 213,
+    "opp": [
+     "Knight",
+     "Valkyrie",
+     "Wizard",
+     "ElectroWizard",
+     "GoblinCage",
+     "HogRider",
+     "Zap",
+     "Arrows"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 38,
+     "4": 6
+    }
+   },
+   {
+    "i": 214,
+    "opp": [
+     "Tesla",
+     "IceWizard",
+     "Skeletons",
+     "IceGolemite",
+     "Poison",
+     "Rocket",
+     "Log",
+     "Valkyrie"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 215,
+    "opp": [
+     "Firecracker",
+     "BossBandit",
+     "BattleRam",
+     "Ronin",
+     "MiniSparkys",
+     "Poison",
+     "Hunter",
+     "MinionHorde"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3160,
+    "why": "game_over",
+    "plays": {
+     "0": 32,
+     "4": 7
+    }
+   },
+   {
+    "i": 216,
+    "opp": [
+     "Firecracker",
+     "Valkyrie",
+     "MiniPekka",
+     "Goblins",
+     "GoblinBarrel",
+     "Log",
+     "Cannon",
+     "Princess"
+    ],
+    "forms": [
+     1,
+     2,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 440,
+    "why": "status [0] vs [4]",
+    "plays": {
+     "0": 4
+    }
+   },
+   {
+    "i": 217,
+    "opp": [
+     "GoblinDrill",
+     "Valkyrie",
+     "Snowball",
+     "Skeletons",
+     "SkeletonArmy",
+     "Poison",
+     "BlowdartGoblin",
+     "InfernoTower"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 218,
+    "opp": [
+     "FirespiritHut",
+     "MightyMiner",
+     "Cannon",
+     "ElectroSpirit",
+     "Skeletons",
+     "Lightning",
+     "HogRider",
+     "Log"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 219,
+    "opp": [
+     "SkeletonBalloon",
+     "GoldenKnight",
+     "Musketeer",
+     "Arrows",
+     "Lightning",
+     "GoblinHut",
+     "SkeletonWarriors",
+     "GoblinGang"
+    ],
+    "forms": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 38,
+     "4": 6
+    }
+   },
+   {
+    "i": 220,
+    "opp": [
+     "RageBarbarian",
+     "Balloon",
+     "Hunter",
+     "Snowball",
+     "IceGolemite",
+     "IceSpirits",
+     "Bats",
+     "BarbLog"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3595,
+    "why": "game_over",
+    "plays": {
+     "0": 40,
+     "4": 4
+    }
+   },
+   {
+    "i": 221,
+    "opp": [
+     "GoblinBarrel",
+     "Valkyrie",
+     "SkeletonBalloon",
+     "BlowdartGoblin",
+     "Tesla",
+     "IceSpirits",
+     "Princess",
+     "SkeletonArmy"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3600,
+    "why": "ticks",
+    "plays": {
+     "0": 39,
+     "4": 5
+    }
+   },
+   {
+    "i": 222,
+    "opp": [
+     "GoblinGiant",
+     "Musketeer",
+     "RageBarbarian",
+     "DarkPrince",
+     "Bats",
+     "Arrows",
+     "ZapMachine",
+     "Tombstone"
+    ],
+    "forms": [
+     1,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "end": 3125,
+    "why": "game_over",
+    "plays": {
+     "0": 32,
+     "4": 6
+    }
+   }
+  ],
+  "wall_s": 832.5,
+  "cf_unmapped": {
+   "BalloonHero_Bomb|Balloon|c#_#_#": 578,
+   "BombTowerBomb|BombTower|c#_#_#": 369,
+   "SpearGoblin_Dummy|GoblinHut|c#_#_#": 3122,
+   "area:BlowDartPoisonAeO_baseDamage|BlowDartPoisonAeO_baseDamage_#": 250,
+   "SkeletonTrooper|Balloon|proj_#_#": 1261,
+   "MusketeerTurret|Musketeer|c#_#_#_#": 606,
+   "SkeletonContainerNew|SkeletonBalloon|c#_#_#": 449,
+   "GiantSkeletonBomb|GiantSkeleton|c#_#_#": 277,
+   "IceWizardHero_IceCube|IceWizard|IceWizardHero_FreezeAeo_Dummy_#_#": 17608,
+   "area:ChampionGuardCleave|ChampionGuardCleave_#": 18,
+   "RageBarbarianBottle|Mirror|RageBarbarianDummyForSpawn_#_#": 14,
+   "area:FirecrackerFireworksSmall_EV1|FirecrackerFireworksSmall_EV#_#": 470,
+   "Wallbreaker_mini|Wallbreakers|c#_#_#": 154,
+   "DarkPrinceHero_Walking|DarkPrince|c#_#": 11551,
+   "TombstoneHero_visual_dummy|Tombstone|c#_#": 3064,
+   "DarkPrinceHero_Mount|DarkPrince|c#_#_#": 1862,
+   "area:BlowDartPoisonAeO_midDamage|BlowDartPoisonAeO_midDamage_#": 227,
+   "TombstoneHero_broken_visual_dummy|Tombstone|c#_#": 504,
+   "area:BlowDartPoisonAeO_fullDamage|BlowDartPoisonAeO_fullDamage_#": 86,
+   "SkeletonKingSkeleton|SkeletonKing|SkeletonKingGraveyard_#_#": 4796,
+   "RageBarbarianBottleEvo|RageBarbarian|RageBarbarianEvoDummyForSpawn_#_#": 24,
+   "IceWizardHero_IceCube|IceWizard|c#_#_#": 115,
+   "Musketeer_hero_DummyBuilding|Musketeer|c#_#_#": 88,
+   "VoodooHog|Knight|c#_#_#": 123,
+   "RageBarbarianBottle|RageBarbarian|RageBarbarianDummyForSpawn_#_#": 191,
+   "EliteArcherHero_Dummy|EliteArcher|c#_#_#": 349,
+   "PhoenixNoRespawn|Phoenix|proj_#_#_#": 504,
+   "BalloonBomb|Balloon|c#_#_#": 341,
+   "MightyMinerBomb|MightyMiner|c#_#_#": 505,
+   "TombstoneHero_Monster_Active|Tombstone|c#_#": 2192,
+   "VoodooHog|Skeletons|c#_#_#": 1153,
+   "ChampionGuard|null|DummySpawnLittlePrinceGuard_#_#": 159,
+   "WizardHero_air|Wizard|c#_#": 1413,
+   "RageBottle|Rage|c#_#": 144,
+   "BerserkerHero_BearForm|Berserker|c#_#": 266
+  }
+ }
+}

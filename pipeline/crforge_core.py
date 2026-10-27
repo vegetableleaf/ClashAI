@@ -34,8 +34,11 @@ What it is not (each raises rather than run something else)
     fin16 does (its summons and champions do not). A press runs 20 ticks after it is given, like a play.
   * ``_battle`` offers what pipeline code reads off RoyaleSim's Battle: ``state_json``, ``catalogue_json``,
     ``unit_types_json`` / ``unit_types_digest``, ``debug_units`` (uid, name only), and ``save()`` = only the fields
-    ``sim_unit_state.extract`` reads, from crforge's nearest fields (attack / load timers; jumping / dash / hide / shot buffs fixed defaults). Cue VALUES are
-    therefore not RoyaleSim's.
+    ``sim_unit_state.extract`` reads.
+  * Cue values (F1c-2): each ENTITY_FIELDS / save() value and status bit is read from crforge's own view, targeting,
+    buff and movement state and put in RoyaleSim's encoding, measured field by field against fin16 on matched scenarios
+    (scratchpad/gauntlet/L74/crforge/facade/cues/cue_ab.py -> facade/results/f1c2); the fields crforge has no
+    equivalent for (tower facing, the king tower's footprint, the target of a non-homing shot, ...) are listed there.
 """
 from __future__ import annotations
 
@@ -205,8 +208,9 @@ class CrforgeCore:
         return _jvm()["rs"].rules()
 
     def unit_types(self) -> list[str]:
-        """crforge body row names, indexed by ``EntityState.unit_type`` (grows as new bodies appear)."""
-        return [str(s) for s in self._cf.unitTypes()]
+        """crforge body row names, indexed by ``EntityState.unit_type`` (grows as new bodies appear; every body on the
+        board has its id once this returns: sim_unit_state.extract reads the names before state_json)."""
+        return [str(s) for s in self._cf.unitTypesNow()]
 
     def card_table_stamp(self) -> dict:
         return {"engine": "crforge", "crforge": CRFORGE_PIN, "tables": str(_jvm()["tables"].version()),

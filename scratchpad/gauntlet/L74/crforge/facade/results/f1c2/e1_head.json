@@ -1,0 +1,781 @@
+{
+ "part": "e1",
+ "n": 24,
+ "ticks": 1200,
+ "every": 5,
+ "result": {
+  "matches": 24,
+  "rows": [
+   {
+    "i": 0,
+    "opp": [
+     "Firecracker",
+     "MightyMiner",
+     "Tesla",
+     "HogRider",
+     "Earthquake",
+     "Skeletons",
+     "ElectroSpirit",
+     "BarbLog"
+    ],
+    "decisions": 351,
+    "plays_accepted": 43,
+    "end_tick": 3600,
+    "why": "end"
+   },
+   {
+    "i": 1,
+    "opp": [
+     "AxeMan",
+     "MiniPekka",
+     "Valkyrie",
+     "Vines",
+     "GoblinHut",
+     "HogRider",
+     "Arrows",
+     "Minions"
+    ],
+    "decisions": 351,
+    "plays_accepted": 39,
+    "end_tick": 3600,
+    "why": "end"
+   },
+   {
+    "i": 2,
+    "opp": [
+     "RageBarbarian",
+     "BossBandit",
+     "Wizard",
+     "Balloon",
+     "Prince",
+     "SkeletonWarriors",
+     "Minions",
+     "Zap"
+    ],
+    "decisions": 304,
+    "plays_accepted": 33,
+    "end_tick": 3128,
+    "why": "end"
+   },
+   {
+    "i": 3,
+    "opp": [
+     "BattleRam",
+     "GoldenKnight",
+     "ElectroWizard",
+     "Ronin",
+     "Ghost",
+     "FirespiritHut",
+     "Assassin",
+     "Zap"
+    ],
+    "decisions": 318,
+    "plays_accepted": 36,
+    "end_tick": 3270,
+    "why": "end"
+   },
+   {
+    "i": 4,
+    "opp": [
+     "SkeletonBalloon",
+     "Goblins",
+     "Mortar",
+     "MovingCannon",
+     "Fireball",
+     "Minions",
+     "Rascals",
+     "BarbLog"
+    ],
+    "decisions": 351,
+    "plays_accepted": 40,
+    "end_tick": 3600,
+    "why": "end"
+   },
+   {
+    "i": 5,
+    "opp": [
+     "RoyalHogs",
+     "BarbLog",
+     "Firecracker",
+     "Knight",
+     "Witch",
+     "Tesla",
+     "SkeletonArmy",
+     "GoblinBarrel"
+    ],
+    "decisions": 241,
+    "plays_accepted": 26,
+    "end_tick": 2494,
+    "why": "end"
+   },
+   {
+    "i": 6,
+    "opp": [
+     "SkeletonArmy",
+     "SkeletonKing",
+     "Wizard",
+     "ElixirGolem",
+     "Lightning",
+     "DarkWitch",
+     "Arrows",
+     "Rage"
+    ],
+    "decisions": 351,
+    "plays_accepted": 40,
+    "end_tick": 3600,
+    "why": "end"
+   },
+   {
+    "i": 7,
+    "opp": [
+     "AxeMan",
+     "BossBandit",
+     "Valkyrie",
+     "Fireball",
+     "Log",
+     "SkeletonWarriors",
+     "GoblinBarrel",
+     "HogRider"
+    ],
+    "decisions": 351,
+    "plays_accepted": 39,
+    "end_tick": 3600,
+    "why": "end"
+   },
+   {
+    "i": 8,
+    "opp": [
+     "GoblinBarrel",
+     "Knight",
+     "SkeletonArmy",
+     "Log",
+     "Princess",
+     "BlowdartGoblin",
+     "Tesla",
+     "IceSpirits"
+    ],
+    "decisions": 359,
+    "plays_accepted": 43,
+    "end_tick": 3678,
+    "why": "end"
+   },
+   {
+    "i": 9,
+    "opp": [
+     "Zap",
+     "Giant",
+     "Wizard",
+     "ZapMachine",
+     "MiniPekka",
+     "Minions",
+     "Heal",
+     "Tornado"
+    ],
+    "decisions": 351,
+    "plays_accepted": 41,
+    "end_tick": 3600,
+    "why": "end"
+   },
+   {
+    "i": 10,
+    "opp": [
+     "SkeletonArmy",
+     "Knight",
+     "IceWizard",
+     "GoblinGang",
+     "AxeMan",
+     "HogRider",
+     "Log",
+     "FirespiritHut"
+    ],
+    "decisions": 351,
+    "plays_accepted": 41,
+    "end_tick": 3600,
+    "why": "end"
+   },
+   {
+    "i": 11,
+    "opp": [
+     "Firecracker",
+     "Monk",
+     "Valkyrie",
+     "ElectroWizard",
+     "GoblinBarrel",
+     "Prince",
+     "Zap",
+     "Log"
+    ],
+    "decisions": 351,
+    "plays_accepted": 41,
+    "end_tick": 3600,
+    "why": "end"
+   },
+   {
+    "i": 12,
+    "opp": [
+     "Knight",
+     "Tombstone",
+     "IceWizard",
+     "Graveyard",
+     "Poison",
+     "Skeletons",
+     "GoblinDemolisher",
+     "BarbLog"
+    ],
+    "decisions": 605,
+    "plays_accepted": 71,
+    "end_tick": 6133,
+    "why": "end"
+   },
+   {
+    "i": 13,
+    "opp": [
+     "Witch",
+     "Bowler",
+     "Snowball",
+     "Graveyard",
+     "Giant",
+     "SkeletonWarriors",
+     "MiniSparkys",
+     "Arrows"
+    ],
+    "decisions": 351,
+    "plays_accepted": 39,
+    "end_tick": 3600,
+    "why": "end"
+   },
+   {
+    "i": 14,
+    "opp": [
+     "Tesla",
+     "MightyMiner",
+     "Firecracker",
+     "ElectroSpirit",
+     "Earthquake",
+     "HogRider",
+     "BarbLog",
+     "Skeletons"
+    ],
+    "decisions": 351,
+    "plays_accepted": 42,
+    "end_tick": 3600,
+    "why": "end"
+   },
+   {
+    "i": 15,
+    "opp": [
+     "GoblinBarrel",
+     "Valkyrie",
+     "RoyalRecruits",
+     "Log",
+     "BlowdartGoblin",
+     "Cannon",
+     "IceSpirits",
+     "Princess"
+    ],
+    "decisions": 351,
+    "plays_accepted": 41,
+    "end_tick": 3600,
+    "why": "end"
+   },
+   {
+    "i": 16,
+    "opp": [
+     "MegaKnight",
+     "GoldenKnight",
+     "AngryBarbarians",
+     "FirespiritHut",
+     "RamRider",
+     "Bats",
+     "Elixir Collector",
+     "Zap"
+    ],
+    "decisions": 231,
+    "plays_accepted": 24,
+    "end_tick": 2399,
+    "why": "end"
+   },
+   {
+    "i": 17,
+    "opp": [
+     "GoblinBarrel",
+     "IceWizard",
+     "Valkyrie",
+     "BlowdartGoblin",
+     "Cannon",
+     "GoblinGang",
+     "Wallbreakers",
+     "Arrows"
+    ],
+    "decisions": 601,
+    "plays_accepted": 72,
+    "end_tick": 6094,
+    "why": "end"
+   },
+   {
+    "i": 18,
+    "opp": [
+     "Cannon",
+     "Valkyrie",
+     "SkeletonArmy",
+     "HogRider",
+     "Zap",
+     "Bats",
+     "Princess",
+     "BlowdartGoblin"
+    ],
+    "decisions": 388,
+    "plays_accepted": 47,
+    "end_tick": 3961,
+    "why": "end"
+   },
+   {
+    "i": 19,
+    "opp": [
+     "Princess",
+     "BossBandit",
+     "AngryBarbarians",
+     "Rage",
+     "FirespiritHut",
+     "Tombstone",
+     "ElectroSpirit",
+     "GoblinCurse"
+    ],
+    "decisions": 320,
+    "plays_accepted": 36,
+    "end_tick": 3284,
+    "why": "end"
+   },
+   {
+    "i": 20,
+    "opp": [
+     "Mortar",
+     "SkeletonKing",
+     "SkeletonBalloon",
+     "InfernoDragon",
+     "GoblinGang",
+     "Log",
+     "Poison",
+     "BlowdartGoblin"
+    ],
+    "decisions": 351,
+    "plays_accepted": 41,
+    "end_tick": 3600,
+    "why": "end"
+   },
+   {
+    "i": 21,
+    "opp": [
+     "SkeletonBalloon",
+     "Goblinstein",
+     "Mortar",
+     "IceSpirits",
+     "BlowdartGoblin",
+     "Zap",
+     "FirespiritHut",
+     "Arrows"
+    ],
+    "decisions": 351,
+    "plays_accepted": 42,
+    "end_tick": 3600,
+    "why": "end"
+   },
+   {
+    "i": 22,
+    "opp": [
+     "Pekka",
+     "Wizard",
+     "Tombstone",
+     "Log",
+     "IceGolemite",
+     "Poison",
+     "ElectroWizard",
+     "HogRider"
+    ],
+    "decisions": 351,
+    "plays_accepted": 39,
+    "end_tick": 3600,
+    "why": "end"
+   },
+   {
+    "i": 23,
+    "opp": [
+     "SkeletonBalloon",
+     "Goblins",
+     "BlowdartGoblin",
+     "SuspiciousBush",
+     "Ghost",
+     "Rascals",
+     "Freeze",
+     "Log"
+    ],
+    "decisions": 343,
+    "plays_accepted": 41,
+    "end_tick": 3512,
+    "why": "end"
+   }
+  ],
+  "unit_tokens": {
+   "rs": 26463,
+   "cf": 28114
+  },
+  "cue_known": {
+   "rs": 26463,
+   "cf": 28114
+  },
+  "paired_tokens": 25508,
+  "row_agreement": {
+   "n": 25508,
+   "equal": 15686,
+   "rate": 0.6149
+  },
+  "columns": [
+   {
+    "col": "cue_known",
+    "n": 25508,
+    "equal": 25508,
+    "rate": 1.0,
+    "top_mismatch": []
+   },
+   {
+    "col": "state=idle",
+    "n": 25508,
+    "equal": 25475,
+    "rate": 0.9987,
+    "top_mismatch": [
+     [
+      "rs=0.000 cf=1.000",
+      23
+     ],
+     [
+      "rs=1.000 cf=0.000",
+      10
+     ]
+    ]
+   },
+   {
+    "col": "state=moving",
+    "n": 25508,
+    "equal": 25393,
+    "rate": 0.9955,
+    "top_mismatch": [
+     [
+      "rs=0.000 cf=1.000",
+      65
+     ],
+     [
+      "rs=1.000 cf=0.000",
+      50
+     ]
+    ]
+   },
+   {
+    "col": "state=engaged",
+    "n": 25508,
+    "equal": 25384,
+    "rate": 0.9951,
+    "top_mismatch": [
+     [
+      "rs=1.000 cf=0.000",
+      65
+     ],
+     [
+      "rs=0.000 cf=1.000",
+      59
+     ]
+    ]
+   },
+   {
+    "col": "state=deploying",
+    "n": 25508,
+    "equal": 25496,
+    "rate": 0.9995,
+    "top_mismatch": [
+     [
+      "rs=1.000 cf=0.000",
+      11
+     ],
+     [
+      "rs=0.000 cf=1.000",
+      1
+     ]
+    ]
+   },
+   {
+    "col": "state=jumping",
+    "n": 25508,
+    "equal": 25496,
+    "rate": 0.9995,
+    "top_mismatch": [
+     [
+      "rs=1.000 cf=0.000",
+      12
+     ]
+    ]
+   },
+   {
+    "col": "state=tunnelling",
+    "n": 25508,
+    "equal": 25508,
+    "rate": 1.0,
+    "top_mismatch": []
+   },
+   {
+    "col": "state=casting",
+    "n": 25508,
+    "equal": 25508,
+    "rate": 1.0,
+    "top_mismatch": []
+   },
+   {
+    "col": "charging",
+    "n": 25508,
+    "equal": 25506,
+    "rate": 0.9999,
+    "top_mismatch": [
+     [
+      "rs=1.000 cf=0.000",
+      1
+     ],
+     [
+      "rs=0.000 cf=1.000",
+      1
+     ]
+    ]
+   },
+   {
+    "col": "tesla_hidden",
+    "n": 25508,
+    "equal": 23077,
+    "rate": 0.9047,
+    "top_mismatch": [
+     [
+      "rs=1.000 cf=0.000",
+      2431
+     ]
+    ]
+   },
+   {
+    "col": "has_target",
+    "n": 25508,
+    "equal": 16477,
+    "rate": 0.646,
+    "top_mismatch": [
+     [
+      "rs=0.000 cf=1.000",
+      8984
+     ],
+     [
+      "rs=1.000 cf=0.000",
+      47
+     ]
+    ]
+   },
+   {
+    "col": "target_is_tower",
+    "n": 25508,
+    "equal": 16504,
+    "rate": 0.647,
+    "top_mismatch": [
+     [
+      "rs=0.000 cf=1.000",
+      8960
+     ],
+     [
+      "rs=1.000 cf=0.000",
+      44
+     ]
+    ]
+   },
+   {
+    "col": "phase=idle",
+    "n": 25508,
+    "equal": 25384,
+    "rate": 0.9951,
+    "top_mismatch": [
+     [
+      "rs=0.000 cf=1.000",
+      65
+     ],
+     [
+      "rs=1.000 cf=0.000",
+      59
+     ]
+    ]
+   },
+   {
+    "col": "phase=windup",
+    "n": 25508,
+    "equal": 25351,
+    "rate": 0.9938,
+    "top_mismatch": [
+     [
+      "rs=0.000 cf=1.000",
+      84
+     ],
+     [
+      "rs=1.000 cf=0.000",
+      73
+     ]
+    ]
+   },
+   {
+    "col": "phase=hit",
+    "n": 25508,
+    "equal": 25455,
+    "rate": 0.9979,
+    "top_mismatch": [
+     [
+      "rs=1.000 cf=0.000",
+      35
+     ],
+     [
+      "rs=0.000 cf=1.000",
+      18
+     ]
+    ]
+   },
+   {
+    "col": "attack_frac",
+    "n": 25508,
+    "equal": 24925,
+    "rate": 0.9771,
+    "top_mismatch": [
+     [
+      "rs=0.417 cf=0.400",
+      9
+     ],
+     [
+      "rs=0.583 cf=0.567",
+      9
+     ],
+     [
+      "rs=0.500 cf=0.000",
+      8
+     ],
+     [
+      "rs=0.750 cf=0.733",
+      8
+     ],
+     [
+      "rs=0.591 cf=0.000",
+      8
+     ],
+     [
+      "rs=0.864 cf=0.000",
+      8
+     ]
+    ]
+   },
+   {
+    "col": "status.frozen",
+    "n": 25508,
+    "equal": 25501,
+    "rate": 0.9997,
+    "top_mismatch": [
+     [
+      "rs=0.000 cf=1.000",
+      5
+     ],
+     [
+      "rs=1.000 cf=0.000",
+      2
+     ]
+    ]
+   },
+   {
+    "col": "status.slowed",
+    "n": 25508,
+    "equal": 25500,
+    "rate": 0.9997,
+    "top_mismatch": [
+     [
+      "rs=0.000 cf=1.000",
+      7
+     ],
+     [
+      "rs=1.000 cf=0.000",
+      1
+     ]
+    ]
+   },
+   {
+    "col": "status.raged",
+    "n": 25508,
+    "equal": 25316,
+    "rate": 0.9925,
+    "top_mismatch": [
+     [
+      "rs=1.000 cf=0.000",
+      190
+     ],
+     [
+      "rs=0.000 cf=1.000",
+      2
+     ]
+    ]
+   },
+   {
+    "col": "status.invisible",
+    "n": 25508,
+    "equal": 25178,
+    "rate": 0.9871,
+    "top_mismatch": [
+     [
+      "rs=1.000 cf=0.000",
+      330
+     ]
+    ]
+   },
+   {
+    "col": "status.shielded",
+    "n": 25508,
+    "equal": 25486,
+    "rate": 0.9991,
+    "top_mismatch": [
+     [
+      "rs=0.000 cf=1.000",
+      18
+     ],
+     [
+      "rs=1.000 cf=0.000",
+      4
+     ]
+    ]
+   },
+   {
+    "col": "slow_frac",
+    "n": 25508,
+    "equal": 25403,
+    "rate": 0.9959,
+    "top_mismatch": [
+     [
+      "rs=0.000 cf=1.000",
+      6
+     ],
+     [
+      "rs=0.500 cf=0.625",
+      6
+     ],
+     [
+      "rs=1.000 cf=0.500",
+      6
+     ],
+     [
+      "rs=0.880 cf=0.860",
+      4
+     ],
+     [
+      "rs=0.680 cf=0.660",
+      4
+     ],
+     [
+      "rs=0.480 cf=0.460",
+      4
+     ]
+    ]
+   }
+  ],
+  "wall_s": 74.2
+ }
+}
