@@ -207,6 +207,20 @@ def fitting_classes(rec, limit=None):
 TORN_CMD = int(os.environ.get('SME_TORN_CMD', '0'))  # round 2.1
 
 
+HP_PH = int(os.environ.get('SME_HP_PLACEHOLDER', '0'))  # round 2.4
+
+
+def fill_placeholder(r, s):
+    """A recorded body with hp -1 is the reader's placeholder (its max_hp reads -1 too: 10,384 / 10,384 rows on the
+    109 matches' live logs; hp_placeholder.py): it takes the hp of a sim body at the very same (side, x, y), if any."""
+    simpos = {}
+    for b in s['U']:
+        simpos.setdefault(b[:3], b[3])
+    out = dict(r)
+    out['U'] = [(b[0], b[1], b[2], simpos.get(b[:3], b[3])) if b[3] == -1 else b for b in r['U']]
+    return out
+
+
 def cmd_pass_read(d, by, t, me):
     """A read inside step t, after its command pass and before its regen and spawns (SME.md round 2.1): the board
     equals sim t, and our elixir is sim t's minus whole elixir exactly, the elixir step t+1 then reaches by its regen
@@ -224,6 +238,8 @@ def analyse(obs, frames, me, lo=0, hi=10 ** 9):
     cls, ds = {}, {}
     for t in ts:
         r = canon_live(frames[t], me)
+        if HP_PH:
+            r = fill_placeholder(r, sim_canon(by[t], me))
         d = diff(r, sim_canon(by[t], me))
         ds[t] = d
         if not d:

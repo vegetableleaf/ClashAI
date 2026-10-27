@@ -427,6 +427,7 @@ Sources: `results/live/dossier_body_position_top10.txt` (`dossier.py`, `dossier_
 | 2.1 (run6) | live own elixir 1 frame early | comparator: a read inside the step's command pass counts as torn (`torn_cmd`) | **24 / 109** | 188,233 | 0 (+7) |
 | 2.2 (run7) | Golden Knight ability never extracted | input: GK ability cast at each dash burst (`SME_GK=1`) | **25 / 109** | 197,203 | 0 (+1) |
 | 2.3 (run8) | hero Ice Golem "death area" (110 extra damage) | input: drop a hero Ice Golem "cast" that is its death (`SME_GOLEM=1`) | **27 / 109** | 202,444 | 0 (+2) |
+| 2.4 (run9) | reader hp -1 bodies | comparator: a recorded hp -1 is a placeholder, given the hp of the sim body at the same point (`SME_HP_PLACEHOLDER=1`) | **28 / 109** | 204,647 | 0 (+1) |
 
 ## 2.1: the live own-elixir class is a reader read in the middle of a step (a)
 Source: `elixir_check.py` on run5, unflagged matches.
@@ -505,3 +506,41 @@ present at the last frame ≤ R and absent at the first frame ≥ R+2.
 
 **Rule (`golem_death_cast`):** those casts are dropped. The fix belongs in `seen_casts` / A2b-1; not edited
 here (`fights.py` is shared with the parity harness).
+
+## 2.4: reader hp -1 is a placeholder (a)
+Source: `hp_placeholder.py`, raw live logs of the 138 matches.
+- **Every recorded body row with hp -1 also reads max_hp -1: 10,384 / 10,384.** No real hp reads like that, so it is
+  the reader failing to read the hp component, not a value.
+- **Where it happens:**
+
+| card | rows with hp -1 | bodies |
+|---|---:|---|
+| 203000088 (hero Tombstone visual dummy) | 7,796 / 46,893 | 41 of 44 always -1 |
+| 13000049 | 2,102 / 3,180 | -1 only some of the time (28 bodies) |
+| 13000007 | 393 / 3,192 | -1 only some of the time (4 bodies) |
+| 13000004 | 87 / 1,735 | -1 only some of the time (1 body) |
+| 6 other cards | 1 row each | |
+
+The three 13000xxx ids are evolved forms (Bats / Witch / Skeleton-type in the onsets).
+- **Comparator:** a recorded hp -1 body takes the sim hp of a body at the very same (side, x, y). Its position must
+  still match exactly.
+
+## Round 2 status
+- **17 → 28 / 109 over 4 sub-rounds**, 0 regressions in each (+7, +1, +2, +1). Exact frames 188,233 → 204,647.
+- **Now stopped:** the ticket's ordered list is done. Neither stop rule fired (no two zero sub-rounds; 28 < 45).
+- **What fails now (run9), first true divergence of the 81 failing unflagged matches:**
+
+| matches | class |
+|---:|---|
+| 44 | body position |
+| 8 | body missing in sim |
+| 8 | projectile-only |
+| 5 | sim body missing in the reader |
+| 5 | own elixir with other arithmetic |
+| 5 + 2 | hp only |
+| 3 | spell / area timing |
+
+- **Candidates for round 3, one mechanism each:**
+  1. Archer Queen, Boss Bandit and Goblinstein ability casts: 0 extracted against 23 / 21 / 16 plays.
+  2. The hero Valkyrie spin starting late in crforge, 9 of 33 clean casts. That is a fork patch candidate.
+  3. A dossier rerun of the 44 body-position onsets on run9.
