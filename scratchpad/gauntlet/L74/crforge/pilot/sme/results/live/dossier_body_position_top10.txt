@@ -1,0 +1,70 @@
+====================================================================================================
+live_play_20261027_033729 | onset 307 | body ValkyrieHero side 0 (reader card Valkyrie)
+  play cmd1 Valkyrie run 217 point (3499, 14500) source first_seen window (217, 217) extractor tick 217
+  sim creation line 218 | first recorded frame with an offset 307 (89 ticks after creation) | max |dx|+|dy| 411
+  offsets (tick: dx,dy): 301:0,0 303:0,0 305:0,0 307:0,-5 309:90,-13 311:-194,164 313:-190,168 315:-134,211 317:-136,275 319:-109,286 321:-73,296 323:-60,299 325:-48,301 327:-34,302 329:-28,302 331:-16,303 333:-62,293 335:-107,283 337:-1,283 339:-31,280 341:31,301 343:24,302 345:15,302 347:13,303
+  within 1200 at the first offset (dist, sim row, side): []
+====================================================================================================
+live_play_20261026_184912 | onset 413 | body GoldenKnight side 1 (reader card GoldenKnight)
+  play cmd1 GoldenKnight run 292 point (7499, 31000) source first_seen window (292, 292) extractor tick 292
+  sim creation line 293 | first recorded frame with an offset 413 (120 ticks after creation) | max |dx|+|dy| 1499
+  offsets (tick: dx,dy): 407:0,0 409:0,0 411:0,0 413:-24,-59 415:22,-171 417:64,-289 419:63,-409 421:43,-528 423:19,-647 425:-45,-749 427:-144,-831 429:-250,-913 431:-314,-1017 433:-378,-1121 435:- 437:- 439:- 441:- 443:- 445:- 447:- 449:- 451:- 453:-
+  within 1200 at the first offset (dist, sim row, side): []
+====================================================================================================
+live_play_20261026_212917 | onset 454 | body GoldenKnight side 0 (reader card GoldenKnight)
+  play cmd3 GoldenKnight run 372 point (1499, 14500) source first_seen window (372, 372) extractor tick 372
+  sim creation line 373 | first recorded frame with an offset 454 (81 ticks after creation) | max |dx|+|dy| 1472
+  offsets (tick: dx,dy): 448:0,0 450:0,0 452:0,0 454:57,243 456:452,294 458:1094,378 460:1094,378 462:1094,378 464:1094,378 466:1094,378 468:1094,378 470:1094,378 472:1094,378 474:1094,378 476:1094,378 478:1094,378 480:1094,378 482:1094,378 484:1094,378 486:1094,378 488:1094,378 490:1094,378 492:1094,378 494:1094,378
+  within 1200 at the first offset (dist, sim row, side): []
+====================================================================================================
+live_play_20261026_085635 | onset 515 | body GoldenKnight side 0 (reader card GoldenKnight)
+  play cmd2 GoldenKnight run 265 point (9500, 5500) source first_seen window (265, 265) extractor tick 265
+  sim creation line 266 | first recorded frame with an offset 515 (249 ticks after creation) | max |dx|+|dy| 1480
+  offsets (tick: dx,dy): 509:0,0 511:0,0 513:0,0 515:17,-7 517:-61,707 519:- 521:- 523:- 525:- 527:- 529:- 531:- 533:- 535:- 537:- 539:- 541:- 543:- 545:- 547:- 549:- 551:-330,1150 553:-334,1068 555:-338,986
+  within 1200 at the first offset (dist, sim row, side): []
+====================================================================================================
+live_play_20261026_162012 | onset 517 | body ValkyrieHero side 1 (reader card Valkyrie)
+  play cmd2 Valkyrie run 297 point (8499, 31000) source first_seen window (297, 297) extractor tick 297
+  sim creation line 298 | first recorded frame with an offset 517 (219 ticks after creation) | max |dx|+|dy| 282
+  offsets (tick: dx,dy): 511:0,0 513:0,0 515:0,0 517:-9,-59 519:-12,-179 521:-10,-269 523:-10,-269 525:-7,-269 527:-5,-269 529:-4,-269 531:-2,-269 533:-22,-260 535:16,-251 537:-26,-249 539:-25,-249 541:-15,-249 543:-53,-199 545:73,-120 547:59,-133 549:43,-139 551:12,-149 553:3,-151 555:-1,-151 557:-27,-147
+  within 1200 at the first offset (dist, sim row, side): []
+====================================================================================================
+live_play_20261026_144615 | onset 534 | body ValkyrieHero side 0 (reader card Valkyrie)
+  play cmd4 Valkyrie run 441 point (14500, 14500) source first_seen window (441, 441) extractor tick 441
+  sim creation line 442 | first recorded frame with an offset 534 (92 ticks after creation) | max |dx|+|dy| 194
+  offsets (tick: dx,dy): 530:0,0 532:0,0 534:-3,150 536:56,138 538:56,138 540:-144,39 542:-149,12 544:-149,12 546:-149,7 548:0,0 550:0,0 551:0,0
+  within 1200 at the first offset (dist, sim row, side): [(0, 'A:ValkyrieHero_AEO', 0)]
+====================================================================================================
+live_play_20261027_022821 | onset 540 | body IceWizardHero side 0 (reader card IceWizard)
+  play cmd2 IceWizard run 448 point (8500, 500) source own_tap window (448, 448) extractor tick 448
+  sim creation line 449 | first recorded frame with an offset 540 (91 ticks after creation) | max |dx|+|dy| 13
+  offsets (tick: dx,dy): 534:0,0 536:0,0 538:0,0 540:-6,7 542:-6,7 544:-6,7 546:-6,7 548:-6,7 550:-6,7 552:-6,7 554:-4,7 556:-4,7 558:-4,7 560:-3,7 562:-3,7 564:-3,7 566:-3,7 568:-3,7 570:-3,7 572:-3,7 574:-3,7 576:-3,7 578:-3,7 580:-3,7
+  within 1200 at the first offset (dist, sim row, side): [(0, 'C:IceWizardHeroFloatingCube', 0)]
+====================================================================================================
+live_play_20261027_011738 | onset 544 | body ValkyrieHero side 0 (reader card Valkyrie)
+  play cmd6 Valkyrie run 476 point (1499, 14500) source first_seen window (476, 476) extractor tick 476
+  sim creation line 477 | first recorded frame with an offset 544 (67 ticks after creation) | max |dx|+|dy| 135
+  offsets (tick: dx,dy): 538:0,0 540:0,0 542:0,0 544:-25,110 546:-22,109 548:-21,108 550:-25,106 552:-3,91 554:57,-34 556:57,-34 558:57,-34 560:57,-34 562:57,-34 564:57,-34 566:57,-34 568:57,-34 570:57,-34 572:57,-34 574:57,-34 576:57,-34 578:57,-34 580:57,-34 582:57,-34 584:57,-34
+  within 1200 at the first offset (dist, sim row, side): [(0, 'A:ValkyrieHero_AEO', 0)]
+====================================================================================================
+live_play_20261027_005727 | onset 633 | body Knight side 1 (reader card Knight)
+  play cmd1 Knight run 417 point (9500, 31500) source own_tap window (417, 417) extractor tick 417
+  sim creation line 418 | first recorded frame with an offset 633 (215 ticks after creation) | max |dx|+|dy| 10
+  offsets (tick: dx,dy): 627:0,0 629:0,0 631:0,0 633:0,-9 635:0,-9 637:0,-9 639:0,-9 641:0,-9 643:0,-9 645:0,-9 647:0,-9 649:0,-9 651:0,-9 653:0,-9 655:0,-9 657:0,-9 659:0,-9 661:0,-9 663:0,-9 665:0,-9 667:-1,-9 669:-1,-9 671:-1,-9 673:-1,-9
+  within 1200 at the first offset (dist, sim row, side): []
+====================================================================================================
+live_play_20261027_001702 | onset 715 | body ValkyrieHero side 0 (reader card Valkyrie)
+  play cmd5 Valkyrie run 679 point (14500, 14500) source first_seen window (679, 679) extractor tick 679
+  sim creation line 680 | first recorded frame with an offset 715 (35 ticks after creation) | max |dx|+|dy| 956
+  offsets (tick: dx,dy): 709:0,0 711:0,0 713:0,0 715:21,57 717:27,177 719:46,296 721:42,417 723:41,539 724:40,600 726:39,722 728:31,814 730:27,875 732:21,935 734:16,935 736:12,845 738:10,800 741:6,800 743:4,800 745:2,800 747:3,800 749:-66,786 751:-134,772 753:-127,756 755:-179,742
+  within 1200 at the first offset (dist, sim row, side): []
+live_play_20261027_033729 onset 307 [(5, 0, 307, 'Valkyrie', 'cast_seen', (307, 308))]
+live_play_20261026_184912 onset 413 []
+live_play_20261026_212917 onset 454 []
+live_play_20261026_085635 onset 515 []
+live_play_20261026_162012 onset 517 [(6, 1, 519, 'Valkyrie', 'cast_seen', (519, 520))]
+live_play_20261026_144615 onset 534 [(6, 0, 532, 'Valkyrie', 'cast_seen', (532, 533))]
+live_play_20261027_022821 onset 540 []
+live_play_20261027_011738 onset 544 [(8, 0, 542, 'Valkyrie', 'cast_seen', (542, 543))]
+live_play_20261027_005727 onset 633 []
+live_play_20261027_001702 onset 715 []

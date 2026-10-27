@@ -280,3 +280,129 @@ classes are body movement and damage timing.**
   `pos_census.py`, `shift_live.py`, `track_live.py`, `insp_live.py`, `find_eps.py`.
 - Results: `results/live/run3_{summary.json,table.tsv,results.jsonl}` and `results/live/run2_summary.json`.
 - Pod only: per-match plans `/workspace/pilot/sme_live/run{2,3}/<match>/plan.json`, plus the converted frames.
+
+---
+
+# Fix loop (ticket A2c)
+
+Fork:
+- Pod 33920 `/workspace/crforge_fork`, branch `clashbot-fix`, cut from the pin `ad8ef3a`. `/workspace/crforge` is not
+  touched.
+- Core tests on the fork, unmodified:
+  `./gradlew :core:test -Pcrforge.cache=/workspace/crforge_cache -Pcrforge.assetSource=file:///workspace/crforge_cache/none`
+  gives **2,140 tests, 0 failures, 0 errors, 2 skipped (a)**, as the plan expects.
+- **No crforge patch was needed in round 1 (a, below).** The fork therefore equals the pin, and there is no patch
+  file under `crforge/fork/`.
+
+| round | mechanism | fix | unflagged matches exact apart from torn | exact frames (138 matches) | regressions |
+|---|---|---|---:|---:|---|
+| 0 (run3) | | | 13 / 109 | 171,677 | |
+| 1a (run4) | Lightning + Earthquake + Poison timing | input: fx-dated spell casts +1 run tick (every fx spell card) | 16 / 109 | 187,945 | **1**: `live_play_20261026_100756`. Its Zap is gap-dated, not countdown-dated |
+| **1 (run5)** | the same | input: +1 run tick only on countdown-dated casts (`lo = hi`) of fx spell cards | **17 / 109** | **188,233** | **0** (13 exact stay exact; +4) |
+
+## Round 1: Lightning "strike 1 tick early, no bolt"
+The cause is the input dating, not crforge (a). The A2b-3b reading "crforge strikes early" is **(c) contradicted**.
+
+**Measurements on run3 (`bolt_check.py`, `aeo_check.py`), recorded frame at the sim's tick + k:**
+
+| object | k = -1 | k = 0 | k = +1 | k = +2 |
+|---|---:|---:|---:|---:|
+| Lightning bolt shown | 0/97 | 0/74 | **81/100** | 0/74 |
+| struck target's hp already reduced | | | | 38/38 (always) |
+| Lightning area effect present, at its first sim line + k | | 1/30 | **38/38** | |
+| Lightning area effect present, at its last sim line + k | | | **31/31** | 0/39 |
+| Earthquake area effect present, at its first sim line + k | | 0/32 | **30/30** | |
+
+**The whole cast is 1 tick late, not just the strike.**
+- The area effect starts and ends late too. An early strike alone would shift only the bolt.
+- So the run tick crforge was given is 1 too early.
+
+**The source of the early run tick:**
+- `fights.seen_casts` (A2b-1's extractor) dates an area-effect spell from its countdown with RoyaleSim's rule:
+  `made = first - (life - remaining)/50`, run = `made - 1`. RoyaleSim makes the area the tick after the command.
+- crforge makes it in the command's own step. `BattleWorld.castSpell` creates it in the command pass, and the
+  opening cleanup admits it, so it shows at line R+1 with one 50 ms update spent.
+- So for crforge, run = `made`. Probe: Lightning, Earthquake, Poison and Tornado all show at R+1, the bolt at R+11.
+- The extractor already has this +1 for Tornado (`PULL_AREAS` lag). That is why Tornado and Log, the
+  `SpellAsDeploy` spells, were exact on the 10-26 replay.
+- The 10-26 recording has no Lightning, so the live frames are the only evidence here.
+
+**The fix, in my write set (`sme_live.plan_from`, `SME_FX_SHIFT=1`).**
+- It applies to countdown-dated `spell_seen` plays (`lo = hi`) of every spell card made by an area effect alone:
+  no projectile, not `SpellAsDeploy`, no summoned unit. That covers Lightning 84, Poison 80, Earthquake 62, Vines 26,
+  Graveyard 24, Freeze 16, Clone 8, DarkMagic 3, GoblinCurse 1.
+- Gap-dated Zaps keep their window.
+- **For A2b-1:** the same +1 belongs in `seen_casts` for crforge (b, a one-line change; it is not mine to edit).
+
+**After round 1 (run5, a):**
+- Lightning bolt at k=0 98/100 (k=±1 0/76); hp reduced at +1 39/39. Area effect start 38/38 at k=0 (k=-1 1/31),
+  end k=0 32/32, k=+1 0/39.
+- Poison start and end aligned the same way.
+- The "Lightning strike timing" class went from 57 onsets to 0 and "Earthquake pulse timing" from 20 to 0.
+- The over-fit probe no longer lists any spell: before, Lightning 27, Earthquake 20, Poison 11. Now abilities 27,
+  Skeletons 11, Ice Wizard 10, Knight 9 (59 commands).
+- Rescored all 138 matches. The 50 unflagged matches with a shifted cast went from 0 exact to 4; the other 59
+  unflagged stayed at 13 exact.
+- Kept run ticks other than the extractor's: 446 of about 11,000 commands, +1 for 435, -1 for 10, +71 for 1
+  (the pre-log Goblin Barrel). All are inside the windows, the shifted spell windows included.
+
+## Item (2): Earthquake and the damage-timing class
+**Earthquake needs no crforge change (a).**
+- Its start came right with round 1.
+- At its end, the counts of Earthquake effects at the point (Earthquake 3,000 ms plus EarthquakeHiddenDamage
+  3,050 ms; the reader shows both as card 28000014) agree on 216 of 218 boundary frames (`eq_count.py`).
+
+**The remaining 14 "hp only" first divergences (run5) split three ways (b, from the onset details):**
+
+| n | what it is | likely side |
+|---:|---|---|
+| 6 | the reader shows hp -1 for an evolved Witch, evolved Bats or the hero Tombstone visual dummy, while the sim has its hp | reader |
+| 4 | an Ice Golem hero's death area: the sim has 110 more damage on the bodies around it, and the area is 50 units off the reader's IceGolemite effect | **crforge candidate for round 2** |
+| 4 | one X-Bow / tower hit lands a tick apart (rec ±306 to 429 hp) | unknown |
+
+**Not fixed in this round.** The plan says one mechanism per fix, and these are three. The Ice Golem hero death area
+is the first one with evidence pointing at crforge.
+
+## Item (3): body-position dossier, top 10 (earliest onsets of the 32 run3 cases; no fix)
+Sources: `results/live/dossier_body_position_top10.txt` (`dossier.py`, `dossier_abil.py`).
+
+| match | body | play (source) | creation → first offset | offset over time | at the onset |
+|---|---|---|---|---|---|
+| 20261027_033729 | hero Valkyrie, opp | first_seen 217 | 218 → 307 (+89) | 5 → 300 in 8 frames, then holds ~300 | Valkyrie ability cmd at 307 (window 307-308) |
+| 20261026_184912 | Golden Knight, opp | first_seen 292 | 293 → 413 (+120) | grows ~120/frame to 1,121 (a dash), then the twin is lost | no ability command |
+| 20261026_212917 | Golden Knight, opp | first_seen 372 | 373 → 454 (+81) | jumps to 1,094 / 378, then constant | no ability command |
+| 20261026_085635 | Golden Knight, opp | first_seen 265 | 266 → 515 (+249) | 707 two frames later | no ability command |
+| 20261026_162012 | hero Valkyrie, opp | first_seen 297 | 298 → 517 (+219) | to -269 in 3 frames, back to -150 | Valkyrie ability at 519 (519-520) |
+| 20261026_144615 | hero Valkyrie, opp | first_seen 441 | 442 → 534 (+92) | ≤150 for 7 frames, back to 0 at 548 (heals) | ValkyrieHero_AEO on her; ability at 532 |
+| 20261027_022821 | hero Ice Wizard, ours | own_tap 448 | 449 → 540 (+91) | (-6, +7) holding | its floating cube at 0 distance |
+| 20261027_011738 | hero Valkyrie, opp | first_seen 476 | 477 → 544 (+67) | ~110 then (57, -34) holding | ValkyrieHero_AEO on her; ability at 542 |
+| 20261027_005727 | Knight, ours | own_tap 417 | 418 → 633 (+215) | (0, -9) holding | nothing within 1,200 |
+| 20261027_001702 | hero Valkyrie, opp | first_seen 679 | 680 → 715 (+35) | grows to 935, then about 800 | no ability command |
+
+**Readings:**
+- **Not a deploy-point or deploy-tick error (a, 10/10).** Every body is exact from its creation for 35-249 ticks;
+  none is off on its first frames.
+- **8 of 10 are champion or hero bodies.**
+  - **Hero Valkyrie (5):** 4 onsets fall on or 2 ticks after a Valkyrie ability command. That points at the
+    ability: its `cast_seen` dating (2-tick window), or crforge's hero-Valkyrie ability motion (b). The over-fit
+    probe's top class is abilities (27 commands that would be better outside their window), which fits either.
+  - **Golden Knight (3):** no ability command anywhere near the onset, and the recorded body runs ahead about 120
+    units a frame (a dash). `fights.seen_casts` says champions are not counted, so the Golden Knight's dash is
+    never given to crforge.
+- **Classification:**
+  - Golden Knight: extraction (champion ability missing) (b, strong).
+  - Hero Valkyrie: open between the ability's dating and crforge.
+  - Our hero Ice Wizard (-6, +7 next to its floating cube) and our Knight (0, -9): small offsets 91 and 215 ticks
+    after deploy. Collision or push (b).
+- **Next measurement (b):**
+  1. Add champion ability casts to the extractor.
+  2. Re-run the over-fit probe on ability commands only, with a wider window (±3).
+  3. If hero Valkyrie still moves wrong with the best ability tick, it is crforge's.
+
+## Files (A2c)
+- Spell-timing checks: `bolt_check.py`, `aeo_check.py`, `eq_count.py`.
+- Dossier: `dossier.py`, `dossier_abil.py`.
+- The `SME_FX_SHIFT` input correction in `sme_live.py`.
+- Results: `results/live/run5_{summary.json,table.tsv,results.jsonl}` and
+  `results/live/dossier_body_position_top10.txt`.
+- Pod: run4 and run5 under `/workspace/pilot/sme_live/`; the fork under `/workspace/crforge_fork`.

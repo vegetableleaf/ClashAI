@@ -67,10 +67,37 @@ def sim_canon(o, my_side):
 
 
 # ---------------------------------------------------------------- plan
+def fx_spells():
+    """Spell cards an area effect alone makes (no projectile, not deployed as a spell, no unit): Lightning, Earthquake,
+    Poison, Freeze, Zap, Graveyard... A2b-1 dates these from the effect's countdown with RoyaleSim's rule (the area is
+    made the tick after the command: run = made - 1); crforge makes it in the command's own step (run = made), as its
+    Tornado rule already says. SME.md fix round 1."""
+    j = json.load(open(os.path.join(sme.TABLES, 'spells_other.json')))
+    out = set()
+    for n, r in j['rows'].items():
+        c = r['columns']
+        if c.get('AreaEffectObject') and not c.get('Projectile') and not c.get('SpellAsDeploy') and not c.get('SummonCharacter'):
+            out.add(n)
+    return out
+
+
+FX_SHIFT = int(os.environ.get('SME_FX_SHIFT', '0'))  # round 1: +1 run tick on fx-dated spell plays
+
+
 def plan_from(rec, opp_deal):
     me = rec['my_side']
     sides = rec['sides']
     cmds, last = [], {}
+    fx = fx_spells() if FX_SHIFT else set()
+    plays = []
+    for p in rec['plays']:
+        # only countdown-dated casts (seen_casts' effect path gives lo = hi); a gap-dated one (Zap: 1 ms life, no
+        # countdown to read) keeps its window -- run4 shifted those too and lost live_play_20261026_100756
+        if FX_SHIFT and p['kind'] == 'play' and p.get('source') == 'spell_seen' and p['card'] in fx \
+                and p['run_ticks'][0] == p['run_ticks'][1]:
+            p = dict(p, tick=p['tick'] + FX_SHIFT, run_ticks=[p['run_ticks'][0] + FX_SHIFT, p['run_ticks'][1] + FX_SHIFT])
+        plays.append(p)
+    rec = dict(rec, plays=plays)
     for p in sorted(rec['plays'], key=lambda p: p['tick']):
         s, d = p['side'], p['deck_index']
         if p['kind'] == 'play':
