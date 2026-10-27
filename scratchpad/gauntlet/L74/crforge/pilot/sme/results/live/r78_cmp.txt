@@ -1,0 +1,8 @@
+exact apart from torn: 86/109 -> 88/109 | exact frames 261135 -> 261135 | regressions 0 | gained 2
+torn frames after: {'torn_snap': 18, 'torn_cmd': 71, 'torn_step': 64, 'torn_t1': 109, 'torn_mixed': 29}
+  10  body position (movement / collision / targeting)
+   3  projectile only (launch timing / flight)
+   3  hp only: sim less/mixed damage at the same points
+   2  body in the sim, none near in the reader
+   1  Earthquake pulse timing
+   1  body in the reader, none near in the sim (play missed / late / unit not made)

@@ -1006,8 +1006,20 @@ in-step SNAP. Pod 33308 got the same lib by copy (core jar sha256 `73b19425f039d
 | **7.0 (r70)** | in-step reads | comparator | SNAP on SnapRun2 / `lib_bp` (bpD's build) | **81 / 109** | 256,184 | `154319`, `233957` |
 | **7.1 (r71)** | Bowler press held through a freeze; Balloon throw dated 1-2 ticks off | extractor | `hero7_cast` (`SME_HERO7=1`; inputs_v15, 4 casts) | **83 / 109** | **256,991** | `183044`, `235915` |
 | **7.3 + 7.4 (r74)** | own Knight tapped before its elixir drop; own press on a drop shared with Skeletons; Rascals girls on the back edge | extractor | `own_play_elixir` + a cost-split drop pair (`SME_OWNPLAY7=1`) and `rascals_back` (`SME_RASCAL7=1`; inputs_v17) | **85 / 109** | **257,585** | `004031`, `010613` |
+| 7.2 (r75) | hero Ice Golem death read as a cast (101112@658) | extractor | `golem_death_fx` (`SME_GOLEM7=1`; inputs_v18, 1 cast) | 85 / 109 | **260,209** | 0 |
+| **7.5 (r76)** | own IW press long before its cast (BP2) | extractor | `bp_rules.press_from_drop` (`SME_BP_PRESS=1`; inputs_v19, 2 casts: 094126, 100018) | **86 / 109** | **261,093** | `094126` |
+| 7.6 (r77) | fitter varies commands just after the onset (BP2) | comparator / fitter | `SME_BP_FITNEXT=1` | 86 / 109 | 261,135 | 0 |
+| **7.7 (r78)** | in-step SNAP on the drain probe (BP2) | comparator | `lib_bp2` = 0001 + `clashbot-bp_0002_TickProbeDrain.patch`, SnapRun2 rebuilt | **88 / 109** | 261,135 | `080929`, `145247` |
 
-0 regressions in every row, against the row before and against bpD.
+0 regressions in every row against the row before. The final run r78 also loses no match against bpD, bp2a, bp2b
+or bp2c.
+
+**The two press rules compose.** `own_press_elixir` (6.3b / 7.3) puts a cast inside a drop pair within 15 ticks.
+`press_from_drop` (BP2, run after it in `extract.match`) only takes casts that are on no drop. So the regen with both
+moves exactly BP2's 2 casts and nothing else.
+
+**Identity checks (a).** `lib_bp` with SnapRun (v1) reproduces r6xc byte for byte (r7id on 33308, results sha256
+`41ea29de6cffeb7e`). r73 (7.3 alone, inputs_v16) is still running on 33308; it is not used above.
 
 ## Dating signals, checked on every cast of the hero (a)
 - **Hero Bowler, 183044: the press is held through a freeze.**
