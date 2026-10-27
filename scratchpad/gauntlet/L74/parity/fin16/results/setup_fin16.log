@@ -1,0 +1,20 @@
+start Tue Oct 27 08:29:21 UTC 2026
+/workspace/in/fin16/royalesim-0.1.36-cp310-abi3-manylinux_2_34_x86_64.whl: OK
+{'royalesim': '0.1.36', 'royalegym': '0.1.23', 'torch': '2.11.0+cu128', 'numpy': '2.5.4'}
+30 files pinned -> /workspace/stepd/fin16/build_manifest_fin16.json
+fin16-linux {'RoyaleSim': '3f5676076fa7293de5355fa7c76275ddfbf4322c', 'RoyaleGym': 'a7deb6e48c3580fe2cd7d856b7c7d19ce67f02f9'} {'cards_json_fnv1a64': '803ec02c7eac9fd3', 'cards_vintage': '15.535.29 client (2026, LIVE build family)', 'cards_json_hash_source': 'embedded'}
+Traceback (most recent call last):
+  File "/workspace/f16/cb_smoke/scratchpad/gauntlet/L74/parity/fin16/smoke_fin16.py", line 15, in <module>
+    assert b.card_table() == h.CARD_TABLE, b.card_table()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: cards-160402017-20261019.1
+FIN16 SETUP FAILED line 31 (exit 1)
+start Tue Oct 27 08:29:38 UTC 2026
+/workspace/in/fin16/royalesim-0.1.36-cp310-abi3-manylinux_2_34_x86_64.whl: OK
+{'royalesim': '0.1.36', 'royalegym': '0.1.23', 'torch': '2.11.0+cu128', 'numpy': '2.5.4'}
+30 files pinned -> /workspace/stepd/fin16/build_manifest_fin16.json
+fin16-linux {'RoyaleSim': '3f5676076fa7293de5355fa7c76275ddfbf4322c', 'RoyaleGym': 'a7deb6e48c3580fe2cd7d856b7c7d19ce67f02f9'} {'cards_json_fnv1a64': '803ec02c7eac9fd3', 'cards_vintage': '15.535.29 client (2026, LIVE build family)', 'cards_json_hash_source': 'embedded'}
+smoke: tick 600 elixir_milli [10000, 10000]
+SMOKE_FIN16_OK
+venvf15 intact {'RoyaleSim': '305aaafceb7b28bf5108c9fe028fafae97d32676', 'RoyaleGym': 'a7deb6e48c3580fe2cd7d856b7c7d19ce67f02f9'}
+done Tue Oct 27 08:29:41 UTC 2026

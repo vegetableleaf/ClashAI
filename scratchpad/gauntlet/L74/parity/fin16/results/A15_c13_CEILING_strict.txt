@@ -1,0 +1,186 @@
+CEILING [strict] K=0 perturbed replays per fight; tolerant card agreement (CEILING.md); goal: raw agreement (live vs perturbed) lower 95% CI >= 0.95 per card (n >= 30), >= 0.975 overall; floor: normalised lower 95% CI >= 0.88 per card, >= 0.92 overall
+
+card | n | matches | agree unperturbed | agree (live vs perturbed) [95% CI] | ceiling (perturbed pairwise) | normalised [95% CI] | flag | whole-fight outcome | body miss live/ceiling | tower fail live/ceiling
+OVERALL | 14252 | 404 | 0.928 | 0.928 [0.922, 0.934] | None | None [None, None] | no ceiling | 0.88 | 0.048/None | 0.011/None
+
+own IceWizard hero | 1370 | 390 | 0.934 | 0.934 [0.92, 0.947] | None | None [None, None] | no ceiling | 0.859 | 0.064/None | 0.005/None
+own Skeletons | 1238 | 378 | 0.868 | 0.868 [0.847, 0.888] | None | None [None, None] | no ceiling | 0.853 | 0.063/None | 0.002/None
+own Log | 1211 | 381 | 0.972 | 0.972 [0.962, 0.981] | None | None [None, None] | no ceiling | 0.843 | 0.014/None | 0.0/None
+own Xbow | 1057 | 378 | 0.967 | 0.967 [0.954, 0.978] | None | None [None, None] | no ceiling | 0.947 | 0.019/None | 0.022/None
+own Knight | 933 | 371 | 0.94 | 0.94 [0.924, 0.955] | None | None [None, None] | no ceiling | 0.884 | 0.058/None | 0.003/None
+own Tesla | 881 | 368 | 0.931 | 0.931 [0.914, 0.947] | None | None [None, None] | no ceiling | 0.894 | 0.069/None | 0.0/None
+own Knight evo | 334 | 258 | 0.913 | 0.913 [0.884, 0.94] | None | None [None, None] | no ceiling | 0.868 | 0.078/None | 0.009/None
+own Tesla evo | 269 | 222 | 0.914 | 0.914 [0.882, 0.945] | None | None [None, None] | no ceiling | 0.874 | 0.086/None | 0.0/None
+opp HogRider | 253 | 77 | 0.941 | 0.941 [0.918, 0.965] | None | None [None, None] | no ceiling | 0.941 | 0.043/None | 0.032/None
+own Tornado | 245 | 173 | 0.959 | 0.959 [0.93, 0.983] | None | None [None, None] | no ceiling | 0.78 | 0.02/None | 0.0/None
+opp Firecracker | 182 | 71 | 0.967 | 0.967 [0.936, 0.99] | None | None [None, None] | no ceiling | 0.907 | 0.027/None | 0.005/None
+opp Skeletons | 179 | 52 | 0.966 | 0.966 [0.937, 0.993] | None | None [None, None] | no ceiling | 0.911 | 0.011/None | 0.0/None
+opp Witch | 166 | 90 | 0.831 | 0.831 [0.776, 0.884] | None | None [None, None] | no ceiling | 0.934 | 0.041/None | 0.018/None
+opp Knight hero | 157 | 44 | 0.994 | 0.994 [0.98, 1.0] | None | None [None, None] | no ceiling | 0.955 | 0.006/None | 0.0/None
+opp GoblinBarrel | 141 | 49 | 0.972 | 0.972 [0.94, 0.993] | None | None [None, None] | no ceiling | 0.73 | 0.034/None | 0.021/None
+opp MegaKnight | 133 | 83 | 0.977 | 0.977 [0.952, 1.0] | None | None [None, None] | no ceiling | 0.91 | 0.007/None | 0.015/None
+opp Valkyrie | 129 | 55 | 0.938 | 0.938 [0.897, 0.976] | None | None [None, None] | no ceiling | 0.915 | 0.062/None | 0.008/None
+opp Log | 129 | 67 | 0.992 | 0.992 [0.975, 1.0] | None | None [None, None] | no ceiling | 0.907 | 0.003/None | 0.0/None
+opp Fireball | 124 | 53 | 0.984 | 0.984 [0.957, 1.0] | None | None [None, None] | no ceiling | 0.831 | 0.009/None | 0.0/None
+opp ElectroSpirit | 122 | 38 | 0.984 | 0.984 [0.961, 1.0] | None | None [None, None] | no ceiling | 0.893 | 0.016/None | 0.0/None
+opp Bats | 122 | 46 | 0.779 | 0.779 [0.689, 0.863] | None | None [None, None] | no ceiling | 0.861 | 0.076/None | 0.016/None
+own Rocket | 119 | 96 | 0.95 | 0.95 [0.908, 0.984] | None | None [None, None] | no ceiling | 0.84 | 0.061/None | 0.008/None
+opp SkeletonArmy | 111 | 55 | 0.883 | 0.883 [0.822, 0.938] | None | None [None, None] | no ceiling | 0.847 | 0.031/None | 0.045/None
+opp BlowdartGoblin | 111 | 39 | 0.856 | 0.856 [0.79, 0.917] | None | None [None, None] | no ceiling | 0.847 | 0.09/None | 0.09/None
+opp IceSpirits | 111 | 37 | 0.982 | 0.982 [0.953, 1.0] | None | None [None, None] | no ceiling | 0.919 | 0.018/None | 0.0/None
+opp BarbLog | 101 | 39 | 0.99 | 0.99 [0.967, 1.0] | None | None [None, None] | no ceiling | 0.861 | 0.006/None | 0.0/None
+opp GoblinGang | 96 | 37 | 0.823 | 0.823 [0.742, 0.897] | None | None [None, None] | no ceiling | 0.854 | 0.043/None | 0.031/None
+opp ElixirGolem | 91 | 32 | 0.692 | 0.692 [0.581, 0.8] | None | None [None, None] | no ceiling | 0.846 | 0.176/None | 0.044/None
+opp Tesla | 90 | 42 | 0.989 | 0.989 [0.963, 1.0] | None | None [None, None] | no ceiling | 0.967 | 0.011/None | 0.0/None
+opp Princess | 88 | 30 | 0.977 | 0.977 [0.944, 1.0] | None | None [None, None] | no ceiling | 0.898 | 0.011/None | 0.011/None
+opp MiniPekka hero | 78 | 30 | 0.91 | 0.91 [0.857, 0.961] | None | None [None, None] | no ceiling | 0.846 | 0.09/None | 0.0/None
+opp Cannon | 77 | 31 | 0.987 | 0.987 [0.957, 1.0] | None | None [None, None] | no ceiling | 0.948 | 0.013/None | 0.0/None
+opp MegaKnight evo | 65 | 48 | 0.923 | 0.923 [0.855, 0.983] | None | None [None, None] | no ceiling | 0.785 | 0.031/None | 0.046/None
+opp Valkyrie hero | 64 | 27 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | no ceiling | 0.984 | 0.0/None | 0.0/None
+opp Archer | 63 | 28 | 0.937 | 0.937 [0.871, 0.985] | None | None [None, None] | no ceiling | 0.937 | 0.04/None | 0.032/None
+opp FirespiritHut | 60 | 23 | 0.933 | 0.933 [0.879, 0.982] | None | None [None, None] | no ceiling | 0.9 | 0.022/None | 0.017/None
+opp RageBarbarian | 60 | 26 | 0.883 | 0.883 [0.8, 0.951] | None | None [None, None] | no ceiling | 0.9 | 0.127/None | 0.05/None
+opp Bomber | 59 | 24 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | no ceiling | 0.983 | 0.0/None | 0.0/None
+opp Pekka | 58 | 30 | 0.983 | 0.983 [0.951, 1.0] | None | None [None, None] | no ceiling | 0.966 | 0.017/None | 0.0/None
+opp SkeletonBalloon | 58 | 23 | 0.621 | 0.621 [0.473, 0.763] | None | None [None, None] | no ceiling | 0.862 | 0.071/None | 0.103/None
+opp Witch evo | 57 | 43 | 0.754 | 0.754 [0.636, 0.87] | None | None [None, None] | no ceiling | 0.965 | 0.035/None | 0.035/None
+opp Poison | 55 | 23 | 0.982 | 0.982 [0.949, 1.0] | None | None [None, None] | no ceiling | 0.945 | 0.008/None | 0.0/None
+opp Arrows | 54 | 32 | 0.926 | 0.926 [0.843, 0.983] | None | None [None, None] | no ceiling | 0.87 | 0.056/None | 0.0/None
+opp Vines | 54 | 19 | 0.907 | 0.907 [0.815, 0.982] | None | None [None, None] | no ceiling | 0.667 | 0.065/None | 0.0/None
+opp BabyDragon | 53 | 25 | 0.962 | 0.962 [0.906, 1.0] | None | None [None, None] | no ceiling | 0.962 | 0.019/None | 0.019/None
+opp Miner | 53 | 19 | 0.887 | 0.887 [0.8, 0.959] | None | None [None, None] | no ceiling | 0.962 | 0.094/None | 0.075/None
+opp AxeMan | 53 | 36 | 0.906 | 0.906 [0.804, 0.98] | None | None [None, None] | no ceiling | 0.925 | 0.093/None | 0.019/None
+opp GiantSkeleton | 53 | 19 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | no ceiling | 0.943 | 0.0/None | 0.0/None
+opp SpearGoblins | 51 | 19 | 0.941 | 0.941 [0.882, 1.0] | None | None [None, None] | no ceiling | 0.804 | 0.039/None | 0.039/None
+opp ElectroGiant | 49 | 24 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | no ceiling | 0.959 | 0.0/None | 0.0/None
+opp RoyalGiant | 48 | 18 | 0.958 | 0.958 [0.879, 1.0] | None | None [None, None] | no ceiling | 0.917 | 0.021/None | 0.021/None
+opp Wizard hero | 47 | 23 | 0.979 | 0.979 [0.932, 1.0] | None | None [None, None] | no ceiling | 0.979 | 0.021/None | 0.0/None
+opp FireSpirits | 47 | 16 | 0.979 | 0.979 [0.932, 1.0] | None | None [None, None] | no ceiling | 0.936 | 0.021/None | 0.0/None
+opp Prince | 45 | 18 | 0.844 | 0.844 [0.674, 1.0] | None | None [None, None] | no ceiling | 0.867 | 0.106/None | 0.044/None
+opp MightyMiner | 45 | 10 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | no ceiling | 0.978 | 0.0/None | 0.0/None
+opp RoyalHogs | 44 | 21 | 0.5 | 0.5 [0.333, 0.657] | None | None [None, None] | no ceiling | 0.818 | 0.136/None | 0.227/None
+opp Knight | 44 | 13 | 0.977 | 0.977 [0.926, 1.0] | None | None [None, None] | no ceiling | 0.955 | 0.023/None | 0.0/None
+opp Ronin | 44 | 16 | 0.977 | 0.977 [0.917, 1.0] | None | None [None, None] | no ceiling | 0.932 | 0.023/None | 0.0/None
+opp Zap | 44 | 33 | 0.932 | 0.932 [0.848, 1.0] | None | None [None, None] | no ceiling | 0.682 | 0.021/None | 0.0/None
+opp SkeletonWarriors | 44 | 19 | 0.795 | 0.795 [0.683, 0.892] | None | None [None, None] | no ceiling | 0.75 | 0.083/None | 0.091/None
+opp Earthquake | 43 | 15 | 0.953 | 0.953 [0.867, 1.0] | None | None [None, None] | no ceiling | 0.791 | 0.019/None | 0.0/None
+opp EliteArcher hero | 42 | 15 | 0.952 | 0.952 [0.872, 1.0] | None | None [None, None] | no ceiling | 0.881 | 0.048/None | 0.0/None
+opp Minions | 42 | 20 | 0.905 | 0.905 [0.814, 0.978] | None | None [None, None] | no ceiling | 0.833 | 0.04/None | 0.0/None
+opp InfernoDragon | 41 | 21 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | no ceiling | 0.902 | 0.0/None | 0.0/None
+opp InfernoTower | 40 | 19 | 0.975 | 0.975 [0.912, 1.0] | None | None [None, None] | no ceiling | 0.95 | 0.025/None | 0.0/None
+opp MiniPekka | 40 | 19 | 0.925 | 0.925 [0.857, 1.0] | None | None [None, None] | no ceiling | 0.925 | 0.05/None | 0.025/None
+opp Assassin | 40 | 16 | 0.85 | 0.85 [0.719, 0.947] | None | None [None, None] | no ceiling | 0.75 | 0.098/None | 0.05/None
+opp AngryBarbarians | 40 | 28 | 0.825 | 0.825 [0.703, 0.929] | None | None [None, None] | no ceiling | 0.8 | 0.075/None | 0.025/None
+opp Rage | 40 | 23 | 0.95 | 0.95 [0.878, 1.0] | None | None [None, None] | no ceiling | 0.775 | 0.021/None | 0.0/None
+opp Musketeer | 40 | 17 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | no ceiling | 0.975 | 0.0/None | 0.0/None
+opp Firecracker evo | 39 | 31 | 0.974 | 0.974 [0.921, 1.0] | None | None [None, None] | no ceiling | 0.897 | 0.026/None | 0.0/None
+opp Ghost | 39 | 16 | 0.897 | 0.897 [0.826, 0.973] | None | None [None, None] | no ceiling | 0.846 | 0.103/None | 0.026/None
+opp Balloon hero | 39 | 15 | 0.949 | 0.949 [0.852, 1.0] | None | None [None, None] | no ceiling | 0.897 | 0.051/None | 0.0/None
+opp DarkPrince hero | 39 | 15 | 0.872 | 0.872 [0.722, 0.976] | None | None [None, None] | no ceiling | 0.897 | 0.103/None | 0.026/None
+opp Lightning | 38 | 18 | 0.974 | 0.974 [0.932, 1.0] | None | None [None, None] | no ceiling | 0.868 | 0.016/None | 0.0/None
+opp Barbarians | 37 | 20 | 0.676 | 0.676 [0.515, 0.838] | None | None [None, None] | no ceiling | 0.757 | 0.086/None | 0.027/None
+opp ElectroWizard | 36 | 20 | 0.917 | 0.917 [0.821, 1.0] | None | None [None, None] | no ceiling | 0.917 | 0.056/None | 0.028/None
+opp Mortar | 36 | 18 | 0.972 | 0.972 [0.925, 1.0] | None | None [None, None] | no ceiling | 0.944 | 0.027/None | 0.028/None
+opp Wizard | 35 | 20 | 0.971 | 0.971 [0.903, 1.0] | None | None [None, None] | no ceiling | 0.943 | 0.0/None | 0.029/None
+opp IceGolemite hero | 35 | 7 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | no ceiling | 0.943 | 0.0/None | 0.0/None
+opp GoblinCage | 34 | 17 | 0.941 | 0.941 [0.861, 1.0] | None | None [None, None] | no ceiling | 0.941 | 0.042/None | 0.0/None
+opp Rocket | 33 | 13 | 0.909 | 0.909 [0.75, 1.0] | None | None [None, None] | no ceiling | 0.818 | 0.071/None | 0.0/None
+opp MiniSparkys | 32 | 16 | 0.938 | 0.938 [0.833, 1.0] | None | None [None, None] | no ceiling | 0.938 | 0.01/None | 0.031/None
+opp Berserker | 32 | 12 | 0.938 | 0.938 [0.867, 1.0] | None | None [None, None] | no ceiling | 0.969 | 0.062/None | 0.0/None
+opp BattleRam | 32 | 17 | 0.906 | 0.906 [0.821, 1.0] | None | None [None, None] | no ceiling | 0.812 | 0.021/None | 0.031/None
+opp Tombstone | 31 | 11 | 0.903 | 0.903 [0.794, 1.0] | None | None [None, None] | no ceiling | 0.968 | 0.033/None | 0.0/None
+opp Balloon | 31 | 15 | 0.968 | 0.968 [0.903, 1.0] | None | None [None, None] | no ceiling | 0.839 | 0.032/None | 0.0/None
+opp Xbow | 31 | 11 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | no ceiling | 1.0 | 0.0/None | 0.0/None
+opp Musketeer hero | 30 | 11 | 0.967 | 0.967 [0.909, 1.0] | None | None [None, None] | no ceiling | 0.933 | 0.033/None | 0.0/None
+opp SkeletonKing | 30 | 12 | 0.833 | 0.833 [0.704, 0.939] | None | None [None, None] | no ceiling | 0.9 | 0.4/None | 0.033/None
+opp RoyalRecruits | 29 | 16 | 0.793 | 0.793 [0.679, 0.917] | None | None [None, None] | insufficient n | 0.793 | 0.034/None | 0.034/None
+opp MovingCannon | 29 | 11 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 0.966 | 0.0/None | 0.0/None
+opp RamRider | 29 | 14 | 0.793 | 0.793 [0.63, 0.931] | None | None [None, None] | insufficient n | 0.793 | 0.138/None | 0.103/None
+opp Elixir Collector | 28 | 16 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 0.964 | 0.0/None | 0.0/None
+opp Wallbreakers | 27 | 11 | 0.889 | 0.889 [0.774, 1.0] | None | None [None, None] | insufficient n | 0.852 | 0.056/None | 0.037/None
+opp BombTower | 27 | 14 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 1.0 | 0.0/None | 0.0/None
+opp MinionHorde | 26 | 21 | 0.808 | 0.808 [0.615, 0.96] | None | None [None, None] | insufficient n | 0.885 | 0.09/None | 0.0/None
+opp DarkWitch | 26 | 14 | 0.615 | 0.615 [0.36, 0.846] | None | None [None, None] | insufficient n | 0.923 | 0.123/None | 0.0/None
+opp Monk | 25 | 8 | 0.96 | 0.96 [0.833, 1.0] | None | None [None, None] | insufficient n | 0.72 | 0.04/None | 0.0/None
+opp Graveyard | 25 | 13 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 0.68 | 0.0/None | 0.0/None
+opp Golem | 25 | 15 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 1.0 | 0.0/None | 0.0/None
+opp ZapMachine | 25 | 13 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 0.92 | 0.0/None | 0.0/None
+opp IceWizard | 25 | 10 | 0.92 | 0.92 [0.8, 1.0] | None | None [None, None] | insufficient n | 0.88 | 0.04/None | 0.04/None
+opp Bowler hero | 24 | 10 | 0.958 | 0.958 [0.85, 1.0] | None | None [None, None] | insufficient n | 0.833 | 0.042/None | 0.0/None
+opp Freeze | 24 | 17 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 0.875 | 0.0/None | 0.0/None
+opp BattleHealer | 24 | 11 | 0.875 | 0.875 [0.714, 1.0] | None | None [None, None] | insufficient n | 0.917 | 0.0/None | 0.125/None
+opp IceGolemite | 24 | 7 | 0.958 | 0.958 [0.875, 1.0] | None | None [None, None] | insufficient n | 1.0 | 0.042/None | 0.0/None
+opp DartBarrell | 23 | 11 | 0.957 | 0.957 [0.85, 1.0] | None | None [None, None] | insufficient n | 0.913 | 0.0/None | 0.043/None
+opp Bowler | 23 | 8 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 1.0 | 0.0/None | 0.0/None
+opp Hunter | 23 | 10 | 0.913 | 0.913 [0.839, 1.0] | None | None [None, None] | insufficient n | 0.783 | 0.087/None | 0.0/None
+opp Snowball | 22 | 14 | 0.955 | 0.955 [0.857, 1.0] | None | None [None, None] | insufficient n | 0.818 | 0.023/None | 0.0/None
+opp IceWizard hero | 21 | 5 | 0.952 | 0.952 [0.906, 1.0] | None | None [None, None] | insufficient n | 0.905 | 0.048/None | 0.0/None
+opp RoyalDelivery | 21 | 14 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 0.714 | 0.0/None | 0.0/None
+opp Valkyrie evo | 21 | 20 | 0.81 | 0.81 [0.619, 0.955] | None | None [None, None] | insufficient n | 0.952 | 0.19/None | 0.0/None
+opp MegaMinion | 21 | 7 | 0.952 | 0.952 [0.864, 1.0] | None | None [None, None] | insufficient n | 0.857 | 0.048/None | 0.0/None
+opp Goblins hero | 20 | 8 | 0.9 | 0.9 [0.8, 1.0] | None | None [None, None] | insufficient n | 0.95 | 0.022/None | 0.0/None
+opp GoblinDrill | 20 | 8 | 0.85 | 0.85 [0.667, 0.963] | None | None [None, None] | insufficient n | 1.0 | 0.019/None | 0.1/None
+opp ThreeMusketeers | 20 | 12 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 0.8 | 0.0/None | 0.0/None
+opp AxeMan evo | 19 | 16 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 0.947 | 0.0/None | 0.0/None
+opp Tombstone hero | 19 | 8 | 0.789 | 0.789 [0.6, 0.947] | None | None [None, None] | insufficient n | 0.737 | 0.094/None | 0.0/None
+opp SkeletonDragons | 19 | 11 | 0.947 | 0.947 [0.85, 1.0] | None | None [None, None] | insufficient n | 0.947 | 0.0/None | 0.053/None
+opp DarkPrince | 18 | 6 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 0.889 | 0.0/None | 0.0/None
+opp Rascals | 18 | 9 | 0.889 | 0.889 [0.75, 1.0] | None | None [None, None] | insufficient n | 0.778 | 0.074/None | 0.0/None
+opp WitchMother | 16 | 11 | 0.5 | 0.5 [0.286, 0.714] | None | None [None, None] | insufficient n | 1.0 | 0.385/None | 0.062/None
+opp Pekka evo | 16 | 14 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 0.938 | 0.0/None | 0.0/None
+opp Archer evo | 15 | 13 | 0.933 | 0.933 [0.786, 1.0] | None | None [None, None] | insufficient n | 0.933 | 0.033/None | 0.0/None
+opp Tesla evo | 15 | 13 | 0.933 | 0.933 [0.786, 1.0] | None | None [None, None] | insufficient n | 0.8 | 0.067/None | 0.0/None
+opp SkeletonBalloon evo | 15 | 14 | 0.533 | 0.533 [0.286, 0.786] | None | None [None, None] | insufficient n | 0.8 | 0.191/None | 0.067/None
+opp ElectroDragon | 15 | 13 | 0.933 | 0.933 [0.769, 1.0] | None | None [None, None] | insufficient n | 0.933 | 0.0/None | 0.067/None
+opp EliteArcher | 14 | 7 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 0.929 | 0.0/None | 0.0/None
+opp Giant | 14 | 6 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 1.0 | 0.0/None | 0.0/None
+opp MegaMinion hero | 13 | 4 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 1.0 | 0.0/None | 0.0/None
+opp Giant hero | 13 | 4 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 0.923 | 0.0/None | 0.0/None
+opp RoyalRecruits evo | 12 | 10 | 0.667 | 0.667 [0.4, 0.917] | None | None [None, None] | insufficient n | 0.583 | 0.042/None | 0.167/None
+opp Cannon evo | 12 | 11 | 0.917 | 0.917 [0.786, 1.0] | None | None [None, None] | insufficient n | 0.833 | 0.077/None | 0.0/None
+opp Wizard evo | 12 | 10 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 0.917 | 0.0/None | 0.0/None
+opp Fisherman | 12 | 6 | 0.75 | 0.75 [0.444, 0.938] | None | None [None, None] | insufficient n | 0.75 | 0.25/None | 0.0/None
+opp Mortar evo | 12 | 11 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 0.917 | 0.0/None | 0.0/None
+opp RageBarbarian evo | 11 | 10 | 0.818 | 0.818 [0.545, 1.0] | None | None [None, None] | insufficient n | 1.0 | 0.095/None | 0.0/None
+opp Bats evo | 11 | 11 | 0.727 | 0.727 [0.455, 1.0] | None | None [None, None] | insufficient n | 0.545 | 0.055/None | 0.0/None
+opp Tornado | 11 | 8 | 0.818 | 0.818 [0.5, 1.0] | None | None [None, None] | insufficient n | 0.909 | 0.069/None | 0.0/None
+opp GoblinGiant | 10 | 7 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 1.0 | 0.0/None | 0.0/None
+opp RoyalGiant evo | 10 | 9 | 0.8 | 0.8 [0.583, 1.0] | None | None [None, None] | insufficient n | 0.8 | 0.2/None | 0.0/None
+opp GoblinDemolisher | 10 | 7 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 1.0 | 0.0/None | 0.0/None
+opp LavaHound | 10 | 5 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 1.0 | 0.0/None | 0.0/None
+opp Musketeer evo | 10 | 9 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 1.0 | 0.0/None | 0.0/None
+opp GoblinCurse | 9 | 8 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 0.778 | 0.0/None | 0.0/None
+opp BlowdartGoblin evo | 9 | 9 | 0.889 | 0.889 [0.667, 1.0] | None | None [None, None] | insufficient n | 0.778 | 0.111/None | 0.111/None
+opp MergeMaiden_Mounted | 8 | 4 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 1.0 | 0.0/None | 0.0/None
+opp BattleRam evo | 8 | 7 | 0.75 | 0.75 [0.429, 1.0] | None | None [None, None] | insufficient n | 0.875 | 0.091/None | 0.0/None
+opp ElectroDragon evo | 8 | 7 | 0.875 | 0.875 [0.571, 1.0] | None | None [None, None] | insufficient n | 0.625 | 0.0/None | 0.125/None
+opp GoblinMachine | 8 | 4 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 1.0 | 0.0/None | 0.0/None
+opp RoyalHogs evo | 8 | 8 | 0.875 | 0.875 [0.625, 1.0] | None | None [None, None] | insufficient n | 1.0 | 0.031/None | 0.0/None
+opp Princess evo | 8 | 7 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 0.875 | 0.0/None | 0.0/None
+opp FirespiritHut evo | 8 | 7 | 0.875 | 0.875 [0.571, 1.0] | None | None [None, None] | insufficient n | 0.75 | 0.043/None | 0.0/None
+opp GoblinHut | 7 | 3 | 0.714 | 0.714 [0.0, 1.0] | None | None [None, None] | insufficient n | 1.0 | 0.176/None | 0.0/None
+opp Hunter evo | 7 | 6 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 0.857 | 0.0/None | 0.0/None
+opp Ghost evo | 6 | 5 | 0.167 | 0.167 [0.0, 0.6] | None | None [None, None] | insufficient n | 0.5 | 0.5/None | 0.167/None
+opp GoblinGiant evo | 6 | 6 | 0.833 | 0.833 [0.5, 1.0] | None | None [None, None] | insufficient n | 0.833 | 0.125/None | 0.0/None
+opp GoblinCage evo | 6 | 6 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 0.833 | 0.0/None | 0.0/None
+opp Barbarians evo | 6 | 5 | 0.833 | 0.833 [0.4, 1.0] | None | None [None, None] | insufficient n | 0.833 | 0.033/None | 0.0/None
+opp Phoenix | 6 | 3 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 0.5 | 0.0/None | 0.0/None
+opp MinionGiant | 5 | 1 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 1.0 | 0.0/None | 0.0/None
+opp DarkMagic | 5 | 3 | 0.8 | 0.8 [0.5, 1.0] | None | None [None, None] | insufficient n | 0.6 | 0.111/None | 0.0/None
+opp Skeletons evo | 5 | 4 | 0.8 | 0.8 [0.571, 1.0] | None | None [None, None] | insufficient n | 1.0 | 0.081/None | 0.0/None
+opp Berserker hero | 5 | 1 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 1.0 | 0.0/None | 0.0/None
+opp SkeletonArmy evo | 5 | 5 | 0.6 | 0.6 [0.2, 1.0] | None | None [None, None] | insufficient n | 0.6 | 0.164/None | 0.2/None
+opp InfernoDragon evo | 4 | 4 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 1.0 | 0.0/None | 0.0/None
+opp MinionHorde evo | 4 | 3 | 0.75 | 0.75 [0.5, 1.0] | None | None [None, None] | insufficient n | 0.75 | 0.042/None | 0.0/None
+opp BarbarianHut | 4 | 2 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 1.0 | 0.0/None | 0.0/None
+opp BabyDragon evo | 4 | 4 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 0.75 | 0.0/None | 0.0/None
+opp Clone | 3 | 3 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 0.667 | 0.0/None | 0.0/None
+opp Wallbreakers evo | 3 | 2 | 0.667 | 0.667 [0.5, 1.0] | None | None [None, None] | insufficient n | 0.333 | 0.1/None | 0.0/None
+opp ElectroGiant evo | 3 | 3 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 1.0 | 0.0/None | 0.0/None
+opp AngryBarbarians evo | 2 | 2 | 0.5 | 0.5 [0.0, 1.0] | None | None [None, None] | insufficient n | 0.5 | 0.0/None | 0.5/None
+opp Goblins | 2 | 1 | 0.5 | 0.5 [0.5, 0.5] | None | None [None, None] | insufficient n | 1.0 | 0.125/None | 0.0/None
+own Zap | 1 | 1 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 0.0 | 0.0/None | 0.0/None
+opp GoblinDrill evo | 1 | 1 | 0.0 | 0.0 [0.0, 0.0] | None | None [None, None] | insufficient n | 0.0 | 0.714/None | 1.0/None
+opp MergeMaiden_Normal | 1 | 1 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 1.0 | 0.0/None | 0.0/None
+opp Knight evo | 1 | 1 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 1.0 | 0.0/None | 0.0/None
+opp Bomber evo | 1 | 1 | 1.0 | 1.0 [1.0, 1.0] | None | None [None, None] | insufficient n | 1.0 | 0.0/None | 0.0/None

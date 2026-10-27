@@ -1,0 +1,2 @@
+pre 20261019_0600: {'raw_same': 6, 'norm_same': 638, 'norm_diff': 0, 'missing': 0, 'fights': 36152, 'fights_diff': 0}
+post 20261019_0600: {'raw_same': 0, 'norm_same': 0, 'norm_diff': 0, 'missing': 0, 'fights': 0, 'fights_diff': 0}

@@ -5,8 +5,12 @@ from .royale_runtime import RUNTIME_ID
 from .reader_identity_aliases import HERO_ICE_WIZARD_ID, HERO_ICE_WIZARD_NAMES
 
 ENABLED = RUNTIME_ID in ('20261012', '20261012-linux', '20261016-linux',   # 20261016-linux: 0.1.35, same card table + forms
-                       'fork36-linux', 'fin13-linux', 'fin15-linux')      # the 0.1.36-based fork: same table + forms
-CARD_TABLE = 'client160402017_20261006'
+                       'fork36-linux', 'fin13-linux', 'fin15-linux',      # the 0.1.36-based fork: same table + forms
+                       'fin16-linux')
+# fin16-linux (A1 10-27): the fork's client160402017_20261019 arm = the live table since the 10-19 balance update (W23
+# PATCH1019). Every other id keeps the 10-06 table (older wheels refuse the 10-19 name).
+FIN16 = RUNTIME_ID == 'fin16-linux'
+CARD_TABLE = 'client160402017_20261019' if FIN16 else 'client160402017_20261006'
 ICEBOW = frozenset(('Tornado', 'Tesla', 'IceWizard', 'Xbow', 'Rocket', 'Knight', 'Log', 'Skeletons'))
 
 
@@ -54,4 +58,4 @@ def selected_card_data():
     """Read the wheel's selected table, never a mutable source checkout."""
     import json
     import royalesim
-    return json.loads(royalesim.EMBEDDED_CARDS_160402017_JSON)
+    return json.loads(royalesim.EMBEDDED_CARDS_160402017_20261019_JSON if FIN16 else royalesim.EMBEDDED_CARDS_160402017_JSON)

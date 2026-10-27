@@ -1,0 +1,5 @@
+BASE  14252 fights 404 matches: 0.9279 [0.9221, 0.9338]
+ARM   14252 fights 404 matches: 0.9279 [0.9221, 0.9338]
+PAIRED on 14252 common fights: +0.00000 [+0.00000, +0.00000]; up 0 / down 0; only base 0, only arm 0
+card | n base -> arm | raw base -> arm
+moved fights (base aK -> arm aK):

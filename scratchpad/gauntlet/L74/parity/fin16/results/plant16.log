@@ -1,0 +1,88 @@
+   Compiling target-lexicon v0.12.16
+   Compiling once_cell v1.21.4
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.24
+   Compiling quote v1.0.47
+   Compiling libc v0.2.189
+   Compiling serde_core v1.0.229
+   Compiling autocfg v1.5.1
+   Compiling zmij v1.0.23
+   Compiling heck v0.5.0
+   Compiling serde v1.0.229
+   Compiling serde_json v1.0.151
+   Compiling itoa v1.0.18
+   Compiling indoc v2.0.7
+   Compiling memchr v2.8.3
+   Compiling cfg-if v1.0.4
+   Compiling royalesim v0.1.36 (/workspace/f16/src_fin16_gate/crates/royalesim)
+   Compiling unindent v0.2.4
+   Compiling memoffset v0.9.1
+   Compiling pyo3-build-config v0.22.6
+   Compiling syn v2.0.119
+   Compiling syn v3.0.5
+   Compiling pyo3-ffi v0.22.6
+   Compiling pyo3-macros-backend v0.22.6
+   Compiling pyo3 v0.22.6
+   Compiling serde_derive v1.0.229
+   Compiling pyo3-macros v0.22.6
+warning: function `saved_card_table` is never used
+     --> src/state.rs:40475:4
+      |
+40475 | fn saved_card_table(bytes: &[u8]) -> Result<CardTable, String> {
+      |    ^^^^^^^^^^^^^^^^
+      |
+      = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `royalesim` (lib) generated 1 warning
+    Finished `gate` profile [optimized] target(s) in 1m 29s
+     Running tests/card_table.rs (/workspace/f16/gate_plant/gate/deps/card_table-37c16382af0b8a7d)
+
+running 6 tests
+test the_160402017_arm_loads_that_clients_table ... FAILED
+test the_2026_10_19_arm_loads_the_updated_skeleton_ring ... FAILED
+test the_install_arm_loads_the_table_from_before_the_update ... FAILED
+test the_ledger_ships_the_15535_table ... ok
+test the_compiled_in_160402017_table_is_the_committed_file ... ok
+test a_saved_battle_restores_on_the_table_it_ran ... FAILED
+
+failures:
+
+---- the_160402017_arm_loads_that_clients_table stdout ----
+
+thread 'the_160402017_arm_loads_that_clients_table' (40592) panicked at tests/card_table.rs:51:5:
+assertion `left == right` failed: the arm loads its own table
+  left: "cards-15535.1"
+ right: "cards-160402017-20261006.1"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- the_2026_10_19_arm_loads_the_updated_skeleton_ring stdout ----
+
+thread 'the_2026_10_19_arm_loads_the_updated_skeleton_ring' (40593) panicked at tests/card_table.rs:112:5:
+assertion `left == right` failed
+  left: "cards-15535.1"
+ right: "cards-160402017-20261019.1"
+
+---- the_install_arm_loads_the_table_from_before_the_update stdout ----
+
+thread 'the_install_arm_loads_the_table_from_before_the_update' (40595) panicked at tests/card_table.rs:93:5:
+assertion `left == right` failed: the arm loads its own table
+  left: "cards-15535.1"
+ right: "cards-160402017.1"
+
+---- a_saved_battle_restores_on_the_table_it_ran stdout ----
+
+thread 'a_saved_battle_restores_on_the_table_it_ran' (40591) panicked at tests/card_table.rs:83:9:
+assertion `left == right` failed: client160402017_20261006
+  left: "cards-15535.1"
+ right: "cards-160402017-20261006.1"
+
+
+failures:
+    a_saved_battle_restores_on_the_table_it_ran
+    the_160402017_arm_loads_that_clients_table
+    the_2026_10_19_arm_loads_the_updated_skeleton_ring
+    the_install_arm_loads_the_table_from_before_the_update
+
+test result: FAILED. 2 passed; 4 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.39s
+
+error: test failed, to rerun pass `--test card_table`

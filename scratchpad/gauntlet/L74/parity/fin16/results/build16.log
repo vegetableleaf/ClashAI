@@ -1,0 +1,14 @@
+08:17:34 head 3f56760 cards.CARD_TABLE client160402017_20261019: the 2026-10-19 update as a client-dated arm (embedded table + load_table, CardTable + repo_cards cell, py export, calibration candidate, tests/card_table.rs) tree 7280b75db09225b30f13f3c821416faf998d539c
+stage_wheel_data: 9 files -> python/royalesim/data
+📡 Using build options bindings from pyproject.toml
+📦 Including files matching "python/royalesim/data/**/*"
+📦 Built wheel for abi3 Python ≥ 3.10 to /workspace/f16/target/wheels/royalesim-0.1.36-cp310-abi3-manylinux_2_34_x86_64.whl
+wheel /workspace/f16/wheels16/royalesim-0.1.36-cp310-abi3-manylinux_2_34_x86_64.whl sha256 b5c3510155f7a8c8aeb6b03664f4f5e302d9a109c9b51d3e850fb2552dc5c7c5
+fin15 provenance ('305aaafceb7b28bf5108c9fe028fafae97d32676', 'clean') table source embedded
+fin16 provenance ('3f5676076fa7293de5355fa7c76275ddfbf4322c', 'clean') table source embedded
+fin16 10-19 arm table cards-160402017-20261019.1
+08:21:51 wheel built
+cargo test rc=0
+TOTAL passed 1967 failed 0 ignored 3 suites 363
+plant card_table_unread -> rc=101 (want != 0): test result: FAILED. 2 passed; 4 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.39s
+08:28:22 done

@@ -21,10 +21,10 @@ RUNTIME_ID = None
 _selected = os.environ.get("ROYALE_RUNTIME", "").strip()
 if _selected:
     if _selected not in ("20261006", "20261006-linux", "20261012", "20261012-linux", "20261016-linux", "fork36-linux",
-                         "fin13-linux", "fin15-linux", "fork", "unpinned-linux"):
+                         "fin13-linux", "fin15-linux", "fin16-linux", "fork", "unpinned-linux"):
         raise RuntimeError(f"Unknown ROYALE_RUNTIME={_selected!r}; known opt-in runtimes: "
                            "'20261006', '20261006-linux', '20261012', '20261012-linux', '20261016-linux', "
-                           "'fork36-linux', 'fin13-linux', 'fin15-linux', 'fork', 'unpinned-linux'")
+                           "'fork36-linux', 'fin13-linux', 'fin15-linux', 'fin16-linux', 'fork', 'unpinned-linux'")
     RUNTIME_ID = _selected
     MANIFEST = REPO / "scratchpad/gauntlet/L73/royale_update_20261006/build_manifest.json"
     RUNTIME = REPO / "research/ext/Royale-20261006/runtime"
@@ -52,6 +52,10 @@ if _selected:
     if _selected == "fin15-linux":    # W8 10-20: the fork at fin15 (fin14c + the W8 laws: elixir floor, uncapped pull mean) in
         import sysconfig               # /workspace/venvf15 (L74/parity/fin15/setup_fin15.sh); manifest of its installed files
         MANIFEST = REPO / "scratchpad/gauntlet/L74/parity/fin15/build_manifest_fin15.json"
+        RUNTIME = Path(sysconfig.get_paths()["purelib"])
+    if _selected == "fin16-linux":    # A1 10-27: fin15 + the client-dated 10-19 card table (W23 data + W19 arm) in
+        import sysconfig               # /workspace/venvf16 (L74/parity/fin16/setup_fin16.sh); manifest of its installed files
+        MANIFEST = REPO / "scratchpad/gauntlet/L74/parity/fin16/build_manifest_fin16.json"
         RUNTIME = Path(sysconfig.get_paths()["purelib"])
     if _selected == "fork":
         RUNTIME = REPO / "research/ext/Royale-fork/runtime"
@@ -96,7 +100,7 @@ def activate() -> dict:
             raise RuntimeError(f"Pinned Royale build manifest missing: {MANIFEST}")
         contents = MANIFEST.read_bytes()
         manifest = json.loads(contents)
-        if RUNTIME_ID in ('20261012', '20261012-linux', '20261016-linux', 'fork36-linux', 'fin13-linux', 'fin15-linux', 'fork'):
+        if RUNTIME_ID in ('20261012', '20261012-linux', '20261016-linux', 'fork36-linux', 'fin13-linux', 'fin15-linux', 'fin16-linux', 'fork'):
             from importlib.metadata import distributions
             installed = {d.metadata['Name'].lower(): d.version for d in distributions(path=[str(runtime)])}
             for name, version in manifest['versions'].items():
