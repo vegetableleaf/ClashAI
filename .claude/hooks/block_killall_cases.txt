@@ -8,3 +8,10 @@
 0	{"tool_name":"Bash","tool_input":{"command":"git commit -m \"note: never use killall\"","description":"x"}}
 0	{"tool_name":"Bash","tool_input":{"command":"grep -n killall notes.md","description":"x"}}
 0	{"tool_name":"Bash","tool_input":{"command":"echo no killall here","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"pkill -f train.py","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"ssh -p 1 root@h 'pkill -9 -f grid.sh'","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"ssh -p 1 root@h \"cd /w && pkill -fx java\"","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"sudo pkill -f x","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"pkill java","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"git commit -m \"never pkill -f\"","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"pgrep -f train.py","description":"x"}}
