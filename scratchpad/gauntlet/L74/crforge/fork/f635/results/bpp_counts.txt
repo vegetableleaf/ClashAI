@@ -1,0 +1,16 @@
+== bp402.tsv: 1080 episodes, 33299 presses
+  1043  none
+    37  UnsupportedOperationException: #: a play whose elixir check the expiry of a refused play's promise decides, at a tick not traced, is not modelled
+== bpp402.tsv: 1080 episodes, 11511 presses
+  1076  none
+     4  UnsupportedOperationException: #: an ability command whose giving the expiry of a refused play's promise decides, at a tick not traced, is not modelled
+== bp635.tsv: 1080 episodes, 29249 presses
+   889  none
+    79  UnsupportedOperationException: ElectroWizardHero sets columns the battle does not model: [AttackSequenceList]
+    78  IllegalArgumentException: the game tables have no global V16_PROJECTILE_DAMAGE_BUG
+    34  UnsupportedOperationException: #: a play whose elixir check the expiry of a refused play's promise decides, at a tick not traced, is not modelled
+== bpp635.tsv: 1080 episodes, 11332 presses
+   967  none
+    78  IllegalArgumentException: the game tables have no global V16_PROJECTILE_DAMAGE_BUG
+    30  UnsupportedOperationException: BattleRam_EV1_PushBack sets PushBackDamage to a table of BaseDamage, Flags where a number is read, which is not modelled
+     5  UnsupportedOperationException: #: an ability command whose giving the expiry of a refused play's promise decides, at a tick not traced, is not modelled

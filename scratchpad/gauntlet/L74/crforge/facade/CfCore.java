@@ -250,14 +250,27 @@ public final class CfCore {
    * hero Barbarian Barrel's barbarian, which its log spawns): the slot's live copy (ChampionController.champions),
    * tried through crforge's client gates (AbilityCommand.tryGates, package-private: reflection) and given by object id
    * as a replay's command (Standard1v1Battle.useAbility(given, run, side, id, name)), run 20 ticks later.
-   * ponytail: its cost is not promised to PlayerCommands while it waits, so a play given in those 20 ticks may spend
-   * it (the run's gates then refuse the press); a promise hook in PlayerCommands is the upgrade.
+   * F635b: a crforge build that has PlayerCommands.useAbility(side, objectId, name) / tryAbility(side, objectId)
+   * (clashbot fork F635-5) gives it there instead: the same client gates, and its cost promised from the giving to
+   * the run, so a play given in those 20 ticks sets it aside. ponytail: on a build without them (the pin) the old
+   * path below stays, and the press's cost is not promised while it waits.
    */
   int spawnedGate(int side, int button, boolean dry) {
     CharacterEntity u = null;
     for (CharacterEntity c : s.std.getWorld().kingTower(side).championSlot(s.buttons[side][button]).champions())
       if (!c.isClone()) { u = c; break; }
     if (u == null) return PlayerCommands.Refusal.NO_CHAMPION.ordinal();
+    if (promisesById()) {
+      try {
+        PlayerCommands.Giving g = (PlayerCommands.Giving) (dry ? BY_ID_TRY.invoke(s.cmds, side, u.getId())
+            : BY_ID_USE.invoke(s.cmds, side, u.getId(), "a" + (s.cmdN++)));
+        if (!dry && g.given()) s.abilityRun[side][button] = g.runTick();
+        return g.refusal().ordinal();
+      } catch (java.lang.reflect.InvocationTargetException e) {
+        if (e.getCause() instanceof UnsupportedOperationException) return 100;
+        throw new IllegalStateException(e.getCause());
+      } catch (ReflectiveOperationException e) { throw new IllegalStateException(e); }
+    }
     int code;
     try {
       if (tryGates == null) {
@@ -278,6 +291,16 @@ public final class CfCore {
   }
 
   static java.lang.reflect.Method tryGates;
+  /** F635b: PlayerCommands' promised by-object-id giving and try (clashbot fork F635-5), or null on a build without. */
+  static final java.lang.reflect.Method BY_ID_USE = byId("useAbility", int.class, int.class, String.class);
+  static final java.lang.reflect.Method BY_ID_TRY = BY_ID_USE == null ? null : byId("tryAbility", int.class, int.class);
+  static java.lang.reflect.Method byId(String name, Class<?>... types) {
+    try { return PlayerCommands.class.getMethod(name, types); } catch (NoSuchMethodException e) { return null; }
+  }
+  /** F635b, for tests: whether this crforge build promises a by-object-id press's cost (BY_ID_USE present). */
+  public static boolean promisesById() { return BY_ID_USE != null && BY_ID_TRY != null; }
+  /** F635b, for tests: the whole elixir a side's client has promised to its waiting commands (PlayerCommands.promised). */
+  public int promised(int side) { return s.cmds.promised(side); }
   /** AbilityCommand gate code -> PlayerCommands.Refusal, as PlayerCommands.abilityRefusal (private) maps it. */
   static final Map<Integer, PlayerCommands.Refusal> GATE_REFUSAL = Map.of(
       AbilityCommand.KING_GONE, PlayerCommands.Refusal.KING_DEAD, AbilityCommand.NO_CHAMPION, PlayerCommands.Refusal.NO_CHAMPION,

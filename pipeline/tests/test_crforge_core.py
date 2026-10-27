@@ -102,6 +102,10 @@ def _press_hero(deck, card, cost):
     e0 = st.players[0].elixir_milli
     (r,) = core.step([press], 1)
     assert r.status == S.OK
+    # F635b: the waiting press's cost is promised (set aside by every play given before its run), also for a hero no
+    # play made (by object id), on a crforge build with the fork's by-id giving (CfCore.promisesById); not on the pin.
+    by_id = card == "BarbLog"
+    assert core._cf.promised(0) == (cost if not by_id or core._cf.promisesById() else 0)
     for _ in range(20):                                   # given at t0, runs at t0 + 20
         assert core.check_deploy(press) == S.CARD_PENDING and core.state().players[0].abilities[0][:2] == [1, 0]
         core.step([], 1)
