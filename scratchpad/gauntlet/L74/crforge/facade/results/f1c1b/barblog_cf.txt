@@ -1,0 +1,23 @@
+barblog play 200 {'accepted': True, 'result_code': 0}
+rows [[1, 0, 1, 123, 0]] opts [{'cmd': (0, 123, 5000010), 'card': 'BarbLog', 'feat': [0.10833333333333334, 1.0, 4.0, 1.2539936203984454, 0.0, 0.0, 0.0, 0.0, 0.0, 1.2539936203984454, 0.17170000000000002, 0.0, 0.3333333333333333, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}]
+bodies [(5000010, 16, 'BarbLogBarbarianHero')]
+entity proj_4000003_0 BarbLogBarbarianHero root None ability BarbLogHeroAbility deployIndex 3
+slot 1 champion BarbLogBarbarianHero deployIndex 3 deckIndex 5 live ['proj_4000003_0']
+championUnit None
+press 265 {'accepted': True, 'result_code': 0}
+k 5 (16, 1145, 9500, 14000, []) elixir 1806 row [[1, 0, 1, 123, 0]] spells []
+k 10 (16, 1145, 9644, 14102, []) elixir 1895 row [[1, 0, 1, 123, 0]] spells []
+k 15 (16, 1145, 9899, 14252, []) elixir 1984 row [[1, 0, 1, 123, 0]] spells []
+k 20 (16, 1145, 10179, 14352, []) elixir 2073 row [[1, 0, 1, 123, 0]] spells []
+k 25 (16, 1145, 10179, 13784, []) elixir 1162 row [[0, 1, 1, 123, 0]] spells []
+k 30 (16, 1145, 10179, 13700, []) elixir 1251 row [[0, 1, 1, 123, 0]] spells []
+k 35 (16, 1145, 10179, 14700, []) elixir 1340 row [[0, 1, 1, 123, 0]] spells []
+k 40 (16, 1145, 10179, 15700, []) elixir 1429 row [[0, 1, 1, 123, 0]] spells []
+k 45 (16, 1145, 9929, 17050, []) elixir 1518 row [[0, 1, 1, 123, 0]] spells []
+k 50 (16, 1145, 9929, 17050, []) elixir 1607 row [[0, 1, 1, 123, 0]] spells []
+k 55 (16, 1145, 9929, 17050, []) elixir 1696 row [[0, 1, 1, 123, 0]] spells []
+k 60 (16, 1145, 9929, 17050, []) elixir 1785 row [[0, 1, 1, 123, 0]] spells []
+k 65 (16, 1145, 9987, 17153, []) elixir 1874 row [[0, 1, 1, 123, 0]] spells []
+k 70 (16, 1145, 10157, 17398, []) elixir 1963 row [[0, 1, 1, 123, 0]] spells []
+k 75 (16, 1145, 10339, 17631, []) elixir 2052 row [[0, 1, 1, 123, 0]] spells []
+k 80 (16, 1145, 10524, 17861, []) elixir 2141 row [[0, 1, 1, 123, 0]] spells []

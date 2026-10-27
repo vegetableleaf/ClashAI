@@ -75,28 +75,30 @@ def test_save_load_is_identical_and_forks_are_independent():
     assert other._battle.state_json() != ref[0]
 
 
-def test_hero_ice_wizard_press_runs_20_ticks_later():
+def _press_hero(deck, card, cost):
     """F1c-1: RoyaleSim fin16's ability format (abil_probe.py / abil_repress.py on pod 32657): a row per button from the
-    deal on, STATUS_HERO on the hero body only, the press refused (CARD_PENDING) while it waits, spent at its run."""
+    deal on, STATUS_HERO on the hero body only, the press refused (CARD_PENDING) while it waits, spent at its run.
+    ``card`` sits at hand slot 0 of ``deck`` in its hero form."""
     from royalegym.protocol import DeployStatus as S
     core = C.CrforgeCore()
-    core.reset(7, _setup(core))
-    iw = core.ids["IceWizard"]
+    core.reset(7, MatchSetup(decks=[[core.ids[n] for n in deck], [core.ids[n] for n in OPP]], shuffle=ShuffleMode.NONE,
+                             forms=[[2] + [0] * 7, [0] * 8]))
+    cid = core.ids[card]
     st = core.state()
-    assert [r[:4] for r in st.players[0].abilities] == [[0, 0, 2, iw]] and st.players[1].abilities == []
+    assert [r[:4] for r in st.players[0].abilities] == [[0, 0, cost, cid]] and st.players[1].abilities == []
     press = DeployCommand(0, 4, 0, 0)
     assert core.check_deploy(press) == S.NO_HERO
     core.step([], 90)                                     # past the start cooldown (TOO_EARLY)
-    (r,) = core.step([DeployCommand(0, 1, 18 * 9000, 18 * 8000)], 1)  # hand slot 1 = IceWizard (setup order)
+    (r,) = core.step([DeployCommand(0, 0, 18 * 9000, 18 * 8000)], 1)
     assert r.status == S.OK
     for _ in range(400):
         if core.check_deploy(press) == S.OK:
             break
         core.step([], 1)
     st = core.state()
-    hero = [e for e in st.entities if e.team == 0 and e.card_id == iw and e.status_flags & 16]
-    assert len(hero) == 1 and core.check_deploy(press) == S.OK      # the body, not its floating cube
-    assert (hero[0].uid, "IceWizard_hero") in core._battle.debug_units()
+    hero = [e for e in st.entities if e.team == 0 and e.card_id == cid and e.status_flags & 16]
+    assert len(hero) == 1 and core.check_deploy(press) == S.OK      # the body, not its summons (the IW's cube)
+    assert (hero[0].uid, card + "_hero") in core._battle.debug_units()
     e0 = st.players[0].elixir_milli
     (r,) = core.step([press], 1)
     assert r.status == S.OK
@@ -106,6 +108,16 @@ def test_hero_ice_wizard_press_runs_20_ticks_later():
     st = core.state()                                     # t0 + 21: the run is visible
     assert st.players[0].abilities[0][:2] == [0, 1] and st.players[0].elixir_milli < e0
     assert core.check_deploy(press) == S.ABILITY_SPENT
+
+
+def test_hero_ice_wizard_press_runs_20_ticks_later():
+    _press_hero(["IceWizard", "Knight", "Tesla", "Log", "Xbow", "Rocket", "Tornado", "Skeletons"], "IceWizard", 2)
+
+
+def test_hero_barbarian_barrel_press():
+    """F1c-1b: the barbarian the hero Barbarian Barrel's log spawns (no play made it: crforge's PlayerCommands cannot
+    name it; pressed by object id)."""
+    _press_hero(["BarbLog", "Knight", "Tesla", "Log", "Xbow", "Rocket", "Tornado", "Skeletons"], "BarbLog", 1)
 
 
 def test_royale_env_runs_on_the_facade():

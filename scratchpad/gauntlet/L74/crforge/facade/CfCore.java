@@ -232,7 +232,7 @@ public final class CfCore {
 
   int gate(int side, int button, boolean dry) {
     CharacterEntity u = s.cmds.championUnit(side, s.buttons[side][button] - 1);
-    if (u == null) return PlayerCommands.Refusal.NO_CHAMPION.ordinal();
+    if (u == null) return spawnedGate(side, button, dry);
     try {
       PlayerCommands.Giving g = dry ? s.cmds.tryAbility(side, u.name()) : s.cmds.useAbility(side, u.name(), "a" + (s.cmdN++));
       if (!dry && g.given()) s.abilityRun[side][button] = g.runTick();
@@ -240,11 +240,62 @@ public final class CfCore {
     } catch (UnsupportedOperationException e) { return 100; }
   }
 
-  /** Whether a card of a side's deck is played in its hero form. */
-  boolean heroCard(int side, String card) {
-    if (card == null) return false;
-    var deck = s.std.getMatch().side(side).deck();
-    for (int i = 0; i < 8; i++) if (s.forms[side][i] == 2 && deck.get(i).name().equals(card)) return true;
+  /**
+   * A button whose champion no play made (crforge's PlayerCommands names only a play's own units, so it misses the
+   * hero Barbarian Barrel's barbarian, which its log spawns): the slot's live copy (ChampionController.champions),
+   * tried through crforge's client gates (AbilityCommand.tryGates, package-private: reflection) and given by object id
+   * as a replay's command (Standard1v1Battle.useAbility(given, run, side, id, name)), run 20 ticks later.
+   * ponytail: its cost is not promised to PlayerCommands while it waits, so a play given in those 20 ticks may spend
+   * it (the run's gates then refuse the press); a promise hook in PlayerCommands is the upgrade.
+   */
+  int spawnedGate(int side, int button, boolean dry) {
+    CharacterEntity u = null;
+    for (CharacterEntity c : s.std.getWorld().kingTower(side).championSlot(s.buttons[side][button]).champions())
+      if (!c.isClone()) { u = c; break; }
+    if (u == null) return PlayerCommands.Refusal.NO_CHAMPION.ordinal();
+    int code;
+    try {
+      if (tryGates == null) {
+        var m = AbilityCommand.class.getDeclaredMethod("tryGates", BattleWorld.class, int.class, CharacterEntity.class,
+            int.class);
+        m.setAccessible(true);
+        tryGates = m;
+      }
+      code = (int) tryGates.invoke(null, s.std.getWorld(), side, u, s.cmds.promised(side));
+    } catch (ReflectiveOperationException e) { throw new IllegalStateException(e); }
+    if (code != AbilityCommand.OK) return GATE_REFUSAL.getOrDefault(code, PlayerCommands.Refusal.NO_CHAMPION).ordinal();
+    if (!dry) {
+      int given = Math.max(tick(), 1), run = given + Standard1v1Battle.PLAY_DELAY_TICKS;   // PlayerCommands.stamp
+      s.std.useAbility(given, run, side, u.getId(), "a" + (s.cmdN++));
+      s.abilityRun[side][button] = run;
+    }
+    return 0;
+  }
+
+  static java.lang.reflect.Method tryGates;
+  /** AbilityCommand gate code -> PlayerCommands.Refusal, as PlayerCommands.abilityRefusal (private) maps it. */
+  static final Map<Integer, PlayerCommands.Refusal> GATE_REFUSAL = Map.of(
+      AbilityCommand.KING_GONE, PlayerCommands.Refusal.KING_DEAD, AbilityCommand.NO_CHAMPION, PlayerCommands.Refusal.NO_CHAMPION,
+      AbilityCommand.COOLDOWN, PlayerCommands.Refusal.COOLDOWN, AbilityCommand.NO_CHARGES, PlayerCommands.Refusal.NO_CHARGES,
+      AbilityCommand.NOT_CHAMPION, PlayerCommands.Refusal.NOT_CHAMPION, AbilityCommand.PENDING, PlayerCommands.Refusal.ABILITY_PENDING,
+      AbilityCommand.CLONE, PlayerCommands.Refusal.CLONE, AbilityCommand.FROZEN, PlayerCommands.Refusal.FROZEN,
+      AbilityCommand.DISABLED, PlayerCommands.Refusal.ABILITY_DISABLED, AbilityCommand.ELIXIR, PlayerCommands.Refusal.NOT_ENOUGH_ELIXIR);
+
+  /**
+   * STATUS_HERO as RoyaleSim sets it: a body carrying the ability of one of its side's hero-form slots (not its
+   * summons, not a champion). Matched by the slot's ability, as ChampionController.follows does, so a hero body an
+   * action spawned (the hero Barbarian Barrel's barbarian) counts too.
+   */
+  boolean heroBody(CharacterEntity c) {
+    var ab = c.getData().ability();
+    if (ab == null) return false;
+    int side = c.side();
+    for (int sl : s.buttons[side]) {
+      var slot = s.std.getWorld().kingTower(side).championSlot(sl);
+      var champ = slot.getChampion();
+      if (s.forms[side][slot.getDeckIndex()] == 2 && champ != null && champ.ability() != null
+          && champ.ability().name().equals(ab.name())) return true;
+    }
     return false;
   }
 
@@ -422,7 +473,7 @@ public final class CfCore {
             flags |= (c.underground() ? 1 : 0) | (c.invisible() ? 2 : 0) | (c.hidden() ? 4 : 0);
             // STATUS_HERO as RoyaleSim sets it: the body that carries a hero-form card's ability (not its summons,
             // not a champion)
-            if (c.getData().ability() != null && heroCard(w.side(), rootCard(w.name()))) flags |= 16;
+            if (heroBody(c)) flags |= 16;
           }
         }
         int target = -1;

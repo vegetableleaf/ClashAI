@@ -1,0 +1,5 @@
+ElectroWizard form 2 REFUSED: ElectroWizard has no loadable hero form: ability ElectroWizardHero_Ability: effect surge is not simulated
+Valkyrie form 2 loads; buttons [[0, 0, 3, 11, 0]]
+Wizard form 2 loads; buttons [[0, 0, 1, 17, 0]]
+Bowler form 2 loads; buttons [[0, 0, 2, 34, 0]]
+census ElectroWizard decked forms {'2': 9, '0': 21}
