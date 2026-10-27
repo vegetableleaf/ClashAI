@@ -90,6 +90,9 @@ public class CfSpeed {
     protected boolean ahead(WorldEntity w, int seat, int h, double[] xy) { return false; }
     protected double regen(int t0, int t1) { return 0.0; }
     protected void observed(int seat) {}
+    /** The opponent's elixir a seat's view shows at tick t (S3b-3c; CfObsBind.FacadeMatch: production's PUBLIC
+     *  estimate). S3: the engine truth. */
+    protected double oppElixir(int seat, int t) { return std.getMatch().side(1 - seat).getElixir() / (double) MatchSide.SCALE; }
     final double[] xy = new double[2];
 
     public void reset(int seed, String[] d0, int[] s0, String[] d1, int[] s1, int[] map0, int[] map1) {
@@ -245,7 +248,7 @@ public class CfSpeed {
       }
       // scalars
       double t = (tick + h) * 0.05;
-      MatchSide me = std.getMatch().side(seat), them = std.getMatch().side(1 - seat);
+      MatchSide me = std.getMatch().side(seat);
       int[] slotOf = seat == 0 ? slotOf0 : slotOf1;
       int o = scOff;
       sc.put(o++, (float) (t / 300.0));
@@ -256,7 +259,7 @@ public class CfSpeed {
       if (h > 0) el = Math.min(10.0, el + regen(tick, tick + h));   // extrapolate: + regen_between, capped at 10
       sc.put(o++, fv6 ? (float) (el / 10.0) : (float) (me.getElixir() / (double) MatchSide.SCALE / 10.0));
       sc.put(o++, 1f);
-      sc.put(o++, (float) (them.getElixir() / (double) MatchSide.SCALE / 10.0));
+      sc.put(o++, (float) (oppElixir(seat, tick + h) / 10.0));
       sc.put(o++, 1f);
       int[] hand = me.getHand().slots();
       for (int hi = 0; hi < 4; hi++) {

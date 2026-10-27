@@ -394,3 +394,54 @@ python -I project.py results/loop_n2048_c2_t24.json --extra-core-s 0.05   # lapt
   form columns on 35,026. A delivered-play builder would therefore change the feature, and a byte-identical one
   needs `PlayDetector` + `public_frame` (sim source) + the spell dedup + the native card-id / card_db tables in Java.
   Owner / foreman call; not done.
+
+## S3b-3c: the PUBLIC opponent-elixir estimate (sc[5]) and opp_past in Java (`obsid/CfOppElixir.java`)
+
+- **What production does (a, code at 8ecde05).** fv >= 4: `e1_eval.Match.prepare` runs `PublicObserver.update(state,
+  source='sim')` at each of the seat's own decisions and sets `opp_elixir = public.estimate_at(tick + h)`;
+  `gen_row`'s `opp_past` is `opponent_past(public.plays, view tick, side, gid)`. Bodies go through
+  `opp_elixir_count.PlayDetector`, spells through the board's spell objects (`sim_objects` -> `public_frame`, cards.yaml
+  kind 'spell'), the counter is `OppElixirCounter` on the env's schedule (crforge: `REGEN_SCHEDULE`). The delivered-play
+  path (`opp_estimate`) is fv < 4 only and is not used.
+- **Port.** `CfOppElixir` (one per seat, held by `FacadeMatch.opp`, reset with the battle) builds the public frame from
+  the facade battle (state()'s bodies: alive, not a tower, a card from the identity tables, hp > 0 or max_hp <= 0; the
+  opponent's only), runs PlayDetector + PublicObserver + the counter, and answers `estimateAt(tick + h)` (CfSpeed's new
+  `oppElixir` hook, which writes sc[5]) and `past()` (opp_past, dt from that same view tick). Python fills two tables on
+  first sight: "card|body row|form" -> (detector key, catalog form) by running production's `public_frame` on that
+  body's own raw() entity, then `_catalog_names` -> `vocab.engine_key` (so the Hero Ice Wizard's public id and every
+  form rule are production's, not re-derived); card id -> key when `public_frame` keeps that card's objects as a spell.
+  Per key: `card_cost` (None -> NaN, no charge), the swarm window, the policy gid. No elixir, hand or deck of either
+  side is read; the harness no longer masks sc[5] (nothing holds the truth).
+- **Edge cases matched (a: each fired in the identity runs; counts live / x0, `opp_counter_edges`).**
+  1. Swarm join: a new group of a key within its window (100 ticks; Graveyard 200) of that key's last charged play is
+     the same cast (164 / 148).
+  2. Spawn by parent: a same-key body with a higher max_hp on the board or gone <= 60 ticks (counted from the first
+     decision frame WITHOUT it), or an unreadable (max_hp <= 0) one when the group is weaker than the key's strongest
+     charged max_hp (290 / 279). Spawn by death: a weaker same-key body gone <= 60 ticks within 1,500 units (28 / 30);
+     with no readable max_hp in the group every gone positive-max_hp body counts (Python's `inf`).
+  3. A body play is dropped when a same-key spell was seen <= 100 ticks earlier (101 / 102); a still-visible spell is
+     not recounted while consecutive sightings are <= 100 ticks apart (2,101 / 2,248 sightings).
+  4. Same-tick plays are charged in key-STRING order (`sorted(candidates)`): it fixes the re-base and the float
+     order (41 / 29 re-bases). A spell sighting replaces a same-tick body candidate (form 0, the objects' centroid).
+  5. `estimate_at(t)` counts plays seen strictly before t: at h = 0 a play seen at this decision is not in its own sc[5].
+  6. Shots count by their firer's card (tower -1, unknown -2, as state() writes them) only when raw() carries
+     projectiles (env feature_version >= 4); an area with no card (`areaCard` null) is not on the board.
+  7. A key with no cards.yaml cost (1 live play): it is dated, enters opp_past, charges nothing.
+- **Step 1 (a): bodies only (`--opp-spells 0`) on the 3 census pairs whose opponent deck has no spell card (88, 166,
+  209; 4 seeds each, live cfg, `results/s3b3c_step1_bodies.json`): sc on those rows (`sc@nospell_opp`) identical
+  5,129 / 5,129 (927 body plays, 62 spawn groups, 27 swarm joins); the other 5,117 rows (icebow's Log / Rocket / Tornado as the
+  opponent) differ only at sc[5] (2,597 rows), as expected without spells.**
+- **Result (a), facade 3531b83 (`CfCore.java` 1fa04dc2), sources pinned (`facade_src_sha256`: production pipeline,
+  CfSpeed / CfObsBind / CfOppElixir / obs_id.py), 56 matches each, `results/s3b3c_{live,x0}.json`:**
+
+  | cfg | seat-rows | sc (incl. sc[5]) | opp_past | tok / mask / unit_form | S3b-3b's 10 keys | plays / spawn tallies |
+  |---|---:|---|---|---|---|---|
+  | live | 48,751 | **identical** | **identical** (35,831 rows hold a play) | identical | identical | identical |
+  | extrapolate 0 | 49,816 | **identical** | **identical** (36,491 rows hold a play) | identical | identical | identical |
+
+  Plays detected: 4,219 live (3,481 by bodies, 738 by spells), 3,997 at x0. Not ported: `opp_cycle` (the same play
+  list; b: a few lines on top of it), `own_ability`, `projectiles` / `effects`, `cue`.
+- Pod 32657 `/workspace/s3b3c`: `rl/` (pipeline at fa3b8ee, data links to `/workspace/f1/rl`), `head/` (CfCore.java at
+  fa3b8ee), `crforge/` (these sources), `out/`. Command: `OBSID_RL=/workspace/s3b3c/rl
+  OBSID_CFCORE=/workspace/s3b3c/head/scratchpad/gauntlet/L74/crforge/facade/CfCore.java OBSID_BUILD=... crforge/obsid/run.sh
+  OUT.json --n 56 [--set extrapolate_ticks=0] [--opp-spells 0 --pairs 88,166,209,...]`.

@@ -31,8 +31,8 @@ import numpy as np  # noqa: E402
 DECKS = Path("/workspace/cfspeed/decks.tsv")
 CLXIII = "/workspace/f1/models/succ48_o_s91_u0075_grafted.pt"
 SFX = {0: "", 1: "@evolution", 2: "@hero"}
-OPP_EL = 5            # sc index of the opponent's elixir: the Java builder reads the TRUTH there; replaced, never logged
-NO_VALUES = {"sc"}    # keys whose first diffs record indices only (sc carries elixir)
+OPP_EL = 5            # sc index of the opponent's elixir: S3b-3c, both sides the PUBLIC estimate (no truth anywhere)
+NO_VALUES: set = set()  # keys whose first diffs record indices only
 
 
 def start_jvm(build: Path) -> None:
@@ -49,7 +49,11 @@ def src_shas() -> dict:
     import hashlib
     files = {"CfCore.java": os.environ.get("OBSID_CFCORE", str(RL / "scratchpad/gauntlet/L74/crforge/facade/CfCore.java"))}
     files.update({f"pipeline/{m}": str(RL / "pipeline" / m) for m in ("crforge_core.py", "royale_env.py", "e1_eval.py",
-                                                                      "obs_contract.py", "body_identity.py")})
+                                                                      "obs_contract.py", "body_identity.py",
+                                                                      "public_observation.py", "opp_elixir_count.py",
+                                                                      "vocab.py")})
+    files.update({f"builder/{p.name}": str(p) for p in (HERE.parent / "CfSpeed.java", HERE / "CfObsBind.java",
+                                                        HERE / "CfOppElixir.java", HERE / "obs_id.py")})
     out = {k: hashlib.sha256(Path(v).read_bytes()).hexdigest() for k, v in files.items()}
     fb = os.environ.get("OBSID_FACADE_BUILD")
     if fb:
@@ -90,6 +94,55 @@ class JavaMain:
         self.v = {k: np.frombuffer(memoryview(b), dt) for (k, b), dt in
                   zip(self.b.items(), (np.float32, np.uint8, np.float32, np.int8))}
         self.Int = jpype.JArray(jpype.JInt)
+        self.keys = jpype.JClass("CfOppElixir$Keys")()     # S3b-3c: the public counter's detector keys
+        self.key_of, self.spell_cards, self.opp_spells, self.gid = {}, None, True, None   # gid: the policy's (main)
+        self.b["opp_past"] = BB.allocateDirect(15 * 4).order(order)
+        self.pastF, self.v["opp_past"] = self.b["opp_past"].asFloatBuffer(), np.frombuffer(memoryview(self.b["opp_past"]), np.float32)
+
+    def key_index(self, key) -> int:
+        """A detector key -> its index in the Java table (cost, swarm window), registered on first sight."""
+        from pipeline.dataset_gen import card_key
+        from pipeline.opp_elixir_count import PlayDetector, card_cost
+        if key is None:
+            return -1
+        if key not in self.key_of:
+            d, c = PlayDetector(), card_cost(key)
+            self.key_of[key] = int(self.keys.addKey(key, float("nan") if c is None else float(c),
+                                                    int(d.swarm_ticks_by_key.get(key, d.swarm_ticks)),
+                                                    int(self.gid.get(card_key(key), 0))))
+        return self.key_of[key]
+
+    def spell_table(self, s) -> None:
+        """card id -> detector key when public_frame (source 'sim') counts that card's board objects as a spell
+        (cards.yaml kind 'spell'), on the names raw() gives them: env.names, else str(id) (-1 tower, -2 none)."""
+        from pipeline.public_observation import public_frame
+        names = s.env.names
+        tab = [-1] * (max(names) + 3)
+        self.spell_cards = set()
+        for cid in range(-2, max(names) + 1):
+            row = dict(side=0, x=0.0, y=0.0, name=names.get(cid, str(cid)))
+            sp = public_frame({"tick": 0, "effects": [row], "projectiles": [row]}, source="sim")["spells"]
+            if sp:
+                assert len(sp) == 2 and sp[0]["card"] == sp[1]["card"], sp
+                self.spell_cards.add(cid)
+                tab[cid + 2] = self.key_index(sp[0]["card"]) if self.opp_spells else -1
+        self.keys.spell = self.Int(tab)
+        self.keys.shots = "projectiles" in s.state           # raw() has shots only at env feature_version >= 4
+
+    def resolve_opp(self, s) -> None:
+        """Each new "card|body row|form#entity id" -> the detector key production gives that body: public_frame
+        (source 'sim') on its raw() entity, then PlayDetector's catalog name -> vocab.engine_key (None -> -1)."""
+        from pipeline import vocab
+        from pipeline.obs_contract import catalog_card_form
+        from pipeline.opp_elixir_count import _catalog_names
+        from pipeline.public_observation import public_frame
+        ents = {int(e["entity_id"]): e for e in s.state["entities"]}
+        for miss in self.keys.takeMissing():
+            k, eid = str(miss).rsplit("#", 1)
+            f = public_frame({"tick": s.state["tick"], "entities": [ents[int(eid)]]}, source="sim")["entities"]
+            name = _catalog_names().get(f[0]["card_id"]) if f else None
+            self.keys.putBody(k, self.key_index(vocab.engine_key(name) if name else None),
+                              int(catalog_card_form(f[0]["card_id"])[1]) if f else 0)
 
     def resolve(self) -> None:
         """Each new key -> what RoyaleSelfPlayEnv.raw() + from_engine fv6 give that body: raw's name (the Hero Ice
@@ -109,6 +162,10 @@ class JavaMain:
     def _obs(self, m, seat):
         m.obs(seat, self.names, self.tokF, 0, self.b["mask"], 0, self.scF, 0, self.b["form"], 0)
 
+    def _past(self, opp):
+        opp.past(self.pastF, 0)
+        return self.v["opp_past"].reshape(3, 5).copy()
+
     def __call__(self, s) -> dict:
         from pipeline.dataset_gen import SC_SLOT_COLS
         core = s.env.core
@@ -123,20 +180,29 @@ class JavaMain:
         inv = [slot_of.get(list(decks).index(n), 8) for n in deal]
         self.Bind.bind(m, core._cf, int(s.side), self.Int(inv))
         m.extrap = int(s.cfg.get("extrapolate_ticks") or 0)
+        if self.spell_cards is None:
+            from pipeline.opp_elixir_count import REGEN_SCHEDULE
+            assert tuple(s.env.elixir_regen_schedule) == REGEN_SCHEDULE   # CfObsBind's regen constants
+            assert s.opp_mode == "counter" and s.feature_version >= 4    # prepare: opp_elixir = public.estimate_at
+            self.spell_table(s)
+        opp = m.opp(int(s.side), self.keys)
+        while not opp.update():                           # S3b-3c: the public counter sees this decision's board
+            self.resolve_opp(s)
         self._obs(m, int(s.side))
         if self.names.missing.size():                     # new names: fill the tables, build again
             self.resolve()
             m.rewind(int(s.side))                         # the rebuild sees this decision's previous state again
             self._obs(m, int(s.side))
         sc = self.v["sc"].copy()
-        sc[OPP_EL] = -1.0                                 # the truth is never compared or logged (port: the counter)
         sc_pre = sc.copy()
         sc[SC_SLOT_COLS] = 0.0                            # GenPolicy.row's zeroing (the key the model reads)
         mask = self.v["mask"].copy()
         assert mask.max() <= 1
         return {"tok": self.v["tok"].reshape(64, 14).copy(), "mask": mask.astype(bool), "sc": sc,
                 "unit_form": self.v["form"].copy(), "_sc_prepare": sc_pre, "_tick": int(core._cf.tick()),
-                "_n_bodies_moved": int(m.movedLast), "_n_rows_moved": int(m.movedLast > 0)}
+                "_n_bodies_moved": int(m.movedLast), "_n_rows_moved": int(m.movedLast > 0),
+                "opp_past": self._past(opp), "_opp_plays": np.int64(opp.plays), "_opp_spawns": np.int64(opp.spawns),
+                "_nospell_opp": not any(int(c) in self.spell_cards for c in s.env.deck_ids[1 - s.side])}
 
 
 class JavaIdent:
@@ -206,7 +272,6 @@ class Report:
         if java.pop("_tick", tick) != tick:
             self.tick_mismatch += 1
         aux = {"_sc_prepare": np.array(prod_sc_prepare, copy=True)}
-        aux["_sc_prepare"][OPP_EL] = -1.0                 # both sides' slot 5 out of this aux check (see OPP_EL)
         for key in sorted(set(prod) | {k for k in java if not k.startswith("_")}) + ["_sc_prepare"]:
             a = aux[key] if key in aux else prod.get(key)
             r = self._k(key)
@@ -259,6 +324,8 @@ def main():
     ap.add_argument("--set", action="append", default=[], help="cfg override k=v (JSON value), both seats")
     ap.add_argument("--min-rows", type=int, default=38400)
     ap.add_argument("--first-diffs", type=int, default=5)
+    ap.add_argument("--opp-spells", type=int, default=1, help="0 = S3b-3c step 1: the counter sees bodies only")
+    ap.add_argument("--pairs", default="", help="census pair indices (comma list, repeats allowed); default the first --n")
     ap.add_argument("--build", default=str(HERE / "build"))
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
@@ -273,8 +340,9 @@ def main():
     from pipeline.royale_runtime import ENGINE
 
     assert ENGINE == "crforge", ENGINE
-    BUILDERS.append(JavaMain())
     model, info = E.load_policy(CLXIII)
+    BUILDERS.append(JavaMain())
+    BUILDERS[0].opp_spells, BUILDERS[0].gid = bool(a.opp_spells), model.gid
     ident = JavaIdent(model)
     BUILDERS.append(ident)
     cfg = S.live_cfg(0.5, info["grid"])
@@ -307,7 +375,12 @@ def main():
                 "_n_rows_own_fx": int(self.own_fx is not None), "_n_rows_drops": int(self.drops is not None)}
         for b in BUILDERS:
             java.update(b(self))
-        rep.add(self, row, java, self._obs[2])
+        # S3b-3c aux checks (public information only): production's PublicObserver play / spawn tallies, and sc on the
+        # rows whose opponent deck has no spell card (bodies alone decide sc[5] there)
+        prod = dict(row, _opp_plays=np.int64(len(self.public.plays)), _opp_spawns=np.int64(self.public.body.spawns))
+        if java.pop("_nospell_opp"):
+            prod["sc@nospell_opp"], java["sc@nospell_opp"] = row["sc"], java["sc"]
+        rep.add(self, prod, java, self._obs[2])
         # diagnostic only, no builder: opp_past from the env's DELIVERED opponent plays (public_plays) vs production fv6
         # (PublicObserver.plays, detected from the public board)
         dl = opponent_past(self.env.public_plays, self._view_tick, self.side, policy.gid)
@@ -322,7 +395,9 @@ def main():
 
     E.Match.gen_row = gen_row
     jobs = []
-    for i, (d1, f1) in enumerate(census()[: a.n]):
+    cen = census()
+    pairs = [int(v) for v in a.pairs.split(",")] if a.pairs else list(range(a.n))
+    for i, (d1, f1) in enumerate(cen[p] for p in pairs):
         jobs.append((i, {"tag": f"obsid{i}", "seed": 5000 + i, "learner_side": i % 2,
                          "learner_deck": list(E.ICEBOW_ENGINE_DECK), "opp_deck": [n + SFX[f] for n, f in zip(d1, f1)],
                          "opp": {"id": "clxiii"}}, 0))
@@ -337,31 +412,38 @@ def main():
         print(json.dumps(dict(tag=r["tag"], decisions=r.get("decisions"), seat_rows=rep.rows,
                               wall_s=round(time.time() - t0))), flush=True)
 
-    E.run_selfplay_batch(make, model, {"clxiii": (model, dict(cfg))}, jobs, cfg, min(a.n, a.inflight), on_result,
+    E.run_selfplay_batch(make, model, {"clxiii": (model, dict(cfg))}, jobs, cfg, min(len(jobs), a.inflight), on_result,
                          on_skip=lambda spec, exc: skips.append((spec["tag"], repr(exc))))
     keys = rep.result()
     core4 = ("tok", "mask", "sc", "unit_form")
     ident_keys = ("past",) + tuple(k for k, _ in JavaIdent.ID_KEYS)
     out = dict(
-        ticket="S3b-3e", matches=len(done), skipped=skips, seat_rows=rep.rows, tick_mismatch=rep.tick_mismatch,
+        ticket="S3b-3c", opp_spells=bool(a.opp_spells), census_pairs=pairs, matches=len(done), skipped=skips, seat_rows=rep.rows, tick_mismatch=rep.tick_mismatch,
         diag=rep.diag,
         wall_s=round(time.time() - t0, 1), cfg_overrides=over, feature_version=cfg["feature_version"],
         gen_row_keys=list(E.gen_row_keys(model.model)),
         acceptance=dict(min_rows=a.min_rows, rows_ok=rep.rows >= a.min_rows,
                         core_keys_identical={k: keys.get(k, {}).get("status") == "IDENTICAL" for k in core4},
                         ident_keys_identical={k: keys.get(k, {}).get("status") == "IDENTICAL" for k in ident_keys},
-                        # sc at every index but OPP_EL (the counter, not ported): only that index may differ
+                        # sc[5] = the public counter on both sides (S3b-3c): core_keys_identical["sc"] covers it
                         sc_identical_except_opp_elixir=bool(keys.get("sc")) and keys["sc"]["dtype_shape_diff"] == 0
-                        and set(keys["sc"]["rows_diff_at_last_axis_index"]) <= {OPP_EL}),
+                        and set(keys["sc"]["rows_diff_at_last_axis_index"]) <= {OPP_EL},
+                        opp_past_identical=keys.get("opp_past", {}).get("status") == "IDENTICAL",
+                        sc_nospell_opp=keys.get("sc@nospell_opp", {}).get("status"),
+                        opp_counter_tallies={k: keys.get(k, {}).get("status") for k in ("_opp_plays", "_opp_spawns")}),
         status_by_key={k: v["status"] for k, v in sorted(keys.items())}, keys=keys, opp_past_delivered=odiag,
+        opp_counter_edges=dict(zip(map(str, jpype.JClass("CfOppElixir").EDGE_NAMES),
+                                   map(int, jpype.JClass("CfOppElixir").EDGE))),
         stamp=envs[0].core.card_table_stamp() if envs else None, facade_hero_rule=BUILDERS[0].facade_hero_rule,
         facade_src_sha256=shas,
         note=("prod = e1_eval prepare + gen_row; java = BUILDERS on the same facade battle and tick. Keys starting '_' "
               "are aux checks, not GenModel keys: _sc_prepare = prepare()'s sc before GenPolicy.row zeroes the hand "
-              f"one-hots. sc[{OPP_EL}] (opponent elixir) of the Java builder is the engine truth: replaced by -1, "
-              "never compared as equal and never logged."))
+              f"one-hots. sc[{OPP_EL}] (opponent elixir) is production's PUBLIC estimate on both sides (S3b-3c: CfOppElixir), "
+              "compared like every index; no engine truth is read or logged. sc@nospell_opp = sc on the rows whose "
+              "opponent deck has no spell card; _opp_plays / _opp_spawns = PublicObserver's play / spawn tallies."))
     Path(a.out).write_text(json.dumps(out, indent=1, default=str))
-    print(json.dumps({k: out[k] for k in ("seat_rows", "tick_mismatch", "diag", "acceptance", "status_by_key")}, default=str))
+    print(json.dumps({k: out[k] for k in ("seat_rows", "tick_mismatch", "diag", "opp_counter_edges", "acceptance",
+                                          "status_by_key")}, default=str))
 
 
 if __name__ == "__main__":

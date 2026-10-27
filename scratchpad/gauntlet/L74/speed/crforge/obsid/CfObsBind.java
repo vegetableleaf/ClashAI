@@ -67,6 +67,22 @@ public final class CfObsBind {
     void forget() {
       prevTick[0] = prevTick[1] = backTick[0] = backTick[1] = -1;
       prev[0].clear(); prev[1].clear(); back[0].clear(); back[1].clear();
+      for (CfOppElixir o : opp) if (o != null) o.reset();
+    }
+
+    // ---------------------------------------------------------------- S3b-3c: the opponent's elixir (sc[5])
+    // production's PUBLIC estimate (CfOppElixir: PublicObserver fed at the seat's decisions), never the engine truth
+    final CfOppElixir[] opp = new CfOppElixir[2];
+
+    /** The seat's public counter (made on first use with the shared key tables). */
+    public CfOppElixir opp(int seat, CfOppElixir.Keys keys) {
+      if (opp[seat] == null) opp[seat] = new CfOppElixir(this, seat, keys);
+      return opp[seat];
+    }
+
+    @Override protected double oppElixir(int seat, int t) {
+      if (opp[seat] == null) throw new IllegalStateException("seat " + seat + " has no public counter");
+      return opp[seat].estimateAt(t);
     }
 
     /** Undoes the last obs's observed(seat): the same decision built again (obs_id.py, after new names) must see the
