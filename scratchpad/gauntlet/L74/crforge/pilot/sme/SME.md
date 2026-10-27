@@ -1261,3 +1261,112 @@ now runs. **No crforge patch:** no case in this cluster was traced to crforge's 
 - Pod 33308 `/workspace/mech/`:
   - `in_m1` = inputs_v14 with GB + DRILL + HB; `in_m2` = in_m1 with ZAP;
   - `sme_m/` is a copy of pilot/sme with the CROSS hook.
+
+---
+
+# A2c-BP4: the four owed body-position censuses (pod 32657)
+
+**Base: r78 reproduced exactly (a).** a2c6's r78 config (chain7.sh on 33920: inputs_v19, every comparator flag, SnapRun2
+`build_snap2b`, FITNEXT) copied to 32657 `/workspace/pilot/bp4/from33920`; `bp4/runR.sh bp4R0 lib_bp3 inputs_v19` on
+the MoveProbe build: results.jsonl byte-identical to r78 (sorted), **88 / 109**, 261,135 exact frames, 0 regressions,
+0 gained. All censuses below run on bp4R0's plans (136 runnable).
+
+**No crforge mechanic change and no extractor / comparator rule** in this ticket: no census supports one (below), so
+nothing beyond the repro is measured on the 109. (The F635c base `clashbot-up-e5462c82` landed meanwhile; a mechanic
+patch would have to sit on it; none was made.)
+
+## Instrumentation: fork patch 0004 (a)
+`fork/bp/clashbot-bp_0004_MoveProbe4.patch` (branch `clashbot-bp4` dddef00d on clashbot-bp3 c9889402, applied by
+`bp4/apply_probe4.py`). MoveProbe is also told:
+- `prop` (in Displacement, before GridMove): proposal after the blend, the push added, push count, blend, groundPushed,
+  stuck, the proposal GridMove gets, the point after GridMove;
+- `push` (in PushPass, per neighbour that pushes): other id, dx, dy, reach, magnitude, other mass, other radius, moves
+  bit, push x / y added, mass term, own mass;
+- `replan` gains the scan radius R, the goal at R-25 / -50 / -75 / -100 and the goal with the reference at its cell's
+  centre (probe-only `MovementQueries.probeEndpointAt`, a pure scan).
+
+Unset, nothing calls it. Core tests 2,140, 0 failures, 2 skipped (`results/live/bp4/coretest_bp4.txt`); SmeRun traces of
+all 138 bp4R0 plans on lib_bp3 vs lib_bp4: 138 identical, the same 2 GoblinDrill refusals in both
+(`trace_ident_bp4.txt`). Tracer `bp4/AimRun4.java` (`mk_aimrun4.py`): AimRun plus state, z and targeting timers per
+character and every projectile / area per tick. Dossier tools: `bp4/ent.py` (SmeRun rows by id) and
+`bp3/tools/aim_one.py` with `LIB=lib_bp4`.
+
+## Item 1: 000233@4599, skeleton 5000116 "2 units off" (a for the cause, b for why)
+- **(c) The bridge-edge clamp hypothesis is contradicted.** 5000116's off-step move is a push from its sibling Skeleton
+  5000117 (same play, 960 units away, reach 1,000 = 500 + 500, overlap 40 -> (-21, 34) at 4597; (-1, 1) at 4598;
+  (-2, 4) at 4599). BP3's "no character within 1,800 units" missed it, and BP2's "no push" was wrong. GridMove
+  returned start + proposal on every one of these steps (`prop`).
+- **The skeleton's scan range is 1,000** (range 500 + own radius 500, `AttackRange.attackRangeWithRadius`; probe value).
+- **(a) The game's two-tick move is reproduced exactly** by crforge's pushes with the aim (13750, 17250) at both 4598 and
+  4599 (enumeration over 12 x 12 node aims and push variants; one match). That aim is the held route's next node: the
+  game did not re-goal 5000116 at 4598, while crforge's goal flips 1497 -> 1498 (new cell 962.76 from reference 5000119,
+  inside R = 1,000). 5000119@4599 is the same event the other way (936.08).
+- **Census `bp4/goal_census.py`** (every goal change with a held route whose first step differs from the held-node step;
+  `goal_bp4R0.log`): 25,808 clean deciding events, **25,804 follow crforge, 4 keep the held route** (000233@4598,
+  000233@4599, 180336@2910, 101112@5923). Each alternative endpoint rule is contradicted (c). Counts are clean events
+  where the variant keeps the held goal but the game follows crforge's change: tick-start reference 7,117; R-25 4,705;
+  R-50 9,091; R-75 11,004; R-100 11,402; reference cell centre 4,870.
+- **(c) Re-aiming at a node already popped is fine:** `repop_census.py` finds 27,724 clean events where the rebuilt
+  route's next node is one the unit reached within 30 ticks, and all follow crforge except 2 that go to the node after
+  (the 000233 pair).
+- **(c) Order, margin, timing and mutual targeting do not separate the 4:** within "side-1 unit, side-0 reference that
+  moved earlier in the tick", 3,650 follow crforge (`bp4/gsum2.py`); with new-goal margin R - d < 10, 1,039 follow
+  crforge; 1 tick after the reference changed, 1,126 follow crforge; with mutual targeting, 8,560 follow crforge.
+- **GridMove clamp census (`clamp_census.py`, as owed):** 4,479 clean clamps with an exact frame before, 835 of them in
+  the river rows 30-33. All follow crforge except 1 skeleton (100018@368, `neither`) and 1 MegaKnight that is unclamped
+  in the game (211757@3477, a jump frame). Bridge edges agree (a).
+- Open (b): what keeps the game's goal at 4598. Not tested yet: the reference point as the game's targeting stored it
+  for a reference retargeted in the same tick (both skeletons retargeted at 4597).
+
+## Item 2: 164443@3213, Ram landing (a for the mechanism, b for the cause)
+- **(a) Both of the game's bodies are reproduced by "the Skeleton's push pass ran before the Ram moved".** The
+  Skeleton's recorded push (148, 24) is exactly the Ram's push from its pre-move point (9848, 17100): overlap 66 x mass
+  4 = 264, +1, clamped to 150. After that push the Skeleton stands 1,168 units from the Ram in x (> reach 1,100), so
+  the Ram is not pushed and walks two pure 60 steps to the recorded point. crforge visits the Ram (5000055) before the
+  Skeleton (5000058).
+- **Landing census `land_census.py`:** 116 clean pushed visits after a JUMPING exit, and all follow crforge except the
+  Ram. With an enemy pusher at k = 1, HogRider 6, RoyalHog 1 and RoyalHog_EV1 2 follow crforge and the Ram 1 does not.
+  So "crforge pushes the lander on its first visit" is right (a).
+- **Order census `order_census.py`** (B pushed by an A that moved earlier in the tick; the push replica is checked against
+  the probe and 2,123 visits where it does not match are skipped). Clean, exact before: **70,318 follow crforge's
+  interleaved order, 1 follows the pre-move point (the Ram)**.
+  - Attacking B with a cross-side mover: 2,857 follow crforge, against that 1.
+  - Cross-side landers at k <= 3: HogRider 4 and RoyalHog 2 follow crforge (034147@507/508: HogRider 5000012 before
+    Skeleton 5000013, both exact).
+  - The Ram (RamRider mount; its rider 5000054 is listed before it) as an earlier mover elsewhere: Skeleton 32, Knight
+    14 and Barbarian 1 follow crforge.
+- Open (b): why the game runs this Ram after the Skeleton on its first visit after landing. The 138 matches hold only
+  one RamRider landing with a discriminating push, so no census can test a Ram-only order rule.
+
+## Item 3: 211239@1532, hero IW first move after its target's death (a for the census)
+`death_census.py`: the unit held reference R at t-1, R is gone at t, and the unit stood still for 3 ticks and was exact
+before.
+- 6,082 clean events: **6,071 crforge, 5 earlier (the game moved one tick sooner), 6 neither**. Every "earlier" event
+  has delay 6 and a direct kill (no enemy projectile or area near R): Bat 170600@2152, Knight_EV1 171232@5586, Knight
+  172314@1783, hero IW + cube 211239@1527. Delay 6 with a direct kill: 2,047 follow crforge.
+- Hero IW: 553 follow crforge at delay 1 and 222 at delay 6 (116 of them out of range, > 5,500); 1 is earlier (211239).
+- (c) Not separating: whether the unit is visited before or after R (u_before_r), load timer > 0, death cause class.
+- Open (b): the 5 delay-6 direct kills. Next: who made the kill and where the kill falls in the tick (needs a damage
+  probe).
+
+## Item 4: 014928@5183, hero IW turn after a Barbarian Barrel end (a for the census)
+`barb_census.py` (RAD 12,000, WIN 30; `barb12_bp4R0.log`): 350 log ends, 1,023 unit windows.
+- Same-side walkers on the lane, clean: 365 stay exact through the window (162 of them with no crforge replan). 5
+  diverge: 2 are air units (BalloonHero, BabyDragon) and 3 replanned in crforge.
+- 014928's hero IW 5000218 (no crforge replan, div 5183) is the only ground walker without a replan that diverges.
+- The Barbarian (5000220) leaves the log at 5165 at (2500, 15000) and stands until 5184 in crforge; the game's IW turns
+  from 5182. Hypothesis (b, untested): its deploy end changes the friendly occlusion overlay a tick or two earlier in the
+  game than in crforge, and the IW rebuilds. Census owed: every same-side ground deploy end against walkers' overlay
+  replans.
+
+## 180336@2910
+In the goal census it is one of the 4 "kept" events: Elite Archer hero, R 7,600, new goal 7,573.22 from Knight 5000057,
+which moved earlier in the tick. Margin, order, timing and mutual targeting do not separate it (item 1). It stays in
+item 1's open class with 000233 and 101112@5923 (b).
+
+## Files (A2c-BP4)
+- `bp4/`: apply_probe4.py, AimRun4.java, mk_aimrun4.py, ent.py, runR.sh, verify4.sh, goal_census.py, gsum2.py,
+  repop_census.py, clamp_census.py, land_census.py, order_census.py, death_census.py, barb_census.py.
+- `fork/bp/clashbot-bp_0004_MoveProbe4.patch`.
+- `results/live/bp4/`: rows (.jsonl.gz), summaries (.log), coretest, trace identity.
+- Pod 32657: `/workspace/pilot/bp4/` (lib_bp4, build_aim4, from33920, a2c6/r78) and `/workspace/pilot/sme_live/bp4R0`.

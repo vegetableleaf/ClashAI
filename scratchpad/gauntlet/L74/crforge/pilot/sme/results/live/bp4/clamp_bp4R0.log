@@ -1,0 +1,36 @@
+jobs=136 failed=0 
+clamps 6375 (pre exact 5832); (clean, river rows 30-33, axis, out):
+  (False, False, 'x', 'crforge') 19
+  (False, False, 'xy', 'crforge') 561
+  (False, False, 'xy', 'gone') 1
+  (False, False, 'xy', 'neither') 1
+  (False, False, 'y', 'crforge') 349
+  (False, False, 'y', 'gone') 1
+  (False, True, 'x', 'crforge') 68
+  (False, True, 'x', 'gone') 2
+  (False, True, 'xy', 'crforge') 314
+  (False, True, 'y', 'crforge') 25
+  (True, False, 'x', 'crforge') 393
+  (True, False, 'x', 'gone') 3
+  (True, False, 'xy', 'crforge') 2273
+  (True, False, 'xy', 'gone') 2
+  (True, False, 'xy', 'unclamped') 1
+  (True, False, 'y', 'crforge') 978
+  (True, False, 'y', 'gone') 4
+  (True, False, 'y', 'neither') 1
+  (True, True, 'x', 'crforge') 151
+  (True, True, 'x', 'gone') 1
+  (True, True, 'xy', 'crforge') 663
+  (True, True, 'y', 'crforge') 21
+{'m': '20261026_100018', 't': 368, 'id': 5000015, 'name': 'Skeleton', 'axis': 'y', 'clean': True, 'cell': [26, 29], 'push': 1, 'free_off': [0, 120], 'tf': 368, 'pre': True, 'out': 'neither'}
+{'m': '20261026_154839', 't': 2389, 'id': 5000048, 'name': 'Skeleton_EV1', 'axis': 'x', 'clean': True, 'cell': [8, 31], 'push': 3, 'free_off': [112, 0], 'tf': 2390, 'pre': True, 'out': 'gone'}
+{'m': '20261026_155201', 't': 3844, 'id': 5000096, 'name': 'MegaKnight_EV1', 'axis': 'xy', 'clean': True, 'cell': [24, 41], 'push': 0, 'free_off': [-202, 146], 'tf': 3845, 'pre': True, 'out': 'gone'}
+{'m': '20261026_205934', 't': 2804, 'id': 5000052, 'name': 'Witch_EV1_Healing_Skeleton', 'axis': 'y', 'clean': True, 'cell': [23, 29], 'push': 1, 'free_off': [0, 296], 'tf': 2805, 'pre': True, 'out': 'gone'}
+{'m': '20261026_211757', 't': 3477, 'id': 5000124, 'name': 'MegaKnight', 'axis': 'xy', 'clean': True, 'cell': [18, 43], 'push': 0, 'free_off': [-1, 250], 'tf': 3477, 'pre': True, 'out': 'unclamped'}
+{'m': '20261026_215757', 't': 2890, 'id': 5000085, 'name': 'Skeleton', 'axis': 'x', 'clean': True, 'cell': [35, 37], 'push': 1, 'free_off': [4, 0], 'tf': 2891, 'pre': True, 'out': 'gone'}
+{'m': '20261026_223723', 't': 3365, 'id': 5000100, 'name': 'Skeleton', 'axis': 'y', 'clean': True, 'cell': [9, 34], 'push': 2, 'free_off': [0, -231], 'tf': 3366, 'pre': True, 'out': 'gone'}
+{'m': '20261026_223723', 't': 3367, 'id': 5000101, 'name': 'Skeleton', 'axis': 'y', 'clean': True, 'cell': [10, 34], 'push': 1, 'free_off': [0, -323], 'tf': 3368, 'pre': True, 'out': 'gone'}
+{'m': '20261027_021852', 't': 1154, 'id': 5000031, 'name': 'GoblinDrillDig', 'axis': 'y', 'clean': True, 'cell': [8, 19], 'push': 0, 'free_off': [0, -250], 'tf': 1155, 'pre': True, 'out': 'gone'}
+{'m': '20261027_022821', 't': 3533, 'id': 5000112, 'name': 'Graveyard_rework_Skeleton', 'axis': 'x', 'clean': True, 'cell': [0, 29], 'push': 1, 'free_off': [-42, 0], 'tf': 3534, 'pre': True, 'out': 'gone'}
+{'m': '20261027_033729', 't': 2817, 'id': 5000087, 'name': 'GoblinDrill_EV1_Dig', 'axis': 'xy', 'clean': True, 'cell': [7, 55], 'push': 0, 'free_off': [-166, 185], 'tf': 2818, 'pre': True, 'out': 'gone'}
+{'m': '20261027_040821', 't': 3709, 'id': 5000188, 'name': 'Skeleton', 'axis': 'x', 'clean': True, 'cell': [0, 14], 'push': 2, 'free_off': [-42, 0], 'tf': 3710, 'pre': True, 'out': 'gone'}

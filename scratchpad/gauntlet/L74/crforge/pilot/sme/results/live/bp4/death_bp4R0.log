@@ -1,0 +1,175 @@
+jobs=136 failed=0 
+events 7670; pre exact and clean 6082
+Counter({'crforge': 6071, 'neither': 6, 'earlier': 5})
+(delay, cause, out):
+  (0, 'area', 'crforge') 6
+  (0, 'direct', 'crforge') 35
+  (0, 'projectile', 'crforge') 19
+  (1, 'area', 'crforge') 17
+  (1, 'direct', 'crforge') 386
+  (1, 'projectile', 'crforge') 1452
+  (2, 'area', 'crforge') 5
+  (2, 'direct', 'crforge') 36
+  (2, 'projectile', 'crforge') 34
+  (3, 'direct', 'crforge') 21
+  (3, 'projectile', 'crforge') 21
+  (4, 'direct', 'crforge') 24
+  (4, 'projectile', 'crforge') 6
+  (5, 'area', 'crforge') 1
+  (5, 'direct', 'crforge') 21
+  (5, 'projectile', 'crforge') 6
+  (6, 'area', 'crforge') 86
+  (6, 'direct', 'crforge') 2047
+  (6, 'direct', 'earlier') 5
+  (6, 'projectile', 'crforge') 630
+  (7, 'direct', 'crforge') 12
+  (7, 'projectile', 'crforge') 17
+  (8, 'area', 'crforge') 15
+  (8, 'direct', 'crforge') 602
+  (8, 'direct', 'neither') 1
+  (8, 'projectile', 'crforge') 572
+  (8, 'projectile', 'neither') 5
+IceWizardHeroFloatingCube    [((0, 'crforge'), 5), ((1, 'crforge'), 545), ((2, 'crforge'), 6), ((3, 'crforge'), 7), ((4, 'crforge'), 3), ((5, 'crforge'), 3), ((6, 'crforge'), 216), ((6, 'earlier'), 1), ((7, 'crforge'), 7), ((8, 'crforge'), 6), ((9, 'crforge'), 4), ((10, 'crforge'), 3), ((11, 'crforge'), 7), ((12, 'crforge'), 6), ((13, 'crforge'), 5), ((14, 'crforge'), 3), ((15, 'crforge'), 7), ((16, 'crforge'), 3), ((17, 'crforge'), 7), ((19, 'crforge'), 3), ((20, 'crforge'), 255), ((20, 'neither'), 4)]
+IceWizardHero                [((0, 'crforge'), 5), ((1, 'crforge'), 553), ((2, 'crforge'), 6), ((3, 'crforge'), 4), ((4, 'crforge'), 4), ((5, 'crforge'), 2), ((6, 'crforge'), 222), ((6, 'earlier'), 1), ((7, 'crforge'), 4), ((8, 'crforge'), 5), ((9, 'crforge'), 2), ((10, 'crforge'), 3), ((11, 'crforge'), 4), ((12, 'crforge'), 5), ((13, 'crforge'), 3), ((14, 'crforge'), 1), ((15, 'crforge'), 6), ((16, 'crforge'), 3), ((17, 'crforge'), 5), ((19, 'crforge'), 2), ((20, 'crforge'), 223), ((20, 'neither'), 2)]
+Knight                       [((0, 'crforge'), 11), ((1, 'crforge'), 4), ((2, 'crforge'), 12), ((3, 'crforge'), 4), ((4, 'crforge'), 2), ((5, 'crforge'), 2), ((6, 'crforge'), 570), ((6, 'earlier'), 1), ((7, 'crforge'), 2), ((8, 'crforge'), 5), ((10, 'crforge'), 1), ((11, 'crforge'), 2), ((12, 'crforge'), 4), ((13, 'crforge'), 4), ((14, 'crforge'), 2), ((15, 'crforge'), 8), ((16, 'crforge'), 5), ((18, 'crforge'), 2), ((19, 'crforge'), 3), ((20, 'crforge'), 98)]
+Skeleton                     [((0, 'crforge'), 7), ((1, 'crforge'), 13), ((2, 'crforge'), 5), ((3, 'crforge'), 3), ((4, 'crforge'), 3), ((5, 'crforge'), 2), ((6, 'crforge'), 350), ((7, 'crforge'), 2), ((9, 'crforge'), 1), ((11, 'crforge'), 1), ((13, 'crforge'), 1), ((16, 'crforge'), 1), ((17, 'crforge'), 1), ((20, 'crforge'), 4)]
+Knight_EV1                   [((0, 'crforge'), 1), ((1, 'crforge'), 1), ((2, 'crforge'), 7), ((3, 'crforge'), 2), ((4, 'crforge'), 1), ((5, 'crforge'), 1), ((6, 'crforge'), 254), ((6, 'earlier'), 1), ((7, 'crforge'), 1), ((9, 'crforge'), 1), ((14, 'crforge'), 1), ((15, 'crforge'), 4), ((16, 'crforge'), 1), ((17, 'crforge'), 3), ((18, 'crforge'), 1), ((20, 'crforge'), 52)]
+Bat                          [((0, 'crforge'), 6), ((1, 'crforge'), 2), ((2, 'crforge'), 2), ((6, 'crforge'), 104), ((6, 'earlier'), 1), ((14, 'crforge'), 1), ((16, 'crforge'), 1), ((20, 'crforge'), 6)]
+SpearGoblin                  [((1, 'crforge'), 59), ((2, 'crforge'), 7), ((3, 'crforge'), 2), ((6, 'crforge'), 19), ((8, 'crforge'), 1), ((11, 'crforge'), 2), ((20, 'crforge'), 8)]
+Musketeer                    [((0, 'crforge'), 2), ((1, 'crforge'), 37), ((6, 'crforge'), 11), ((9, 'crforge'), 1), ((13, 'crforge'), 3), ((19, 'crforge'), 1), ((20, 'crforge'), 24)]
+Barbarian                    [((0, 'crforge'), 2), ((1, 'crforge'), 1), ((2, 'crforge'), 1), ((3, 'crforge'), 3), ((4, 'crforge'), 2), ((5, 'crforge'), 1), ((6, 'crforge'), 51), ((7, 'crforge'), 2), ((10, 'crforge'), 1), ((14, 'crforge'), 1), ((18, 'crforge'), 1), ((20, 'crforge'), 3)]
+Furnace_rework               [((1, 'crforge'), 12), ((2, 'crforge'), 1), ((3, 'crforge'), 1), ((6, 'crforge'), 35), ((11, 'crforge'), 1), ((13, 'crforge'), 2), ((18, 'crforge'), 1), ((20, 'crforge'), 15)]
+MightyMiner                  [((3, 'crforge'), 1), ((4, 'crforge'), 1), ((6, 'crforge'), 49), ((12, 'crforge'), 1), ((20, 'crforge'), 9)]
+ValkyrieHero                 [((1, 'crforge'), 52), ((2, 'crforge'), 5), ((6, 'crforge'), 1), ((13, 'crforge'), 1), ((20, 'crforge'), 2)]
+SkeletonWarrior              [((2, 'crforge'), 3), ((4, 'crforge'), 1), ((6, 'crforge'), 50), ((12, 'crforge'), 2), ((19, 'crforge'), 1), ((20, 'crforge'), 4)]
+RascalGirl                   [((1, 'crforge'), 33), ((2, 'crforge'), 1), ((6, 'crforge'), 9), ((7, 'crforge'), 1), ((8, 'crforge'), 1), ((12, 'crforge'), 1), ((20, 'crforge'), 14)]
+BabyDragon                   [((1, 'crforge'), 31), ((6, 'crforge'), 21), ((9, 'crforge'), 1), ((19, 'crforge'), 1), ((20, 'crforge'), 3)]
+Firecracker                  [((1, 'crforge'), 10), ((4, 'crforge'), 2), ((5, 'crforge'), 1), ((6, 'crforge'), 30), ((10, 'crforge'), 1), ((20, 'crforge'), 9)]
+ArcherQueen                  [((1, 'crforge'), 31), ((2, 'crforge'), 1), ((6, 'crforge'), 3), ((8, 'crforge'), 1), ((18, 'crforge'), 3), ((20, 'crforge'), 14)]
+GoldenKnight                 [((0, 'crforge'), 7), ((4, 'crforge'), 1), ((5, 'crforge'), 2), ((6, 'crforge'), 29), ((12, 'crforge'), 1), ((15, 'crforge'), 2), ((20, 'crforge'), 6)]
+ElectroWizard                [((1, 'crforge'), 41), ((11, 'crforge'), 1), ((15, 'crforge'), 1), ((20, 'crforge'), 3)]
+Archer                       [((1, 'crforge'), 32), ((2, 'crforge'), 1), ((4, 'crforge'), 1), ((6, 'crforge'), 5), ((8, 'crforge'), 2), ((16, 'crforge'), 1), ((19, 'crforge'), 1), ((20, 'crforge'), 3)]
+Minion                       [((0, 'crforge'), 1), ((1, 'crforge'), 38), ((3, 'crforge'), 1), ((6, 'crforge'), 1), ((20, 'crforge'), 4)]
+MegaKnight                   [((1, 'crforge'), 1), ((2, 'crforge'), 1), ((3, 'crforge'), 2), ((5, 'crforge'), 2), ((6, 'crforge'), 28), ((16, 'crforge'), 1), ((17, 'crforge'), 1), ((19, 'crforge'), 1), ((20, 'crforge'), 7)]
+BlowdartGoblin               [((1, 'crforge'), 26), ((6, 'crforge'), 5), ((7, 'crforge'), 1), ((12, 'crforge'), 1), ((17, 'crforge'), 2), ((19, 'crforge'), 2), ((20, 'crforge'), 6)]
+Bowler                       [((1, 'crforge'), 33), ((3, 'crforge'), 3), ((4, 'crforge'), 1), ((6, 'crforge'), 1), ((7, 'crforge'), 1), ((8, 'crforge'), 2), ((9, 'crforge'), 1), ((20, 'crforge'), 1)]
+BossBandit                   [((1, 'crforge'), 3), ((2, 'crforge'), 1), ((3, 'crforge'), 1), ((6, 'crforge'), 20), ((7, 'crforge'), 1), ((12, 'crforge'), 1), ((19, 'crforge'), 1), ((20, 'crforge'), 13)]
+Valkyrie                     [((0, 'crforge'), 1), ((1, 'crforge'), 36), ((10, 'crforge'), 1)]
+Prince                       [((2, 'crforge'), 1), ((6, 'crforge'), 24), ((10, 'crforge'), 1), ((12, 'crforge'), 1), ((20, 'crforge'), 11)]
+Ghost                        [((0, 'crforge'), 1), ((6, 'crforge'), 35), ((20, 'crforge'), 1)]
+RascalBoy                    [((6, 'crforge'), 31), ((19, 'crforge'), 1), ((20, 'crforge'), 4)]
+SpearGoblin_Dummy            [((1, 'crforge'), 20), ((2, 'crforge'), 1), ((6, 'crforge'), 9), ((13, 'crforge'), 1), ((17, 'crforge'), 1), ((20, 'crforge'), 4)]
+AngryBarbarian               [((4, 'crforge'), 1), ((5, 'crforge'), 1), ((6, 'crforge'), 26), ((12, 'crforge'), 1), ((13, 'crforge'), 1), ((14, 'crforge'), 1), ((20, 'crforge'), 4)]
+Ronin                        [((1, 'crforge'), 1), ((3, 'crforge'), 1), ((5, 'crforge'), 1), ((6, 'crforge'), 28), ((20, 'crforge'), 3)]
+KnightHero                   [((4, 'crforge'), 1), ((6, 'crforge'), 24), ((10, 'crforge'), 1), ((20, 'crforge'), 5)]
+RageBarbarian                [((6, 'crforge'), 21), ((19, 'crforge'), 1), ((20, 'crforge'), 8)]
+Monk                         [((2, 'crforge'), 1), ((5, 'crforge'), 3), ((6, 'crforge'), 11), ((12, 'crforge'), 1), ((14, 'crforge'), 1), ((20, 'crforge'), 10)]
+goblinstein_doctor           [((0, 'crforge'), 1), ((1, 'crforge'), 13), ((6, 'crforge'), 7), ((20, 'crforge'), 5)]
+WizardHero                   [((1, 'crforge'), 19), ((3, 'crforge'), 1), ((6, 'crforge'), 3), ((7, 'crforge'), 1), ((20, 'crforge'), 2)]
+MovingCannon                 [((0, 'crforge'), 1), ((1, 'crforge'), 16), ((6, 'crforge'), 4), ((8, 'crforge'), 1), ((18, 'crforge'), 1), ((20, 'crforge'), 2)]
+Archer_EV1                   [((1, 'crforge'), 19), ((6, 'crforge'), 2), ((9, 'crforge'), 1), ((14, 'crforge'), 1), ((18, 'crforge'), 1), ((20, 'crforge'), 1)]
+Bat_EV1                      [((6, 'crforge'), 23), ((20, 'crforge'), 1)]
+HogRider                     [((6, 'crforge'), 23)]
+MiniPekka                    [((1, 'crforge'), 1), ((6, 'crforge'), 22)]
+EliteArcherHero              [((1, 'crforge'), 3), ((6, 'crforge'), 13), ((16, 'crforge'), 1), ((20, 'crforge'), 6)]
+DarkPrinceHero               [((0, 'crforge'), 1), ((4, 'crforge'), 1), ((6, 'crforge'), 19), ((7, 'crforge'), 1), ((20, 'crforge'), 1)]
+ElectroWizardHero            [((1, 'crforge'), 13), ((3, 'crforge'), 1), ((6, 'crforge'), 4), ((14, 'crforge'), 1), ((20, 'crforge'), 3)]
+Pekka                        [((3, 'crforge'), 1), ((6, 'crforge'), 14), ((7, 'crforge'), 1), ((20, 'crforge'), 6)]
+BabyDragon_EV1               [((1, 'crforge'), 12), ((6, 'crforge'), 3), ((13, 'crforge'), 1), ((17, 'crforge'), 1), ((20, 'crforge'), 3)]
+electro_dragon_ev1           [((0, 'crforge'), 1), ((1, 'crforge'), 14), ((2, 'crforge'), 1), ((11, 'crforge'), 1), ((20, 'crforge'), 3)]
+MegaMinionHero               [((1, 'crforge'), 17), ((6, 'crforge'), 3)]
+Musketeer_EV1                [((1, 'crforge'), 14), ((6, 'crforge'), 1), ((17, 'crforge'), 1), ((20, 'crforge'), 3)]
+AxeMan                       [((2, 'crforge'), 1), ((5, 'crforge'), 1), ((6, 'crforge'), 1), ((8, 'crforge'), 1), ((13, 'crforge'), 1), ((15, 'crforge'), 1), ((16, 'crforge'), 1), ((17, 'crforge'), 1), ((20, 'crforge'), 11)]
+GoblinBrawler                [((6, 'crforge'), 15), ((20, 'crforge'), 2)]
+MiniPekkaHero                [((2, 'crforge'), 1), ((3, 'crforge'), 1), ((5, 'crforge'), 1), ((6, 'crforge'), 9), ((8, 'crforge'), 1), ((13, 'crforge'), 1), ((20, 'crforge'), 3)]
+MiniZapMachine               [((1, 'crforge'), 12), ((2, 'crforge'), 1), ((4, 'crforge'), 1), ((20, 'crforge'), 2)]
+ElixirGolem4                 [((0, 'crforge'), 1), ((2, 'crforge'), 1), ((6, 'crforge'), 14)]
+Goblin_Stab                  [((0, 'crforge'), 1), ((1, 'crforge'), 1), ((2, 'crforge'), 1), ((4, 'crforge'), 1), ((6, 'crforge'), 12)]
+Witch                        [((0, 'crforge'), 1), ((1, 'crforge'), 12), ((5, 'crforge'), 1), ((6, 'crforge'), 1), ((20, 'crforge'), 1)]
+WitchMother                  [((1, 'crforge'), 13), ((6, 'crforge'), 1), ((13, 'crforge'), 1), ((20, 'crforge'), 1)]
+Phoenix                      [((6, 'crforge'), 14), ((20, 'crforge'), 2)]
+Firecracker_EV1              [((1, 'crforge'), 1), ((6, 'crforge'), 10), ((20, 'crforge'), 3)]
+InfernoDragon                [((6, 'crforge'), 10), ((20, 'crforge'), 4)]
+RoyalHog                     [((2, 'crforge'), 2), ((5, 'crforge'), 1), ((6, 'crforge'), 11)]
+Assassin                     [((6, 'crforge'), 9), ((12, 'crforge'), 1), ((18, 'crforge'), 1), ((20, 'crforge'), 2)]
+MegaKnight_EV1               [((1, 'crforge'), 2), ((5, 'crforge'), 1), ((6, 'crforge'), 5), ((20, 'crforge'), 5)]
+Fisherman                    [((1, 'crforge'), 1), ((6, 'crforge'), 9), ((20, 'crforge'), 3)]
+AxeMan_EV1                   [((1, 'crforge'), 1), ((2, 'crforge'), 1), ((6, 'crforge'), 1), ((14, 'crforge'), 2), ((16, 'crforge'), 1), ((20, 'crforge'), 6)]
+Skeleton_EV1                 [((1, 'crforge'), 1), ((3, 'crforge'), 1), ((4, 'crforge'), 1), ((5, 'crforge'), 1), ((6, 'crforge'), 8)]
+ElectroDragon                [((1, 'crforge'), 9), ((20, 'crforge'), 3)]
+Recruit                      [((6, 'crforge'), 10), ((20, 'crforge'), 2)]
+AngryBarbarian_EV1           [((6, 'crforge'), 10)]
+BalloonHero                  [((6, 'crforge'), 10)]
+BerserkerHero                [((6, 'crforge'), 10)]
+BlowdartGoblin_EV1           [((1, 'crforge'), 3), ((6, 'crforge'), 4), ((17, 'crforge'), 1), ((20, 'crforge'), 2)]
+Barbarian_EV1                [((0, 'crforge'), 1), ((1, 'crforge'), 1), ((3, 'crforge'), 1), ((6, 'crforge'), 5), ((10, 'crforge'), 1)]
+Furnace_EV1                  [((1, 'crforge'), 1), ((6, 'crforge'), 6), ((15, 'crforge'), 1), ((20, 'crforge'), 1)]
+IceWizard                    [((0, 'crforge'), 1), ((1, 'crforge'), 6), ((6, 'crforge'), 1), ((11, 'crforge'), 1)]
+Berserker                    [((6, 'crforge'), 9)]
+AngryBarbarian_EV1_2         [((5, 'crforge'), 1), ((6, 'crforge'), 4), ((15, 'crforge'), 1), ((20, 'crforge'), 2)]
+ElectroGiant                 [((6, 'crforge'), 8)]
+DartBarrell                  [((1, 'crforge'), 5), ((20, 'crforge'), 3)]
+SkeletonTrooper              [((0, 'crforge'), 1), ((6, 'crforge'), 7)]
+SkeletonArmy_EV1_Spectral    [((2, 'crforge'), 2), ((4, 'crforge'), 1), ((6, 'crforge'), 5)]
+BowlerHero                   [((1, 'crforge'), 5), ((20, 'crforge'), 2)]
+MinionGiant                  [((1, 'crforge'), 5), ((4, 'crforge'), 1), ((6, 'crforge'), 1)]
+MusketeerHero                [((1, 'crforge'), 5), ((20, 'crforge'), 2)]
+BarrelGoblin                 [((6, 'crforge'), 6), ((10, 'crforge'), 1)]
+InfernoDragon_EV1            [((6, 'crforge'), 4), ((19, 'crforge'), 1), ((20, 'crforge'), 1)]
+Witch_EV1_Skeleton_Interval  [((6, 'crforge'), 6)]
+Miner                        [((6, 'crforge'), 2), ((9, 'crforge'), 1), ((20, 'crforge'), 3)]
+Graveyard_rework_Skeleton    [((6, 'crforge'), 5)]
+GiantHero                    [((6, 'crforge'), 4), ((17, 'crforge'), 1)]
+ElixirGolem2                 [((1, 'crforge'), 1), ((6, 'crforge'), 4)]
+Valkyrie_EV1                 [((1, 'crforge'), 4), ((20, 'crforge'), 1)]
+TombstoneHeroSkeleton        [((2, 'crforge'), 1), ((6, 'crforge'), 4)]
+GoblinHero                   [((6, 'crforge'), 4)]
+Bomber                       [((1, 'crforge'), 1), ((6, 'crforge'), 3)]
+goblinstein                  [((6, 'crforge'), 4)]
+GoblinDemolisher             [((6, 'crforge'), 3), ((20, 'crforge'), 1)]
+DarkPrince                   [((6, 'crforge'), 4)]
+GiantSkeleton                [((6, 'crforge'), 3), ((20, 'crforge'), 1)]
+RoyalHog_EV1_Grounded        [((6, 'crforge'), 4)]
+ElectroGiant_EV1             [((6, 'crforge'), 4)]
+SpearGoblinGiant             [((7, 'crforge'), 4)]
+Golem                        [((1, 'crforge'), 1), ((6, 'crforge'), 2)]
+Wizard                       [((1, 'crforge'), 3)]
+Golemite                     [((6, 'crforge'), 3)]
+RageBarbarian_EV1            [((6, 'crforge'), 3)]
+GoblinCage_EV1_GoblinBrawler [((6, 'crforge'), 3)]
+Recruit_EV1                  [((6, 'crforge'), 3)]
+Witch_EV1                    [((1, 'crforge'), 1), ((6, 'crforge'), 1), ((20, 'crforge'), 1)]
+BattleHealer                 [((6, 'crforge'), 2), ((20, 'crforge'), 1)]
+Pekka_EV1                    [((6, 'crforge'), 3)]
+Ram                          [((6, 'crforge'), 3)]
+Ghost_EV1                    [((6, 'crforge'), 2)]
+Goblin                       [((6, 'crforge'), 2)]
+WizardHero_air               [((1, 'crforge'), 1), ((6, 'crforge'), 1)]
+BarbLogBarbarianHero         [((6, 'crforge'), 2)]
+Balloon                      [((6, 'crforge'), 2)]
+RageBarbarianEvoGhost        [((6, 'crforge'), 2)]
+ZapMachine                   [((1, 'crforge'), 2)]
+GoblinGiant                  [((6, 'crforge'), 2)]
+SpearGoblinGiant_EV1         [((8, 'crforge'), 2)]
+SkeletonArmy_EV1_General     [((6, 'crforge'), 2)]
+Wizard_EV1                   [((1, 'crforge'), 1)]
+ElixirGolem1                 [((6, 'crforge'), 1)]
+Witch_EV1_Healing_Skeleton   [((6, 'crforge'), 1)]
+RoyalHog_EV1                 [((6, 'crforge'), 1)]
+RamRider                     [((3, 'crforge'), 1)]
+IceGolemiteHero              [((6, 'crforge'), 1)]
+DarkPrinceHero_Mount         [((6, 'crforge'), 1)]
+DarkPrinceHero_Walking       [((6, 'crforge'), 1)]
+IceWizardHero_IceCube        [((0, 'crforge'), 1)]
+FireSpirits                  [((6, 'crforge'), 1)]
+{'m': '20261026_170600', 't': 2152, 'id': 5000035, 'name': 'Bat', 'state': 2, 'timers': '1150/100/0/0/0', 'R': 'Skeleton', 'R_hp': 130, 'delay': 6, 'dist': 2194, 'ref_mc': 5000039, 'clean': True, 'pre': True, 'cause': 'direct', 'u_before_r': True, 'out': 'earlier'}
+{'m': '20261026_171232', 't': 5586, 'id': 5000151, 'name': 'Knight_EV1', 'state': 2, 'timers': '1650/250/0/0/0', 'R': 'ElixirGolem4', 'R_hp': 110, 'delay': 6, 'dist': 2061, 'ref_mc': 5000163, 'clean': True, 'pre': True, 'cause': 'direct', 'u_before_r': True, 'f': 5592, 'out': 'earlier'}
+{'m': '20261026_172314', 't': 1783, 'id': 5000026, 'name': 'Knight', 'state': 2, 'timers': '1150/0/0/0/0', 'R': 'Skeleton', 'R_hp': 130, 'delay': 6, 'dist': 1424, 'ref_mc': 5000028, 'clean': True, 'pre': True, 'cause': 'direct', 'u_before_r': True, 'f': 1789, 'out': 'earlier'}
+{'m': '20261026_211239', 't': 1527, 'id': 5000020, 'name': 'IceWizardHero', 'state': 2, 'timers': '7800/200/0/0/0', 'R': 'IceWizardHero', 'R_hp': 528, 'delay': 6, 'dist': 6478, 'ref_mc': 5000001, 'clean': True, 'pre': True, 'cause': 'direct', 'u_before_r': True, 'out': 'earlier'}
+{'m': '20261026_211239', 't': 1527, 'id': 5000021, 'name': 'IceWizardHeroFloatingCube', 'state': 2, 'timers': '7800/200/0/0/0', 'R': 'IceWizardHero', 'R_hp': 528, 'delay': 6, 'dist': 6478, 'ref_mc': 5000001, 'clean': True, 'pre': True, 'cause': 'direct', 'u_before_r': True, 'out': 'earlier'}
+{'m': '20261027_001141', 't': 5347, 'id': 5000118, 'name': 'IceWizardHero', 'state': 2, 'timers': '6350/0/0/0/0', 'R': 'Barbarian', 'R_hp': 16, 'delay': 148, 'dist': 3062, 'ref_mc': 5000001, 'clean': True, 'pre': True, 'cause': 'projectile', 'u_before_r': True, 'f': 5496, 'out': 'neither'}
+{'m': '20261027_001141', 't': 5347, 'id': 5000119, 'name': 'IceWizardHeroFloatingCube', 'state': 2, 'timers': '6350/0/0/0/0', 'R': 'Barbarian', 'R_hp': 16, 'delay': 148, 'dist': 3062, 'ref_mc': -1, 'clean': True, 'pre': True, 'cause': 'projectile', 'u_before_r': True, 'f': 5496, 'out': 'neither'}
+{'m': '20261027_001141', 't': 5358, 'id': 5000119, 'name': 'IceWizardHeroFloatingCube', 'state': 2, 'timers': '1450/1000/0/0/0', 'R': 'Barbarian', 'R_hp': 91, 'delay': 137, 'dist': 2836, 'ref_mc': -1, 'clean': True, 'pre': True, 'cause': 'direct', 'u_before_r': True, 'f': 5496, 'out': 'neither'}
+{'m': '20261027_001141', 't': 5383, 'id': 5000118, 'name': 'IceWizardHero', 'state': 2, 'timers': '8150/0/0/0/0', 'R': 'Barbarian', 'R_hp': 91, 'delay': 112, 'dist': 3509, 'ref_mc': 5000001, 'clean': True, 'pre': True, 'cause': 'projectile', 'u_before_r': True, 'f': 5496, 'out': 'neither'}
+{'m': '20261027_001141', 't': 5383, 'id': 5000119, 'name': 'IceWizardHeroFloatingCube', 'state': 2, 'timers': '1500/300/0/0/0', 'R': 'Barbarian', 'R_hp': 91, 'delay': 112, 'dist': 3509, 'ref_mc': -1, 'clean': True, 'pre': True, 'cause': 'projectile', 'u_before_r': True, 'f': 5496, 'out': 'neither'}
+{'m': '20261027_001141', 't': 5390, 'id': 5000119, 'name': 'IceWizardHeroFloatingCube', 'state': 2, 'timers': '1250/1200/0/0/0', 'R': 'Barbarian', 'R_hp': 91, 'delay': 105, 'dist': 4265, 'ref_mc': -1, 'clean': True, 'pre': True, 'cause': 'projectile', 'u_before_r': True, 'f': 5496, 'out': 'neither'}

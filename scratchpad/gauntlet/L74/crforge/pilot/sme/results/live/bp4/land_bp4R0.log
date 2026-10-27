@@ -1,0 +1,53 @@
+jobs=136 failed=0 
+pushed visits after a transition 5152; pre exact and clean 4008
+(from state, visit k, enemy pusher, out):
+  (4, 0, False, 'crforge') 365
+  (4, 0, False, 'neither') 1
+  (4, 0, True, 'crforge') 58
+  (4, 1, False, 'crforge') 1055
+  (4, 1, False, 'gone') 1
+  (4, 1, True, 'crforge') 52
+  (4, 2, False, 'crforge') 1093
+  (4, 2, False, 'gone') 7
+  (4, 2, False, 'neither') 1
+  (4, 2, True, 'crforge') 59
+  (4, 3, False, 'crforge') 1125
+  (4, 3, False, 'gone') 3
+  (4, 3, True, 'crforge') 67
+  (4, 3, True, 'gone') 4
+  (5, 1, False, 'crforge') 38
+  (5, 1, True, 'crforge') 9
+  (5, 1, True, 'neither') 1
+  (5, 2, False, 'crforge') 31
+  (5, 2, True, 'crforge') 7
+  (5, 3, False, 'crforge') 25
+  (5, 3, True, 'crforge') 6
+jump landings with an enemy pusher (name, k, out):
+  ('HogRider', 1, 'crforge') 6
+  ('HogRider', 2, 'crforge') 4
+  ('HogRider', 3, 'crforge') 3
+  ('Ram', 1, 'neither') 1
+  ('RoyalHog', 1, 'crforge') 1
+  ('RoyalHog', 2, 'crforge') 1
+  ('RoyalHog', 3, 'crforge') 1
+  ('RoyalHog_EV1_Grounded', 1, 'crforge') 2
+  ('RoyalHog_EV1_Grounded', 2, 'crforge') 2
+  ('RoyalHog_EV1_Grounded', 3, 'crforge') 2
+{'m': '20261026_100018', 't': 373, 'id': 5000016, 'name': 'Skeleton', 'from': 4, 'k': 3, 'enemy': 0, 'ally': 1, 'enemy_names': [], 'push': [-113, -89], 'z_before': None, 'clean': True, 'tf': 374, 'pre': True, 'out': 'gone'}
+{'m': '20261026_101112', 't': 429, 'id': 5000014, 'name': 'IceSpirits', 'from': 4, 'k': 3, 'enemy': 1, 'ally': 0, 'enemy_names': ['Skeleton'], 'push': [27, -52], 'z_before': None, 'clean': True, 'tf': 430, 'pre': True, 'out': 'gone'}
+{'m': '20261026_101112', 't': 4204, 'id': 5000095, 'name': 'Skeleton', 'from': 4, 'k': 3, 'enemy': 0, 'ally': 1, 'enemy_names': [], 'push': [-7, 9], 'z_before': None, 'clean': True, 'tf': 4205, 'pre': True, 'out': 'gone'}
+{'m': '20261026_141505', 't': 3739, 'id': 5000084, 'name': 'Skeleton', 'from': 4, 'k': 3, 'enemy': 1, 'ally': 1, 'enemy_names': ['Tesla'], 'push': [-6, 132], 'z_before': None, 'clean': True, 'tf': 3740, 'pre': True, 'out': 'gone'}
+{'m': '20261026_145247', 't': 3020, 'id': 5000054, 'name': 'Skeleton', 'from': 4, 'k': 2, 'enemy': 0, 'ally': 1, 'enemy_names': [], 'push': [-47, -4], 'z_before': None, 'clean': True, 'tf': 3021, 'pre': True, 'out': 'gone'}
+{'m': '20261026_145247', 't': 3020, 'id': 5000056, 'name': 'Skeleton', 'from': 4, 'k': 2, 'enemy': 0, 'ally': 3, 'enemy_names': [], 'push': [-23, -21], 'z_before': None, 'clean': True, 'tf': 3021, 'pre': True, 'out': 'gone'}
+{'m': '20261026_152601', 't': 3766, 'id': 5000141, 'name': 'Skeleton', 'from': 4, 'k': 1, 'enemy': 0, 'ally': 1, 'enemy_names': [], 'push': [-67, -2], 'z_before': None, 'clean': True, 'tf': 3767, 'pre': True, 'out': 'gone'}
+{'m': '20261026_154319', 't': 5233, 'id': 5000166, 'name': 'FireSpirits', 'from': 4, 'k': 3, 'enemy': 1, 'ally': 0, 'enemy_names': ['Skeleton'], 'push': [0, -26], 'z_before': None, 'clean': True, 'tf': 5234, 'pre': True, 'out': 'gone'}
+{'m': '20261026_164443', 't': 3212, 'id': 5000055, 'name': 'Ram', 'from': 5, 'k': 1, 'enemy': 1, 'ally': 0, 'enemy_names': ['Skeleton'], 'push': [-16, -2], 'z_before': None, 'clean': True, 'tf': 3213, 'pre': True, 'out': 'neither'}
+{'m': '20261026_175027', 't': 2582, 'id': 5000057, 'name': 'SpearGoblin', 'from': 4, 'k': 2, 'enemy': 0, 'ally': 1, 'enemy_names': [], 'push': [-22, 4], 'z_before': None, 'clean': True, 'tf': 2582, 'pre': True, 'out': 'neither'}
+{'m': '20261026_175456', 't': 5673, 'id': 5000124, 'name': 'Skeleton', 'from': 4, 'k': 2, 'enemy': 0, 'ally': 1, 'enemy_names': [], 'push': [-1, 39], 'z_before': None, 'clean': True, 'tf': 5674, 'pre': True, 'out': 'gone'}
+{'m': '20261026_211757', 't': 3474, 'id': 5000131, 'name': 'SkeletonArmy_EV1_Soldier', 'from': 4, 'k': 3, 'enemy': 0, 'ally': 1, 'enemy_names': [], 'push': [0, 9], 'z_before': None, 'clean': True, 'tf': 3476, 'pre': True, 'out': 'gone'}
+{'m': '20261026_222712', 't': 3320, 'id': 5000079, 'name': 'Skeleton', 'from': 4, 'k': 2, 'enemy': 0, 'ally': 1, 'enemy_names': [], 'push': [-41, 0], 'z_before': None, 'clean': True, 'tf': 3321, 'pre': True, 'out': 'gone'}
+{'m': '20261026_222712', 't': 3320, 'id': 5000080, 'name': 'Skeleton', 'from': 4, 'k': 2, 'enemy': 0, 'ally': 1, 'enemy_names': [], 'push': [33, -2], 'z_before': None, 'clean': True, 'tf': 3321, 'pre': True, 'out': 'gone'}
+{'m': '20261027_005727', 't': 2814, 'id': 5000066, 'name': 'Skeleton', 'from': 4, 'k': 3, 'enemy': 1, 'ally': 1, 'enemy_names': ['Graveyard_rework_Skeleton'], 'push': [17, 15], 'z_before': None, 'clean': True, 'tf': 2815, 'pre': True, 'out': 'gone'}
+{'m': '20261027_014928', 't': 5004, 'id': 5000208, 'name': 'Graveyard_rework_Skeleton', 'from': 4, 'k': 2, 'enemy': 0, 'ally': 1, 'enemy_names': [], 'push': [121, 3], 'z_before': None, 'clean': True, 'tf': 5005, 'pre': True, 'out': 'gone'}
+{'m': '20261027_021852', 't': 1523, 'id': 5000047, 'name': 'FireSpirits', 'from': 4, 'k': 0, 'enemy': 0, 'ally': 3, 'enemy_names': [], 'push': [37, -24], 'z_before': None, 'clean': True, 'tf': 1523, 'pre': True, 'out': 'neither'}
+{'m': '20261027_033729', 't': 4653, 'id': 5000159, 'name': 'Skeleton', 'from': 4, 'k': 2, 'enemy': 0, 'ally': 1, 'enemy_names': [], 'push': [-12, 19], 'z_before': None, 'clean': True, 'tf': 4654, 'pre': True, 'out': 'gone'}

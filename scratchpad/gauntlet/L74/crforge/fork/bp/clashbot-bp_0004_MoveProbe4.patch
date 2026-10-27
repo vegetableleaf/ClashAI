@@ -1,0 +1,148 @@
+From dddef00d9a8f3e45ba568dfccc3b70ad05ff8956 Mon Sep 17 00:00:00 2001
+From: vegetableleaf <benzhu2029@u.northwestern.edu>
+Date: Tue, 27 Oct 2026 22:59:19 +0000
+Subject: [PATCH] clashbot-bp4: MoveProbe prop / push points and endpoint
+ variants (instrumentation only, no behaviour change)
+
+---
+ .../core/pathfinding/GridMovementQueries.java | 24 +++++++++++++++++++
+ .../core/pathfinding/move/Displacement.java   | 14 +++++++++++
+ .../pathfinding/move/MovementQueries.java     |  8 +++++++
+ .../core/pathfinding/move/PushPass.java       | 10 ++++++++
+ .../pathfinding/move/RoutePreparation.java    | 13 +++++++++-
+ 5 files changed, 68 insertions(+), 1 deletion(-)
+
+diff --git a/core/src/main/java/org/crforge/core/pathfinding/GridMovementQueries.java b/core/src/main/java/org/crforge/core/pathfinding/GridMovementQueries.java
+index 61be3e05..b81081c1 100644
+--- a/core/src/main/java/org/crforge/core/pathfinding/GridMovementQueries.java
++++ b/core/src/main/java/org/crforge/core/pathfinding/GridMovementQueries.java
+@@ -249,6 +249,30 @@ public final class GridMovementQueries implements MovementQueries {
+     return packed < 0 ? -1 : (packed & 0xffff) * grid.getWidth() + (packed >> 16);
+   }
+ 
++  /** Instrumentation only (MoveProbe): see {@link MovementQueries#probeEndpointAt}. */
++  @Override
++  public int probeEndpointAt(int px, int py, int radius) {
++    GridEntity entity = unit.entity();
++    int packed =
++        ReferenceEndpoint.selectEndpoint(
++            grid.getWidth(),
++            grid.getHeight(),
++            entity.getX(),
++            entity.getY(),
++            px / org.crforge.core.pathfinding.grid.TileMap.CELL_UNITS,
++            py / org.crforge.core.pathfinding.grid.TileMap.CELL_UNITS,
++            radius,
++            entity.isAir(),
++            PathfindingGlobals.KS_POS_TO_TARGET_FLYING_NO_WATER,
++            PathfindingGlobals.KS_POS_TO_TARGET_GROUND_AVOID_BUILDINGS,
++            ReferenceEndpoint.everyCellInBounds(grid.getWidth(), grid.getHeight()),
++            (x, y) -> FixedMath.squaredDistance(px, py, x, y),
++            grid::water,
++            (col, row) -> CellTests.overlayBlocks(grid, col, row),
++            null);
++    return packed < 0 ? -1 : (packed & 0xffff) * grid.getWidth() + (packed >> 16);
++  }
++
+   /** 1 for a hovering unit, which a push does not move off water. */
+   @Override
+   public int hovering() {
+diff --git a/core/src/main/java/org/crforge/core/pathfinding/move/Displacement.java b/core/src/main/java/org/crforge/core/pathfinding/move/Displacement.java
+index 56ed84c8..6728f34a 100644
+--- a/core/src/main/java/org/crforge/core/pathfinding/move/Displacement.java
++++ b/core/src/main/java/org/crforge/core/pathfinding/move/Displacement.java
+@@ -171,6 +171,9 @@ public final class Displacement {
+       proposal[1] = component.getWorkVector()[1];
+     }
+ 
++    int probeBlendX = proposal[0];
++    int probeBlendY = proposal[1];
++    int probeCount = component.getPushCount();
+     int stuck = 0;
+     if (component.getPushCount() >= 1) {
+       int count = component.getPushCount();
+@@ -208,6 +211,17 @@ public final class Displacement {
+ 
+     int[] position = {startX, startY};
+     GridMove.gridMove(grid, position, proposal[0], proposal[1], queries.entityView(), stuck & 1);
++    if (MoveProbe.on()) {
++      int pushX = probeCount >= 1 ? component.getWorkVector()[0] : 0;
++      int pushY = probeCount >= 1 ? component.getWorkVector()[1] : 0;
++      MoveProbe.tell(
++          "prop",
++          owner.getId(),
++          new int[] {
++            probeBlendX, probeBlendY, pushX, pushY, probeCount, component.getAvoidanceBlend(),
++            groundPushed ? 1 : 0, stuck, proposal[0], proposal[1], position[0], position[1]
++          });
++    }
+     owner.setX(position[0]);
+     owner.setY(position[1]);
+ 
+diff --git a/core/src/main/java/org/crforge/core/pathfinding/move/MovementQueries.java b/core/src/main/java/org/crforge/core/pathfinding/move/MovementQueries.java
+index 7b2bdfb9..0a2ea99a 100644
+--- a/core/src/main/java/org/crforge/core/pathfinding/move/MovementQueries.java
++++ b/core/src/main/java/org/crforge/core/pathfinding/move/MovementQueries.java
+@@ -65,6 +65,14 @@ public interface MovementQueries {
+     return -1;
+   }
+ 
++  /**
++   * Instrumentation only (MoveProbe): the goal node {@link #endpoint} would answer for a reference
++   * standing at the given point with the given radius, or -1. Nothing in the simulation calls it.
++   */
++  default int probeEndpointAt(int x, int y, int radius) {
++    return -1;
++  }
++
+   /**
+    * Moves a position off water to the nearest usable cell centre and returns it packed as {@code x
+    * | (y << 16)} in game units.
+diff --git a/core/src/main/java/org/crforge/core/pathfinding/move/PushPass.java b/core/src/main/java/org/crforge/core/pathfinding/move/PushPass.java
+index 4424f8c4..017e8c85 100644
+--- a/core/src/main/java/org/crforge/core/pathfinding/move/PushPass.java
++++ b/core/src/main/java/org/crforge/core/pathfinding/move/PushPass.java
+@@ -199,6 +199,16 @@ public final class PushPass {
+       component.setPushY(component.getPushY() + FixedMath.divOrZero(magnitude * dy, safeDistance));
+       component.setPushCount(component.getPushCount() + 1);
+       component.setPushX(component.getPushX() + FixedMath.divOrZero(magnitude * dx, safeDistance));
++      if (MoveProbe.on()) {
++        MoveProbe.tell(
++            "push",
++            owner.getId(),
++            new int[] {
++              other.getId(), dx, dy, reach, magnitude, otherMass, otherRadius,
++              neighbourMoves ? 1 : 0, FixedMath.divOrZero(magnitude * dx, safeDistance),
++              FixedMath.divOrZero(magnitude * dy, safeDistance), massTerm, owner.getMass()
++            });
++      }
+     }
+ 
+     chain.mark("release");
+diff --git a/core/src/main/java/org/crforge/core/pathfinding/move/RoutePreparation.java b/core/src/main/java/org/crforge/core/pathfinding/move/RoutePreparation.java
+index 62bc63e5..db7e1be9 100644
+--- a/core/src/main/java/org/crforge/core/pathfinding/move/RoutePreparation.java
++++ b/core/src/main/java/org/crforge/core/pathfinding/move/RoutePreparation.java
+@@ -171,7 +171,18 @@ public final class RoutePreparation {
+             heldGoal,
+             reference == null ? -1 : reference.x(),
+             reference == null ? -1 : reference.y(),
+-            reference == null ? -1 : queries.probeEndpointFromTickStart(probeRadius)
++            reference == null ? -1 : queries.probeEndpointFromTickStart(probeRadius),
++            probeRadius,
++            reference == null ? -1 : queries.probeEndpointAt(reference.x(), reference.y(), probeRadius - 25),
++            reference == null ? -1 : queries.probeEndpointAt(reference.x(), reference.y(), probeRadius - 50),
++            reference == null ? -1 : queries.probeEndpointAt(reference.x(), reference.y(), probeRadius - 75),
++            reference == null ? -1 : queries.probeEndpointAt(reference.x(), reference.y(), probeRadius - 100),
++            reference == null
++                ? -1
++                : queries.probeEndpointAt(
++                    reference.x() / TileMap.CELL_UNITS * TileMap.CELL_UNITS + TileMap.CELL_UNITS / 2,
++                    reference.y() / TileMap.CELL_UNITS * TileMap.CELL_UNITS + TileMap.CELL_UNITS / 2,
++                    probeRadius)
+           });
+     }
+     if (reference != null) {
+-- 
+2.43.0
+

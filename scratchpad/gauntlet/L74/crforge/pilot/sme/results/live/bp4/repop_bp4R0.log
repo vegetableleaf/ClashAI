@@ -1,0 +1,34 @@
+jobs=136 failed=0 
+events 36888; deciding with an exact frame before 32141
+clean [((False, False, 'alt1'), 42), ((False, False, 'crforge'), 4272), ((False, False, 'neither'), 76), ((True, True, 'alt1'), 2), ((True, True, 'crforge'), 27724), ((True, True, 'neither'), 25)]
+ago [((False, 1, 'alt1'), 11), ((False, 1, 'crforge'), 710), ((False, 1, 'neither'), 14), ((False, 2, 'alt1'), 8), ((False, 2, 'crforge'), 885), ((False, 2, 'neither'), 14), ((False, 3, 'alt1'), 7), ((False, 3, 'crforge'), 490), ((False, 3, 'neither'), 6), ((False, 4, 'alt1'), 2), ((False, 4, 'crforge'), 396), ((False, 4, 'neither'), 6), ((False, 5, 'alt1'), 3), ((False, 5, 'crforge'), 352), ((False, 5, 'neither'), 8), ((False, 6, 'alt1'), 6), ((False, 6, 'crforge'), 290), ((False, 6, 'neither'), 5), ((False, 7, 'alt1'), 4), ((False, 7, 'crforge'), 240), ((False, 7, 'neither'), 1), ((False, 8, 'alt1'), 1), ((False, 8, 'crforge'), 207), ((False, 8, 'neither'), 4), ((False, 9, 'crforge'), 702), ((False, 9, 'neither'), 18), ((True, 1, 'alt1'), 1), ((True, 1, 'crforge'), 3918), ((True, 1, 'neither'), 5), ((True, 2, 'alt1'), 1), ((True, 2, 'crforge'), 5833), ((True, 2, 'neither'), 2), ((True, 3, 'crforge'), 3060), ((True, 3, 'neither'), 2), ((True, 4, 'crforge'), 2779), ((True, 4, 'neither'), 3), ((True, 5, 'crforge'), 2174), ((True, 5, 'neither'), 3), ((True, 6, 'crforge'), 1822), ((True, 6, 'neither'), 2), ((True, 7, 'crforge'), 1679), ((True, 7, 'neither'), 1), ((True, 8, 'crforge'), 1507), ((True, 9, 'crforge'), 4952), ((True, 9, 'neither'), 7)]
+sub [((False, 'goal', 'alt1'), 42), ((False, 'goal', 'crforge'), 4264), ((False, 'goal', 'neither'), 76), ((False, 'overlay', 'crforge'), 8), ((True, 'goal', 'alt1'), 2), ((True, 'goal', 'crforge'), 27676), ((True, 'goal', 'neither'), 25), ((True, 'overlay', 'crforge'), 48)]
+arrive [((False, 1, 'alt1'), 42), ((False, 1, 'crforge'), 4272), ((False, 1, 'neither'), 76), ((True, 0, 'crforge'), 6), ((True, 1, 'alt1'), 2), ((True, 1, 'crforge'), 27718), ((True, 1, 'neither'), 25)]
+same [((False, False, 'alt1'), 5), ((False, False, 'crforge'), 2583), ((False, False, 'neither'), 57), ((False, True, 'alt1'), 37), ((False, True, 'crforge'), 1689), ((False, True, 'neither'), 19), ((True, False, 'crforge'), 17586), ((True, False, 'neither'), 19), ((True, True, 'alt1'), 2), ((True, True, 'crforge'), 10138), ((True, True, 'neither'), 6)]
+20261026_080929 1602 5000033 Skeleton ago 5 goal arrive 1 same True neither
+20261026_101112 5923 5000156 Knight ago 2 goal arrive 1 same False neither
+20261026_141505 4814 5000128 BlowdartGoblin ago 4 goal arrive 1 same True neither
+20261026_142345 3471 5000064 Skeleton ago 1 goal arrive 1 same True neither
+20261026_145247 3032 5000066 Skeleton ago 20 goal arrive 1 same False neither
+20261026_160930 4150 5000089 Goblin ago 1 goal arrive 1 same False neither
+20261026_170912 745 5000014 Skeleton ago 9 goal arrive 1 same False neither
+20261026_171232 5440 5000153 Skeleton ago 1 goal arrive 1 same False neither
+20261026_171232 5592 5000151 Knight_EV1 ago 26 goal arrive 1 same False neither
+20261026_175027 2582 5000051 Skeleton ago 5 goal arrive 1 same True neither
+20261026_175027 3613 5000088 Skeleton ago 2 goal arrive 1 same False neither
+20261026_175027 4138 5000108 Skeleton ago 5 goal arrive 1 same False neither
+20261026_180015 2114 5000049 Skeleton ago 6 goal arrive 1 same False neither
+20261026_180336 2910 5000058 EliteArcherHero ago 3 goal arrive 1 same False neither
+20261026_185736 2626 5000060 FireSpirits ago 1 goal arrive 1 same False neither
+20261026_201701 2583 5000048 goblinstein_doctor ago 7 goal arrive 1 same True neither
+20261026_220728 3561 5000135 Witch_EV1_Healing_Skeleton ago 4 goal arrive 1 same False neither
+20261026_230512 1120 5000019 Skeleton ago 3 goal arrive 1 same False neither
+20261027_000233 4598 5000116 Skeleton ago 1 goal arrive 1 same True alt1
+20261027_000233 4599 5000119 Skeleton ago 2 goal arrive 1 same True alt1
+20261027_001141 2869 5000041 Knight_EV1 ago 10 goal arrive 1 same False neither
+20261027_021852 1523 5000040 Skeleton ago 6 goal arrive 1 same False neither
+20261027_025651 3521 5000132 Skeleton ago 1 goal arrive 1 same False neither
+20261027_040821 1186 5000051 Skeleton ago 4 goal arrive 1 same False neither
+20261027_040821 1186 5000053 Skeleton ago 9 goal arrive 1 same False neither
+20261027_040821 1186 5000059 Skeleton ago 11 goal arrive 1 same True neither
+20261027_040821 1186 5000061 Skeleton ago 9 goal arrive 1 same False neither

@@ -1,0 +1,43 @@
+jobs=136 failed=0 
+unit-windows 1023, log ends 350
+(clean, unit on the log side, crforge replans, out):
+  (False, False, ('goal', 'overlay'), 'exact') 1
+  (False, False, ('goal',), 'div') 4
+  (False, False, ('goal',), 'exact') 31
+  (False, False, ('goal',), 'gone') 11
+  (False, False, (), 'exact') 5
+  (False, False, (), 'gone') 7
+  (False, True, ('goal', 'overlay'), 'exact') 1
+  (False, True, ('goal',), 'div') 1
+  (False, True, ('goal',), 'exact') 20
+  (False, True, ('goal',), 'gone') 4
+  (False, True, ('overlay',), 'exact') 1
+  (False, True, (), 'div') 1
+  (False, True, (), 'exact') 13
+  (False, True, (), 'gone') 9
+  (True, False, ('goal', 'overlay'), 'exact') 27
+  (True, False, ('goal', 'overlay'), 'gone') 2
+  (True, False, ('goal',), 'div') 2
+  (True, False, ('goal',), 'exact') 217
+  (True, False, ('goal',), 'gone') 54
+  (True, False, ('overlay',), 'exact') 1
+  (True, False, ('overlay',), 'gone') 6
+  (True, False, (), 'exact') 72
+  (True, False, (), 'gone') 77
+  (True, True, ('goal', 'overlay'), 'div') 1
+  (True, True, ('goal', 'overlay'), 'exact') 15
+  (True, True, ('goal', 'overlay'), 'gone') 2
+  (True, True, ('goal',), 'div') 2
+  (True, True, ('goal',), 'exact') 182
+  (True, True, ('goal',), 'gone') 31
+  (True, True, ('overlay',), 'exact') 6
+  (True, True, (), 'div') 2
+  (True, True, (), 'exact') 162
+  (True, True, (), 'gone') 53
+{'m': '20261026_095457', 'te': 4177, 'log': 'BarbLogProjectileRolling', 'log_side': 1, 'id': 5000130, 'name': 'Knight', 'side': 0, 'replan': ['goal'], 'clean': True, 'out': 'div', 'div_t': 4189}
+{'m': '20261026_141505', 'te': 1786, 'log': 'BarbLogProjectile', 'log_side': 1, 'id': 5000026, 'name': 'RascalBoy', 'side': 1, 'replan': ['goal'], 'clean': True, 'out': 'div', 'div_t': 1808}
+{'m': '20261026_141505', 'te': 2823, 'log': 'BarbLogProjectile', 'log_side': 1, 'id': 5000055, 'name': 'Knight', 'side': 0, 'replan': ['goal'], 'clean': True, 'out': 'div', 'div_t': 2833}
+{'m': '20261026_233436', 'te': 1163, 'log': 'BarbLogProjectileRolling', 'log_side': 0, 'id': 5000021, 'name': 'BalloonHero', 'side': 0, 'replan': [], 'clean': True, 'out': 'div', 'div_t': 1182}
+{'m': '20261026_233436', 'te': 5995, 'log': 'BarbLogProjectile', 'log_side': 0, 'id': 5000187, 'name': 'IceGolemite', 'side': 0, 'replan': ['goal', 'overlay'], 'clean': True, 'out': 'div', 'div_t': 6001}
+{'m': '20261027_005727', 'te': 5986, 'log': 'BarbLogProjectileRolling', 'log_side': 0, 'id': 5000260, 'name': 'Knight', 'side': 0, 'replan': ['goal'], 'clean': True, 'out': 'div', 'div_t': 6001}
+{'m': '20261027_005727', 'te': 5986, 'log': 'BarbLogProjectileRolling', 'log_side': 0, 'id': 5000266, 'name': 'BabyDragon', 'side': 0, 'replan': [], 'clean': True, 'out': 'div', 'div_t': 6001}
