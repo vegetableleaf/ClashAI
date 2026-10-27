@@ -1,7 +1,6 @@
 """cls_down_split.py CLS_BASE_DIR CLS_ARM_DIR MOVED.json: split the down fights by how fin16's first global divergence (live vs
 SIM) relates to fin15's on the same fight: SAME (kind, body, dt within 4 ticks: a divergence both engines already had; fin16
 only changed what followed), EARLIER on fin16 (fin16 departs from live first), LATER on fin16."""
-import json
 import sys
 from collections import Counter
 
