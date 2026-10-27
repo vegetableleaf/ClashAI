@@ -1,0 +1,6 @@
+== bppc402_up1.tsv: 1040 episodes, 11326 presses
+  1033  none
+     7  UnsupportedOperationException: #: an ability command whose giving the expiry of a refused play's promise decides, at a tick not traced, is not modelled
+== bppc635_up1.tsv: 1040 episodes, 11717 presses
+  1037  none
+     3  UnsupportedOperationException: #: an ability command whose giving the expiry of a refused play's promise decides, at a tick not traced, is not modelled

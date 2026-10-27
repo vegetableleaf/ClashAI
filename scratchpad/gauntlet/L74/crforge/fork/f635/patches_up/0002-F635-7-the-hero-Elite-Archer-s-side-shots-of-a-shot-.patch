@@ -1,0 +1,129 @@
+From e54769fe6f7d70bec39fe18c65bb4359318f2d99 Mon Sep 17 00:00:00 2001
+From: vegetableleaf <benzhu2029@u.northwestern.edu>
+Date: Tue, 27 Oct 2026 20:50:49 +0000
+Subject: [PATCH 2/3] F635-7: the hero Elite Archer's side shots of a shot
+ whose shooter left on its launch tick have no root
+
+A hero Elite Archer (Magic Archer) killed at the drain of the tick it launches its ability shot
+leaves before the shot's starting action makes the side shots: the shot's root is forgotten, and
+launchAcross refused ("which has no root, so the shooter would be its root"). The side shots now
+start with no root, as any projectile whose root has left the battle. crforge's readers of a
+projectile's root (the reflect, a spell-like deflect) then see none (b: the game may make the
+shooter, a projectile, the root; no modelled reader tells the two apart).
+EliteArcherHeroParallelShotTest: the kill queued for the launch tick's drain, red (the refusal)
+then green.
+Core tests: 16.402.22 2149/0; 16.635.3 (guard bypassed for the run) 3 -> 3 failures.
+---
+ .../battle/projectile/ProjectileEntity.java   | 12 ++--
+ .../unit/EliteArcherHeroParallelShotTest.java | 65 +++++++++++++++++++
+ 2 files changed, 69 insertions(+), 8 deletions(-)
+
+diff --git a/core/src/main/java/org/crforge/core/battle/projectile/ProjectileEntity.java b/core/src/main/java/org/crforge/core/battle/projectile/ProjectileEntity.java
+index a78b405b..10cd923c 100644
+--- a/core/src/main/java/org/crforge/core/battle/projectile/ProjectileEntity.java
++++ b/core/src/main/java/org/crforge/core/battle/projectile/ProjectileEntity.java
+@@ -519,7 +519,10 @@ public class ProjectileEntity extends BattleEntity
+    * Archer's ability shot shoots its side shots: from the given start, on the ground but for a
+    * constant height, with no target and no delay, at the source's packed level re-based on this
+    * row's rarity, carrying the source's play, aimed from where the source stands. The source is its
+-   * launcher and owner, and the source's root, a unit or tower, its root. A projectile owns no
++   * launcher and owner, and the source's root, a unit or tower, its root; none when the source has
++   * none, its shooter having left the battle by the time it sets off (killed on its launch tick):
++   * the side shot is then as any projectile whose root has left (clashbot fork F635, b). A
++   * projectile owns no
+    * projectile here: the owner is left empty, which is what every reader of a projectile's owner
+    * makes of one that is not a character - the shooter that counts its hits, the initial collision
+    * check's segment, the hooks - and the source has no running action that hears of it.
+@@ -532,13 +535,6 @@ public class ProjectileEntity extends BattleEntity
+    */
+   public void launchAcross(ProjectileEntity source, int sx, int sy, int hx, int hy) {
+     refuseUnitOnly("shot by a projectile");
+-    if (source.root == null) {
+-      throw new UnsupportedOperationException(
+-          data.name()
+-              + " is shot by "
+-              + source.name()
+-              + ", which has no root, so the shooter would be its root, not modelled");
+-    }
+     place(null, source.root, null, source.packedLevel, sx, sy, 0, hx, hy, source.x, source.y);
+     this.delayMs = 0;
+     this.deployIndex = source.deployIndex;
+diff --git a/core/src/test/java/org/crforge/core/battle/unit/EliteArcherHeroParallelShotTest.java b/core/src/test/java/org/crforge/core/battle/unit/EliteArcherHeroParallelShotTest.java
+index d01b7027..47e431c1 100644
+--- a/core/src/test/java/org/crforge/core/battle/unit/EliteArcherHeroParallelShotTest.java
++++ b/core/src/test/java/org/crforge/core/battle/unit/EliteArcherHeroParallelShotTest.java
+@@ -128,6 +128,71 @@ class EliteArcherHeroParallelShotTest {
+     }
+   }
+ 
++  /**
++   * The scene of {@link #theAbilityShotStartsTwoSideShots} up to the tick before the ability shot's
++   * launch, then that launch's step, with the hero's kill queued for that step's drain when asked:
++   * the battle, the hero, and the tick the ability shot was first listed at the end of.
++   */
++  private static Object[] toTheLaunch(int killBefore) {
++    GameTables tables = GameData.tables();
++    BattleRecords records = new BattleRecords(tables);
++    Standard1v1Battle battle = null;
++    LadderMatch match = null;
++    for (int word = 0; match == null || !inHand(match, "EliteArcher"); word++) {
++      battle = new Standard1v1Battle(tables);
++      match = battle.startLadderMatch(DECK, KNIGHTS, word, 0, heroFirst(), new int[8]);
++    }
++    int cost = records.matchCard("EliteArcher").cost();
++    while (battle.getBattle().getTick() < match.getStartCooldownTicks()
++        || match.side(0).wholeElixir() < cost) {
++      step(battle);
++    }
++    battle.play(
++        battle.getBattle().getTick(), records.card("EliteArcher"), LEVEL, 0, 3500, 14000, "e");
++    while (named(battle, HERO).isEmpty()) {
++      assertThat(battle.getBattle().getTick()).isLessThan(LIMIT);
++      step(battle);
++    }
++    CharacterEntity hero = named(battle, HERO).get(0);
++    while (!aimedAt(battle, hero)) {
++      assertThat(battle.getBattle().getTick()).isLessThan(LIMIT);
++      step(battle);
++    }
++    battle.useAbility(battle.getBattle().getTick(), 0, hero.name(), "a");
++    while (shots(battle, MIDDLE).isEmpty()) {
++      assertThat(battle.getBattle().getTick()).isLessThan(LIMIT);
++      if (battle.getBattle().getTick() + 1 == killBefore) {
++        battle.getWorld().kill(hero, null);
++      }
++      step(battle);
++    }
++    return new Object[] {battle, hero, battle.getBattle().getTick()};
++  }
++
++  @Test
++  @DisplayName(
++      "clashbot F635: a hero Elite Archer killed on the tick it launches its ability shot leaves"
++          + " the shot with no root; the side shots still start, with no root, as any projectile"
++          + " whose root has left")
++  void aShooterKilledAsItLaunchesLeavesSideShotsWithNoRoot() {
++    int launch = (int) toTheLaunch(-1)[2];
++    Object[] scene = toTheLaunch(launch);
++    Standard1v1Battle battle = (Standard1v1Battle) scene[0];
++    CharacterEntity hero = (CharacterEntity) scene[1];
++    assertThat((int) scene[2]).as("the same launch tick").isEqualTo(launch);
++    ProjectileEntity middle = shots(battle, MIDDLE).get(0);
++    assertThat(hero.isRemovable()).as("the hero died at the launch's drain").isTrue();
++    step(battle);
++    assertThat(named(battle, HERO)).as("the hero has left").isEmpty();
++    assertThat(middle.getRoot()).isNull();
++    List<ProjectileEntity> sides = shots(battle, SIDE);
++    assertThat(sides).hasSize(Shipped.number(PARALLEL, "ProjectileCount"));
++    for (ProjectileEntity side : sides) {
++      assertThat(side.side()).isEqualTo(middle.side());
++      assertThat(side.getRoot()).isNull();
++    }
++  }
++
+   /**
+    * The point across a line at an offset: the line turned a quarter, scaled to the offset with the
+    * game's integer normalization.
+-- 
+2.43.0
+

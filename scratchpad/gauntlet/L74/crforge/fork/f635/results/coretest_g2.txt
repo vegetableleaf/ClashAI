@@ -1,0 +1,3 @@
+core tests 2181 failures 0 errors 0 skipped 5
+core tests 2181 failures 0 errors 0 skipped 25
+done

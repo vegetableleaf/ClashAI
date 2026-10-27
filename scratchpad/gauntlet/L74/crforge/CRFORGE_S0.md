@@ -366,3 +366,68 @@ actions added, 1 removed (`ElectroWizardHero_Forbid_Movement`) and 13 changed.
   - the removed bug globals and new fix flags, whose game-code effect only an upstream core change can model.
 - The pin stays on 16.402.22. This bypass is not exactness for those 7 or for any match where the refund or flag rules
   bite (b), and nothing here is adopted.
+
+## F635c (2026-10-27/28): fork rebased onto upstream's 16.635 move (e5462c82); both client ranges played
+Labels as above. Files: `crforge/fork/f635/` (`patches/0009-0010`, `patches_up/0001-0005`, `results/f635c_*`,
+`results/coretest_{c7,c8,up0,g2,g4}.txt`, `results/bppc_up1_counts.txt`, `pod/{ctboth,ctup,buildsnap,smerun85,bppc}.sh`).
+Pod 30408, `/workspace/f635/crforge_fork`; the pin and the other branches untouched (upstream fetched into
+`upstream/main` only).
+
+**New branch head: `clashbot-up-e5462c82` = `bec5811a51fcbc55bd4112b4f9fe30c23b5e29d8`** (upstream e5462c82 + 5 commits).
+**Determinism hash (Probe determinism, lib of that head): 16.402.22 `a0bd88c41f98b46d` (= the pin's), 16.635.3
+`575c99887ba28802`, IDENTICAL on 1 vs 4 threads (a).** Core jar sha256 `63b78b8a1b743ef2`.
+
+- **Upstream moved the battle to client 16.635.1 overnight (a):** 13 commits 008aa626..e5462c82, each traced from the
+  16.635.1 client. They cover F635-1 (#739), F635-2 (#738), F635-3 (#747), F635-4 (#744), F635-6 (#745), F635-8 (#742),
+  7a (#743) and 7b (#741), plus #740 (DashImmune RespectDodgingDamageCooldown), which we had not listed. Upstream
+  refuses 16.402 data (b40c4a36).
+- **Branch:** from `clashbot-upstream-20261027` (= 008aa626), fast-forwarded to e5462c82. Upstream's version kept for
+  every overlap; ours kept only where upstream has none:
+  - `cbdec89e` F635-5 (by-id press promise, PlayerCommands; facade ee9982b needs it);
+  - `e54769fe` F635-7 (Elite Archer side shots with no root; upstream still refuses);
+  - `1d338603` F635c-10 guard: `GameVersions.MODELLED_DATA` = 16.402.18-22 + 16.635.3;
+  - `822d27f7` F635c-11 and `bec5811a` F635c-12, below.
+- **Two upstream changes alter 16.402 play in code (a, our frames):** upstream e5462c82 + ours, SME old client
+  88 -> 81/109.
+  - 5 regressions start at a MegaKnight_EV1: #738 dropped the uppercut's coded hold.
+  - 2 start at a BossBandit: #740's column default is on.
+  - F635c-11 and F635c-12 restore 16.402.17's rule on 16.402 data only (`BattleWorld.client16402`, filter default off).
+  - The two were measured together, so attributing the 2 BossBandit matches to F635c-12 rests on the unit (b).
+  - Upstream itself reports the same for #738: 55 of its 16.402.22 references went to mismatch.
+- **Differences, ours (dropped) vs upstream (kept).** Our 47 new-client frames do not tell any of them apart:
+  c7_new (our F635-1..9 line) vs the branch, 47/47 identical, so each is (b) on our evidence. Upstream traced each
+  from the client.
+
+  | item | ours | upstream |
+  |---|---|---|
+  | F635-6 (#745) | read the dropped global as clear | kept the set test: queued damage vs hp + shield. Ours was the wrong side (c, by upstream's trace) |
+  | F635-3 (#747) | cast match also by side | cast id = the king's play count, no side check (the same count from the other side matches) |
+  | F635-8 (#742) | NoCounter not read | NoCounter: a counter (Ronin parry) skips the hit |
+  | F635-4 (#744) | entry time only, any order length | entry buff and time, order of two or more |
+  | F635-1 (#739) | last copy leaving refunds | the cost rides on the unit, refunded capped as the slot is; a building paid so is refused |
+  | 7a (#743) | (ticket assumed the charge is left alone) | the charge is RESET during a pushback while movement is disabled (c for the ticket's reading) |
+  | 7b (#741) | (ticket: discarded hit already returned before the kill) | crforge ran hitEnded for a missed hit (c); the flag skips it, the Kamikaze unit lives on |
+- **Gates of the branch head (a):**
+  - Core tests: 16.635.3 2182/0 (6 skipped); 16.402.22 2182/0 (29 skipped). Upstream alone on 16.402.22: 1,006 guard
+    refusals + 21 others.
+  - 16.635-only upstream tests assume 16.635 data: ReplayScenarioEveryFieldTest, 1 CastIdSpecificBuff case and the 4
+    uppercut / DashImmune 16.635.1-rule cases.
+  - SME old client, a2c6's round-7 config (= its r78: inputs_v19, repr_v2, TORN_STEP STEP_CLOCK TORN_CMD3 KIND_T
+    BP_MIXPH BP_SNAP SnapRun2 BP_FITNEXT), with clashbot-bp TickProbe 0001 + 0002 applied for the build only
+    (`buildsnap.sh`, scratch, not committed): **88/109, 261,135 exact frames, 138/138 identical to a2c6's r78, 0
+    regressions.** The lib_bp2 control on 30408 is also 138/138 identical to r78.
+  - SME new client (47 RNG-free, 33 unflagged): 17/33, 70,198 exact frames, 47/47 identical to the F635 line.
+  - Forced-button sweep (26 forms x 40; ButtonProbeP): 16.635.3 1,037/1,040 none, 3 on the press-timing rule below;
+    16.402.22 1,033/1,040 none, 7. **No 16.635.3 row is refused.**
+- **Giant evo / Mirror evo (items 8-9): not modelled.** In 16.635.3, `Giant_EV1` and `Mirror_EV1` are NotInUse +
+  NotVisible (a). The 43 in-use evolution rows are exactly the 43 evolutions seen in our battle logs. So they are
+  shipped-ahead, unreleased forms.
+- **GiantBuffer_hero (Rune Giant hero): not a real form; excluded.** The row has no `CardForm: HeroForm`.
+  `forms_decks.py` now takes only CardForm HeroForm rows (27 -> 26 forms; GiantBuffer_hero is the one dropped).
+  `new_client_forms.py` drops its item.
+- **Press-timing refusals (F635b concern), cause read from the code (a by code, not traced per episode):**
+  - The rule is `PlayerCommands.tryAbility`. A press is given within +-2 ticks (DROP_WINDOW) of the 60-tick expiry of
+    an earlier refused play's promise, and the elixir gate's answer differs with and without that promise.
+  - It is the client's exact promise-expiry tick, not traced, not a press bug.
+- clashbot-635 got 7a/7b too (`5cc4067d`, `ea9a9bf4`, cherry-picks of #743/#741; SME for 7a: old 67/109 and new 17/33
+  identical), and is superseded by `clashbot-up-e5462c82`.

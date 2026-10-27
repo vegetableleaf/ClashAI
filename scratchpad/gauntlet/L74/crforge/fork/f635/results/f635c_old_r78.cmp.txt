@@ -1,0 +1,25 @@
+== F635c up1 (upstream e5462c82 + F635-5 + F635-7 + guard), r78 config, vs ctl85 (lib_bp2)
+exact apart from torn: 88/109 -> 81/109 | exact frames 261135 -> 252384 | regressions ['live_play_20261026_155201', 'live_play_20261026_180652', 'live_play_20261026_200941', 'live_play_20261026_205934', 'live_play_20261026_224041', 'live_play_20261027_011738', 'live_play_20261027_020913'] | gained 0
+torn frames after: {'torn_snap': 18, 'torn_cmd': 70, 'torn_step': 63, 'torn_t1': 109, 'torn_mixed': 29}
+  16  body position (movement / collision / targeting)
+   3  projectile only (launch timing / flight)
+   3  hp only: sim less/mixed damage at the same points
+   2  hp only: sim more damage at the same points
+   1  Earthquake pulse timing
+   1  body in the reader, none near in the sim (play missed / late / unit not made)
+   1  body in the sim, none near in the reader
+== up2 (+ F635c-11/12) vs ctl85
+exact apart from torn: 88/109 -> 88/109 | exact frames 261135 -> 261135 | regressions 0 | gained 0
+torn frames after: {'torn_snap': 18, 'torn_cmd': 71, 'torn_step': 64, 'torn_t1': 109, 'torn_mixed': 29}
+  10  body position (movement / collision / targeting)
+   3  projectile only (launch timing / flight)
+   3  hp only: sim less/mixed damage at the same points
+   2  body in the sim, none near in the reader
+   1  Earthquake pulse timing
+   1  body in the reader, none near in the sim (play missed / late / unit not made)
+== identity
+r78 vs ctl85: matches in both 138: identical 138, different 0
+r78 vs up2: matches in both 138: identical 138, different 0
+== ctl85 vs r75
+exact apart from torn: 85/109 -> 88/109 | exact frames 260209 -> 261135 | regressions 0 | gained 3
+torn frames after: {'torn_snap': 18, 'torn_cmd': 71, 'torn_step': 64, 'torn_t1': 109, 'torn_mixed': 29}

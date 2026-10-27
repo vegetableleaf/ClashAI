@@ -25,7 +25,6 @@ ITEMS = [  # (label, table card, form: 'evo' / 'hero' / None = any form), what i
     ('balloon hero: delivery mark (F635-1 done)', 'Balloon', 'hero'),
     ('giant hero: delivery mark (F635-1 done)', 'Giant', 'hero'),
     ('barbarian_barrel hero: button untested', 'BarbLog', 'hero'),
-    ('rune_giant hero: button untested', 'GiantBuffer', 'hero'),
     ('goblins hero: button untested', 'Goblins', 'hero'),
 ]
 

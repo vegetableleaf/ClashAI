@@ -1,0 +1,453 @@
+From ea9a9bf46fc89db9a007053d2a1ef5fb12768e1e Mon Sep 17 00:00:00 2001
+From: vegetableleaf <benzhu2029@u.northwestern.edu>
+Date: Tue, 27 Oct 2026 22:02:09 +0000
+Subject: [PATCH 10/10] F635-10: LOGIC_SKIP_KAMIKAZE_ON_DISCARDED_HIT (data
+ 16.635.3), upstream e5462c82 (#741) cherry-picked
+
+A hit discarded for distance (target left the range during the wind-up) skips its end, where a
+Kamikaze owner destroys itself, under the published global; the 16.402 tables publish none and the
+hit always ends (crforge already ran hitEnded for a missed hit: the ticket premise that it returned
+before the kill does not hold). Kamikaze rows in 16.635.3: BattleRam, ElectroSpirit, FireSpirits,
+GoblinDemolisher_kamikaze_form, HealSpirit, IceSpirits(_EV1), SkeletonBalloon(_EV1), SuspiciousBush,
+Wallbreaker(_EV1, _mini). Conflicts: Fidelity notes only (BattleWorld, WorldEntity).
+
+Red: end not skipped, 1 of 22 BattleKamikazeDiscardedHitTest/HitApplication* fails on 16.635.3; green.
+Core: 16.402.22 2157/0; 16.635.3 (guard bypassed for the run) 2157/0.
+
+(cherry picked from commit e5462c8278f537a99361f248444efef53efebe1f)
+---
+ .../crforge/core/battle/unit/BattleWorld.java |  20 +-
+ .../crforge/core/battle/unit/WorldEntity.java |   9 +-
+ .../pathfinding/target/HitApplication.java    |  16 +-
+ .../core/pathfinding/target/HitQueries.java   |  13 +-
+ .../unit/BattleKamikazeDiscardedHitTest.java  | 278 ++++++++++++++++++
+ 5 files changed, 330 insertions(+), 6 deletions(-)
+ create mode 100644 core/src/test/java/org/crforge/core/battle/unit/BattleKamikazeDiscardedHitTest.java
+
+diff --git a/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java b/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java
+index e2732f41..dabe68ab 100644
+--- a/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java
++++ b/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java
+@@ -169,7 +169,10 @@ import org.crforge.core.pathfinding.target.ValidatorQueries;
+             + " action, and a death hook with no attacker or no pending pass ahead of it. Left"
+             + " out: the elixir a death gives. Not modelled: the game mode's own per-tick work"
+             + " beside the index and the overlay, and the copy of the attacker the game makes as"
+-            + " a death hook's cause.")
++            + " a death hook's cause."
++            + " Traced on game client 16.635.1, no reference holds it yet: the global"
++            + " LOGIC_SKIP_KAMIKAZE_ON_DISCARDED_HIT read from the tables, clear when they do not"
++            + " publish it.")
+ public class BattleWorld implements HolderPasses {
+ 
+   @Getter private final TileMap tileMap;
+@@ -864,6 +867,19 @@ public class BattleWorld implements HolderPasses {
+   /** The battle's action rows, from the tables it was loaded with. */
+   @Getter private ActionRows actions;
+ 
++  /**
++   * The global under which the end of a Kamikaze unit's hit discarded for distance is skipped, so
++   * the unit lives on: published by the data of game client 16.635.1 (set), not by the data
++   * versions of client 16.402.17, whose hit always ends, discarded or not.
++   */
++  static final String SKIP_KAMIKAZE_ON_DISCARDED_HIT = "LOGIC_SKIP_KAMIKAZE_ON_DISCARDED_HIT";
++
++  /**
++   * True when the loaded tables publish {@link #SKIP_KAMIKAZE_ON_DISCARDED_HIT} set: a hit
++   * discarded for distance then skips its end, which a Kamikaze unit destroys itself in.
++   */
++  @Getter private boolean skipKamikazeOnDiscardedHit;
++
+   /**
+    * Which bit of an entity's tag word each flag is, as the loaded game tags table numbers the tags;
+    * every entity of the battle shares it. No flag has a bit until the tables are loaded.
+@@ -894,6 +910,8 @@ public class BattleWorld implements HolderPasses {
+     this.movementGlobals =
+         movementGlobals.withResetChargeDuringPushbackWhenMovementDisabled(
+             records.publishedGlobalBoolean(RESET_CHARGE_DURING_PUSHBACK));
++    this.skipKamikazeOnDiscardedHit =
++        records.publishedGlobalBoolean(SKIP_KAMIKAZE_ON_DISCARDED_HIT);
+   }
+ 
+   /**
+diff --git a/core/src/main/java/org/crforge/core/battle/unit/WorldEntity.java b/core/src/main/java/org/crforge/core/battle/unit/WorldEntity.java
+index 24cd6d6f..cd2388a3 100644
+--- a/core/src/main/java/org/crforge/core/battle/unit/WorldEntity.java
++++ b/core/src/main/java/org/crforge/core/battle/unit/WorldEntity.java
+@@ -152,7 +152,9 @@ import org.crforge.core.pathfinding.target.ValidatorQueries;
+             + " entry reached applied to itself and the counter back to 0 at the last, held by"
+             + " evo_barbarians_vs_musketeer and evo_bats_vs_musketeer; a list of counts, a"
+             + " projectile's shooter and a reflecting unit by BattleBuffAfterHitsTest; a typed"
+-            + " hit's and damage over time's count of a BuffAfterHits row refused.")
++            + " hit's and damage over time's count of a BuffAfterHits row refused."
++            + " Traced on game client 16.635.1, no reference holds it yet: a hit discarded for"
++            + " distance skips its end under the battle's LOGIC_SKIP_KAMIKAZE_ON_DISCARDED_HIT.")
+ public abstract class WorldEntity extends BattleEntity implements ActionOwner, SpawnHost {
+ 
+   /** Side of the player at the low end of the arena. */
+@@ -702,6 +704,11 @@ public abstract class WorldEntity extends BattleEntity implements ActionOwner, S
+         WorldEntity.this.hitEnded();
+       }
+ 
++      @Override
++      public boolean skipsEndOfDiscardedHit() {
++        return world.isSkipKamikazeOnDiscardedHit();
++      }
++
+       @Override
+       public void hitAllowed() {
+         WorldEntity.this.hitAllowed();
+diff --git a/core/src/main/java/org/crforge/core/pathfinding/target/HitApplication.java b/core/src/main/java/org/crforge/core/pathfinding/target/HitApplication.java
+index 31acbab2..0b5cc759 100644
+--- a/core/src/main/java/org/crforge/core/pathfinding/target/HitApplication.java
++++ b/core/src/main/java/org/crforge/core/pathfinding/target/HitApplication.java
+@@ -44,7 +44,10 @@ import org.crforge.core.fidelity.FidelityStatus;
+  *   <li>a hit not cancelled for distance schedules the action the row runs as it attacks on the
+  *       owner, with the target as its cause; a hit with no target schedules nothing. It then
+  *       schedules the action the row runs on the owner itself, with the owner as its cause, target
+- *       or not.
++ *       or not;
++ *   <li>the hit's end, where a Kamikaze owner destroys itself, landed or not; a hit discarded for
++ *       distance skips it when the battle's global asks for it (game client 16.635.1, under
++ *       LOGIC_SKIP_KAMIKAZE_ON_DISCARDED_HIT), which client 16.402.17 never does.
+  * </ul>
+  *
+  * <p>The damage chosen here reaches the target only through the direct hit. A projectile computes
+@@ -81,7 +84,10 @@ import org.crforge.core.fidelity.FidelityStatus;
+             + " the long-distance cancel is carried and held by no run. The attack counter,"
+             + " raised by a hit not cancelled for distance, is held by"
+             + " golden-gaps-v1/electro_giant_struck_by_knights and card_ElectroGiant, whose"
+-            + " reflect keys on it.")
++            + " reflect keys on it. Traced on game client 16.635.1, no reference holds it yet: the"
++            + " skip of the end of a hit discarded for distance under"
++            + " LOGIC_SKIP_KAMIKAZE_ON_DISCARDED_HIT, which keeps a Kamikaze owner alive; the 16.402"
++            + " data versions do not publish the global, and their hit always ends.")
+ public final class HitApplication {
+ 
+   private HitApplication() {
+@@ -206,7 +212,11 @@ public final class HitApplication {
+     if (!missed && !entryAction && !specialLoad && last && queries.hitListeners()) {
+       queries.attackEnded();
+     }
+-    queries.hitEnded();
++    // Last, the hit's end, where a Kamikaze owner destroys itself: skipped for a hit discarded for
++    // distance when the battle's global asks for it, so that owner lives on.
++    if (!missed || !queries.skipsEndOfDiscardedHit()) {
++      queries.hitEnded();
++    }
+     return missed;
+   }
+ 
+diff --git a/core/src/main/java/org/crforge/core/pathfinding/target/HitQueries.java b/core/src/main/java/org/crforge/core/pathfinding/target/HitQueries.java
+index c98662fc..591b0432 100644
+--- a/core/src/main/java/org/crforge/core/pathfinding/target/HitQueries.java
++++ b/core/src/main/java/org/crforge/core/pathfinding/target/HitQueries.java
+@@ -218,10 +218,21 @@ public interface HitQueries {
+ 
+   /**
+    * The hit's last call, made whether or not anything landed but not for a hit the owner's tags
+-   * forbid: a Kamikaze owner destroys itself here, after its direct hit or its launch.
++   * forbid, nor for a hit discarded for distance when {@link #skipsEndOfDiscardedHit()}: a Kamikaze
++   * owner destroys itself here, after its direct hit or its launch.
+    */
+   default void hitEnded() {}
+ 
++  /**
++   * True when a hit discarded for distance skips its end, {@link #hitEnded()}, so a Kamikaze owner
++   * whose target left its range lives on: the battle's published global
++   * LOGIC_SKIP_KAMIKAZE_ON_DISCARDED_HIT, which game client 16.635.1 reads. False by default, the
++   * rule of client 16.402.17, whose hit always ends.
++   */
++  default boolean skipsEndOfDiscardedHit() {
++    return false;
++  }
++
+   /**
+    * Whether the owner's actions listen to its hits: a running action that enchants them. Without
+    * one the hit neither passes its damage through them nor tells them its attack ended.
+diff --git a/core/src/test/java/org/crforge/core/battle/unit/BattleKamikazeDiscardedHitTest.java b/core/src/test/java/org/crforge/core/battle/unit/BattleKamikazeDiscardedHitTest.java
+new file mode 100644
+index 00000000..8e7f069b
+--- /dev/null
++++ b/core/src/test/java/org/crforge/core/battle/unit/BattleKamikazeDiscardedHitTest.java
+@@ -0,0 +1,278 @@
++/*
++ * crforge - https://github.com/voonhous/crforge
++ * SPDX-License-Identifier: Apache-2.0
++ * Porting this code? Please cite this file and the commit you read: see the README.
++ */
++
++package org.crforge.core.battle.unit;
++
++import static org.assertj.core.api.Assertions.assertThat;
++
++import com.fasterxml.jackson.databind.node.ObjectNode;
++import java.io.IOException;
++import java.nio.file.Path;
++import java.util.ArrayList;
++import java.util.List;
++import org.crforge.core.battle.BattleEntity;
++import org.crforge.core.battle.GameData;
++import org.crforge.core.battle.Shipped;
++import org.crforge.core.battle.data.GameRow;
++import org.crforge.core.battle.data.GameTables;
++import org.crforge.core.battle.projectile.ProjectileEntity;
++import org.crforge.core.battle.spawn.SpawnHost;
++import org.crforge.core.pathfinding.GridEntityState;
++import org.junit.jupiter.api.DisplayName;
++import org.junit.jupiter.api.Test;
++import org.junit.jupiter.api.io.TempDir;
++
++/**
++ * The end of a Kamikaze unit's hit that was discarded because its target left the attack range
++ * during the wind-up. An evolved Wall Breaker hooked by a Fisherman while it attacks a building is
++ * pulled out of range and let go with its attack running on, so the hit it then makes is discarded.
++ * Under the rules of game client 16.402.17 the end of that hit still destroys it, with no explosion
++ * and none of its death actions, as it destroyed itself; client 16.635.1 skips the end of a
++ * discarded hit under the published global LOGIC_SKIP_KAMIKAZE_ON_DISCARDED_HIT, so the unit lives
++ * on and, killed by the Fisherman, runs its death actions: the death damage the game's patch notes
++ * give back to the evolved Wall Breakers pulled by a Fisherman. The 16.402 data versions did not
++ * publish the global and kept the old rule; each case here sets the global up itself.
++ */
++class BattleKamikazeDiscardedHitTest {
++
++  private static final int LEVEL = Standard1v1Battle.DEFAULT_LEVEL;
++
++  /** The global that skips the end of a Kamikaze unit's discarded hit; 16.402 tables had none. */
++  private static final String SKIP = "LOGIC_SKIP_KAMIKAZE_ON_DISCARDED_HIT";
++
++  /** The Kamikaze unit: the evolved Wall Breaker, whose killed action makes its death damage. */
++  private static final String WALL_BREAKER = "Wallbreaker_EV1";
++
++  private static final GameRow FISHERMAN = Shipped.unitRow("Fisherman");
++
++  private static final GameRow BREAKER = Shipped.unitRow(WALL_BREAKER);
++
++  /** The projectile the Wall Breaker's own hit launches. */
++  private static final String OWN_PROJECTILE = Shipped.text(BREAKER, "Projectile");
++
++  /** What one battle showed of the Wall Breaker. */
++  private static final class Run {
++    /**
++     * The tick the hook took the Wall Breaker while it was attacking, its hit not yet made, or -1.
++     */
++    int hookedAttacking = -1;
++
++    /** Each end of the Wall Breaker's hit: the tick and whether it killed it. */
++    final List<String> hitEnds = new ArrayList<>();
++
++    /** Each projectile its own hit launched: the tick. */
++    final List<Integer> ownLaunches = new ArrayList<>();
++
++    /** Each projectile of its side launched after the hook other than its own hit's. */
++    final List<String> sideLaunches = new ArrayList<>();
++
++    /** Characters it spawned. */
++    final List<String> spawned = new ArrayList<>();
++
++    /** Its death hooks scheduled: the tick and the side of what killed it. */
++    final List<String> deathHooks = new ArrayList<>();
++
++    /** The tick it left the battle, or -1. */
++    int removed = -1;
++  }
++
++  /**
++   * One battle with the towers passive: a Fisherman that never walks in the middle, an evolved Wall
++   * Breaker of the other side in his special's ring below him, and, placed at the given tick, a
++   * Cannon of the Fisherman's side below the Wall Breaker within half its range, the only building
++   * it attacks.
++   */
++  private static Run battle(GameTables tables, int cannonAt) {
++    Standard1v1Battle match = new Standard1v1Battle(tables, LEVEL, false);
++    Run run = new Run();
++    int radius = Shipped.number(BREAKER, "CollisionRadius");
++    int x = 9000;
++    int fy = 13000;
++    int wy = fy - radius - Shipped.number(FISHERMAN, "SpecialMinRange") - 1500;
++    int cy =
++        wy
++            - radius
++            - Shipped.number(Shipped.unitRow("Cannon"), "CollisionRadius")
++            - Shipped.number(BREAKER, "Range") / 2;
++    still(match, 0, 0, "Fisherman", x, fy, "F");
++    CharacterEntity breaker = still(match, 0, 1, WALL_BREAKER, x, wy, "W");
++    match
++        .getWorld()
++        .addObserver(
++            new WorldObserver() {
++              @Override
++              public void dragStateSet(
++                  int t, ProjectileEntity projectile, WorldEntity unit, int oldState, int now) {
++                // A hook taking it on the tick its hit ended finds it destroying itself already.
++                if (unit == breaker
++                    && oldState == GridEntityState.ATTACKING
++                    && !breaker.isKamikazeHitEnded()
++                    && run.hookedAttacking < 0) {
++                  run.hookedAttacking = t;
++                }
++              }
++
++              @Override
++              public void kamikazeHitEnded(int t, WorldEntity unit, boolean kills) {
++                if (unit == breaker) {
++                  run.hitEnds.add(t + " " + kills);
++                }
++              }
++
++              @Override
++              public void projectileLaunched(int t, ProjectileEntity projectile) {
++                String name = projectile.getData().name();
++                if (projectile.getSide() != 1) {
++                  return;
++                }
++                if (name.equals(OWN_PROJECTILE)) {
++                  run.ownLaunches.add(t);
++                } else if (run.hookedAttacking >= 0) {
++                  run.sideLaunches.add(t + " " + name);
++                }
++              }
++
++              @Override
++              public void characterSpawned(
++                  int t, SpawnHost source, CharacterEntity child, int createdX, int createdY) {
++                if (source == breaker) {
++                  run.spawned.add(t + " " + child.name());
++                }
++              }
++
++              @Override
++              public void deathHooksScheduled(
++                  int t,
++                  WorldEntity dying,
++                  BattleEntity attacker,
++                  int side,
++                  List<String> hooks,
++                  boolean inPendingPass) {
++                if (dying == breaker) {
++                  run.deathHooks.add(t + " " + side);
++                }
++              }
++
++              @Override
++              public void entityRemoved(int t, WorldEntity removed) {
++                if (removed == breaker) {
++                  run.removed = t;
++                }
++              }
++            });
++    still(match, cannonAt, 0, "Cannon", x, cy, "C");
++    for (int t = 0; t < 200 && run.removed < 0; t++) {
++      match.getBattle().step();
++    }
++    return run;
++  }
++
++  /** A unit placed at a tick that never walks, under a name of its own. */
++  private static CharacterEntity still(
++      Standard1v1Battle match, int at, int side, String row, int x, int y, String name) {
++    CharacterEntity unit =
++        match.deploy(at, match.getWorld().getRecords().unit(row), LEVEL, side, x, y, name);
++    unit.setActive(CharacterEntity.MOVEMENT_SLOT, false);
++    return unit;
++  }
++
++  /**
++   * The first battle, over the Cannon's placing tick, in which the hook takes the Wall Breaker
++   * while it attacks the Cannon, before its hit, so that it is let go with its attack running on.
++   * The global plays no part before the hook, so the same tick is found on every table set.
++   */
++  private static Run hookedMidAttack(GameTables tables) {
++    for (int at = 0; at < 120; at++) {
++      Run run = battle(tables, at);
++      if (run.hookedAttacking >= 0) {
++        return run;
++      }
++    }
++    throw new AssertionError("no placing of the Cannon has the Wall Breaker hooked mid-attack");
++  }
++
++  /**
++   * The configured tables with the skip global published, set as the test asks: its row's value
++   * changed where the tables publish it, else a row added for it.
++   */
++  private static GameTables withSkip(Path folder, boolean set) throws IOException {
++    return GameData.altered(
++        folder,
++        "globals",
++        rows -> {
++          if (rows.has(SKIP)) {
++            ((ObjectNode) rows.get(SKIP).get("columns")).put("BooleanValue", set);
++            return;
++          }
++          int index = rows.size();
++          ObjectNode row = rows.putObject(SKIP);
++          row.put("index", index);
++          row.put("class", "LogicData");
++          ObjectNode columns = row.putObject("columns");
++          columns.put("Name", SKIP);
++          columns.put("BooleanValue", set);
++        });
++  }
++
++  /** The configured tables with no skip global published, as the 16.402 tables had none. */
++  private static GameTables withoutSkip(Path folder) throws IOException {
++    return GameData.altered(folder, "globals", rows -> rows.remove(SKIP));
++  }
++
++  /** The old rule: the discarded hit's end destroys the Wall Breaker, with no death damage. */
++  private static void assertDestroyedByItsDiscardedHit(Run run) {
++    assertThat(run.hookedAttacking).isGreaterThanOrEqualTo(0);
++    // Its hit after the pull launched nothing: the target was out of range, the hit discarded.
++    assertThat(run.ownLaunches).isEmpty();
++    // Its end killed it all the same, after the hook.
++    assertThat(run.hitEnds).hasSize(1);
++    assertThat(run.hitEnds.get(0)).endsWith(" true");
++    assertThat(Integer.parseInt(run.hitEnds.get(0).split(" ")[0]))
++        .isGreaterThan(run.hookedAttacking);
++    // As it destroyed itself, its killed action did not run: no death damage, no spawn.
++    assertThat(run.deathHooks).isEmpty();
++    assertThat(run.spawned).isEmpty();
++    assertThat(run.sideLaunches).isEmpty();
++    assertThat(run.removed).isGreaterThan(run.hookedAttacking);
++  }
++
++  @Test
++  @DisplayName(
++      "without the skip global, as the 16.402 tables had it, an evolved Wall Breaker hooked by a"
++          + " Fisherman mid-attack is destroyed by the end of its discarded hit, with no death"
++          + " damage")
++  void withoutTheGlobal(@TempDir Path folder) throws IOException {
++    assertDestroyedByItsDiscardedHit(hookedMidAttack(withoutSkip(folder)));
++  }
++
++  @Test
++  @DisplayName("with the skip global published clear, the discarded hit's end destroys it as well")
++  void withTheGlobalClear(@TempDir Path folder) throws IOException {
++    assertDestroyedByItsDiscardedHit(hookedMidAttack(withSkip(folder, false)));
++  }
++
++  @Test
++  @DisplayName(
++      "with the skip global set, the discarded hit leaves the hooked evolved Wall Breaker alive, and"
++          + " killed by the Fisherman's side it runs its death actions, its death damage among them")
++  void withTheGlobalSet(@TempDir Path folder) throws IOException {
++    Run run = hookedMidAttack(withSkip(folder, true));
++    assertThat(run.hookedAttacking).isGreaterThanOrEqualTo(0);
++    assertThat(run.ownLaunches).isEmpty();
++    // No end of a hit: neither the discarded one nor any after it destroyed it.
++    assertThat(run.hitEnds).isEmpty();
++    // The Fisherman's side killed it, and its killed action ran: what it spawns, and a projectile
++    // of its side launched from its death tick on, its death damage.
++    assertThat(run.deathHooks).hasSize(1);
++    assertThat(run.deathHooks.get(0)).endsWith(" 0");
++    int died = Integer.parseInt(run.deathHooks.get(0).split(" ")[0]);
++    assertThat(died).isGreaterThan(run.hookedAttacking);
++    assertThat(run.spawned).isNotEmpty();
++    assertThat(run.sideLaunches).isNotEmpty();
++    assertThat(Integer.parseInt(run.sideLaunches.get(0).split(" ")[0]))
++        .isGreaterThanOrEqualTo(died);
++  }
++}
+-- 
+2.43.0
+

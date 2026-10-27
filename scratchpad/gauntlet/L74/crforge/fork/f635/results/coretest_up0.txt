@@ -1,0 +1,6 @@
+core tests 2179 failures 0 errors 0 skipped 5
+core tests 2179 failures 1027 errors 0 skipped 6
+done
+core tests 2179 failures 1027 errors 0 skipped 6
+[('UnsupportedOperationException', 1006), ('AssertionError', 9), ('AssertionFailedError', 9), ('UnsupportedScenarioException', 3)]
+[('BattleCloneTest', 35), ('BattleFishermanTest', 29), ('BattleElectroGiantTest', 26), ('BattleUppercutWindTest', 25), ('PlayerCommandsTest', 22), ('BattleMergeMaidenTest', 16), ('BattleExpressionEnvironmentTest', 16), ('RiderTest', 15), ('ReplayScenarioEveryFieldTest', 14), ('BattleAreaEffectFilter

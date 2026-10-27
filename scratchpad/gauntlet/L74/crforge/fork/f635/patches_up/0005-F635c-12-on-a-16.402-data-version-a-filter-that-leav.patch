@@ -1,0 +1,63 @@
+From bec5811a51fcbc55bd4112b4f9fe30c23b5e29d8 Mon Sep 17 00:00:00 2001
+From: vegetableleaf <benzhu2029@u.northwestern.edu>
+Date: Tue, 27 Oct 2026 22:52:32 +0000
+Subject: [PATCH 5/5] F635c-12: on a 16.402 data version a filter that leaves
+ RespectDodgingDamageCooldown out takes it off
+
+Upstream eba4bac7 (#740) loads the column on by default (client 16.635.1); client 16.402.17 had no such
+column and passed no flag. BattleRecords takes the default off for a 16.402.17 data version.
+(a): SME old client, r78 config: upstream alone regresses 200941 and 020913 (first divergence a BossBandit,
+237 hp / its position); both back with F635c-11 + F635c-12 together (the two were not run one at a time: the attribution to this commit is by the diverging unit, b).
+Test: theExplosionLeavesOutTheBandit expects the push for the column left out on 16.402 data (red with the
+default on). Core (with F635c-11): 16.635.3 2182/0; 16.402.22 2182/0.
+---
+ .../java/org/crforge/core/battle/data/BattleRecords.java  | 8 ++++++--
+ .../core/battle/unit/BattleDashShieldLostPushTest.java    | 7 ++++++-
+ 2 files changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/core/src/main/java/org/crforge/core/battle/data/BattleRecords.java b/core/src/main/java/org/crforge/core/battle/data/BattleRecords.java
+index 1782a008..78973205 100644
+--- a/core/src/main/java/org/crforge/core/battle/data/BattleRecords.java
++++ b/core/src/main/java/org/crforge/core/battle/data/BattleRecords.java
+@@ -1440,9 +1440,13 @@ public final class BattleRecords {
+         .filterPrincessTowers(filterSwitch(row, listed, "FilterPrincessTowers"))
+         .filterDead(!row.has("FilterDead") || row.bool("FilterDead"))
+         // A row that leaves it out takes the class default of the client the battle follows:
+-        // client 16.635.1 loads it on. A row that writes it off turns it off.
++        // client 16.635.1 loads it on. A row that writes it off turns it off. The 16.402 data
++        // versions play client 16.402.17, which has no such column and passes no flag: off
++        // (clashbot fork F635c; our 16.402 recordings of a Boss Bandit follow the old test, a).
+         .respectDodgingDamageCooldown(
+-            !row.has("RespectDodgingDamageCooldown") || row.bool("RespectDodgingDamageCooldown"))
++            row.has("RespectDodgingDamageCooldown")
++                ? row.bool("RespectDodgingDamageCooldown")
++                : !GameVersions.CLIENT_16_402_17_DATA.contains(tables.version()))
+         .filterClones(filterSwitch(row, listed, "FilterClones"))
+         .matchSelf(row.bool("MatchSelf"))
+         .filterSelf(filterListOnly(listed, "Self"))
+diff --git a/core/src/test/java/org/crforge/core/battle/unit/BattleDashShieldLostPushTest.java b/core/src/test/java/org/crforge/core/battle/unit/BattleDashShieldLostPushTest.java
+index d62bfc73..2a059be9 100644
+--- a/core/src/test/java/org/crforge/core/battle/unit/BattleDashShieldLostPushTest.java
++++ b/core/src/test/java/org/crforge/core/battle/unit/BattleDashShieldLostPushTest.java
+@@ -223,12 +223,17 @@ class BattleDashShieldLostPushTest {
+           + " a shield the Bandit's dash broke neither pushes nor damages the Bandit, whose immunity"
+           + " after its dash still counts")
+   void theExplosionLeavesOutTheBandit(@TempDir Path folder) throws IOException {
++    // clashbot fork F635c: a filter that leaves the column out takes it off on a data version of
++    // client 16.402.17, which passed no flag, and the explosion then pushes the Bandit.
++    boolean olderClient =
++        org.crforge.core.battle.data.GameVersions.CLIENT_16_402_17_DATA.contains(
++            GameData.tables().version());
+     for (Boolean respect : new Boolean[] {null, true}) {
+       Seen scene = play(written(folder.resolve(String.valueOf(respect)), respect));
+       assertThat(scene.shield()).as("the shield broke").isZero();
+       assertThat(scene.state()).as("the dash has landed").isNotEqualTo(GridEntityState.DASHING);
+       assertThat(scene.immunityLeft()).as("the immunity after the dash").isPositive();
+-      assertThat(scene.pushed()).as("pushed, column %s", respect).isFalse();
++      assertThat(scene.pushed()).as("pushed, column %s", respect).isEqualTo(respect == null && olderClient);
+       assertThat(scene.lost()).as("damaged").isZero();
+     }
+   }
+-- 
+2.43.0
+

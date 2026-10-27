@@ -1,0 +1,169 @@
+From cbdec89e32ce6521b768ccf4bfdf2dc33dea0992 Mon Sep 17 00:00:00 2001
+From: vegetableleaf <benzhu2029@u.northwestern.edu>
+Date: Tue, 27 Oct 2026 20:37:26 +0000
+Subject: [PATCH 1/3] F635-5: an ability command given by object id through
+ PlayerCommands promises its cost
+
+PlayerCommands.useAbility(side, objectId, name) / tryAbility(side, objectId): the client's try of
+the by-name command (the run's gates, the promised costs set aside), then the battle's by-id
+command, with the ability's cost promised from the giving to the run. A champion no play made
+(the hero Barbarian Barrel's barbarian, which its log spawns) is pressed this way; before, such a
+press went to Standard1v1Battle.useAbility(given, run, side, id, name) directly and promised
+nothing, so a play given in its 20 ticks passed the try and was refused at its run, and a later
+giving within two ticks of that refused play's promise expiry was refused as not modelled.
+Measured with ButtonProbeP (27 forced-button forms x 40): 16.402.22 play refusals of that kind
+37 -> 0 of 1,080; 16.635.3 34 -> 0 (a). Not for replays: a replay's command still promises nothing.
+Core tests: 16.402.22 2147/0; 16.635.3 (guard bypassed for the run) 11 -> 11 failures.
+---
+ .../core/battle/unit/PlayerCommands.java      | 66 ++++++++++++++++++-
+ .../core/battle/unit/PlayerCommandsTest.java  | 41 ++++++++++++
+ 2 files changed, 106 insertions(+), 1 deletion(-)
+
+diff --git a/core/src/main/java/org/crforge/core/battle/unit/PlayerCommands.java b/core/src/main/java/org/crforge/core/battle/unit/PlayerCommands.java
+index 4a3228f1..a28c4f22 100644
+--- a/core/src/main/java/org/crforge/core/battle/unit/PlayerCommands.java
++++ b/core/src/main/java/org/crforge/core/battle/unit/PlayerCommands.java
+@@ -12,6 +12,7 @@ import static org.crforge.core.util.ValidationUtils.checkState;
+ import java.util.ArrayList;
+ import java.util.Arrays;
+ import java.util.List;
++import org.crforge.core.battle.BattleEntity;
+ import org.crforge.core.battle.data.BattleRecords;
+ import org.crforge.core.battle.deploy.DeployCard;
+ import org.crforge.core.battle.deploy.MapCheck;
+@@ -396,6 +397,62 @@ public final class PlayerCommands {
+     return tryAbility(side, unit, "an ability command naming " + unit);
+   }
+ 
++  /**
++   * Gives an ability command naming a unit by its game object id, as its player taps the
++   * champion's button now for a champion no play made, such as the hero Barbarian Barrel's
++   * barbarian, which the log spawns (clashbot fork F635). The client's try is that of {@link
++   * #useAbility(int, String, String)}: the run's gates, the promised costs set aside. Given, it
++   * runs {@link Standard1v1Battle#PLAY_DELAY_TICKS} ticks after its stamp as the battle's
++   * command by object id, and promises the ability's cost until then, as a command naming a
++   * play's unit does; refused, nothing changes.
++   *
++   * @param side the commanding side
++   * @param objectId the game object id of the unit it names, a live character of the side
++   * @param name the command's name, new to this battle
++   * @return what the giving came to
++   */
++  public Giving useAbility(int side, int objectId, String name) {
++    checkNameNew(name);
++    Giving tried = tryAbility(side, liveUnit(side, objectId), name);
++    if (!tried.given()) {
++      return tried;
++    }
++    battle.useAbility(tried.givenTick(), tried.runTick(), side, objectId, name);
++    given.add(
++        new Given(
++            side,
++            Kind.ABILITY,
++            -1,
++            name,
++            tried.runTick(),
++            battle.getBattle().getTick() + Standard1v1Battle.PROMISE_TICKS,
++            tried.cost()));
++    return tried;
++  }
++
++  /**
++   * Tries an ability command naming a unit by its game object id as {@link #useAbility(int, int,
++   * String)} does, without giving it; nothing changes (clashbot fork F635).
++   *
++   * @param side the commanding side
++   * @param objectId the game object id of the unit it would name
++   * @return what a giving now would come to
++   */
++  public Giving tryAbility(int side, int objectId) {
++    return tryAbility(
++        side, liveUnit(side, objectId), "an ability command naming object " + objectId);
++  }
++
++  /** The live character of the side holding a game object id, or null. */
++  private CharacterEntity liveUnit(int side, int objectId) {
++    for (BattleEntity entity : battle.getBattle().getHolder().entities()) {
++      if (entity.getId() == objectId) {
++        return entity instanceof CharacterEntity unit && unit.side() == side ? unit : null;
++      }
++    }
++    return null;
++  }
++
+   /**
+    * The unit an ability command for one of a side's champion slots names now, as the player's
+    * button for the slot names it: the unit of the play the slot follows (its deploy count) whose
+@@ -433,9 +490,16 @@ public final class PlayerCommands {
+ 
+   /** The client's try of an ability command: the run's gates, the promised costs set aside. */
+   private Giving tryAbility(int side, String unit, String name) {
++    return tryAbility(side, playedUnit(side, unit), name);
++  }
++
++  /**
++   * The client's try of an ability command naming a unit, found by its name or its object id: the
++   * run's gates, the promised costs set aside.
++   */
++  private Giving tryAbility(int side, CharacterEntity named, String name) {
+     int givenTick = stamp(battle.getBattle().getTick());
+     int runTick = givenTick + Standard1v1Battle.PLAY_DELAY_TICKS;
+-    CharacterEntity named = playedUnit(side, unit);
+     if (named == null) {
+       return new Giving(Refusal.NO_CHAMPION, AbilityCommand.NO_CHAMPION, givenTick, runTick, 0);
+     }
+diff --git a/core/src/test/java/org/crforge/core/battle/unit/PlayerCommandsTest.java b/core/src/test/java/org/crforge/core/battle/unit/PlayerCommandsTest.java
+index d0088bb5..e492325e 100644
+--- a/core/src/test/java/org/crforge/core/battle/unit/PlayerCommandsTest.java
++++ b/core/src/test/java/org/crforge/core/battle/unit/PlayerCommandsTest.java
+@@ -217,6 +217,47 @@ class PlayerCommandsTest {
+     assertThat(commands.promised(0)).as("released by its run").isZero();
+   }
+ 
++  @Test
++  @DisplayName(
++      "clashbot F635: an ability command naming its unit by object id is tried and promised as one"
++          + " naming a play's unit: its cost is set aside from its giving to its run")
++  void anAbilityCommandByObjectIdPromisesItsCost() {
++    Standard1v1Battle battle = dealt(QUEEN_SKELETONS, "ArcherQueen");
++    LadderMatch match = battle.getMatch();
++    PlayerCommands commands = new PlayerCommands(battle);
++    int queenCost = Shipped.cost("ArcherQueen");
++    stepTo(battle, OPEN);
++    while (match.side(0).wholeElixir() < queenCost) {
++      battle.getBattle().step();
++    }
++    Giving queen = commands.playCard(0, slot(match, "ArcherQueen"), LEVEL, X, 4000, "q");
++    assertThat(queen.given()).isTrue();
++    int abilityCost = battle.getWorld().getRecords().unit("ArcherQueen").ability().manaCost();
++    int deployed =
++        queen.runTick() + Shipped.number(Shipped.unitRow("ArcherQueen"), "DeployTime") / 50;
++    while (battle.getBattle().getTick() <= deployed || match.side(0).wholeElixir() < abilityCost) {
++      battle.getBattle().step();
++    }
++    int id = commands.championUnit(0, 0).getId();
++    int tick = battle.getBattle().getTick();
++    assertThat(commands.tryAbility(1, id).refusal()).isEqualTo(Refusal.NO_CHAMPION);
++    assertThat(commands.tryAbility(0, id).given()).isTrue();
++    assertThat(commands.promised(0)).as("a try promises nothing").isZero();
++
++    Giving ability = commands.useAbility(0, id, "a");
++
++    assertThat(ability.given()).isTrue();
++    assertThat(ability.cost()).isEqualTo(abilityCost);
++    assertThat(ability.runTick()).isEqualTo(tick + Standard1v1Battle.PLAY_DELAY_TICKS);
++    assertThat(commands.promised(0)).isEqualTo(abilityCost);
++    stepTo(battle, ability.runTick());
++    battle.getBattle().step();
++    assertThat(battle.getAbilityUses()).hasSize(1);
++    assertThat(battle.getAbilityUses().get(0).tick()).isEqualTo(ability.runTick());
++    assertThat(battle.getAbilityUses().get(0).outcome().code()).isEqualTo(AbilityCommand.OK);
++    assertThat(commands.promised(0)).as("released by its run").isZero();
++  }
++
+   @Test
+   @DisplayName(
+       "the elixir check sets aside the costs the waiting plays promised: a Knight the whole elixir"
+-- 
+2.43.0
+

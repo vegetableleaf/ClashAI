@@ -1,0 +1,576 @@
+From 5cc4067d115d3b17b8d16d5e02c88f784c83ab3e Mon Sep 17 00:00:00 2001
+From: vegetableleaf <benzhu2029@u.northwestern.edu>
+Date: Tue, 27 Oct 2026 21:54:51 +0000
+Subject: [PATCH 09/10] F635-9:
+ FIX_RESET_CHARGE_DURING_PUSHBACK_WHEN_MOVEMENT_DISABLED (data 16.635.3),
+ upstream ba42dfdc (#743) cherry-picked
+
+After the visit of a pushback in flight, under the published global, a unit with a charge whose
+movement is disabled (NO_MOVE / NO_MOVE_ALLOW_ATTRACT, or a row Speed >= 1 its buffs scale to 0)
+loses the charge. Upstream traced it on client 16.635.1; no reference battle holds it. The 16.402
+tables publish no such global and keep the old rule.
+
+Red: the reset branch off, 3 of 22 BattleChargeTest/MovementVisitTest fail on 16.635.3; green 22/22.
+Core: 16.402.22 2154/0; 16.635.3 (guard bypassed for the run) 2154/0.
+
+(cherry picked from commit ba42dfdcf606cfafce931fdf25939a99afa5c82f)
+---
+ .../core/battle/data/BattleRecords.java       |  11 ++
+ .../crforge/core/battle/unit/BattleWorld.java |  15 +-
+ .../core/pathfinding/GridMovementQueries.java |  12 ++
+ .../pathfinding/move/ChargeBookkeeping.java   |  39 +++--
+ .../pathfinding/move/MovementGlobals.java     |  25 +++-
+ .../pathfinding/move/MovementQueries.java     |  19 +++
+ .../core/pathfinding/move/MovementVisit.java  |  34 ++++-
+ .../core/battle/unit/BattleChargeTest.java    | 134 ++++++++++++++++++
+ .../pathfinding/move/MovementVisitTest.java   |  65 +++++++++
+ .../pathfinding/move/StubMovementQueries.java |  12 ++
+ 10 files changed, 350 insertions(+), 16 deletions(-)
+
+diff --git a/core/src/main/java/org/crforge/core/battle/data/BattleRecords.java b/core/src/main/java/org/crforge/core/battle/data/BattleRecords.java
+index 50584281..2af5d14f 100644
+--- a/core/src/main/java/org/crforge/core/battle/data/BattleRecords.java
++++ b/core/src/main/java/org/crforge/core/battle/data/BattleRecords.java
+@@ -3261,6 +3261,17 @@ public final class BattleRecords {
+     return globals.row(name).bool("BooleanValue");
+   }
+ 
++  /**
++   * A published global's flag, clear when the tables do not publish the global: for a global that
++   * only a later game client reads, which the data versions of an earlier client have no row for.
++   *
++   * @param name the global's name
++   */
++  public boolean publishedGlobalBoolean(String name) {
++    GameTable globals = tables.table(GLOBALS);
++    return globals.has(name) && globals.row(name).bool("BooleanValue");
++  }
++
+   /**
+    * A published global's text.
+    *
+diff --git a/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java b/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java
+index 8cc03bb5..e2732f41 100644
+--- a/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java
++++ b/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java
+@@ -190,9 +190,17 @@ public class BattleWorld implements HolderPasses {
+ 
+   /**
+    * The match-wide movement settings: the standard game's, with a pushback's end dropping the
+-   * route.
++   * route, and once the tables are loaded the pushback's charge reset their global asks for.
+    */
+-  @Getter private final MovementGlobals movementGlobals;
++  @Getter private MovementGlobals movementGlobals;
++
++  /**
++   * The global under which a pushback's visit resets the charge of an entity whose movement is
++   * disabled: published by the data of game client 16.635.1 (set), not by the data versions of
++   * client 16.402.17, which run without the reset.
++   */
++  static final String RESET_CHARGE_DURING_PUSHBACK =
++      "FIX_RESET_CHARGE_DURING_PUSHBACK_WHEN_MOVEMENT_DISABLED";
+ 
+   /** The neighbour answers the push pass and the avoidance handler ask for. */
+   @Getter private final NeighbourQuery neighbourQuery;
+@@ -883,6 +891,9 @@ public class BattleWorld implements HolderPasses {
+     this.flagBits = EntityFlags.of(tables);
+     this.records = new BattleRecords(tables);
+     this.actions = new ActionRows(tables, records);
++    this.movementGlobals =
++        movementGlobals.withResetChargeDuringPushbackWhenMovementDisabled(
++            records.publishedGlobalBoolean(RESET_CHARGE_DURING_PUSHBACK));
+   }
+ 
+   /**
+diff --git a/core/src/main/java/org/crforge/core/pathfinding/GridMovementQueries.java b/core/src/main/java/org/crforge/core/pathfinding/GridMovementQueries.java
+index 222427a7..8f894854 100644
+--- a/core/src/main/java/org/crforge/core/pathfinding/GridMovementQueries.java
++++ b/core/src/main/java/org/crforge/core/pathfinding/GridMovementQueries.java
+@@ -165,6 +165,18 @@ public final class GridMovementQueries implements MovementQueries {
+     return modifierComponent;
+   }
+ 
++  /** The row's Speed as the unit's speed columns hold it. */
++  @Override
++  public int rowSpeed() {
++    return unit.speedConfig().speed();
++  }
++
++  /** The speed scaled by the speed percents of the unit's listed buffs. */
++  @Override
++  public int speedThroughModifiers(int base) {
++    return SpeedBudget.speedModifier(speedPercents, base);
++  }
++
+   @Override
+   public int chargeRangeFromModifiers() {
+     return chargeRangeFromModifiers;
+diff --git a/core/src/main/java/org/crforge/core/pathfinding/move/ChargeBookkeeping.java b/core/src/main/java/org/crforge/core/pathfinding/move/ChargeBookkeeping.java
+index d937195f..1b53fe71 100644
+--- a/core/src/main/java/org/crforge/core/pathfinding/move/ChargeBookkeeping.java
++++ b/core/src/main/java/org/crforge/core/pathfinding/move/ChargeBookkeeping.java
+@@ -99,23 +99,42 @@ public final class ChargeBookkeeping {
+         || owner.getState() == GridEntityState.JUMPING
+         || owner.getState() == GridEntityState.CLONE_SETUP) {
+       // An attack pushback, a jump and clone setup all leave the charge exactly as it was.
+-    } else if (config.chargeRange() != 0) {
+-      component.setChargeProgress(0);
+-      clearChargeStrike(queries, chain);
+     } else {
+-      chain.mark("modifier_component");
+-      if (queries.hasModifierComponent() && queries.chargeRangeFromModifiers() != 0) {
+-        component.setChargeProgress(0);
+-      } else {
+-        component.setChargeProgress(MovementState.CHARGE_INACTIVE);
+-      }
+-      clearChargeStrike(queries, chain);
++      resetCharge(component, config, queries, chain);
+     }
+     if (component.getChargeProgress() >= MovementState.CHARGE_COMPLETE) {
+       Displacement.markCharging(owner);
+     }
+   }
+ 
++  /**
++   * The charge reset: to 0 for an entity whose row has a charge range or whose modifiers give one,
++   * to no charge otherwise, and the targeting component's strike-now byte cleared.
++   *
++   * @param component the entity's movement component, whose charge progress this writes
++   * @param config the entity's movement configuration columns
++   * @param queries the answers the reset pulls from the rest of the simulation
++   * @param chain the chain that records what the reset looked up
++   */
++  static void resetCharge(
++      MovementState component,
++      MovementConfig config,
++      MovementQueries queries,
++      MovementChain chain) {
++    if (config.chargeRange() != 0) {
++      component.setChargeProgress(0);
++      clearChargeStrike(queries, chain);
++      return;
++    }
++    chain.mark("modifier_component");
++    if (queries.hasModifierComponent() && queries.chargeRangeFromModifiers() != 0) {
++      component.setChargeProgress(0);
++    } else {
++      component.setChargeProgress(MovementState.CHARGE_INACTIVE);
++    }
++    clearChargeStrike(queries, chain);
++  }
++
+   /** Clears the targeting component's strike-now byte, whenever the entity carries one. */
+   private static void clearChargeStrike(MovementQueries queries, MovementChain chain) {
+     chain.mark("movement_byte");
+diff --git a/core/src/main/java/org/crforge/core/pathfinding/move/MovementGlobals.java b/core/src/main/java/org/crforge/core/pathfinding/move/MovementGlobals.java
+index 8331f92f..cd52533a 100644
+--- a/core/src/main/java/org/crforge/core/pathfinding/move/MovementGlobals.java
++++ b/core/src/main/java/org/crforge/core/pathfinding/move/MovementGlobals.java
+@@ -31,7 +31,8 @@ public record MovementGlobals(
+     int samePathEpsilon,
+     boolean friendlyOnlyOcclusions,
+     boolean spawnPathfindReachedRadiusFromSpeed,
+-    boolean pushbackEndDropsRoute) {
++    boolean pushbackEndDropsRoute,
++    boolean resetChargeDuringPushbackWhenMovementDisabled) {
+ 
+   /**
+    * The settings of the standard game over a grid of the given width.
+@@ -45,6 +46,7 @@ public record MovementGlobals(
+         PathfindingGlobals.PATHFINDING_SAMEPATH_EPSILON,
+         PathfindingGlobals.PATHFINDING_FRIENDLYONLY_OCCLUSIONS,
+         PathfindingGlobals.LOGIC_SPAWN_PATHFIND_REACHED_RADIUS_FROM_SPEED,
++        false,
+         false);
+   }
+ 
+@@ -61,6 +63,25 @@ public record MovementGlobals(
+         samePathEpsilon,
+         friendlyOnlyOcclusions,
+         spawnPathfindReachedRadiusFromSpeed,
+-        drops);
++        drops,
++        resetChargeDuringPushbackWhenMovementDisabled);
++  }
++
++  /**
++   * These settings with a pushback's visit resetting the charge of an entity whose movement is
++   * disabled, or leaving it.
++   *
++   * @param resets true to reset it, as the published global asks
++   * @return the settings with that rule
++   */
++  public MovementGlobals withResetChargeDuringPushbackWhenMovementDisabled(boolean resets) {
++    return new MovementGlobals(
++        width,
++        touchdownRestrictedSideMovement,
++        samePathEpsilon,
++        friendlyOnlyOcclusions,
++        spawnPathfindReachedRadiusFromSpeed,
++        pushbackEndDropsRoute,
++        resets);
+   }
+ }
+diff --git a/core/src/main/java/org/crforge/core/pathfinding/move/MovementQueries.java b/core/src/main/java/org/crforge/core/pathfinding/move/MovementQueries.java
+index 2dc722e1..ca9c6a01 100644
+--- a/core/src/main/java/org/crforge/core/pathfinding/move/MovementQueries.java
++++ b/core/src/main/java/org/crforge/core/pathfinding/move/MovementQueries.java
+@@ -220,6 +220,25 @@ public interface MovementQueries {
+     return 0;
+   }
+ 
++  /**
++   * The Speed of the entity's row, which the pushback visit's test of a disabled movement reads.
++   * Supplied as 0, so only a no-move tag disables movement.
++   */
++  default int rowSpeed() {
++    return 0;
++  }
++
++  /**
++   * A speed scaled by the entity's buffs' speed percents: the largest boost, then what the largest
++   * slow leaves, each division truncating; 0 under a stun. Asked only of an entity with the
++   * modifier component. Supplied as the speed itself.
++   *
++   * @param base the speed to scale
++   */
++  default int speedThroughModifiers(int base) {
++    return base;
++  }
++
+   /** A counter route preparation reports after each search. Supplied as 0. */
+   default int searchCounter() {
+     return 0;
+diff --git a/core/src/main/java/org/crforge/core/pathfinding/move/MovementVisit.java b/core/src/main/java/org/crforge/core/pathfinding/move/MovementVisit.java
+index fb11b9de..6bdec4ab 100644
+--- a/core/src/main/java/org/crforge/core/pathfinding/move/MovementVisit.java
++++ b/core/src/main/java/org/crforge/core/pathfinding/move/MovementVisit.java
+@@ -8,6 +8,7 @@ package org.crforge.core.pathfinding.move;
+ 
+ import org.crforge.core.fidelity.Fidelity;
+ import org.crforge.core.fidelity.FidelityStatus;
++import org.crforge.core.pathfinding.EntityFlags;
+ import org.crforge.core.pathfinding.GridEntity;
+ import org.crforge.core.pathfinding.GridEntityState;
+ import org.crforge.core.pathfinding.grid.Route;
+@@ -25,7 +26,8 @@ import org.crforge.core.pathfinding.math.FixedMath;
+  *   <li>a morphing entity does nothing;
+  *   <li>an entity whose movement countdown is running replays the last displacement and counts the
+  *       countdown down;
+- *   <li>an entity with a pushback in flight runs the pushback visit;
++ *   <li>an entity with a pushback in flight runs the pushback visit, and then, under the global
++ *       game client 16.635.1 publishes for it, loses its charge when its movement is disabled;
+  *   <li>otherwise it prepares a route when its state asks for one and then follows it.
+  * </ol>
+  *
+@@ -44,7 +46,10 @@ import org.crforge.core.pathfinding.math.FixedMath;
+             + " attacking rider, the pushback visit's end action, the block countdown. Collision"
+             + " checks are always on. The route dropped at a flight's end, which the battle core"
+             + " always sets, is held by the reference battles of a Monk's push on a Giant, the"
+-            + " Zap Machine's recoil and two death explosions' pushes.")
++            + " Zap Machine's recoil and two death explosions' pushes. Traced on game client"
++            + " 16.635.1, no reference holds it yet: the charge reset after the pushback visit"
++            + " under FIX_RESET_CHARGE_DURING_PUSHBACK_WHEN_MOVEMENT_DISABLED, for a no-move tag or"
++            + " buffs that scale the row's speed to 0.")
+ public final class MovementVisit {
+ 
+   /** The x value that marks an entity's position as never having been written. */
+@@ -106,6 +111,14 @@ public final class MovementVisit {
+     }
+     if (component.getPushbackInFlight() != 0) {
+       pushbackVisit(component, owner, config, queries, noCheckCollisions, chain);
++      // Game client 16.635.1, under its published global: an entity whose movement is disabled
++      // loses its charge after the flight's step, which keeps the charge of an attack's own
++      // pushback, so a stun during an evolved Battle Ram's recoil takes its charge at once.
++      if (chain.globals().resetChargeDuringPushbackWhenMovementDisabled()
++          && component.getChargeProgress() != MovementState.CHARGE_INACTIVE
++          && movementDisabled(owner, queries)) {
++        ChargeBookkeeping.resetCharge(component, config, queries, chain);
++      }
+       return;
+     }
+     chain.mark("route_query");
+@@ -115,6 +128,23 @@ public final class MovementVisit {
+     chain.follow();
+   }
+ 
++  /**
++   * Whether the entity's movement is disabled, as the pushback visit's charge reset asks: its tag
++   * word holds NO_MOVE or NO_MOVE_ALLOW_ATTRACT, or its row has a Speed of at least 1 that its
++   * buffs scale to 0, which only an entity with the modifier component can be.
++   */
++  static boolean movementDisabled(GridEntity owner, MovementQueries queries) {
++    EntityFlags bits = owner.getFlagBits();
++    if ((owner.getFlags() & (bits.noMove() | bits.noMoveAllowAttract())) != 0) {
++      return true;
++    }
++    int speed = queries.rowSpeed();
++    if (speed < 1 || !queries.hasModifierComponent()) {
++      return false;
++    }
++    return queries.speedThroughModifiers(speed) == 0;
++  }
++
+   /**
+    * Places an entity that is attached to another on a circle around it and matches its facing.
+    *
+diff --git a/core/src/test/java/org/crforge/core/battle/unit/BattleChargeTest.java b/core/src/test/java/org/crforge/core/battle/unit/BattleChargeTest.java
+index 67cca48c..0d751ebd 100644
+--- a/core/src/test/java/org/crforge/core/battle/unit/BattleChargeTest.java
++++ b/core/src/test/java/org/crforge/core/battle/unit/BattleChargeTest.java
+@@ -204,6 +204,140 @@ class BattleChargeTest {
+         .noneMatch(r -> r.getAction().name().equals("BattleRam_EV1_PushBack"));
+   }
+ 
++  /** The global that makes a stun reset a charge while a pushback flies; 16.402 tables had none. */
++  private static final String CHARGE_FIX =
++      "FIX_RESET_CHARGE_DURING_PUSHBACK_WHEN_MOVEMENT_DISABLED";
++
++  /**
++   * The configured tables with the global that resets a charge during a pushback while movement is
++   * disabled published, set as the test asks: its row's value changed where the tables publish it,
++   * else a row added for it.
++   */
++  private static GameTables withChargeFix(Path folder, boolean set) throws IOException {
++    return GameData.altered(
++        folder,
++        "globals",
++        rows -> {
++          if (rows.has(CHARGE_FIX)) {
++            ((ObjectNode) rows.get(CHARGE_FIX).get("columns")).put("BooleanValue", set);
++            return;
++          }
++          int index = rows.size();
++          ObjectNode row = rows.putObject(CHARGE_FIX);
++          row.put("index", index);
++          row.put("class", "LogicData");
++          ObjectNode columns = row.putObject("columns");
++          columns.put("Name", CHARGE_FIX);
++          columns.put("BooleanValue", set);
++        });
++  }
++
++  /** The configured tables with no charge fix published, as the 16.402 tables had none. */
++  private static GameTables withoutChargeFix(Path folder) throws IOException {
++    return GameData.altered(folder, "globals", rows -> rows.remove(CHARGE_FIX));
++  }
++
++  /**
++   * Walks an evolved Battle Ram into the red princess tower on the right lane until its first hit
++   * recoils it, then drops an enemy Zap on it the next tick. Answers, for each of the next 20
++   * steps, whether a pushback was in flight after the step, whether it was the attack's own, the
++   * charge progress and whether the Zap's stun was listed on the ram. The stun is listed after the
++   * movement pass of the step it lands in, so the movement pass of the next step is the first to
++   * find it.
++   */
++  private static List<int[]> zapInTheRecoil(GameTables tables) {
++    Standard1v1Battle match = new Standard1v1Battle(tables, Standard1v1Battle.DEFAULT_LEVEL, false);
++    BattleRecords records = new BattleRecords(tables);
++    CharacterEntity ram = match.deploy(0, records.unit("BattleRam_EV1"), 11, 0, 14500, 17000);
++    match.getBattle().step();
++    WorldEntity tower =
++        match.getWorld().present().stream()
++            .filter(e -> e.side() == 1 && e.name().startsWith("PrincessTower"))
++            .filter(e -> e.getView().getX() > 9000)
++            .findFirst()
++            .orElseThrow();
++    int full = tower.getHitPoints().getHitPoints();
++    boolean hit = false;
++    for (int tick = 0; tick < 200 && !hit; tick++) {
++      match.getBattle().step();
++      hit = tower.getHitPoints().getHitPoints() < full;
++    }
++    assertThat(hit).as("the ram's first hit on the tower").isTrue();
++    MovementState movement = ram.getUnit().movement();
++    assertThat(movement.getPushbackInFlight()).as("its recoil flies").isEqualTo(1);
++    assertThat(movement.getChargeProgress()).isGreaterThanOrEqualTo(MovementState.CHARGE_COMPLETE);
++    match.placeAreaEffect(
++        match.getWorld().tick() + 1,
++        "Zap",
++        11,
++        1,
++        ram.getView().getX(),
++        ram.getView().getY(),
++        "zap");
++    List<int[]> steps = new ArrayList<>();
++    for (int i = 0; i < 20; i++) {
++      match.getBattle().step();
++      boolean stunned =
++          ram.getBuffs().items().stream().anyMatch(b -> b.getBuff().speedMultiplier() <= -100);
++      steps.add(
++          new int[] {
++            movement.getPushbackInFlight(),
++            movement.getAttackPushback(),
++            movement.getChargeProgress(),
++            stunned ? 1 : 0
++          });
++    }
++    return steps;
++  }
++
++  @Test
++  @DisplayName(
++      "under the published charge fix, a stun on the evolved Battle Ram while its recoil flies"
++          + " takes its charge at once, before the recoil has flown")
++  void aStunInTheRecoilTakesTheCharge(@TempDir Path folder) throws IOException {
++    List<int[]> steps = zapInTheRecoil(withChargeFix(folder, true));
++    // A step whose movement pass finds the stun listed and after which the recoil still flies:
++    // the charge is back to 0, the ram's row having a charge range.
++    assertThat(stunnedInTheRecoil(steps)).as("steps in the recoil under the stun").isNotEmpty();
++    for (int[] s : stunnedInTheRecoil(steps)) {
++      assertThat(s[2]).as("the charge in the recoil under the stun").isZero();
++    }
++  }
++
++  /**
++   * The steps whose movement pass found the stun listed - listed after the step before - and after
++   * which the ram's own recoil still flies.
++   */
++  private static List<int[]> stunnedInTheRecoil(List<int[]> steps) {
++    List<int[]> out = new ArrayList<>();
++    for (int i = 1; i < steps.size(); i++) {
++      int[] s = steps.get(i);
++      if (steps.get(i - 1)[3] == 1 && s[3] == 1 && s[0] == 1 && s[1] == 1) {
++        out.add(s);
++      }
++    }
++    return out;
++  }
++
++  @Test
++  @DisplayName(
++      "without the charge fix published, or with it clear, a stun on the evolved Battle Ram while"
++          + " its recoil flies leaves its charge until the recoil has flown")
++  void aStunInTheRecoilKeepsTheChargeWithoutTheFix(@TempDir Path without, @TempDir Path clear)
++      throws IOException {
++    for (List<int[]> steps :
++        List.of(
++            zapInTheRecoil(withoutChargeFix(without)),
++            zapInTheRecoil(withChargeFix(clear, false)))) {
++      assertThat(stunnedInTheRecoil(steps)).as("steps in the recoil under the stun").isNotEmpty();
++      for (int[] s : stunnedInTheRecoil(steps)) {
++        assertThat(s[2])
++            .as("the charge in the recoil under the stun")
++            .isGreaterThanOrEqualTo(MovementState.CHARGE_COMPLETE);
++      }
++    }
++  }
++
+   @Test
+   @DisplayName(
+       "an evolved Battle Ram's direct hit on a tower recoils it by its AttackPushBack, away from"
+diff --git a/core/src/test/java/org/crforge/core/pathfinding/move/MovementVisitTest.java b/core/src/test/java/org/crforge/core/pathfinding/move/MovementVisitTest.java
+index 8d5aace8..eaf32a40 100644
+--- a/core/src/test/java/org/crforge/core/pathfinding/move/MovementVisitTest.java
++++ b/core/src/test/java/org/crforge/core/pathfinding/move/MovementVisitTest.java
+@@ -9,6 +9,8 @@ package org.crforge.core.pathfinding.move;
+ import static org.assertj.core.api.Assertions.assertThat;
+ 
+ import java.util.List;
++import org.crforge.core.battle.GameData;
++import org.crforge.core.pathfinding.EntityFlags;
+ import org.crforge.core.pathfinding.GridEntity;
+ import org.crforge.core.pathfinding.GridEntityState;
+ import org.crforge.core.pathfinding.grid.CellGrid;
+@@ -268,4 +270,67 @@ class MovementVisitTest {
+     assertThat(component.getPushbackBudget()).isEqualTo(-15);
+     assertThat(component.getPushbackInFlight()).isZero();
+   }
++
++  /**
++   * One visit of an attack's own pushback in flight, with a complete charge on a row with a charge
++   * range, under the globals' charge reset or without it.
++   */
++  private void visitChargedRecoil(boolean reset) {
++    component.setPushbackInFlight(1);
++    component.setAttackPushback(1);
++    component.setPushbackBudget(60);
++    component.setTargetX(3250);
++    component.setTargetY(10250);
++    component.setChargeProgress(MovementState.CHARGE_COMPLETE);
++    MovementConfig config = MovementConfig.forGroundUnit().withCharge(300);
++    MovementChain chain =
++        new MovementChain(
++            component,
++            owner,
++            grid,
++            config,
++            MovementGlobals.forStandardArena(WIDTH)
++                .withResetChargeDuringPushbackWhenMovementDisabled(reset),
++            new ReferencePoint(3500, 25500),
++            List.of(),
++            queries);
++    MovementVisit.movementVisit(component, owner, null, config, null, queries, false, chain);
++  }
++
++  @Test
++  void underTheChargeResetANoMoveTagTakesTheChargeOfAUnitPushedBack() {
++    EntityFlags bits = EntityFlags.of(GameData.tables());
++    owner.setFlagBits(bits);
++    for (long tag : new long[] {bits.noMove(), bits.noMoveAllowAttract()}) {
++      owner.setFlags(tag);
++      visitChargedRecoil(true);
++      assertThat(component.getChargeProgress()).isZero();
++      visitChargedRecoil(false);
++      assertThat(component.getChargeProgress()).isEqualTo(MovementState.CHARGE_COMPLETE);
++    }
++  }
++
++  @Test
++  void underTheChargeResetBuffsThatStopTheUnitTakeTheChargeOfAUnitPushedBack() {
++    queries.hasModifierComponent = true;
++    queries.rowSpeed = 60;
++    // A slow that leaves something of the speed keeps the charge.
++    queries.speedPercents = new int[] {-50};
++    visitChargedRecoil(true);
++    assertThat(component.getChargeProgress()).isEqualTo(MovementState.CHARGE_COMPLETE);
++    // A stun scales the speed to 0.
++    queries.speedPercents = new int[] {-100};
++    visitChargedRecoil(true);
++    assertThat(component.getChargeProgress()).isZero();
++    visitChargedRecoil(false);
++    assertThat(component.getChargeProgress()).isEqualTo(MovementState.CHARGE_COMPLETE);
++    // A row without speed, or a unit without the modifier component, is not stopped by buffs.
++    queries.rowSpeed = 0;
++    visitChargedRecoil(true);
++    assertThat(component.getChargeProgress()).isEqualTo(MovementState.CHARGE_COMPLETE);
++    queries.rowSpeed = 60;
++    queries.hasModifierComponent = false;
++    visitChargedRecoil(true);
++    assertThat(component.getChargeProgress()).isEqualTo(MovementState.CHARGE_COMPLETE);
++  }
+ }
+diff --git a/core/src/test/java/org/crforge/core/pathfinding/move/StubMovementQueries.java b/core/src/test/java/org/crforge/core/pathfinding/move/StubMovementQueries.java
+index 1243e908..14b5dc69 100644
+--- a/core/src/test/java/org/crforge/core/pathfinding/move/StubMovementQueries.java
++++ b/core/src/test/java/org/crforge/core/pathfinding/move/StubMovementQueries.java
+@@ -40,6 +40,8 @@ class StubMovementQueries implements MovementQueries {
+   int gameModeGoal = -1;
+   boolean hasModifierComponent;
+   int chargeRangeFromModifiers;
++  int rowSpeed;
++  int[] speedPercents = new int[0];
+   int touchdownModeActive;
+   int touchdownEdgeSeparate;
+   int pushDisplacementEnabled;
+@@ -166,6 +168,16 @@ class StubMovementQueries implements MovementQueries {
+     return chargeRangeFromModifiers;
+   }
+ 
++  @Override
++  public int rowSpeed() {
++    return rowSpeed;
++  }
++
++  @Override
++  public int speedThroughModifiers(int base) {
++    return SpeedBudget.speedModifier(speedPercents, base);
++  }
++
+   @Override
+   public int touchdownModeActive() {
+     return touchdownModeActive;
+-- 
+2.43.0
+

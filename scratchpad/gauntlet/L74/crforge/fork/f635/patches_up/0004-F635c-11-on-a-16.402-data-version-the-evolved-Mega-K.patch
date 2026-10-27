@@ -1,0 +1,160 @@
+From 822d27f7558614357badec150070e9d9cc9199c1 Mon Sep 17 00:00:00 2001
+From: vegetableleaf <benzhu2029@u.northwestern.edu>
+Date: Tue, 27 Oct 2026 22:52:32 +0000
+Subject: [PATCH 4/5] F635c-11: on a 16.402 data version the evolved Mega
+ Knight uppercut holds the unit as client 16.402.17 did
+
+Upstream 58271477 (#738) drops the run own NO_ATTACK+NO_MOVE (start, after the push, each step of the
+wait) for client 16.635.1, in code, with nothing in the 16.402 tables to tell it. BattleWorld.client16402
+(the tables are a 16.402.17 data version) keeps the old hold there; 16.635.3 plays upstream rule.
+(a): SME old client, a2c6 round-7 config (r78): upstream alone 88 -> 81/109, 5 of the 7 regressions a
+MegaKnight_EV1 first divergence (155201, 180652, 205934, 224041, 011738); with this and F635c-12 88/109,
+138/138 identical to r78.
+Tests: theOlderClientRaisesTheHoldItself (16.402 data; red with the gate off); four 16.635.1-rule cases
+assume 16.635 data. Core (with F635c-12): 16.635.3 2182/0; 16.402.22 2182/0.
+---
+ .../crforge/core/battle/unit/BattleWorld.java |  8 +++++++
+ .../crforge/core/battle/unit/UppercutRun.java | 13 ++++++++++-
+ .../unit/BattleUppercutAttractTest.java       | 23 +++++++++++++++++++
+ .../battle/unit/BattleUppercutWindTest.java   |  8 +++++++
+ 4 files changed, 51 insertions(+), 1 deletion(-)
+
+diff --git a/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java b/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java
+index a0be53ef..9e8ba615 100644
+--- a/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java
++++ b/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java
+@@ -855,6 +855,13 @@ public class BattleWorld implements HolderPasses {
+    */
+   @Getter private boolean skipKamikazeOnDiscardedHit;
+ 
++  /**
++   * True when the loaded tables are a data version of game client 16.402.17 (clashbot fork F635c):
++   * the rules client 16.635.1 changed in code, with nothing in the tables to tell them, keep the
++   * older client's there, as the evolved Mega Knight's uppercut hold.
++   */
++  @Getter private boolean client16402;
++
+   /**
+    * Which bit of an entity's tag word each flag is, as the loaded game tags table numbers the tags;
+    * every entity of the battle shares it. No flag has a bit until the tables are loaded.
+@@ -887,6 +894,7 @@ public class BattleWorld implements HolderPasses {
+             records.publishedGlobalBoolean(RESET_CHARGE_DURING_PUSHBACK));
+     this.skipKamikazeOnDiscardedHit =
+         records.publishedGlobalBoolean(SKIP_KAMIKAZE_ON_DISCARDED_HIT);
++    this.client16402 = GameVersions.CLIENT_16_402_17_DATA.contains(tables.version());
+   }
+ 
+   /**
+diff --git a/core/src/main/java/org/crforge/core/battle/unit/UppercutRun.java b/core/src/main/java/org/crforge/core/battle/unit/UppercutRun.java
+index bda520ab..1f59bae7 100644
+--- a/core/src/main/java/org/crforge/core/battle/unit/UppercutRun.java
++++ b/core/src/main/java/org/crforge/core/battle/unit/UppercutRun.java
+@@ -105,6 +105,12 @@ final class UppercutRun extends ActionInstance {
+     // run, hold the unit while it is listed. From here on each pre-hook tells the observers how the
+     // hold part of the unit's word changes.
+     unit.watchTags();
++    // Client 16.402.17 (its data versions, clashbot fork F635c) raised NO_ATTACK and NO_MOVE itself
++    // as the run started, after the push and on each step of the wait; our 16.402 recordings of the
++    // evolved Mega Knight follow that hold (a).
++    if (unit.world().isClient16402()) {
++      unit.raiseWatched(bits().noAttack() | bits().noMove());
++    }
+     target = unit.currentTarget();
+     if (target == null) {
+       throw new UnsupportedOperationException(
+@@ -134,7 +140,9 @@ final class UppercutRun extends ActionInstance {
+         finish();
+       } else {
+         // The one tag the run raises itself, for one step, and only as the row asks.
+-        if (row.isLockTargetAfterUppercut()) {
++        if (unit.world().isClient16402()) {
++          unit.raiseWatched(bits().noAttack() | bits().noMove() | bits().lockTarget());
++        } else if (row.isLockTargetAfterUppercut()) {
+           unit.raiseWatched(bits().lockTarget());
+         }
+         delay = row.getDashFollowUpDelayMs();
+@@ -169,6 +177,9 @@ final class UppercutRun extends ActionInstance {
+     }
+     delay -= STEP_MS;
+     if (delay > 0) {
++      if (unit.world().isClient16402()) {
++        unit.raiseWatched(bits().noMove() | bits().noAttack());
++      }
+       return "waiting";
+     }
+     // Without the follow-up dash, which the row refuses, the run ends with the delay.
+diff --git a/core/src/test/java/org/crforge/core/battle/unit/BattleUppercutAttractTest.java b/core/src/test/java/org/crforge/core/battle/unit/BattleUppercutAttractTest.java
+index b7b64376..66e04f46 100644
+--- a/core/src/test/java/org/crforge/core/battle/unit/BattleUppercutAttractTest.java
++++ b/core/src/test/java/org/crforge/core/battle/unit/BattleUppercutAttractTest.java
+@@ -187,6 +187,10 @@ class BattleUppercutAttractTest {
+       "the run adds no NO_MOVE of its own: with the row's attract tag the Mega Knight's word never"
+           + " holds NO_MOVE while the uppercut is listed")
+   void theRunAddsNoNoMoveOfItsOwn(@TempDir Path folder) throws IOException {
++    // clashbot fork F635c: client 16.635.1's rule; a 16.402 data version keeps 16.402.17's.
++    org.junit.jupiter.api.Assumptions.assumeTrue(
++        org.crforge.core.battle.data.GameVersions.CLIENT_16_635_1_DATA.contains(
++            GameData.tables().version()));
+     Scene scene = new Scene(written(folder, "NO_ATTACK,NO_MOVE_ALLOW_ATTRACT", true));
+     long hold = scene.bits.noAttack() | scene.bits.noMoveAllowAttract();
+ 
+@@ -200,11 +204,30 @@ class BattleUppercutAttractTest {
+     }
+   }
+ 
++  @Test
++  @DisplayName(
++      "clashbot F635c: on a data version of client 16.402.17 the run raises NO_ATTACK and NO_MOVE"
++          + " itself as it starts, as that client did, the stock row setting no tags")
++  void theOlderClientRaisesTheHoldItself() {
++    org.junit.jupiter.api.Assumptions.assumeTrue(
++        org.crforge.core.battle.data.GameVersions.CLIENT_16_402_17_DATA.contains(
++            GameData.tables().version()));
++    Scene scene = new Scene(GameData.tables());
++    long hold = scene.bits.noAttack() | scene.bits.noMove();
++
++    scene.match.getBattle().step();
++    assertThat(scene.megaKnight.getView().getFlags() & hold).as("the hold on step 0").isEqualTo(hold);
++  }
++
+   @Test
+   @DisplayName(
+       "after the push the unit carries LOCK_TARGET for one step only while the row's"
+           + " LockTargetAfterUppercut is on")
+   void theLockAfterThePushFollowsTheRow(@TempDir Path folder) throws IOException {
++    // clashbot fork F635c: client 16.635.1's rule; a 16.402 data version keeps 16.402.17's.
++    org.junit.jupiter.api.Assumptions.assumeTrue(
++        org.crforge.core.battle.data.GameVersions.CLIENT_16_635_1_DATA.contains(
++            GameData.tables().version()));
+     Scene locked = new Scene(written(folder.resolve("on"), "NO_ATTACK", true));
+     Scene unlocked = new Scene(written(folder.resolve("off"), "NO_ATTACK", false));
+ 
+diff --git a/core/src/test/java/org/crforge/core/battle/unit/BattleUppercutWindTest.java b/core/src/test/java/org/crforge/core/battle/unit/BattleUppercutWindTest.java
+index 1c3cda61..a18532ab 100644
+--- a/core/src/test/java/org/crforge/core/battle/unit/BattleUppercutWindTest.java
++++ b/core/src/test/java/org/crforge/core/battle/unit/BattleUppercutWindTest.java
+@@ -186,6 +186,10 @@ class BattleUppercutWindTest {
+       "an uppercut on a target without a movement component ends as it starts, the unit carrying"
+           + " the row's tags for one step and nothing pushed")
+   void anUppercutOnATowerEndsAtOnce() {
++    // clashbot fork F635c: client 16.635.1's rule; a 16.402 data version keeps 16.402.17's.
++    org.junit.jupiter.api.Assumptions.assumeTrue(
++        org.crforge.core.battle.data.GameVersions.CLIENT_16_635_1_DATA.contains(
++            GameData.tables().version()));
+     Scene scene = new Scene();
+     CharacterEntity mk = scene.unit(0, "MegaKnight_EV1", 3500, 23500, "mk");
+     scene.step(40);
+@@ -322,6 +326,10 @@ class BattleUppercutWindTest {
+       "the uppercut's push on a target carrying NO_PUSHBACK is refused: the target is not pushed,"
+           + " nothing is scheduled on it, and the run ends without holding the unit")
+   void aPushOnANoPushbackTargetIsRefused() {
++    // clashbot fork F635c: client 16.635.1's rule; a 16.402 data version keeps 16.402.17's.
++    org.junit.jupiter.api.Assumptions.assumeTrue(
++        org.crforge.core.battle.data.GameVersions.CLIENT_16_635_1_DATA.contains(
++            GameData.tables().version()));
+     Uppercut pushed = uppercutOnAKnight(false, null);
+     // The run's row's tags, and the lock the run raises after a push for one step.
+     MegaKnightUppercut row = pushed.shippedRow();
+-- 
+2.43.0
+

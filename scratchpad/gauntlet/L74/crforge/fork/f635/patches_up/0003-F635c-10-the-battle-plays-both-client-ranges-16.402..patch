@@ -1,0 +1,122 @@
+From 1d3386032d6b17d6ca6b988848da4f5efbd39c60 Mon Sep 17 00:00:00 2001
+From: vegetableleaf <benzhu2029@u.northwestern.edu>
+Date: Tue, 27 Oct 2026 22:19:08 +0000
+Subject: [PATCH 3/3] F635c-10: the battle plays both client ranges, 16.402.17
+ (data 16.402.18-22) and 16.635.1 (data 16.635.3)
+
+GameVersions.MODELLED_DATA; BattleWorld.requireModelled accepts it (upstream b40c4a36 accepts 16.635.3 only).
+Rules a later client changed are read from what each version tables publish (the 16.635.1 globals
+are absent from the 16.402 tables). Two upstream test classes are client 16.635.1 only and assume its
+data: ReplayScenarioEveryFieldTest (its replays) and one BattleCastIdSpecificBuffTest case (the shipped
+row sets the column from 16.635.3 on).
+Red: on the upstream guard BattleDataVersionTest fails on 16.402.22 (1,006 guard refusals in all).
+Core: 16.635.3 2181/0 (5 skipped); 16.402.22 2181/0 (25 skipped).
+---
+ .../org/crforge/core/battle/data/GameVersions.java    |  8 ++++++++
+ .../org/crforge/core/battle/unit/BattleWorld.java     | 11 +++++++----
+ .../battle/replay/ReplayScenarioEveryFieldTest.java   |  3 +++
+ .../battle/unit/BattleCastIdSpecificBuffTest.java     |  4 ++++
+ .../core/battle/unit/BattleDataVersionTest.java       |  4 ++--
+ 5 files changed, 24 insertions(+), 6 deletions(-)
+
+diff --git a/core/src/main/java/org/crforge/core/battle/data/GameVersions.java b/core/src/main/java/org/crforge/core/battle/data/GameVersions.java
+index 415e0ebf..69b215b9 100644
+--- a/core/src/main/java/org/crforge/core/battle/data/GameVersions.java
++++ b/core/src/main/java/org/crforge/core/battle/data/GameVersions.java
+@@ -77,6 +77,14 @@ public final class GameVersions {
+    */
+   public static final Set<String> CLIENT_16_635_1_DATA = Set.of(DATA_16_635_3);
+ 
++  /**
++   * The data versions the battle plays (clashbot fork F635c): both client ranges, 16.402.17's and
++   * 16.635.1's. Rules a later client changed are read from what each version's tables publish, so
++   * a 16.402 data version keeps the rules of its own client wherever they are data-driven.
++   */
++  public static final Set<String> MODELLED_DATA =
++      Set.of(DATA_16_402_18, DATA_16_402_19, DATA_16_402_21, DATA_16_402_22, DATA_16_635_3);
++
+   private GameVersions() {
+     // Constants only
+   }
+diff --git a/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java b/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java
+index e09cf04f..a0be53ef 100644
+--- a/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java
++++ b/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java
+@@ -891,18 +891,21 @@ public class BattleWorld implements HolderPasses {
+ 
+   /**
+    * Refuses tables whose data version is not one the battle models: a data version game client
+-   * 16.635.1 has run ({@link GameVersions#CLIENT_16_635_1_DATA}).
++   * 16.402.17 or 16.635.1 has run ({@link GameVersions#MODELLED_DATA}; clashbot fork F635c keeps
++   * the 16.402 range beside upstream's 16.635.1).
+    *
+    * @param tables the game tables
+    * @throws UnsupportedOperationException for any other data version
+    */
+   public static void requireModelled(GameTables tables) {
+-    if (!GameVersions.CLIENT_16_635_1_DATA.contains(tables.version())) {
++    if (!GameVersions.MODELLED_DATA.contains(tables.version())) {
+       throw new UnsupportedOperationException(
+           "the battle models the rules of game client "
+               + GameVersions.CLIENT_16_635_1
+-              + ", which runs data versions "
+-              + new TreeSet<>(GameVersions.CLIENT_16_635_1_DATA)
++              + " and game client "
++              + GameVersions.CLIENT_16_402_17
++              + ", which run data versions "
++              + new TreeSet<>(GameVersions.MODELLED_DATA)
+               + "; it does not play tables of data version "
+               + tables.version());
+     }
+diff --git a/core/src/test/java/org/crforge/core/battle/replay/ReplayScenarioEveryFieldTest.java b/core/src/test/java/org/crforge/core/battle/replay/ReplayScenarioEveryFieldTest.java
+index b5577ea2..8160708e 100644
+--- a/core/src/test/java/org/crforge/core/battle/replay/ReplayScenarioEveryFieldTest.java
++++ b/core/src/test/java/org/crforge/core/battle/replay/ReplayScenarioEveryFieldTest.java
+@@ -34,6 +34,9 @@ class ReplayScenarioEveryFieldTest {
+   @BeforeAll
+   static void loadTables() {
+     tables = GameData.tables();
++    // clashbot fork F635c: the replays here are client 16.635.1's, read with its data versions only.
++    org.junit.jupiter.api.Assumptions.assumeTrue(
++        org.crforge.core.battle.data.GameVersions.CLIENT_16_635_1_DATA.contains(tables.version()));
+   }
+ 
+   /** A scenario with its plays' items fitted to the tables: the costs and levels of their rows. */
+diff --git a/core/src/test/java/org/crforge/core/battle/unit/BattleCastIdSpecificBuffTest.java b/core/src/test/java/org/crforge/core/battle/unit/BattleCastIdSpecificBuffTest.java
+index b37eccd9..85b78362 100644
+--- a/core/src/test/java/org/crforge/core/battle/unit/BattleCastIdSpecificBuffTest.java
++++ b/core/src/test/java/org/crforge/core/battle/unit/BattleCastIdSpecificBuffTest.java
+@@ -224,6 +224,10 @@ class BattleCastIdSpecificBuffTest {
+           + " Firecracker's cast, so the fireworks of one shot keep one cast-specific instance on the"
+           + " unit they reach")
+   void theFireworksCarryTheFirecrackersCast() {
++    // clashbot fork F635c: the shipped row sets the column from data 16.635.3 on.
++    org.junit.jupiter.api.Assumptions.assumeTrue(
++        org.crforge.core.battle.data.GameVersions.CLIENT_16_635_1_DATA.contains(
++            GameData.tables().version()));
+     Standard1v1Battle battle = new Standard1v1Battle(GameData.tables(), LEVEL, false);
+     CharacterEntity firecracker =
+         battle.deploy(0, GameData.unit("Firecracker_EV1"), LEVEL, 0, 6500, 14000, "F");
+diff --git a/core/src/test/java/org/crforge/core/battle/unit/BattleDataVersionTest.java b/core/src/test/java/org/crforge/core/battle/unit/BattleDataVersionTest.java
+index 5c724657..025cc100 100644
+--- a/core/src/test/java/org/crforge/core/battle/unit/BattleDataVersionTest.java
++++ b/core/src/test/java/org/crforge/core/battle/unit/BattleDataVersionTest.java
+@@ -59,13 +59,13 @@ class BattleDataVersionTest {
+   @Test
+   @DisplayName("tables of each data version the modelled client runs are played")
+   void theClientsDataVersionsArePlayed(@TempDir Path folder) throws IOException {
+-    for (String version : GameVersions.CLIENT_16_635_1_DATA) {
++    for (String version : GameVersions.MODELLED_DATA) {
+       Path dir = Files.createDirectories(folder.resolve(version));
+       Standard1v1Battle battle = new Standard1v1Battle(labelled(dir, version));
+       battle.getBattle().step();
+       assertThat(battle.getWorld().getRecords()).isNotNull();
+     }
+-    assertThat(GameData.tables().version()).isIn(GameVersions.CLIENT_16_635_1_DATA);
++    assertThat(GameData.tables().version()).isIn(GameVersions.MODELLED_DATA);
+   }
+ 
+   @Test
+-- 
+2.43.0
+

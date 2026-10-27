@@ -1,0 +1,23 @@
+== up1_new vs c7_new
+exact apart from torn: 17/33 -> 17/33 | exact frames 70198 -> 70198 | regressions 0 | gained 0
+torn frames after: {'torn_mixed': 138, 'torn_t1': 17, 'torn_step': 31, 'torn_cmd': 14}
+   4  body in the reader, none near in the sim (play missed / late / unit not made)
+   4  body position (movement / collision / targeting)
+   3  live client: own elixir down a card cost 1 frame before the sim
+   1  hp only: sim more damage at the same points
+   1  spell area effect timing
+   1  hp only: sim less/mixed damage at the same points
+   1  projectile only (launch timing / flight)
+   1  body in the sim, none near in the reader
+== up2_new vs up1_new
+exact apart from torn: 17/33 -> 17/33 | exact frames 70198 -> 70198 | regressions 0 | gained 0
+torn frames after: {'torn_mixed': 138, 'torn_t1': 17, 'torn_step': 31, 'torn_cmd': 14}
+   4  body in the reader, none near in the sim (play missed / late / unit not made)
+   4  body position (movement / collision / targeting)
+   3  live client: own elixir down a card cost 1 frame before the sim
+   1  hp only: sim more damage at the same points
+   1  spell area effect timing
+   1  hp only: sim less/mixed damage at the same points
+   1  projectile only (launch timing / flight)
+   1  body in the sim, none near in the reader
+c7_new vs up2_new: matches in both 47: identical 47, different 0
