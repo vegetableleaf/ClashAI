@@ -1,0 +1,26 @@
+{
+ "ckpt": "clxiii",
+ "params": 1759432,
+ "max_batch": 2048,
+ "wait_ms": 5.0,
+ "rows": [
+  {
+   "block": 512,
+   "producers": 24,
+   "rows_per_s": 18485,
+   "play_frac": 0.01,
+   "vs_bare": 0.886,
+   "serialized_cells": false,
+   "mean_batch": 2039,
+   "cell_calls_per_batch": 1.97,
+   "server_s": {
+    "stack_s": 1.43,
+    "forward_s": 59.36,
+    "cell_s": 15.73,
+    "idle_s": 0.05
+   },
+   "producer_cpu_us_per_row": 22.19
+  }
+ ],
+ "bare_forward_rows_per_s": 20865
+}

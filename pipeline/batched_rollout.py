@@ -279,6 +279,19 @@ class LazyRefine:
         tr = getattr(pol.model, "tower_refine", None)
         self.tr = tr if tr is not None and tr.use_cell else None
         self.stats = {"stack_s": 0.0, "device_s": 0.0}
+        self.fwd_pol = None
+
+    def split(self):
+        """A separate forward copy of the network with the cell-only features switched off for good, so a cell call
+        (on the original, refine layers in place) can run while a forward runs (S4b: no swap to race with)."""
+        if self.fwd_pol is None and (self.cr is not None or self.tr is not None):
+            q = copy.copy(self.pol)
+            q.model = copy.deepcopy(self.model)
+            q.model.cell_refine = None
+            if self.tr is not None:
+                q.model.tower_refine.use_cell = False
+            self.fwd_pol = q
+        return self
 
     def forward_batch(self, rows, device: str = "cpu"):
         import torch

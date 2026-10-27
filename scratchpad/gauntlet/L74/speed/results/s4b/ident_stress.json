@@ -1,0 +1,262 @@
+{
+ "stress": true,
+ "new_cuda_vs_base_cuda": {
+  "n": 1718,
+  "n_other": 1718,
+  "taps": 1405,
+  "tap_diffs": [],
+  "n_tap_diffs": 0,
+  "n_dict_diffs": 0,
+  "dict_diffs": []
+ },
+ "new_cuda_vs_new_cpu": {
+  "n": 1718,
+  "n_other": 1718,
+  "taps": 1405,
+  "tap_diffs": [],
+  "n_tap_diffs": 0,
+  "n_dict_diffs": 709,
+  "dict_diffs": [
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 3320,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 3398,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 3457,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 3497,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 3517,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 3527,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 3537,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 3547,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 3577,
+    "why": [
+     "lethal_rocket",
+     "lethal_rocket"
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 3647,
+    "why": [
+     "lethal_rocket",
+     "lethal_rocket"
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 3699,
+    "why": [
+     "lethal_rocket",
+     "lethal_rocket"
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 3709,
+    "why": [
+     "lethal_rocket",
+     "lethal_rocket"
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 3719,
+    "why": [
+     "lethal_rocket",
+     "lethal_rocket"
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 3729,
+    "why": [
+     "lethal_rocket",
+     "lethal_rocket"
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 3739,
+    "why": [
+     "lethal_rocket",
+     "lethal_rocket"
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 3749,
+    "why": [
+     "lethal_rocket",
+     "lethal_rocket"
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 3759,
+    "why": [
+     "lethal_rocket",
+     "lethal_rocket"
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 3769,
+    "why": [
+     "lethal_rocket",
+     "lethal_rocket"
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 3779,
+    "why": [
+     "lethal_rocket",
+     "lethal_rocket"
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 3799,
+    "why": [
+     "lethal_rocket",
+     "lethal_rocket"
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   }
+  ]
+ }
+}

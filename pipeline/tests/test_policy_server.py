@@ -82,3 +82,48 @@ def test_graphs_and_compile_equal_eager_on_cuda():
         assert torch.allclose(nz(got[1]["card"][:40]), nz(ref[1]["card"]), atol=1e-4), mode
         assert torch.allclose(got[2], ref[2], atol=1e-5), mode
         assert torch.equal(got[3], ref[3]), mode
+
+
+def _producer(client, block, q):
+    arr, allowed, stalled, seeds = block
+    out = client.decide(arr, allowed, stalled, [np.random.default_rng(s) for s in seeds])
+    q.put([(d["play"], d["slot"], d["cell"], d["why"], d["lp_gate"], d["lp_card"], d["lp_cell"]) for d in out])
+    client.close()
+
+
+@pytest.mark.skipif(not (CK.is_file() and BATCH.is_file()), reason="CLXIII checkpoint / live batch fixture absent")
+def test_procserver_decide_in_producers_equals_block_by_block():
+    """S4b: four producer PROCESSES run the decide themselves (the server only forwards + answers cell calls); their
+    blocks share forwards; every action equals the block-by-block decide, log-probs within 1e-5."""
+    import multiprocessing as mp
+    from pipeline import batched_rollout as BR
+    from pipeline import e1_eval as E
+    from pipeline.policy_server import ProcServer, row_spec
+    pol, _ = E.load_policy(CK, "cpu")
+    blocks = _blocks([5, 7, 3, 9], seed=1)
+    want = [_reference(pol, *b) for b in blocks]
+    keys = E.gen_row_keys(pol.model)
+    srv = ProcServer(BR.LazyRefine(pol), row_spec(blocks[0][0], keys), len(blocks), 16, CFG, device="cpu",
+                     max_batch=64, wait_ms=300.0)
+    ctx = mp.get_context("spawn")          # spawn: a fork after torch started its CPU thread pool can hang the child
+    q = ctx.Queue()
+    procs = [ctx.Process(target=_producer, args=(srv.clients[i], b, q)) for i, b in enumerate(blocks)]
+    for p in procs:
+        p.start()
+    srv.start()
+    try:
+        got = [q.get(timeout=120) for _ in blocks]
+    finally:
+        for p in procs:
+            p.join(timeout=30)
+        srv.close()
+    assert srv.stats["rows"] == 24 and srv.stats["batches"] < 4                # blocks shared forwards
+    by_len = {len(g): g for g in got}
+    n_play = 0
+    for w in want:
+        g = by_len[len(w)]
+        for x, y in zip(w, g):
+            assert (x["play"], x["slot"], x["cell"], x["why"]) == y[:4]
+            assert all(abs(a - b) < 1e-5 for a, b in zip((x["lp_gate"], x["lp_card"], x["lp_cell"]), y[4:]))
+            n_play += x["play"]
+    assert n_play >= 3

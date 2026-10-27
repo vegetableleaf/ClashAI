@@ -1,0 +1,387 @@
+{
+ "stress": false,
+ "new_cuda_vs_base_cuda": {
+  "n": 1718,
+  "n_other": 1718,
+  "taps": 229,
+  "tap_diffs": [],
+  "n_tap_diffs": 0,
+  "n_dict_diffs": 0,
+  "dict_diffs": []
+ },
+ "new_cuda_vs_new_cpu": {
+  "n": 1718,
+  "n_other": 1718,
+  "taps": 229,
+  "tap_diffs": [
+   [
+    "live_play_20261026_000924.jsonl",
+    3133,
+    [
+     0,
+     [
+      "0.2222222222222222",
+      "0.5"
+     ],
+     [
+      {
+       "card": 114,
+       "deck_index": 6,
+       "follow": {
+        "afford_ticks": null,
+        "after_ticks": 26,
+        "require_first": true,
+        "within_ticks": 8
+       },
+       "form": 0,
+       "hand_pos": 1,
+       "name": "Tornado",
+       "no_affordable": false,
+       "p_play": "0.45672833919525146",
+       "play": true,
+       "xy": [
+        "0.2222222222222222",
+        "0.5"
+       ]
+      }
+     ]
+    ],
+    [
+     0,
+     [
+      "0.2222222222222222",
+      "0.5"
+     ],
+     [
+      {
+       "card": 114,
+       "deck_index": 6,
+       "follow": {
+        "afford_ticks": null,
+        "after_ticks": 26,
+        "require_first": true,
+        "within_ticks": 8
+       },
+       "form": 0,
+       "hand_pos": 1,
+       "name": "Tornado",
+       "no_affordable": false,
+       "p_play": "0.4567280411720276",
+       "play": true,
+       "xy": [
+        "0.2222222222222222",
+        "0.5"
+       ]
+      }
+     ]
+    ]
+   ],
+   [
+    "live_play_20261026_000924.jsonl",
+    4087,
+    [
+     2,
+     [
+      "0.25",
+      "0.5"
+     ],
+     [
+      {
+       "card": 114,
+       "deck_index": 6,
+       "follow": {
+        "afford_ticks": null,
+        "after_ticks": 25,
+        "require_first": true,
+        "within_ticks": 8
+       },
+       "form": 0,
+       "hand_pos": 1,
+       "name": "Tornado",
+       "no_affordable": false,
+       "p_play": "0.8797785043716431",
+       "play": true,
+       "xy": [
+        "0.25",
+        "0.5"
+       ]
+      }
+     ]
+    ],
+    [
+     2,
+     [
+      "0.25",
+      "0.5"
+     ],
+     [
+      {
+       "card": 114,
+       "deck_index": 6,
+       "follow": {
+        "afford_ticks": null,
+        "after_ticks": 25,
+        "require_first": true,
+        "within_ticks": 8
+       },
+       "form": 0,
+       "hand_pos": 1,
+       "name": "Tornado",
+       "no_affordable": false,
+       "p_play": "0.8797786235809326",
+       "play": true,
+       "xy": [
+        "0.25",
+        "0.5"
+       ]
+      }
+     ]
+    ]
+   ]
+  ],
+  "n_tap_diffs": 2,
+  "n_dict_diffs": 1564,
+  "dict_diffs": [
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 150,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 160,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 170,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 180,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 190,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 210,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 214,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 240,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 250,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 260,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 270,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 280,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 290,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 300,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 310,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 320,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 330,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 340,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 350,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   },
+   {
+    "log": "live_play_20261026_161448.jsonl",
+    "tick": 360,
+    "why": [
+     null,
+     null
+    ],
+    "keys": [
+     "p_play"
+    ],
+    "rng_differs": false
+   }
+  ]
+ }
+}

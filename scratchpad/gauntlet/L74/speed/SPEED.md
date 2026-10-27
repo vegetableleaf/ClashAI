@@ -522,3 +522,82 @@ Plateau rows/s (B 2048), PRO 6000 / 4090 (ratio):
 Per dollar (listed $2.49 vs $0.89, i.e. 2.8x the price): the 4090 gives 1.4-1.9x more rows per dollar in every cell.
 Achieved fp32 only 17-29 TFLOPS on the PRO 6000: the forward is far from peak on both cards, so kernel work is cheaper
 than hardware. The PRO 6000 wins only where many GPUs in ONE machine are needed (learner + rollouts), or 96 GB.
+
+## k. S4b: the decide in the producers, the server only forwards; ticket B's live identity on CUDA (pod 30408)
+
+### k1. `policy_server.ProcServer` + `Client` (a)
+
+**Design.**
+- **Producers are processes** (spawned: a fork after torch started its CPU thread pool hung the child, measured in the
+  first test run).
+- Each producer has one shared-memory segment for its row block. `Client.decide` writes the block there, sends `fwd`,
+  gets (gate, card, p) back, and **runs the P1 decide itself**. Its playing rows' cell logits come back from the
+  server.
+- The server has three threads:
+  - a receiver;
+  - a **double-buffered forward thread**: batch k+1 is stacked from shared memory and launched while batch k is still
+    on the GPU, and k's heads come back through pinned non-blocking copies + an event;
+  - a **cell thread** on its own CUDA stream, which serves cell calls while forwards run.
+- A policy with refine layers is `LazyRefine.split()` into a separate forward copy with the cell-only features off, so
+  no layer is swapped and the cell thread cannot race the forward. An unsplit refine policy falls back to cells
+  serialized with forwards.
+- `AsyncPolicyServer`'s threaded decide still refuses refine policies.
+
+**Identity (a): `tests/test_policy_server.py::test_procserver_decide_in_producers_equals_block_by_block`.**
+- 4 producer processes; their blocks shared forwards (3 batches for 4 blocks).
+- play / slot / cell / why equal the block-by-block decide, and log-probs are within 1e-5, on the CLXIII checkpoint
+  with its refine layers (split path).
+- Full suite: 10 passed (policy_server 4, fast_obs 4, batched_rollout 3, ...).
+
+**Throughput (a): `s4b_bench.py`, fp32 eager, max_batch 2,048, wait 5 ms, a 30 s window after every producer is
+ready.** 15% of rows play unless noted (every 7th row forced, so the cell path is exercised).
+
+| policy | producers x block | rows/s | **vs bare forward** | mean batch | cell s / forward s | producer CPU us / row |
+|---|---|---|---|---|---|---|
+| training learner u0075 (1.55M, no refine), bare 21,109 | 16 x 256 | 19,751 | 93.6% | 1,364 | 8.7 / 55.4 | 55.8 |
+| same | **32 x 256** | **20,814** | **98.6%** | 2,048 | 8.9 / 57.9 | 60.3 |
+| same | **24 x 512** | **20,852** | **98.8%** | 2,048 | 10.0 / 58.5 | 52.4 |
+| CLXIII (1.76M, refine, split), bare 20,965 | 32 x 256 | 16,287 | 77.7% | 2,041 | 20.4 / 57.9 | 60.8 |
+| same | 24 x 512 | 16,656 | 79.4% | 2,042 | 24.4 / 59.5 | 51.4 |
+| same, 1% of rows play | 24 x 512 | 18,485 | 88.6% | 2,039 | 15.7 / 59.4 | 22.2 |
+
+Earlier versions, for the record (same bench):
+- single-thread server loop: 61% (the producers' cell calls waited behind each forward; batches 737-893 rows);
+- 3 threads without double buffering: 87-89% (learner), 80% (CLXIII with serialized cells).
+
+**Findings.**
+- **The target is met for the training model (a): 98.6-98.8% of the bare forward** at 6k-12k rows in flight
+  (32 x 256, 24 x 512). Fewer rows in flight (16 x 256) do not fill the batches (93.6%).
+- **For CLXIII it is not met (a: 78-89%).** The refine layers' cell features (a conv over the 2,304 cells, per
+  playing row, about 2 cell calls per batch) are real GPU work, which the bare-forward reference does not contain. At
+  1% play the cost is mostly a fixed cost per call: 15.7 s of the 30 s window in cell calls.
+- Untested next lever (b): merge cell calls across batches, one call every few ms, or warm-pad the cell batch to a
+  fixed bucket.
+- The producers spend 52-61 us of CPU per row on the decide at 15% play and 22 us at 1% play. At 21k rows/s that is
+  0.5-1.3 cores, spread over the producers (a).
+
+### k2. Ticket B on CUDA: test_decide_identity's live checks (a)
+
+`decide_identity_cuda.py`, on 30408 with these inputs:
+- the 4 recorded logs (161448, 000924, 182408, 033228) and CLXIII;
+- BASE a76f57e's `decision_options` / `e1_eval` / `live_gen_v2`, from `git show`;
+- the live cue table (sha babaa3d1, the laptop's file; the pod's royalesim embeds another table, so the wrapper reads
+  the file);
+- the test's own `live_main`, with the pilot on cuda.
+
+| comparison | decisions | taps | tap differences | decision-dict or RNG differences |
+|---|---|---|---|---|
+| **new (single forward) vs BASE, both cuda** | 1,718 | 229 | **0** | **0** |
+| same, stress pass (gate +3, OT, low princesses) | 1,718 | 1,405 | **0** | **0** |
+| new cuda vs new cpu | 1,718 | 229 | 0 actions | 1,564 rows: `p_play` float bits (cuda vs cpu forward); 2 rows: the follow-up entry's logged `p_play`; 1 WAIT row's logged cell |
+| new cuda vs new cpu, stress | 1,718 | 1,405 | 0 actions | 709 rows: `p_play` float bits |
+
+- **On CUDA the ticket-B tree's live decisions are identical to a76f57e**, on the recorded and the stress pass:
+  every decision dict and the decision-RNG state. The whys cover None 1,703, log_air 5, lethal_rocket 3,
+  xbow_dead_lane 4 and rocket_tornado 3; in stress, lethal_rocket 528 and log_air 12.
+- **Device differences (cpu vs cuda, both on the new tree) never change a tap.** The logged differences:
+  - `p_play` in the last float bits, e.g. 0.4567283 vs 0.4567280;
+  - `live_play_20261026_000924` ticks 3133 and 4087 (why rocket_tornado): the follow-up entry's logged `p_play`; tap,
+    hand_pos and xy are identical;
+  - `live_play_20261026_182408` tick 3148, why None, play False, Tesla: the logged (not tapped) cell of a WAIT row,
+    xy (0.5, 0.8125) on cpu vs (0.5, 0.6875) on cuda, an argmax near-tie.

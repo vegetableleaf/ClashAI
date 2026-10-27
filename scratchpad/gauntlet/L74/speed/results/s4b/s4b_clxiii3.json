@@ -1,0 +1,43 @@
+{
+ "ckpt": "clxiii",
+ "params": 1759432,
+ "max_batch": 2048,
+ "wait_ms": 5.0,
+ "rows": [
+  {
+   "block": 256,
+   "producers": 32,
+   "rows_per_s": 16287,
+   "play_frac": 0.152,
+   "vs_bare": 0.777,
+   "serialized_cells": false,
+   "mean_batch": 2041,
+   "cell_calls_per_batch": 1.97,
+   "server_s": {
+    "stack_s": 1.87,
+    "forward_s": 57.86,
+    "cell_s": 20.41,
+    "idle_s": 0.12
+   },
+   "producer_cpu_us_per_row": 60.8
+  },
+  {
+   "block": 512,
+   "producers": 24,
+   "rows_per_s": 16656,
+   "play_frac": 0.152,
+   "vs_bare": 0.794,
+   "serialized_cells": false,
+   "mean_batch": 2042,
+   "cell_calls_per_batch": 2.0,
+   "server_s": {
+    "stack_s": 1.59,
+    "forward_s": 59.49,
+    "cell_s": 24.43,
+    "idle_s": 0.07
+   },
+   "producer_cpu_us_per_row": 51.41
+  }
+ ],
+ "bare_forward_rows_per_s": 20965
+}
