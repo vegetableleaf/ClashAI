@@ -256,3 +256,28 @@ $P -I cf_obs.py --envs 16 --steps 600 --warm-steps 600 --out runs/obs.json
 $P -I cf_loop.py --envs 2048 --cohorts 2 --threads 24 --warm 60 --seconds 90 --out runs/loop_n2048_c2_t24.json
 python -I project.py results/loop_n2048_c2_t24.json --extra-core-s 0.05   # laptop
 ```
+
+## S3b-1: crforge body rows -> the ids RoyaleSim's production path gives (`body_map.json`)
+
+- **Method (a).** Every card form of the 223 census pairs (180 jobs: 119 cards, base + the evo / hero slots played) was
+  played by side 0 alone, 2,400 ticks, towers attacking, in both engines at level 11 (RoyaleSim's level):
+  crforge via `BodyProbe.java` (direct play; in a Ladder match for the 4 forms that need champion slots or a king),
+  RoyaleSim fin15 via `rs_probe.py` (`RoyaleSelfPlayEnv.raw()`, the production raw dict). A crforge body matches the
+  RoyaleSim body of the same card form with the same max_hp; its id is `vocab.engine_unit_id(rs_name, max_hp)`, what
+  `from_engine` computes. **All 204 matches were exact on max_hp** (0 needed the 3% tolerance). `map_bodies.py` joins
+  them; its `_check()` asserts three known cases.
+- **Result (a).** 188 crforge body names mapped (16 entries carry a max_hp rule: the golem / lava / elixir golem /
+  recruits / mother witch sub-spawn splits and the spell bodies). 15 names stay dropped (`_unmatched`): 10 the
+  RoyaleSim probe never showed (bomb / bottle death bodies with max_hp -1, Tombstone hero visual dummies at 2,559,997 hp,
+  Skeleton Barrel's container) and 5 seen only in matches through kills or curses, with no RoyaleSim evidence
+  (SpearGoblin_Dummy, VoodooHog, PhoenixNoRespawn, Wallbreaker_mini, GoblinCurseGoblin).
+- **Bodies dropped per match, 223 census matches (a, `cf_drop.py`, random plays, L16; 91.2 bodies per match):
+  before 23.3 (193 of 223 matches drop at least one; 61 names), after 1.0 (36 matches; 6 names).**
+- **Finding (a): 9 crforge rows need the spawning card, not the name.** RoyaleSim names a body by its parent card, so
+  production gives a Witch's skeleton the `witch` id, a Night Witch's bat `night_witch`, a Furnace's spirit `furnace`,
+  a Goblin Giant's spear goblin `goblin_giant`. crforge uses one row for each (Skeleton, Bat, SpearGoblin, Goblin_Stab,
+  Barbarian, Barbarian_EV1, FireSpirits, Minion, Goblin). **42.5 of the 91.2 bodies per match** carry such a row. The
+  facade must pick the entry by the card that spawned the body (`by_name_unique: false`); whether crforge exposes that
+  parent for every spawn (Play.units() covers direct units) is untested (b).
+- **Forms (b).** RoyaleSim showed status_flags 0 on every probed body, evolved and hero slots included, so `form` comes
+  from the crforge row name (_EV1 / Hero) and is not checked against RoyaleSim.

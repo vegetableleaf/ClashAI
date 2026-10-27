@@ -1,0 +1,3581 @@
+{
+ "AngryBarbarian": {
+  "entries": [
+   {
+    "rs_card": "AngryBarbarians",
+    "rs_name": "AngryBarbarians",
+    "form": 0,
+    "vocab_id": 35,
+    "vocab_key": "elite_barbarians",
+    "max_hp_rule": null,
+    "max_hp_l11": 1341,
+    "max_hp_l16": 2143,
+    "rs_status_flags": 0,
+    "evidence": "crforge AngryBarbarians flag 0 -> AngryBarbarian max_hp 1341 (L11, x6, first tick 21); RoyaleSim fin15 AngryBarbarians flag 0 -> AngryBarbarians max_hp 1341 (x6, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "AngryBarbarian_EV1": {
+  "entries": [
+   {
+    "rs_card": "AngryBarbarians",
+    "rs_name": "AngryBarbarians",
+    "form": 1,
+    "vocab_id": 35,
+    "vocab_key": "elite_barbarians",
+    "max_hp_rule": null,
+    "max_hp_l11": 1341,
+    "max_hp_l16": 2143,
+    "rs_status_flags": 0,
+    "evidence": "crforge AngryBarbarians flag 1 -> AngryBarbarian_EV1 max_hp 1341 (L11, x3, first tick 21); RoyaleSim fin15 AngryBarbarians flag 1 -> AngryBarbarians max_hp 1341 (x4, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "AngryBarbarian_EV1_2": {
+  "entries": [
+   {
+    "rs_card": "AngryBarbarians",
+    "rs_name": "AngryBarbarians",
+    "form": 1,
+    "vocab_id": 35,
+    "vocab_key": "elite_barbarians",
+    "max_hp_rule": null,
+    "max_hp_l11": 1341,
+    "max_hp_l16": 2143,
+    "rs_status_flags": 0,
+    "evidence": "crforge AngryBarbarians flag 1 -> AngryBarbarian_EV1_2 max_hp 1341 (L11, x3, first tick 21); RoyaleSim fin15 AngryBarbarians flag 1 -> AngryBarbarians max_hp 1341 (x4, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Archer": {
+  "entries": [
+   {
+    "rs_card": "Archer",
+    "rs_name": "Archer",
+    "form": 0,
+    "vocab_id": 9,
+    "vocab_key": "archers",
+    "max_hp_rule": null,
+    "max_hp_l11": 304,
+    "max_hp_l16": 486,
+    "rs_status_flags": 0,
+    "evidence": "crforge Archer flag 0 -> Archer max_hp 304 (L11, x6, first tick 21); RoyaleSim fin15 Archer flag 0 -> Archer max_hp 304 (x6, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "ArcherQueen": {
+  "entries": [
+   {
+    "rs_card": "ArcherQueen",
+    "rs_name": "ArcherQueen",
+    "form": 0,
+    "vocab_id": 8,
+    "vocab_key": "archer_queen",
+    "max_hp_rule": null,
+    "max_hp_l11": 1000,
+    "max_hp_l16": 1599,
+    "rs_status_flags": 0,
+    "evidence": "crforge ArcherQueen flag 0 -> ArcherQueen max_hp 1000 (L11, x3, first tick 21); RoyaleSim fin15 ArcherQueen flag 0 -> ArcherQueen max_hp 1000 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Archer_EV1": {
+  "entries": [
+   {
+    "rs_card": "Archer",
+    "rs_name": "Archer",
+    "form": 1,
+    "vocab_id": 9,
+    "vocab_key": "archers",
+    "max_hp_rule": null,
+    "max_hp_l11": 304,
+    "max_hp_l16": 486,
+    "rs_status_flags": 0,
+    "evidence": "crforge Archer flag 1 -> Archer_EV1 max_hp 304 (L11, x6, first tick 21); RoyaleSim fin15 Archer flag 1 -> Archer max_hp 304 (x6, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Assassin": {
+  "entries": [
+   {
+    "rs_card": "Assassin",
+    "rs_name": "Assassin",
+    "form": 0,
+    "vocab_id": 13,
+    "vocab_key": "bandit",
+    "max_hp_rule": null,
+    "max_hp_l11": 906,
+    "max_hp_l16": 1447,
+    "rs_status_flags": 0,
+    "evidence": "crforge Assassin flag 0 -> Assassin max_hp 906 (L11, x3, first tick 21); RoyaleSim fin15 Assassin flag 0 -> Assassin max_hp 906 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "AxeMan": {
+  "entries": [
+   {
+    "rs_card": "AxeMan",
+    "rs_name": "AxeMan",
+    "form": 0,
+    "vocab_id": 40,
+    "vocab_key": "executioner",
+    "max_hp_rule": null,
+    "max_hp_l11": 1280,
+    "max_hp_l16": 2045,
+    "rs_status_flags": 0,
+    "evidence": "crforge AxeMan flag 0 -> AxeMan max_hp 1280 (L11, x3, first tick 21); RoyaleSim fin15 AxeMan flag 0 -> AxeMan max_hp 1280 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "AxeMan_EV1": {
+  "entries": [
+   {
+    "rs_card": "AxeMan",
+    "rs_name": "AxeMan",
+    "form": 1,
+    "vocab_id": 40,
+    "vocab_key": "executioner",
+    "max_hp_rule": null,
+    "max_hp_l11": 1280,
+    "max_hp_l16": 2045,
+    "rs_status_flags": 0,
+    "evidence": "crforge AxeMan flag 1 -> AxeMan_EV1 max_hp 1280 (L11, x3, first tick 21); RoyaleSim fin15 AxeMan flag 1 -> AxeMan max_hp 1280 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "BabyDragon": {
+  "entries": [
+   {
+    "rs_card": "BabyDragon",
+    "rs_name": "BabyDragon",
+    "form": 0,
+    "vocab_id": 11,
+    "vocab_key": "baby_dragon",
+    "max_hp_rule": null,
+    "max_hp_l11": 1152,
+    "max_hp_l16": 1840,
+    "rs_status_flags": 0,
+    "evidence": "crforge BabyDragon flag 0 -> BabyDragon max_hp 1152 (L11, x3, first tick 21); RoyaleSim fin15 BabyDragon flag 0 -> BabyDragon max_hp 1152 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "BabyDragon_EV1": {
+  "entries": [
+   {
+    "rs_card": "BabyDragon",
+    "rs_name": "BabyDragon",
+    "form": 1,
+    "vocab_id": 11,
+    "vocab_key": "baby_dragon",
+    "max_hp_rule": null,
+    "max_hp_l11": 1152,
+    "max_hp_l16": 1840,
+    "rs_status_flags": 0,
+    "evidence": "crforge BabyDragon flag 1 -> BabyDragon_EV1 max_hp 1152 (L11, x3, first tick 21); RoyaleSim fin15 BabyDragon flag 1 -> BabyDragon max_hp 1152 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Balloon": {
+  "entries": [
+   {
+    "rs_card": "Balloon",
+    "rs_name": "Balloon",
+    "form": 0,
+    "vocab_id": 12,
+    "vocab_key": "balloon",
+    "max_hp_rule": null,
+    "max_hp_l11": 1676,
+    "max_hp_l16": 2678,
+    "rs_status_flags": 0,
+    "evidence": "crforge Balloon flag 0 -> Balloon max_hp 1676 (L11, x3, first tick 21); RoyaleSim fin15 Balloon flag 0 -> Balloon max_hp 1676 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "BalloonHero": {
+  "entries": [
+   {
+    "rs_card": "Balloon",
+    "rs_name": "Balloon",
+    "form": 2,
+    "vocab_id": 12,
+    "vocab_key": "balloon",
+    "max_hp_rule": null,
+    "max_hp_l11": 1676,
+    "max_hp_l16": 2678,
+    "rs_status_flags": 0,
+    "evidence": "crforge Balloon flag 2 -> BalloonHero max_hp 1676 (L11, x3, first tick 21); RoyaleSim fin15 Balloon flag 2 -> Balloon max_hp 1676 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "BarbLogBarbarianHero": {
+  "entries": [
+   {
+    "rs_card": "BarbLog",
+    "rs_name": "BarbLog",
+    "form": 2,
+    "vocab_id": 16,
+    "vocab_key": "barbarians",
+    "max_hp_rule": "any max_hp -> barbarians (spell body)",
+    "max_hp_l11": 716,
+    "max_hp_l16": 1145,
+    "rs_status_flags": 0,
+    "evidence": "crforge BarbLog flag 2 -> BarbLogBarbarianHero max_hp 716 (L11, x2, first tick 362); RoyaleSim fin15 BarbLog flag 2 -> BarbLog max_hp 716 (x3, first tick 130)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Barbarian": {
+  "entries": [
+   {
+    "rs_card": "BarbLog",
+    "rs_name": "BarbLog",
+    "form": 0,
+    "vocab_id": 16,
+    "vocab_key": "barbarians",
+    "max_hp_rule": "any max_hp -> barbarians (spell body)",
+    "max_hp_l11": 716,
+    "max_hp_l16": 1145,
+    "rs_status_flags": 0,
+    "evidence": "crforge BarbLog flag 0 -> Barbarian max_hp 716 (L11, x3, first tick 52); RoyaleSim fin15 BarbLog flag 0 -> BarbLog max_hp 716 (x3, first tick 130)"
+   },
+   {
+    "rs_card": "Barbarians",
+    "rs_name": "Barbarians",
+    "form": 0,
+    "vocab_id": 16,
+    "vocab_key": "barbarians",
+    "max_hp_rule": null,
+    "max_hp_l11": 716,
+    "max_hp_l16": 1145,
+    "rs_status_flags": 0,
+    "evidence": "crforge Barbarians flag 0 -> Barbarian max_hp 716 (L11, x15, first tick 21); RoyaleSim fin15 Barbarians flag 0 -> Barbarians max_hp 716 (x15, first tick 100)"
+   },
+   {
+    "rs_card": "BattleRam",
+    "rs_name": "BattleRam",
+    "form": 0,
+    "vocab_id": 19,
+    "vocab_key": "battle_ram",
+    "max_hp_rule": null,
+    "max_hp_l11": 716,
+    "max_hp_l16": 1145,
+    "rs_status_flags": 0,
+    "evidence": "crforge BattleRam flag 0 -> Barbarian max_hp 716 (L11, x6, first tick 157); RoyaleSim fin15 BattleRam flag 0 -> BattleRam max_hp 716 (x6, first tick 230)"
+   }
+  ],
+  "by_name_unique": false
+ },
+ "Barbarian_EV1": {
+  "entries": [
+   {
+    "rs_card": "Barbarians",
+    "rs_name": "Barbarians",
+    "form": 1,
+    "vocab_id": 16,
+    "vocab_key": "barbarians",
+    "max_hp_rule": null,
+    "max_hp_l11": 716,
+    "max_hp_l16": 1145,
+    "rs_status_flags": 0,
+    "evidence": "crforge Barbarians flag 1 -> Barbarian_EV1 max_hp 716 (L11, x15, first tick 21); RoyaleSim fin15 Barbarians flag 1 -> Barbarians max_hp 716 (x15, first tick 100)"
+   },
+   {
+    "rs_card": "BattleRam",
+    "rs_name": "BattleRam",
+    "form": 1,
+    "vocab_id": 19,
+    "vocab_key": "battle_ram",
+    "max_hp_rule": null,
+    "max_hp_l11": 716,
+    "max_hp_l16": 1145,
+    "rs_status_flags": 0,
+    "evidence": "crforge BattleRam flag 1 -> Barbarian_EV1 max_hp 716 (L11, x6, first tick 245); RoyaleSim fin15 BattleRam flag 1 -> BattleRam max_hp 716 (x6, first tick 230)"
+   }
+  ],
+  "by_name_unique": false
+ },
+ "BarrelGoblin": {
+  "entries": [
+   {
+    "rs_card": "GoblinBarrel",
+    "rs_name": "GoblinBarrel",
+    "form": 0,
+    "vocab_id": 60,
+    "vocab_key": "goblins",
+    "max_hp_rule": "any max_hp -> goblins (spell body)",
+    "max_hp_l11": 202,
+    "max_hp_l16": 323,
+    "rs_status_flags": 0,
+    "evidence": "crforge GoblinBarrel flag 0 -> BarrelGoblin max_hp 202 (L11, x9, first tick 78); RoyaleSim fin15 GoblinBarrel flag 0 -> GoblinBarrel max_hp 202 (x9, first tick 150)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Bat": {
+  "entries": [
+   {
+    "rs_card": "Bats",
+    "rs_name": "Bats",
+    "form": 0,
+    "vocab_id": 17,
+    "vocab_key": "bats",
+    "max_hp_rule": null,
+    "max_hp_l11": 81,
+    "max_hp_l16": 130,
+    "rs_status_flags": 0,
+    "evidence": "crforge Bats flag 0 -> Bat max_hp 81 (L11, x15, first tick 21); RoyaleSim fin15 Bats flag 0 -> Bats max_hp 81 (x15, first tick 100)"
+   },
+   {
+    "rs_card": "DarkWitch",
+    "rs_name": "DarkWitch",
+    "form": 0,
+    "vocab_id": 93,
+    "vocab_key": "night_witch",
+    "max_hp_rule": null,
+    "max_hp_l11": 81,
+    "max_hp_l16": 130,
+    "rs_status_flags": 0,
+    "evidence": "crforge DarkWitch flag 0 -> Bat max_hp 81 (L11, x21, first tick 59); RoyaleSim fin15 DarkWitch flag 0 -> DarkWitch max_hp 81 (x17, first tick 130)"
+   }
+  ],
+  "by_name_unique": false
+ },
+ "Bat_EV1": {
+  "entries": [
+   {
+    "rs_card": "Bats",
+    "rs_name": "Bats",
+    "form": 1,
+    "vocab_id": 17,
+    "vocab_key": "bats",
+    "max_hp_rule": null,
+    "max_hp_l11": 122,
+    "max_hp_l16": 196,
+    "rs_status_flags": 0,
+    "evidence": "crforge Bats flag 1 -> Bat_EV1 max_hp 122 (L11, x15, first tick 21); RoyaleSim fin15 Bats flag 1 -> Bats max_hp 122 (x5, first tick 1820)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "BattleHealer": {
+  "entries": [
+   {
+    "rs_card": "BattleHealer",
+    "rs_name": "BattleHealer",
+    "form": 0,
+    "vocab_id": 18,
+    "vocab_key": "battle_healer",
+    "max_hp_rule": null,
+    "max_hp_l11": 1920,
+    "max_hp_l16": 3067,
+    "rs_status_flags": 0,
+    "evidence": "crforge BattleHealer flag 0 -> BattleHealer max_hp 1920 (L11, x3, first tick 21); RoyaleSim fin15 BattleHealer flag 0 -> BattleHealer max_hp 1920 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "BattleRam": {
+  "entries": [
+   {
+    "rs_card": "BattleRam",
+    "rs_name": "BattleRam",
+    "form": 0,
+    "vocab_id": 19,
+    "vocab_key": "battle_ram",
+    "max_hp_rule": null,
+    "max_hp_l11": 967,
+    "max_hp_l16": 1546,
+    "rs_status_flags": 0,
+    "evidence": "crforge BattleRam flag 0 -> BattleRam max_hp 967 (L11, x3, first tick 21); RoyaleSim fin15 BattleRam flag 0 -> BattleRam max_hp 967 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "BattleRam_EV1": {
+  "entries": [
+   {
+    "rs_card": "BattleRam",
+    "rs_name": "BattleRam",
+    "form": 1,
+    "vocab_id": 19,
+    "vocab_key": "battle_ram",
+    "max_hp_rule": null,
+    "max_hp_l11": 967,
+    "max_hp_l16": 1546,
+    "rs_status_flags": 0,
+    "evidence": "crforge BattleRam flag 1 -> BattleRam_EV1 max_hp 967 (L11, x3, first tick 21); RoyaleSim fin15 BattleRam flag 1 -> BattleRam max_hp 967 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Berserker": {
+  "entries": [
+   {
+    "rs_card": "Berserker",
+    "rs_name": "Berserker",
+    "form": 0,
+    "vocab_id": 20,
+    "vocab_key": "berserker",
+    "max_hp_rule": null,
+    "max_hp_l11": 896,
+    "max_hp_l16": 1431,
+    "rs_status_flags": 0,
+    "evidence": "crforge Berserker flag 0 -> Berserker max_hp 896 (L11, x3, first tick 21); RoyaleSim fin15 Berserker flag 0 -> Berserker max_hp 896 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "BerserkerHero": {
+  "entries": [
+   {
+    "rs_card": "Berserker",
+    "rs_name": "Berserker",
+    "form": 2,
+    "vocab_id": 20,
+    "vocab_key": "berserker",
+    "max_hp_rule": null,
+    "max_hp_l11": 896,
+    "max_hp_l16": 1431,
+    "rs_status_flags": 0,
+    "evidence": "crforge Berserker flag 2 -> BerserkerHero max_hp 896 (L11, x3, first tick 21); RoyaleSim fin15 Berserker flag 2 -> Berserker max_hp 896 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "BlowdartGoblin": {
+  "entries": [
+   {
+    "rs_card": "BlowdartGoblin",
+    "rs_name": "BlowdartGoblin",
+    "form": 0,
+    "vocab_id": 29,
+    "vocab_key": "dart_goblin",
+    "max_hp_rule": null,
+    "max_hp_l11": 261,
+    "max_hp_l16": 417,
+    "rs_status_flags": 0,
+    "evidence": "crforge BlowdartGoblin flag 0 -> BlowdartGoblin max_hp 261 (L11, x3, first tick 21); RoyaleSim fin15 BlowdartGoblin flag 0 -> BlowdartGoblin max_hp 261 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "BlowdartGoblin_EV1": {
+  "entries": [
+   {
+    "rs_card": "BlowdartGoblin",
+    "rs_name": "BlowdartGoblin",
+    "form": 1,
+    "vocab_id": 29,
+    "vocab_key": "dart_goblin",
+    "max_hp_rule": null,
+    "max_hp_l11": 261,
+    "max_hp_l16": 417,
+    "rs_status_flags": 0,
+    "evidence": "crforge BlowdartGoblin flag 1 -> BlowdartGoblin_EV1 max_hp 261 (L11, x3, first tick 21); RoyaleSim fin15 BlowdartGoblin flag 1 -> BlowdartGoblin max_hp 261 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "BombTower": {
+  "entries": [
+   {
+    "rs_card": "BombTower",
+    "rs_name": "BombTower",
+    "form": 0,
+    "vocab_id": 21,
+    "vocab_key": "bomb_tower",
+    "max_hp_rule": null,
+    "max_hp_l11": 1356,
+    "max_hp_l16": 2167,
+    "rs_status_flags": 0,
+    "evidence": "crforge BombTower flag 0 -> BombTower max_hp 1356 (L11, x3, first tick 21); RoyaleSim fin15 BombTower flag 0 -> BombTower max_hp 1356 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Bomber": {
+  "entries": [
+   {
+    "rs_card": "Bomber",
+    "rs_name": "Bomber",
+    "form": 0,
+    "vocab_id": 22,
+    "vocab_key": "bomber",
+    "max_hp_rule": null,
+    "max_hp_l11": 304,
+    "max_hp_l16": 486,
+    "rs_status_flags": 0,
+    "evidence": "crforge Bomber flag 0 -> Bomber max_hp 304 (L11, x3, first tick 21); RoyaleSim fin15 Bomber flag 0 -> Bomber max_hp 304 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Bomber_EV1": {
+  "entries": [
+   {
+    "rs_card": "Bomber",
+    "rs_name": "Bomber",
+    "form": 1,
+    "vocab_id": 22,
+    "vocab_key": "bomber",
+    "max_hp_rule": null,
+    "max_hp_l11": 304,
+    "max_hp_l16": 486,
+    "rs_status_flags": 0,
+    "evidence": "crforge Bomber flag 1 -> Bomber_EV1 max_hp 304 (L11, x3, first tick 21); RoyaleSim fin15 Bomber flag 1 -> Bomber max_hp 304 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "BossBandit": {
+  "entries": [
+   {
+    "rs_card": "BossBandit",
+    "rs_name": "BossBandit",
+    "form": 0,
+    "vocab_id": 23,
+    "vocab_key": "boss_bandit",
+    "max_hp_rule": null,
+    "max_hp_l11": 2624,
+    "max_hp_l16": 4192,
+    "rs_status_flags": 0,
+    "evidence": "crforge BossBandit flag 0 -> BossBandit max_hp 2624 (L11, x3, first tick 21); RoyaleSim fin15 BossBandit flag 0 -> BossBandit max_hp 2624 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Bowler": {
+  "entries": [
+   {
+    "rs_card": "Bowler",
+    "rs_name": "Bowler",
+    "form": 0,
+    "vocab_id": 24,
+    "vocab_key": "bowler",
+    "max_hp_rule": null,
+    "max_hp_l11": 2081,
+    "max_hp_l16": 3325,
+    "rs_status_flags": 0,
+    "evidence": "crforge Bowler flag 0 -> Bowler max_hp 2081 (L11, x3, first tick 21); RoyaleSim fin15 Bowler flag 0 -> Bowler max_hp 2081 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "BowlerHero": {
+  "entries": [
+   {
+    "rs_card": "Bowler",
+    "rs_name": "Bowler",
+    "form": 2,
+    "vocab_id": 24,
+    "vocab_key": "bowler",
+    "max_hp_rule": null,
+    "max_hp_l11": 2081,
+    "max_hp_l16": 3325,
+    "rs_status_flags": 0,
+    "evidence": "crforge Bowler flag 2 -> BowlerHero max_hp 2081 (L11, x3, first tick 21); RoyaleSim fin15 Bowler flag 2 -> Bowler max_hp 2081 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "BrokenCannon": {
+  "entries": [
+   {
+    "rs_card": "MovingCannon",
+    "rs_name": "MovingCannon",
+    "form": 0,
+    "vocab_id": 26,
+    "vocab_key": "cannon_cart",
+    "max_hp_rule": null,
+    "max_hp_l11": 1809,
+    "max_hp_l16": 2891,
+    "rs_status_flags": 0,
+    "evidence": "crforge MovingCannon flag 0 -> BrokenCannon max_hp 1809 (L11, x0, first tick 265); RoyaleSim fin15 MovingCannon flag 0 -> MovingCannon max_hp 1809 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "BushGoblin": {
+  "entries": [
+   {
+    "rs_card": "SuspiciousBush",
+    "rs_name": "SuspiciousBush",
+    "form": 0,
+    "vocab_id": 117,
+    "vocab_key": "suspicious_bush",
+    "max_hp_rule": null,
+    "max_hp_l11": 337,
+    "max_hp_l16": 539,
+    "rs_status_flags": 0,
+    "evidence": "crforge SuspiciousBush flag 0 -> BushGoblin max_hp 337 (L11, x6, first tick 219); RoyaleSim fin15 SuspiciousBush flag 0 -> SuspiciousBush max_hp 337 (x6, first tick 290)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Cannon": {
+  "entries": [
+   {
+    "rs_card": "Cannon",
+    "rs_name": "Cannon",
+    "form": 0,
+    "vocab_id": 25,
+    "vocab_key": "cannon",
+    "max_hp_rule": null,
+    "max_hp_l11": 824,
+    "max_hp_l16": 1316,
+    "rs_status_flags": 0,
+    "evidence": "crforge Cannon flag 0 -> Cannon max_hp 824 (L11, x3, first tick 21); RoyaleSim fin15 Cannon flag 0 -> Cannon max_hp 824 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Cannon_EV1": {
+  "entries": [
+   {
+    "rs_card": "Cannon",
+    "rs_name": "Cannon",
+    "form": 1,
+    "vocab_id": 25,
+    "vocab_key": "cannon",
+    "max_hp_rule": null,
+    "max_hp_l11": 824,
+    "max_hp_l16": 1316,
+    "rs_status_flags": 0,
+    "evidence": "crforge Cannon flag 1 -> Cannon_EV1 max_hp 824 (L11, x3, first tick 21); RoyaleSim fin15 Cannon flag 1 -> Cannon max_hp 824 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "DarkPrince": {
+  "entries": [
+   {
+    "rs_card": "DarkPrince",
+    "rs_name": "DarkPrince",
+    "form": 0,
+    "vocab_id": 28,
+    "vocab_key": "dark_prince",
+    "max_hp_rule": null,
+    "max_hp_l11": 1200,
+    "max_hp_l16": 1918,
+    "rs_status_flags": 0,
+    "evidence": "crforge DarkPrince flag 0 -> DarkPrince max_hp 1200 (L11, x3, first tick 21); RoyaleSim fin15 DarkPrince flag 0 -> DarkPrince max_hp 1200 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "DarkPrinceHero": {
+  "entries": [
+   {
+    "rs_card": "DarkPrince",
+    "rs_name": "DarkPrince",
+    "form": 2,
+    "vocab_id": 28,
+    "vocab_key": "dark_prince",
+    "max_hp_rule": null,
+    "max_hp_l11": 1200,
+    "max_hp_l16": 1918,
+    "rs_status_flags": 0,
+    "evidence": "crforge DarkPrince flag 2 -> DarkPrinceHero max_hp 1200 (L11, x3, first tick 21); RoyaleSim fin15 DarkPrince flag 2 -> DarkPrince max_hp 1200 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "DarkWitch": {
+  "entries": [
+   {
+    "rs_card": "DarkWitch",
+    "rs_name": "DarkWitch",
+    "form": 0,
+    "vocab_id": 93,
+    "vocab_key": "night_witch",
+    "max_hp_rule": null,
+    "max_hp_l11": 906,
+    "max_hp_l16": 1447,
+    "rs_status_flags": 0,
+    "evidence": "crforge DarkWitch flag 0 -> DarkWitch max_hp 906 (L11, x3, first tick 21); RoyaleSim fin15 DarkWitch flag 0 -> DarkWitch max_hp 906 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "DartBarrell": {
+  "entries": [
+   {
+    "rs_card": "DartBarrell",
+    "rs_name": "DartBarrell",
+    "form": 0,
+    "vocab_id": 45,
+    "vocab_key": "flying_machine",
+    "max_hp_rule": null,
+    "max_hp_l11": 614,
+    "max_hp_l16": 981,
+    "rs_status_flags": 0,
+    "evidence": "crforge DartBarrell flag 0 -> DartBarrell max_hp 614 (L11, x3, first tick 21); RoyaleSim fin15 DartBarrell flag 0 -> DartBarrell max_hp 614 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "DeliveryRecruit": {
+  "entries": [
+   {
+    "rs_card": "RoyalDelivery",
+    "rs_name": "RoyalDelivery",
+    "form": 0,
+    "vocab_id": 107,
+    "vocab_key": "royal_recruit",
+    "max_hp_rule": "any max_hp -> royal_recruit (spell body)",
+    "max_hp_l11": 547,
+    "max_hp_l16": 875,
+    "rs_status_flags": 0,
+    "evidence": "crforge RoyalDelivery flag 0 -> DeliveryRecruit max_hp 547 (L11, x3, first tick 62); RoyaleSim fin15 RoyalDelivery flag 0 -> RoyalDelivery max_hp 547 (x3, first tick 140)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "ElectroDragon": {
+  "entries": [
+   {
+    "rs_card": "ElectroDragon",
+    "rs_name": "ElectroDragon",
+    "form": 0,
+    "vocab_id": 31,
+    "vocab_key": "electro_dragon",
+    "max_hp_rule": null,
+    "max_hp_l11": 1049,
+    "max_hp_l16": 1676,
+    "rs_status_flags": 0,
+    "evidence": "crforge ElectroDragon flag 0 -> ElectroDragon max_hp 1049 (L11, x3, first tick 21); RoyaleSim fin15 ElectroDragon flag 0 -> ElectroDragon max_hp 1049 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "ElectroGiant": {
+  "entries": [
+   {
+    "rs_card": "ElectroGiant",
+    "rs_name": "ElectroGiant",
+    "form": 0,
+    "vocab_id": 32,
+    "vocab_key": "electro_giant",
+    "max_hp_rule": null,
+    "max_hp_l11": 3952,
+    "max_hp_l16": 6314,
+    "rs_status_flags": 0,
+    "evidence": "crforge ElectroGiant flag 0 -> ElectroGiant max_hp 3952 (L11, x3, first tick 21); RoyaleSim fin15 ElectroGiant flag 0 -> ElectroGiant max_hp 3952 (x2, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "ElectroGiant_EV1": {
+  "entries": [
+   {
+    "rs_card": "ElectroGiant",
+    "rs_name": "ElectroGiant",
+    "form": 1,
+    "vocab_id": 32,
+    "vocab_key": "electro_giant",
+    "max_hp_rule": null,
+    "max_hp_l11": 3952,
+    "max_hp_l16": 6314,
+    "rs_status_flags": 0,
+    "evidence": "crforge ElectroGiant flag 1 -> ElectroGiant_EV1 max_hp 3952 (L11, x3, first tick 21); RoyaleSim fin15 ElectroGiant flag 1 -> ElectroGiant max_hp 3952 (x2, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "ElectroSpirit": {
+  "entries": [
+   {
+    "rs_card": "ElectroSpirit",
+    "rs_name": "ElectroSpirit",
+    "form": 0,
+    "vocab_id": 33,
+    "vocab_key": "electro_spirit",
+    "max_hp_rule": null,
+    "max_hp_l11": 215,
+    "max_hp_l16": 343,
+    "rs_status_flags": 0,
+    "evidence": "crforge ElectroSpirit flag 0 -> ElectroSpirit max_hp 215 (L11, x3, first tick 21); RoyaleSim fin15 ElectroSpirit flag 0 -> ElectroSpirit max_hp 215 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "ElectroWizard": {
+  "entries": [
+   {
+    "rs_card": "ElectroWizard",
+    "rs_name": "ElectroWizard",
+    "form": 0,
+    "vocab_id": 34,
+    "vocab_key": "electro_wizard",
+    "max_hp_rule": null,
+    "max_hp_l11": 714,
+    "max_hp_l16": 1141,
+    "rs_status_flags": 0,
+    "evidence": "crforge ElectroWizard flag 0 -> ElectroWizard max_hp 714 (L11, x3, first tick 21); RoyaleSim fin15 ElectroWizard flag 0 -> ElectroWizard max_hp 714 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "ElectroWizardHero": {
+  "entries": [
+   {
+    "rs_card": "ElectroWizard",
+    "rs_name": "ElectroWizard",
+    "form": 2,
+    "vocab_id": 34,
+    "vocab_key": "electro_wizard",
+    "max_hp_rule": null,
+    "max_hp_l11": 714,
+    "max_hp_l16": 1141,
+    "rs_status_flags": 0,
+    "evidence": "crforge ElectroWizard flag 2 -> ElectroWizardHero max_hp 714 (L11, x3, first tick 21); RoyaleSim fin15 ElectroWizard flag 2 -> ElectroWizard max_hp 714 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "EliteArcher": {
+  "entries": [
+   {
+    "rs_card": "EliteArcher",
+    "rs_name": "EliteArcher",
+    "form": 0,
+    "vocab_id": 79,
+    "vocab_key": "magic_archer",
+    "max_hp_rule": null,
+    "max_hp_l11": 529,
+    "max_hp_l16": 846,
+    "rs_status_flags": 0,
+    "evidence": "crforge EliteArcher flag 0 -> EliteArcher max_hp 529 (L11, x3, first tick 21); RoyaleSim fin15 EliteArcher flag 0 -> EliteArcher max_hp 529 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "EliteArcherHero": {
+  "entries": [
+   {
+    "rs_card": "EliteArcher",
+    "rs_name": "EliteArcher",
+    "form": 2,
+    "vocab_id": 79,
+    "vocab_key": "magic_archer",
+    "max_hp_rule": null,
+    "max_hp_l11": 529,
+    "max_hp_l16": 846,
+    "rs_status_flags": 0,
+    "evidence": "crforge EliteArcher flag 2 -> EliteArcherHero max_hp 529 (L11, x3, first tick 21); RoyaleSim fin15 EliteArcher flag 2 -> EliteArcher max_hp 529 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "ElixirCollector": {
+  "entries": [
+   {
+    "rs_card": "Elixir Collector",
+    "rs_name": "Elixir Collector",
+    "form": 0,
+    "vocab_id": 37,
+    "vocab_key": "elixir_collector",
+    "max_hp_rule": null,
+    "max_hp_l11": 1070,
+    "max_hp_l16": 1709,
+    "rs_status_flags": 0,
+    "evidence": "crforge Elixir Collector flag 0 -> ElixirCollector max_hp 1070 (L11, x2, first tick 441); RoyaleSim fin15 Elixir Collector flag 0 -> Elixir Collector max_hp 1070 (x3, first tick 240)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "ElixirGolem1": {
+  "entries": [
+   {
+    "rs_card": "ElixirGolem",
+    "rs_name": "ElixirGolem",
+    "form": 0,
+    "vocab_id": 38,
+    "vocab_key": "elixir_golem",
+    "max_hp_rule": "elixir_golem if >= 1100, elixir_golemite if >= 500, else elixir_blob (f = the side's tower max_hp / L11 tower max_hp; from_engine fv<5 path)",
+    "max_hp_l11": 1569,
+    "max_hp_l16": 2507,
+    "rs_status_flags": 0,
+    "evidence": "crforge ElixirGolem flag 0 -> ElixirGolem1 max_hp 1569 (L11, x3, first tick 21); RoyaleSim fin15 ElixirGolem flag 0 -> ElixirGolem max_hp 1569 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "ElixirGolem2": {
+  "entries": [
+   {
+    "rs_card": "ElixirGolem",
+    "rs_name": "ElixirGolem",
+    "form": 0,
+    "vocab_id": 39,
+    "vocab_key": "elixir_golemite",
+    "max_hp_rule": "elixir_golem if >= 1100, elixir_golemite if >= 500, else elixir_blob (f = the side's tower max_hp / L11 tower max_hp; from_engine fv<5 path)",
+    "max_hp_l11": 762,
+    "max_hp_l16": 1218,
+    "rs_status_flags": 0,
+    "evidence": "crforge ElixirGolem flag 0 -> ElixirGolem2 max_hp 762 (L11, x4, first tick 372); RoyaleSim fin15 ElixirGolem flag 0 -> ElixirGolem max_hp 762 (x4, first tick 450)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "ElixirGolem4": {
+  "entries": [
+   {
+    "rs_card": "ElixirGolem",
+    "rs_name": "ElixirGolem",
+    "form": 0,
+    "vocab_id": 36,
+    "vocab_key": "elixir_blob",
+    "max_hp_rule": "elixir_golem if >= 1100, elixir_golemite if >= 500, else elixir_blob (f = the side's tower max_hp / L11 tower max_hp; from_engine fv<5 path)",
+    "max_hp_l11": 360,
+    "max_hp_l16": 576,
+    "rs_status_flags": 0,
+    "evidence": "crforge ElixirGolem flag 0 -> ElixirGolem4 max_hp 360 (L11, x8, first tick 494); RoyaleSim fin15 ElixirGolem flag 0 -> ElixirGolem max_hp 360 (x8, first tick 520)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "FireSpirits": {
+  "entries": [
+   {
+    "rs_card": "FireSpirits",
+    "rs_name": "FireSpirits",
+    "form": 0,
+    "vocab_id": 41,
+    "vocab_key": "fire_spirit",
+    "max_hp_rule": null,
+    "max_hp_l11": 215,
+    "max_hp_l16": 343,
+    "rs_status_flags": 0,
+    "evidence": "crforge FireSpirits flag 0 -> FireSpirits max_hp 215 (L11, x3, first tick 21); RoyaleSim fin15 FireSpirits flag 0 -> FireSpirits max_hp 215 (x3, first tick 100)"
+   },
+   {
+    "rs_card": "FirespiritHut",
+    "rs_name": "FirespiritHut",
+    "form": 0,
+    "vocab_id": 47,
+    "vocab_key": "furnace",
+    "max_hp_rule": null,
+    "max_hp_l11": 215,
+    "max_hp_l16": 343,
+    "rs_status_flags": 0,
+    "evidence": "crforge FirespiritHut flag 0 -> FireSpirits max_hp 215 (L11, x7, first tick 59); RoyaleSim fin15 FirespiritHut flag 0 -> FirespiritHut max_hp 215 (x6, first tick 130)"
+   }
+  ],
+  "by_name_unique": false
+ },
+ "Firecracker": {
+  "entries": [
+   {
+    "rs_card": "Firecracker",
+    "rs_name": "Firecracker",
+    "form": 0,
+    "vocab_id": 43,
+    "vocab_key": "firecracker",
+    "max_hp_rule": null,
+    "max_hp_l11": 304,
+    "max_hp_l16": 486,
+    "rs_status_flags": 0,
+    "evidence": "crforge Firecracker flag 0 -> Firecracker max_hp 304 (L11, x3, first tick 21); RoyaleSim fin15 Firecracker flag 0 -> Firecracker max_hp 304 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Firecracker_EV1": {
+  "entries": [
+   {
+    "rs_card": "Firecracker",
+    "rs_name": "Firecracker",
+    "form": 1,
+    "vocab_id": 43,
+    "vocab_key": "firecracker",
+    "max_hp_rule": null,
+    "max_hp_l11": 304,
+    "max_hp_l16": 486,
+    "rs_status_flags": 0,
+    "evidence": "crforge Firecracker flag 1 -> Firecracker_EV1 max_hp 304 (L11, x3, first tick 21); RoyaleSim fin15 Firecracker flag 1 -> Firecracker max_hp 304 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Fisherman": {
+  "entries": [
+   {
+    "rs_card": "Fisherman",
+    "rs_name": "Fisherman",
+    "form": 0,
+    "vocab_id": 44,
+    "vocab_key": "fisherman",
+    "max_hp_rule": null,
+    "max_hp_l11": 870,
+    "max_hp_l16": 1390,
+    "rs_status_flags": 0,
+    "evidence": "crforge Fisherman flag 0 -> Fisherman max_hp 870 (L11, x3, first tick 21); RoyaleSim fin15 Fisherman flag 0 -> Fisherman max_hp 870 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Furnace_EV1": {
+  "entries": [
+   {
+    "rs_card": "FirespiritHut",
+    "rs_name": "FirespiritHut",
+    "form": 1,
+    "vocab_id": 47,
+    "vocab_key": "furnace",
+    "max_hp_rule": null,
+    "max_hp_l11": 727,
+    "max_hp_l16": 1161,
+    "rs_status_flags": 0,
+    "evidence": "crforge FirespiritHut flag 1 -> Furnace_EV1 max_hp 727 (L11, x3, first tick 21); RoyaleSim fin15 FirespiritHut flag 1 -> FirespiritHut max_hp 727 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Furnace_rework": {
+  "entries": [
+   {
+    "rs_card": "FirespiritHut",
+    "rs_name": "FirespiritHut",
+    "form": 0,
+    "vocab_id": 47,
+    "vocab_key": "furnace",
+    "max_hp_rule": null,
+    "max_hp_l11": 727,
+    "max_hp_l16": 1161,
+    "rs_status_flags": 0,
+    "evidence": "crforge FirespiritHut flag 0 -> Furnace_rework max_hp 727 (L11, x3, first tick 21); RoyaleSim fin15 FirespiritHut flag 0 -> FirespiritHut max_hp 727 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Ghost": {
+  "entries": [
+   {
+    "rs_card": "Ghost",
+    "rs_name": "Ghost",
+    "form": 0,
+    "vocab_id": 104,
+    "vocab_key": "royal_ghost",
+    "max_hp_rule": null,
+    "max_hp_l11": 1152,
+    "max_hp_l16": 1840,
+    "rs_status_flags": 0,
+    "evidence": "crforge Ghost flag 0 -> Ghost max_hp 1152 (L11, x3, first tick 21); RoyaleSim fin15 Ghost flag 0 -> Ghost max_hp 1152 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Ghost_EV1": {
+  "entries": [
+   {
+    "rs_card": "Ghost",
+    "rs_name": "Ghost",
+    "form": 1,
+    "vocab_id": 104,
+    "vocab_key": "royal_ghost",
+    "max_hp_rule": null,
+    "max_hp_l11": 1152,
+    "max_hp_l16": 1840,
+    "rs_status_flags": 0,
+    "evidence": "crforge Ghost flag 1 -> Ghost_EV1 max_hp 1152 (L11, x3, first tick 21); RoyaleSim fin15 Ghost flag 1 -> Ghost max_hp 1152 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Ghost_EV1_Summon_Left": {
+  "entries": [
+   {
+    "rs_card": "Ghost",
+    "rs_name": "Ghost",
+    "form": 1,
+    "vocab_id": 104,
+    "vocab_key": "royal_ghost",
+    "max_hp_rule": null,
+    "max_hp_l11": 81,
+    "max_hp_l16": 130,
+    "rs_status_flags": 0,
+    "evidence": "crforge Ghost flag 1 -> Ghost_EV1_Summon_Left max_hp 81 (L11, x4, first tick 167); RoyaleSim fin15 Ghost flag 1 -> Ghost max_hp 81 (x2, first tick 2070)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Ghost_EV1_Summon_Right": {
+  "entries": [
+   {
+    "rs_card": "Ghost",
+    "rs_name": "Ghost",
+    "form": 1,
+    "vocab_id": 104,
+    "vocab_key": "royal_ghost",
+    "max_hp_rule": null,
+    "max_hp_l11": 81,
+    "max_hp_l16": 130,
+    "rs_status_flags": 0,
+    "evidence": "crforge Ghost flag 1 -> Ghost_EV1_Summon_Right max_hp 81 (L11, x4, first tick 167); RoyaleSim fin15 Ghost flag 1 -> Ghost max_hp 81 (x2, first tick 2070)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Giant": {
+  "entries": [
+   {
+    "rs_card": "Giant",
+    "rs_name": "Giant",
+    "form": 0,
+    "vocab_id": 48,
+    "vocab_key": "giant",
+    "max_hp_rule": null,
+    "max_hp_l11": 3968,
+    "max_hp_l16": 6339,
+    "rs_status_flags": 0,
+    "evidence": "crforge Giant flag 0 -> Giant max_hp 3968 (L11, x3, first tick 21); RoyaleSim fin15 Giant flag 0 -> Giant max_hp 3968 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "GiantBuffer": {
+  "entries": [
+   {
+    "rs_card": "GiantBuffer",
+    "rs_name": "GiantBuffer",
+    "form": 0,
+    "vocab_id": 109,
+    "vocab_key": "rune_giant",
+    "max_hp_rule": null,
+    "max_hp_l11": 2816,
+    "max_hp_l16": 4499,
+    "rs_status_flags": 0,
+    "evidence": "crforge GiantBuffer flag 0 -> GiantBuffer max_hp 2816 (L11, x3, first tick 21); RoyaleSim fin15 GiantBuffer flag 0 -> GiantBuffer max_hp 2816 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "GiantHero": {
+  "entries": [
+   {
+    "rs_card": "Giant",
+    "rs_name": "Giant",
+    "form": 2,
+    "vocab_id": 48,
+    "vocab_key": "giant",
+    "max_hp_rule": null,
+    "max_hp_l11": 3968,
+    "max_hp_l16": 6339,
+    "rs_status_flags": 0,
+    "evidence": "crforge Giant flag 2 -> GiantHero max_hp 3968 (L11, x3, first tick 21); RoyaleSim fin15 Giant flag 2 -> Giant max_hp 3968 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "GiantSkeleton": {
+  "entries": [
+   {
+    "rs_card": "GiantSkeleton",
+    "rs_name": "GiantSkeleton",
+    "form": 0,
+    "vocab_id": 49,
+    "vocab_key": "giant_skeleton",
+    "max_hp_rule": null,
+    "max_hp_l11": 3361,
+    "max_hp_l16": 5370,
+    "rs_status_flags": 0,
+    "evidence": "crforge GiantSkeleton flag 0 -> GiantSkeleton max_hp 3361 (L11, x3, first tick 21); RoyaleSim fin15 GiantSkeleton flag 0 -> GiantSkeleton max_hp 3361 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Goblin": {
+  "entries": [
+   {
+    "rs_card": "GoblinDrill",
+    "rs_name": "GoblinDrill",
+    "form": 0,
+    "vocab_id": 55,
+    "vocab_key": "goblin_drill",
+    "max_hp_rule": null,
+    "max_hp_l11": 202,
+    "max_hp_l16": 323,
+    "rs_status_flags": 0,
+    "evidence": "crforge GoblinDrill flag 0 -> Goblin max_hp 202 (L11, x18, first tick 97); RoyaleSim fin15 GoblinDrill flag 0 -> GoblinDrill max_hp 202 (x18, first tick 170)"
+   },
+   {
+    "rs_card": "GoblinGiant",
+    "rs_name": "GoblinGiant",
+    "form": 0,
+    "vocab_id": 57,
+    "vocab_key": "goblin_giant",
+    "max_hp_rule": null,
+    "max_hp_l11": 202,
+    "max_hp_l16": 323,
+    "rs_status_flags": 0,
+    "evidence": "crforge GoblinGiant flag 1 -> Goblin max_hp 202 (L11, x84, first tick 350); RoyaleSim fin15 GoblinGiant flag 1 -> GoblinGiant max_hp 202 (x3, first tick 1460)"
+   },
+   {
+    "rs_card": "Mortar",
+    "rs_name": "Mortar",
+    "form": 0,
+    "vocab_id": 89,
+    "vocab_key": "mortar",
+    "max_hp_rule": null,
+    "max_hp_l11": 202,
+    "max_hp_l16": 323,
+    "rs_status_flags": 0,
+    "evidence": "crforge Mortar flag 1 -> Goblin max_hp 202 (L11, x14, first tick 152); RoyaleSim fin15 Mortar flag 1 -> Mortar max_hp 202 (x3, first tick 2170)"
+   }
+  ],
+  "by_name_unique": false
+ },
+ "GoblinBrawler": {
+  "entries": [
+   {
+    "rs_card": "GoblinCage",
+    "rs_name": "GoblinCage",
+    "form": 0,
+    "vocab_id": 52,
+    "vocab_key": "goblin_cage",
+    "max_hp_rule": null,
+    "max_hp_l11": 1121,
+    "max_hp_l16": 1791,
+    "rs_status_flags": 0,
+    "evidence": "crforge GoblinCage flag 0 -> GoblinBrawler max_hp 1121 (L11, x3, first tick 440); RoyaleSim fin15 GoblinCage flag 0 -> GoblinCage max_hp 1121 (x2, first tick 510)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "GoblinCage": {
+  "entries": [
+   {
+    "rs_card": "GoblinCage",
+    "rs_name": "GoblinCage",
+    "form": 0,
+    "vocab_id": 52,
+    "vocab_key": "goblin_cage",
+    "max_hp_rule": null,
+    "max_hp_l11": 780,
+    "max_hp_l16": 1247,
+    "rs_status_flags": 0,
+    "evidence": "crforge GoblinCage flag 0 -> GoblinCage max_hp 780 (L11, x3, first tick 21); RoyaleSim fin15 GoblinCage flag 0 -> GoblinCage max_hp 780 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "GoblinCage_EV1_GoblinBrawler": {
+  "entries": [
+   {
+    "rs_card": "GoblinCage",
+    "rs_name": "GoblinCage",
+    "form": 1,
+    "vocab_id": 52,
+    "vocab_key": "goblin_cage",
+    "max_hp_rule": null,
+    "max_hp_l11": 1121,
+    "max_hp_l16": 1791,
+    "rs_status_flags": 0,
+    "evidence": "crforge GoblinCage flag 1 -> GoblinCage_EV1_GoblinBrawler max_hp 1121 (L11, x3, first tick 440); RoyaleSim fin15 GoblinCage flag 1 -> GoblinCage max_hp 1121 (x2, first tick 510)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "GoblinCage_EV1_TEMPNAME": {
+  "entries": [
+   {
+    "rs_card": "GoblinCage",
+    "rs_name": "GoblinCage",
+    "form": 1,
+    "vocab_id": 52,
+    "vocab_key": "goblin_cage",
+    "max_hp_rule": null,
+    "max_hp_l11": 780,
+    "max_hp_l16": 1247,
+    "rs_status_flags": 0,
+    "evidence": "crforge GoblinCage flag 1 -> GoblinCage_EV1_TEMPNAME max_hp 780 (L11, x3, first tick 21); RoyaleSim fin15 GoblinCage flag 1 -> GoblinCage max_hp 780 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "GoblinDemolisher": {
+  "entries": [
+   {
+    "rs_card": "GoblinDemolisher",
+    "rs_name": "GoblinDemolisher",
+    "form": 0,
+    "vocab_id": 54,
+    "vocab_key": "goblin_demolisher",
+    "max_hp_rule": null,
+    "max_hp_l11": 1300,
+    "max_hp_l16": 2077,
+    "rs_status_flags": 0,
+    "evidence": "crforge GoblinDemolisher flag 0 -> GoblinDemolisher max_hp 1300 (L11, x3, first tick 21); RoyaleSim fin15 GoblinDemolisher flag 0 -> GoblinDemolisher max_hp 1300 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "GoblinDemolisher_kamikaze_form": {
+  "entries": [
+   {
+    "rs_card": "GoblinDemolisher",
+    "rs_name": "GoblinDemolisher",
+    "form": 0,
+    "vocab_id": 54,
+    "vocab_key": "goblin_demolisher",
+    "max_hp_rule": null,
+    "max_hp_l11": 1300,
+    "max_hp_l16": 2077,
+    "rs_status_flags": 0,
+    "evidence": "crforge GoblinDemolisher flag 0 -> GoblinDemolisher_kamikaze_form max_hp 1300 (L11, x0, first tick 216); RoyaleSim fin15 GoblinDemolisher flag 0 -> GoblinDemolisher max_hp 1300 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "GoblinDrill": {
+  "entries": [
+   {
+    "rs_card": "GoblinDrill",
+    "rs_name": "GoblinDrill",
+    "form": 0,
+    "vocab_id": 55,
+    "vocab_key": "goblin_drill",
+    "max_hp_rule": null,
+    "max_hp_l11": 1313,
+    "max_hp_l16": 2098,
+    "rs_status_flags": 0,
+    "evidence": "crforge GoblinDrill flag 0 -> GoblinDrill max_hp 1313 (L11, x3, first tick 58); RoyaleSim fin15 GoblinDrill flag 0 -> GoblinDrill max_hp 1313 (x3, first tick 130)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "GoblinDrillDig": {
+  "entries": [
+   {
+    "rs_card": "GoblinDrill",
+    "rs_name": "GoblinDrill",
+    "form": 0,
+    "vocab_id": 55,
+    "vocab_key": "goblin_drill",
+    "max_hp_rule": null,
+    "max_hp_l11": 2560,
+    "max_hp_l16": 4090,
+    "rs_status_flags": 0,
+    "evidence": "crforge GoblinDrill flag 0 -> GoblinDrillDig max_hp 2560 (L11, x3, first tick 21); RoyaleSim fin15 GoblinDrill flag 0 -> GoblinDrill max_hp 2560 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "GoblinDrill_EV1": {
+  "entries": [
+   {
+    "rs_card": "GoblinDrill",
+    "rs_name": "GoblinDrill",
+    "form": 1,
+    "vocab_id": 55,
+    "vocab_key": "goblin_drill",
+    "max_hp_rule": null,
+    "max_hp_l11": 1313,
+    "max_hp_l16": 2098,
+    "rs_status_flags": 0,
+    "evidence": "crforge GoblinDrill flag 1 -> GoblinDrill_EV1 max_hp 1313 (L11, x3, first tick 58); RoyaleSim fin15 GoblinDrill flag 1 -> GoblinDrill max_hp 1313 (x3, first tick 130)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "GoblinDrill_EV1_Dig": {
+  "entries": [
+   {
+    "rs_card": "GoblinDrill",
+    "rs_name": "GoblinDrill",
+    "form": 1,
+    "vocab_id": 55,
+    "vocab_key": "goblin_drill",
+    "max_hp_rule": null,
+    "max_hp_l11": 2560,
+    "max_hp_l16": 4090,
+    "rs_status_flags": 0,
+    "evidence": "crforge GoblinDrill flag 1 -> GoblinDrill_EV1_Dig max_hp 2560 (L11, x3, first tick 21); RoyaleSim fin15 GoblinDrill flag 1 -> GoblinDrill max_hp 2560 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "GoblinDummy": {
+  "entries": [
+   {
+    "rs_card": "GoblinBarrel",
+    "rs_name": "GoblinBarrel",
+    "form": 0,
+    "vocab_id": 60,
+    "vocab_key": "goblins",
+    "max_hp_rule": "any max_hp -> goblins (spell body)",
+    "max_hp_l11": 81,
+    "max_hp_l16": 130,
+    "rs_status_flags": 0,
+    "evidence": "crforge GoblinBarrel flag 1 -> GoblinDummy max_hp 81 (L11, x9, first tick 78); RoyaleSim fin15 GoblinBarrel flag 1 -> GoblinBarrel max_hp 81 (x3, first tick 1980)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "GoblinGiant": {
+  "entries": [
+   {
+    "rs_card": "GoblinGiant",
+    "rs_name": "GoblinGiant",
+    "form": 0,
+    "vocab_id": 57,
+    "vocab_key": "goblin_giant",
+    "max_hp_rule": null,
+    "max_hp_l11": 3110,
+    "max_hp_l16": 4969,
+    "rs_status_flags": 0,
+    "evidence": "crforge GoblinGiant flag 0 -> GoblinGiant max_hp 3110 (L11, x3, first tick 21); RoyaleSim fin15 GoblinGiant flag 0 -> GoblinGiant max_hp 3110 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "GoblinGiant_EV1": {
+  "entries": [
+   {
+    "rs_card": "GoblinGiant",
+    "rs_name": "GoblinGiant",
+    "form": 1,
+    "vocab_id": 57,
+    "vocab_key": "goblin_giant",
+    "max_hp_rule": null,
+    "max_hp_l11": 3110,
+    "max_hp_l16": 4969,
+    "rs_status_flags": 0,
+    "evidence": "crforge GoblinGiant flag 1 -> GoblinGiant_EV1 max_hp 3110 (L11, x3, first tick 21); RoyaleSim fin15 GoblinGiant flag 1 -> GoblinGiant max_hp 3110 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "GoblinHero": {
+  "entries": [
+   {
+    "rs_card": "Goblins",
+    "rs_name": "Goblins",
+    "form": 2,
+    "vocab_id": 60,
+    "vocab_key": "goblins",
+    "max_hp_rule": null,
+    "max_hp_l11": 202,
+    "max_hp_l16": 323,
+    "rs_status_flags": 0,
+    "evidence": "crforge Goblins flag 2 -> GoblinHero max_hp 202 (L11, x8, first tick 331); RoyaleSim fin15 Goblins flag 2 -> Goblins max_hp 202 (x12, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "GoblinHero_Flag_Building": {
+  "entries": [
+   {
+    "rs_card": "Goblins",
+    "rs_name": "Goblins",
+    "form": 2,
+    "vocab_id": 60,
+    "vocab_key": "goblins",
+    "max_hp_rule": null,
+    "max_hp_l11": 2560,
+    "max_hp_l16": 4090,
+    "rs_status_flags": 0,
+    "evidence": "crforge Goblins flag 2 -> GoblinHero_Flag_Building max_hp 2560 (L11, x2, first tick 484); RoyaleSim fin15 Goblins flag 2 -> Goblins max_hp 2560 (x3, first tick 280)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "GoblinHut_Rework": {
+  "entries": [
+   {
+    "rs_card": "GoblinHut",
+    "rs_name": "GoblinHut",
+    "form": 0,
+    "vocab_id": 58,
+    "vocab_key": "goblin_hut",
+    "max_hp_rule": null,
+    "max_hp_l11": 1180,
+    "max_hp_l16": 1885,
+    "rs_status_flags": 0,
+    "evidence": "crforge GoblinHut flag 0 -> GoblinHut_Rework max_hp 1180 (L11, x3, first tick 21); RoyaleSim fin15 GoblinHut flag 0 -> GoblinHut max_hp 1180 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Goblin_Stab": {
+  "entries": [
+   {
+    "rs_card": "GoblinGang",
+    "rs_name": "GoblinGang",
+    "form": 0,
+    "vocab_id": 56,
+    "vocab_key": "goblin_gang",
+    "max_hp_rule": null,
+    "max_hp_l11": 202,
+    "max_hp_l16": 323,
+    "rs_status_flags": 0,
+    "evidence": "crforge GoblinGang flag 0 -> Goblin_Stab max_hp 202 (L11, x9, first tick 21); RoyaleSim fin15 GoblinGang flag 0 -> GoblinGang max_hp 202 (x9, first tick 100)"
+   },
+   {
+    "rs_card": "Goblins",
+    "rs_name": "Goblins",
+    "form": 0,
+    "vocab_id": 60,
+    "vocab_key": "goblins",
+    "max_hp_rule": null,
+    "max_hp_l11": 202,
+    "max_hp_l16": 323,
+    "rs_status_flags": 0,
+    "evidence": "crforge Goblins flag 0 -> Goblin_Stab max_hp 202 (L11, x12, first tick 21); RoyaleSim fin15 Goblins flag 0 -> Goblins max_hp 202 (x12, first tick 100)"
+   }
+  ],
+  "by_name_unique": false
+ },
+ "GoldenKnight": {
+  "entries": [
+   {
+    "rs_card": "GoldenKnight",
+    "rs_name": "GoldenKnight",
+    "form": 0,
+    "vocab_id": 62,
+    "vocab_key": "golden_knight",
+    "max_hp_rule": null,
+    "max_hp_l11": 1799,
+    "max_hp_l16": 2875,
+    "rs_status_flags": 0,
+    "evidence": "crforge GoldenKnight flag 0 -> GoldenKnight max_hp 1799 (L11, x3, first tick 21); RoyaleSim fin15 GoldenKnight flag 0 -> GoldenKnight max_hp 1799 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Golem": {
+  "entries": [
+   {
+    "rs_card": "Golem",
+    "rs_name": "Golem",
+    "form": 0,
+    "vocab_id": 63,
+    "vocab_key": "golem",
+    "max_hp_rule": "golemite if max_hp/f < 2500 else golem (f = the side's tower max_hp / L11 tower max_hp; from_engine fv<5 path)",
+    "max_hp_l11": 5120,
+    "max_hp_l16": 8180,
+    "rs_status_flags": 0,
+    "evidence": "crforge Golem flag 0 -> Golem max_hp 5120 (L11, x3, first tick 21); RoyaleSim fin15 Golem flag 0 -> Golem max_hp 5120 (x2, first tick 130)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Golemite": {
+  "entries": [
+   {
+    "rs_card": "Golem",
+    "rs_name": "Golem",
+    "form": 0,
+    "vocab_id": 64,
+    "vocab_key": "golemite",
+    "max_hp_rule": "golemite if max_hp/f < 2500 else golem (f = the side's tower max_hp / L11 tower max_hp; from_engine fv<5 path)",
+    "max_hp_l11": 1039,
+    "max_hp_l16": 1660,
+    "rs_status_flags": 0,
+    "evidence": "crforge Golem flag 0 -> Golemite max_hp 1039 (L11, x4, first tick 1015); RoyaleSim fin15 Golem flag 0 -> Golem max_hp 1039 (x4, first tick 920)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Graveyard_rework_Skeleton": {
+  "entries": [
+   {
+    "rs_card": "Graveyard",
+    "rs_name": "Graveyard",
+    "form": 0,
+    "vocab_id": 7,
+    "vocab_key": "skeletons",
+    "max_hp_rule": "any max_hp -> skeletons (spell body)",
+    "max_hp_l11": 81,
+    "max_hp_l16": 130,
+    "rs_status_flags": 0,
+    "evidence": "crforge Graveyard flag 0 -> Graveyard_rework_Skeleton max_hp 81 (L11, x36, first tick 65); RoyaleSim fin15 Graveyard flag 0 -> Graveyard max_hp 81 (x36, first tick 140)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "HealSpirit": {
+  "entries": [
+   {
+    "rs_card": "Heal",
+    "rs_name": "Heal",
+    "form": 0,
+    "vocab_id": 67,
+    "vocab_key": "heal_spirit",
+    "max_hp_rule": null,
+    "max_hp_l11": 215,
+    "max_hp_l16": 343,
+    "rs_status_flags": 0,
+    "evidence": "crforge Heal flag 0 -> HealSpirit max_hp 215 (L11, x2, first tick 21); RoyaleSim fin15 Heal flag 0 -> Heal max_hp 215 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "HogRider": {
+  "entries": [
+   {
+    "rs_card": "HogRider",
+    "rs_name": "HogRider",
+    "form": 0,
+    "vocab_id": 68,
+    "vocab_key": "hog_rider",
+    "max_hp_rule": null,
+    "max_hp_l11": 1697,
+    "max_hp_l16": 2711,
+    "rs_status_flags": 0,
+    "evidence": "crforge HogRider flag 0 -> HogRider max_hp 1697 (L11, x3, first tick 21); RoyaleSim fin15 HogRider flag 0 -> HogRider max_hp 1697 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Hunter": {
+  "entries": [
+   {
+    "rs_card": "Hunter",
+    "rs_name": "Hunter",
+    "form": 0,
+    "vocab_id": 69,
+    "vocab_key": "hunter",
+    "max_hp_rule": null,
+    "max_hp_l11": 885,
+    "max_hp_l16": 1415,
+    "rs_status_flags": 0,
+    "evidence": "crforge Hunter flag 0 -> Hunter max_hp 885 (L11, x3, first tick 21); RoyaleSim fin15 Hunter flag 0 -> Hunter max_hp 885 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Hunter_EV1": {
+  "entries": [
+   {
+    "rs_card": "Hunter",
+    "rs_name": "Hunter",
+    "form": 1,
+    "vocab_id": 69,
+    "vocab_key": "hunter",
+    "max_hp_rule": null,
+    "max_hp_l11": 885,
+    "max_hp_l16": 1415,
+    "rs_status_flags": 0,
+    "evidence": "crforge Hunter flag 1 -> Hunter_EV1 max_hp 885 (L11, x3, first tick 21); RoyaleSim fin15 Hunter flag 1 -> Hunter max_hp 885 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "IceGolemite": {
+  "entries": [
+   {
+    "rs_card": "IceGolemite",
+    "rs_name": "IceGolemite",
+    "form": 0,
+    "vocab_id": 70,
+    "vocab_key": "ice_golem",
+    "max_hp_rule": null,
+    "max_hp_l11": 1228,
+    "max_hp_l16": 1963,
+    "rs_status_flags": 0,
+    "evidence": "crforge IceGolemite flag 0 -> IceGolemite max_hp 1228 (L11, x3, first tick 21); RoyaleSim fin15 IceGolemite flag 0 -> IceGolemite max_hp 1228 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "IceGolemiteHero": {
+  "entries": [
+   {
+    "rs_card": "IceGolemite",
+    "rs_name": "IceGolemite",
+    "form": 2,
+    "vocab_id": 70,
+    "vocab_key": "ice_golem",
+    "max_hp_rule": null,
+    "max_hp_l11": 1228,
+    "max_hp_l16": 1963,
+    "rs_status_flags": 0,
+    "evidence": "crforge IceGolemite flag 2 -> IceGolemiteHero max_hp 1228 (L11, x3, first tick 21); RoyaleSim fin15 IceGolemite flag 2 -> IceGolemite max_hp 1228 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "IceSpirits": {
+  "entries": [
+   {
+    "rs_card": "IceSpirits",
+    "rs_name": "IceSpirits",
+    "form": 0,
+    "vocab_id": 71,
+    "vocab_key": "ice_spirit",
+    "max_hp_rule": null,
+    "max_hp_l11": 215,
+    "max_hp_l16": 343,
+    "rs_status_flags": 0,
+    "evidence": "crforge IceSpirits flag 0 -> IceSpirits max_hp 215 (L11, x3, first tick 21); RoyaleSim fin15 IceSpirits flag 0 -> IceSpirits max_hp 215 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "IceSpirits_EV1": {
+  "entries": [
+   {
+    "rs_card": "IceSpirits",
+    "rs_name": "IceSpirits",
+    "form": 1,
+    "vocab_id": 71,
+    "vocab_key": "ice_spirit",
+    "max_hp_rule": null,
+    "max_hp_l11": 215,
+    "max_hp_l16": 343,
+    "rs_status_flags": 0,
+    "evidence": "crforge IceSpirits flag 1 -> IceSpirits_EV1 max_hp 215 (L11, x3, first tick 21); RoyaleSim fin15 IceSpirits flag 1 -> IceSpirits max_hp 215 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "IceWizard": {
+  "entries": [
+   {
+    "rs_card": "IceWizard",
+    "rs_name": "IceWizard",
+    "form": 0,
+    "vocab_id": 2,
+    "vocab_key": "ice_wizard",
+    "max_hp_rule": null,
+    "max_hp_l11": 688,
+    "max_hp_l16": 1100,
+    "rs_status_flags": 0,
+    "evidence": "crforge IceWizard flag 0 -> IceWizard max_hp 688 (L11, x3, first tick 21); RoyaleSim fin15 IceWizard flag 0 -> IceWizard max_hp 688 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "IceWizardHero": {
+  "entries": [
+   {
+    "rs_card": "IceWizard",
+    "rs_name": "IceWizard",
+    "form": 2,
+    "vocab_id": 2,
+    "vocab_key": "ice_wizard",
+    "max_hp_rule": null,
+    "max_hp_l11": 688,
+    "max_hp_l16": 1100,
+    "rs_status_flags": 0,
+    "evidence": "crforge IceWizard flag 2 -> IceWizardHero max_hp 688 (L11, x3, first tick 21); RoyaleSim fin15 IceWizard flag 2 -> IceWizard max_hp 688 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "IceWizardHeroFloatingCube": {
+  "entries": [
+   {
+    "rs_card": "IceWizard",
+    "rs_name": "IceWizard",
+    "form": 2,
+    "vocab_id": 2,
+    "vocab_key": "ice_wizard",
+    "max_hp_rule": null,
+    "max_hp_l11": 688,
+    "max_hp_l16": 1100,
+    "rs_status_flags": 0,
+    "evidence": "crforge IceWizard flag 2 -> IceWizardHeroFloatingCube max_hp 688 (L11, x3, first tick 21); RoyaleSim fin15 IceWizard flag 2 -> IceWizard max_hp 688 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "InfernoDragon": {
+  "entries": [
+   {
+    "rs_card": "InfernoDragon",
+    "rs_name": "InfernoDragon",
+    "form": 0,
+    "vocab_id": 72,
+    "vocab_key": "inferno_dragon",
+    "max_hp_rule": null,
+    "max_hp_l11": 1295,
+    "max_hp_l16": 2069,
+    "rs_status_flags": 0,
+    "evidence": "crforge InfernoDragon flag 0 -> InfernoDragon max_hp 1295 (L11, x3, first tick 21); RoyaleSim fin15 InfernoDragon flag 0 -> InfernoDragon max_hp 1295 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "InfernoDragon_EV1": {
+  "entries": [
+   {
+    "rs_card": "InfernoDragon",
+    "rs_name": "InfernoDragon",
+    "form": 1,
+    "vocab_id": 72,
+    "vocab_key": "inferno_dragon",
+    "max_hp_rule": null,
+    "max_hp_l11": 1295,
+    "max_hp_l16": 2069,
+    "rs_status_flags": 0,
+    "evidence": "crforge InfernoDragon flag 1 -> InfernoDragon_EV1 max_hp 1295 (L11, x3, first tick 21); RoyaleSim fin15 InfernoDragon flag 1 -> InfernoDragon max_hp 1295 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "InfernoTower": {
+  "entries": [
+   {
+    "rs_card": "InfernoTower",
+    "rs_name": "InfernoTower",
+    "form": 0,
+    "vocab_id": 73,
+    "vocab_key": "inferno_tower",
+    "max_hp_rule": null,
+    "max_hp_l11": 1748,
+    "max_hp_l16": 2793,
+    "rs_status_flags": 0,
+    "evidence": "crforge InfernoTower flag 0 -> InfernoTower max_hp 1748 (L11, x3, first tick 21); RoyaleSim fin15 InfernoTower flag 0 -> InfernoTower max_hp 1748 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Knight": {
+  "entries": [
+   {
+    "rs_card": "Knight",
+    "rs_name": "Knight",
+    "form": 0,
+    "vocab_id": 5,
+    "vocab_key": "knight",
+    "max_hp_rule": null,
+    "max_hp_l11": 1766,
+    "max_hp_l16": 2822,
+    "rs_status_flags": 0,
+    "evidence": "crforge Knight flag 0 -> Knight max_hp 1766 (L11, x3, first tick 21); RoyaleSim fin15 Knight flag 0 -> Knight max_hp 1766 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "KnightHero": {
+  "entries": [
+   {
+    "rs_card": "Knight",
+    "rs_name": "Knight",
+    "form": 2,
+    "vocab_id": 5,
+    "vocab_key": "knight",
+    "max_hp_rule": null,
+    "max_hp_l11": 1766,
+    "max_hp_l16": 2822,
+    "rs_status_flags": 0,
+    "evidence": "crforge Knight flag 2 -> KnightHero max_hp 1766 (L11, x3, first tick 21); RoyaleSim fin15 Knight flag 2 -> Knight max_hp 1766 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Knight_EV1": {
+  "entries": [
+   {
+    "rs_card": "Knight",
+    "rs_name": "Knight",
+    "form": 1,
+    "vocab_id": 5,
+    "vocab_key": "knight",
+    "max_hp_rule": null,
+    "max_hp_l11": 1766,
+    "max_hp_l16": 2822,
+    "rs_status_flags": 0,
+    "evidence": "crforge Knight flag 1 -> Knight_EV1 max_hp 1766 (L11, x3, first tick 21); RoyaleSim fin15 Knight flag 1 -> Knight max_hp 1766 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "LavaHound": {
+  "entries": [
+   {
+    "rs_card": "LavaHound",
+    "rs_name": "LavaHound",
+    "form": 0,
+    "vocab_id": 74,
+    "vocab_key": "lava_hound",
+    "max_hp_rule": "lava_pups if max_hp/f < 1000 else lava_hound (f = the side's tower max_hp / L11 tower max_hp; from_engine fv<5 path)",
+    "max_hp_l11": 3581,
+    "max_hp_l16": 5721,
+    "rs_status_flags": 0,
+    "evidence": "crforge LavaHound flag 0 -> LavaHound max_hp 3581 (L11, x3, first tick 21); RoyaleSim fin15 LavaHound flag 0 -> LavaHound max_hp 3581 (x2, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "LavaPups": {
+  "entries": [
+   {
+    "rs_card": "LavaHound",
+    "rs_name": "LavaHound",
+    "form": 0,
+    "vocab_id": 75,
+    "vocab_key": "lava_pups",
+    "max_hp_rule": "lava_pups if max_hp/f < 1000 else lava_hound (f = the side's tower max_hp / L11 tower max_hp; from_engine fv<5 path)",
+    "max_hp_l11": 215,
+    "max_hp_l16": 343,
+    "rs_status_flags": 0,
+    "evidence": "crforge LavaHound flag 0 -> LavaPups max_hp 215 (L11, x18, first tick 663); RoyaleSim fin15 LavaHound flag 0 -> LavaHound max_hp 215 (x12, first tick 740)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "LittlePrince": {
+  "entries": [
+   {
+    "rs_card": "LittlePrince",
+    "rs_name": "LittlePrince",
+    "form": 0,
+    "vocab_id": 77,
+    "vocab_key": "little_prince",
+    "max_hp_rule": null,
+    "max_hp_l11": 698,
+    "max_hp_l16": 1116,
+    "rs_status_flags": 0,
+    "evidence": "crforge LittlePrince flag 0 -> LittlePrince max_hp 698 (L11, x3, first tick 21); RoyaleSim fin15 LittlePrince flag 0 -> LittlePrince max_hp 698 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "MegaKnight": {
+  "entries": [
+   {
+    "rs_card": "MegaKnight",
+    "rs_name": "MegaKnight",
+    "form": 0,
+    "vocab_id": 80,
+    "vocab_key": "mega_knight",
+    "max_hp_rule": null,
+    "max_hp_l11": 3993,
+    "max_hp_l16": 6380,
+    "rs_status_flags": 0,
+    "evidence": "crforge MegaKnight flag 0 -> MegaKnight max_hp 3993 (L11, x3, first tick 21); RoyaleSim fin15 MegaKnight flag 0 -> MegaKnight max_hp 3993 (x2, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "MegaKnight_EV1": {
+  "entries": [
+   {
+    "rs_card": "MegaKnight",
+    "rs_name": "MegaKnight",
+    "form": 1,
+    "vocab_id": 80,
+    "vocab_key": "mega_knight",
+    "max_hp_rule": null,
+    "max_hp_l11": 3993,
+    "max_hp_l16": 6380,
+    "rs_status_flags": 0,
+    "evidence": "crforge MegaKnight flag 1 -> MegaKnight_EV1 max_hp 3993 (L11, x3, first tick 21); RoyaleSim fin15 MegaKnight flag 1 -> MegaKnight max_hp 3993 (x2, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "MegaMinion": {
+  "entries": [
+   {
+    "rs_card": "MegaMinion",
+    "rs_name": "MegaMinion",
+    "form": 0,
+    "vocab_id": 81,
+    "vocab_key": "mega_minion",
+    "max_hp_rule": null,
+    "max_hp_l11": 837,
+    "max_hp_l16": 1337,
+    "rs_status_flags": 0,
+    "evidence": "crforge MegaMinion flag 0 -> MegaMinion max_hp 837 (L11, x3, first tick 21); RoyaleSim fin15 MegaMinion flag 0 -> MegaMinion max_hp 837 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "MegaMinionHero": {
+  "entries": [
+   {
+    "rs_card": "MegaMinion",
+    "rs_name": "MegaMinion",
+    "form": 2,
+    "vocab_id": 81,
+    "vocab_key": "mega_minion",
+    "max_hp_rule": null,
+    "max_hp_l11": 837,
+    "max_hp_l16": 1337,
+    "rs_status_flags": 0,
+    "evidence": "crforge MegaMinion flag 2 -> MegaMinionHero max_hp 837 (L11, x2, first tick 391); RoyaleSim fin15 MegaMinion flag 2 -> MegaMinion max_hp 837 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "MightyMiner": {
+  "entries": [
+   {
+    "rs_card": "MightyMiner",
+    "rs_name": "MightyMiner",
+    "form": 0,
+    "vocab_id": 82,
+    "vocab_key": "mighty_miner",
+    "max_hp_rule": null,
+    "max_hp_l11": 2250,
+    "max_hp_l16": 3595,
+    "rs_status_flags": 0,
+    "evidence": "crforge MightyMiner flag 0 -> MightyMiner max_hp 2250 (L11, x3, first tick 21); RoyaleSim fin15 MightyMiner flag 0 -> MightyMiner max_hp 2250 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Miner": {
+  "entries": [
+   {
+    "rs_card": "Miner",
+    "rs_name": "Miner",
+    "form": 0,
+    "vocab_id": 83,
+    "vocab_key": "miner",
+    "max_hp_rule": null,
+    "max_hp_l11": 1210,
+    "max_hp_l16": 1934,
+    "rs_status_flags": 0,
+    "evidence": "crforge Miner flag 0 -> Miner max_hp 1210 (L11, x3, first tick 21); RoyaleSim fin15 Miner flag 0 -> Miner max_hp 1210 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "MiniPekka": {
+  "entries": [
+   {
+    "rs_card": "MiniPekka",
+    "rs_name": "MiniPekka",
+    "form": 0,
+    "vocab_id": 84,
+    "vocab_key": "mini_pekka",
+    "max_hp_rule": null,
+    "max_hp_l11": 1390,
+    "max_hp_l16": 2220,
+    "rs_status_flags": 0,
+    "evidence": "crforge MiniPekka flag 0 -> MiniPekka max_hp 1390 (L11, x3, first tick 21); RoyaleSim fin15 MiniPekka flag 0 -> MiniPekka max_hp 1390 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "MiniPekkaHero": {
+  "entries": [
+   {
+    "rs_card": "MiniPekka",
+    "rs_name": "MiniPekka",
+    "form": 2,
+    "vocab_id": 84,
+    "vocab_key": "mini_pekka",
+    "max_hp_rule": null,
+    "max_hp_l11": 1390,
+    "max_hp_l16": 2220,
+    "rs_status_flags": 0,
+    "evidence": "crforge MiniPekka flag 2 -> MiniPekkaHero max_hp 1390 (L11, x3, first tick 21); RoyaleSim fin15 MiniPekka flag 2 -> MiniPekka max_hp 1390 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "MiniZapMachine": {
+  "entries": [
+   {
+    "rs_card": "MiniSparkys",
+    "rs_name": "MiniSparkys",
+    "form": 0,
+    "vocab_id": 127,
+    "vocab_key": "zappies",
+    "max_hp_rule": null,
+    "max_hp_l11": 529,
+    "max_hp_l16": 846,
+    "rs_status_flags": 0,
+    "evidence": "crforge MiniSparkys flag 0 -> MiniZapMachine max_hp 529 (L11, x9, first tick 21); RoyaleSim fin15 MiniSparkys flag 0 -> MiniSparkys max_hp 529 (x9, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Minion": {
+  "entries": [
+   {
+    "rs_card": "MinionHorde",
+    "rs_name": "MinionHorde",
+    "form": 0,
+    "vocab_id": 85,
+    "vocab_key": "minion_horde",
+    "max_hp_rule": null,
+    "max_hp_l11": 230,
+    "max_hp_l16": 368,
+    "rs_status_flags": 0,
+    "evidence": "crforge MinionHorde flag 0 -> Minion max_hp 230 (L11, x18, first tick 21); RoyaleSim fin15 MinionHorde flag 0 -> MinionHorde max_hp 230 (x18, first tick 100)"
+   },
+   {
+    "rs_card": "Minions",
+    "rs_name": "Minions",
+    "form": 0,
+    "vocab_id": 86,
+    "vocab_key": "minions",
+    "max_hp_rule": null,
+    "max_hp_l11": 230,
+    "max_hp_l16": 368,
+    "rs_status_flags": 0,
+    "evidence": "crforge Minions flag 0 -> Minion max_hp 230 (L11, x9, first tick 21); RoyaleSim fin15 Minions flag 0 -> Minions max_hp 230 (x9, first tick 100)"
+   }
+  ],
+  "by_name_unique": false
+ },
+ "MinionGiant": {
+  "entries": [
+   {
+    "rs_card": "MinionGiant",
+    "rs_name": "MinionGiant",
+    "form": 0,
+    "vocab_id": 232,
+    "vocab_key": "minion_giant",
+    "max_hp_rule": null,
+    "max_hp_l11": 1817,
+    "max_hp_l16": 2903,
+    "rs_status_flags": 0,
+    "evidence": "crforge MinionGiant flag 0 -> MinionGiant max_hp 1817 (L11, x3, first tick 21); RoyaleSim fin15 MinionGiant flag 0 -> MinionGiant max_hp 1817 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "MinionHorde_EV1": {
+  "entries": [
+   {
+    "rs_card": "MinionHorde",
+    "rs_name": "MinionHorde",
+    "form": 1,
+    "vocab_id": 85,
+    "vocab_key": "minion_horde",
+    "max_hp_rule": null,
+    "max_hp_l11": 230,
+    "max_hp_l16": 368,
+    "rs_status_flags": 0,
+    "evidence": "crforge MinionHorde flag 1 -> MinionHorde_EV1 max_hp 230 (L11, x18, first tick 21); RoyaleSim fin15 MinionHorde flag 1 -> MinionHorde max_hp 230 (x18, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Monk": {
+  "entries": [
+   {
+    "rs_card": "Monk",
+    "rs_name": "Monk",
+    "form": 0,
+    "vocab_id": 88,
+    "vocab_key": "monk",
+    "max_hp_rule": null,
+    "max_hp_l11": 2214,
+    "max_hp_l16": 3537,
+    "rs_status_flags": 0,
+    "evidence": "crforge Monk flag 0 -> Monk max_hp 2214 (L11, x3, first tick 21); RoyaleSim fin15 Monk flag 0 -> Monk max_hp 2214 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Mortar": {
+  "entries": [
+   {
+    "rs_card": "Mortar",
+    "rs_name": "Mortar",
+    "form": 0,
+    "vocab_id": 89,
+    "vocab_key": "mortar",
+    "max_hp_rule": null,
+    "max_hp_l11": 1369,
+    "max_hp_l16": 2188,
+    "rs_status_flags": 0,
+    "evidence": "crforge Mortar flag 0 -> Mortar max_hp 1369 (L11, x3, first tick 21); RoyaleSim fin15 Mortar flag 0 -> Mortar max_hp 1369 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Mortar_EV1": {
+  "entries": [
+   {
+    "rs_card": "Mortar",
+    "rs_name": "Mortar",
+    "form": 1,
+    "vocab_id": 89,
+    "vocab_key": "mortar",
+    "max_hp_rule": null,
+    "max_hp_l11": 1369,
+    "max_hp_l16": 2188,
+    "rs_status_flags": 0,
+    "evidence": "crforge Mortar flag 1 -> Mortar_EV1 max_hp 1369 (L11, x3, first tick 21); RoyaleSim fin15 Mortar flag 1 -> Mortar max_hp 1369 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "MovingCannon": {
+  "entries": [
+   {
+    "rs_card": "MovingCannon",
+    "rs_name": "MovingCannon",
+    "form": 0,
+    "vocab_id": 26,
+    "vocab_key": "cannon_cart",
+    "max_hp_rule": null,
+    "max_hp_l11": 1809,
+    "max_hp_l16": 2891,
+    "rs_status_flags": 0,
+    "evidence": "crforge MovingCannon flag 0 -> MovingCannon max_hp 1809 (L11, x3, first tick 21); RoyaleSim fin15 MovingCannon flag 0 -> MovingCannon max_hp 1809 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Musketeer": {
+  "entries": [
+   {
+    "rs_card": "Musketeer",
+    "rs_name": "Musketeer",
+    "form": 0,
+    "vocab_id": 92,
+    "vocab_key": "musketeer",
+    "max_hp_rule": null,
+    "max_hp_l11": 721,
+    "max_hp_l16": 1153,
+    "rs_status_flags": 0,
+    "evidence": "crforge Musketeer flag 0 -> Musketeer max_hp 721 (L11, x3, first tick 21); RoyaleSim fin15 Musketeer flag 0 -> Musketeer max_hp 721 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "MusketeerHero": {
+  "entries": [
+   {
+    "rs_card": "Musketeer",
+    "rs_name": "Musketeer",
+    "form": 2,
+    "vocab_id": 92,
+    "vocab_key": "musketeer",
+    "max_hp_rule": null,
+    "max_hp_l11": 721,
+    "max_hp_l16": 1153,
+    "rs_status_flags": 0,
+    "evidence": "crforge Musketeer flag 2 -> MusketeerHero max_hp 721 (L11, x3, first tick 21); RoyaleSim fin15 Musketeer flag 2 -> Musketeer max_hp 721 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Musketeer_EV1": {
+  "entries": [
+   {
+    "rs_card": "Musketeer",
+    "rs_name": "Musketeer",
+    "form": 1,
+    "vocab_id": 92,
+    "vocab_key": "musketeer",
+    "max_hp_rule": null,
+    "max_hp_l11": 721,
+    "max_hp_l16": 1153,
+    "rs_status_flags": 0,
+    "evidence": "crforge Musketeer flag 1 -> Musketeer_EV1 max_hp 721 (L11, x3, first tick 21); RoyaleSim fin15 Musketeer flag 1 -> Musketeer max_hp 721 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Pekka": {
+  "entries": [
+   {
+    "rs_card": "Pekka",
+    "rs_name": "Pekka",
+    "form": 0,
+    "vocab_id": 94,
+    "vocab_key": "pekka",
+    "max_hp_rule": null,
+    "max_hp_l11": 3760,
+    "max_hp_l16": 6008,
+    "rs_status_flags": 0,
+    "evidence": "crforge Pekka flag 0 -> Pekka max_hp 3760 (L11, x3, first tick 21); RoyaleSim fin15 Pekka flag 0 -> Pekka max_hp 3760 (x2, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Pekka_EV1": {
+  "entries": [
+   {
+    "rs_card": "Pekka",
+    "rs_name": "Pekka",
+    "form": 1,
+    "vocab_id": 94,
+    "vocab_key": "pekka",
+    "max_hp_rule": null,
+    "max_hp_l11": 3760,
+    "max_hp_l16": 6008,
+    "rs_status_flags": 0,
+    "evidence": "crforge Pekka flag 1 -> Pekka_EV1 max_hp 3760 (L11, x3, first tick 21); RoyaleSim fin15 Pekka flag 1 -> Pekka max_hp 3760 (x2, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Phoenix": {
+  "entries": [
+   {
+    "rs_card": "Phoenix",
+    "rs_name": "Phoenix",
+    "form": 0,
+    "vocab_id": 95,
+    "vocab_key": "phoenix",
+    "max_hp_rule": null,
+    "max_hp_l11": 1052,
+    "max_hp_l16": 1680,
+    "rs_status_flags": 0,
+    "evidence": "crforge Phoenix flag 0 -> Phoenix max_hp 1052 (L11, x3, first tick 21); RoyaleSim fin15 Phoenix flag 0 -> Phoenix max_hp 1052 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "PhoenixEgg": {
+  "entries": [
+   {
+    "rs_card": "Phoenix",
+    "rs_name": "Phoenix",
+    "form": 0,
+    "vocab_id": 95,
+    "vocab_key": "phoenix",
+    "max_hp_rule": null,
+    "max_hp_l11": 317,
+    "max_hp_l16": 507,
+    "rs_status_flags": 0,
+    "evidence": "crforge Phoenix flag 0 -> PhoenixEgg max_hp 317 (L11, x3, first tick 274); RoyaleSim fin15 Phoenix flag 0 -> Phoenix max_hp 317 (x3, first tick 350)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Prince": {
+  "entries": [
+   {
+    "rs_card": "Prince",
+    "rs_name": "Prince",
+    "form": 0,
+    "vocab_id": 97,
+    "vocab_key": "prince",
+    "max_hp_rule": null,
+    "max_hp_l11": 1920,
+    "max_hp_l16": 3067,
+    "rs_status_flags": 0,
+    "evidence": "crforge Prince flag 0 -> Prince max_hp 1920 (L11, x3, first tick 21); RoyaleSim fin15 Prince flag 0 -> Prince max_hp 1920 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Princess": {
+  "entries": [
+   {
+    "rs_card": "Princess",
+    "rs_name": "Princess",
+    "form": 0,
+    "vocab_id": 98,
+    "vocab_key": "princess",
+    "max_hp_rule": null,
+    "max_hp_l11": 261,
+    "max_hp_l16": 417,
+    "rs_status_flags": 0,
+    "evidence": "crforge Princess flag 0 -> Princess max_hp 261 (L11, x3, first tick 21); RoyaleSim fin15 Princess flag 0 -> Princess max_hp 261 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Princess_EV1": {
+  "entries": [
+   {
+    "rs_card": "Princess",
+    "rs_name": "Princess",
+    "form": 1,
+    "vocab_id": 98,
+    "vocab_key": "princess",
+    "max_hp_rule": null,
+    "max_hp_l11": 261,
+    "max_hp_l16": 417,
+    "rs_status_flags": 0,
+    "evidence": "crforge Princess flag 1 -> Princess_EV1 max_hp 261 (L11, x3, first tick 21); RoyaleSim fin15 Princess flag 1 -> Princess max_hp 261 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "RageBarbarian": {
+  "entries": [
+   {
+    "rs_card": "RageBarbarian",
+    "rs_name": "RageBarbarian",
+    "form": 0,
+    "vocab_id": 78,
+    "vocab_key": "lumberjack",
+    "max_hp_rule": null,
+    "max_hp_l11": 1282,
+    "max_hp_l16": 2049,
+    "rs_status_flags": 0,
+    "evidence": "crforge RageBarbarian flag 0 -> RageBarbarian max_hp 1282 (L11, x3, first tick 21); RoyaleSim fin15 RageBarbarian flag 0 -> RageBarbarian max_hp 1282 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "RageBarbarianEvoGhost": {
+  "entries": [
+   {
+    "rs_card": "RageBarbarian",
+    "rs_name": "RageBarbarian",
+    "form": 1,
+    "vocab_id": 78,
+    "vocab_key": "lumberjack",
+    "max_hp_rule": null,
+    "max_hp_l11": 2,
+    "max_hp_l16": 4,
+    "rs_status_flags": 0,
+    "evidence": "crforge RageBarbarian flag 1 -> RageBarbarianEvoGhost max_hp 2 (L11, x3, first tick 282); RoyaleSim fin15 RageBarbarian flag 1 -> RageBarbarian max_hp 2 (x1, first tick 2260)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "RageBarbarian_EV1": {
+  "entries": [
+   {
+    "rs_card": "RageBarbarian",
+    "rs_name": "RageBarbarian",
+    "form": 1,
+    "vocab_id": 78,
+    "vocab_key": "lumberjack",
+    "max_hp_rule": null,
+    "max_hp_l11": 1282,
+    "max_hp_l16": 2049,
+    "rs_status_flags": 0,
+    "evidence": "crforge RageBarbarian flag 1 -> RageBarbarian_EV1 max_hp 1282 (L11, x3, first tick 21); RoyaleSim fin15 RageBarbarian flag 1 -> RageBarbarian max_hp 1282 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Ram": {
+  "entries": [
+   {
+    "rs_card": "RamRider",
+    "rs_name": "RamRider",
+    "form": 0,
+    "vocab_id": 100,
+    "vocab_key": "ram_rider",
+    "max_hp_rule": null,
+    "max_hp_l11": 1766,
+    "max_hp_l16": 2822,
+    "rs_status_flags": 0,
+    "evidence": "crforge RamRider flag 0 -> Ram max_hp 1766 (L11, x3, first tick 21); RoyaleSim fin15 RamRider flag 0 -> RamRider max_hp 1766 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "RamRider": {
+  "entries": [
+   {
+    "rs_card": "RamRider",
+    "rs_name": "RamRider",
+    "form": 0,
+    "vocab_id": 100,
+    "vocab_key": "ram_rider",
+    "max_hp_rule": null,
+    "max_hp_l11": 593,
+    "max_hp_l16": 948,
+    "rs_status_flags": 0,
+    "evidence": "crforge RamRider flag 0 -> RamRider max_hp 593 (L11, x3, first tick 21); RoyaleSim fin15 RamRider flag 0 -> RamRider max_hp 593 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "RascalBoy": {
+  "entries": [
+   {
+    "rs_card": "Rascals",
+    "rs_name": "Rascals",
+    "form": 0,
+    "vocab_id": 101,
+    "vocab_key": "rascals",
+    "max_hp_rule": null,
+    "max_hp_l11": 1832,
+    "max_hp_l16": 2928,
+    "rs_status_flags": 0,
+    "evidence": "crforge Rascals flag 0 -> RascalBoy max_hp 1832 (L11, x3, first tick 21); RoyaleSim fin15 Rascals flag 0 -> Rascals max_hp 1832 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "RascalGirl": {
+  "entries": [
+   {
+    "rs_card": "Rascals",
+    "rs_name": "Rascals",
+    "form": 0,
+    "vocab_id": 101,
+    "vocab_key": "rascals",
+    "max_hp_rule": null,
+    "max_hp_l11": 261,
+    "max_hp_l16": 417,
+    "rs_status_flags": 0,
+    "evidence": "crforge Rascals flag 0 -> RascalGirl max_hp 261 (L11, x6, first tick 21); RoyaleSim fin15 Rascals flag 0 -> Rascals max_hp 261 (x6, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Recruit": {
+  "entries": [
+   {
+    "rs_card": "RoyalRecruits",
+    "rs_name": "RoyalRecruits",
+    "form": 0,
+    "vocab_id": 107,
+    "vocab_key": "royal_recruit",
+    "max_hp_rule": "always royal_recruit (f = the side's tower max_hp / L11 tower max_hp; from_engine fv<5 path)",
+    "max_hp_l11": 547,
+    "max_hp_l16": 875,
+    "rs_status_flags": 0,
+    "evidence": "crforge RoyalRecruits flag 0 -> Recruit max_hp 547 (L11, x18, first tick 21); RoyaleSim fin15 RoyalRecruits flag 0 -> RoyalRecruits max_hp 547 (x12, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Recruit_EV1": {
+  "entries": [
+   {
+    "rs_card": "RoyalRecruits",
+    "rs_name": "RoyalRecruits",
+    "form": 1,
+    "vocab_id": 107,
+    "vocab_key": "royal_recruit",
+    "max_hp_rule": "always royal_recruit (f = the side's tower max_hp / L11 tower max_hp; from_engine fv<5 path)",
+    "max_hp_l11": 547,
+    "max_hp_l16": 875,
+    "rs_status_flags": 0,
+    "evidence": "crforge RoyalRecruits flag 1 -> Recruit_EV1 max_hp 547 (L11, x18, first tick 21); RoyaleSim fin15 RoyalRecruits flag 1 -> RoyalRecruits max_hp 547 (x12, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Ronin": {
+  "entries": [
+   {
+    "rs_card": "Ronin",
+    "rs_name": "Ronin",
+    "form": 0,
+    "vocab_id": 102,
+    "vocab_key": "ronin",
+    "max_hp_rule": null,
+    "max_hp_l11": 1779,
+    "max_hp_l16": 2842,
+    "rs_status_flags": 0,
+    "evidence": "crforge Ronin flag 0 -> Ronin max_hp 1779 (L11, x3, first tick 21); RoyaleSim fin15 Ronin flag 0 -> Ronin max_hp 1779 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "RoyalGiant": {
+  "entries": [
+   {
+    "rs_card": "RoyalGiant",
+    "rs_name": "RoyalGiant",
+    "form": 0,
+    "vocab_id": 105,
+    "vocab_key": "royal_giant",
+    "max_hp_rule": null,
+    "max_hp_l11": 3164,
+    "max_hp_l16": 5055,
+    "rs_status_flags": 0,
+    "evidence": "crforge RoyalGiant flag 0 -> RoyalGiant max_hp 3164 (L11, x3, first tick 21); RoyaleSim fin15 RoyalGiant flag 0 -> RoyalGiant max_hp 3164 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "RoyalGiant_EV1": {
+  "entries": [
+   {
+    "rs_card": "RoyalGiant",
+    "rs_name": "RoyalGiant",
+    "form": 1,
+    "vocab_id": 105,
+    "vocab_key": "royal_giant",
+    "max_hp_rule": null,
+    "max_hp_l11": 3164,
+    "max_hp_l16": 5055,
+    "rs_status_flags": 0,
+    "evidence": "crforge RoyalGiant flag 1 -> RoyalGiant_EV1 max_hp 3164 (L11, x3, first tick 21); RoyaleSim fin15 RoyalGiant flag 1 -> RoyalGiant max_hp 3164 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "RoyalHog": {
+  "entries": [
+   {
+    "rs_card": "RoyalHogs",
+    "rs_name": "RoyalHogs",
+    "form": 0,
+    "vocab_id": 106,
+    "vocab_key": "royal_hogs",
+    "max_hp_rule": null,
+    "max_hp_l11": 837,
+    "max_hp_l16": 1337,
+    "rs_status_flags": 0,
+    "evidence": "crforge RoyalHogs flag 0 -> RoyalHog max_hp 837 (L11, x12, first tick 21); RoyaleSim fin15 RoyalHogs flag 0 -> RoyalHogs max_hp 837 (x12, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "RoyalHog_EV1": {
+  "entries": [
+   {
+    "rs_card": "RoyalHogs",
+    "rs_name": "RoyalHogs",
+    "form": 1,
+    "vocab_id": 106,
+    "vocab_key": "royal_hogs",
+    "max_hp_rule": null,
+    "max_hp_l11": 837,
+    "max_hp_l16": 1337,
+    "rs_status_flags": 0,
+    "evidence": "crforge RoyalHogs flag 1 -> RoyalHog_EV1 max_hp 837 (L11, x12, first tick 21); RoyaleSim fin15 RoyalHogs flag 1 -> RoyalHogs max_hp 837 (x12, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "RoyalHog_EV1_Grounded": {
+  "entries": [
+   {
+    "rs_card": "RoyalHogs",
+    "rs_name": "RoyalHogs",
+    "form": 1,
+    "vocab_id": 106,
+    "vocab_key": "royal_hogs",
+    "max_hp_rule": null,
+    "max_hp_l11": 837,
+    "max_hp_l16": 1337,
+    "rs_status_flags": 0,
+    "evidence": "crforge RoyalHogs flag 1 -> RoyalHog_EV1_Grounded max_hp 837 (L11, x0, first tick 112); RoyaleSim fin15 RoyalHogs flag 1 -> RoyalHogs max_hp 837 (x12, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Skeleton": {
+  "entries": [
+   {
+    "rs_card": "SkeletonArmy",
+    "rs_name": "SkeletonArmy",
+    "form": 0,
+    "vocab_id": 110,
+    "vocab_key": "skeleton_army",
+    "max_hp_rule": null,
+    "max_hp_l11": 81,
+    "max_hp_l16": 130,
+    "rs_status_flags": 0,
+    "evidence": "crforge SkeletonArmy flag 0 -> Skeleton max_hp 81 (L11, x45, first tick 21); RoyaleSim fin15 SkeletonArmy flag 0 -> SkeletonArmy max_hp 81 (x45, first tick 100)"
+   },
+   {
+    "rs_card": "SkeletonBalloon",
+    "rs_name": "SkeletonBalloon",
+    "form": 0,
+    "vocab_id": 111,
+    "vocab_key": "skeleton_barrel",
+    "max_hp_rule": null,
+    "max_hp_l11": 81,
+    "max_hp_l16": 130,
+    "rs_status_flags": 0,
+    "evidence": "crforge SkeletonBalloon flag 0 -> Skeleton max_hp 81 (L11, x21, first tick 179); RoyaleSim fin15 SkeletonBalloon flag 0 -> SkeletonBalloon max_hp 81 (x21, first tick 250)"
+   },
+   {
+    "rs_card": "Skeletons",
+    "rs_name": "Skeletons",
+    "form": 0,
+    "vocab_id": 7,
+    "vocab_key": "skeletons",
+    "max_hp_rule": null,
+    "max_hp_l11": 81,
+    "max_hp_l16": 130,
+    "rs_status_flags": 0,
+    "evidence": "crforge Skeletons flag 0 -> Skeleton max_hp 81 (L11, x9, first tick 21); RoyaleSim fin15 Skeletons flag 0 -> Skeletons max_hp 81 (x9, first tick 100)"
+   },
+   {
+    "rs_card": "Tombstone",
+    "rs_name": "Tombstone",
+    "form": 0,
+    "vocab_id": 119,
+    "vocab_key": "tombstone",
+    "max_hp_rule": null,
+    "max_hp_l11": 81,
+    "max_hp_l16": 130,
+    "rs_status_flags": 0,
+    "evidence": "crforge Tombstone flag 0 -> Skeleton max_hp 81 (L11, x60, first tick 40); RoyaleSim fin15 Tombstone flag 0 -> Tombstone max_hp 81 (x52, first tick 110)"
+   },
+   {
+    "rs_card": "Witch",
+    "rs_name": "Witch",
+    "form": 0,
+    "vocab_id": 124,
+    "vocab_key": "witch",
+    "max_hp_rule": null,
+    "max_hp_l11": 81,
+    "max_hp_l16": 130,
+    "rs_status_flags": 0,
+    "evidence": "crforge Witch flag 0 -> Skeleton max_hp 81 (L11, x28, first tick 59); RoyaleSim fin15 Witch flag 0 -> Witch max_hp 81 (x24, first tick 130)"
+   }
+  ],
+  "by_name_unique": false
+ },
+ "SkeletonArmy_EV1_General": {
+  "entries": [
+   {
+    "rs_card": "SkeletonArmy",
+    "rs_name": "SkeletonArmy",
+    "form": 1,
+    "vocab_id": 110,
+    "vocab_key": "skeleton_army",
+    "max_hp_rule": null,
+    "max_hp_l11": 81,
+    "max_hp_l16": 130,
+    "rs_status_flags": 0,
+    "evidence": "crforge SkeletonArmy flag 1 -> SkeletonArmy_EV1_General max_hp 81 (L11, x3, first tick 21); RoyaleSim fin15 SkeletonArmy flag 1 -> SkeletonArmy max_hp 81 (x46, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "SkeletonArmy_EV1_Soldier": {
+  "entries": [
+   {
+    "rs_card": "SkeletonArmy",
+    "rs_name": "SkeletonArmy",
+    "form": 1,
+    "vocab_id": 110,
+    "vocab_key": "skeleton_army",
+    "max_hp_rule": null,
+    "max_hp_l11": 81,
+    "max_hp_l16": 130,
+    "rs_status_flags": 0,
+    "evidence": "crforge SkeletonArmy flag 1 -> SkeletonArmy_EV1_Soldier max_hp 81 (L11, x45, first tick 21); RoyaleSim fin15 SkeletonArmy flag 1 -> SkeletonArmy max_hp 81 (x46, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "SkeletonArmy_EV1_Spectral": {
+  "entries": [
+   {
+    "rs_card": "SkeletonArmy",
+    "rs_name": "SkeletonArmy",
+    "form": 1,
+    "vocab_id": 110,
+    "vocab_key": "skeleton_army",
+    "max_hp_rule": null,
+    "max_hp_l11": 2,
+    "max_hp_l16": 4,
+    "rs_status_flags": 0,
+    "evidence": "crforge SkeletonArmy flag 1 -> SkeletonArmy_EV1_Spectral max_hp 2 (L11, x44, first tick 82); RoyaleSim fin15 SkeletonArmy flag 1 -> SkeletonArmy max_hp 2 (x12, first tick 1990)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "SkeletonBalloon": {
+  "entries": [
+   {
+    "rs_card": "SkeletonBalloon",
+    "rs_name": "SkeletonBalloon",
+    "form": 0,
+    "vocab_id": 111,
+    "vocab_key": "skeleton_barrel",
+    "max_hp_rule": null,
+    "max_hp_l11": 532,
+    "max_hp_l16": 850,
+    "rs_status_flags": 0,
+    "evidence": "crforge SkeletonBalloon flag 0 -> SkeletonBalloon max_hp 532 (L11, x3, first tick 21); RoyaleSim fin15 SkeletonBalloon flag 0 -> SkeletonBalloon max_hp 532 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "SkeletonBalloon_EV1": {
+  "entries": [
+   {
+    "rs_card": "SkeletonBalloon",
+    "rs_name": "SkeletonBalloon",
+    "form": 1,
+    "vocab_id": 111,
+    "vocab_key": "skeleton_barrel",
+    "max_hp_rule": null,
+    "max_hp_l11": 665,
+    "max_hp_l16": 1063,
+    "rs_status_flags": 0,
+    "evidence": "crforge SkeletonBalloon flag 1 -> SkeletonBalloon_EV1 max_hp 665 (L11, x3, first tick 21); RoyaleSim fin15 SkeletonBalloon flag 1 -> SkeletonBalloon max_hp 665 (x1, first tick 1930)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "SkeletonDragon": {
+  "entries": [
+   {
+    "rs_card": "SkeletonDragons",
+    "rs_name": "SkeletonDragons",
+    "form": 0,
+    "vocab_id": 112,
+    "vocab_key": "skeleton_dragons",
+    "max_hp_rule": null,
+    "max_hp_l11": 560,
+    "max_hp_l16": 895,
+    "rs_status_flags": 0,
+    "evidence": "crforge SkeletonDragons flag 0 -> SkeletonDragon max_hp 560 (L11, x6, first tick 21); RoyaleSim fin15 SkeletonDragons flag 0 -> SkeletonDragons max_hp 560 (x6, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "SkeletonKing": {
+  "entries": [
+   {
+    "rs_card": "SkeletonKing",
+    "rs_name": "SkeletonKing",
+    "form": 0,
+    "vocab_id": 113,
+    "vocab_key": "skeleton_king",
+    "max_hp_rule": null,
+    "max_hp_l11": 2298,
+    "max_hp_l16": 3672,
+    "rs_status_flags": 0,
+    "evidence": "crforge SkeletonKing flag 0 -> SkeletonKing max_hp 2298 (L11, x3, first tick 21); RoyaleSim fin15 SkeletonKing flag 0 -> SkeletonKing max_hp 2298 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "SkeletonWarrior": {
+  "entries": [
+   {
+    "rs_card": "SkeletonWarriors",
+    "rs_name": "SkeletonWarriors",
+    "form": 0,
+    "vocab_id": 66,
+    "vocab_key": "guards",
+    "max_hp_rule": null,
+    "max_hp_l11": 81,
+    "max_hp_l16": 130,
+    "rs_status_flags": 0,
+    "evidence": "crforge SkeletonWarriors flag 0 -> SkeletonWarrior max_hp 81 (L11, x9, first tick 21); RoyaleSim fin15 SkeletonWarriors flag 0 -> SkeletonWarriors max_hp 81 (x9, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Skeleton_EV1": {
+  "entries": [
+   {
+    "rs_card": "Skeletons",
+    "rs_name": "Skeletons",
+    "form": 1,
+    "vocab_id": 7,
+    "vocab_key": "skeletons",
+    "max_hp_rule": null,
+    "max_hp_l11": 81,
+    "max_hp_l16": 130,
+    "rs_status_flags": 0,
+    "evidence": "crforge Skeletons flag 1 -> Skeleton_EV1 max_hp 81 (L11, x9, first tick 21); RoyaleSim fin15 Skeletons flag 1 -> Skeletons max_hp 81 (x9, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "SpearGoblin": {
+  "entries": [
+   {
+    "rs_card": "GoblinGang",
+    "rs_name": "GoblinGang",
+    "form": 0,
+    "vocab_id": 56,
+    "vocab_key": "goblin_gang",
+    "max_hp_rule": null,
+    "max_hp_l11": 133,
+    "max_hp_l16": 212,
+    "rs_status_flags": 0,
+    "evidence": "crforge GoblinGang flag 0 -> SpearGoblin max_hp 133 (L11, x9, first tick 21); RoyaleSim fin15 GoblinGang flag 0 -> GoblinGang max_hp 133 (x9, first tick 100)"
+   },
+   {
+    "rs_card": "GoblinGiant",
+    "rs_name": "GoblinGiant",
+    "form": 0,
+    "vocab_id": 57,
+    "vocab_key": "goblin_giant",
+    "max_hp_rule": null,
+    "max_hp_l11": 133,
+    "max_hp_l16": 212,
+    "rs_status_flags": 0,
+    "evidence": "crforge GoblinGiant flag 0 -> SpearGoblin max_hp 133 (L11, x4, first tick 672); RoyaleSim fin15 GoblinGiant flag 0 -> GoblinGiant max_hp 133 (x10, first tick 100)"
+   },
+   {
+    "rs_card": "GoblinHut",
+    "rs_name": "GoblinHut",
+    "form": 0,
+    "vocab_id": 58,
+    "vocab_key": "goblin_hut",
+    "max_hp_rule": null,
+    "max_hp_l11": 133,
+    "max_hp_l16": 212,
+    "rs_status_flags": 0,
+    "evidence": "crforge GoblinHut flag 0 -> SpearGoblin max_hp 133 (L11, x3, first tick 643); RoyaleSim fin15 GoblinHut flag 0 -> GoblinHut max_hp 133 (x2, first tick 720)"
+   },
+   {
+    "rs_card": "SpearGoblins",
+    "rs_name": "SpearGoblins",
+    "form": 0,
+    "vocab_id": 115,
+    "vocab_key": "spear_goblins",
+    "max_hp_rule": null,
+    "max_hp_l11": 133,
+    "max_hp_l16": 212,
+    "rs_status_flags": 0,
+    "evidence": "crforge SpearGoblins flag 0 -> SpearGoblin max_hp 133 (L11, x9, first tick 21); RoyaleSim fin15 SpearGoblins flag 0 -> SpearGoblins max_hp 133 (x9, first tick 100)"
+   }
+  ],
+  "by_name_unique": false
+ },
+ "SpearGoblinGiant": {
+  "entries": [
+   {
+    "rs_card": "GoblinGiant",
+    "rs_name": "GoblinGiant",
+    "form": 0,
+    "vocab_id": 57,
+    "vocab_key": "goblin_giant",
+    "max_hp_rule": null,
+    "max_hp_l11": 133,
+    "max_hp_l16": 212,
+    "rs_status_flags": 0,
+    "evidence": "crforge GoblinGiant flag 0 -> SpearGoblinGiant max_hp 133 (L11, x6, first tick 21); RoyaleSim fin15 GoblinGiant flag 0 -> GoblinGiant max_hp 133 (x10, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "SpearGoblinGiant_EV1": {
+  "entries": [
+   {
+    "rs_card": "GoblinGiant",
+    "rs_name": "GoblinGiant",
+    "form": 1,
+    "vocab_id": 57,
+    "vocab_key": "goblin_giant",
+    "max_hp_rule": null,
+    "max_hp_l11": 133,
+    "max_hp_l16": 212,
+    "rs_status_flags": 0,
+    "evidence": "crforge GoblinGiant flag 1 -> SpearGoblinGiant_EV1 max_hp 133 (L11, x6, first tick 21); RoyaleSim fin15 GoblinGiant flag 1 -> GoblinGiant max_hp 133 (x10, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "SuspiciousBush": {
+  "entries": [
+   {
+    "rs_card": "SuspiciousBush",
+    "rs_name": "SuspiciousBush",
+    "form": 0,
+    "vocab_id": 117,
+    "vocab_key": "suspicious_bush",
+    "max_hp_rule": null,
+    "max_hp_l11": 81,
+    "max_hp_l16": 130,
+    "rs_status_flags": 0,
+    "evidence": "crforge SuspiciousBush flag 0 -> SuspiciousBush max_hp 81 (L11, x3, first tick 21); RoyaleSim fin15 SuspiciousBush flag 0 -> SuspiciousBush max_hp 81 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Tesla": {
+  "entries": [
+   {
+    "rs_card": "Tesla",
+    "rs_name": "Tesla",
+    "form": 0,
+    "vocab_id": 1,
+    "vocab_key": "tesla",
+    "max_hp_rule": null,
+    "max_hp_l11": 1182,
+    "max_hp_l16": 1889,
+    "rs_status_flags": 0,
+    "evidence": "crforge Tesla flag 0 -> Tesla max_hp 1182 (L11, x3, first tick 21); RoyaleSim fin15 Tesla flag 0 -> Tesla max_hp 1182 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Tesla_EV1": {
+  "entries": [
+   {
+    "rs_card": "Tesla",
+    "rs_name": "Tesla",
+    "form": 1,
+    "vocab_id": 1,
+    "vocab_key": "tesla",
+    "max_hp_rule": null,
+    "max_hp_l11": 1182,
+    "max_hp_l16": 1889,
+    "rs_status_flags": 0,
+    "evidence": "crforge Tesla flag 1 -> Tesla_EV1 max_hp 1182 (L11, x3, first tick 21); RoyaleSim fin15 Tesla flag 1 -> Tesla max_hp 1182 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Tombstone": {
+  "entries": [
+   {
+    "rs_card": "Tombstone",
+    "rs_name": "Tombstone",
+    "form": 0,
+    "vocab_id": 119,
+    "vocab_key": "tombstone",
+    "max_hp_rule": null,
+    "max_hp_l11": 529,
+    "max_hp_l16": 846,
+    "rs_status_flags": 0,
+    "evidence": "crforge Tombstone flag 0 -> Tombstone max_hp 529 (L11, x3, first tick 21); RoyaleSim fin15 Tombstone flag 0 -> Tombstone max_hp 529 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "TombstoneHero": {
+  "entries": [
+   {
+    "rs_card": "Tombstone",
+    "rs_name": "Tombstone",
+    "form": 2,
+    "vocab_id": 119,
+    "vocab_key": "tombstone",
+    "max_hp_rule": null,
+    "max_hp_l11": 529,
+    "max_hp_l16": 846,
+    "rs_status_flags": 0,
+    "evidence": "crforge Tombstone flag 2 -> TombstoneHero max_hp 529 (L11, x3, first tick 21); RoyaleSim fin15 Tombstone flag 2 -> Tombstone max_hp 529 (x6, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "TombstoneHeroSkeleton": {
+  "entries": [
+   {
+    "rs_card": "Tombstone",
+    "rs_name": "Tombstone",
+    "form": 2,
+    "vocab_id": 119,
+    "vocab_key": "tombstone",
+    "max_hp_rule": null,
+    "max_hp_l11": 81,
+    "max_hp_l16": 130,
+    "rs_status_flags": 0,
+    "evidence": "crforge Tombstone flag 2 -> TombstoneHeroSkeleton max_hp 81 (L11, x60, first tick 40); RoyaleSim fin15 Tombstone flag 2 -> Tombstone max_hp 81 (x52, first tick 110)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "TombstoneHero_Monster_Passive": {
+  "entries": [
+   {
+    "rs_card": "Tombstone",
+    "rs_name": "Tombstone",
+    "form": 2,
+    "vocab_id": 119,
+    "vocab_key": "tombstone",
+    "max_hp_rule": null,
+    "max_hp_l11": 529,
+    "max_hp_l16": 846,
+    "rs_status_flags": 0,
+    "evidence": "crforge Tombstone flag 2 -> TombstoneHero_Monster_Passive max_hp 529 (L11, x3, first tick 21); RoyaleSim fin15 Tombstone flag 2 -> Tombstone max_hp 529 (x6, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Valkyrie": {
+  "entries": [
+   {
+    "rs_card": "Valkyrie",
+    "rs_name": "Valkyrie",
+    "form": 0,
+    "vocab_id": 120,
+    "vocab_key": "valkyrie",
+    "max_hp_rule": null,
+    "max_hp_l11": 1907,
+    "max_hp_l16": 3047,
+    "rs_status_flags": 0,
+    "evidence": "crforge Valkyrie flag 0 -> Valkyrie max_hp 1907 (L11, x3, first tick 21); RoyaleSim fin15 Valkyrie flag 0 -> Valkyrie max_hp 1907 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "ValkyrieHero": {
+  "entries": [
+   {
+    "rs_card": "Valkyrie",
+    "rs_name": "Valkyrie",
+    "form": 2,
+    "vocab_id": 120,
+    "vocab_key": "valkyrie",
+    "max_hp_rule": null,
+    "max_hp_l11": 1907,
+    "max_hp_l16": 3047,
+    "rs_status_flags": 0,
+    "evidence": "crforge Valkyrie flag 2 -> ValkyrieHero max_hp 1907 (L11, x3, first tick 21); RoyaleSim fin15 Valkyrie flag 2 -> Valkyrie max_hp 1907 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Valkyrie_EV1": {
+  "entries": [
+   {
+    "rs_card": "Valkyrie",
+    "rs_name": "Valkyrie",
+    "form": 1,
+    "vocab_id": 120,
+    "vocab_key": "valkyrie",
+    "max_hp_rule": null,
+    "max_hp_l11": 1907,
+    "max_hp_l16": 3047,
+    "rs_status_flags": 0,
+    "evidence": "crforge Valkyrie flag 1 -> Valkyrie_EV1 max_hp 1907 (L11, x3, first tick 21); RoyaleSim fin15 Valkyrie flag 1 -> Valkyrie max_hp 1907 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Wallbreaker": {
+  "entries": [
+   {
+    "rs_card": "Wallbreakers",
+    "rs_name": "Wallbreakers",
+    "form": 0,
+    "vocab_id": 123,
+    "vocab_key": "wall_breakers",
+    "max_hp_rule": null,
+    "max_hp_l11": 330,
+    "max_hp_l16": 527,
+    "rs_status_flags": 0,
+    "evidence": "crforge Wallbreakers flag 0 -> Wallbreaker max_hp 330 (L11, x6, first tick 21); RoyaleSim fin15 Wallbreakers flag 0 -> Wallbreakers max_hp 330 (x6, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Wallbreaker_EV1": {
+  "entries": [
+   {
+    "rs_card": "Wallbreakers",
+    "rs_name": "Wallbreakers",
+    "form": 1,
+    "vocab_id": 123,
+    "vocab_key": "wall_breakers",
+    "max_hp_rule": null,
+    "max_hp_l11": 330,
+    "max_hp_l16": 527,
+    "rs_status_flags": 0,
+    "evidence": "crforge Wallbreakers flag 1 -> Wallbreaker_EV1 max_hp 330 (L11, x6, first tick 21); RoyaleSim fin15 Wallbreakers flag 1 -> Wallbreakers max_hp 330 (x6, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Witch": {
+  "entries": [
+   {
+    "rs_card": "Witch",
+    "rs_name": "Witch",
+    "form": 0,
+    "vocab_id": 124,
+    "vocab_key": "witch",
+    "max_hp_rule": null,
+    "max_hp_l11": 839,
+    "max_hp_l16": 1341,
+    "rs_status_flags": 0,
+    "evidence": "crforge Witch flag 0 -> Witch max_hp 839 (L11, x3, first tick 21); RoyaleSim fin15 Witch flag 0 -> Witch max_hp 839 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "WitchMother": {
+  "entries": [
+   {
+    "rs_card": "WitchMother",
+    "rs_name": "WitchMother",
+    "form": 0,
+    "vocab_id": 90,
+    "vocab_key": "mother_witch",
+    "max_hp_rule": "mother_witch_hog if < 400 else mother_witch (400 unmeasured) (f = the side's tower max_hp / L11 tower max_hp; from_engine fv<5 path)",
+    "max_hp_l11": 529,
+    "max_hp_l16": 846,
+    "rs_status_flags": 0,
+    "evidence": "crforge WitchMother flag 0 -> WitchMother max_hp 529 (L11, x3, first tick 21); RoyaleSim fin15 WitchMother flag 0 -> WitchMother max_hp 529 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Witch_EV1": {
+  "entries": [
+   {
+    "rs_card": "Witch",
+    "rs_name": "Witch",
+    "form": 1,
+    "vocab_id": 124,
+    "vocab_key": "witch",
+    "max_hp_rule": null,
+    "max_hp_l11": 839,
+    "max_hp_l16": 1341,
+    "rs_status_flags": 0,
+    "evidence": "crforge Witch flag 1 -> Witch_EV1 max_hp 839 (L11, x3, first tick 21); RoyaleSim fin15 Witch flag 1 -> Witch max_hp 839 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Witch_EV1_Healing_Skeleton": {
+  "entries": [
+   {
+    "rs_card": "Witch",
+    "rs_name": "Witch",
+    "form": 1,
+    "vocab_id": 124,
+    "vocab_key": "witch",
+    "max_hp_rule": null,
+    "max_hp_l11": 81,
+    "max_hp_l16": 130,
+    "rs_status_flags": 0,
+    "evidence": "crforge Witch flag 1 -> Witch_EV1_Healing_Skeleton max_hp 81 (L11, x12, first tick 59); RoyaleSim fin15 Witch flag 1 -> Witch max_hp 81 (x28, first tick 130)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Witch_EV1_Skeleton_Interval": {
+  "entries": [
+   {
+    "rs_card": "Witch",
+    "rs_name": "Witch",
+    "form": 1,
+    "vocab_id": 124,
+    "vocab_key": "witch",
+    "max_hp_rule": null,
+    "max_hp_l11": 81,
+    "max_hp_l16": 130,
+    "rs_status_flags": 0,
+    "evidence": "crforge Witch flag 1 -> Witch_EV1_Skeleton_Interval max_hp 81 (L11, x20, first tick 200); RoyaleSim fin15 Witch flag 1 -> Witch max_hp 81 (x28, first tick 130)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Wizard": {
+  "entries": [
+   {
+    "rs_card": "Wizard",
+    "rs_name": "Wizard",
+    "form": 0,
+    "vocab_id": 125,
+    "vocab_key": "wizard",
+    "max_hp_rule": null,
+    "max_hp_l11": 755,
+    "max_hp_l16": 1206,
+    "rs_status_flags": 0,
+    "evidence": "crforge Wizard flag 0 -> Wizard max_hp 755 (L11, x3, first tick 21); RoyaleSim fin15 Wizard flag 0 -> Wizard max_hp 755 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "WizardHero": {
+  "entries": [
+   {
+    "rs_card": "Wizard",
+    "rs_name": "Wizard",
+    "form": 2,
+    "vocab_id": 125,
+    "vocab_key": "wizard",
+    "max_hp_rule": null,
+    "max_hp_l11": 755,
+    "max_hp_l16": 1206,
+    "rs_status_flags": 0,
+    "evidence": "crforge Wizard flag 2 -> WizardHero max_hp 755 (L11, x3, first tick 21); RoyaleSim fin15 Wizard flag 2 -> Wizard max_hp 755 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Wizard_EV1": {
+  "entries": [
+   {
+    "rs_card": "Wizard",
+    "rs_name": "Wizard",
+    "form": 1,
+    "vocab_id": 125,
+    "vocab_key": "wizard",
+    "max_hp_rule": null,
+    "max_hp_l11": 755,
+    "max_hp_l16": 1206,
+    "rs_status_flags": 0,
+    "evidence": "crforge Wizard flag 1 -> Wizard_EV1 max_hp 755 (L11, x3, first tick 21); RoyaleSim fin15 Wizard flag 1 -> Wizard max_hp 755 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "Xbow": {
+  "entries": [
+   {
+    "rs_card": "Xbow",
+    "rs_name": "Xbow",
+    "form": 0,
+    "vocab_id": 3,
+    "vocab_key": "x_bow",
+    "max_hp_rule": null,
+    "max_hp_l11": 1600,
+    "max_hp_l16": 2556,
+    "rs_status_flags": 0,
+    "evidence": "crforge Xbow flag 0 -> Xbow max_hp 1600 (L11, x3, first tick 21); RoyaleSim fin15 Xbow flag 0 -> Xbow max_hp 1600 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "ZapMachine": {
+  "entries": [
+   {
+    "rs_card": "ZapMachine",
+    "rs_name": "ZapMachine",
+    "form": 0,
+    "vocab_id": 114,
+    "vocab_key": "sparky",
+    "max_hp_rule": null,
+    "max_hp_l11": 1451,
+    "max_hp_l16": 2319,
+    "rs_status_flags": 0,
+    "evidence": "crforge ZapMachine flag 0 -> ZapMachine max_hp 1451 (L11, x3, first tick 21); RoyaleSim fin15 ZapMachine flag 0 -> ZapMachine max_hp 1451 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "electro_dragon_ev1": {
+  "entries": [
+   {
+    "rs_card": "ElectroDragon",
+    "rs_name": "ElectroDragon",
+    "form": 0,
+    "vocab_id": 31,
+    "vocab_key": "electro_dragon",
+    "max_hp_rule": null,
+    "max_hp_l11": 1049,
+    "max_hp_l16": 1676,
+    "rs_status_flags": 0,
+    "evidence": "crforge ElectroDragon flag 1 -> electro_dragon_ev1 max_hp 1049 (L11, x3, first tick 21); RoyaleSim fin15 ElectroDragon flag 1 -> ElectroDragon max_hp 1049 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "goblinstein": {
+  "entries": [
+   {
+    "rs_card": "Goblinstein",
+    "rs_name": "Goblinstein",
+    "form": 0,
+    "vocab_id": 61,
+    "vocab_key": "goblinstein",
+    "max_hp_rule": null,
+    "max_hp_l11": 2240,
+    "max_hp_l16": 3578,
+    "rs_status_flags": 0,
+    "evidence": "crforge Goblinstein flag 0 -> goblinstein max_hp 2240 (L11, x3, first tick 21); RoyaleSim fin15 Goblinstein flag 0 -> Goblinstein max_hp 2240 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "goblinstein_doctor": {
+  "entries": [
+   {
+    "rs_card": "Goblinstein",
+    "rs_name": "Goblinstein",
+    "form": 0,
+    "vocab_id": 61,
+    "vocab_key": "goblinstein",
+    "max_hp_rule": null,
+    "max_hp_l11": 721,
+    "max_hp_l16": 1153,
+    "rs_status_flags": 0,
+    "evidence": "crforge Goblinstein flag 0 -> goblinstein_doctor max_hp 721 (L11, x3, first tick 21); RoyaleSim fin15 Goblinstein flag 0 -> Goblinstein max_hp 721 (x3, first tick 100)"
+   }
+  ],
+  "by_name_unique": true
+ },
+ "_unmatched": [
+  {
+   "crforge_name": "BalloonBomb",
+   "card": "Balloon",
+   "flag": 0,
+   "max_hp_l11": -1,
+   "why": "no RoyaleSim body of this card form with this max_hp",
+   "rs_bodies_of_card": [
+    [
+     "Balloon",
+     1676
+    ]
+   ]
+  },
+  {
+   "crforge_name": "BalloonHero_Bomb",
+   "card": "Balloon",
+   "flag": 2,
+   "max_hp_l11": -1,
+   "why": "no RoyaleSim body of this card form with this max_hp",
+   "rs_bodies_of_card": [
+    [
+     "Balloon",
+     1676
+    ]
+   ]
+  },
+  {
+   "crforge_name": "BombTowerBomb",
+   "card": "BombTower",
+   "flag": 0,
+   "max_hp_l11": -1,
+   "why": "no RoyaleSim body of this card form with this max_hp",
+   "rs_bodies_of_card": [
+    [
+     "BombTower",
+     1356
+    ]
+   ]
+  },
+  {
+   "crforge_name": "GiantSkeletonBomb",
+   "card": "GiantSkeleton",
+   "flag": 0,
+   "max_hp_l11": -1,
+   "why": "no RoyaleSim body of this card form with this max_hp",
+   "rs_bodies_of_card": [
+    [
+     "GiantSkeleton",
+     3361
+    ]
+   ]
+  },
+  {
+   "crforge_name": "RageBottle",
+   "card": "Rage",
+   "flag": 0,
+   "max_hp_l11": -1,
+   "why": "no RoyaleSim body of this card form with this max_hp",
+   "rs_bodies_of_card": []
+  },
+  {
+   "crforge_name": "RageBarbarianBottle",
+   "card": "RageBarbarian",
+   "flag": 0,
+   "max_hp_l11": -1,
+   "why": "no RoyaleSim body of this card form with this max_hp",
+   "rs_bodies_of_card": [
+    [
+     "RageBarbarian",
+     1282
+    ]
+   ]
+  },
+  {
+   "crforge_name": "RageBarbarianBottleEvo",
+   "card": "RageBarbarian",
+   "flag": 1,
+   "max_hp_l11": -1,
+   "why": "no RoyaleSim body of this card form with this max_hp",
+   "rs_bodies_of_card": [
+    [
+     "RageBarbarian",
+     2
+    ],
+    [
+     "RageBarbarian",
+     1282
+    ]
+   ]
+  },
+  {
+   "crforge_name": "SkeletonContainerNew",
+   "card": "SkeletonBalloon",
+   "flag": 0,
+   "max_hp_l11": -1,
+   "why": "no RoyaleSim body of this card form with this max_hp",
+   "rs_bodies_of_card": [
+    [
+     "SkeletonBalloon",
+     81
+    ],
+    [
+     "SkeletonBalloon",
+     532
+    ]
+   ]
+  },
+  {
+   "crforge_name": "TombstoneHero_broken_visual_dummy",
+   "card": "Tombstone",
+   "flag": 2,
+   "max_hp_l11": 2559997,
+   "why": "no RoyaleSim body of this card form with this max_hp",
+   "rs_bodies_of_card": [
+    [
+     "Tombstone",
+     81
+    ],
+    [
+     "Tombstone",
+     529
+    ]
+   ]
+  },
+  {
+   "crforge_name": "TombstoneHero_visual_dummy",
+   "card": "Tombstone",
+   "flag": 2,
+   "max_hp_l11": 2559997,
+   "why": "no RoyaleSim body of this card form with this max_hp",
+   "rs_bodies_of_card": [
+    [
+     "Tombstone",
+     81
+    ],
+    [
+     "Tombstone",
+     529
+    ]
+   ]
+  },
+  {
+   "crforge_name": "SpearGoblin_Dummy",
+   "card": null,
+   "flag": null,
+   "max_hp_l11": null,
+   "why": "seen on 148 bodies in the 223 census matches, never in a solo probe (made by kills, curses or other interactions): no RoyaleSim evidence, left dropped",
+   "rs_bodies_of_card": []
+  },
+  {
+   "crforge_name": "VoodooHog",
+   "card": null,
+   "flag": null,
+   "max_hp_l11": null,
+   "why": "seen on 20 bodies in the 223 census matches, never in a solo probe (made by kills, curses or other interactions): no RoyaleSim evidence, left dropped",
+   "rs_bodies_of_card": []
+  },
+  {
+   "crforge_name": "PhoenixNoRespawn",
+   "card": null,
+   "flag": null,
+   "max_hp_l11": null,
+   "why": "seen on 4 bodies in the 223 census matches, never in a solo probe (made by kills, curses or other interactions): no RoyaleSim evidence, left dropped",
+   "rs_bodies_of_card": []
+  },
+  {
+   "crforge_name": "Wallbreaker_mini",
+   "card": null,
+   "flag": null,
+   "max_hp_l11": null,
+   "why": "seen on 3 bodies in the 223 census matches, never in a solo probe (made by kills, curses or other interactions): no RoyaleSim evidence, left dropped",
+   "rs_bodies_of_card": []
+  },
+  {
+   "crforge_name": "GoblinCurseGoblin",
+   "card": null,
+   "flag": null,
+   "max_hp_l11": null,
+   "why": "seen on 1 bodies in the 223 census matches, never in a solo probe (made by kills, curses or other interactions): no RoyaleSim evidence, left dropped",
+   "rs_bodies_of_card": []
+  }
+ ],
+ "_meta": {
+  "crforge": "ad8ef3a532ada8dea732bf1ecdeb01beef0fb4b0",
+  "tables": "16.402.22",
+  "royalesim": "fin15 0.1.36",
+  "level_join": 11,
+  "probe": "BodyProbe.java / rs_probe.py, 2,400 ticks per card form, side 0 alone",
+  "forms_note": "RoyaleSim showed status_flags 0 on every probed body, evolved and hero slots included, so 'form' is read from the crforge row name (_EV1 / Hero), not checked against RoyaleSim"
+ }
+}

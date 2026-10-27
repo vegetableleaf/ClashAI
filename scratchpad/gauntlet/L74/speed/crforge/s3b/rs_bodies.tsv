@@ -1,0 +1,220 @@
+card	flag	plays	rs_name	max_hp	status_flags	unit_name	vocab_id	first_tick	count	error
+AngryBarbarians	0	3	AngryBarbarians	1341	0		35	100	6	
+AngryBarbarians	1	2	AngryBarbarians	1341	0		35	100	4	
+Archer	0	3	Archer	304	0		9	100	6	
+Archer	1	3	Archer	304	0		9	100	6	
+ArcherQueen	0	3	ArcherQueen	1000	0		8	100	3	
+Arrows	0	3	-	-	-	-	-	-	0	
+Assassin	0	3	Assassin	906	0		13	100	3	
+AxeMan	0	3	AxeMan	1280	0		40	100	3	
+AxeMan	1	3	AxeMan	1280	0		40	100	3	
+BabyDragon	0	3	BabyDragon	1152	0		11	100	3	
+BabyDragon	1	3	BabyDragon	1152	0		11	100	3	
+Balloon	0	3	Balloon	1676	0		12	100	3	
+Balloon	2	3	Balloon	1676	0		12	100	3	
+BarbLog	0	3	BarbLog	716	0		16	130	3	
+BarbLog	2	3	BarbLog	716	0		16	130	3	
+Barbarians	0	3	Barbarians	716	0		16	100	15	
+Barbarians	1	3	Barbarians	716	0		16	100	15	
+Bats	0	3	Bats	81	0		17	100	15	
+Bats	1	3	Bats	81	0		17	100	10	
+Bats	1	3	Bats	122	0		17	1820	5	
+BattleHealer	0	3	BattleHealer	1920	0		18	100	3	
+BattleRam	0	3	BattleRam	716	0		19	230	6	
+BattleRam	0	3	BattleRam	967	0		19	100	3	
+BattleRam	1	3	BattleRam	716	0		19	230	6	
+BattleRam	1	3	BattleRam	967	0		19	100	3	
+Berserker	0	3	Berserker	896	0		20	100	3	
+Berserker	2	3	Berserker	896	0		20	100	3	
+BlowdartGoblin	0	3	BlowdartGoblin	261	0		29	100	3	
+BlowdartGoblin	1	3	BlowdartGoblin	261	0		29	100	3	
+BombTower	0	3	BombTower	1356	0		21	100	3	
+Bomber	0	3	Bomber	304	0		22	100	3	
+Bomber	1	3	Bomber	304	0		22	100	3	
+BossBandit	0	3	BossBandit	2624	0		23	100	3	
+Bowler	0	3	Bowler	2081	0		24	100	3	
+Bowler	2	3	Bowler	2081	0		24	100	3	
+Cannon	0	3	Cannon	824	0		25	100	3	
+Cannon	1	3	Cannon	824	0		25	100	3	
+Clone	0	3	-	-	-	-	-	-	0	
+DarkMagic	0	3	-	-	-	-	-	-	0	
+DarkPrince	0	3	DarkPrince	1200	0		28	100	3	
+DarkPrince	2	3	DarkPrince	1200	0		28	100	3	
+DarkWitch	0	3	DarkWitch	81	0		93	130	17	
+DarkWitch	0	3	DarkWitch	906	0		93	100	3	
+DartBarrell	0	3	DartBarrell	614	0		45	100	3	
+Earthquake	0	3	-	-	-	-	-	-	0	
+ElectroDragon	0	3	ElectroDragon	1049	0		31	100	3	
+ElectroDragon	1	3	ElectroDragon	1049	0		31	100	3	
+ElectroGiant	0	2	ElectroGiant	3952	0		32	100	2	
+ElectroGiant	1	2	ElectroGiant	3952	0		32	100	2	
+ElectroSpirit	0	3	ElectroSpirit	215	0		33	100	3	
+ElectroWizard	0	3	ElectroWizard	714	0		34	100	3	
+ElectroWizard	2	3	ElectroWizard	714	0		34	100	3	
+EliteArcher	0	3	EliteArcher	529	0		79	100	3	
+EliteArcher	2	3	EliteArcher	529	0		79	100	3	
+Elixir Collector	0	3	Elixir Collector	1070	0		37	240	3	
+ElixirGolem	0	3	ElixirGolem	360	0		36	520	8	
+ElixirGolem	0	3	ElixirGolem	762	0		39	450	4	
+ElixirGolem	0	3	ElixirGolem	1569	0		38	100	3	
+FireSpirits	0	3	FireSpirits	215	0		41	100	3	
+Fireball	0	3	-	-	-	-	-	-	0	
+Firecracker	0	3	Firecracker	304	0		43	100	3	
+Firecracker	1	3	Firecracker	304	0		43	100	3	
+FirespiritHut	0	3	FirespiritHut	215	0		47	130	6	
+FirespiritHut	0	3	FirespiritHut	727	0		47	100	3	
+FirespiritHut	1	3	FirespiritHut	215	0		47	130	7	
+FirespiritHut	1	3	FirespiritHut	727	0		47	100	3	
+Fisherman	0	3	Fisherman	870	0		44	100	3	
+Freeze	0	3	-	-	-	-	-	-	0	
+Ghost	0	3	Ghost	1152	0		104	100	3	
+Ghost	1	3	Ghost	81	0		104	2070	2	
+Ghost	1	3	Ghost	1152	0		104	100	3	
+Giant	0	3	Giant	3968	0		48	100	3	
+Giant	2	3	Giant	3968	0		48	100	3	
+GiantBuffer	0	3	GiantBuffer	2816	0		109	100	3	
+GiantSkeleton	0	3	GiantSkeleton	3361	0		49	100	3	
+GoblinBarrel	0	3	GoblinBarrel	202	0		60	150	9	
+GoblinBarrel	1	3	GoblinBarrel	81	0		60	1980	3	
+GoblinBarrel	1	3	GoblinBarrel	202	0		60	150	9	
+GoblinCage	0	3	GoblinCage	780	0		52	100	3	
+GoblinCage	0	3	GoblinCage	1121	0		52	510	2	
+GoblinCage	1	3	GoblinCage	780	0		52	100	3	
+GoblinCage	1	3	GoblinCage	1121	0		52	510	2	
+GoblinCurse	0	3	-	-	-	-	-	-	0	
+GoblinDemolisher	0	3	GoblinDemolisher	1300	0		54	100	3	
+GoblinDrill	0	3	GoblinDrill	202	0		55	170	18	
+GoblinDrill	0	3	GoblinDrill	1313	0		55	130	3	
+GoblinDrill	0	3	GoblinDrill	2560	0		55	100	3	
+GoblinDrill	1	3	GoblinDrill	202	0		55	170	21	
+GoblinDrill	1	3	GoblinDrill	1313	0		55	130	3	
+GoblinDrill	1	3	GoblinDrill	2560	0		55	100	3	
+GoblinGang	0	3	GoblinGang	133	0		56	100	9	
+GoblinGang	0	3	GoblinGang	202	0		56	100	9	
+GoblinGiant	0	3	GoblinGiant	133	0		57	100	10	
+GoblinGiant	0	3	GoblinGiant	3110	0		57	100	3	
+GoblinGiant	1	3	GoblinGiant	133	0		57	100	10	
+GoblinGiant	1	3	GoblinGiant	202	0		57	1460	3	
+GoblinGiant	1	3	GoblinGiant	3110	0		57	100	3	
+GoblinHut	0	3	GoblinHut	133	0		58	720	2	
+GoblinHut	0	3	GoblinHut	1180	0		58	100	3	
+Goblins	0	3	Goblins	202	0		60	100	12	
+Goblins	2	3	Goblins	202	0		60	100	12	
+Goblins	2	3	Goblins	2560	0		60	280	3	
+Goblinstein	0	3	Goblinstein	721	0		61	100	3	
+Goblinstein	0	3	Goblinstein	2240	0		61	100	3	
+GoldenKnight	0	3	GoldenKnight	1799	0		62	100	3	
+Golem	0	2	Golem	1039	0		64	920	4	
+Golem	0	2	Golem	5120	0		63	130	2	
+Graveyard	0	3	Graveyard	81	0		7	140	36	
+Heal	0	3	Heal	215	0		67	100	3	
+HogRider	0	3	HogRider	1697	0		68	100	3	
+Hunter	0	3	Hunter	885	0		69	100	3	
+Hunter	1	3	Hunter	885	0		69	100	3	
+IceGolemite	0	3	IceGolemite	1228	0		70	100	3	
+IceGolemite	2	3	IceGolemite	1228	0		70	100	3	
+IceSpirits	0	3	IceSpirits	215	0		71	100	3	
+IceSpirits	1	3	IceSpirits	215	0		71	100	3	
+IceWizard	0	3	IceWizard	688	0		2	100	3	
+IceWizard	2	3	IceWizard	688	0	IceWizardHero	2	100	3	
+InfernoDragon	0	3	InfernoDragon	1295	0		72	100	3	
+InfernoDragon	1	3	InfernoDragon	1295	0		72	100	3	
+InfernoTower	0	3	InfernoTower	1748	0		73	100	3	
+Knight	0	3	Knight	1766	0		5	100	3	
+Knight	1	3	Knight	1766	0		5	100	3	
+Knight	2	3	Knight	1766	0		5	100	3	
+LavaHound	0	2	LavaHound	215	0		75	740	12	
+LavaHound	0	2	LavaHound	3581	0		74	100	2	
+Lightning	0	3	-	-	-	-	-	-	0	
+LittlePrince	0	3	LittlePrince	698	0		77	100	3	
+Log	0	3	-	-	-	-	-	-	0	
+MegaKnight	0	2	MegaKnight	3993	0		80	100	2	
+MegaKnight	1	2	MegaKnight	3993	0		80	100	2	
+MegaMinion	0	3	MegaMinion	837	0		81	100	3	
+MegaMinion	2	3	MegaMinion	837	0		81	100	3	
+MightyMiner	0	3	MightyMiner	2250	0		82	100	3	
+Miner	0	3	Miner	1210	0		83	100	3	
+MiniPekka	0	3	MiniPekka	1390	0		84	100	3	
+MiniPekka	2	3	MiniPekka	1390	0		84	100	3	
+MiniSparkys	0	3	MiniSparkys	529	0		127	100	9	
+MinionGiant	0	3	MinionGiant	1817	0		232	100	3	
+MinionHorde	0	3	MinionHorde	230	0		85	100	18	
+MinionHorde	1	3	MinionHorde	230	0		85	100	18	
+Minions	0	3	Minions	230	0		86	100	9	
+Mirror	0	3	-	-	-	-	-	-	0	
+Monk	0	3	Monk	2214	0		88	100	3	
+Mortar	0	3	Mortar	1369	0		89	100	3	
+Mortar	1	3	Mortar	202	0		89	2170	3	
+Mortar	1	3	Mortar	1369	0		89	100	3	
+MovingCannon	0	3	MovingCannon	1809	0		26	100	3	
+Musketeer	0	3	Musketeer	721	0		92	100	3	
+Musketeer	1	3	Musketeer	721	0		92	100	3	
+Musketeer	2	3	Musketeer	721	0		92	100	3	
+Pekka	0	2	Pekka	3760	0		94	100	2	
+Pekka	1	2	Pekka	3760	0		94	100	2	
+Phoenix	0	3	Phoenix	317	0		95	350	3	
+Phoenix	0	3	Phoenix	1052	0		95	100	3	
+Poison	0	3	-	-	-	-	-	-	0	
+Prince	0	3	Prince	1920	0		97	100	3	
+Princess	0	3	Princess	261	0		98	100	3	
+Princess	1	3	Princess	261	0		98	100	3	
+Rage	0	3	-	-	-	-	-	-	0	
+RageBarbarian	0	3	RageBarbarian	1282	0		78	100	3	
+RageBarbarian	1	3	RageBarbarian	2	0		78	2260	1	
+RageBarbarian	1	3	RageBarbarian	1282	0		78	100	3	
+RamRider	0	3	RamRider	593	0		100	100	3	
+RamRider	0	3	RamRider	1766	0		100	100	3	
+Rascals	0	3	Rascals	261	0		101	100	6	
+Rascals	0	3	Rascals	1832	0		101	100	3	
+Rocket	0	3	-	-	-	-	-	-	0	
+Ronin	0	3	Ronin	1779	0		102	100	3	
+RoyalDelivery	0	3	RoyalDelivery	547	0		107	140	3	
+RoyalGiant	0	3	RoyalGiant	3164	0		105	100	3	
+RoyalGiant	1	3	RoyalGiant	3164	0		105	100	3	
+RoyalHogs	0	3	RoyalHogs	837	0		106	100	12	
+RoyalHogs	1	3	RoyalHogs	837	0		106	100	12	
+RoyalRecruits	0	2	RoyalRecruits	547	0		107	100	12	
+RoyalRecruits	1	2	RoyalRecruits	547	0		107	100	12	
+SkeletonArmy	0	3	SkeletonArmy	81	0		110	100	45	
+SkeletonArmy	1	3	SkeletonArmy	2	0		110	1990	12	
+SkeletonArmy	1	3	SkeletonArmy	81	0		110	100	46	
+SkeletonBalloon	0	3	SkeletonBalloon	81	0		111	250	21	
+SkeletonBalloon	0	3	SkeletonBalloon	532	0		111	100	3	
+SkeletonBalloon	1	3	SkeletonBalloon	81	0		111	250	28	
+SkeletonBalloon	1	3	SkeletonBalloon	532	0		111	100	2	
+SkeletonBalloon	1	3	SkeletonBalloon	665	0		111	1930	1	
+SkeletonDragons	0	3	SkeletonDragons	560	0		112	100	6	
+SkeletonKing	0	3	SkeletonKing	2298	0		113	100	3	
+SkeletonWarriors	0	3	SkeletonWarriors	81	0		66	100	9	
+Skeletons	0	3	Skeletons	81	0		7	100	9	
+Skeletons	1	3	Skeletons	81	0		7	100	9	
+Snowball	0	3	-	-	-	-	-	-	0	
+Snowball	1	3	-	-	-	-	-	-	0	
+SpearGoblins	0	3	SpearGoblins	133	0		115	100	9	
+SuspiciousBush	0	3	SuspiciousBush	81	0		117	100	3	
+SuspiciousBush	0	3	SuspiciousBush	337	0		117	290	6	
+Tesla	0	3	Tesla	1182	0		1	100	3	
+Tesla	1	3	Tesla	1182	0		1	100	3	
+Tombstone	0	3	Tombstone	81	0		119	110	52	
+Tombstone	0	3	Tombstone	529	0		119	100	3	
+Tombstone	2	3	Tombstone	81	0		119	110	52	
+Tombstone	2	3	Tombstone	529	0		119	100	6	
+Tornado	0	3	-	-	-	-	-	-	0	
+Valkyrie	0	3	Valkyrie	1907	0		120	100	3	
+Valkyrie	1	3	Valkyrie	1907	0		120	100	3	
+Valkyrie	2	3	Valkyrie	1907	0		120	100	3	
+Vines	0	3	-	-	-	-	-	-	0	
+Wallbreakers	0	3	Wallbreakers	330	0		123	100	6	
+Wallbreakers	1	3	Wallbreakers	330	0		123	100	6	
+Witch	0	3	Witch	81	0		124	130	24	
+Witch	0	3	Witch	839	0		124	100	3	
+Witch	1	3	Witch	81	0		124	130	28	
+Witch	1	3	Witch	839	0		124	100	3	
+WitchMother	0	3	WitchMother	529	0		90	100	3	
+Wizard	0	3	Wizard	755	0		125	100	3	
+Wizard	1	3	Wizard	755	0		125	100	3	
+Wizard	2	3	Wizard	755	0		125	100	3	
+Xbow	0	3	Xbow	1600	0		3	100	3	
+Zap	0	3	-	-	-	-	-	-	0	
+Zap	1	3	-	-	-	-	-	-	0	
+ZapMachine	0	3	ZapMachine	1451	0		114	100	3	

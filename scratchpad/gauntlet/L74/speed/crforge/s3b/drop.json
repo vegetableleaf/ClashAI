@@ -1,0 +1,1431 @@
+{
+ "matches": 223,
+ "bodies_per_match": 91.17040358744394,
+ "dropped_before_per_match": 23.286995515695068,
+ "dropped_after_per_match": 1.0,
+ "need_parent_per_match": 42.52017937219731,
+ "matches_with_drop_before": 193,
+ "matches_with_drop_after": 36,
+ "names_dropped_before": {
+  "Bat": 743,
+  "TombstoneHeroSkeleton": 570,
+  "BarrelGoblin": 435,
+  "SpearGoblin": 372,
+  "Goblin_Stab": 319,
+  "Graveyard_rework_Skeleton": 297,
+  "SkeletonWarrior": 228,
+  "Minion": 207,
+  "Wallbreaker": 190,
+  "SkeletonArmy_EV1_Soldier": 179,
+  "SkeletonArmy_EV1_Spectral": 153,
+  "SpearGoblin_Dummy": 148,
+  "Skeleton_EV1": 130,
+  "Goblin": 116,
+  "ElixirGolem4": 72,
+  "GoblinHero": 71,
+  "Furnace_rework": 57,
+  "Witch_EV1_Skeleton_Interval": 56,
+  "Bat_EV1": 54,
+  "MiniZapMachine": 48,
+  "TombstoneHero_visual_dummy": 47,
+  "TombstoneHero_Monster_Passive": 47,
+  "GoblinHut_Rework": 46,
+  "GoblinDummy": 45,
+  "BushGoblin": 44,
+  "RoyalHog": 44,
+  "ElixirGolem2": 38,
+  "GoblinBrawler": 30,
+  "BarbLogBarbarianHero": 26,
+  "RascalGirl": 26,
+  "AngryBarbarian": 24,
+  "Witch_EV1_Healing_Skeleton": 24,
+  "ElixirGolem1": 22,
+  "PhoenixEgg": 22,
+  "Barbarian_EV1": 20,
+  "VoodooHog": 20,
+  "Wallbreaker_EV1": 18,
+  "goblinstein_doctor": 18,
+  "Recruit": 18,
+  "Ram": 16,
+  "GoblinDrillDig": 15,
+  "GoblinHero_Flag_Building": 14,
+  "Ghost_EV1_Summon_Left": 14,
+  "Ghost_EV1_Summon_Right": 14,
+  "RascalBoy": 13,
+  "SkeletonArmy_EV1_General": 12,
+  "DeliveryRecruit": 11,
+  "electro_dragon_ev1": 7,
+  "AngryBarbarian_EV1": 6,
+  "AngryBarbarian_EV1_2": 6,
+  "SpearGoblinGiant": 6,
+  "GoblinCage_EV1_TEMPNAME": 5,
+  "RageBarbarianEvoGhost": 5,
+  "GoblinCage_EV1_GoblinBrawler": 4,
+  "SkeletonDragon": 4,
+  "RoyalHog_EV1": 4,
+  "PhoenixNoRespawn": 4,
+  "Wallbreaker_mini": 3,
+  "GoblinDrill_EV1_Dig": 3,
+  "SpearGoblinGiant_EV1": 2,
+  "GoblinCurseGoblin": 1
+ },
+ "names_dropped_after": {
+  "SpearGoblin_Dummy": 148,
+  "TombstoneHero_visual_dummy": 47,
+  "VoodooHog": 20,
+  "PhoenixNoRespawn": 4,
+  "Wallbreaker_mini": 3,
+  "GoblinCurseGoblin": 1
+ },
+ "names_need_parent": {
+  "Skeleton": 7209,
+  "Bat": 743,
+  "SpearGoblin": 372,
+  "Goblin_Stab": 319,
+  "Barbarian": 266,
+  "FireSpirits": 230,
+  "Minion": 207,
+  "Goblin": 116,
+  "Barbarian_EV1": 20
+ },
+ "per_match": [
+  {
+   "bodies": 79,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 41
+  },
+  {
+   "bodies": 42,
+   "dropped_before": 3,
+   "dropped_after": 0,
+   "need_parent": 15
+  },
+  {
+   "bodies": 74,
+   "dropped_before": 15,
+   "dropped_after": 0,
+   "need_parent": 36
+  },
+  {
+   "bodies": 116,
+   "dropped_before": 53,
+   "dropped_after": 0,
+   "need_parent": 54
+  },
+  {
+   "bodies": 45,
+   "dropped_before": 22,
+   "dropped_after": 0,
+   "need_parent": 27
+  },
+  {
+   "bodies": 69,
+   "dropped_before": 25,
+   "dropped_after": 11,
+   "need_parent": 29
+  },
+  {
+   "bodies": 164,
+   "dropped_before": 64,
+   "dropped_after": 0,
+   "need_parent": 63
+  },
+  {
+   "bodies": 152,
+   "dropped_before": 35,
+   "dropped_after": 0,
+   "need_parent": 91
+  },
+  {
+   "bodies": 80,
+   "dropped_before": 18,
+   "dropped_after": 2,
+   "need_parent": 17
+  },
+  {
+   "bodies": 115,
+   "dropped_before": 50,
+   "dropped_after": 0,
+   "need_parent": 55
+  },
+  {
+   "bodies": 31,
+   "dropped_before": 9,
+   "dropped_after": 0,
+   "need_parent": 9
+  },
+  {
+   "bodies": 73,
+   "dropped_before": 21,
+   "dropped_after": 0,
+   "need_parent": 21
+  },
+  {
+   "bodies": 157,
+   "dropped_before": 57,
+   "dropped_after": 0,
+   "need_parent": 63
+  },
+  {
+   "bodies": 50,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 19
+  },
+  {
+   "bodies": 74,
+   "dropped_before": 24,
+   "dropped_after": 0,
+   "need_parent": 35
+  },
+  {
+   "bodies": 51,
+   "dropped_before": 1,
+   "dropped_after": 0,
+   "need_parent": 21
+  },
+  {
+   "bodies": 34,
+   "dropped_before": 4,
+   "dropped_after": 0,
+   "need_parent": 12
+  },
+  {
+   "bodies": 71,
+   "dropped_before": 33,
+   "dropped_after": 0,
+   "need_parent": 32
+  },
+  {
+   "bodies": 71,
+   "dropped_before": 4,
+   "dropped_after": 0,
+   "need_parent": 29
+  },
+  {
+   "bodies": 118,
+   "dropped_before": 12,
+   "dropped_after": 0,
+   "need_parent": 67
+  },
+  {
+   "bodies": 113,
+   "dropped_before": 44,
+   "dropped_after": 0,
+   "need_parent": 59
+  },
+  {
+   "bodies": 116,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 50
+  },
+  {
+   "bodies": 40,
+   "dropped_before": 4,
+   "dropped_after": 0,
+   "need_parent": 13
+  },
+  {
+   "bodies": 150,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 70
+  },
+  {
+   "bodies": 58,
+   "dropped_before": 3,
+   "dropped_after": 0,
+   "need_parent": 20
+  },
+  {
+   "bodies": 95,
+   "dropped_before": 16,
+   "dropped_after": 0,
+   "need_parent": 62
+  },
+  {
+   "bodies": 199,
+   "dropped_before": 65,
+   "dropped_after": 0,
+   "need_parent": 83
+  },
+  {
+   "bodies": 95,
+   "dropped_before": 8,
+   "dropped_after": 0,
+   "need_parent": 51
+  },
+  {
+   "bodies": 91,
+   "dropped_before": 28,
+   "dropped_after": 0,
+   "need_parent": 37
+  },
+  {
+   "bodies": 69,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 29
+  },
+  {
+   "bodies": 72,
+   "dropped_before": 21,
+   "dropped_after": 0,
+   "need_parent": 48
+  },
+  {
+   "bodies": 108,
+   "dropped_before": 26,
+   "dropped_after": 0,
+   "need_parent": 48
+  },
+  {
+   "bodies": 62,
+   "dropped_before": 25,
+   "dropped_after": 0,
+   "need_parent": 33
+  },
+  {
+   "bodies": 103,
+   "dropped_before": 50,
+   "dropped_after": 0,
+   "need_parent": 50
+  },
+  {
+   "bodies": 51,
+   "dropped_before": 4,
+   "dropped_after": 0,
+   "need_parent": 15
+  },
+  {
+   "bodies": 67,
+   "dropped_before": 27,
+   "dropped_after": 0,
+   "need_parent": 15
+  },
+  {
+   "bodies": 60,
+   "dropped_before": 25,
+   "dropped_after": 0,
+   "need_parent": 36
+  },
+  {
+   "bodies": 105,
+   "dropped_before": 9,
+   "dropped_after": 0,
+   "need_parent": 60
+  },
+  {
+   "bodies": 115,
+   "dropped_before": 20,
+   "dropped_after": 0,
+   "need_parent": 81
+  },
+  {
+   "bodies": 99,
+   "dropped_before": 32,
+   "dropped_after": 22,
+   "need_parent": 31
+  },
+  {
+   "bodies": 162,
+   "dropped_before": 47,
+   "dropped_after": 0,
+   "need_parent": 77
+  },
+  {
+   "bodies": 73,
+   "dropped_before": 33,
+   "dropped_after": 0,
+   "need_parent": 28
+  },
+  {
+   "bodies": 113,
+   "dropped_before": 32,
+   "dropped_after": 0,
+   "need_parent": 58
+  },
+  {
+   "bodies": 116,
+   "dropped_before": 32,
+   "dropped_after": 0,
+   "need_parent": 74
+  },
+  {
+   "bodies": 59,
+   "dropped_before": 16,
+   "dropped_after": 0,
+   "need_parent": 16
+  },
+  {
+   "bodies": 68,
+   "dropped_before": 12,
+   "dropped_after": 0,
+   "need_parent": 30
+  },
+  {
+   "bodies": 101,
+   "dropped_before": 52,
+   "dropped_after": 0,
+   "need_parent": 70
+  },
+  {
+   "bodies": 145,
+   "dropped_before": 70,
+   "dropped_after": 11,
+   "need_parent": 45
+  },
+  {
+   "bodies": 75,
+   "dropped_before": 6,
+   "dropped_after": 0,
+   "need_parent": 29
+  },
+  {
+   "bodies": 142,
+   "dropped_before": 33,
+   "dropped_after": 10,
+   "need_parent": 80
+  },
+  {
+   "bodies": 120,
+   "dropped_before": 47,
+   "dropped_after": 0,
+   "need_parent": 64
+  },
+  {
+   "bodies": 46,
+   "dropped_before": 4,
+   "dropped_after": 0,
+   "need_parent": 12
+  },
+  {
+   "bodies": 124,
+   "dropped_before": 36,
+   "dropped_after": 0,
+   "need_parent": 73
+  },
+  {
+   "bodies": 71,
+   "dropped_before": 17,
+   "dropped_after": 0,
+   "need_parent": 34
+  },
+  {
+   "bodies": 62,
+   "dropped_before": 2,
+   "dropped_after": 0,
+   "need_parent": 21
+  },
+  {
+   "bodies": 73,
+   "dropped_before": 15,
+   "dropped_after": 0,
+   "need_parent": 18
+  },
+  {
+   "bodies": 30,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 15
+  },
+  {
+   "bodies": 75,
+   "dropped_before": 25,
+   "dropped_after": 0,
+   "need_parent": 33
+  },
+  {
+   "bodies": 77,
+   "dropped_before": 9,
+   "dropped_after": 0,
+   "need_parent": 51
+  },
+  {
+   "bodies": 103,
+   "dropped_before": 14,
+   "dropped_after": 0,
+   "need_parent": 62
+  },
+  {
+   "bodies": 163,
+   "dropped_before": 78,
+   "dropped_after": 5,
+   "need_parent": 42
+  },
+  {
+   "bodies": 44,
+   "dropped_before": 5,
+   "dropped_after": 0,
+   "need_parent": 15
+  },
+  {
+   "bodies": 75,
+   "dropped_before": 8,
+   "dropped_after": 0,
+   "need_parent": 30
+  },
+  {
+   "bodies": 110,
+   "dropped_before": 22,
+   "dropped_after": 0,
+   "need_parent": 70
+  },
+  {
+   "bodies": 75,
+   "dropped_before": 30,
+   "dropped_after": 0,
+   "need_parent": 14
+  },
+  {
+   "bodies": 82,
+   "dropped_before": 32,
+   "dropped_after": 0,
+   "need_parent": 22
+  },
+  {
+   "bodies": 45,
+   "dropped_before": 20,
+   "dropped_after": 0,
+   "need_parent": 29
+  },
+  {
+   "bodies": 67,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 34
+  },
+  {
+   "bodies": 56,
+   "dropped_before": 19,
+   "dropped_after": 0,
+   "need_parent": 15
+  },
+  {
+   "bodies": 125,
+   "dropped_before": 38,
+   "dropped_after": 0,
+   "need_parent": 81
+  },
+  {
+   "bodies": 35,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 21
+  },
+  {
+   "bodies": 81,
+   "dropped_before": 1,
+   "dropped_after": 1,
+   "need_parent": 45
+  },
+  {
+   "bodies": 69,
+   "dropped_before": 12,
+   "dropped_after": 0,
+   "need_parent": 15
+  },
+  {
+   "bodies": 94,
+   "dropped_before": 16,
+   "dropped_after": 0,
+   "need_parent": 44
+  },
+  {
+   "bodies": 136,
+   "dropped_before": 32,
+   "dropped_after": 0,
+   "need_parent": 79
+  },
+  {
+   "bodies": 79,
+   "dropped_before": 15,
+   "dropped_after": 0,
+   "need_parent": 18
+  },
+  {
+   "bodies": 110,
+   "dropped_before": 50,
+   "dropped_after": 0,
+   "need_parent": 81
+  },
+  {
+   "bodies": 80,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 46
+  },
+  {
+   "bodies": 120,
+   "dropped_before": 20,
+   "dropped_after": 0,
+   "need_parent": 49
+  },
+  {
+   "bodies": 56,
+   "dropped_before": 9,
+   "dropped_after": 0,
+   "need_parent": 24
+  },
+  {
+   "bodies": 70,
+   "dropped_before": 33,
+   "dropped_after": 0,
+   "need_parent": 42
+  },
+  {
+   "bodies": 52,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 18
+  },
+  {
+   "bodies": 39,
+   "dropped_before": 3,
+   "dropped_after": 0,
+   "need_parent": 15
+  },
+  {
+   "bodies": 74,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 24
+  },
+  {
+   "bodies": 75,
+   "dropped_before": 23,
+   "dropped_after": 0,
+   "need_parent": 44
+  },
+  {
+   "bodies": 127,
+   "dropped_before": 51,
+   "dropped_after": 0,
+   "need_parent": 48
+  },
+  {
+   "bodies": 77,
+   "dropped_before": 31,
+   "dropped_after": 10,
+   "need_parent": 23
+  },
+  {
+   "bodies": 176,
+   "dropped_before": 21,
+   "dropped_after": 0,
+   "need_parent": 115
+  },
+  {
+   "bodies": 124,
+   "dropped_before": 64,
+   "dropped_after": 2,
+   "need_parent": 68
+  },
+  {
+   "bodies": 90,
+   "dropped_before": 20,
+   "dropped_after": 0,
+   "need_parent": 32
+  },
+  {
+   "bodies": 97,
+   "dropped_before": 46,
+   "dropped_after": 0,
+   "need_parent": 51
+  },
+  {
+   "bodies": 121,
+   "dropped_before": 14,
+   "dropped_after": 1,
+   "need_parent": 40
+  },
+  {
+   "bodies": 102,
+   "dropped_before": 8,
+   "dropped_after": 0,
+   "need_parent": 69
+  },
+  {
+   "bodies": 132,
+   "dropped_before": 65,
+   "dropped_after": 4,
+   "need_parent": 21
+  },
+  {
+   "bodies": 105,
+   "dropped_before": 14,
+   "dropped_after": 4,
+   "need_parent": 51
+  },
+  {
+   "bodies": 99,
+   "dropped_before": 8,
+   "dropped_after": 1,
+   "need_parent": 64
+  },
+  {
+   "bodies": 94,
+   "dropped_before": 23,
+   "dropped_after": 0,
+   "need_parent": 40
+  },
+  {
+   "bodies": 73,
+   "dropped_before": 5,
+   "dropped_after": 0,
+   "need_parent": 29
+  },
+  {
+   "bodies": 74,
+   "dropped_before": 27,
+   "dropped_after": 0,
+   "need_parent": 34
+  },
+  {
+   "bodies": 155,
+   "dropped_before": 33,
+   "dropped_after": 0,
+   "need_parent": 125
+  },
+  {
+   "bodies": 17,
+   "dropped_before": 6,
+   "dropped_after": 0,
+   "need_parent": 12
+  },
+  {
+   "bodies": 38,
+   "dropped_before": 5,
+   "dropped_after": 0,
+   "need_parent": 18
+  },
+  {
+   "bodies": 112,
+   "dropped_before": 40,
+   "dropped_after": 0,
+   "need_parent": 65
+  },
+  {
+   "bodies": 130,
+   "dropped_before": 32,
+   "dropped_after": 0,
+   "need_parent": 85
+  },
+  {
+   "bodies": 77,
+   "dropped_before": 37,
+   "dropped_after": 0,
+   "need_parent": 36
+  },
+  {
+   "bodies": 125,
+   "dropped_before": 6,
+   "dropped_after": 0,
+   "need_parent": 82
+  },
+  {
+   "bodies": 70,
+   "dropped_before": 29,
+   "dropped_after": 4,
+   "need_parent": 15
+  },
+  {
+   "bodies": 78,
+   "dropped_before": 5,
+   "dropped_after": 0,
+   "need_parent": 35
+  },
+  {
+   "bodies": 109,
+   "dropped_before": 12,
+   "dropped_after": 0,
+   "need_parent": 63
+  },
+  {
+   "bodies": 74,
+   "dropped_before": 11,
+   "dropped_after": 1,
+   "need_parent": 20
+  },
+  {
+   "bodies": 112,
+   "dropped_before": 60,
+   "dropped_after": 4,
+   "need_parent": 12
+  },
+  {
+   "bodies": 82,
+   "dropped_before": 34,
+   "dropped_after": 0,
+   "need_parent": 51
+  },
+  {
+   "bodies": 206,
+   "dropped_before": 95,
+   "dropped_after": 3,
+   "need_parent": 99
+  },
+  {
+   "bodies": 69,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 30
+  },
+  {
+   "bodies": 114,
+   "dropped_before": 15,
+   "dropped_after": 0,
+   "need_parent": 59
+  },
+  {
+   "bodies": 104,
+   "dropped_before": 29,
+   "dropped_after": 0,
+   "need_parent": 43
+  },
+  {
+   "bodies": 52,
+   "dropped_before": 2,
+   "dropped_after": 0,
+   "need_parent": 21
+  },
+  {
+   "bodies": 100,
+   "dropped_before": 25,
+   "dropped_after": 0,
+   "need_parent": 39
+  },
+  {
+   "bodies": 44,
+   "dropped_before": 2,
+   "dropped_after": 0,
+   "need_parent": 15
+  },
+  {
+   "bodies": 122,
+   "dropped_before": 44,
+   "dropped_after": 8,
+   "need_parent": 45
+  },
+  {
+   "bodies": 136,
+   "dropped_before": 89,
+   "dropped_after": 4,
+   "need_parent": 38
+  },
+  {
+   "bodies": 48,
+   "dropped_before": 8,
+   "dropped_after": 0,
+   "need_parent": 15
+  },
+  {
+   "bodies": 94,
+   "dropped_before": 22,
+   "dropped_after": 0,
+   "need_parent": 68
+  },
+  {
+   "bodies": 65,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 29
+  },
+  {
+   "bodies": 52,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 18
+  },
+  {
+   "bodies": 207,
+   "dropped_before": 65,
+   "dropped_after": 0,
+   "need_parent": 136
+  },
+  {
+   "bodies": 67,
+   "dropped_before": 15,
+   "dropped_after": 0,
+   "need_parent": 16
+  },
+  {
+   "bodies": 62,
+   "dropped_before": 18,
+   "dropped_after": 0,
+   "need_parent": 30
+  },
+  {
+   "bodies": 58,
+   "dropped_before": 8,
+   "dropped_after": 1,
+   "need_parent": 18
+  },
+  {
+   "bodies": 14,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 5
+  },
+  {
+   "bodies": 97,
+   "dropped_before": 40,
+   "dropped_after": 0,
+   "need_parent": 38
+  },
+  {
+   "bodies": 83,
+   "dropped_before": 32,
+   "dropped_after": 0,
+   "need_parent": 41
+  },
+  {
+   "bodies": 73,
+   "dropped_before": 27,
+   "dropped_after": 0,
+   "need_parent": 15
+  },
+  {
+   "bodies": 55,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 25
+  },
+  {
+   "bodies": 65,
+   "dropped_before": 6,
+   "dropped_after": 0,
+   "need_parent": 31
+  },
+  {
+   "bodies": 51,
+   "dropped_before": 4,
+   "dropped_after": 0,
+   "need_parent": 19
+  },
+  {
+   "bodies": 92,
+   "dropped_before": 13,
+   "dropped_after": 0,
+   "need_parent": 39
+  },
+  {
+   "bodies": 103,
+   "dropped_before": 10,
+   "dropped_after": 0,
+   "need_parent": 75
+  },
+  {
+   "bodies": 98,
+   "dropped_before": 18,
+   "dropped_after": 0,
+   "need_parent": 72
+  },
+  {
+   "bodies": 90,
+   "dropped_before": 39,
+   "dropped_after": 16,
+   "need_parent": 28
+  },
+  {
+   "bodies": 60,
+   "dropped_before": 12,
+   "dropped_after": 0,
+   "need_parent": 12
+  },
+  {
+   "bodies": 61,
+   "dropped_before": 15,
+   "dropped_after": 0,
+   "need_parent": 13
+  },
+  {
+   "bodies": 96,
+   "dropped_before": 39,
+   "dropped_after": 2,
+   "need_parent": 51
+  },
+  {
+   "bodies": 74,
+   "dropped_before": 8,
+   "dropped_after": 0,
+   "need_parent": 27
+  },
+  {
+   "bodies": 157,
+   "dropped_before": 49,
+   "dropped_after": 0,
+   "need_parent": 70
+  },
+  {
+   "bodies": 135,
+   "dropped_before": 16,
+   "dropped_after": 0,
+   "need_parent": 87
+  },
+  {
+   "bodies": 41,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 16
+  },
+  {
+   "bodies": 66,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 23
+  },
+  {
+   "bodies": 70,
+   "dropped_before": 24,
+   "dropped_after": 0,
+   "need_parent": 17
+  },
+  {
+   "bodies": 82,
+   "dropped_before": 12,
+   "dropped_after": 0,
+   "need_parent": 38
+  },
+  {
+   "bodies": 99,
+   "dropped_before": 45,
+   "dropped_after": 0,
+   "need_parent": 42
+  },
+  {
+   "bodies": 160,
+   "dropped_before": 35,
+   "dropped_after": 0,
+   "need_parent": 128
+  },
+  {
+   "bodies": 113,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 55
+  },
+  {
+   "bodies": 153,
+   "dropped_before": 75,
+   "dropped_after": 0,
+   "need_parent": 72
+  },
+  {
+   "bodies": 160,
+   "dropped_before": 49,
+   "dropped_after": 0,
+   "need_parent": 73
+  },
+  {
+   "bodies": 63,
+   "dropped_before": 12,
+   "dropped_after": 0,
+   "need_parent": 21
+  },
+  {
+   "bodies": 105,
+   "dropped_before": 30,
+   "dropped_after": 0,
+   "need_parent": 76
+  },
+  {
+   "bodies": 57,
+   "dropped_before": 23,
+   "dropped_after": 0,
+   "need_parent": 32
+  },
+  {
+   "bodies": 127,
+   "dropped_before": 58,
+   "dropped_after": 0,
+   "need_parent": 30
+  },
+  {
+   "bodies": 59,
+   "dropped_before": 3,
+   "dropped_after": 0,
+   "need_parent": 22
+  },
+  {
+   "bodies": 65,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 30
+  },
+  {
+   "bodies": 72,
+   "dropped_before": 23,
+   "dropped_after": 16,
+   "need_parent": 15
+  },
+  {
+   "bodies": 107,
+   "dropped_before": 20,
+   "dropped_after": 0,
+   "need_parent": 82
+  },
+  {
+   "bodies": 32,
+   "dropped_before": 6,
+   "dropped_after": 0,
+   "need_parent": 9
+  },
+  {
+   "bodies": 81,
+   "dropped_before": 15,
+   "dropped_after": 0,
+   "need_parent": 27
+  },
+  {
+   "bodies": 74,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 33
+  },
+  {
+   "bodies": 38,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 17
+  },
+  {
+   "bodies": 118,
+   "dropped_before": 12,
+   "dropped_after": 0,
+   "need_parent": 78
+  },
+  {
+   "bodies": 139,
+   "dropped_before": 35,
+   "dropped_after": 0,
+   "need_parent": 75
+  },
+  {
+   "bodies": 89,
+   "dropped_before": 35,
+   "dropped_after": 0,
+   "need_parent": 52
+  },
+  {
+   "bodies": 60,
+   "dropped_before": 15,
+   "dropped_after": 0,
+   "need_parent": 12
+  },
+  {
+   "bodies": 88,
+   "dropped_before": 36,
+   "dropped_after": 4,
+   "need_parent": 15
+  },
+  {
+   "bodies": 85,
+   "dropped_before": 10,
+   "dropped_after": 2,
+   "need_parent": 35
+  },
+  {
+   "bodies": 90,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 39
+  },
+  {
+   "bodies": 60,
+   "dropped_before": 24,
+   "dropped_after": 0,
+   "need_parent": 40
+  },
+  {
+   "bodies": 78,
+   "dropped_before": 2,
+   "dropped_after": 0,
+   "need_parent": 41
+  },
+  {
+   "bodies": 148,
+   "dropped_before": 92,
+   "dropped_after": 4,
+   "need_parent": 19
+  },
+  {
+   "bodies": 50,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 18
+  },
+  {
+   "bodies": 90,
+   "dropped_before": 22,
+   "dropped_after": 5,
+   "need_parent": 46
+  },
+  {
+   "bodies": 64,
+   "dropped_before": 13,
+   "dropped_after": 0,
+   "need_parent": 38
+  },
+  {
+   "bodies": 86,
+   "dropped_before": 10,
+   "dropped_after": 0,
+   "need_parent": 37
+  },
+  {
+   "bodies": 93,
+   "dropped_before": 11,
+   "dropped_after": 0,
+   "need_parent": 58
+  },
+  {
+   "bodies": 144,
+   "dropped_before": 41,
+   "dropped_after": 0,
+   "need_parent": 65
+  },
+  {
+   "bodies": 76,
+   "dropped_before": 34,
+   "dropped_after": 3,
+   "need_parent": 38
+  },
+  {
+   "bodies": 63,
+   "dropped_before": 15,
+   "dropped_after": 0,
+   "need_parent": 30
+  },
+  {
+   "bodies": 75,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 32
+  },
+  {
+   "bodies": 69,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 29
+  },
+  {
+   "bodies": 124,
+   "dropped_before": 46,
+   "dropped_after": 0,
+   "need_parent": 86
+  },
+  {
+   "bodies": 225,
+   "dropped_before": 99,
+   "dropped_after": 22,
+   "need_parent": 76
+  },
+  {
+   "bodies": 80,
+   "dropped_before": 17,
+   "dropped_after": 0,
+   "need_parent": 26
+  },
+  {
+   "bodies": 117,
+   "dropped_before": 54,
+   "dropped_after": 3,
+   "need_parent": 40
+  },
+  {
+   "bodies": 74,
+   "dropped_before": 21,
+   "dropped_after": 0,
+   "need_parent": 26
+  },
+  {
+   "bodies": 50,
+   "dropped_before": 2,
+   "dropped_after": 0,
+   "need_parent": 19
+  },
+  {
+   "bodies": 71,
+   "dropped_before": 8,
+   "dropped_after": 4,
+   "need_parent": 44
+  },
+  {
+   "bodies": 50,
+   "dropped_before": 4,
+   "dropped_after": 0,
+   "need_parent": 18
+  },
+  {
+   "bodies": 82,
+   "dropped_before": 7,
+   "dropped_after": 0,
+   "need_parent": 44
+  },
+  {
+   "bodies": 60,
+   "dropped_before": 15,
+   "dropped_after": 0,
+   "need_parent": 15
+  },
+  {
+   "bodies": 72,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 35
+  },
+  {
+   "bodies": 124,
+   "dropped_before": 49,
+   "dropped_after": 0,
+   "need_parent": 56
+  },
+  {
+   "bodies": 53,
+   "dropped_before": 1,
+   "dropped_after": 0,
+   "need_parent": 15
+  },
+  {
+   "bodies": 49,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 18
+  },
+  {
+   "bodies": 182,
+   "dropped_before": 121,
+   "dropped_after": 5,
+   "need_parent": 21
+  },
+  {
+   "bodies": 79,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 36
+  },
+  {
+   "bodies": 183,
+   "dropped_before": 38,
+   "dropped_after": 0,
+   "need_parent": 111
+  },
+  {
+   "bodies": 96,
+   "dropped_before": 23,
+   "dropped_after": 14,
+   "need_parent": 43
+  },
+  {
+   "bodies": 80,
+   "dropped_before": 0,
+   "dropped_after": 0,
+   "need_parent": 36
+  },
+  {
+   "bodies": 212,
+   "dropped_before": 86,
+   "dropped_after": 0,
+   "need_parent": 85
+  },
+  {
+   "bodies": 159,
+   "dropped_before": 33,
+   "dropped_after": 0,
+   "need_parent": 110
+  },
+  {
+   "bodies": 91,
+   "dropped_before": 60,
+   "dropped_after": 0,
+   "need_parent": 58
+  },
+  {
+   "bodies": 76,
+   "dropped_before": 23,
+   "dropped_after": 0,
+   "need_parent": 38
+  },
+  {
+   "bodies": 97,
+   "dropped_before": 24,
+   "dropped_after": 0,
+   "need_parent": 52
+  },
+  {
+   "bodies": 89,
+   "dropped_before": 48,
+   "dropped_after": 3,
+   "need_parent": 19
+  },
+  {
+   "bodies": 137,
+   "dropped_before": 92,
+   "dropped_after": 4,
+   "need_parent": 30
+  },
+  {
+   "bodies": 45,
+   "dropped_before": 2,
+   "dropped_after": 0,
+   "need_parent": 11
+  },
+  {
+   "bodies": 104,
+   "dropped_before": 10,
+   "dropped_after": 0,
+   "need_parent": 38
+  },
+  {
+   "bodies": 78,
+   "dropped_before": 23,
+   "dropped_after": 0,
+   "need_parent": 33
+  },
+  {
+   "bodies": 72,
+   "dropped_before": 25,
+   "dropped_after": 0,
+   "need_parent": 31
+  },
+  {
+   "bodies": 156,
+   "dropped_before": 23,
+   "dropped_after": 0,
+   "need_parent": 123
+  },
+  {
+   "bodies": 68,
+   "dropped_before": 2,
+   "dropped_after": 0,
+   "need_parent": 41
+  },
+  {
+   "bodies": 145,
+   "dropped_before": 49,
+   "dropped_after": 7,
+   "need_parent": 85
+  },
+  {
+   "bodies": 47,
+   "dropped_before": 14,
+   "dropped_after": 0,
+   "need_parent": 26
+  },
+  {
+   "bodies": 165,
+   "dropped_before": 15,
+   "dropped_after": 0,
+   "need_parent": 115
+  },
+  {
+   "bodies": 95,
+   "dropped_before": 25,
+   "dropped_after": 0,
+   "need_parent": 62
+  }
+ ]
+}
