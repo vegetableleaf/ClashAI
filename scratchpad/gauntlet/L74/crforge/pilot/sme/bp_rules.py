@@ -156,7 +156,43 @@ def apply(path, plays, sides=None, frames=None):
         plays = valk_from_buff(plays, buff_starts(path, 'ValkyrieHero_Charge'))
     if GK:
         plays = gk_from_buff(plays, buff_starts(path, 'GoldenKnightCharge'), frames, sides)
+    if PRESS:
+        plays = press_from_drop(plays, frames, sides)
     return plays
+
+
+PRESS = int(os.environ.get('SME_BP_PRESS', '0'))
+PRESS_BEFORE, PRESS_DROP = 300, 15000
+
+
+def press_from_drop(plays, frames, sides):
+    """SME_BP_PRESS=1 (A2c-BP2): our own cast_seen ability with no elixir drop at its tick takes the nearest earlier
+    drop that no card play or other ability of ours explains. The game takes the cost on the press; the cast (state 10)
+    can come much later: 094126 drop 3483 -> 3485 (2 elixir), cast_seen 3651, and crforge given the press at R = 3483 is
+    exact on our elixir and on the hero Ice Wizard's path from 3485 on (it holds the cast as the game does).
+    own_press_elixir looks only 15 ticks either side. Census (bp/press_census.py, inputs_v9_bpall): 140 own abilities,
+    126 on a drop, 14 on none; 7 drops unexplained, 2 of them before an own cast_seen cast (094126 gap 166, 100018
+    gap 23). Window [a, b - 1] of the frame pair (a, b): crforge shows the cost on line R + 1."""
+    side = lambda s: sides[str(s)] if str(s) in sides else sides[s]  # noqa: E731
+    my = next(s for s in (0, 1) if side(s).get('role') == 'us')
+    ts = sorted(frames)
+    drops = [(a, b) for a, b in zip(ts, ts[1:]) if frames[a]['el'] - frames[b]['el'] >= PRESS_DROP]
+    own = [p for p in plays if p['side'] == my]
+    runs = [t for p in own if p['kind'] == 'play' for t in range(p['run_ticks'][0], p['run_ticks'][1] + 1)]
+    abil = [p['tick'] for p in own if p['kind'] == 'ability']
+    free = [(a, b) for a, b in drops if not any(a - 1 <= t <= b for t in runs + abil)]
+    out = []
+    for p in plays:
+        if p['kind'] == 'ability' and p['side'] == my and p.get('source') == 'cast_seen' and \
+                not any(a - 1 <= p['tick'] <= b for a, b in drops):
+            c = [(a, b) for a, b in free if p['tick'] - PRESS_BEFORE <= b <= p['tick']
+                 and not any(b <= t < p['tick'] for t in abil)]
+            if c:
+                a, b = max(c, key=lambda ab: ab[1])
+                free.remove((a, b))
+                p = dict(p, tick=b - 1, run_ticks=[a, b - 1], dated='press_drop')
+        out.append(p)
+    return out
 
 
 RASCALS = int(os.environ.get('SME_BP_RASCALS', '0'))

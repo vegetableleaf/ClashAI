@@ -1,0 +1,60 @@
+live_play_20261026_080929 1 4642 [4642, 4643] spell_seen first 4644 k 2 offset 0
+live_play_20261026_082025 0 2858 [2858, 2859] spell_seen first 2860 k 1 offset 1
+live_play_20261026_082025 0 4308 [4308, 4309] spell_seen first 4310 k 2 offset 0
+live_play_20261026_084438 1 5096 [5096, 5097] spell_seen first 5098 k 2 offset 0
+live_play_20261026_094126 1 4574 [4574, 4575] spell_seen first 4576 k 1 offset 1
+live_play_20261026_100354 0 303 [303, 304] spell_seen first 305 k 2 offset 0
+live_play_20261026_100354 0 4557 [4557, 4558] spell_seen first 4559 k 1 offset 1
+live_play_20261026_101749 1 272 [272, 273] spell_seen first 274 k 2 offset 0
+live_play_20261026_101749 1 2114 [2114, 2115] spell_seen first 2116 k 2 offset 0
+live_play_20261026_101749 1 3041 [3041, 3042] spell_seen first 3043 k 2 offset 0
+live_play_20261026_141505 0 2822 [2822, 2823] spell_seen first 2824 k 2 offset 0
+live_play_20261026_144057 1 2753 [2752, 2754] spell_seen first 2755 k 3 offset -1
+live_play_20261026_153442 1 3303 [3303, 3304] spell_seen first 3305 k 2 offset 0
+live_play_20261026_155201 1 4125 [4125, 4126] spell_seen first 4127 k 2 offset 0
+live_play_20261026_161448 0 3526 [3526, 3527] spell_seen first 3528 k 2 offset 0
+live_play_20261026_162012 0 2761 [2761, 2762] spell_seen first 2763 k 1 offset 1
+live_play_20261026_170912 1 3650 [3650, 3651] spell_seen first 3652 k 1 offset 1
+live_play_20261026_171232 1 3598 [3598, 3599] spell_seen first 3600 k 2 offset 0
+live_play_20261026_171232 1 4227 [4227, 4228] spell_seen first 4229 k 2 offset 0
+live_play_20261026_171232 1 5481 [5481, 5482] spell_seen first 5483 k 2 offset 0
+live_play_20261026_172835 1 5015 [5015, 5016] spell_seen first 5017 k 2 offset 0
+live_play_20261026_181217 1 2421 [2421, 2422] spell_seen first 2423 k 2 offset 0
+live_play_20261026_181217 1 3327 [3327, 3328] spell_seen first 3329 k 1 offset 1
+live_play_20261026_183044 0 3885 [3885, 3886] spell_seen first 3887 k 2 offset 0
+live_play_20261026_194858 1 2542 [2542, 2543] spell_seen first 2544 k 2 offset 0
+live_play_20261026_201258 1 4408 [4408, 4409] spell_seen first 4410 k 2 offset 0
+live_play_20261026_204837 1 4322 [4322, 4323] spell_seen first 4324 k 2 offset 0
+live_play_20261026_204837 1 5820 [5820, 5821] spell_seen first 5822 k 1 offset 1
+live_play_20261026_205934 0 1950 [1950, 1951] spell_seen first 1952 k 1 offset 1
+live_play_20261026_205934 0 2771 [2771, 2772] spell_seen first 2773 k 2 offset 0
+live_play_20261026_210720 1 281 [281, 282] spell_seen first 283 k 1 offset 1
+live_play_20261026_210720 1 3661 [3661, 3662] spell_seen first 3663 k 2 offset 0
+live_play_20261026_210720 0 4027 [4027, 4028] spell_seen first 4029 k 2 offset 0
+live_play_20261026_213436 1 5104 [5104, 5105] spell_seen first 5106 k 2 offset 0
+live_play_20261026_215757 1 1756 [1756, 1757] spell_seen first 1758 k 1 offset 1
+live_play_20261026_230512 1 4321 [4321, 4322] spell_seen first 4323 k 2 offset 0
+live_play_20261026_232957 1 1416 [1416, 1417] spell_seen first 1418 k 2 offset 0
+live_play_20261026_233957 1 4691 [4691, 4692] spell_seen first 4693 k 2 offset 0
+live_play_20261026_234837 0 5015 [5015, 5016] spell_seen first 5017 k 1 offset 1
+live_play_20261026_235355 0 2320 [2320, 2321] spell_seen first 2322 k 1 offset 1
+live_play_20261027_000233 0 449 [449, 450] spell_seen first 451 k 2 offset 0
+live_play_20261027_002429 1 4792 [4792, 4793] spell_seen first 4794 k 1 offset 1
+live_play_20261027_002429 1 5941 [5941, 5942] spell_seen first 5943 k 2 offset 0
+live_play_20261027_004901 0 1761 [1761, 1762] spell_seen first 1763 k 2 offset 0
+live_play_20261027_004901 0 3344 [3344, 3345] spell_seen first 3346 k 2 offset 0
+live_play_20261027_014151 1 945 [945, 946] spell_seen first 947 k 2 offset 0
+live_play_20261027_014151 1 1834 [1834, 1835] spell_seen first 1836 k 1 offset 1
+live_play_20261027_014151 1 2647 [2647, 2648] spell_seen first 2649 k 2 offset 0
+live_play_20261027_014151 1 3414 [3414, 3415] spell_seen first 3416 k 2 offset 0
+live_play_20261027_014151 1 3772 [3772, 3773] spell_seen first 3774 k 1 offset 1
+live_play_20261027_020550 1 2212 [2212, 2213] spell_seen first 2214 k 2 offset 0
+live_play_20261027_032352 0 5913 [5913, 5914] spell_seen first 5915 k 1 offset 1
+live_play_20261027_034147 1 2284 [2284, 2285] spell_seen first 2286 k 2 offset 0
+live_play_20261027_041141 0 404 [404, 405] spell_seen first 406 k 1 offset 1
+live_play_20261027_041602 1 4194 [4194, 4195] spell_seen first 4196 k 2 offset 0
+SUM ('spell_seen', 'me', -1) 1
+SUM ('spell_seen', 'me', 0) 31
+SUM ('spell_seen', 'me', 1) 12
+SUM ('spell_seen', 'opp', 0) 6
+SUM ('spell_seen', 'opp', 1) 5

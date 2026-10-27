@@ -1,0 +1,21 @@
+--- a/sme_live.py	2026-10-27 16:55:16.427029200 -0400
++++ b/sme_live.py	2026-10-27 16:55:16.800387300 -0400
+@@ -346,6 +346,7 @@
+ STEP_MOVE = 200  # game units: more than one step of the fastest walker read here (~180 per tick)
+ STEP_CLOCK = int(os.environ.get('SME_STEP_CLOCK', '0'))  # round 6.1: our elixir as the step clock
+ SNAP = int(os.environ.get('SME_BP_SNAP', '0'))  # A2c-BP: in-step reads by crforge's own in-step states
++FITNEXT = int(os.environ.get('SME_BP_FITNEXT', '0'))  # A2c-BP2: the fitter also varies a command just after the onset
+ MIX_PH = int(os.environ.get('SME_BP_MIXPH', '0'))  # A2c-BP: torn_mixed reads the hp -1 placeholder as the main comparison does (round 2.4)
+ 
+ 
+@@ -492,7 +493,9 @@
+     vs = []
+     for i, c in enumerate(plan['cmds']):
+         s = c['_src']
+-        if not (d - WIN <= c['run'] <= d):
++        # A2c-BP2 (SME_BP_FITNEXT=1): a command run after the onset whose window reaches back to it is varied too
++        # (080929: our Log run 3132, window [3131, 3133], the game's cost read at 3131; R = 3131 heals 3131-3216)
++        if not (d - WIN <= c['run'] <= d or (FITNEXT and s['lo'] <= d < c['run'])):
+             continue
+         for R in range(s['lo'], s['hi'] + 1):
+             if R != c['run']:

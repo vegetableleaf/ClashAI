@@ -926,3 +926,68 @@ the open classes, not more input dating.
 - **Pod 33308** (JDK 17.0.20.1 from apt, as `pod_setup.sh`): lib, SmeRun / SnapRun builds, frames2, inputs_v12 / v14,
   the original inputs, the tables and `pilot/sme` are sha-identical to 33920 (one tree hash, `ce83e863...`).
   **r6xa run there is byte-identical to 33920's r6xa** (results.jsonl sha256 `98a1cb9d9c524253...`).
+
+# A2c-BP2: 080929, 094126, 000233 (body-position line, pod 32657)
+
+Base: **bpD reproduced exactly (a)**: `bp/runD.sh bp2D0` = bpD on all 138 matches (`bp/same.py`: 138 / 138 identical,
+76 / 109). Runs: `bp/runB.sh RUN INPUTS LIB [VAR=val]` from a pod copy of `pilot/sme` (`/workspace/pilot/bp2/sme`) with
+the FITNEXT patch; comparator = bpD's (r63b + MIXPH + SNAP on SnapRun2). Each row is cumulative on the one before.
+
+| run | match | layer | change | exact apart from torn | exact frames | regressions | gained |
+|---|---|---|---|---:|---:|---|---|
+| bpD | | | | 76 / 109 | 245,973 | | |
+| **bp2a** | 094126 | extractor | `SME_BP_PRESS=1` (bp_rules.press_from_drop): our cast_seen ability with no elixir drop at its tick takes the nearest earlier unexplained drop (2 casts move; inputs = inputs_v9_bpall + `bp/bp_post.py`, flags off = byte-identical) | **77 / 109** | 246,845 | 0 | `094126` |
+| bp2b | 080929 | fitter | `SME_BP_FITNEXT=1` (`fork/bp/sme_live_bp2_fitnext.diff`): `variants_at` also varies a command run after the onset whose window reaches back to it | 77 / 109 | 246,887 | 0 | 0 (080929 episode 3131-3216 healed, +42 frames) |
+| **bp2c** | 080929, 145247 | comparator (instrumentation) | crforge fork `clashbot-bp` 05533954 (`fork/bp/clashbot-bp_0002_TickProbeDrain.patch`): a TickProbe point after each entity a cleanup round drains; SNAP sees those states | **79 / 109** | 246,887 | 0 | `080929`, `145247` |
+
+## 094126@3485: our hero IW press dated 166 ticks late (a, extractor)
+- Our elixir is 20,000 below the sim from frame 3485 to 3651, equal before and after (`bp/tr.py`): the game took the
+  2-elixir press between frames 3483 and 3485; the extractor dated it from the cast (cast_seen 3651).
+- Probe: the press at R = 3483 makes our elixir and the hero IW / cube path exact from 3485; whole match 872 -> 102 div
+  frames (`bp/win.py ... 53:3483`). crforge holds the cast as the game does.
+- Census (`bp/press_census.py`, `results/live/bp/press_census_v9.txt`): 140 own abilities, 126 on an elixir drop, 14 on
+  none; 7 drops that no card play or ability explains, 2 of them before an own cast_seen cast (094126 gap 166, 100018
+  gap 23; `own_press_elixir` looks 15 ticks either side). The rule moves exactly those 2. Self-check `bp/test_press.py`.
+- The next onset (4576, our Rocket 1 tick early) was the fitter's: spell_seen window [4574, 4575], R = 4575 exact. The
+  fitter reached it once 3485 healed. Rocket census (`rocket_census.txt`): own spell_seen Rockets 31 at offset 0, 12 at
+  +1, 1 at -1; the window covers them, no rule needed.
+- Extract hook: `fork/bp/extract_bp2_press_hook.diff` adds `bp_rules.PRESS` to the hook's gate (a2c6 merges). The hook's
+  frames (`live_frames.convert`) equal frames2 on 094126 (2,537 / 2,537 frames).
+
+## 080929: two onsets, both fixed (a)
+- **3131-3216 (fitter blind spot).** Frame 3131: our elixir 2 below the sim; our Log ran at 3132 (spell_seen window
+  [3131, 3133]). R = 3131 makes 3131 a command-pass read (torn_cmd) and every frame to 3216 exact. The fitter never tried
+  it: `variants_at` takes only commands run in [d - 120, d], and the Log ran at d + 1. FITNEXT keeps R inside the
+  extractor's window.
+- **2007 (reader read inside the end cleanup).** The frame is sim 2008 except that the hero IW (hp 0) and its cube are
+  still listed at their moved point. The Princess bolt that killed it is gone. In crforge the end cleanup drains every
+  removable entity from the live list (`EntityHolder.drainRemovable`), then tells of each removal. No observer point
+  lay between the bolt leaving (4000113, first in id order) and the hero leaving, so SnapRun2 had no such state. With
+  the drain point, state `51:drain/-1/4000113` equals the frame (0 diffs, our elixir from state 43).
+  `145247`@3032 fits the same way: after 2 of 3 drains (`110:drain/-1/5000065`).
+- Fork 05533954: one `TickProbe.tell("drain", ...)` line. Core tests 2,140, 0 failures, 2 skipped
+  (`coretest_clashbot_bp2.txt`). Traces of all 138 plans identical on lib_bp vs lib_bp2: 138 identical, the same 2
+  GoblinDrill refusals in both (`trace_ident_bp2.txt`).
+- Planted checks (`bp/snap_test.py bp2c bp2b`): live body moved 1 unit 2 / 2, hp + 1 2 / 2, projectile moved 1 unit
+  2 / 2, our elixir + 1 2 / 2 (`snaptest_bp2c.txt`).
+
+## 000233@4599: crforge re-routes onto a near node (classified; not fixed)
+- Two skeletons, one on each side, target each other from step 4597. At 4599 both are 2 units off (side 1: rec (10981,
+  21504) vs sim (10983, 21505)); targets agree (reader target_gen).
+- No push, no avoidance blend (0), and one displacement in the movement visit (`bp/instep.py`).
+- Scratch debug build (`bp/dbgrun.py`, a print in `Displacement.displace`, not committed). In step 4599 crforge aims
+  skeleton 5000119 at (11250, 21250). That is a node of its rebuilt route, 458 units away, inside the 1,000-unit node
+  advance, popped after the step. In 4598 it aimed at (11750, 20750). The game's 2-tick move, (126, -124), is exactly
+  2 x (63, -62), the step toward (11750, 20750) (a). The other skeleton's aim changes in the same step, (13750, 16750)
+  -> (13750, 17250). Evidence: `results/live/bp/aims_bp2.txt`.
+- The same pattern is seen on **170912@745 (a for crforge's aim, b for the game's)**: right after a route rebuild,
+  crforge aims at an adjacent node 432 units away, (7250, 17250) instead of (6250, 17250).
+- **Hypothesis (b):** after a route rebuild, the game does not aim at a first node already inside the advance radius;
+  either it pops that node first or it does not rebuild then.
+  - Counter-evidence: 000233's own rebuild at 4597 also aimed at the near node, and frame 4597 is exact. There, both
+    aims give nearly the same direction, so that frame cannot decide (b).
+- **Census owed** before any fork change: every displacement whose aim node is within 1,000 units and differs from the
+  previous tick's aim without a pop, on the 138 matches' clean stretches; the outcome is whether the next frames stay
+  exact. It needs the aim print as a TickProbe-style hook (instrumentation) in the clashbot-bp fork.
+  - `replan_census.py` does not see these events: the node is popped in the same step, so line to line the next node
+    looks unchanged.

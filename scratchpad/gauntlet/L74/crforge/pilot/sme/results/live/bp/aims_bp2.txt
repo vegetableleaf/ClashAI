@@ -1,0 +1,11 @@
+000233 steps 4597-4599 (skeletons 5000119 / 5000116):
+DBG disp from 10790,21690 aim 11250,21250 budget 90 step 90 blend 0 push 0
+DBG disp from 13698,16132 aim 13750,16750 budget 90 step 90 blend 0 push 1
+DBG disp from 10855,21628 aim 11750,20750 budget 90 step 90 blend 0 push 0
+DBG disp from 13704,16222 aim 13750,17250 budget 90 step 90 blend 0 push 1
+DBG disp from 10918,21566 aim 11250,21250 budget 90 step 90 blend 0 push 0
+170912 steps 744-746 (skeleton 5000014):
+DBG disp from 7830,17170 aim 6750,17250 budget 90 step 90 blend -80 push 0
+DBG disp from 7746,17139 aim 6250,17250 budget 90 step 90 blend -70 push 0
+DBG disp from 7660,17112 aim 7250,17250 budget 90 step 90 blend -60 push 0
+DBG disp from 7570,17113 aim 6750,17250 budget 90 step 90 blend -50 push 0

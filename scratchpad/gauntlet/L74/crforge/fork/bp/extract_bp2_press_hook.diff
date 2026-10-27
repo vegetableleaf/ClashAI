@@ -1,0 +1,10 @@
+--- a/scratchpad/gauntlet/L74/crforge/pilot/extract/extract.py (A2c-BP hook, 1d8badc)
++++ b/scratchpad/gauntlet/L74/crforge/pilot/extract/extract.py (A2c-BP2: SME_BP_PRESS joins the hook's gate)
+@@ -367,6 +367,6 @@
+     # A2c-BP (sme/bp_rules.py, SME_BP_* flags, all off by default): hero Valkyrie / Golden Knight / hero Giant casts
+     # dated from the reader's charge / stun buff countdowns, Golden Knight pushes dropped, Rascals point from its girls
+     import bp_rules  # crforge_casts put sme/ on sys.path
+-    if bp_rules.VALK or bp_rules.GK or bp_rules.GIANT or bp_rules.RASCALS:
++    if bp_rules.VALK or bp_rules.GK or bp_rules.GIANT or bp_rules.RASCALS or bp_rules.PRESS:
+         import live_frames
+         plays = bp_rules.apply(path, plays, sides, {f['t']: f for f in live_frames.convert(path)})

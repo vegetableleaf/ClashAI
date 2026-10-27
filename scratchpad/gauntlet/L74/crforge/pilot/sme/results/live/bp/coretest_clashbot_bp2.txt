@@ -1,0 +1,2 @@
+tests 2140 failures 0 errors 0 skipped 2
+05533954 clashbot-bp: TickProbe drain point (instrumentation only, no behaviour change)

@@ -1,0 +1,22 @@
+ABIL live_play_20261026_080929 IceWizard 3187 cast_seen None before None gap None after None
+ABIL live_play_20261026_094126 IceWizard 3651 cast_seen None before (3483, 3485, 19286) gap 166 after None
+UNEXPL live_play_20261026_094126 (3483, 3485, 19286) abilities [('IceWizard', 3651)]
+ABIL live_play_20261026_095134 IceWizard 3422 cast_seen None before None gap None after None
+ABIL live_play_20261026_100018 IceWizard 3348 cast_seen None before (3323, 3325, 19286) gap 23 after None
+UNEXPL live_play_20261026_100018 (3323, 3325, 19286) abilities [('IceWizard', 3348)]
+ABIL live_play_20261026_142027 IceWizard 1746 cast_seen None before None gap None after None
+ABIL live_play_20261026_144057 IceWizard 4237 cast_seen None before None gap None after None
+UNEXPL live_play_20261026_160930 (5209, 5211, 38926) abilities []
+ABIL live_play_20261026_164443 IceWizard 3444 cast_seen None before None gap None after None
+UNEXPL live_play_20261026_171753 (1770, 1773, 29466) abilities []
+UNEXPL live_play_20261026_201258 (825, 827, 19644) abilities []
+ABIL live_play_20261026_204837 IceWizard 5532 cast_seen None before None gap None after None
+ABIL live_play_20261026_213436 IceWizard 5240 cast_seen None before None gap None after None
+ABIL live_play_20261026_224856 IceWizard 1566 cast_seen None before None gap None after None
+UNEXPL live_play_20261026_225213 (3586, 3588, 19286) abilities []
+ABIL live_play_20261026_230512 IceWizard 3262 cast_seen None before None gap None after (4940, 4942, 28926)
+UNEXPL live_play_20261026_230512 (4940, 4942, 28926) abilities []
+ABIL live_play_20261027_004031 IceWizard 2084 cast_seen None before None gap None after None
+ABIL live_play_20261027_024155 IceWizard 3472 cast_seen None before None gap None after None
+ABIL live_play_20261027_030951 IceWizard 3149 cast_seen None before None gap None after None
+COUNTS {'drop_play': 4851, 'drop_unexplained': 7, 'drop_ability': 113, 'ability': 140, 'ability_on_drop': 126, 'ability_no_drop': 14}

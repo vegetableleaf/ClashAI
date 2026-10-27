@@ -1,0 +1,1 @@
+export SME_LIB=/workspace/pilot/lib_bp SME_BUILD=/workspace/pilot/sme/build_008aa626 SME_HP_PLACEHOLDER=1 SME_TORN_CMD=1 SME_REPR=/workspace/pilot/sme/repr_v2.json SME_THREADS=4 SME_TORN_STEP=1 SME_STEP_CLOCK=1 SME_TORN_CMD3=1 SME_BP_MIXPH=1 SME_BP_SNAP=1 SME_SNAP_BUILD=/workspace/pilot/bp/build_snap2 SME_SNAP_CLASS=SnapRun2

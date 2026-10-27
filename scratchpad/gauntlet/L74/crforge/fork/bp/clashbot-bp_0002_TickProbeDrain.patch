@@ -1,0 +1,39 @@
+From 0553395466258febe7e06fa138502ea522e50e15 Mon Sep 17 00:00:00 2001
+From: vegetableleaf <vegetableleaf@users.noreply.github.com>
+Date: Tue, 27 Oct 2026 20:56:55 +0000
+Subject: [PATCH] clashbot-bp: TickProbe drain point (instrumentation only, no
+ behaviour change)
+
+---
+ core/src/main/java/org/crforge/core/battle/EntityHolder.java | 1 +
+ core/src/main/java/org/crforge/core/battle/TickProbe.java    | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/core/src/main/java/org/crforge/core/battle/EntityHolder.java b/core/src/main/java/org/crforge/core/battle/EntityHolder.java
+index 8b7dad26..8f8883bc 100644
+--- a/core/src/main/java/org/crforge/core/battle/EntityHolder.java
++++ b/core/src/main/java/org/crforge/core/battle/EntityHolder.java
+@@ -389,6 +389,7 @@ public class EntityHolder {
+       BattleEntity entity = it.next();
+       if (entity.isRemovable()) {
+         it.remove();
++        TickProbe.tell("drain", -1, entity.getId());
+         removed.add(entity);
+       }
+     }
+diff --git a/core/src/main/java/org/crforge/core/battle/TickProbe.java b/core/src/main/java/org/crforge/core/battle/TickProbe.java
+index 8bbbdd03..6e7f3062 100644
+--- a/core/src/main/java/org/crforge/core/battle/TickProbe.java
++++ b/core/src/main/java/org/crforge/core/battle/TickProbe.java
+@@ -20,7 +20,7 @@ public interface TickProbe {
+   /**
+    * A point inside a step.
+    *
+-   * @param point the part just done: commands, cleanup, prePass, preHook, visit, action, postHook, postPass, endTick
++   * @param point the part just done: commands, cleanup, prePass, preHook, visit, action, postHook, postPass, endTick, drain (one entity just taken off the live list by a cleanup round)
+    * @param slot the component slot of a visit, else -1
+    * @param entityId the entity just visited, else -1
+    */
+-- 
+2.43.0
+
