@@ -154,3 +154,129 @@ python3 onsets.py polA/score_frames.jsonl; python3 tornck.py polA/full/o0.jsonl 
   `cover.py` (replay vs P3: 1,098 / 1,099 shared ticks give equal entity sets).
 - `results/`: plans, fit logs, scores, per-frame diffs, the planted-bug runs, the polish moves, and the v1/v2 scores.
 - Pod only: the full sim traces, `/workspace/pilot/sme/pol{A,B}/full/o0.jsonl`, about 12 MB each.
+
+---
+
+# SME on live-log matches (ticket A2b-3b), 2026-10-27
+
+Inputs:
+- A2b-1's `inputs_rngfree.jsonl` (pod `/workspace/pilot/inputs`, sha256 `ca766522…`): 138 RNG-free post-10-19 Ranked
+  matches, 109 of them unflagged. It was used read-only.
+- Each match's live log (`L68/live_reader`), turned into reader frames by `live_frames.py`. A frame gives the board,
+  our elixir, and our hand at decision ticks; the queue is never observed.
+
+Work dir: pod 33920 `/workspace/pilot/sme_live`, runs `run2` (raw comparator) and `run3` (with the
+representation map). Results: `results/live/`.
+
+## Verdict
+- **D1 "SME pilot" row: FAIL.** Only **13 / 109** unflagged matches (13 / 138 all) are exact apart from torn frames
+  (a). The target is 45 / 50, and 13 / 109 is about 6 / 50.
+- **The failures' first divergences fall in 11 mechanism classes plus 1 crforge refusal, not ≤ 5 (a, coarse rules in
+  `agg_live.py mech()`).**
+  - Most onsets are transient: 437 of 521 episodes heal; median 2 episodes per failing match.
+  - Still, 84 of 136 scored matches end in a divergence that never heals.
+- **The comparator and frames are sound on live data (a).** The 10-26 match's live-log frames, scored against the
+  replay-fitted plan (seed A), are exact on **1,983 / 1,983** frames, our elixir and hand included. So the
+  live-side failures come from inputs or the engine, not from the frame conversion.
+
+## Method (`sme_live.py`)
+1. **Plan** from the A2b-1 record: decks, levels, slot flags, towers (spawn group + levels) and words.
+   - Seed 1: the match is RNG-free, so nothing draws after the deal.
+   - Both deals are forced with `Hand.rearrange`: ours from the log, the opponent's = A2b-1's `opp_deal_fit`.
+   - Commands sit at the extractor's `tick` and point, with given = run - 20.
+   - An ability names the side's latest play of its card, `cmdK_0`. If that play was refused, the ability is
+     dropped and logged.
+2. **Repair (inputs only).** Episode by episode: at each divergence onset d, every command run in [d-120, d] tries
+   - the other run ticks of its extracted window [lo, hi], and
+   - for opponent plays only (our taps are exact, A2b-1 37/37), the 8 points 500 units around its point.
+
+   The variant that moves the first divergence latest is kept. An onset nothing fixes is given up and the next
+   onset is tried, up to 40 rounds.
+3. **Score:** every live frame is one of:
+   - exact;
+   - `torn_t1`: the whole frame equals sim t+1;
+   - `torn_mixed`: an isolated frame whose every object is held by sim t or t+1;
+   - div.
+
+   The first true divergence is the first div frame.
+4. **Representation map (`repr_v1.json`, run3 only).**
+   - Dropped: crforge characters without hit points. They had no recorded object at their point at any run2 onset:
+     SkeletonContainerNew 44, RageBarbarianBottle 21, BalloonHero_Bomb 13, BombTowerBomb 7, GiantSkeletonBomb 5,
+     MightyMinerBomb 4, BalloonBomb 3, RageBarbarianBottleEvo 3, Musketeer_hero_DummyBuilding 1.
+   - Remapped: RageBottle counts as an area effect; it sat on the reader's Rage effect 8 / 8 times.
+   - Effect: D1 moved only from 12 to 13. Numbers below are run3 unless marked.
+
+## Opponent deal (a)
+- Scoring each deal is not needed. **336 / 336** alternative fitting deal classes (3 per match: other initial hand
+  sets and queue orders) gave a sim trace identical on every tick, board and our side, to A2b-1's deal.
+- So in crforge only legality depends on the opponent's deal, and taking the best deal equals taking any deal.
+- **The 29 flagged matches fail as expected (25 `opp_no_fitting_deal`, 4 `own_cycle_fail`).** For the
+  no-fitting-deal ones, the default deal makes the match refuse opponent plays, so their bodies are missing.
+  - The 9 scored matches with an exact share under 0.05 are all `opp_no_fitting_deal`.
+  - That includes `live_play_20261026_090406` (0.000) and `live_play_20261026_203234` (0.000).
+
+## Totals (run3)
+| | value |
+|---|---:|
+| matches scored / crforge refused the input | 136 / 2 (GoblinDrill evo after a refused play: "not modelled") |
+| live frames | 293,942 |
+| exact frames | 171,677 (0.584) |
+| per-match exact share | min 0.000, p25 0.168, median 0.603, p75 0.966, max 1.000 |
+| torn frames (reader) | 132 in 52 matches: 28 `torn_t1` + 104 `torn_mixed` |
+| first true divergence tick | median 720 (p25 413, p75 1682) |
+| matches exact apart from torn frames | 13 / 138; **13 / 109 unflagged** |
+
+The per-match rows are in `results/live/run3_table.tsv`. Columns: frames, exact share, torn_t1, torn_mixed, div frames,
+first true divergence tick, its quantity and card, repair rounds, kept offsets and refused plays. Episode details
+are in `run3_results.jsonl`.
+
+## First true divergence of the 96 failing unflagged matches (`d1_live.py`)
+| n | mechanism (rule) | label |
+|---:|---|---|
+| 32 | body position: the same body, off by \|dx\|+\|dy\| ≤ 10 (4), ≤ 100 (16), ≤ 500 (11), > 500 (1) | (b) movement, collision or targeting; mostly hero Valkyrie, hero Ice Wizard, Graveyard skeletons, Knight, Golden Knight |
+| 15 | our live elixir is a whole card cost lower than the sim for 1 frame (13158 vs 23158) | (b) live client: our own elixir drops 1 tick before crforge's step. The replay shows the battle agreeing with crforge (a), so this is a live-client view, not the battle |
+| 12 | Lightning: the reader shows a bolt projectile on the target with the HP not yet taken; crforge took it 1 tick earlier and has no bolt | (a) pattern; heals the next frame |
+| 9 + 6 | HP only at the same points: sim more (9) or less/mixed (6) damage; often periodic (Earthquake: tower -72, X-Bow -416 every 20 ticks) | (b) hit / pulse timing 1 tick early in crforge |
+| 8 | a recorded body with no sim body near | (b) a play missed or late in the extraction, or a unit crforge did not make |
+| 4 + 3 + 3 + 2 | projectile-only; Earthquake pulse; other spell effects (Poison / Freeze / Rage / Tornado); area-effect start/end | (b) timing |
+| 1 + 1 | a sim body the reader lacks; crforge refused the input | |
+
+All 12 classes, across all 521 described episodes, with healed counts: `results/live/run3_summary.json` `mechanisms`.
+
+The reader-side torn reads (132 frames) are already excluded. What-if: excluding also the live own-elixir class
+and the three spell-timing classes would turn only 5 more failing matches into passes (18 / 109). **The large
+classes are body movement and damage timing.**
+
+## Over-fitting guard (a)
+- **Kept run ticks never leave the extractor's window, by construction.**
+  - Of 11,009 commands, 395 are kept at a tick other than the extractor's `tick`: +1 386, -1 8, and +71 for 1.
+  - The +71 is a pre-log Goblin Barrel whose window is [0, 150].
+- **Moved points:** opponent points were moved only where that delayed a divergence. `points_moved` is per match in
+  `run3_results.jsonl`.
+- **Probe outside the window (1-2 ticks past lo/hi, at the first 5 onsets of each match, never kept).**
+  - 110 distinct commands in 61 matches would move an onset later.
+  - By card: Lightning 27, abilities 21, Earthquake 20, Poison 11, Skeletons 7, Ice Wizard 7, Knight 6.
+  - By offset: +1 for 118 variants, +2 for 77, -1 for 38, -2 for 4.
+  - These spell windows are pinned by the spell's own first-seen object (A2b-1 phase-3 births), and the spell's
+    objects themselves match. The out-of-window gain is the strike/pulse arriving 1 tick later, so this points
+    at crforge's spell-hit timing rather than the extraction (b, untested).
+
+## What this means for D1
+- **The engine is not shown exact on live play.** The replay-recorded match had no Lightning, Earthquake, Poison or
+  Graveyard (it had Log, Tornado, Princess, X-Bow and heroes). It was exact apart from torn reads, but on live
+  matches these cards and body movement diverge in most matches.
+- **Next measurements (b):**
+  1. Record replays of matches with Lightning / Earthquake (CRFORGE_S0 §4 procedure). That splits "crforge 1 tick
+     early" from "the live client 1 tick late", since the 10-26 replay showed no such offset.
+  2. Diff the 32 body-position onsets against fin16 on the same inputs. Engine-specific or input-specific?
+  3. A2b-1: the 29 flagged matches and the 8 missing-body onsets are extraction work.
+
+## Files (A2b-3b)
+- Scoring and repair: `sme_live.py` (fit + score + over-fit probe + deal check) and `live_frames.py` (live log to
+  frames, laptop). `sme.py`'s `diff` now treats an unobserved hand/queue (`None`) as unknown.
+- `SmeRun.java` additions: forced deals, tower spawn groups, Mirror plays and `skip` commands. A dropped ability keeps
+  its index.
+- Analysis: `agg_live.py` (census, `mech()` rules), `d1_live.py`, `stats_live.py`, `repr_stats.py`, `repr_v1.json`,
+  `pos_census.py`, `shift_live.py`, `track_live.py`, `insp_live.py`, `find_eps.py`.
+- Results: `results/live/run3_{summary.json,table.tsv,results.jsonl}` and `results/live/run2_summary.json`.
+- Pod only: per-match plans `/workspace/pilot/sme_live/run{2,3}/<match>/plan.json`, plus the converted frames.

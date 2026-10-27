@@ -1,0 +1,139 @@
+match	flags	frames	exact_share	torn_t1	torn_mixed	div	missing_in_sim	first_div	quantity	card	magnitude	repair_rounds	nonzero_offsets	refused_plays
+live_play_20261026_080408	-	3024	0.9110	0	1	268	0	2841	A:presence_sim_only	A:EarthquakeHiddenDamage	null	23	8	0
+live_play_20261026_080929	-	2317	0.9801	0	1	45	0	1602	U:presence_rec_only	IceWizard	null	9	6	0
+live_play_20261026_082025	1:opp_no_fitting_deal:0	2768	0.0191	0	0	2715	268	256	U:presence_rec_only	GoblinGang	null	1	0	11
+live_play_20261026_083722	-	2061	0.5478	0	0	932	0	537	P:presence_rec_only	P:Lightning	null	7	2	0
+live_play_20261026_084110	0:opp_no_fitting_deal:0	1764	0.0629	0	0	1653	99	373	U:presence_rec_only	ElectroSpirit	null	3	0	18
+live_play_20261026_084438	0:opp_no_fitting_deal:0	1766	0.0045	0	0	1758	1262	166	U:presence_rec_only	Prince	null	1	0	8
+live_play_20261026_085635	-	1766	0.1036	0	0	1583	0	515	U:position	GoldenKnight	[-17, 7, 0]	1	0	0
+live_play_20261026_090406	0:opp_no_fitting_deal:0	2211	0.0000	0	0	2211	0	151	U:presence_rec_only	Assassin	null	1	0	5
+live_play_20261026_094126	-	2537	0.5818	0	1	1060	0	2325	P:presence_rec_only	P:Lightning	null	6	2	0
+live_play_20261026_095134	-	1763	0.3953	0	1	1065	0	411	S:elixir	None	[13158, 23158]	4	1	2
+live_play_20261026_095457	-	2107	0.4547	1	1	1147	920	1571	A:presence_rec_only	A:Poison	null	6	3	1
+live_play_20261026_100018	1:opp_no_fitting_deal:0	1765	0.1450	0	1	1508	177	318	S:elixir	None	[36604, 76604]	2	0	12
+live_play_20261026_100354	-	2276	0.1656	0	0	1899	1	572	U:hp	Tesla	[0, 0, -110]	2	0	6
+live_play_20261026_100756	-	1766	1.0000	0	0	0	0	None	none	None	null	3	3	0
+live_play_20261026_101112	-	2931	0.0867	0	0	2677	0	660	A:presence_sim_only	A:IceGolemiteHero_Damage_AEO	null	2	1	5
+live_play_20261026_101749	1:own_cycle_fail:6	1672	0.9910	0	11	4	0	246	S:hand	None	[[[5, 2, 1, 3], null], [[5, 2, 1, 4], [3, 0, 6, 7]]]	9	6	0
+live_play_20261026_141505	-	3007	0.9977	2	1	4	0	1808	U:hp	Xbow	[0, 0, 4]	16	10	0
+live_play_20261026_142027	-	1766	0.8528	0	0	260	0	1682	S:elixir	None	[17388, 37388]	10	2	0
+live_play_20261026_142345	-	2746	0.3857	0	1	1686	11	492	T:hp	tower	[0, 0, -78]	9	3	0
+live_play_20261026_143116	-	1766	0.8992	0	1	177	0	699	T:hp	tower	[0, 0, -33]	10	1	0
+live_play_20261026_144057	-	3031	0.6348	1	5	1101	2	1822	P:presence_rec_only	P:Lightning	null	9	4	0
+live_play_20261026_144615	-	1775	0.3837	0	0	1094	1033	534	U:hp	Knight	[0, 0, 155]	5	1	1
+live_play_20261026_145118	-	699	1.0000	0	0	0	0	None	none	None	null	1	1	0
+live_play_20261026_145247	-	1805	0.9729	0	2	47	1	2522	P:presence_rec_only	P:Lightning	null	8	3	0
+live_play_20261026_145939	-	3033	0.9924	1	1	21	0	1982	P:presence_rec_only	P:Lightning	null	15	9	0
+live_play_20261026_152601	-	3031	0.9815	3	3	50	0	606	T:hp	tower	[0, 0, -78]	12	2	0
+live_play_20261026_153442	0:opp_no_fitting_deal:0	1766	0.2050	0	0	1404	0	874	T:hp	tower	[0, 0, -404]	1	0	2
+live_play_20261026_154319	-	3042	0.6082	0	2	1190	0	225	S:elixir	None	[90000, 100000]	12	2	0
+live_play_20261026_154839	-	1808	0.8020	0	0	358	0	2185	S:elixir	None	[3596, 13596]	6	4	0
+live_play_20261026_155201	-	2154	1.0000	0	0	0	0	None	none	None	null	4	3	0
+live_play_20261026_155552	-	2323	1.0000	0	0	0	0	None	none	None	null	9	9	0
+live_play_20261026_160930	1:own_cycle_fail:43	2802	0.1824	0	0	2291	222	1172	U:hp	Knight	[0, 0, 151]	2	1	4
+live_play_20261026_161448	1:opp_no_fitting_deal:0	1765	0.0737	0	0	1635	1281	372	U:presence_rec_only	ElectroGiant	null	3	0	6
+live_play_20261026_162012	-	1740	0.4914	4	1	880	0	517	U:position	Valkyrie	[9, 59, 0]	15	4	0
+live_play_20261026_162331	-	2235	0.9996	0	1	0	0	None	none	None	null	3	3	0
+live_play_20261026_164130	1:opp_no_fitting_deal:0	1766	0.0385	0	0	1698	0	286	U:presence_rec_only	Tombstone	null	1	0	7
+live_play_20261026_164443	-	1765	0.1677	0	0	1469	0	744	U:position	GoldenKnight	[-1, 0, 0]	1	0	0
+live_play_20261026_165839	-	1967	0.8378	0	0	319	0	1099	S:elixir	None	[4760, 34760]	8	4	0
+live_play_20261026_170600	-	1719	0.9983	0	0	3	0	2081	S:elixir	None	[7972, 17972]	6	3	0
+live_play_20261026_170912	-	1822	0.7574	0	2	440	1	745	U:position	Skeletons	[-2, 19, 0]	12	2	0
+live_play_20261026_171232	-	3037	0.9964	2	3	6	0	923	P:presence_rec_only	P:Lightning	null	12	6	0
+live_play_20261026_171753	-	2334	0.5887	0	1	959	706	1770	U:presence_sim_only	C:Knight	null	4	2	3
+live_play_20261026_172314	-	3035	0.6982	0	3	913	10	461	A:presence_sim_only	A:EarthquakeHiddenDamage	null	14	7	0
+live_play_20261026_172835	-	2503	0.1270	0	0	2185	232	787	P:position	P:Xbow	[219, -48]	1	0	2
+live_play_20261026_174147	ERROR	java.lang.UnsupportedOperationException: cmd44: a play of GoblinDrill, an evolution slot's card, after a play of it refu
+live_play_20261026_175027	-	2474	0.3472	0	0	1615	0	1868	U:position	GoblinGang	[-25, 3, 0]	2	1	0
+live_play_20261026_175456	-	3032	0.9532	0	8	134	0	912	P:presence_rec_only	P:Lightning	null	27	4	0
+live_play_20261026_180015	-	1765	0.0725	0	0	1637	16	407	P:presence_sim_only	P:ArcherQueenArrow	null	1	0	1
+live_play_20261026_180336	-	1766	0.9026	1	2	169	0	2911	U:position	EliteArcher	[9, 23, 0]	4	3	0
+live_play_20261026_180652	-	1948	0.3886	0	0	1191	1083	1667	U:hp	Knight	[0, 0, 214]	1	0	0
+live_play_20261026_181217	-	3023	0.9100	0	2	270	0	1169	U:presence_rec_only	IceWizard	null	14	5	0
+live_play_20261026_182050	-	1766	0.9700	0	0	53	0	2933	U:hp	IceWizard	[-30, 2, -694]	7	5	0
+live_play_20261026_183044	-	1941	0.9531	0	3	88	0	1851	A:presence_rec_only	A:Lightning	null	10	6	0
+live_play_20261026_183750	-	2261	0.5524	0	1	1011	0	2653	T:presence_rec_only	tower	null	2	1	0
+live_play_20261026_184912	-	1766	0.0742	0	0	1635	935	413	U:position	GoldenKnight	[24, 59, 0]	1	0	3
+live_play_20261026_185736	1:opp_no_fitting_deal:0	1765	0.6958	1	0	536	1262	2609	U:presence_rec_only	Tombstone	null	3	2	5
+live_play_20261026_190255	1:opp_no_fitting_deal:0	1765	0.0164	0	0	1736	1268	209	U:presence_rec_only	SuspiciousBush	null	1	0	9
+live_play_20261026_192935	-	3024	0.9153	0	5	251	0	382	P:presence_sim_only	P:xbow_projectile	null	15	5	0
+live_play_20261026_194213	1:opp_no_fitting_deal:0	1766	0.0566	0	0	1666	0	351	U:presence_rec_only	GoblinGang	null	1	0	2
+live_play_20261026_194858	1:opp_no_fitting_deal:0	1766	0.1314	0	0	1534	0	615	P:position	P:Xbow	[163, -26]	2	1	4
+live_play_20261026_200616	-	1825	0.6225	0	0	689	1	1016	U:hp	Tesla	[0, 0, 286]	4	2	0
+live_play_20261026_200941	-	1766	0.7746	0	0	398	0	376	T:presence_rec_only	tower	null	5	2	0
+live_play_20261026_201258	0:opp_no_fitting_deal:0	1765	0.0765	0	0	1630	437	198	S:elixir	None	[65244, 95244]	2	0	2
+live_play_20261026_201701	-	1772	0.8804	1	0	211	0	830	T:presence_rec_only	tower	null	4	1	0
+live_play_20261026_202455	1:opp_no_fitting_deal:0	2194	0.7794	0	1	483	258	3573	U:presence_rec_only	Skeletons	null	5	4	8
+live_play_20261026_203234	1:opp_no_fitting_deal:0	1766	0.0000	0	0	1766	1260	150	U:presence_rec_only	SuspiciousBush	null	1	0	13
+live_play_20261026_203752	-	2329	0.9996	0	1	0	0	None	none	None	null	6	6	0
+live_play_20261026_204202	-	1766	0.7752	0	0	397	0	381	S:elixir	None	[27818, 87818]	17	2	0
+live_play_20261026_204518	-	1765	0.1620	0	0	1479	0	723	U:hp	Xbow	[0, 0, 306]	2	1	0
+live_play_20261026_204837	0:opp_no_fitting_deal:0	1765	0.0306	0	0	1711	1269	182	U:hp	Tombstone	[0, 0, 4089996]	2	0	9
+live_play_20261026_205934	-	1766	0.9054	0	0	167	0	2801	U:hp	Witch	[0, 0, 1587]	5	3	0
+live_play_20261026_210249	-	2496	0.9996	0	0	1	0	3181	U:position	Rascals	[5, -64, 0]	8	7	0
+live_play_20261026_210720	-	2702	0.3283	0	0	1815	317	751	S:elixir	None	[3678, 13678]	7	4	2
+live_play_20261026_211239	-	3022	0.7945	0	0	621	0	521	A:presence_sim_only	A:Freeze	null	15	2	0
+live_play_20261026_211757	-	1765	0.9994	0	0	1	0	3477	U:hp	SkeletonArmy	[0, -6, 130]	7	6	0
+live_play_20261026_212111	-	2747	0.9978	2	2	2	0	3155	S:elixir	None	[76735, 86735]	12	10	0
+live_play_20261026_212917	-	2289	0.0664	0	0	2137	744	454	U:hp	Xbow	[0, 0, 535]	1	0	0
+live_play_20261026_213436	0:opp_no_fitting_deal:0	3021	0.0089	0	0	2994	34	205	U:presence_rec_only	Ghost	null	1	0	4
+live_play_20261026_214710	-	1765	1.0000	0	0	0	0	None	none	None	null	5	5	0
+live_play_20261026_215757	-	3023	0.9199	1	1	240	0	3901	U:hp	Witch	[0, 0, 1832]	11	10	0
+live_play_20261026_220317	-	2160	0.2269	0	0	1670	17	1130	U:position	Goblinstein	[0, -120, 0]	2	1	1
+live_play_20261026_220728	-	1766	0.9236	0	3	132	0	778	S:elixir	None	[13484, 33484]	20	4	0
+live_play_20261026_221406	1:opp_no_fitting_deal:0	1765	0.0907	0	1	1604	1280	472	U:presence_rec_only	LittlePrince	null	2	1	10
+live_play_20261026_221926	-	1765	0.9932	0	2	10	0	783	T:hp	tower	[0, 0, -78]	13	4	0
+live_play_20261026_222240	-	1765	0.9977	1	0	3	0	1051	S:elixir	None	[17078, 47078]	8	5	0
+live_play_20261026_222712	-	3025	0.3914	0	3	1838	0	641	A:presence_rec_only	A:Earthquake	null	11	2	6
+live_play_20261026_223723	-	1766	0.9994	0	0	1	0	212	S:elixir	None	[67736, 97736]	7	6	0
+live_play_20261026_224041	-	1765	0.4635	0	0	947	0	296	A:presence_rec_only	A:Rage	null	6	3	0
+live_play_20261026_224856	-	1766	0.0606	0	0	1659	0	365	U:presence_rec_only	Goblins	null	1	0	0
+live_play_20261026_225213	ERROR	java.lang.UnsupportedOperationException: cmd46: a play of GoblinDrill, an evolution slot's card, after a play of it refu
+live_play_20261026_230512	1:own_cycle_fail:41	2646	0.7222	1	0	734	392	205	S:elixir	None	[66490, 96490]	12	7	4
+live_play_20261026_232438	0:own_cycle_fail:8	1764	0.3209	0	1	1197	1263	497	A:presence_rec_only	A:Vines	null	6	2	5
+live_play_20261026_232957	0:opp_no_fitting_deal:0	1764	0.0822	0	0	1619	810	442	U:presence_rec_only	Phoenix	null	1	0	11
+live_play_20261026_233436	-	2812	0.8471	0	0	430	235	197	S:elixir	None	[65066, 95066]	13	9	7
+live_play_20261026_233957	-	3038	0.9980	1	0	5	0	3090	U:hp	IceWizard	[-18, 18, -167]	17	13	0
+live_play_20261026_234517	-	1766	1.0000	0	0	0	0	None	none	None	null	4	4	0
+live_play_20261026_234837	-	3035	0.1483	1	0	2584	0	1053	U:position	Knight	[1, -3, 0]	2	1	0
+live_play_20261026_235355	-	3032	0.9156	0	0	256	0	2681	P:presence_rec_only	P:Balloon	null	9	6	0
+live_play_20261026_235915	-	1766	0.7939	0	1	363	0	392	P:presence_sim_only	P:LighningSpell	null	10	3	0
+live_play_20261027_000233	-	1764	0.3231	0	0	1194	1277	515	A:position	A:IceGolemite	[-6, 2]	5	2	3
+live_play_20261027_001141	-	1828	0.2287	0	0	1410	1216	963	U:hp	IceWizard	[0, 0, 250]	2	0	1
+live_play_20261027_001702	-	1766	0.6172	0	0	676	0	715	U:position	Valkyrie	[-21, -57, 0]	22	4	0
+live_play_20261027_002021	-	2161	0.9745	0	0	55	0	3255	U:hp	Bats	[0, 0, 258]	6	4	0
+live_play_20261027_002429	-	3042	0.9997	0	0	1	0	2189	U:hp	GoblinGang	[0, 0, 143]	5	4	0
+live_play_20261027_002948	-	3032	0.5947	1	3	1225	0	494	T:hp	tower	[0, 0, -78]	17	4	0
+live_play_20261027_003506	1:opp_no_fitting_deal:0	1765	0.0136	0	0	1741	1270	198	U:presence_rec_only	Tombstone	null	1	0	4
+live_play_20261027_004031	-	3033	0.9660	1	9	93	0	592	P:presence_rec_only	P:Lightning	null	28	8	0
+live_play_20261027_004550	-	1765	1.0000	0	0	0	0	None	none	None	null	4	4	0
+live_play_20261027_004901	-	2872	0.7490	1	0	720	1	2998	U:hp	Knight	[0, 0, 155]	7	5	0
+live_play_20261027_005727	-	3036	0.2467	0	0	2287	0	633	U:position	Knight	[0, 9, 0]	5	1	0
+live_play_20261027_010245	-	1910	0.1110	0	0	1698	0	573	T:hp	tower	[0, 0, 77]	1	0	0
+live_play_20261027_010613	-	2305	0.4416	0	0	1287	11	2187	U:presence_rec_only	Rascals	null	4	3	0
+live_play_20261027_011738	-	1765	0.4997	0	0	883	626	544	U:hp	Knight	[0, 0, 155]	2	0	0
+live_play_20261027_014151	-	2146	0.2605	0	0	1587	0	1268	A:presence_rec_only	A:IceWizard	null	3	2	0
+live_play_20261027_014928	-	3023	0.3374	0	0	2003	11	716	U:presence_rec_only	Knight	null	13	2	0
+live_play_20261027_015759	-	1924	0.9990	0	0	2	0	3346	P:presence_rec_only	P:Lightning	null	5	3	0
+live_play_20261027_020134	-	2361	0.4858	0	2	1212	2	1615	T:hp	tower	[0, 0, 73]	7	4	0
+live_play_20261027_020550	-	1766	1.0000	0	0	0	0	None	none	None	null	3	3	0
+live_play_20261027_020913	-	2399	0.1188	0	0	2114	0	722	U:position	IceWizard	[-35, 112, 0]	2	1	0
+live_play_20261027_021852	-	1548	0.8902	0	0	170	0	398	S:elixir	None	[60844, 90844]	7	4	0
+live_play_20261027_022149	0:opp_no_fitting_deal:0	1722	0.1463	0	0	1470	95	654	P:presence_sim_only	P:ArcherQueenArrow	null	1	0	5
+live_play_20261027_022507	-	1766	1.0000	0	0	0	0	None	none	None	null	0	0	0
+live_play_20261027_022821	-	1766	0.4196	1	0	1024	0	540	U:position	IceWizard	[6, -7, 0]	5	2	0
+live_play_20261027_023451	1:opp_no_fitting_deal:0	1933	0.4382	0	0	1086	0	1372	U:presence_sim_only	C:Skeleton	null	4	2	1
+live_play_20261027_023839	0:opp_no_fitting_deal:0	1766	0.0747	0	0	1634	0	414	P:presence_rec_only	P:Log	null	1	0	9
+live_play_20261027_024155	-	1765	0.1054	0	0	1579	0	523	U:hp	Knight	[0, 0, -110]	2	1	3
+live_play_20261027_025339	-	1766	1.0000	0	0	0	0	None	none	None	null	4	4	0
+live_play_20261027_025651	-	1766	0.3647	0	0	1122	0	1436	U:position	Graveyard	[80, 40, 0]	5	3	0
+live_play_20261027_030315	-	1766	0.1614	0	0	1481	0	720	U:position	SpearGoblins	[-94, 111, 0]	1	0	0
+live_play_20261027_030951	-	1765	0.9864	0	0	24	0	1120	P:presence_rec_only	P:Xbow	null	10	8	0
+live_play_20261027_031722	1:opp_no_fitting_deal:0	1342	0.0835	0	0	1230	424	374	U:presence_rec_only	ElectroWizard	null	2	0	8
+live_play_20261027_032352	-	3038	0.5978	0	3	1219	0	497	T:hp	tower	[0, 0, -33]	39	3	0
+live_play_20261027_033729	-	2379	0.8134	0	3	441	0	307	U:position	Valkyrie	[0, 5, 0]	20	5	0
+live_play_20261027_034147	-	1907	0.8254	0	0	333	0	2818	P:presence_sim_only	P:LighningSpell	null	4	3	0
+live_play_20261027_040302	-	3029	0.4256	0	2	1738	0	1489	U:position	Graveyard	[80, 40, 0]	16	4	0
+live_play_20261027_040821	-	1781	0.7990	0	0	358	0	1185	S:elixir	None	[10930, 20930]	3	1	0
+live_play_20261027_041141	-	2379	1.0000	0	0	0	0	None	none	None	null	11	11	0
+live_play_20261027_041602	-	2056	0.5126	0	1	1001	0	2276	P:position	P:GoblinBarrel	[172, 22]	4	3	0

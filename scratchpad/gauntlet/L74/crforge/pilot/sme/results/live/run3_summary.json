@@ -1,0 +1,4376 @@
+{
+ "matches": 138,
+ "d1_sme_pilot": {
+  "all": "13/138",
+  "unflagged": "13/109"
+ },
+ "frames": 293942,
+ "exact_frames": 171677,
+ "torn_t1_frames": 28,
+ "torn_mixed_frames": 104,
+ "first_div_census": [
+  [
+   [
+    "S:elixir",
+    null
+   ],
+   18
+  ],
+  [
+   [
+    "P:presence_rec_only",
+    "P:Lightning"
+   ],
+   9
+  ],
+  [
+   [
+    "T:hp",
+    "tower"
+   ],
+   9
+  ],
+  [
+   [
+    "U:hp",
+    "Knight"
+   ],
+   6
+  ],
+  [
+   [
+    "U:position",
+    "GoldenKnight"
+   ],
+   3
+  ],
+  [
+   [
+    "U:hp",
+    "Xbow"
+   ],
+   3
+  ],
+  [
+   [
+    "U:position",
+    "Valkyrie"
+   ],
+   3
+  ],
+  [
+   [
+    "U:presence_rec_only",
+    "Tombstone"
+   ],
+   3
+  ],
+  [
+   [
+    "U:hp",
+    "IceWizard"
+   ],
+   3
+  ],
+  [
+   [
+    "T:presence_rec_only",
+    "tower"
+   ],
+   3
+  ],
+  [
+   [
+    "A:presence_sim_only",
+    "A:EarthquakeHiddenDamage"
+   ],
+   2
+  ],
+  [
+   [
+    "U:presence_rec_only",
+    "IceWizard"
+   ],
+   2
+  ],
+  [
+   [
+    "U:presence_rec_only",
+    "GoblinGang"
+   ],
+   2
+  ],
+  [
+   [
+    "U:hp",
+    "Tesla"
+   ],
+   2
+  ],
+  [
+   [
+    "P:position",
+    "P:Xbow"
+   ],
+   2
+  ],
+  [
+   [
+    "P:presence_sim_only",
+    "P:ArcherQueenArrow"
+   ],
+   2
+  ],
+  [
+   [
+    "U:presence_rec_only",
+    "SuspiciousBush"
+   ],
+   2
+  ],
+  [
+   [
+    "U:hp",
+    "Witch"
+   ],
+   2
+  ],
+  [
+   [
+    "U:position",
+    "Knight"
+   ],
+   2
+  ],
+  [
+   [
+    "P:presence_sim_only",
+    "P:LighningSpell"
+   ],
+   2
+  ],
+  [
+   [
+    "U:position",
+    "IceWizard"
+   ],
+   2
+  ],
+  [
+   [
+    "U:position",
+    "Graveyard"
+   ],
+   2
+  ],
+  [
+   [
+    "U:presence_rec_only",
+    "ElectroSpirit"
+   ],
+   1
+  ],
+  [
+   [
+    "U:presence_rec_only",
+    "Prince"
+   ],
+   1
+  ],
+  [
+   [
+    "U:presence_rec_only",
+    "Assassin"
+   ],
+   1
+  ],
+  [
+   [
+    "A:presence_rec_only",
+    "A:Poison"
+   ],
+   1
+  ],
+  [
+   [
+    "A:presence_sim_only",
+    "A:IceGolemiteHero_Damage_AEO"
+   ],
+   1
+  ],
+  [
+   [
+    "S:hand",
+    null
+   ],
+   1
+  ],
+  [
+   [
+    "U:presence_rec_only",
+    "ElectroGiant"
+   ],
+   1
+  ],
+  [
+   [
+    "U:position",
+    "Skeletons"
+   ],
+   1
+  ],
+  [
+   [
+    "U:presence_sim_only",
+    "C:Knight"
+   ],
+   1
+  ],
+  [
+   [
+    "error",
+    "java.lang.UnsupportedOperationException: cmd44: a play of Go"
+   ],
+   1
+  ],
+  [
+   [
+    "U:position",
+    "GoblinGang"
+   ],
+   1
+  ],
+  [
+   [
+    "U:position",
+    "EliteArcher"
+   ],
+   1
+  ],
+  [
+   [
+    "A:presence_rec_only",
+    "A:Lightning"
+   ],
+   1
+  ],
+  [
+   [
+    "P:presence_sim_only",
+    "P:xbow_projectile"
+   ],
+   1
+  ],
+  [
+   [
+    "U:presence_rec_only",
+    "Skeletons"
+   ],
+   1
+  ],
+  [
+   [
+    "U:hp",
+    "Tombstone"
+   ],
+   1
+  ],
+  [
+   [
+    "U:position",
+    "Rascals"
+   ],
+   1
+  ],
+  [
+   [
+    "A:presence_sim_only",
+    "A:Freeze"
+   ],
+   1
+  ],
+  [
+   [
+    "U:hp",
+    "SkeletonArmy"
+   ],
+   1
+  ],
+  [
+   [
+    "U:presence_rec_only",
+    "Ghost"
+   ],
+   1
+  ],
+  [
+   [
+    "U:position",
+    "Goblinstein"
+   ],
+   1
+  ],
+  [
+   [
+    "U:presence_rec_only",
+    "LittlePrince"
+   ],
+   1
+  ],
+  [
+   [
+    "A:presence_rec_only",
+    "A:Earthquake"
+   ],
+   1
+  ],
+  [
+   [
+    "A:presence_rec_only",
+    "A:Rage"
+   ],
+   1
+  ],
+  [
+   [
+    "U:presence_rec_only",
+    "Goblins"
+   ],
+   1
+  ],
+  [
+   [
+    "error",
+    "java.lang.UnsupportedOperationException: cmd46: a play of Go"
+   ],
+   1
+  ],
+  [
+   [
+    "A:presence_rec_only",
+    "A:Vines"
+   ],
+   1
+  ],
+  [
+   [
+    "U:presence_rec_only",
+    "Phoenix"
+   ],
+   1
+  ],
+  [
+   [
+    "P:presence_rec_only",
+    "P:Balloon"
+   ],
+   1
+  ],
+  [
+   [
+    "A:position",
+    "A:IceGolemite"
+   ],
+   1
+  ],
+  [
+   [
+    "U:hp",
+    "Bats"
+   ],
+   1
+  ],
+  [
+   [
+    "U:hp",
+    "GoblinGang"
+   ],
+   1
+  ],
+  [
+   [
+    "U:presence_rec_only",
+    "Rascals"
+   ],
+   1
+  ],
+  [
+   [
+    "A:presence_rec_only",
+    "A:IceWizard"
+   ],
+   1
+  ],
+  [
+   [
+    "U:presence_rec_only",
+    "Knight"
+   ],
+   1
+  ],
+  [
+   [
+    "U:presence_sim_only",
+    "C:Skeleton"
+   ],
+   1
+  ],
+  [
+   [
+    "P:presence_rec_only",
+    "P:Log"
+   ],
+   1
+  ],
+  [
+   [
+    "U:position",
+    "SpearGoblins"
+   ],
+   1
+  ],
+  [
+   [
+    "P:presence_rec_only",
+    "P:Xbow"
+   ],
+   1
+  ],
+  [
+   [
+    "U:presence_rec_only",
+    "ElectroWizard"
+   ],
+   1
+  ],
+  [
+   [
+    "P:position",
+    "P:GoblinBarrel"
+   ],
+   1
+  ]
+ ],
+ "first_div_cards": [
+  [
+   null,
+   19
+  ],
+  [
+   "tower",
+   12
+  ],
+  [
+   "P:Lightning",
+   9
+  ],
+  [
+   "Knight",
+   9
+  ],
+  [
+   "IceWizard",
+   7
+  ],
+  [
+   "GoblinGang",
+   4
+  ],
+  [
+   "Tombstone",
+   4
+  ],
+  [
+   "GoldenKnight",
+   3
+  ],
+  [
+   "Xbow",
+   3
+  ],
+  [
+   "Valkyrie",
+   3
+  ],
+  [
+   "P:Xbow",
+   3
+  ],
+  [
+   "A:EarthquakeHiddenDamage",
+   2
+  ],
+  [
+   "Tesla",
+   2
+  ],
+  [
+   "Skeletons",
+   2
+  ],
+  [
+   "P:ArcherQueenArrow",
+   2
+  ],
+  [
+   "SuspiciousBush",
+   2
+  ],
+  [
+   "Witch",
+   2
+  ],
+  [
+   "Rascals",
+   2
+  ],
+  [
+   "P:LighningSpell",
+   2
+  ],
+  [
+   "Graveyard",
+   2
+  ],
+  [
+   "ElectroSpirit",
+   1
+  ],
+  [
+   "Prince",
+   1
+  ],
+  [
+   "Assassin",
+   1
+  ],
+  [
+   "A:Poison",
+   1
+  ],
+  [
+   "A:IceGolemiteHero_Damage_AEO",
+   1
+  ],
+  [
+   "ElectroGiant",
+   1
+  ],
+  [
+   "C:Knight",
+   1
+  ],
+  [
+   "EliteArcher",
+   1
+  ],
+  [
+   "A:Lightning",
+   1
+  ],
+  [
+   "P:xbow_projectile",
+   1
+  ],
+  [
+   "A:Freeze",
+   1
+  ],
+  [
+   "SkeletonArmy",
+   1
+  ],
+  [
+   "Ghost",
+   1
+  ],
+  [
+   "Goblinstein",
+   1
+  ],
+  [
+   "LittlePrince",
+   1
+  ],
+  [
+   "A:Earthquake",
+   1
+  ],
+  [
+   "A:Rage",
+   1
+  ],
+  [
+   "Goblins",
+   1
+  ],
+  [
+   "A:Vines",
+   1
+  ],
+  [
+   "Phoenix",
+   1
+  ],
+  [
+   "P:Balloon",
+   1
+  ],
+  [
+   "A:IceGolemite",
+   1
+  ],
+  [
+   "Bats",
+   1
+  ],
+  [
+   "A:IceWizard",
+   1
+  ],
+  [
+   "C:Skeleton",
+   1
+  ],
+  [
+   "P:Log",
+   1
+  ],
+  [
+   "SpearGoblins",
+   1
+  ],
+  [
+   "ElectroWizard",
+   1
+  ],
+  [
+   "P:GoblinBarrel",
+   1
+  ]
+ ],
+ "commands": 11009,
+ "episode_census": [
+  [
+   [
+    "T:hp",
+    "tower"
+   ],
+   81,
+   79
+  ],
+  [
+   [
+    "none",
+    null
+   ],
+   64,
+   60
+  ],
+  [
+   [
+    "S:elixir",
+    null
+   ],
+   48,
+   47
+  ],
+  [
+   [
+    "P:presence_rec_only",
+    "P:Lightning"
+   ],
+   36,
+   36
+  ],
+  [
+   [
+    "A:presence_rec_only",
+    "A:Earthquake"
+   ],
+   15,
+   15
+  ],
+  [
+   [
+    "U:hp",
+    "Knight"
+   ],
+   14,
+   10
+  ],
+  [
+   [
+    "U:presence_rec_only",
+    "IceWizard"
+   ],
+   14,
+   12
+  ],
+  [
+   [
+    "P:presence_sim_only",
+    "P:TowerPrincessProjectile"
+   ],
+   14,
+   14
+  ],
+  [
+   [
+    "U:position",
+    "Valkyrie"
+   ],
+   14,
+   10
+  ],
+  [
+   [
+    "U:position",
+    "IceWizard"
+   ],
+   12,
+   9
+  ],
+  [
+   [
+    "U:position",
+    "Graveyard"
+   ],
+   10,
+   7
+  ],
+  [
+   [
+    "U:hp",
+    "IceWizard"
+   ],
+   10,
+   10
+  ],
+  [
+   [
+    "U:hp",
+    "Tesla"
+   ],
+   9,
+   9
+  ],
+  [
+   [
+    "A:presence_rec_only",
+    "A:Poison"
+   ],
+   8,
+   8
+  ],
+  [
+   [
+    "U:position",
+    "Knight"
+   ],
+   8,
+   5
+  ],
+  [
+   [
+    "T:presence_rec_only",
+    "tower"
+   ],
+   8,
+   7
+  ],
+  [
+   [
+    "U:hp",
+    "Xbow"
+   ],
+   7,
+   5
+  ],
+  [
+   [
+    "P:presence_sim_only",
+    "P:LighningSpell"
+   ],
+   7,
+   5
+  ],
+  [
+   [
+    "U:presence_rec_only",
+    "Tesla"
+   ],
+   6,
+   6
+  ],
+  [
+   [
+    "A:presence_sim_only",
+    "A:EarthquakeHiddenDamage"
+   ],
+   5,
+   4
+  ],
+  [
+   [
+    "A:presence_rec_only",
+    "A:Lightning"
+   ],
+   5,
+   5
+  ],
+  [
+   [
+    "U:presence_rec_only",
+    "Skeletons"
+   ],
+   5,
+   5
+  ],
+  [
+   [
+    "A:presence_rec_only",
+    "A:Rage"
+   ],
+   5,
+   2
+  ],
+  [
+   [
+    "U:presence_rec_only",
+    "Xbow"
+   ],
+   4,
+   4
+  ],
+  [
+   [
+    "U:position",
+    "GoldenKnight"
+   ],
+   4,
+   0
+  ],
+  [
+   [
+    "U:position",
+    "Skeletons"
+   ],
+   4,
+   3
+  ],
+  [
+   [
+    "U:presence_rec_only",
+    "Tombstone"
+   ],
+   4,
+   0
+  ],
+  [
+   [
+    "U:hp",
+    "Witch"
+   ],
+   3,
+   3
+  ],
+  [
+   [
+    "P:presence_sim_only",
+    "P:xbow_projectile"
+   ],
+   3,
+   3
+  ],
+  [
+   [
+    "P:position",
+    "P:GoblinBarrel"
+   ],
+   3,
+   2
+  ],
+  [
+   [
+    "U:presence_sim_only",
+    "C:Skeleton"
+   ],
+   3,
+   3
+  ],
+  [
+   [
+    "P:presence_sim_only",
+    "P:IceWizardHeroProjectile"
+   ],
+   3,
+   3
+  ],
+  [
+   [
+    "P:presence_sim_only",
+    "P:ArcherQueenArrow"
+   ],
+   3,
+   0
+  ],
+  [
+   [
+    "P:position",
+    "P:tower_shot"
+   ],
+   3,
+   2
+  ],
+  [
+   [
+    "A:presence_sim_only",
+    "A:Freeze"
+   ],
+   3,
+   3
+  ],
+  [
+   [
+    "A:presence_rec_only",
+    "A:Freeze"
+   ],
+   3,
+   3
+  ],
+  [
+   [
+    "P:presence_rec_only",
+    "P:Balloon"
+   ],
+   3,
+   3
+  ],
+  [
+   [
+    "refused_play>U:presence_rec_only",
+    "GoblinGang"
+   ],
+   2,
+   0
+  ],
+  [
+   [
+    "U:presence_rec_only",
+    "Goblins"
+   ],
+   2,
+   0
+  ],
+  [
+   [
+    "U:hp",
+    "Bats"
+   ],
+   2,
+   2
+  ],
+  [
+   [
+    "P:position",
+    "P:Xbow"
+   ],
+   2,
+   0
+  ],
+  [
+   [
+    "A:presence_rec_only",
+    "A:Vines"
+   ],
+   2,
+   2
+  ],
+  [
+   [
+    "U:presence_rec_only",
+    "SuspiciousBush"
+   ],
+   2,
+   0
+  ],
+  [
+   [
+    "U:hp",
+    "Tombstone"
+   ],
+   2,
+   2
+  ],
+  [
+   [
+    "P:position",
+    "P:IceWizard"
+   ],
+   2,
+   2
+  ],
+  [
+   [
+    "A:presence_rec_only",
+    "A:IceWizard"
+   ],
+   2,
+   1
+  ],
+  [
+   [
+    "refused_play>U:presence_rec_only",
+    "Ghost"
+   ],
+   2,
+   0
+  ],
+  [
+   [
+    "P:presence_rec_only",
+    "P:Xbow"
+   ],
+   2,
+   1
+  ],
+  [
+   [
+    "U:hp",
+    "C:Skeleton"
+   ],
+   1,
+   1
+  ],
+  [
+   [
+    "refused_play>U:presence_rec_only",
+    "ElectroSpirit"
+   ],
+   1,
+   0
+  ],
+  [
+   [
+    "refused_play>U:presence_rec_only",
+    "Prince"
+   ],
+   1,
+   0
+  ],
+  [
+   [
+    "refused_play>U:presence_rec_only",
+    "Assassin"
+   ],
+   1,
+   0
+  ],
+  [
+   [
+    "U:hp",
+    "Valkyrie"
+   ],
+   1,
+   0
+  ],
+  [
+   [
+    "refused_play>U:presence_rec_only",
+    "HogRider"
+   ],
+   1,
+   0
+  ],
+  [
+   [
+    "A:presence_sim_only",
+    "A:IceGolemiteHero_Damage_AEO"
+   ],
+   1,
+   0
+  ],
+  [
+   [
+    "S:hand",
+    null
+   ],
+   1,
+   1
+  ],
+  [
+   [
+    "P:presence_sim_only",
+    "P:BabyDragonProjectile"
+   ],
+   1,
+   1
+  ],
+  [
+   [
+    "P:presence_sim_only",
+    "P:RocketSpell"
+   ],
+   1,
+   1
+  ],
+  [
+   [
+    "refused_play>U:presence_rec_only",
+    "ElectroGiant"
+   ],
+   1,
+   1
+  ],
+  [
+   [
+    "refused_play>U:presence_rec_only",
+    "MiniPekka"
+   ],
+   1,
+   0
+  ],
+  [
+   [
+    "T:presence_sim_only",
+    "T:PrincessTower"
+   ],
+   1,
+   1
+  ],
+  [
+   [
+    "A:presence_rec_only",
+    "A:GiantSkeleton"
+   ],
+   1,
+   1
+  ],
+  [
+   [
+    "U:hp",
+    "Golem"
+   ],
+   1,
+   1
+  ],
+  [
+   [
+    "U:hp",
+    "ElixirGolem"
+   ],
+   1,
+   1
+  ],
+  [
+   [
+    "U:presence_sim_only",
+    "C:Knight"
+   ],
+   1,
+   1
+  ],
+  [
+   [
+    "P:presence_sim_only",
+    "P:prj_goblinstein_doctor"
+   ],
+   1,
+   0
+  ],
+  [
+   [
+    "U:position",
+    "GoblinGang"
+   ],
+   1,
+   0
+  ],
+  [
+   [
+    "U:position",
+    "EliteArcher"
+   ],
+   1,
+   1
+  ],
+  [
+   [
+    "U:presence_sim_only",
+    "C:MiniPekkaHero"
+   ],
+   1,
+   1
+  ],
+  [
+   [
+    "P:presence_rec_only",
+    "P:Bowler"
+   ],
+   1,
+   1
+  ],
+  [
+   [
+    "P:position",
+    "P:Bowler"
+   ],
+   1,
+   1
+  ],
+  [
+   [
+    "refused_play>U:presence_rec_only",
+    "Skeletons"
+   ],
+   1,
+   0
+  ],
+  [
+   [
+    "refused_play>P:presence_sim_only",
+    "P:xbow_projectile"
+   ],
+   1,
+   0
+  ],
+  [
+   [
+    "U:position",
+    "ZapMachine"
+   ],
+   1,
+   0
+  ],
+  [
+   [
+    "U:position",
+    "Rascals"
+   ],
+   1,
+   1
+  ],
+  [
+   [
+    "U:hp",
+    "SkeletonArmy"
+   ],
+   1,
+   1
+  ],
+  [
+   [
+    "U:position",
+    "Goblinstein"
+   ],
+   1,
+   0
+  ],
+  [
+   [
+    "U:presence_rec_only",
+    "LittlePrince"
+   ],
+   1,
+   0
+  ],
+  [
+   [
+    "U:presence_sim_only",
+    "C:BabyDragon"
+   ],
+   1,
+   1
+  ],
+  [
+   [
+    "A:presence_sim_only",
+    "A:IceGolemiteDeathArea"
+   ],
+   1,
+   0
+  ],
+  [
+   [
+    "U:position",
+    "DarkPrince"
+   ],
+   1,
+   0
+  ],
+  [
+   [
+    "refused_play>U:presence_rec_only",
+    "Phoenix"
+   ],
+   1,
+   0
+  ],
+  [
+   [
+    "A:position",
+    "A:Balloon"
+   ],
+   1,
+   1
+  ],
+  [
+   [
+    "P:presence_sim_only",
+    "P:BalloonHero_Skeletrooper_Projectile"
+   ],
+   1,
+   0
+  ],
+  [
+   [
+    "A:position",
+    "A:IceGolemite"
+   ],
+   1,
+   1
+  ],
+  [
+   [
+    "U:hp",
+    "Skeletons"
+   ],
+   1,
+   0
+  ],
+  [
+   [
+    "U:hp",
+    "GoblinGang"
+   ],
+   1,
+   1
+  ],
+  [
+   [
+    "U:position",
+    "MightyMiner"
+   ],
+   1,
+   1
+  ],
+  [
+   [
+    "U:presence_rec_only",
+    "Rascals"
+   ],
+   1,
+   0
+  ],
+  [
+   [
+    "U:presence_rec_only",
+    "Knight"
+   ],
+   1,
+   1
+  ],
+  [
+   [
+    "A:presence_sim_only",
+    "A:Rage"
+   ],
+   1,
+   1
+  ],
+  [
+   [
+    "refused_play>P:presence_rec_only",
+    "P:Log"
+   ],
+   1,
+   0
+  ],
+  [
+   [
+    "U:position",
+    "SpearGoblins"
+   ],
+   1,
+   0
+  ],
+  [
+   [
+    "refused_play>U:presence_rec_only",
+    "ElectroWizard"
+   ],
+   1,
+   0
+  ],
+  [
+   [
+    "U:position",
+    "BarbLog"
+   ],
+   1,
+   1
+  ],
+  [
+   [
+    "U:hp",
+    "Rascals"
+   ],
+   1,
+   1
+  ]
+ ],
+ "episodes": 521,
+ "mechanisms": [
+  {
+   "mechanism": "body position (movement / collision / targeting)",
+   "onsets_described": 98,
+   "healed": 70,
+   "first_true_div": 32,
+   "matches": 61
+  },
+  {
+   "mechanism": "hp only: sim more damage at the same points",
+   "onsets_described": 92,
+   "healed": 87,
+   "first_true_div": 10,
+   "matches": 23
+  },
+  {
+   "mechanism": "Lightning strike timing",
+   "onsets_described": 57,
+   "healed": 55,
+   "first_true_div": 12,
+   "matches": 14
+  },
+  {
+   "mechanism": "live client: own elixir down a card cost 1 frame before the sim",
+   "onsets_described": 48,
+   "healed": 47,
+   "first_true_div": 18,
+   "matches": 36
+  },
+  {
+   "mechanism": "body in the reader, none near in the sim (play missed / late / unit not made)",
+   "onsets_described": 39,
+   "healed": 26,
+   "first_true_div": 14,
+   "matches": 28
+  },
+  {
+   "mechanism": "projectile only (launch timing / flight)",
+   "onsets_described": 32,
+   "healed": 23,
+   "first_true_div": 6,
+   "matches": 20
+  },
+  {
+   "mechanism": "hp only: sim less/mixed damage at the same points",
+   "onsets_described": 21,
+   "healed": 18,
+   "first_true_div": 8,
+   "matches": 13
+  },
+  {
+   "mechanism": "Earthquake pulse timing",
+   "onsets_described": 20,
+   "healed": 19,
+   "first_true_div": 3,
+   "matches": 8
+  },
+  {
+   "mechanism": "spell area effect timing",
+   "onsets_described": 20,
+   "healed": 17,
+   "first_true_div": 3,
+   "matches": 10
+  },
+  {
+   "mechanism": "input: a play the match refused (not in hand / elixir / point)",
+   "onsets_described": 15,
+   "healed": 1,
+   "first_true_div": 11,
+   "matches": 14
+  },
+  {
+   "mechanism": "body in the sim, none near in the reader",
+   "onsets_described": 7,
+   "healed": 7,
+   "first_true_div": 2,
+   "matches": 7
+  },
+  {
+   "mechanism": "area effect only (start / end timing)",
+   "onsets_described": 7,
+   "healed": 6,
+   "first_true_div": 3,
+   "matches": 7
+  },
+  {
+   "mechanism": "other: S1_hand",
+   "onsets_described": 1,
+   "healed": 1,
+   "first_true_div": 1,
+   "matches": 1
+  }
+ ],
+ "nonzero_offset_commands": 395,
+ "offset_hist": {
+  "-1": 8,
+  "1": 386,
+  "71": 1
+ },
+ "overfit_probe_hits": [
+  {
+   "cmd": 41,
+   "card": "Earthquake",
+   "side": 0,
+   "window": [
+    2840,
+    2840
+   ],
+   "run": 2841,
+   "first_div": null,
+   "match": "live_play_20261026_080408"
+  },
+  {
+   "cmd": 41,
+   "card": "Earthquake",
+   "side": 0,
+   "window": [
+    2840,
+    2840
+   ],
+   "run": 2842,
+   "first_div": 2843,
+   "match": "live_play_20261026_080408"
+  },
+  {
+   "cmd": 53,
+   "card": "Earthquake",
+   "side": 0,
+   "window": [
+    3340,
+    3340
+   ],
+   "run": 3341,
+   "first_div": 3662,
+   "match": "live_play_20261026_080408"
+  },
+  {
+   "cmd": 53,
+   "card": "Earthquake",
+   "side": 0,
+   "window": [
+    3340,
+    3340
+   ],
+   "run": 3342,
+   "first_div": 3364,
+   "match": "live_play_20261026_080408"
+  },
+  {
+   "cmd": 53,
+   "card": "Earthquake",
+   "side": 0,
+   "window": [
+    3340,
+    3340
+   ],
+   "run": 3341,
+   "first_div": 3662,
+   "match": "live_play_20261026_080408"
+  },
+  {
+   "cmd": 53,
+   "card": "Earthquake",
+   "side": 0,
+   "window": [
+    3340,
+    3340
+   ],
+   "run": 3341,
+   "first_div": 3662,
+   "match": "live_play_20261026_080408"
+  },
+  {
+   "cmd": 63,
+   "card": "Earthquake",
+   "side": 0,
+   "window": [
+    3640,
+    3640
+   ],
+   "run": 3641,
+   "first_div": null,
+   "match": "live_play_20261026_080408"
+  },
+  {
+   "cmd": 5,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    525,
+    525
+   ],
+   "run": 526,
+   "first_div": null,
+   "match": "live_play_20261026_083722"
+  },
+  {
+   "cmd": 5,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    525,
+    525
+   ],
+   "run": 527,
+   "first_div": null,
+   "match": "live_play_20261026_083722"
+  },
+  {
+   "cmd": 5,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    525,
+    525
+   ],
+   "run": 526,
+   "first_div": null,
+   "match": "live_play_20261026_083722"
+  },
+  {
+   "cmd": 5,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    525,
+    525
+   ],
+   "run": 527,
+   "first_div": null,
+   "match": "live_play_20261026_083722"
+  },
+  {
+   "cmd": 18,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    1792,
+    1792
+   ],
+   "run": 1793,
+   "first_div": null,
+   "match": "live_play_20261026_083722"
+  },
+  {
+   "cmd": 18,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    1792,
+    1792
+   ],
+   "run": 1794,
+   "first_div": 1814,
+   "match": "live_play_20261026_083722"
+  },
+  {
+   "cmd": 18,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    1792,
+    1792
+   ],
+   "run": 1793,
+   "first_div": null,
+   "match": "live_play_20261026_083722"
+  },
+  {
+   "cmd": 27,
+   "card": "ability",
+   "side": 1,
+   "window": [
+    2465,
+    2466
+   ],
+   "run": 2464,
+   "first_div": 2809,
+   "match": "live_play_20261026_083722"
+  },
+  {
+   "cmd": 26,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    2313,
+    2313
+   ],
+   "run": 2314,
+   "first_div": 2474,
+   "match": "live_play_20261026_094126"
+  },
+  {
+   "cmd": 26,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    2313,
+    2313
+   ],
+   "run": 2315,
+   "first_div": 2335,
+   "match": "live_play_20261026_094126"
+  },
+  {
+   "cmd": 26,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    2313,
+    2313
+   ],
+   "run": 2314,
+   "first_div": 2474,
+   "match": "live_play_20261026_094126"
+  },
+  {
+   "cmd": 45,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    3266,
+    3266
+   ],
+   "run": 3267,
+   "first_div": 3485,
+   "match": "live_play_20261026_094126"
+  },
+  {
+   "cmd": 45,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    3266,
+    3266
+   ],
+   "run": 3268,
+   "first_div": 3485,
+   "match": "live_play_20261026_094126"
+  },
+  {
+   "cmd": 4,
+   "card": "Skeletons",
+   "side": 0,
+   "window": [
+    411,
+    411
+   ],
+   "run": 410,
+   "first_div": 432,
+   "match": "live_play_20261026_095134"
+  },
+  {
+   "cmd": 16,
+   "card": "ability",
+   "side": 1,
+   "window": [
+    1553,
+    1554
+   ],
+   "run": 1552,
+   "first_div": null,
+   "match": "live_play_20261026_095134"
+  },
+  {
+   "cmd": 21,
+   "card": "Skeletons",
+   "side": 0,
+   "window": [
+    1971,
+    1971
+   ],
+   "run": 1970,
+   "first_div": 1992,
+   "match": "live_play_20261026_095457"
+  },
+  {
+   "cmd": 9,
+   "card": "ability",
+   "side": 1,
+   "window": [
+    570,
+    571
+   ],
+   "run": 572,
+   "first_div": null,
+   "match": "live_play_20261026_100354"
+  },
+  {
+   "cmd": 9,
+   "card": "ability",
+   "side": 1,
+   "window": [
+    570,
+    571
+   ],
+   "run": 573,
+   "first_div": null,
+   "match": "live_play_20261026_100354"
+  },
+  {
+   "cmd": 11,
+   "card": "ability",
+   "side": 0,
+   "window": [
+    658,
+    659
+   ],
+   "run": 660,
+   "first_div": 662,
+   "match": "live_play_20261026_101112"
+  },
+  {
+   "cmd": 11,
+   "card": "ability",
+   "side": 0,
+   "window": [
+    658,
+    659
+   ],
+   "run": 661,
+   "first_div": 662,
+   "match": "live_play_20261026_101112"
+  },
+  {
+   "cmd": 91,
+   "card": "Xbow",
+   "side": 0,
+   "window": [
+    5331,
+    5331
+   ],
+   "run": 5330,
+   "first_div": 5402,
+   "match": "live_play_20261026_141505"
+  },
+  {
+   "cmd": 20,
+   "card": "ability",
+   "side": 1,
+   "window": [
+    1682,
+    1682
+   ],
+   "run": 1681,
+   "first_div": 1990,
+   "match": "live_play_20261026_142027"
+  },
+  {
+   "cmd": 29,
+   "card": "ability",
+   "side": 0,
+   "window": [
+    2383,
+    2384
+   ],
+   "run": 2382,
+   "first_div": null,
+   "match": "live_play_20261026_142027"
+  },
+  {
+   "cmd": 29,
+   "card": "ability",
+   "side": 0,
+   "window": [
+    2383,
+    2384
+   ],
+   "run": 2382,
+   "first_div": null,
+   "match": "live_play_20261026_142027"
+  },
+  {
+   "cmd": 29,
+   "card": "ability",
+   "side": 0,
+   "window": [
+    2383,
+    2384
+   ],
+   "run": 2382,
+   "first_div": null,
+   "match": "live_play_20261026_142027"
+  },
+  {
+   "cmd": 7,
+   "card": "Earthquake",
+   "side": 1,
+   "window": [
+    472,
+    472
+   ],
+   "run": 473,
+   "first_div": null,
+   "match": "live_play_20261026_142345"
+  },
+  {
+   "cmd": 7,
+   "card": "Earthquake",
+   "side": 1,
+   "window": [
+    472,
+    472
+   ],
+   "run": 474,
+   "first_div": 496,
+   "match": "live_play_20261026_142345"
+  },
+  {
+   "cmd": 7,
+   "card": "Earthquake",
+   "side": 1,
+   "window": [
+    472,
+    472
+   ],
+   "run": 473,
+   "first_div": null,
+   "match": "live_play_20261026_142345"
+  },
+  {
+   "cmd": 7,
+   "card": "Earthquake",
+   "side": 1,
+   "window": [
+    472,
+    472
+   ],
+   "run": 473,
+   "first_div": null,
+   "match": "live_play_20261026_142345"
+  },
+  {
+   "cmd": 24,
+   "card": "Earthquake",
+   "side": 1,
+   "window": [
+    1905,
+    1905
+   ],
+   "run": 1906,
+   "first_div": 2282,
+   "match": "live_play_20261026_142345"
+  },
+  {
+   "cmd": 24,
+   "card": "Earthquake",
+   "side": 1,
+   "window": [
+    1905,
+    1905
+   ],
+   "run": 1907,
+   "first_div": 2282,
+   "match": "live_play_20261026_142345"
+  },
+  {
+   "cmd": 24,
+   "card": "Earthquake",
+   "side": 1,
+   "window": [
+    1905,
+    1905
+   ],
+   "run": 1906,
+   "first_div": 2282,
+   "match": "live_play_20261026_142345"
+  },
+  {
+   "cmd": 24,
+   "card": "Earthquake",
+   "side": 1,
+   "window": [
+    1905,
+    1905
+   ],
+   "run": 1907,
+   "first_div": 2282,
+   "match": "live_play_20261026_142345"
+  },
+  {
+   "cmd": 9,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    673,
+    673
+   ],
+   "run": 674,
+   "first_div": 917,
+   "match": "live_play_20261026_143116"
+  },
+  {
+   "cmd": 9,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    673,
+    673
+   ],
+   "run": 675,
+   "first_div": 917,
+   "match": "live_play_20261026_143116"
+  },
+  {
+   "cmd": 9,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    673,
+    673
+   ],
+   "run": 674,
+   "first_div": 917,
+   "match": "live_play_20261026_143116"
+  },
+  {
+   "cmd": 9,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    673,
+    673
+   ],
+   "run": 675,
+   "first_div": 917,
+   "match": "live_play_20261026_143116"
+  },
+  {
+   "cmd": 9,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    673,
+    673
+   ],
+   "run": 674,
+   "first_div": 917,
+   "match": "live_play_20261026_143116"
+  },
+  {
+   "cmd": 9,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    673,
+    673
+   ],
+   "run": 675,
+   "first_div": 917,
+   "match": "live_play_20261026_143116"
+  },
+  {
+   "cmd": 9,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    673,
+    673
+   ],
+   "run": 674,
+   "first_div": 917,
+   "match": "live_play_20261026_143116"
+  },
+  {
+   "cmd": 9,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    673,
+    673
+   ],
+   "run": 675,
+   "first_div": 917,
+   "match": "live_play_20261026_143116"
+  },
+  {
+   "cmd": 9,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    673,
+    673
+   ],
+   "run": 674,
+   "first_div": 917,
+   "match": "live_play_20261026_143116"
+  },
+  {
+   "cmd": 9,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    673,
+    673
+   ],
+   "run": 675,
+   "first_div": 917,
+   "match": "live_play_20261026_143116"
+  },
+  {
+   "cmd": 19,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    1800,
+    1800
+   ],
+   "run": 1801,
+   "first_div": null,
+   "match": "live_play_20261026_144057"
+  },
+  {
+   "cmd": 36,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    3170,
+    3170
+   ],
+   "run": 3171,
+   "first_div": 3415,
+   "match": "live_play_20261026_144057"
+  },
+  {
+   "cmd": 36,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    3170,
+    3170
+   ],
+   "run": 3172,
+   "first_div": 3193,
+   "match": "live_play_20261026_144057"
+  },
+  {
+   "cmd": 57,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    4216,
+    4216
+   ],
+   "run": 4217,
+   "first_div": null,
+   "match": "live_play_20261026_144057"
+  },
+  {
+   "cmd": 75,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    4986,
+    4986
+   ],
+   "run": 4987,
+   "first_div": null,
+   "match": "live_play_20261026_144057"
+  },
+  {
+   "cmd": 75,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    4986,
+    4986
+   ],
+   "run": 4988,
+   "first_div": 4999,
+   "match": "live_play_20261026_144057"
+  },
+  {
+   "cmd": 6,
+   "card": "ability",
+   "side": 0,
+   "window": [
+    532,
+    533
+   ],
+   "run": 531,
+   "first_div": null,
+   "match": "live_play_20261026_144615"
+  },
+  {
+   "cmd": 26,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    2510,
+    2510
+   ],
+   "run": 2511,
+   "first_div": null,
+   "match": "live_play_20261026_145247"
+  },
+  {
+   "cmd": 26,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    2510,
+    2510
+   ],
+   "run": 2512,
+   "first_div": null,
+   "match": "live_play_20261026_145247"
+  },
+  {
+   "cmd": 26,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    2510,
+    2510
+   ],
+   "run": 2511,
+   "first_div": null,
+   "match": "live_play_20261026_145247"
+  },
+  {
+   "cmd": 26,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    2510,
+    2510
+   ],
+   "run": 2512,
+   "first_div": null,
+   "match": "live_play_20261026_145247"
+  },
+  {
+   "cmd": 48,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    3660,
+    3660
+   ],
+   "run": 3661,
+   "first_div": null,
+   "match": "live_play_20261026_145247"
+  },
+  {
+   "cmd": 48,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    3660,
+    3660
+   ],
+   "run": 3662,
+   "first_div": 3763,
+   "match": "live_play_20261026_145247"
+  },
+  {
+   "cmd": 19,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    1970,
+    1970
+   ],
+   "run": 1971,
+   "first_div": null,
+   "match": "live_play_20261026_145939"
+  },
+  {
+   "cmd": 19,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    1970,
+    1970
+   ],
+   "run": 1972,
+   "first_div": null,
+   "match": "live_play_20261026_145939"
+  },
+  {
+   "cmd": 19,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    1970,
+    1970
+   ],
+   "run": 1971,
+   "first_div": null,
+   "match": "live_play_20261026_145939"
+  },
+  {
+   "cmd": 19,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    1970,
+    1970
+   ],
+   "run": 1972,
+   "first_div": null,
+   "match": "live_play_20261026_145939"
+  },
+  {
+   "cmd": 50,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    3810,
+    3810
+   ],
+   "run": 3811,
+   "first_div": null,
+   "match": "live_play_20261026_145939"
+  },
+  {
+   "cmd": 6,
+   "card": "Earthquake",
+   "side": 1,
+   "window": [
+    566,
+    566
+   ],
+   "run": 567,
+   "first_div": null,
+   "match": "live_play_20261026_152601"
+  },
+  {
+   "cmd": 6,
+   "card": "Earthquake",
+   "side": 1,
+   "window": [
+    566,
+    566
+   ],
+   "run": 567,
+   "first_div": null,
+   "match": "live_play_20261026_152601"
+  },
+  {
+   "cmd": 37,
+   "card": "Skeletons",
+   "side": 0,
+   "window": [
+    2961,
+    2961
+   ],
+   "run": 2960,
+   "first_div": 2982,
+   "match": "live_play_20261026_152601"
+  },
+  {
+   "cmd": 60,
+   "card": "Earthquake",
+   "side": 1,
+   "window": [
+    3894,
+    3894
+   ],
+   "run": 3895,
+   "first_div": null,
+   "match": "live_play_20261026_152601"
+  },
+  {
+   "cmd": 60,
+   "card": "Earthquake",
+   "side": 1,
+   "window": [
+    3894,
+    3894
+   ],
+   "run": 3895,
+   "first_div": null,
+   "match": "live_play_20261026_152601"
+  },
+  {
+   "cmd": 25,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    2110,
+    2110
+   ],
+   "run": 2111,
+   "first_div": null,
+   "match": "live_play_20261026_154319"
+  },
+  {
+   "cmd": 25,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    2110,
+    2110
+   ],
+   "run": 2112,
+   "first_div": 2119,
+   "match": "live_play_20261026_154319"
+  },
+  {
+   "cmd": 45,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    2977,
+    2977
+   ],
+   "run": 2978,
+   "first_div": 3112,
+   "match": "live_play_20261026_154319"
+  },
+  {
+   "cmd": 45,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    2977,
+    2977
+   ],
+   "run": 2979,
+   "first_div": 2986,
+   "match": "live_play_20261026_154319"
+  },
+  {
+   "cmd": 44,
+   "card": "ability",
+   "side": 1,
+   "window": [
+    3184,
+    3185
+   ],
+   "run": 3183,
+   "first_div": null,
+   "match": "live_play_20261026_162012"
+  },
+  {
+   "cmd": 44,
+   "card": "ability",
+   "side": 1,
+   "window": [
+    3184,
+    3185
+   ],
+   "run": 3183,
+   "first_div": null,
+   "match": "live_play_20261026_162012"
+  },
+  {
+   "cmd": 44,
+   "card": "ability",
+   "side": 1,
+   "window": [
+    3184,
+    3185
+   ],
+   "run": 3183,
+   "first_div": null,
+   "match": "live_play_20261026_162012"
+  },
+  {
+   "cmd": 13,
+   "card": "IceWizard",
+   "side": 0,
+   "window": [
+    1099,
+    1099
+   ],
+   "run": 1098,
+   "first_div": 1121,
+   "match": "live_play_20261026_165839"
+  },
+  {
+   "cmd": 22,
+   "card": "Skeletons",
+   "side": 1,
+   "window": [
+    2081,
+    2081
+   ],
+   "run": 2080,
+   "first_div": 2101,
+   "match": "live_play_20261026_170600"
+  },
+  {
+   "cmd": 28,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    2744,
+    2744
+   ],
+   "run": 2745,
+   "first_div": null,
+   "match": "live_play_20261026_170600"
+  },
+  {
+   "cmd": 28,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    2744,
+    2744
+   ],
+   "run": 2746,
+   "first_div": null,
+   "match": "live_play_20261026_170600"
+  },
+  {
+   "cmd": 9,
+   "card": "Earthquake",
+   "side": 0,
+   "window": [
+    832,
+    832
+   ],
+   "run": 833,
+   "first_div": 1075,
+   "match": "live_play_20261026_170912"
+  },
+  {
+   "cmd": 11,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    911,
+    911
+   ],
+   "run": 912,
+   "first_div": 961,
+   "match": "live_play_20261026_171232"
+  },
+  {
+   "cmd": 11,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    911,
+    911
+   ],
+   "run": 913,
+   "first_div": 961,
+   "match": "live_play_20261026_171232"
+  },
+  {
+   "cmd": 11,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    911,
+    911
+   ],
+   "run": 912,
+   "first_div": 961,
+   "match": "live_play_20261026_171232"
+  },
+  {
+   "cmd": 11,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    911,
+    911
+   ],
+   "run": 913,
+   "first_div": 961,
+   "match": "live_play_20261026_171232"
+  },
+  {
+   "cmd": 11,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    911,
+    911
+   ],
+   "run": 912,
+   "first_div": 961,
+   "match": "live_play_20261026_171232"
+  },
+  {
+   "cmd": 11,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    911,
+    911
+   ],
+   "run": 913,
+   "first_div": 961,
+   "match": "live_play_20261026_171232"
+  },
+  {
+   "cmd": 73,
+   "card": "IceWizard",
+   "side": 1,
+   "window": [
+    4571,
+    4571
+   ],
+   "run": 4570,
+   "first_div": 4601,
+   "match": "live_play_20261026_171232"
+  },
+  {
+   "cmd": 19,
+   "card": "Knight",
+   "side": 0,
+   "window": [
+    1768,
+    1768
+   ],
+   "run": 1770,
+   "first_div": 1789,
+   "match": "live_play_20261026_171753"
+  },
+  {
+   "cmd": 4,
+   "card": "Earthquake",
+   "side": 1,
+   "window": [
+    460,
+    460
+   ],
+   "run": 461,
+   "first_div": null,
+   "match": "live_play_20261026_172314"
+  },
+  {
+   "cmd": 4,
+   "card": "Earthquake",
+   "side": 1,
+   "window": [
+    460,
+    460
+   ],
+   "run": 462,
+   "first_div": 463,
+   "match": "live_play_20261026_172314"
+  },
+  {
+   "cmd": 28,
+   "card": "Earthquake",
+   "side": 1,
+   "window": [
+    2047,
+    2047
+   ],
+   "run": 2048,
+   "first_div": null,
+   "match": "live_play_20261026_172314"
+  },
+  {
+   "cmd": 60,
+   "card": "Earthquake",
+   "side": 1,
+   "window": [
+    3483,
+    3483
+   ],
+   "run": 3484,
+   "first_div": null,
+   "match": "live_play_20261026_172314"
+  },
+  {
+   "cmd": 74,
+   "card": "Earthquake",
+   "side": 1,
+   "window": [
+    3975,
+    3975
+   ],
+   "run": 3976,
+   "first_div": null,
+   "match": "live_play_20261026_172314"
+  },
+  {
+   "cmd": 8,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    900,
+    900
+   ],
+   "run": 901,
+   "first_div": null,
+   "match": "live_play_20261026_175456"
+  },
+  {
+   "cmd": 8,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    900,
+    900
+   ],
+   "run": 902,
+   "first_div": null,
+   "match": "live_play_20261026_175456"
+  },
+  {
+   "cmd": 8,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    900,
+    900
+   ],
+   "run": 901,
+   "first_div": null,
+   "match": "live_play_20261026_175456"
+  },
+  {
+   "cmd": 8,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    900,
+    900
+   ],
+   "run": 902,
+   "first_div": null,
+   "match": "live_play_20261026_175456"
+  },
+  {
+   "cmd": 19,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    1962,
+    1962
+   ],
+   "run": 1963,
+   "first_div": null,
+   "match": "live_play_20261026_175456"
+  },
+  {
+   "cmd": 30,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    2684,
+    2684
+   ],
+   "run": 2685,
+   "first_div": 2889,
+   "match": "live_play_20261026_175456"
+  },
+  {
+   "cmd": 13,
+   "card": "Vines",
+   "side": 0,
+   "window": [
+    1125,
+    1125
+   ],
+   "run": 1126,
+   "first_div": 1255,
+   "match": "live_play_20261026_181217"
+  },
+  {
+   "cmd": 65,
+   "card": "Vines",
+   "side": 0,
+   "window": [
+    4414,
+    4414
+   ],
+   "run": 4415,
+   "first_div": null,
+   "match": "live_play_20261026_181217"
+  },
+  {
+   "cmd": 65,
+   "card": "Vines",
+   "side": 0,
+   "window": [
+    4414,
+    4414
+   ],
+   "run": 4416,
+   "first_div": 4459,
+   "match": "live_play_20261026_181217"
+  },
+  {
+   "cmd": 65,
+   "card": "Vines",
+   "side": 0,
+   "window": [
+    4414,
+    4414
+   ],
+   "run": 4415,
+   "first_div": null,
+   "match": "live_play_20261026_181217"
+  },
+  {
+   "cmd": 65,
+   "card": "Vines",
+   "side": 0,
+   "window": [
+    4414,
+    4414
+   ],
+   "run": 4416,
+   "first_div": 4459,
+   "match": "live_play_20261026_181217"
+  },
+  {
+   "cmd": 20,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    1820,
+    1820
+   ],
+   "run": 1821,
+   "first_div": null,
+   "match": "live_play_20261026_183044"
+  },
+  {
+   "cmd": 20,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    1820,
+    1820
+   ],
+   "run": 1822,
+   "first_div": null,
+   "match": "live_play_20261026_183044"
+  },
+  {
+   "cmd": 35,
+   "card": "ability",
+   "side": 1,
+   "window": [
+    2914,
+    2915
+   ],
+   "run": 2912,
+   "first_div": null,
+   "match": "live_play_20261026_183044"
+  },
+  {
+   "cmd": 35,
+   "card": "ability",
+   "side": 1,
+   "window": [
+    2914,
+    2915
+   ],
+   "run": 2913,
+   "first_div": null,
+   "match": "live_play_20261026_183044"
+  },
+  {
+   "cmd": 35,
+   "card": "ability",
+   "side": 1,
+   "window": [
+    2914,
+    2915
+   ],
+   "run": 2912,
+   "first_div": null,
+   "match": "live_play_20261026_183044"
+  },
+  {
+   "cmd": 35,
+   "card": "ability",
+   "side": 1,
+   "window": [
+    2914,
+    2915
+   ],
+   "run": 2913,
+   "first_div": null,
+   "match": "live_play_20261026_183044"
+  },
+  {
+   "cmd": 30,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    2650,
+    2650
+   ],
+   "run": 2651,
+   "first_div": null,
+   "match": "live_play_20261026_192935"
+  },
+  {
+   "cmd": 30,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    2650,
+    2650
+   ],
+   "run": 2652,
+   "first_div": null,
+   "match": "live_play_20261026_192935"
+  },
+  {
+   "cmd": 30,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    2650,
+    2650
+   ],
+   "run": 2651,
+   "first_div": null,
+   "match": "live_play_20261026_192935"
+  },
+  {
+   "cmd": 30,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    2650,
+    2650
+   ],
+   "run": 2652,
+   "first_div": null,
+   "match": "live_play_20261026_192935"
+  },
+  {
+   "cmd": 30,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    2650,
+    2650
+   ],
+   "run": 2651,
+   "first_div": null,
+   "match": "live_play_20261026_192935"
+  },
+  {
+   "cmd": 30,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    2650,
+    2650
+   ],
+   "run": 2652,
+   "first_div": null,
+   "match": "live_play_20261026_192935"
+  },
+  {
+   "cmd": 50,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    3528,
+    3528
+   ],
+   "run": 3529,
+   "first_div": null,
+   "match": "live_play_20261026_192935"
+  },
+  {
+   "cmd": 0,
+   "card": "IceWizard",
+   "side": 1,
+   "window": [
+    198,
+    198
+   ],
+   "run": 197,
+   "first_div": 220,
+   "match": "live_play_20261026_201258"
+  },
+  {
+   "cmd": 3,
+   "card": "Xbow",
+   "side": 0,
+   "window": [
+    381,
+    381
+   ],
+   "run": 380,
+   "first_div": 452,
+   "match": "live_play_20261026_204202"
+  },
+  {
+   "cmd": 7,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    574,
+    574
+   ],
+   "run": 575,
+   "first_div": 692,
+   "match": "live_play_20261026_204202"
+  },
+  {
+   "cmd": 7,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    574,
+    574
+   ],
+   "run": 576,
+   "first_div": 674,
+   "match": "live_play_20261026_204202"
+  },
+  {
+   "cmd": 7,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    574,
+    574
+   ],
+   "run": 575,
+   "first_div": 692,
+   "match": "live_play_20261026_204202"
+  },
+  {
+   "cmd": 7,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    574,
+    574
+   ],
+   "run": 576,
+   "first_div": 674,
+   "match": "live_play_20261026_204202"
+  },
+  {
+   "cmd": 7,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    574,
+    574
+   ],
+   "run": 575,
+   "first_div": 692,
+   "match": "live_play_20261026_204202"
+  },
+  {
+   "cmd": 7,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    574,
+    574
+   ],
+   "run": 576,
+   "first_div": 674,
+   "match": "live_play_20261026_204202"
+  },
+  {
+   "cmd": 7,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    574,
+    574
+   ],
+   "run": 575,
+   "first_div": 692,
+   "match": "live_play_20261026_204202"
+  },
+  {
+   "cmd": 7,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    574,
+    574
+   ],
+   "run": 576,
+   "first_div": 674,
+   "match": "live_play_20261026_204202"
+  },
+  {
+   "cmd": 10,
+   "card": "Skeletons",
+   "side": 0,
+   "window": [
+    751,
+    751
+   ],
+   "run": 750,
+   "first_div": 771,
+   "match": "live_play_20261026_210720"
+  },
+  {
+   "cmd": 22,
+   "card": "IceWizard",
+   "side": 0,
+   "window": [
+    1888,
+    1888
+   ],
+   "run": 1887,
+   "first_div": 1910,
+   "match": "live_play_20261026_210720"
+  },
+  {
+   "cmd": 6,
+   "card": "Freeze",
+   "side": 1,
+   "window": [
+    520,
+    520
+   ],
+   "run": 521,
+   "first_div": null,
+   "match": "live_play_20261026_211239"
+  },
+  {
+   "cmd": 6,
+   "card": "Freeze",
+   "side": 1,
+   "window": [
+    520,
+    520
+   ],
+   "run": 522,
+   "first_div": null,
+   "match": "live_play_20261026_211239"
+  },
+  {
+   "cmd": 6,
+   "card": "Freeze",
+   "side": 1,
+   "window": [
+    520,
+    520
+   ],
+   "run": 521,
+   "first_div": null,
+   "match": "live_play_20261026_211239"
+  },
+  {
+   "cmd": 6,
+   "card": "Freeze",
+   "side": 1,
+   "window": [
+    520,
+    520
+   ],
+   "run": 522,
+   "first_div": null,
+   "match": "live_play_20261026_211239"
+  },
+  {
+   "cmd": 24,
+   "card": "Freeze",
+   "side": 1,
+   "window": [
+    2091,
+    2091
+   ],
+   "run": 2092,
+   "first_div": null,
+   "match": "live_play_20261026_211239"
+  },
+  {
+   "cmd": 24,
+   "card": "Freeze",
+   "side": 1,
+   "window": [
+    2091,
+    2091
+   ],
+   "run": 2093,
+   "first_div": 2094,
+   "match": "live_play_20261026_211239"
+  },
+  {
+   "cmd": 24,
+   "card": "Freeze",
+   "side": 1,
+   "window": [
+    2091,
+    2091
+   ],
+   "run": 2092,
+   "first_div": null,
+   "match": "live_play_20261026_211239"
+  },
+  {
+   "cmd": 34,
+   "card": "Poison",
+   "side": 0,
+   "window": [
+    2613,
+    2613
+   ],
+   "run": 2614,
+   "first_div": 3007,
+   "match": "live_play_20261026_220728"
+  },
+  {
+   "cmd": 34,
+   "card": "Poison",
+   "side": 0,
+   "window": [
+    2613,
+    2613
+   ],
+   "run": 2615,
+   "first_div": 3007,
+   "match": "live_play_20261026_220728"
+  },
+  {
+   "cmd": 34,
+   "card": "Poison",
+   "side": 0,
+   "window": [
+    2613,
+    2613
+   ],
+   "run": 2614,
+   "first_div": 3007,
+   "match": "live_play_20261026_220728"
+  },
+  {
+   "cmd": 34,
+   "card": "Poison",
+   "side": 0,
+   "window": [
+    2613,
+    2613
+   ],
+   "run": 2615,
+   "first_div": 3007,
+   "match": "live_play_20261026_220728"
+  },
+  {
+   "cmd": 9,
+   "card": "Earthquake",
+   "side": 0,
+   "window": [
+    743,
+    743
+   ],
+   "run": 744,
+   "first_div": null,
+   "match": "live_play_20261026_221926"
+  },
+  {
+   "cmd": 9,
+   "card": "Earthquake",
+   "side": 0,
+   "window": [
+    743,
+    743
+   ],
+   "run": 745,
+   "first_div": 805,
+   "match": "live_play_20261026_221926"
+  },
+  {
+   "cmd": 9,
+   "card": "Earthquake",
+   "side": 0,
+   "window": [
+    743,
+    743
+   ],
+   "run": 744,
+   "first_div": null,
+   "match": "live_play_20261026_221926"
+  },
+  {
+   "cmd": 9,
+   "card": "Earthquake",
+   "side": 0,
+   "window": [
+    743,
+    743
+   ],
+   "run": 745,
+   "first_div": 805,
+   "match": "live_play_20261026_221926"
+  },
+  {
+   "cmd": 18,
+   "card": "IceWizard",
+   "side": 1,
+   "window": [
+    1809,
+    1809
+   ],
+   "run": 1808,
+   "first_div": 1831,
+   "match": "live_play_20261026_221926"
+  },
+  {
+   "cmd": 25,
+   "card": "Earthquake",
+   "side": 0,
+   "window": [
+    2260,
+    2260
+   ],
+   "run": 2261,
+   "first_div": null,
+   "match": "live_play_20261026_221926"
+  },
+  {
+   "cmd": 25,
+   "card": "Earthquake",
+   "side": 0,
+   "window": [
+    2260,
+    2260
+   ],
+   "run": 2262,
+   "first_div": 2284,
+   "match": "live_play_20261026_221926"
+  },
+  {
+   "cmd": 25,
+   "card": "Earthquake",
+   "side": 0,
+   "window": [
+    2260,
+    2260
+   ],
+   "run": 2261,
+   "first_div": null,
+   "match": "live_play_20261026_221926"
+  },
+  {
+   "cmd": 12,
+   "card": "IceWizard",
+   "side": 1,
+   "window": [
+    1051,
+    1051
+   ],
+   "run": 1050,
+   "first_div": 1082,
+   "match": "live_play_20261026_222240"
+  },
+  {
+   "cmd": 5,
+   "card": "Earthquake",
+   "side": 0,
+   "window": [
+    580,
+    580
+   ],
+   "run": 581,
+   "first_div": null,
+   "match": "live_play_20261026_222712"
+  },
+  {
+   "cmd": 21,
+   "card": "Earthquake",
+   "side": 0,
+   "window": [
+    1747,
+    1747
+   ],
+   "run": 1748,
+   "first_div": 1838,
+   "match": "live_play_20261026_222712"
+  },
+  {
+   "cmd": 34,
+   "card": "Earthquake",
+   "side": 0,
+   "window": [
+    2571,
+    2571
+   ],
+   "run": 2572,
+   "first_div": 2711,
+   "match": "live_play_20261026_222712"
+  },
+  {
+   "cmd": 34,
+   "card": "Earthquake",
+   "side": 0,
+   "window": [
+    2571,
+    2571
+   ],
+   "run": 2573,
+   "first_div": 2711,
+   "match": "live_play_20261026_222712"
+  },
+  {
+   "cmd": 34,
+   "card": "Earthquake",
+   "side": 0,
+   "window": [
+    2571,
+    2571
+   ],
+   "run": 2572,
+   "first_div": 2711,
+   "match": "live_play_20261026_222712"
+  },
+  {
+   "cmd": 34,
+   "card": "Earthquake",
+   "side": 0,
+   "window": [
+    2571,
+    2571
+   ],
+   "run": 2573,
+   "first_div": 2711,
+   "match": "live_play_20261026_222712"
+  },
+  {
+   "cmd": 0,
+   "card": "Knight",
+   "side": 0,
+   "window": [
+    212,
+    212
+   ],
+   "run": 211,
+   "first_div": 232,
+   "match": "live_play_20261026_223723"
+  },
+  {
+   "cmd": 0,
+   "card": "Knight",
+   "side": 1,
+   "window": [
+    205,
+    205
+   ],
+   "run": 204,
+   "first_div": 225,
+   "match": "live_play_20261026_230512"
+  },
+  {
+   "cmd": 13,
+   "card": "Knight",
+   "side": 1,
+   "window": [
+    1118,
+    1118
+   ],
+   "run": 1117,
+   "first_div": 1138,
+   "match": "live_play_20261026_230512"
+  },
+  {
+   "cmd": 32,
+   "card": "ability",
+   "side": 0,
+   "window": [
+    2558,
+    2558
+   ],
+   "run": 2556,
+   "first_div": 2626,
+   "match": "live_play_20261026_230512"
+  },
+  {
+   "cmd": 7,
+   "card": "Vines",
+   "side": 1,
+   "window": [
+    468,
+    468
+   ],
+   "run": 469,
+   "first_div": null,
+   "match": "live_play_20261026_232438"
+  },
+  {
+   "cmd": 7,
+   "card": "Vines",
+   "side": 1,
+   "window": [
+    468,
+    468
+   ],
+   "run": 470,
+   "first_div": null,
+   "match": "live_play_20261026_232438"
+  },
+  {
+   "cmd": 7,
+   "card": "Vines",
+   "side": 1,
+   "window": [
+    468,
+    468
+   ],
+   "run": 469,
+   "first_div": null,
+   "match": "live_play_20261026_232438"
+  },
+  {
+   "cmd": 7,
+   "card": "Vines",
+   "side": 1,
+   "window": [
+    468,
+    468
+   ],
+   "run": 470,
+   "first_div": null,
+   "match": "live_play_20261026_232438"
+  },
+  {
+   "cmd": 7,
+   "card": "Vines",
+   "side": 1,
+   "window": [
+    468,
+    468
+   ],
+   "run": 469,
+   "first_div": null,
+   "match": "live_play_20261026_232438"
+  },
+  {
+   "cmd": 7,
+   "card": "Vines",
+   "side": 1,
+   "window": [
+    468,
+    468
+   ],
+   "run": 470,
+   "first_div": null,
+   "match": "live_play_20261026_232438"
+  },
+  {
+   "cmd": 0,
+   "card": "Knight",
+   "side": 1,
+   "window": [
+    197,
+    197
+   ],
+   "run": 196,
+   "first_div": 218,
+   "match": "live_play_20261026_233436"
+  },
+  {
+   "cmd": 14,
+   "card": "IceWizard",
+   "side": 1,
+   "window": [
+    1002,
+    1002
+   ],
+   "run": 1001,
+   "first_div": 1024,
+   "match": "live_play_20261026_233436"
+  },
+  {
+   "cmd": 42,
+   "card": "ability",
+   "side": 1,
+   "window": [
+    3089,
+    3089
+   ],
+   "run": 3090,
+   "first_div": 3092,
+   "match": "live_play_20261026_233957"
+  },
+  {
+   "cmd": 42,
+   "card": "ability",
+   "side": 1,
+   "window": [
+    3089,
+    3089
+   ],
+   "run": 3091,
+   "first_div": null,
+   "match": "live_play_20261026_233957"
+  },
+  {
+   "cmd": 74,
+   "card": "Skeletons",
+   "side": 1,
+   "window": [
+    4666,
+    4666
+   ],
+   "run": 4665,
+   "first_div": 4687,
+   "match": "live_play_20261026_233957"
+  },
+  {
+   "cmd": 104,
+   "card": "Skeletons",
+   "side": 1,
+   "window": [
+    5725,
+    5725
+   ],
+   "run": 5724,
+   "first_div": 5745,
+   "match": "live_play_20261026_233957"
+  },
+  {
+   "cmd": 61,
+   "card": "ability",
+   "side": 1,
+   "window": [
+    4913,
+    4913
+   ],
+   "run": 4912,
+   "first_div": null,
+   "match": "live_play_20261026_235355"
+  },
+  {
+   "cmd": 3,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    381,
+    381
+   ],
+   "run": 382,
+   "first_div": null,
+   "match": "live_play_20261026_235915"
+  },
+  {
+   "cmd": 3,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    381,
+    381
+   ],
+   "run": 383,
+   "first_div": 403,
+   "match": "live_play_20261026_235915"
+  },
+  {
+   "cmd": 3,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    381,
+    381
+   ],
+   "run": 382,
+   "first_div": null,
+   "match": "live_play_20261026_235915"
+  },
+  {
+   "cmd": 28,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    2650,
+    2650
+   ],
+   "run": 2651,
+   "first_div": 3048,
+   "match": "live_play_20261026_235915"
+  },
+  {
+   "cmd": 28,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    2650,
+    2650
+   ],
+   "run": 2652,
+   "first_div": 2682,
+   "match": "live_play_20261026_235915"
+  },
+  {
+   "cmd": 28,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    2650,
+    2650
+   ],
+   "run": 2651,
+   "first_div": 3048,
+   "match": "live_play_20261026_235915"
+  },
+  {
+   "cmd": 28,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    2650,
+    2650
+   ],
+   "run": 2652,
+   "first_div": 2682,
+   "match": "live_play_20261026_235915"
+  },
+  {
+   "cmd": 6,
+   "card": "ability",
+   "side": 1,
+   "window": [
+    513,
+    514
+   ],
+   "run": 515,
+   "first_div": 593,
+   "match": "live_play_20261027_000233"
+  },
+  {
+   "cmd": 6,
+   "card": "ability",
+   "side": 1,
+   "window": [
+    513,
+    514
+   ],
+   "run": 516,
+   "first_div": 593,
+   "match": "live_play_20261027_000233"
+  },
+  {
+   "cmd": 18,
+   "card": "ability",
+   "side": 1,
+   "window": [
+    1350,
+    1351
+   ],
+   "run": 1352,
+   "first_div": 1470,
+   "match": "live_play_20261027_000233"
+  },
+  {
+   "cmd": 18,
+   "card": "ability",
+   "side": 1,
+   "window": [
+    1350,
+    1351
+   ],
+   "run": 1353,
+   "first_div": 1470,
+   "match": "live_play_20261027_000233"
+  },
+  {
+   "cmd": 7,
+   "card": "Earthquake",
+   "side": 1,
+   "window": [
+    434,
+    434
+   ],
+   "run": 435,
+   "first_div": null,
+   "match": "live_play_20261027_002948"
+  },
+  {
+   "cmd": 19,
+   "card": "Earthquake",
+   "side": 1,
+   "window": [
+    1491,
+    1491
+   ],
+   "run": 1492,
+   "first_div": 1745,
+   "match": "live_play_20261027_002948"
+  },
+  {
+   "cmd": 31,
+   "card": "Earthquake",
+   "side": 1,
+   "window": [
+    2494,
+    2494
+   ],
+   "run": 2495,
+   "first_div": null,
+   "match": "live_play_20261027_002948"
+  },
+  {
+   "cmd": 31,
+   "card": "Earthquake",
+   "side": 1,
+   "window": [
+    2494,
+    2494
+   ],
+   "run": 2496,
+   "first_div": 2556,
+   "match": "live_play_20261027_002948"
+  },
+  {
+   "cmd": 8,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    580,
+    580
+   ],
+   "run": 581,
+   "first_div": null,
+   "match": "live_play_20261027_004031"
+  },
+  {
+   "cmd": 8,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    580,
+    580
+   ],
+   "run": 582,
+   "first_div": 602,
+   "match": "live_play_20261027_004031"
+  },
+  {
+   "cmd": 8,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    580,
+    580
+   ],
+   "run": 581,
+   "first_div": null,
+   "match": "live_play_20261027_004031"
+  },
+  {
+   "cmd": 35,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    2540,
+    2540
+   ],
+   "run": 2541,
+   "first_div": null,
+   "match": "live_play_20261027_004031"
+  },
+  {
+   "cmd": 48,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    3060,
+    3060
+   ],
+   "run": 3061,
+   "first_div": null,
+   "match": "live_play_20261027_004031"
+  },
+  {
+   "cmd": 48,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    3060,
+    3060
+   ],
+   "run": 3062,
+   "first_div": 3082,
+   "match": "live_play_20261027_004031"
+  },
+  {
+   "cmd": 38,
+   "card": "ability",
+   "side": 1,
+   "window": [
+    2996,
+    2997
+   ],
+   "run": 2995,
+   "first_div": 3368,
+   "match": "live_play_20261027_004901"
+  },
+  {
+   "cmd": 89,
+   "card": "ability",
+   "side": 1,
+   "window": [
+    5224,
+    5225
+   ],
+   "run": 5223,
+   "first_div": 5526,
+   "match": "live_play_20261027_004901"
+  },
+  {
+   "cmd": 4,
+   "card": "Poison",
+   "side": 0,
+   "window": [
+    625,
+    625
+   ],
+   "run": 626,
+   "first_div": null,
+   "match": "live_play_20261027_005727"
+  },
+  {
+   "cmd": 20,
+   "card": "Graveyard",
+   "side": 0,
+   "window": [
+    2050,
+    2050
+   ],
+   "run": 2051,
+   "first_div": null,
+   "match": "live_play_20261027_005727"
+  },
+  {
+   "cmd": 20,
+   "card": "Graveyard",
+   "side": 0,
+   "window": [
+    2050,
+    2050
+   ],
+   "run": 2052,
+   "first_div": 2104,
+   "match": "live_play_20261027_005727"
+  },
+  {
+   "cmd": 8,
+   "card": "ability",
+   "side": 0,
+   "window": [
+    542,
+    543
+   ],
+   "run": 541,
+   "first_div": null,
+   "match": "live_play_20261027_011738"
+  },
+  {
+   "cmd": 11,
+   "card": "ability",
+   "side": 1,
+   "window": [
+    1266,
+    1267
+   ],
+   "run": 1264,
+   "first_div": null,
+   "match": "live_play_20261027_014151"
+  },
+  {
+   "cmd": 9,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    690,
+    690
+   ],
+   "run": 691,
+   "first_div": null,
+   "match": "live_play_20261027_014928"
+  },
+  {
+   "cmd": 9,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    690,
+    690
+   ],
+   "run": 692,
+   "first_div": 724,
+   "match": "live_play_20261027_014928"
+  },
+  {
+   "cmd": 9,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    690,
+    690
+   ],
+   "run": 691,
+   "first_div": null,
+   "match": "live_play_20261027_014928"
+  },
+  {
+   "cmd": 9,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    690,
+    690
+   ],
+   "run": 692,
+   "first_div": 724,
+   "match": "live_play_20261027_014928"
+  },
+  {
+   "cmd": 9,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    690,
+    690
+   ],
+   "run": 691,
+   "first_div": null,
+   "match": "live_play_20261027_014928"
+  },
+  {
+   "cmd": 9,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    690,
+    690
+   ],
+   "run": 691,
+   "first_div": null,
+   "match": "live_play_20261027_014928"
+  },
+  {
+   "cmd": 43,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    3334,
+    3334
+   ],
+   "run": 3335,
+   "first_div": null,
+   "match": "live_play_20261027_015759"
+  },
+  {
+   "cmd": 43,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    3334,
+    3334
+   ],
+   "run": 3336,
+   "first_div": null,
+   "match": "live_play_20261027_015759"
+  },
+  {
+   "cmd": 43,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    3334,
+    3334
+   ],
+   "run": 3335,
+   "first_div": null,
+   "match": "live_play_20261027_015759"
+  },
+  {
+   "cmd": 43,
+   "card": "Lightning",
+   "side": 1,
+   "window": [
+    3334,
+    3334
+   ],
+   "run": 3336,
+   "first_div": null,
+   "match": "live_play_20261027_015759"
+  },
+  {
+   "cmd": 4,
+   "card": "Knight",
+   "side": 0,
+   "window": [
+    398,
+    398
+   ],
+   "run": 397,
+   "first_div": 419,
+   "match": "live_play_20261027_021852"
+  },
+  {
+   "cmd": 14,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    1135,
+    1135
+   ],
+   "run": 1136,
+   "first_div": 1197,
+   "match": "live_play_20261027_021852"
+  },
+  {
+   "cmd": 3,
+   "card": "Poison",
+   "side": 1,
+   "window": [
+    532,
+    532
+   ],
+   "run": 533,
+   "first_div": null,
+   "match": "live_play_20261027_022821"
+  },
+  {
+   "cmd": 22,
+   "card": "Graveyard",
+   "side": 1,
+   "window": [
+    1735,
+    1735
+   ],
+   "run": 1736,
+   "first_div": null,
+   "match": "live_play_20261027_022821"
+  },
+  {
+   "cmd": 8,
+   "card": "ability",
+   "side": 1,
+   "window": [
+    521,
+    522
+   ],
+   "run": 523,
+   "first_div": null,
+   "match": "live_play_20261027_024155"
+  },
+  {
+   "cmd": 8,
+   "card": "ability",
+   "side": 1,
+   "window": [
+    521,
+    522
+   ],
+   "run": 524,
+   "first_div": null,
+   "match": "live_play_20261027_024155"
+  },
+  {
+   "cmd": 18,
+   "card": "Graveyard",
+   "side": 1,
+   "window": [
+    1380,
+    1380
+   ],
+   "run": 1381,
+   "first_div": 1452,
+   "match": "live_play_20261027_025651"
+  },
+  {
+   "cmd": 37,
+   "card": "ability",
+   "side": 0,
+   "window": [
+    3030,
+    3030
+   ],
+   "run": 3031,
+   "first_div": null,
+   "match": "live_play_20261027_030951"
+  },
+  {
+   "cmd": 7,
+   "card": "Poison",
+   "side": 0,
+   "window": [
+    471,
+    471
+   ],
+   "run": 472,
+   "first_div": null,
+   "match": "live_play_20261027_032352"
+  },
+  {
+   "cmd": 7,
+   "card": "Poison",
+   "side": 0,
+   "window": [
+    471,
+    471
+   ],
+   "run": 473,
+   "first_div": null,
+   "match": "live_play_20261027_032352"
+  },
+  {
+   "cmd": 7,
+   "card": "Poison",
+   "side": 0,
+   "window": [
+    471,
+    471
+   ],
+   "run": 472,
+   "first_div": null,
+   "match": "live_play_20261027_032352"
+  },
+  {
+   "cmd": 7,
+   "card": "Poison",
+   "side": 0,
+   "window": [
+    471,
+    471
+   ],
+   "run": 473,
+   "first_div": null,
+   "match": "live_play_20261027_032352"
+  },
+  {
+   "cmd": 7,
+   "card": "Poison",
+   "side": 0,
+   "window": [
+    471,
+    471
+   ],
+   "run": 472,
+   "first_div": null,
+   "match": "live_play_20261027_032352"
+  },
+  {
+   "cmd": 7,
+   "card": "Poison",
+   "side": 0,
+   "window": [
+    471,
+    471
+   ],
+   "run": 473,
+   "first_div": null,
+   "match": "live_play_20261027_032352"
+  },
+  {
+   "cmd": 7,
+   "card": "Poison",
+   "side": 0,
+   "window": [
+    471,
+    471
+   ],
+   "run": 472,
+   "first_div": null,
+   "match": "live_play_20261027_032352"
+  },
+  {
+   "cmd": 7,
+   "card": "Poison",
+   "side": 0,
+   "window": [
+    471,
+    471
+   ],
+   "run": 473,
+   "first_div": null,
+   "match": "live_play_20261027_032352"
+  },
+  {
+   "cmd": 7,
+   "card": "Poison",
+   "side": 0,
+   "window": [
+    471,
+    471
+   ],
+   "run": 472,
+   "first_div": null,
+   "match": "live_play_20261027_032352"
+  },
+  {
+   "cmd": 7,
+   "card": "Poison",
+   "side": 0,
+   "window": [
+    471,
+    471
+   ],
+   "run": 473,
+   "first_div": null,
+   "match": "live_play_20261027_032352"
+  },
+  {
+   "cmd": 5,
+   "card": "ability",
+   "side": 0,
+   "window": [
+    307,
+    308
+   ],
+   "run": 306,
+   "first_div": null,
+   "match": "live_play_20261027_033729"
+  },
+  {
+   "cmd": 39,
+   "card": "Lightning",
+   "side": 0,
+   "window": [
+    2807,
+    2807
+   ],
+   "run": 2808,
+   "first_div": null,
+   "match": "live_play_20261027_034147"
+  },
+  {
+   "cmd": 15,
+   "card": "Graveyard",
+   "side": 0,
+   "window": [
+    1433,
+    1433
+   ],
+   "run": 1434,
+   "first_div": null,
+   "match": "live_play_20261027_040302"
+  },
+  {
+   "cmd": 27,
+   "card": "Poison",
+   "side": 0,
+   "window": [
+    2262,
+    2262
+   ],
+   "run": 2263,
+   "first_div": null,
+   "match": "live_play_20261027_040302"
+  }
+ ],
+ "deal_check": {
+  "true": 336
+ },
+ "errors": [
+  "live_play_20261026_174147",
+  "live_play_20261026_225213"
+ ]
+}

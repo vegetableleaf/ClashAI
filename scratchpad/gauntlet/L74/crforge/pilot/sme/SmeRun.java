@@ -6,7 +6,7 @@
 // jobs.txt: one job per line, "<plan.json> <ticks> <out.jsonl> <fromTick>"; lines with t < fromTick are not written.
 // (When fromTick > 0 the plays/ab lists of the first written line hold every play since tick 0.)
 // plan.json: {"seed":int,"playerData":[1,1],"words":[w0,w1],"decks":[[8 names],[8 names]],"slots":[[8],[8]],
-//             "towers":[[kingLevel,level],[kingLevel,level]],
+//             "towers":[[kingLevel,level(,spawnGroup)],[...]], optional "deals":[[8 deck indices]|null, ...],
 //             "cmds":[{"kind":"play","given":g,"run":r,"side":s,"card":name,"level":l,"x":x,"y":y}
 //                    |{"kind":"ability","given":g,"run":r,"side":s,"unit":"cmd<i>_<k>"}]}
 // out: one JSON line per tick (tick 0 = before the first step), entities in holder order:
@@ -52,7 +52,8 @@ public class SmeRun {
     JsonNode plan = new ObjectMapper().readTree(new File(planPath));
     List<Standard1v1Battle.Towers> towers = new ArrayList<>();
     for (JsonNode t : plan.get("towers"))
-      towers.add(new Standard1v1Battle.Towers(Standard1v1Battle.PRINCESS_TOWERS, t.get(0).asInt(), t.get(1).asInt()));
+      towers.add(new Standard1v1Battle.Towers(t.size() > 2 ? t.get(2).asText() : Standard1v1Battle.PRINCESS_TOWERS,
+          t.get(0).asInt(), t.get(1).asInt()));
     Standard1v1Battle b = new Standard1v1Battle(tables, towers, true);
     b.getWorld().seed(plan.get("seed").asInt());
     for (JsonNode c : plan.get("playerData")) b.addPlayerData(c.asInt());
@@ -68,13 +69,27 @@ public class SmeRun {
     }
     b.startLadderMatch(decks.get(0), decks.get(1), plan.get("words").get(0).asInt(), plan.get("words").get(1).asInt(),
         slots.get(0), slots.get(1));
+    // Optional forced deals (live matches: our deal from the log, the opponent's one fitting deal): hand slots 0-3 then
+    // the queue, front first, written over the seeded deal. RNG-free matches draw nothing after the deal.
+    JsonNode deals = plan.get("deals");
+    if (deals != null)
+      for (int s = 0; s < 2; s++) {
+        JsonNode d = deals.get(s);
+        if (d == null || d.isNull()) continue;
+        int[] order = new int[8];
+        for (int k = 0; k < 8; k++) order[k] = d.get(k).asInt();
+        b.getMatch().side(s).getHand().rearrange(new int[] {0, 1, 2, 3, 4, 5, 6, 7}, order);
+      }
     int i = 0;
     for (JsonNode c : plan.get("cmds")) {
       String name = "cmd" + i++;
       int g = c.get("given").asInt(), r = c.get("run").asInt(), s = c.get("side").asInt();
-      if (c.get("kind").asText().equals("play"))
+      if (c.get("kind").asText().equals("play") && c.get("card").asText().equals("Mirror"))
+        b.playMirror(g, r, "Mirror", c.get("level").asInt(), s, c.get("x").asInt(), c.get("y").asInt(), name);
+      else if (c.get("kind").asText().equals("play"))
         b.play(g, r, b.getWorld().getRecords().card(c.get("card").asText()), c.get("level").asInt(), s,
             c.get("x").asInt(), c.get("y").asInt(), name);
+      else if (c.get("kind").asText().equals("skip")) continue;  // a dropped command keeps its index (cmd names)
       else b.useAbility(r, s, c.get("unit").asText(), name);  // ponytail: by unit name, given = run - 20 (the only delay crforge accepts)
     }
     try (PrintWriter w = new PrintWriter(new BufferedWriter(new FileWriter(out)))) {

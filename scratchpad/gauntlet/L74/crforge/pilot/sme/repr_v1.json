@@ -1,0 +1,2 @@
+{"_why": "run2 episode onsets (repr_stats.py): every sim-only crforge character without hit points (SkeletonContainerNew 44, RageBarbarianBottle 21, BalloonHero_Bomb 13, BombTowerBomb 7, GiantSkeletonBomb 5, MightyMinerBomb 4, BalloonBomb 3, RageBarbarianBottleEvo 3, Musketeer_hero_DummyBuilding 1) had no recorded object at its point; RageBottle sat on the reader's Rage area effect 8/8.",
+ "drop_no_hp": true, "drop": [], "as": {"RageBottle": "A"}}

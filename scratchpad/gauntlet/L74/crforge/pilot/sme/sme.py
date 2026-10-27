@@ -87,7 +87,8 @@ def diff(r, s):
             rr, ss = r[k], s.get(k)
             if rr[0] != ss[0]:
                 out.append((k + '_elixir', rr[0], ss[0]))
-            if rr[1:] != ss[1:]:
+            # live frames give our hand only at decision ticks and never the queue: None = not observed
+            if (rr[1] is not None and rr[1] != ss[1]) or (rr[2] is not None and rr[2] != ss[2]):
                 out.append((k + '_hand', rr[1:], ss[1:]))
     out += [('sim_unknown_class', x, None) for x in s.get('?', [])]
     return out
@@ -178,6 +179,9 @@ def anchor(f, old, side, card):
 
 
 # ---------------------------------------------------------------- crforge runs
+ERRORS = {}  # job index -> error message of the last run_batch
+
+
 def run_batch(jobs, workdir):
     """jobs: list of (plan dict, ticks, from). Returns list of lists of observation dicts."""
     os.makedirs(workdir, exist_ok=True)
@@ -192,7 +196,12 @@ def run_batch(jobs, workdir):
                         str(THREADS)], capture_output=True, text=True)
     if 'jobs=' not in r.stdout:
         raise SystemExit('SmeRun failed: ' + r.stdout + r.stderr[-3000:])
-    bad = {l.split(':')[1].strip() for l in r.stderr.splitlines() if l.startswith('java.lang.RuntimeException')}
+    bad = {}
+    for l in r.stderr.splitlines():
+        if l.startswith('java.lang.RuntimeException'):
+            bad[l.split(':')[1].strip()] = l.split(':', 2)[2].strip()
+    ERRORS.clear()
+    ERRORS.update({int(os.path.basename(k)[1:-5]): v for k, v in bad.items()})
     return [None if os.path.join(workdir, 'p%d.json' % i) in bad else
             [json.loads(l) for l in open(os.path.join(workdir, 'o%d.jsonl' % i))] for i in range(len(jobs))]
 
