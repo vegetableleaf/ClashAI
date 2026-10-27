@@ -1,0 +1,20 @@
+jobs=136 failed=0 
+('DarkPrince', 'alone', 'clean') 1
+('DarkPrinceHero', 'alone', 'after') 1
+('DarkPrinceHero', 'alone', 'clean') 5
+('DarkPrinceHero_Walking', 'alone', 'after') 1
+('HogRider', 'alone', 'after') 29
+('HogRider', 'alone', 'clean') 78
+('HogRider', 'contact', 'clean') 5
+('Prince', 'alone', 'after') 1
+('Prince', 'alone', 'clean') 8
+('Ram', 'alone', 'after') 4
+('Ram', 'alone', 'clean') 11
+('Ram', 'contact', 'onset') 1
+('RoyalHog', 'alone', 'after') 4
+('RoyalHog', 'alone', 'clean') 38
+('RoyalHog', 'contact', 'clean') 1
+('RoyalHog_EV1_Grounded', 'alone', 'clean') 4
+('RoyalHog_EV1_Grounded', 'contact', 'clean') 1
+('VoodooHog', 'alone', 'after') 3
+onset ('live_play_20261026_164443', 'Ram', 'contact', 3211, 3213)

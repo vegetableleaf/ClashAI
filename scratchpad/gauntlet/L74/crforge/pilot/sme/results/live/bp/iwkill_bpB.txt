@@ -1,0 +1,18 @@
+jobs=136 failed=0 
+('IceWizardHero', 'none', 'clean', 'agree') 65
+('IceWizardHero', 'none', 'diverged', 'agree') 15
+('IceWizardHero', 'own', 'clean', 'agree') 12
+('IceWizardHero', 'own', 'diverged', 'agree') 2
+('IceWizardHero', 'third', 'clean', 'agree') 247
+('IceWizardHero', 'third', 'clean', 'late') 1
+('IceWizardHero', 'third', 'diverged', 'agree') 73
+('IceWizardHero', 'third', 'diverged', 'late') 3
+('IceWizardHeroFloatingCube', 'none', 'clean', 'agree') 74
+('IceWizardHeroFloatingCube', 'none', 'diverged', 'agree') 23
+('IceWizardHeroFloatingCube', 'own', 'clean', 'agree') 334
+('IceWizardHeroFloatingCube', 'own', 'diverged', 'agree') 104
+('IceWizardHeroFloatingCube', 'own', 'diverged', 'late') 7
+('IceWizardHeroFloatingCube', 'third', 'clean', 'agree') 717
+('IceWizardHeroFloatingCube', 'third', 'clean', 'late') 1
+('IceWizardHeroFloatingCube', 'third', 'diverged', 'agree') 218
+('IceWizardHeroFloatingCube', 'third', 'diverged', 'late') 19

@@ -1,0 +1,82 @@
+frames 175 Counter({'torn_cmd': 65, 'torn_step': 61, 'torn_mixed': 29, 'div': 20})
+div        dec   {'1': 5, '0': 2}
+div        del   {'1': 4, '0': 4}
+div        dmg   {'1': 2, 'x': 2, 'm': 1, '0': 3}
+div        el    {'1': 8, '0': 8, 'x': 2, 'c': 2}
+div        mv    {'1': 9, '0': 3, 'x': 1, 'm': 1}
+div        new   {'m': 6, '0': 3, '1': 1}
+div        pdel  {'1': 8, '0': 3}
+div        pmv   {'1': 7, '0': 2}
+div        pnew  {'0': 1}
+torn_cmd   adel  {'0': 1}
+torn_cmd   dec   {'0': 21}
+torn_cmd   del   {'0': 1}
+torn_cmd   dmg   {'0': 24}
+torn_cmd   el    {'c': 65}
+torn_cmd   mv    {'0': 56}
+torn_cmd   new   {'0': 65}
+torn_cmd   pdel  {'0': 5}
+torn_cmd   pmv   {'0': 45}
+torn_cmd   pnew  {'0': 8}
+torn_mixed adel  {'0': 1}
+torn_mixed anew  {'1': 1}
+torn_mixed dec   {'1': 4, '0': 1}
+torn_mixed del   {'0': 3}
+torn_mixed dmg   {'m': 2, '0': 6, '1': 4}
+torn_mixed el    {'0': 27, '1': 1}
+torn_mixed mv    {'m': 6, '0': 13, '1': 6}
+torn_mixed new   {'0': 1}
+torn_mixed pdel  {'0': 2, '1': 1}
+torn_mixed pmv   {'0': 14, '1': 2, 'm': 1}
+torn_step  anew  {'0': 5}
+torn_step  dec   {'1': 26}
+torn_step  del   {'m': 5, '1': 15, '0': 11}
+torn_step  dmg   {'1': 31, '0': 7, 'x': 1}
+torn_step  el    {'0': 28, '1': 32}
+torn_step  mv    {'1': 54}
+torn_step  new   {'0': 8, '1': 1}
+torn_step  pdel  {'1': 21, '0': 1}
+torn_step  pmv   {'0': 16, '1': 25}
+torn_step  pnew  {'0': 9}
+pairs (A=1, B=0) | (B=1, A=0):
+  el    mv       0 |   35
+  el    dec      0 |   13
+  el    dmg      1 |   16
+  el    del     11 |    1
+  el    new      8 |    0
+  el    pmv      0 |    5
+  el    pdel     0 |    9
+  el    pnew     6 |    0
+  el    anew     5 |    1
+  mv    dmg      9 |    0
+  mv    del     12 |    0
+  mv    new     10 |    0
+  mv    pmv     20 |    1
+  mv    pdel     2 |    2
+  mv    pnew     8 |    0
+  mv    anew     4 |    1
+  dec   dmg      3 |    0
+  dec   del      7 |    0
+  dec   new      7 |    1
+  dec   pmv      8 |    0
+  dec   pdel     1 |    0
+  dec   pnew     6 |    0
+  dec   anew     3 |    1
+  dmg   del      9 |    0
+  dmg   new      8 |    0
+  dmg   pmv     10 |    4
+  dmg   pdel     0 |    5
+  dmg   pnew     6 |    0
+  dmg   anew     4 |    1
+  del   new      4 |    0
+  del   pmv      0 |   11
+  del   pdel     0 |    8
+  del   pnew     5 |    0
+  del   anew     1 |    1
+  new   pmv      0 |    5
+  new   pdel     0 |    4
+  pmv   pdel     0 |    3
+  pmv   pnew     7 |    0
+  pmv   anew     3 |    0
+  pdel  pnew     3 |    0
+  pdel  anew     2 |    1
