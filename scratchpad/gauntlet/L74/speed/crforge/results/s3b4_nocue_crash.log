@@ -1,0 +1,46 @@
+/workspace/s3b3d/rl/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+Traceback (most recent call last):
+  File "Thread.java", line 840, in java.lang.Thread.run
+java.lang.java.lang.UnsupportedOperationException: java.lang.UnsupportedOperationException: EliteArcherHero_Ability_Triple_Shot_Projectile is shot by proj_4000373, which has no root, so the shooter would be its root, not modelled
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "ForkJoinWorkerThread.java", line 165, in java.util.concurrent.ForkJoinWorkerThread.run
+java.util.concurrent.java.util.concurrent.ExecutionException: java.util.concurrent.ExecutionException: java.lang.UnsupportedOperationException: EliteArcherHero_Ability_Triple_Shot_Projectile is shot by proj_4000373, which has no root, so the shooter would be its root, not modelled
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "ForkJoinWorkerThread.java", line 165, in java.util.concurrent.ForkJoinWorkerThread.run
+java.lang.java.lang.RuntimeException: java.lang.RuntimeException: java.util.concurrent.ExecutionException: java.lang.UnsupportedOperationException: EliteArcherHero_Ability_Triple_Shot_Projectile is shot by proj_4000373, which has no root, so the shooter would be its root, not modelled
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "CfLoop.java", line 178, in CfLoop.await_
+    try { pending.get(); } catch (Exception e) { throw new RuntimeException(e); } finally { pending = null; }
+java.lang.java.lang.RuntimeException: java.lang.RuntimeException: java.lang.RuntimeException: java.util.concurrent.ExecutionException: java.lang.UnsupportedOperationException: EliteArcherHero_Ability_Triple_Shot_Projectile is shot by proj_4000373, which has no root, so the shooter would be its root, not modelled
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "ForkJoinTask.java", line 981, in java.util.concurrent.ForkJoinTask.get
+java.util.concurrent.java.util.concurrent.ExecutionException: java.util.concurrent.ExecutionException: java.lang.RuntimeException: java.lang.RuntimeException: java.util.concurrent.ExecutionException: java.lang.UnsupportedOperationException: EliteArcherHero_Ability_Triple_Shot_Projectile is shot by proj_4000373, which has no root, so the shooter would be its root, not modelled
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "CfLoop.java", line 178, in CfLoop.await_
+    try { pending.get(); } catch (Exception e) { throw new RuntimeException(e); } finally { pending = null; }
+Exception: Java Exception
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/workspace/s3b3d/rl/scratchpad/gauntlet/L74/speed/crforge/obsid/cf_loop_obs.py", line 198, in <module>
+    main()
+  File "/workspace/s3b3d/rl/scratchpad/gauntlet/L74/speed/crforge/obsid/cf_loop_obs.py", line 165, in main
+    c.L.await_()
+java.lang.java.lang.RuntimeException: java.lang.RuntimeException: java.util.concurrent.ExecutionException: java.lang.RuntimeException: java.lang.RuntimeException: java.util.concurrent.ExecutionException: java.lang.UnsupportedOperationException: EliteArcherHero_Ability_Triple_Shot_Projectile is shot by proj_4000373, which has no root, so the shooter would be its root, not modelled

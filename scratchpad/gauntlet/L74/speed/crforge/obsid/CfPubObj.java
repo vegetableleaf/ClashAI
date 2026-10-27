@@ -30,7 +30,7 @@ public final class CfPubObj {
     public boolean[] objNoTimer = new boolean[0];               // in unavailable_area_timers: remaining unknown
     public int[] evKey = new int[0];                            // card_key(names[cid]) of a play / press of that card
     final HashMap<String, Integer> body = new HashMap<>();      // "card|body row|form bits" -> key << 2 | form, -1 none
-    public final Set<String> missing = new LinkedHashSet<>();
+    public final Set<String> missing = java.util.concurrent.ConcurrentHashMap.newKeySet();   // CfLoop: pool threads add
     final HashMap<Integer, double[]> spec = new HashMap<>();    // key << 2 | form -> {max_charges, deploy_ms, cooldown_ms}
     public int[] cyc = new int[0];                              // CfOppElixir key -> card_key's key (opp_cycle dedup)
 
@@ -264,14 +264,20 @@ public final class CfPubObj {
   /** The four keys of the seat's last update into the buffers (float32, row-major); {@code opp} = the seat's
    *  CfOppElixir (S3b-3c's detected plays), null = opp_cycle not written. */
   public void build(int seat, FloatBuffer proj, FloatBuffer eff, FloatBuffer ab, CfOppElixir opp, FloatBuffer cyc) {
+    build(seat, proj, 0, eff, 0, ab, 0, opp, cyc, 0);
+  }
+
+  /** The same at buffer offsets (CfLoop: one row of a cohort's buffers). */
+  public void build(int seat, FloatBuffer proj, int pOff, FloatBuffer eff, int eOff, FloatBuffer ab, int aOff, CfOppElixir opp,
+                    FloatBuffer cyc, int cOff) {
     sync();
     final int H = h[seat], vt = tick[seat] + H;
     Obs o = last[seat];
     if (H > 0) o = advance(o, prev[seat], prev[seat] == null ? 0 : lastTick[seat] - prevTick[seat], H);
-    tokens(o.p, seat, true, proj);
-    tokens(o.e, seat, false, eff);
-    ability(seat, vt, ab);
-    if (opp != null) cycle(opp, vt, cyc);
+    tokens(o.p, seat, true, proj, pOff);
+    tokens(o.e, seat, false, eff, eOff);
+    ability(seat, vt, ab, aOff);
+    if (opp != null) cycle(opp, vt, cyc, cOff);
   }
 
   /** extrapolate.advance_public_objects. */
@@ -321,7 +327,7 @@ public final class CfPubObj {
   };
 
   /** projectile_observation.tokens_from_objects for one kind. */
-  void tokens(ArrayList<double[]> rows, int seat, boolean shots, FloatBuffer out) {
+  void tokens(ArrayList<double[]> rows, int seat, boolean shots, FloatBuffer out, int off) {
     int cap = shots ? PROJ_K : EFF_K, w = shots ? 8 : 6;
     ArrayList<double[]> vals = new ArrayList<>();
     for (double[] r : rows) {
@@ -338,9 +344,9 @@ public final class CfPubObj {
       vals.add(v);
     }
     vals.sort(LEX);
-    for (int i = 0; i < cap * w; i++) out.put(i, 0f);
+    for (int i = 0; i < cap * w; i++) out.put(off + i, 0f);
     for (int i = 0; i < Math.min(cap, vals.size()); i++)
-      for (int j = 0; j < w; j++) out.put(i * w + j, (float) vals.get(i)[j]);
+      for (int j = 0; j < w; j++) out.put(off + i * w + j, (float) vals.get(i)[j]);
   }
 
   static void xy(double x, double y, int side, double[] v, int o) {
@@ -350,8 +356,8 @@ public final class CfPubObj {
   }
 
   /** own_ability.tokens(rows, gid, own events, view tick) (hero_spec 'off'). */
-  void ability(int seat, int vt, FloatBuffer out) {
-    for (int i = 0; i < ABIL_K * 7; i++) out.put(i, 0f);
+  void ability(int seat, int vt, FloatBuffer out, int off) {
+    for (int i = 0; i < ABIL_K * 7; i++) out.put(off + i, 0f);
     int[] ab = abil[seat];
     for (int i = 0; i < ab.length / 3; i++) {
       int key = ab[3 * i], form = ab[3 * i + 1], n = ab[3 * i + 2];
@@ -373,7 +379,7 @@ public final class CfPubObj {
         }
       }
       double[] row = {t.gid.get(key), form, n, ready, known, charges, cd};
-      for (int j = 0; j < 7; j++) out.put(i * 7 + j, (float) row[j]);
+      for (int j = 0; j < 7; j++) out.put(off + i * 7 + j, (float) row[j]);
     }
   }
 
@@ -382,8 +388,8 @@ public final class CfPubObj {
   public static String detKey(CfOppElixir.Keys k, int i) { return k.name.get(i); }
 
   /** public_observation.opponent_cycle(PublicObserver.plays, view tick, seat, gid) on CfOppElixir's detected plays. */
-  void cycle(CfOppElixir opp, int vt, FloatBuffer out) {
-    for (int r = 0; r < CYCLE_K; r++) { out.put(4 * r, 0f); out.put(4 * r + 1, 3f); out.put(4 * r + 2, -1f); out.put(4 * r + 3, -1f); }
+  void cycle(CfOppElixir opp, int vt, FloatBuffer out, int off) {
+    for (int r = 0; r < CYCLE_K; r++) { out.put(off + 4 * r, 0f); out.put(off + 4 * r + 1, 3f); out.put(off + 4 * r + 2, -1f); out.put(off + 4 * r + 3, -1f); }
     int n = opp.n;
     while (n > 0 && opp.ticks[n - 1] >= vt) n--;                  // plays are in tick order: those before the view tick
     HashSet<Integer> seen = new HashSet<>();
@@ -397,8 +403,8 @@ public final class CfPubObj {
       if (c == 0) continue;
       int since = 0;
       for (int j = 0; j < n; j++) if (opp.ticks[j] > opp.ticks[i]) since++;
-      out.put(4 * r, c); out.put(4 * r + 1, opp.pform[i]); out.put(4 * r + 2, since);
-      out.put(4 * r + 3, (float) ((vt - opp.ticks[i]) * 0.05));
+      out.put(off + 4 * r, c); out.put(off + 4 * r + 1, opp.pform[i]); out.put(off + 4 * r + 2, since);
+      out.put(off + 4 * r + 3, (float) ((vt - opp.ticks[i]) * 0.05));
     }
   }
 }

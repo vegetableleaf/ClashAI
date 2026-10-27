@@ -1,0 +1,60 @@
+noobs3 start 18:14:37
+nr_periods 253433
+nr_throttled 4325
+throttled_time 3922337839179
+nr_bursts 0
+burst_time 0
+noobs3 end 18:19:39
+nr_periods 256460
+nr_throttled 5357
+throttled_time 4204818849354
+nr_bursts 0
+burst_time 0
+all3 start 18:19:39
+nr_periods 256460
+nr_throttled 5357
+throttled_time 4204818849354
+nr_bursts 0
+burst_time 0
+all3 end 18:24:49
+nr_periods 259558
+nr_throttled 6103
+throttled_time 4415385625950
+nr_bursts 0
+burst_time 0
+nocue2 start 18:24:49
+nr_periods 259558
+nr_throttled 6103
+throttled_time 4415385625950
+nr_bursts 0
+burst_time 0
+nocue2 end 18:29:45
+nr_periods 262513
+nr_throttled 7191
+throttled_time 4764977633087
+nr_bursts 0
+burst_time 0
+all4 start 18:29:45
+nr_periods 262513
+nr_throttled 7191
+throttled_time 4764977633087
+nr_bursts 0
+burst_time 0
+all4 end 18:34:49
+nr_periods 265560
+nr_throttled 7908
+throttled_time 4968231118169
+nr_bursts 0
+burst_time 0
+noobs4 start 18:34:49
+nr_periods 265560
+nr_throttled 7908
+throttled_time 4968231118169
+nr_bursts 0
+burst_time 0
+noobs4 end 18:39:52
+nr_periods 268587
+nr_throttled 8670
+throttled_time 5235459119181
+nr_bursts 0
+burst_time 0

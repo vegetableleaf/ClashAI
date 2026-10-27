@@ -42,7 +42,7 @@ public final class CfCue {
    */
   public static final class Tables {
     final HashMap<String, int[]> body = new HashMap<>(), buff = new HashMap<>();
-    public final LinkedHashSet<String> missing = new LinkedHashSet<>();   // "B:name" / "F:alias"
+    public final java.util.Set<String> missing = java.util.concurrent.ConcurrentHashMap.newKeySet();   // "B:name" / "F:alias" (S3b-4: CfLoop pool threads add)
     public int underground, invisible, windup;
 
     public void putBody(String name, int hs, boolean hides, int idleTags) { body.put(name, new int[] {hs, hides ? 1 : 0, idleTags}); }

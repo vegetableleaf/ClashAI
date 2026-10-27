@@ -27,7 +27,7 @@ public final class CfOppElixir {
     final ArrayList<Double> cost = new ArrayList<>();           // NaN = card_cost None (nothing charged)
     final ArrayList<Integer> window = new ArrayList<>();        // swarm_ticks_by_key.get(key, swarm_ticks)
     final ArrayList<Integer> gid = new ArrayList<>();           // the policy's gid.get(card_key(key), 0) (opp_past)
-    public final Set<String> missing = new LinkedHashSet<>();   // "card|body row|form#entity id" seen, not in body
+    public final Set<String> missing = java.util.concurrent.ConcurrentHashMap.newKeySet();   // S3b-4: CfLoop pool threads add; "card|body row|form#entity id" seen, not in body
 
     public int addKey(String n, double c, int w, int g) {
       name.add(n); cost.add(c); window.add(w); gid.add(g);

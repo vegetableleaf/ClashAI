@@ -203,28 +203,32 @@ Caveats:
    against `DECIDE` 2-3; trainer integration (job lists, records, rewards, opponent groups) 3-5; multi-JVM shared
    memory 1-2; crforge naming adapter 0.5-1 (EVAL.md). About **2-3 weeks**.
 
-### c3. Projection (b): `project.py results/loop_n2048_c2_t24.json --extra-core-s 0.05`
-CPU bound = the measured loop rate (720k/h on 48 threads), linear to the pod's vCPU minus 2, slowed by 0.05 core-s per
-match for the observation parts not yet ported (b: 10x the measured Java tok / mask / sc cost of 0.005). GPU bound =
-SPEED.md's rows/s on one 4090 (B >= 1,024, CLXIII inputs) x GPUs / 706 rows per match.
+### c3. Projection: `project.py results/loop_n2048_c2_t24.json --extra-core-s 0.049` (S3b-4: the extra is measured)
+CPU bound = the measured loop rate (720k/h on 48 threads), linear to the pod's vCPU minus 2, slowed by **0.049 core-s
+per match: the full Java observation's measured cost in the loop** (S3b-4 below, a: every builder, cue included, the
+median process core-s per match with the observation minus without; it was the 0.05 guess of S3, b). Cross-check:
+`project.py results/s3b4_all4.json` (the facade loop with every builder, no extra) gives a CPU bound of 648,568 on
+54 vCPU and 1,571,731 on 128 vCPU. GPU bound = SPEED.md's rows/s on one 4090 (B >= 1,024, CLXIII inputs) x GPUs / 706
+rows per match.
 
 | pod | model, GPU path | CPU-bound matches/h | GPU-bound matches/h | **matches/h** | 300k | 1 M |
 |---|---|---:|---:|---:|---|---|
-| 54 vCPU + 1x 4090 | 1.76 M as today, fp32 | 626,711 | 48,580 | **48,580** | no | no |
-| 54 vCPU + 1x 4090 | 1.76 M lazy refine, fp32 | 626,711 | 95,833 | **95,833** | no | no |
-| 54 vCPU + 1x 4090 | 1.76 M lazy refine + bf16 | 626,711 | 227,035 | **227,035** | no | no |
-| 54 vCPU + 1x 4090 | 10 M as today, fp32 | 626,711 | 22,324 | **22,324** | no | no |
-| 54 vCPU + 1x 4090 | 10 M lazy refine + bf16 (b: CLXIII's x4.67) | 626,711 | 104,329 | **104,329** | no | no |
-| 128 vCPU + 2x 4090 | 1.76 M as today, fp32 | 1,518,570 | 97,159 | **97,159** | no | no |
-| 128 vCPU + 2x 4090 | 1.76 M lazy refine, fp32 | 1,518,570 | 191,667 | **191,667** | no | no |
-| 128 vCPU + 2x 4090 | 1.76 M lazy refine + bf16 | 1,518,570 | 454,069 | **454,069** | yes | no |
-| 128 vCPU + 2x 4090 | 10 M as today, fp32 | 1,518,570 | 44,648 | **44,648** | no | no |
-| 128 vCPU + 2x 4090 | 10 M lazy refine + bf16 (b: CLXIII's x4.67) | 1,518,570 | 208,657 | **208,657** | no | no |
+| 54 vCPU + 1x 4090 | 1.76 M as today, fp32 | 629,184 | 48,580 | **48,580** | no | no |
+| 54 vCPU + 1x 4090 | 1.76 M lazy refine, fp32 | 629,184 | 95,833 | **95,833** | no | no |
+| 54 vCPU + 1x 4090 | 1.76 M lazy refine + bf16 | 629,184 | 227,035 | **227,035** | no | no |
+| 54 vCPU + 1x 4090 | 10 M as today, fp32 | 629,184 | 22,324 | **22,324** | no | no |
+| 54 vCPU + 1x 4090 | 10 M lazy refine + bf16 (b: CLXIII's x4.67) | 629,184 | 104,329 | **104,329** | no | no |
+| 128 vCPU + 2x 4090 | 1.76 M as today, fp32 | 1,524,562 | 97,159 | **97,159** | no | no |
+| 128 vCPU + 2x 4090 | 1.76 M lazy refine, fp32 | 1,524,562 | 191,667 | **191,667** | no | no |
+| 128 vCPU + 2x 4090 | 1.76 M lazy refine + bf16 | 1,524,562 | 454,069 | **454,069** | yes | no |
+| 128 vCPU + 2x 4090 | 10 M as today, fp32 | 1,524,562 | 44,648 | **44,648** | no | no |
+| 128 vCPU + 2x 4090 | 10 M lazy refine + bf16 (b: CLXIII's x4.67) | 1,524,562 | 208,657 | **208,657** | no | no |
 
 **What reaches 300k and 1 M per pod:**
 - **CPU side** (b): 300k needs at most 0.62 core-s per match on 54 vCPU (52 usable) and the loop measured 0.19-0.21
-  with the main tensors, so **300k: yes on both pods**. 1 M needs at most 0.19 core-s per match on 54 vCPU (**no**: about
-  0.25 after the port) and 0.45 on 128 vCPU (**yes**: 1.5 M projected).
+  with the main tensors, so **300k: yes on both pods**. 1 M needs at most 0.19 core-s per match on 54 vCPU (**no**:
+  0.25 projected, 0.27 measured in the facade loop with every builder, S3b-4) and 0.45 on 128 vCPU (**yes**: 1.5 M
+  projected; b: linear past 48 threads, which needs several JVMs, c2 point 5).
 - **GPU side: 300k only on 2x 4090 with CLXIII lazy refine + bf16** (454k). Lazy refine is SPEED.md's untested refactor
   (b), bf16 changes the stored log-probs (SPEED.md e5). On one 4090 the best is 227k.
 - **1 M: no pod here reaches it.** It needs 196k rows/s at 706 rows per match: 4.4 4090s at the best measured CLXIII
@@ -491,8 +495,19 @@ python -I project.py results/loop_n2048_c2_t24.json --extra-core-s 0.05   # lapt
   | extrapolate 0 | `results/s3b3d_x0.json` | 49,917 | 12,905 / 2,961 / 14,461 / 36,596 | 4,520 / 0 / 0 |
 
   Also 0 view-tick mismatches and 0 own-event-count mismatches (Java log vs `PublicObserver.own_events`) on every row.
-  Not measured (b): how many own_ability rows had a press after the deploy (the ready = 0 / cooldown branch); every
-  controller row had readiness known (16,191 / 16,191).
+  **The press branch (a), `--hero-abilities` (RoyaleSelfPlayEnv hero_abilities, the generic press rule):** the harness
+  env above presses NO button (0 presses in 56 matches: `hero_abilities` defaults off), so those runs never showed a
+  controller after a press. With presses on, at 93e718f (S3b-3f's CfCue in the harness too), 56 matches each, every
+  GenModel key (all 20, `cue` included) IDENTICAL:
+
+  | cfg | JSON | seat-rows | presses | own_ability rows: known / not ready / no charge left / cooldown > 0 |
+  |---|---|---:|---:|---|
+  | live | `results/s3b3d_live_press.json` | 50,939 | 580 | 16,518 / 9,488 / 9,488 / 0 |
+  | extrapolate 0 | `results/s3b3d_x0_press.json` | 50,527 | 538 | 15,573 / 10,028 / 8,913 / 1,255 |
+
+  0 view-tick, own-event-count and press-tick mismatches. Cooldown > 0 is only the deploy window (born + 1,000 ms; no
+  hero / champion here has an ability cooldown): the body shows from born = act + 20 on, so at h = 26 the view tick is
+  always past born + 20 (0 rows), at h = 0 it is not (1,255 rows).
 - Command (pod 30408): `OBSID_RL=/workspace/s3b3d/rl OBSID_CLXIII=/workspace/f1c/models/succ48_o_s91_u0075_grafted.pt
   OBSID_BUILD=/workspace/s3b3d/build_live rl/scratchpad/gauntlet/L74/speed/crforge/obsid/run.sh out/s3b3d_live.json
   --n 56 [--set extrapolate_ticks=0]`.
@@ -554,3 +569,63 @@ python -I project.py results/loop_n2048_c2_t24.json --extra-core-s 0.05   # lapt
   | the same call from Python (JPype) | 24.8 us | 24.3 us |
 
   The Java path takes tok / mask as built; the first-sight table fills are left out of its time.
+
+## S3b-4: the full Java observation inside the loop (`obsid/CfLoop.java`, `obsid/cf_loop_obs.py`)
+
+- **What runs (a, code).** `CfLoop` = S3's `Rollout` on the F1 facade: C cohorts of N `CfCore` matches (the facade's
+  identity tables copied from one `CrforgeCore`), T Java threads per cohort, async step, direct buffers. Per 10-tick
+  decision each seat acts by Rollout's Java stand-in rule (a random hand slot with p 0.3 if `CfCore.check` allows it,
+  a random point and cell; an ability press with p 0.05 when the side has a button), the match steps, and both seats'
+  rows are built at the live cfg (fv6, extrapolate 26, the public counter) by EVERY ported builder, in
+  `Match.prepare`'s order: `CfOppElixir.update` -> `FacadeMatch.obs` (tok / mask / sc / unit_form) -> `CfCue.build`
+  (cue) -> `CfOppElixir.past` -> `CfIdent.build` (past + 9 identity keys) -> `CfPubObj.update` + `build` (projectiles,
+  effects, own_ability, opp_cycle): all 20 GenModel keys of CLXIII. Decks: the 56 census pairs of the harness (Icebow
+  on side i % 2; `CfCore.reset` arguments captured from `RoyaleSelfPlayEnv.reset`), levels 16.
+- **Measured:** process CPU (`getrusage`: engine, obs, GC, JIT, the Python thread), and the pool threads' CPU
+  (`ThreadMXBean`) split into engine (acts + 10 ticks + resets) and obs (both seats' rows). Tables are per cohort,
+  filled from production code between that cohort's rounds; a decision that meets a missing key skips that builder
+  (counted). Window 120 s after 90 s warm-up, 2 cohorts x 2,048 matches x 24 threads (S3's best loop shape), pod 30408
+  (54 vCPU quota; its GPU trainer took ~1.1 cores throughout; the cgroup was throttled in about a third of its 100 ms
+  periods during each run, `results/s3b4_throttle.txt`: the wall rate is low, core-s per match is the robust number).
+- **Result (a), `results/s3b4_*.json`, sources pinned (`src_sha256`), runs in time order:**
+
+  | run | builders | matches | **process core-s / match** | engine thread core-s / match | **obs thread core-s / match** | **obs us / seat-row** | matches/h (48 threads) |
+  |---|---|---:|---:|---:|---:|---:|---:|
+  | `all` | all 20 keys | 14,888 | 0.363 | 0.237 | 0.0633 | 90.8 | 446,230 |
+  | `noobs` | none | 23,151 | 0.231 | 0.191 | - | - | 694,164 |
+  | `all2` | all 20 keys (1 engine crash; cue skipped on 2,772 rows) | 19,413 | 0.266 | 0.179 | 0.0388 | 55.6 | 582,115 |
+  | `nocue` | all but cue | 21,973 | 0.246 | 0.172 | 0.0287 | 40.8 | 658,986 |
+  | `noobs2` | none | 25,178 | 0.212 | 0.177 | - | - | 755,318 |
+  | `noobs3` | none | 25,053 | 0.219 | 0.174 | - | - | 751,385 |
+  | `all3` | all 20 keys (cue skipped on 5,220 rows) | 19,622 | 0.273 | 0.185 | 0.0421 | 60.5 | 588,525 |
+  | `nocue2` | all but cue | 22,852 | 0.250 | 0.168 | 0.0285 | 40.9 | 685,389 |
+  | `all4` | all 20 keys (0 misses, 0 crashes) | 19,961 | 0.275 | 0.187 | 0.0391 | 56.4 | 598,755 |
+  | `noobs4` | none | 23,681 | 0.235 | 0.185 | - | - | 709,605 |
+
+  Seat-rows per match 697-704; 0 rows missed a detector or CfPubObj key in any window.
+- **The numbers (a; medians of the runs above, `all` an outlier kept in the table):**
+  - **Java observation, all 20 keys: 0.039 core-s per match of pool-thread CPU, 56-61 us per seat-row** (all2-4;
+    0.063 / 91 us in `all`). Without cue: 0.029 core-s per match, 41 us per seat-row, so cue costs about 0.011 core-s
+    per match (about 16 us per seat-row).
+  - **Process cost of the observation** (with it minus without, all GC / allocation included): median 0.274 - 0.225 =
+    **0.049 core-s per match** (range 0.03-0.15 over the pairings; `all` vs `noobs` gives 0.13). This is the value c3
+    now uses in place of S3's guessed 0.05.
+  - **Engine (facade) core-s per match: 0.17-0.19 of pool-thread CPU, 0.21-0.235 process** without the observation
+    (S3's raw-crforge loop measured 0.19-0.21 WITH tok / mask / sc, on pod 32657).
+  - A small run (1 cohort x 64 matches x 4 threads, `results/s3b4_smoke.json`) gave 26 us per seat-row and 0.10
+    engine thread core-s per match: per-unit costs at 48 threads are about 2x those at 4 (b: SMT / cache sharing on a
+    shared host, not separated).
+- **Engine crash (a, new):** with random ability presses crforge itself threw on 1 match of `all2` and killed the
+  first `nocue` run (`results/s3b4_nocue_crash.log`): `UnsupportedOperationException:
+  EliteArcherHero_Ability_Triple_Shot_Projectile is shot by proj_..., which has no root, so the shooter would be its
+  root, not modelled` (the hero Musketeer's ability shot). `CfLoop` now drops such a match (counted as
+  `engine_crashes`) instead of stopping the loop. A real loop needs this decision too (F1 / crforge, not this ticket).
+- **Not in this cost (b):** the GPU forward / decide (c2), the server's Python, the memory model's tables, and real
+  table misses (here tables fill in warm-up; 109-136 keys were still filled in each window, about 1 per second).
+- Threading changes to make the builders safe on a pool: the `missing` sets of `CfOppElixir.Keys`, `CfPubObj.Tables`
+  and `CfCue.Tables` are concurrent sets (were LinkedHashSet; the harness only reads them between builds). `CfPubObj.build`
+  takes buffer offsets.
+- Command (pod 30408, `/workspace/s3b3d`): `OBSID_RL=/workspace/s3b3d/rl
+  OBSID_CLXIII=/workspace/f1c/models/succ48_o_s91_u0075_grafted.pt OBSID_BUILD=/workspace/s3b3d/build_loop
+  rl/scratchpad/gauntlet/L74/speed/crforge/obsid/run_loop.sh out/s3b4_all4.json --envs 2048 --cohorts 2 --threads 24
+  --warm 90 --seconds 120 [--no-cue | --no-obs]` (`s3b4_chain*.sh` ran them in the order above).

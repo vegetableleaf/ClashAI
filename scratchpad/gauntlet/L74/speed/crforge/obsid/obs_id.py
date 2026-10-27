@@ -272,7 +272,7 @@ class JavaPub:
         self.b = {k: BB.allocateDirect(4 * s[0] * s[1]).order(order) for k, s in self.KEYS}
         self.f = {k: b.asFloatBuffer() for k, b in self.b.items()}
         self.v = {k: np.frombuffer(memoryview(self.b[k]), np.float32).reshape(s) for k, s in self.KEYS}
-        self.press_tick_mismatch = 0
+        self.press_tick_mismatch = self.presses = 0
         orig, pub = R._Core.act, self
 
         def act(core_, *, side, deck_index=-1, x=0, y=0, ability_button=None):
@@ -286,6 +286,7 @@ class JavaPub:
                 else:
                     pub.press_tick_mismatch += int(t != int(env.tick))   # own_ability_events' tick is env.tick
                     j.press(int(side), t, int(ability_button))
+                    pub.presses += 1
             return r
 
         R._Core.act = act
@@ -373,6 +374,15 @@ class JavaPub:
                    _n_rows_proj=int(out["projectiles"][:, 0].any()), _n_rows_eff=int(out["effects"][:, 0].any()),
                    _n_rows_abil=int(out["own_ability"][:, 0].any()), _n_rows_abil_known=int(out["own_ability"][:, 4].any()),
                    _n_rows_cycle=int(out.get("opp_cycle", np.zeros((1, 1)))[:, 0].any()))
+        # the press branch, on PRODUCTION's row (cols: card, form, n, ready, ready_known, charges, cooldown_s): a known
+        # controller not ready / with no charge left (a press after its deploy) / a cooldown still running
+        pa = s._gen_row["own_ability"]
+        kn = (pa[:, 0] > 0) & (pa[:, 4] == 1)
+        out.update(_n_rows_abil_not_ready=int((kn & (pa[:, 3] == 0)).any()),
+                   _n_rows_abil_spent=int((kn & (pa[:, 5] == 0)).any()),
+                   _n_rows_abil_cooldown=int((kn & (pa[:, 6] > 0)).any()),
+                   _n_rows_abil_spent_identical=int((kn & (pa[:, 5] == 0)).any()
+                                                    and pa.tobytes() == out["own_ability"].tobytes()))
         return out
 
 
@@ -524,6 +534,8 @@ def main():
     ap.add_argument("--first-diffs", type=int, default=5)
     ap.add_argument("--opp-spells", type=int, default=1, help="0 = S3b-3c step 1: the counter sees bodies only")
     ap.add_argument("--pairs", default="", help="census pair indices (comma list, repeats allowed); default the first --n")
+    ap.add_argument("--hero-abilities", action="store_true", help="S3b-3d: env presses ability buttons by its rule "
+                    "(RoyaleSelfPlayEnv hero_abilities, ability_policy generic): exercises own_ability after a press")
     ap.add_argument("--build", default=str(HERE / "build"))
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
@@ -605,7 +617,7 @@ def main():
     envs, done, skips, t0 = [], [], [], time.time()
 
     def make():
-        envs.append(RoyaleSelfPlayEnv(decision_ticks=10, forms_mode="deck"))
+        envs.append(RoyaleSelfPlayEnv(decision_ticks=10, forms_mode="deck", hero_abilities=a.hero_abilities))
         return envs[-1]
 
     def on_result(r):
@@ -619,6 +631,7 @@ def main():
     core4 = ("tok", "mask", "sc", "unit_form")
     ident_keys = ("past",) + tuple(k for k, _ in JavaIdent.ID_KEYS)
     out = dict(
+        hero_abilities=a.hero_abilities,
         ticket="S3b-3c", opp_spells=bool(a.opp_spells), census_pairs=pairs, matches=len(done), skipped=skips, seat_rows=rep.rows, tick_mismatch=rep.tick_mismatch,
         diag=rep.diag,
         wall_s=round(time.time() - t0, 1), cfg_overrides=over, feature_version=cfg["feature_version"],
@@ -636,7 +649,8 @@ def main():
         status_by_key={k: v["status"] for k, v in sorted(keys.items())}, keys=keys, opp_past_delivered=odiag,
         pub_counters=dict(motion_estimated=int(sum(j.motionEstimated for j in pub.pub.values())),
                           landed=int(sum(j.landed for j in pub.pub.values())),
-                          expired=int(sum(j.expired for j in pub.pub.values())), press_tick_mismatch=pub.press_tick_mismatch),
+                          expired=int(sum(j.expired for j in pub.pub.values())), press_tick_mismatch=pub.press_tick_mismatch,
+                          presses=pub.presses),
         opp_counter_edges=dict(zip(map(str, jpype.JClass("CfOppElixir").EDGE_NAMES),
                                    map(int, jpype.JClass("CfOppElixir").EDGE))),
         stamp=envs[0].core.card_table_stamp() if envs else None, facade_hero_rule=BUILDERS[0].facade_hero_rule,
