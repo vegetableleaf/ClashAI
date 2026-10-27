@@ -149,13 +149,132 @@ commit's two pipeline files laid over them.
 | setup_fin16.sh, freeze_fin16.py, smoke_fin16.py, build_manifest_fin16.json | the training-pod install (section 0) |
 | cpu_ckpts.py | re-saves a config's checkpoints with CPU tensors, in a throw-away tree copy only (the CPU smoke) |
 | fin16_chain.sh | W19's earlier chain for the old W19 pod (33591, gone; no result of it landed); superseded by build16.sh + ab_run.sh |
-| results/ | CEILING_strict per arm x cohort, cmp_{c13,c22,union}.txt, ident_{c13,c22}.txt, build16.log, cargo results, plant16.log, setup_fin16.log, smoke_rl.txt |
+| down_dossier.py, cls_down.py, cls_down.sh, cls_down_agg.py, cls_down_split.py | A1b moved-fight dossier (section 5.2) |
+| table_diff.py | leaf diff of two card-table JSONs (A1c) |
+| results/ | K8_*_c22_CEILING_strict.txt, cmp_c22_K8.txt, ident_c22_K8.txt, moved_c22.json.gz, down_dossier_c22.txt, table_diff_1006_1019.txt; CEILING_strict per arm x cohort, cmp_{c13,c22,union}.txt, ident_{c13,c22}.txt, build16.log, cargo results, plant16.log, setup_fin16.log, smoke_rl.txt |
 
 ## 4. Not done / open
 
-- K = 8 (perturbed ceiling) was not run on fin16. Every number above is K = 0. W19 measured K0 = K8 on raw agreement to 0.001.
+- K = 8 on c22: done in A1b (section 5.1). c13 was not re-run at K = 8: it is identical between the arms at K = 0.
 - `fights.py` still defaults to `PARITY_TABLE_1019=0` (it is outside this ticket's write set). A fin16 J1 run must set it to 1.
 - `activate()`'s `card_table` stamp hashes the wheel's default embedded table, not the selected arm. Its
   cards_json_fnv1a64 is 803ec02c on both fin15 and fin16. fin15 and fin16 stamps still differ (pins, manifest sha, runtime_id),
   so `require_same` keeps them apart (a, read from the stamps). The stamp field itself is misleading (b; pre-existing).
 - No pipeline unit tests were added; `pipeline/tests/` is outside the write set. The 11-id probe above stands in.
+
+## 5. A1b (10-27): K = 8 on c22, and the 58 down fights
+
+### 5.1 K = 8 (8 perturbed SIMs per fight; ceiling and normalised J1), c22, both arms (a)
+Same harness, exports and chunks as section 2; `ab_run.sh` with K=8 (fin16 with `PARITY_TABLE_1019=1`); pod 32657, 09:16-10:16Z.
+
+| c22, stamped strict | fin15 (K8_15) | fin16 (K8_16) |
+|---|---|---|
+| fights / matches | 29,617 / 748 | 29,638 / 748 |
+| raw agreement (live vs perturbed) [95% CI] | 0.917 [0.912, 0.921] | **0.926 [0.922, 0.931]** |
+| ceiling (perturbed pairwise) | 0.993 | 0.993 |
+| normalised [95% CI] | 0.923 [0.919, 0.927]: floor (0.92 lower CI) missed | **0.933 [0.929, 0.937]: floor met** |
+| own Skeletons raw / normalised (n 2,566 / 2,568) | 0.838 / 0.849 | 0.885 / 0.895 |
+| opp Skeletons raw / normalised (n 404 / 406) | 0.860 / 0.865 | 0.945 / 0.950 |
+| paired on aK = mean over the 8 perturbed SIMs (cmpci) | | **+0.00961 [+0.00811, +0.01125]**, 374 up / 76 down |
+
+- The K = 8 pre-patch control holds. All 273 pre-10-19 c22 matches are identical after normalising, with all 8 perturbed SIMs
+  each (0 of 15,384 fights differ). Source: `results/ident_c22_K8.txt`.
+- The ceiling does not move: 0.993 on both arms. The replay is just as deterministic on fin16. The gain is agreement with live,
+  not less noise.
+- **Why the paired numbers differ from section 2 (a, from the code).** Section 2 had 339 up / 58 down at K = 0; here it is
+  374 / 76. cmpci pairs fights on `card_scores()['aK']`.
+  - At K = 0, aK is the agreement of live with the unperturbed SIM, so each fight is 0 or 1.
+  - At K > 0, aK is the MEAN agreement over the 8 perturbed SIMs (fights.py `card_scores`).
+  - So at K = 8 a fight counts as up or down whenever its fraction moves at all, and more fights move.
+  - The net figure agrees: +0.00949 vs +0.00961.
+- Raw agreement: 0.926 at K = 8 vs 0.927 at K = 0.
+- Normalised J1 still misses the owner's bar: 0.933 against 0.975 lower CI.
+
+### 5.2 Dossier of the 58 down fights (c22, K = 0; section 2's A15 -> A16)
+Tools:
+- `down_dossier.py` compares the two arms' own fight records exactly: the changed cards in each fight, and the earliest-born
+  body whose SIM record differs between the arms. Output: `results/moved_c22.json.gz`.
+- `cls_down.py` (w19/cls.py restricted to these fights, `CLS_ALL=1`, both arms) gives the live-vs-SIM first divergence on each
+  arm: on fin16, where the fight now fails; on fin15, where it passed.
+- `cls_down_agg.py` / `cls_down_split.py` join the two. Per-fight lines are in `results/down_dossier_c22.txt`.
+
+**Card (a):**
+- **57 of the 58 down fights contain a Skeletons play or Skeletons set-up body.**
+  - In 5, the first body whose record differs between the arms is the Skeletons themselves.
+  - In 52, it is a body near them, so a knock-on.
+- The 58th fight holds another changed card and no Skeletons.
+- Up fights for comparison: 322 of 339 involve Skeletons (76 direct, 246 knock-on); 15 are knock-on of another changed card;
+  2 are direct Cannon Cart / Dart Goblin set-ups.
+- Anchors of the down fights:
+
+  | anchor | down fights |
+  |---|---|
+  | own Skeletons | 14 |
+  | own IceWizard hero | 7 |
+  | opp Skeletons | 3 |
+  | opp RageBarbarian | 3 |
+  | own Xbow | 3 |
+  | everything else | 1-2 each |
+
+  So the down fights sit around our Skeleton plays, like the up fights (137 of the 339 up fights are anchored on own
+  Skeletons).
+
+**First divergence from live (a, cls on both arms):**
+
+| how fin16's first global live-vs-SIM divergence relates to fin15's on the same fight | down fights |
+|---|---|
+| **same** divergence (kind, body, within 4 ticks): fin15 already departed from live there and passed anyway | **34** |
+| fin16 departs **later** than fin15 (it tracks live longer, then the verdict flips downstream) | 16 |
+| fin16 departs **earlier**, on a Skeletons body | 5 |
+| fin16 departs earlier, on another body | 2 |
+| unclassified (cls found no divergence on one arm) | 1 |
+
+- fin16's failing verdict:
+
+  | kind | down fights |
+  |---|---|
+  | death_sim_late | 26 |
+  | death_sim_early | 15 |
+  | survival_sim_dies | 6 |
+  | survival_live_dies | 3 |
+  | spell_fate | 3 |
+  | tower_sim_less | 3 |
+  | tower_sim_more | 2 |
+
+- The first divergence next to the failing body is a Skeletons body in 16 of 58 (own 13, opp 3). It falls within 40 ticks of
+  the fight start in 24 of 58; the median is 61 ticks.
+
+**Mechanism.**
+- (a) Yes, this is knock-on from the relocated Skeletons. 50 of the 58 fights either share fin15's first live divergence (34)
+  or keep fin16 closer to live for longer (16). Either way, the fight was already off live before or at the point where the
+  two engines part. The new Skeleton positions change what follows, and in these fights the verdict tips the other way.
+  This is the cascade side of the same mechanism that makes the 339 up fights.
+- (b) In at most 3 fights the 10-19 layout itself may be wrong. In 7 fights fin16 departs from live earlier than fin15, and in
+  4 of them that is the same body only 5-12 ticks sooner (pos of own Skeletons at dt 38 vs 50, 104 vs 114; Assassin dt 38 vs
+  44; SkeletonArmy target dt 119 vs 125). The 3 left are fights where fin16's first live divergence is a Skeletons body and
+  fin15's was not:
+  - 20261020_202500@2575: own Skeletons pos at dt 73;
+  - 20261021_043430@5655: own Skeletons pos at dt 58;
+  - 20261021_142227@1620: own Skeletons gone in the SIM first, at dt 30.
+
+  These match the clamp-zone family from section 9.3 of FIN15.md: live clamps the inner member in ~45 % of identical taps.
+  That is (b), untested.
+- No law change was made, and none is proposed beyond the 10-19 table: the ticket bars further RoyaleSim law rounds.
+
+## 6. A1c (10-27, commit b417557): sim_unit_state follows the selected table
+- `pipeline/sim_unit_state.py` `_tbl` used to read `EMBEDDED_CARDS_160402017_JSON` (the 10-06 table) on every runtime.
+  Under fin16-linux it now reads the wheel's 10-19 text. Any module without that text keeps 10-06 and imports nothing new;
+  that covers older wheels and `live_unit_state`'s namespace.
+- **What the table feeds (a):** `sim_unit_state.extract` feeds only `e1_eval.sim_cue_rows`. That is the step-c cue
+  observations `b["cue"]`, used by models with `cue_inputs: on` (brT10_s107.yaml has it). It feeds no reward.
+- **Whether the values matter (a):** the extractor reads 702 table entries (hit_speed_ms, hide flag, idle_buff, projectile
+  name, buff multipliers, buff durations, projectile target_buff, spell area life). 0 of them differ between the two tables.
+  The one buff row that differs, DarkMagicAOE_Damage_lv2, differs only in damage_per_second, which the extractor does not read.
+  The full 60-leaf table diff is in `results/table_diff_1006_1019.txt`. So cue rows are numerically unchanged: this is a
+  correctness fix, not a behaviour change.
+- `live_unit_state.py:55` (its fixed hash of the 10-06 table) is kept. It does not break: a fin16 wheel still embeds the 10-06
+  text. Because the cue-read fields are equal, live cue rows and fin16 SIM cue rows still agree.
+- **Tests:** `test_fin16_selection`; `test_ids_unchanged_by_fin16` (11 old ids vs 0f2d82f); `test_cue_table_follows_fin16`.
+  29 / 29 pass (laptop, `uvx pytest`). pyflakes is clean.
+- **Smoke:** `rl_royale --smoke` on fin16-linux (brT10_s107, `cue_inputs: true`, CPU) printed SMOKE PASS twice. The W/L/D
+  matched the section 1 smoke: 4/4/0 and 3/5/0.
