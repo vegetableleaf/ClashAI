@@ -507,3 +507,18 @@ Dry run on 30408 (4090, `FRESH=1`, so torch 2.11.0+cu128 was installed from scra
 - The numbers reproduce j2 / j3 within 1.5% (1.76M fp32 21,091 / TF32 28,193 / bf16 47,175 rows/s; same change rates).
 - On a card with more memory the OOM cells will run, so the time grows. It stays far under 40 min (b).
 - Usage: `tar xzf gpu_bench.tgz -C /workspace && bash /workspace/gpu_bench/bench_gpu.sh` (`GRID=quick`: 1.76M only).
+
+## k. RTX PRO 6000 Blackwell (Server Edition, 96 GB) vs RTX 4090 -- 10-27, gpu_bench bundle, results/gpu_bench_pro6000/
+Same bundle as the 4090 dry run (torch 2.8.0+cu128). Wall 210 s. Pod cgroup = 27.2 cores (cpu.max), not 32.
+Plateau rows/s (B 2048), PRO 6000 / 4090 (ratio):
+
+| model | fp32 | TF32 | bf16 | bf16 decision change (PRO 6000) |
+|---|---|---|---|---|
+| 1.76M (CLXIII) | 41.1k / 21.0k (1.96x) | 45.2k / 28.4k (1.59x) | 68.8k / 47.1k (1.46x) | 0.49% |
+| 5M  | 13.8k / 8.7k (1.59x) | 17.6k / 10.3k (1.71x) | 27.8k / 19.1k (1.46x) | 9.2% (random weights) |
+| 10M | 7.4k / 4.6k (1.61x) | 9.8k / 5.6k (1.75x) | 15.6k / 11.0k (1.42x) | 6.0% (random weights) |
+| 15M | 5.05k / 2.85k (1.77x) | 7.2k / 4.4k (1.64x) | 11.5k / 8.0k (1.44x) | 5.2% (random weights) |
+
+Per dollar (listed $2.49 vs $0.89, i.e. 2.8x the price): the 4090 gives 1.4-1.9x more rows per dollar in every cell.
+Achieved fp32 only 17-29 TFLOPS on the PRO 6000: the forward is far from peak on both cards, so kernel work is cheaper
+than hardware. The PRO 6000 wins only where many GPUs in ONE machine are needed (learner + rollouts), or 96 GB.

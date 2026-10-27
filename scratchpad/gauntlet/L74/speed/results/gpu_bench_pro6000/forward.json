@@ -1,0 +1,386 @@
+{
+ "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+ "rows": [
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "eager",
+   "B": 256,
+   "ms": 7.22,
+   "rows_per_s": 35460
+  },
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "eager",
+   "B": 512,
+   "ms": 13.2,
+   "rows_per_s": 38790
+  },
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "eager",
+   "B": 1024,
+   "ms": 24.99,
+   "rows_per_s": 40975
+  },
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "eager",
+   "B": 2048,
+   "ms": 48.72,
+   "rows_per_s": 42039
+  },
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "eager",
+   "B": 4096,
+   "ms": 96.79,
+   "rows_per_s": 42319
+  },
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "eager",
+   "B": 8192,
+   "ms": 193.4,
+   "rows_per_s": 42357
+  },
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "graphs",
+   "B": 256,
+   "ms": 6.4,
+   "rows_per_s": 39975
+  },
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "graphs",
+   "B": 512,
+   "ms": 12.06,
+   "rows_per_s": 42454
+  },
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "graphs",
+   "B": 1024,
+   "ms": 24.51,
+   "rows_per_s": 41775
+  },
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "graphs",
+   "B": 2048,
+   "ms": 48.32,
+   "rows_per_s": 42387
+  },
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "graphs",
+   "B": 4096,
+   "ms": 96.45,
+   "rows_per_s": 42469
+  },
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "graphs",
+   "B": 8192,
+   "ms": 192.8,
+   "rows_per_s": 42489
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "eager",
+   "B": 256,
+   "ms": 19.13,
+   "rows_per_s": 13380
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "eager",
+   "B": 512,
+   "ms": 37.45,
+   "rows_per_s": 13670
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "eager",
+   "B": 1024,
+   "ms": 72.79,
+   "rows_per_s": 14068
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "eager",
+   "B": 2048,
+   "ms": 145.26,
+   "rows_per_s": 14099
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "eager",
+   "B": 4096,
+   "ms": 289.76,
+   "rows_per_s": 14136
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "eager",
+   "B": 8192,
+   "ms": 579.98,
+   "rows_per_s": 14125
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "graphs",
+   "B": 256,
+   "ms": 18.49,
+   "rows_per_s": 13844
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "graphs",
+   "B": 512,
+   "ms": 36.94,
+   "rows_per_s": 13861
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "graphs",
+   "B": 1024,
+   "ms": 72.58,
+   "rows_per_s": 14109
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "graphs",
+   "B": 2048,
+   "ms": 145.08,
+   "rows_per_s": 14117
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "graphs",
+   "B": 4096,
+   "ms": 289.68,
+   "rows_per_s": 14140
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "graphs",
+   "B": 8192,
+   "ms": 579.7,
+   "rows_per_s": 14131
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "eager",
+   "B": 256,
+   "ms": 36.18,
+   "rows_per_s": 7076
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "eager",
+   "B": 512,
+   "ms": 70.64,
+   "rows_per_s": 7248
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "eager",
+   "B": 1024,
+   "ms": 139.77,
+   "rows_per_s": 7326
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "eager",
+   "B": 2048,
+   "ms": 276.95,
+   "rows_per_s": 7395
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "eager",
+   "B": 4096,
+   "ms": 551.69,
+   "rows_per_s": 7425
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "eager",
+   "B": 8192,
+   "ms": 1102.91,
+   "rows_per_s": 7428
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "graphs",
+   "B": 256,
+   "ms": 35.52,
+   "rows_per_s": 7208
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "graphs",
+   "B": 512,
+   "ms": 70.06,
+   "rows_per_s": 7308
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "graphs",
+   "B": 1024,
+   "ms": 139.59,
+   "rows_per_s": 7336
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "graphs",
+   "B": 2048,
+   "ms": 276.81,
+   "rows_per_s": 7399
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "graphs",
+   "B": 4096,
+   "ms": 551.62,
+   "rows_per_s": 7425
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "graphs",
+   "B": 8192,
+   "ms": 1102.57,
+   "rows_per_s": 7430
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "eager",
+   "B": 256,
+   "ms": 53.21,
+   "rows_per_s": 4811
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "eager",
+   "B": 512,
+   "ms": 104.03,
+   "rows_per_s": 4922
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "eager",
+   "B": 1024,
+   "ms": 205.77,
+   "rows_per_s": 4976
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "eager",
+   "B": 2048,
+   "ms": 405.3,
+   "rows_per_s": 5053
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "eager",
+   "B": 4096,
+   "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 6.67 GiB. GPU 0 has a total capacity of 94.97 GiB of which 6.38 GiB is free. Including non-PyTorch memory, this process has 88.59 GiB memory in "
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "eager",
+   "B": 8192,
+   "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 13.33 GiB. GPU 0 has a total capacity of 94.97 GiB of which 8.31 GiB is free. Including non-PyTorch memory, this process has 86.65 GiB memory in"
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "graphs",
+   "B": 256,
+   "ms": 52.62,
+   "rows_per_s": 4865
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "graphs",
+   "B": 512,
+   "ms": 103.62,
+   "rows_per_s": 4941
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "graphs",
+   "B": 1024,
+   "ms": 205.48,
+   "rows_per_s": 4983
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "graphs",
+   "B": 2048,
+   "ms": 405.05,
+   "rows_per_s": 5056
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "graphs",
+   "B": 4096,
+   "ms": 811.14,
+   "rows_per_s": 5050
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "graphs",
+   "B": 8192,
+   "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 13.33 GiB. GPU 0 has a total capacity of 94.97 GiB of which 7.24 GiB is free. Including non-PyTorch memory, this process has 87.72 GiB memory in"
+  }
+ ]
+}
