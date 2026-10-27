@@ -29,7 +29,7 @@ import random
 from collections import Counter
 from typing import Optional
 
-from pipeline.royale_runtime import activate as _activate_runtime
+from pipeline.royale_runtime import ENGINE, activate as _activate_runtime
 from pipeline import royale_heroiw as heroiw
 
 _activate_runtime()
@@ -185,7 +185,7 @@ class _Core:
                 env.behaviour_telemetry.play(before.tick, side, env.names[cid], int(x), int(y),
                                              elixir=before.players[side].elixir_milli / 1000.0)
             if env.feature_version >= 3:
-                env.public_plays.append(dict(tick=int(before.tick), side=side, card=env.names[cid], form=form,
+                env.public_plays.append(dict(tick=int(before.tick) + env.engine_delay_ticks, side=side, card=env.names[cid], form=form,
                                              x=int(x), y=int(y), accepted=True, play_index=len(env.public_plays)))
             return {"accepted": True, "result_code": 0}
         code = NOT_ENOUGH_ELIXIR if r.status == DeployStatus.NOT_ENOUGH_ELIXIR else REFUSED_BASE + int(r.status)
@@ -197,6 +197,9 @@ class _Core:
 
 class RoyalePoolEnv:
     scenario_start: Optional[dict] = None    # RoyaleSelfPlayEnv.reset(start=...) of this match (W15); None = from tick 0
+    # ticks between an accepted act and the engine running it: RoyaleSim runs it at once (0); crforge 20 (its
+    # PLAY_DELAY_TICKS, the client's). e1_eval makes a seat wait for the run; public plays are dated at the run.
+    engine_delay_ticks = 0
 
     def __init__(self, *, decision_ticks: int = 10, elixir_slack: int = 40, tail_cap: int = 7200,
                  warmup_ticks: int = 90, seed: int = 0, subs: Optional[dict[str, str]] = None,
@@ -230,7 +233,12 @@ class RoyalePoolEnv:
         if forms_mode not in FORMS_MODES:
             raise ValueError(f"forms_mode {forms_mode!r} not in {FORMS_MODES}")
         self.forms_mode = 'deck' if heroiw.ENABLED else forms_mode
-        self.core = RustEngine(**heroiw.engine_options())
+        if ENGINE == "crforge":                       # ROYALE_ENGINE=crforge (pipeline.royale_runtime, F1)
+            from pipeline.crforge_core import CrforgeCore
+            self.core = CrforgeCore()
+            self.engine_delay_ticks = int(self.core.command_delay_ticks[0])
+        else:
+            self.core = RustEngine(**heroiw.engine_options())
         self.ids = {c.name: c.card_id for c in self.core.cards()}
         self.names = {v: k for k, v in self.ids.items()}
         self.decision_ticks, self.elixir_slack, self.tail_cap = int(decision_ticks), int(elixir_slack), int(tail_cap)
@@ -238,6 +246,9 @@ class RoyalePoolEnv:
         self.eng = _Core(self)
         self._code_names = RESULT_CODE_NAMES
         self.elixir_regen_schedule = REGEN_SCHEDULE          # e1_eval's opp-elixir counter reads it (T12b)
+        if ENGINE == "crforge":   # crforge regenerates as the real engine (F1b regen_probe, 40 matches: 0.01793 /
+            from pipeline.opp_elixir_count import REGEN_SCHEDULE as REAL   # 0.03575 / 0.05371 per tick vs 0.0178 /
+            self.elixir_regen_schedule = REAL                           # 0.0357 / 0.0537)
 
     # ---------------------------------------------------------------- decks
     def card_id(self, name: str) -> int:

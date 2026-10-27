@@ -137,19 +137,12 @@ def part_obs(a):
     torch.set_num_threads(4)
     from pipeline import e1_eval as E
     from pipeline import search_s0 as S
-    from pipeline.opp_elixir_count import REGEN_SCHEDULE
     from pipeline.royale_env import RoyaleSelfPlayEnv
-
-    class CfEnv(RoyaleSelfPlayEnv):
-        """The seam this ticket proposes for royale_env (not edited): crforge core + crforge's (= the real) regen."""
-        def __init__(self, **kw):
-            super().__init__(**kw)
-            self.core = CrforgeCore()
-            self.elixir_regen_schedule = REGEN_SCHEDULE
 
     model, info = E.load_policy(CLXIII)
     cfg = S.live_cfg(0.5, info["grid"])
-    cfg.update(action_delay_ticks=6, feature_version=6)   # live 26 = crforge's built-in 20 + 6 (seam note)
+    # tap to land = live's 26 (live_cfg) on both engines: e1_eval takes crforge's own 20 off it (Match._setup)
+    cfg.update(action_delay_ticks=26, feature_version=6)
     jobs, pairs = [], census()
     for i in range(a.n):
         d1, f1 = pairs[i % len(pairs)][2], pairs[i % len(pairs)][3]
@@ -159,7 +152,7 @@ def part_obs(a):
     rows, skips, envs, t0 = [], [], [], time.time()
 
     def make():
-        envs.append(CfEnv(decision_ticks=10, forms_mode="deck"))
+        envs.append(RoyaleSelfPlayEnv(decision_ticks=10, forms_mode="deck"))   # ROYALE_ENGINE picks the core
         return envs[-1]
 
     def on_result(r):
@@ -170,14 +163,14 @@ def part_obs(a):
     E.run_selfplay_batch(make, model, {"clxiii": (model, dict(cfg))}, jobs, cfg, min(a.n, 8), on_result,
                          on_skip=lambda spec, exc: skips.append((spec["tag"], repr(exc))))
     unm = {}
-    for e in envs:
+    for e in (e for e in envs if hasattr(e.core, "unmapped")):
         for k, v in e.core.unmapped()["missing"].items():
             unm[k] = unm.get(k, 0) + v
     unres, agg = {}, {}
-    for e in envs:
+    for e in (e for e in envs if hasattr(e.core, "unmapped")):
         for k, v in e.core.unmapped()["stats"].items():
             agg[k] = agg.get(k, 0) + v
-    for e in envs:
+    for e in (e for e in envs if hasattr(e.core, "unmapped")):
         for k, v in e.core.unmapped()["unresolved_creations"].items():
             unres[k] = unres.get(k, 0) + v
     return dict(matches=len(rows), skipped=skips, wall_s=round(time.time() - t0, 1), rows=rows, unresolved=unres,

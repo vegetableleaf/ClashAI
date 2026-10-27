@@ -921,6 +921,9 @@ class Match:
         self.delay = int(cfg.get("action_delay_ticks") or 0)
         if self.delay < 0:
             raise ValueError(f"cfg['action_delay_ticks'] {self.delay} < 0")
+        # cfg's delay is tap to LAND (live's 26). crforge runs a play its own engine_delay_ticks (20) after the act, so
+        # e1 waits only the rest (6); RoyaleSim runs it at once (0 = unchanged)
+        self.delay = max(0, self.delay - int(getattr(env, "engine_delay_ticks", 0)))
         self.n_unlanded = 0
         self.extrap = int(cfg.get("extrapolate_ticks") or 0)
         if self.extrap < 0:
@@ -1227,7 +1230,11 @@ class Match:
             self._land(p, d, land, landed)
         de = self.cfg["decide_every"]
         # after a delayed play the next decision is the first decide_every grid tick AFTER landing (delay 0: tick + de)
-        env._advance_to(min((tick + de * (delay // de + 1)) if (delay and d["play"]) else env.tick + de, env.tail_cap))
+        # crforge (royale_env engine_delay_ticks 20; 0 on RoyaleSim = unchanged): the engine runs the play that much after
+        # the act, and the seat makes no decision before it runs (live: no decision while a play is pending)
+        eng = int(getattr(env, "engine_delay_ticks", 0))
+        env._advance_to(min((tick + de * ((delay + eng) // de + 1)) if ((delay or eng) and d["play"]) else env.tick + de,
+                            env.tail_cap))
         self.state = env.eng.observe()
         self.done = bool(env.terminated) or env.tick >= env.tail_cap
 
@@ -1822,6 +1829,7 @@ class SelfPlaySide(Match):
             for side, commands in self._ability_commands.items():
                 self.env.queue_abilities(side, commands, self.delay)
         de, delay = self.cfg["decide_every"], self.delay
+        eng = int(getattr(self.env, "engine_delay_ticks", 0))   # crforge's own command delay; 0 on RoyaleSim
         if "_opp_style" in self.cfg:
             delay += int(d.get("_style_delay", 0))
         if d["play"] and d.get("follow_ups"):                 # follow_up_spec second plays: the ghost Match's rules (module comment)
@@ -1849,11 +1857,11 @@ class SelfPlaySide(Match):
                 delay += self.tap_slow[1]                     # cfg["tap_slow"]: this play lands late
                 self.n_tap_slow += 1
             self.pending = (tick + delay, p, d)
-            self.next_tick = tick + de * (delay // de + 1)
+            self.next_tick = tick + de * ((delay + eng) // de + 1)   # crforge: none until the engine runs it (Match.apply)
             return
         if d["play"]:
             self._land(p, d, tick, True)
-        self.next_tick = tick + de
+        self.next_tick = tick + de * (eng // de + 1) if (d["play"] and eng) else tick + de
 
     # ---- follow_ups (the ghost Match._apply_follow_ups' rules, event-driven: SelfPlayMatch.due calls _follow_check) ----------------
     def _fresh_players(self) -> list:
@@ -1930,7 +1938,8 @@ class SelfPlaySide(Match):
         if fu0 is not None and d is fu0["d"]:                 # the first play of an open follow-up plan landed (or was refused)
             fu0["a_landed"], fu0["a_acc"] = True, acc
         if acc:
-            self.accepted.append((int(land), str(card_key(self.engine_deck[self.deck_index_of_slot[d["slot"]]]))))
+            # the other side's counter sees it when the engine runs it: + crforge's own delay (0 on RoyaleSim)
+            self.accepted.append((int(land) + int(getattr(self.env, "engine_delay_ticks", 0)), str(card_key(self.engine_deck[self.deck_index_of_slot[d["slot"]]]))))
         return acc
 
     def _outcome(self) -> tuple[str, tuple[int, int]]:

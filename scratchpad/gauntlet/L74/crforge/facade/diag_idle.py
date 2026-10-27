@@ -7,21 +7,19 @@ import numpy as np
 import accept_f1 as A
 from pipeline import e1_eval as E
 from pipeline import search_s0 as S
-from pipeline.opp_elixir_count import REGEN_SCHEDULE
+
 from pipeline.royale_env import RoyaleSelfPlayEnv
-from pipeline.crforge_core import CrforgeCore
+
 
 i = int(sys.argv[1])
 model, info = E.load_policy(A.CLXIII)
-cfg = S.live_cfg(0.5, info["grid"]); cfg.update(action_delay_ticks=6, feature_version=6)
+cfg = S.live_cfg(0.5, info["grid"]); cfg.update(action_delay_ticks=26, feature_version=6)
 pair = A.census()[i % 223]
 spec = {"tag": f"f1obs{i}", "seed": 3000 + i, "learner_side": i % 2, "learner_deck": list(E.ICEBOW_ENGINE_DECK),
         "opp_deck": [n + A.SFX[f] for n, f in zip(pair[2], pair[3])], "opp": {"id": "x"}}
 env = RoyaleSelfPlayEnv(decision_ticks=10, forms_mode="deck")
-if sys.argv[2:] == ["rs"]:
-    cfg.update(action_delay_ticks=26)     # RoyaleSim runs commands at once: the live 26 all in e1_eval
-else:
-    env.core = CrforgeCore(); env.elixir_regen_schedule = REGEN_SCHEDULE
+if sys.argv[2:] != ["rs"]:
+    assert env.engine_delay_ticks == 20, "run with ROYALE_ENGINE=crforge"
 m = E.SelfPlayMatch(env, spec, 0, dict(cfg), dict(cfg), model, model)
 log = []
 while True:

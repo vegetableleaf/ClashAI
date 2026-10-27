@@ -61,6 +61,22 @@ if _selected:
         RUNTIME = REPO / "research/ext/Royale-fork/runtime"
         MANIFEST = RUNTIME.parent / "build_manifest.json"
 _STAMP = None
+# The engine behind royale_env (F1, plan1026 Pillar 1 Stage 2): ROYALE_ENGINE=crforge runs crforge
+# (pipeline/crforge_core.py) behind RustEngine's interface; the RoyaleSim runtime above still supplies the
+# catalogue, card tables and protocol. Unset / royalesim = RoyaleSim, unchanged (no stamp key: old stamps compare equal).
+ENGINE = os.environ.get("ROYALE_ENGINE", "").strip() or "royalesim"
+if ENGINE not in ("royalesim", "crforge"):
+    raise RuntimeError(f"Unknown ROYALE_ENGINE={ENGINE!r}; known: 'royalesim', 'crforge'")
+CRFORGE_PIN = "ad8ef3a532ada8dea732bf1ecdeb01beef0fb4b0"
+
+
+def _crforge_stamp() -> dict:
+    """What a crforge run is pinned to: the crforge commit, its tables folder, the body map and the facade source."""
+    sha = {k: hashlib.sha256((REPO / p).read_bytes()).hexdigest() for k, p in (
+        ("body_map_sha256", "scratchpad/gauntlet/L74/speed/crforge/body_map.json"),
+        ("facade_java_sha256", "scratchpad/gauntlet/L74/crforge/facade/CfCore.java"))}
+    tables = os.environ.get("CRFORGE_TABLES", "/workspace/cfspeed/crforge_cache/tables/16.402.22")
+    return dict(name="crforge", crforge=CRFORGE_PIN, tables=Path(tables).name, **sha)
 
 
 def _verify_files(runtime: Path, manifest: dict) -> None:
@@ -127,6 +143,8 @@ def activate() -> dict:
                       card_table=RustEngine(**options).card_table_stamp())
         if RUNTIME_ID:
             _STAMP["runtime_id"] = RUNTIME_ID
+        if ENGINE == "crforge":
+            _STAMP["engine"] = _crforge_stamp()
     return json.loads(json.dumps(_STAMP))
 
 
