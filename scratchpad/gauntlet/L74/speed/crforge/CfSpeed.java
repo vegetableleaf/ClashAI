@@ -58,7 +58,7 @@ public class CfSpeed {
   // ------------------------------------------------------------------------------------------------------------------
   // one match on the battle core (no LadderEnv: no fog, no health-bar tracking, no crforge observation encoding)
   // ------------------------------------------------------------------------------------------------------------------
-  public static final class Match {
+  public static class Match {
     final GameTables tables;
     public Standard1v1Battle std;
     PlayerCommands cmds;
@@ -72,7 +72,16 @@ public class CfSpeed {
     final float[] rows = new float[512 * F];
     final byte[] forms = new byte[512];
 
+    /** Feature version 6 rules (obs_contract fv6 + public_observation.body_only_board, the production GenModel row):
+     * no spell tokens, deploying / age unknown, my elixir at the facade's milli quantisation. false = S3's fv4. */
+    public boolean fv6;
+
     public Match(GameTables tables) { this.tables = tables; }
+
+    /** A body's vocab code (cls * 4 + form), or -1 = not a token. S3: hp > 0, by row name (Names). */
+    protected int unitCode(WorldEntity w, int hp, int mhp, Names names) {
+      return hp <= 0 ? -1 : names.unitCode(w.getData().name());
+    }
 
     public void reset(int seed, String[] d0, int[] s0, String[] d1, int[] s1, int[] map0, int[] map1) {
       std = new Standard1v1Battle(tables, LEVEL);
@@ -156,8 +165,7 @@ public class CfSpeed {
           twFrac[rel * 3 + k] = alive && mhp > 0 ? (float) ((double) hp / mhp) : 0f;
           continue;
         }
-        if (hp <= 0) continue;
-        int code = names.unitCode(w.getData().name());
+        int code = unitCode(w, hp, mhp, names);
         if (code < 0) continue;
         int at = n * F;
         Arrays.fill(rows, at, at + F, 0f);
@@ -166,11 +174,13 @@ public class CfSpeed {
         rows[at + 4] = (float) x;
         rows[at + 5] = (float) y;
         if (mhp > 0) { rows[at + 6] = (float) ((double) hp / mhp); rows[at + 7] = 1f; }
-        boolean deploying = w instanceof CharacterEntity && w.getView().getDeployCountdown() > 0;
-        rows[at + 8] = deploying ? 1f : 0f;
-        rows[at + 9] = 1f;
-        rows[at + 10] = (float) ((tick - first(w.getId(), tick)) * 0.05 / 30.0);
-        rows[at + 11] = 1f;
+        if (!fv6) {   // fv6: body_only_board leaves deploying and age unknown (columns 8-11 zero)
+          boolean deploying = w instanceof CharacterEntity && w.getView().getDeployCountdown() > 0;
+          rows[at + 8] = deploying ? 1f : 0f;
+          rows[at + 9] = 1f;
+          rows[at + 10] = (float) ((tick - first(w.getId(), tick)) * 0.05 / 30.0);
+          rows[at + 11] = 1f;
+        }
         rows[at + 12] = 1f;
         forms[n] = (byte) (code & 3);
         key[n] = Math.abs(y - 0.5);
@@ -178,7 +188,7 @@ public class CfSpeed {
         if (++n == 512) break;
       }
       for (BattleEntity e : list) {
-        if (n == 512) break;
+        if (n == 512 || fv6) break;   // fv6: no spell tokens (body_only_board)
         String name; int X0, Y0, sd;
         if (e instanceof ProjectileEntity p) { name = p.getData().name(); X0 = p.x(); Y0 = p.y(); sd = p.side(); }
         else if (e instanceof AreaEffectEntity a) { name = a.getData().name(); X0 = a.x(); Y0 = a.y(); sd = a.side(); }
@@ -231,7 +241,9 @@ public class CfSpeed {
       sc.put(o++, (float) (t / 300.0));
       sc.put(o++, t >= 120.0 ? 1f : 0f);
       sc.put(o++, t >= 180.0 ? 1f : 0f);
-      sc.put(o++, (float) (me.getElixir() / (double) MatchSide.SCALE / 10.0));
+      // fv6: the facade's elixir_milli (crforge's 1/10,000 floored to milli, RoyaleSim's unit) / 1000, as raw() reads it
+      sc.put(o++, fv6 ? (float) (me.getElixir() / 10 / 1000.0 / 10.0)
+          : (float) (me.getElixir() / (double) MatchSide.SCALE / 10.0));
       sc.put(o++, 1f);
       sc.put(o++, (float) (them.getElixir() / (double) MatchSide.SCALE / 10.0));
       sc.put(o++, 1f);

@@ -36,10 +36,25 @@ NO_VALUES = {"sc"}    # keys whose first diffs record indices only (sc carries e
 
 
 def start_jvm(build: Path) -> None:
-    """The facade's JVM (crforge_core._jvm skips startJVM when one runs) with the builders' classes beside CfCore."""
+    """The facade's JVM (crforge_core._jvm skips startJVM when one runs) with the builders' classes beside CfCore.
+    OBSID_FACADE_BUILD (optional): a facade class dir put first, so ITS CfCore runs (a build another ticket made)."""
     from pipeline import crforge_core as cc
-    cp = sorted(str(p) for p in cc.LIB.glob("*.jar")) + [str(build)]
+    first = [os.environ["OBSID_FACADE_BUILD"]] if os.environ.get("OBSID_FACADE_BUILD") else []
+    cp = sorted(str(p) for p in cc.LIB.glob("*.jar")) + first + [str(build)]
     jpype.startJVM(f"-Xmx{os.environ.get('CRFORGE_XMX', '4g')}", classpath=cp, convertStrings=True)
+
+
+def src_shas() -> dict:
+    """sha256 of the facade / production sources this run uses (taken at start: the work tree is shared)."""
+    import hashlib
+    files = {"CfCore.java": os.environ.get("OBSID_CFCORE", str(RL / "scratchpad/gauntlet/L74/crforge/facade/CfCore.java"))}
+    files.update({f"pipeline/{m}": str(RL / "pipeline" / m) for m in ("crforge_core.py", "royale_env.py", "e1_eval.py",
+                                                                      "obs_contract.py", "body_identity.py")})
+    out = {k: hashlib.sha256(Path(v).read_bytes()).hexdigest() for k, v in files.items()}
+    fb = os.environ.get("OBSID_FACADE_BUILD")
+    if fb:
+        out.update({f"{fb}/{c.name}": hashlib.sha256(c.read_bytes()).hexdigest() for c in sorted(Path(fb).glob("*.class"))})
+    return out
 
 
 def census():
@@ -53,20 +68,20 @@ def census():
 
 # ---------------------------------------------------------------------------------------------------- builders
 class JavaMain:
-    """CfSpeed.Match.obs (S3's P3 builder) on the facade battle: tok / mask / sc / unit_form. The name tables are
-    filled from body_map.json (a body's first entry) and the facade's spell objects (that card's vocab spell id).
-    ponytail: name-only lookup, so the 9 by-root names take their first entry; the facade's root-play table in Java
-    is the upgrade."""
+    """CfSpeed.Match.obs at feature version 6 (CfObsBind.FacadeMatch) on the facade battle: tok / mask / sc /
+    unit_form. Body identity: the facade's own tables (body_map, root play) give each body its card; the Names table
+    maps "card|body row|max_hp|form|tower kind|tower max_hp" -> production's class / form (``resolve``)."""
 
     def __init__(self):
         from pipeline import crforge_core as cc
         J = cc._jvm()
-        self.cc, self.tables = cc, J["tables"]
+        self.tables = J["tables"]
         self.CfSpeed, self.Bind = jpype.JClass("CfSpeed"), jpype.JClass("CfObsBind")
+        self.Match = jpype.JClass("CfObsBind$FacadeMatch")
+        self.facade_hero_rule = str(self.Bind.facadeHeroRule())
         self.names = self.CfSpeed.Names()
-        self.bm = json.loads(cc.BODY_MAP.read_text())
-        self.spell_card = {k: v[0] for k, v in cc.spell_objects().items()}
-        self.match = {}                                   # id(core) -> CfSpeed.Match reading that core's battle
+        self.card_names = None
+        self.match = {}                                   # id(core) -> FacadeMatch reading that core's battle
         BB = jpype.JClass("java.nio.ByteBuffer")
         order = jpype.JClass("java.nio.ByteOrder").nativeOrder()
         self.b = {k: BB.allocateDirect(n).order(order) for k, n in
@@ -77,18 +92,19 @@ class JavaMain:
         self.Int = jpype.JArray(jpype.JInt)
 
     def resolve(self) -> None:
-        from pipeline import vocab
+        """Each new key -> what RoyaleSelfPlayEnv.raw() + from_engine fv6 give that body: raw's name (the Hero Ice
+        Wizard's body rows read 'IceWizard', royale_heroiw.public_identity), the tower level factor from_engine takes
+        from the side's first tower, then body_identity.resolve_board. None -> -1 (dropped, as from_engine drops it)."""
+        from pipeline import royale_heroiw as heroiw
+        from pipeline.body_identity import resolve_board
         for s in self.names.takeMissing():
-            kind, name = s[:2], s[2:]
-            if kind == "U:":
-                v = self.bm.get(name)
-                e = v["entries"][0] if v and not name.startswith("_") and v.get("entries") else None
-                cid = -1 if e is None or e.get("vocab_id") is None else int(e["vocab_id"])
-                self.names.putUnit(name, cid, int(e["form"]) if e else 0)
-            else:
-                card = self.spell_card.get(name)
-                cid = vocab.engine_spell_id(card) if card else None
-                self.names.putSpell(name, -1 if cid is None else int(cid))
+            assert s.startswith("U:"), s                  # fv6 builds no spell tokens
+            key = s[2:]
+            card, body, mhp, form, king, tmhp = key.split("|")
+            name = "IceWizard" if heroiw.public_identity(body) is not None else self.card_names.get(int(card), card)
+            f = {0: float(tmhp) / (4824.0 if king == "1" else 3052.0)} if int(tmhp) else {}
+            ident = resolve_board([(0, name, int(mhp), int(form), False)], f)[0]
+            self.names.putUnit(key, -1 if ident.cls is None else int(ident.cls), int(ident.form))
 
     def _obs(self, m, seat):
         m.obs(seat, self.names, self.tokF, 0, self.b["mask"], 0, self.scF, 0, self.b["form"], 0)
@@ -98,7 +114,9 @@ class JavaMain:
         core = s.env.core
         m = self.match.get(id(core))
         if m is None:
-            m = self.match[id(core)] = self.CfSpeed.Match(self.tables)
+            m = self.match[id(core)] = self.Match(self.tables)
+        if self.card_names is None:
+            self.card_names = dict(s.env.names)              # raw()'s card id -> name
         # crforge deck index = the env's deal order (RoyaleSelfPlayEnv.deal, ShuffleMode.NONE); our slots index env.decks
         slot_of = {i: slot for slot, i in s.deck_index_of_slot.items()}
         decks, deal = s.env.decks[s.side], s.env.deal[s.side]
@@ -193,6 +211,7 @@ def main():
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
 
+    shas = src_shas()
     start_jvm(Path(a.build))
     import torch
     torch.set_num_threads(a.threads)
@@ -245,9 +264,13 @@ def main():
         wall_s=round(time.time() - t0, 1), cfg_overrides=over, feature_version=cfg["feature_version"],
         gen_row_keys=list(E.gen_row_keys(model.model)),
         acceptance=dict(min_rows=a.min_rows, rows_ok=rep.rows >= a.min_rows,
-                        core_keys_identical={k: keys.get(k, {}).get("status") == "IDENTICAL" for k in core4}),
+                        core_keys_identical={k: keys.get(k, {}).get("status") == "IDENTICAL" for k in core4},
+                        # sc at every index but OPP_EL (the counter, not ported): only that index may differ
+                        sc_identical_except_opp_elixir=bool(keys.get("sc")) and keys["sc"]["dtype_shape_diff"] == 0
+                        and set(keys["sc"]["rows_diff_at_last_axis_index"]) <= {OPP_EL}),
         status_by_key={k: v["status"] for k, v in sorted(keys.items())}, keys=keys,
-        stamp=envs[0].core.card_table_stamp() if envs else None,
+        stamp=envs[0].core.card_table_stamp() if envs else None, facade_hero_rule=BUILDERS[0].facade_hero_rule,
+        facade_src_sha256=shas,
         note=("prod = e1_eval prepare + gen_row; java = BUILDERS on the same facade battle and tick. Keys starting '_' "
               "are aux checks, not GenModel keys: _sc_prepare = prepare()'s sc before GenPolicy.row zeroes the hand "
               f"one-hots. sc[{OPP_EL}] (opponent elixir) of the Java builder is the engine truth: replaced by -1, "

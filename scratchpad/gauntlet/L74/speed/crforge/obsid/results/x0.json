@@ -2,9 +2,9 @@
  "ticket": "S3b-3a",
  "matches": 56,
  "skipped": [],
- "seat_rows": 48451,
+ "seat_rows": 49816,
  "tick_mismatch": 0,
- "wall_s": 525.8,
+ "wall_s": 560.9,
  "cfg_overrides": {
   "extrapolate_ticks": 0
  },
@@ -35,14 +35,15 @@
   "min_rows": 38400,
   "rows_ok": true,
   "core_keys_identical": {
-   "tok": false,
-   "mask": false,
+   "tok": true,
+   "mask": true,
    "sc": false,
-   "unit_form": false
-  }
+   "unit_form": true
+  },
+  "sc_identical_except_opp_elixir": true
  },
  "status_by_key": {
-  "_sc_prepare": "DIFF",
+  "_sc_prepare": "IDENTICAL",
   "cue": "NOT_PORTED",
   "deck_card": "NOT_PORTED",
   "deck_form": "NOT_PORTED",
@@ -50,7 +51,7 @@
   "hand_card": "NOT_PORTED",
   "hand_form": "NOT_PORTED",
   "hand_slot": "NOT_PORTED",
-  "mask": "DIFF",
+  "mask": "IDENTICAL",
   "next_card": "NOT_PORTED",
   "next_form": "NOT_PORTED",
   "opp_cycle": "NOT_PORTED",
@@ -61,439 +62,153 @@
   "sc": "DIFF",
   "slot_card": "NOT_PORTED",
   "slot_form": "NOT_PORTED",
-  "tok": "DIFF",
-  "unit_form": "DIFF"
+  "tok": "IDENTICAL",
+  "unit_form": "IDENTICAL"
  },
  "keys": {
   "cue": {
    "status": "NOT_PORTED",
-   "rows": 48451,
+   "rows": 49816,
    "equal": 0,
-   "not_ported": 48451,
+   "not_ported": 49816,
    "dtype_shape_diff": 0,
    "rows_diff_at_last_axis_index": {},
    "first_diffs": []
   },
   "deck_card": {
    "status": "NOT_PORTED",
-   "rows": 48451,
+   "rows": 49816,
    "equal": 0,
-   "not_ported": 48451,
+   "not_ported": 49816,
    "dtype_shape_diff": 0,
    "rows_diff_at_last_axis_index": {},
    "first_diffs": []
   },
   "deck_form": {
    "status": "NOT_PORTED",
-   "rows": 48451,
+   "rows": 49816,
    "equal": 0,
-   "not_ported": 48451,
+   "not_ported": 49816,
    "dtype_shape_diff": 0,
    "rows_diff_at_last_axis_index": {},
    "first_diffs": []
   },
   "effects": {
    "status": "NOT_PORTED",
-   "rows": 48451,
+   "rows": 49816,
    "equal": 0,
-   "not_ported": 48451,
+   "not_ported": 49816,
    "dtype_shape_diff": 0,
    "rows_diff_at_last_axis_index": {},
    "first_diffs": []
   },
   "hand_card": {
    "status": "NOT_PORTED",
-   "rows": 48451,
+   "rows": 49816,
    "equal": 0,
-   "not_ported": 48451,
+   "not_ported": 49816,
    "dtype_shape_diff": 0,
    "rows_diff_at_last_axis_index": {},
    "first_diffs": []
   },
   "hand_form": {
    "status": "NOT_PORTED",
-   "rows": 48451,
+   "rows": 49816,
    "equal": 0,
-   "not_ported": 48451,
+   "not_ported": 49816,
    "dtype_shape_diff": 0,
    "rows_diff_at_last_axis_index": {},
    "first_diffs": []
   },
   "hand_slot": {
    "status": "NOT_PORTED",
-   "rows": 48451,
+   "rows": 49816,
    "equal": 0,
-   "not_ported": 48451,
+   "not_ported": 49816,
    "dtype_shape_diff": 0,
    "rows_diff_at_last_axis_index": {},
    "first_diffs": []
   },
   "mask": {
-   "status": "DIFF",
-   "rows": 48451,
-   "equal": 42905,
+   "status": "IDENTICAL",
+   "rows": 49816,
+   "equal": 49816,
    "not_ported": 0,
    "dtype_shape_diff": 0,
-   "rows_diff_at_last_axis_index": {
-    "0": 71,
-    "1": 106,
-    "2": 180,
-    "3": 419,
-    "4": 603,
-    "5": 820,
-    "6": 871,
-    "7": 867,
-    "8": 665,
-    "9": 596,
-    "10": 400,
-    "11": 307,
-    "12": 197,
-    "13": 197,
-    "14": 165,
-    "15": 135,
-    "16": 127,
-    "17": 118,
-    "18": 113,
-    "19": 104,
-    "20": 107,
-    "21": 99,
-    "22": 102,
-    "23": 93,
-    "24": 93,
-    "25": 96,
-    "26": 88,
-    "27": 84,
-    "28": 84,
-    "29": 83,
-    "30": 81,
-    "31": 79,
-    "32": 75,
-    "33": 74,
-    "34": 64,
-    "35": 59,
-    "36": 53,
-    "37": 40,
-    "38": 27,
-    "39": 21,
-    "40": 20,
-    "41": 12,
-    "42": 4,
-    "43": 4,
-    "44": 4,
-    "45": 3,
-    "46": 3,
-    "47": 3,
-    "48": 3,
-    "49": 3,
-    "50": 3,
-    "51": 2,
-    "52": 2
-   },
-   "first_diffs": [
-    {
-     "tag": "obsid2",
-     "side": 0,
-     "tick": 520,
-     "index": [
-      [
-       3
-      ]
-     ],
-     "prod": [
-      true,
-      true,
-      true,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false
-     ],
-     "java": [
-      true,
-      true,
-      true,
-      true,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false
-     ]
-    },
-    {
-     "tag": "obsid2:opp",
-     "side": 1,
-     "tick": 520,
-     "index": [
-      [
-       3
-      ]
-     ],
-     "prod": [
-      true,
-      true,
-      true,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false
-     ],
-     "java": [
-      true,
-      true,
-      true,
-      true,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false
-     ]
-    },
-    {
-     "tag": "obsid2",
-     "side": 0,
-     "tick": 530,
-     "index": [
-      [
-       3
-      ]
-     ],
-     "prod": [
-      true,
-      true,
-      true,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false
-     ],
-     "java": [
-      true,
-      true,
-      true,
-      true,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false
-     ]
-    },
-    {
-     "tag": "obsid2:opp",
-     "side": 1,
-     "tick": 530,
-     "index": [
-      [
-       3
-      ]
-     ],
-     "prod": [
-      true,
-      true,
-      true,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false
-     ],
-     "java": [
-      true,
-      true,
-      true,
-      true,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false
-     ]
-    },
-    {
-     "tag": "obsid2",
-     "side": 0,
-     "tick": 540,
-     "index": [
-      [
-       3
-      ]
-     ],
-     "prod": [
-      true,
-      true,
-      true,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false
-     ],
-     "java": [
-      true,
-      true,
-      true,
-      true,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false
-     ]
-    }
-   ]
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
   },
   "next_card": {
    "status": "NOT_PORTED",
-   "rows": 48451,
+   "rows": 49816,
    "equal": 0,
-   "not_ported": 48451,
+   "not_ported": 49816,
    "dtype_shape_diff": 0,
    "rows_diff_at_last_axis_index": {},
    "first_diffs": []
   },
   "next_form": {
    "status": "NOT_PORTED",
-   "rows": 48451,
+   "rows": 49816,
    "equal": 0,
-   "not_ported": 48451,
+   "not_ported": 49816,
    "dtype_shape_diff": 0,
    "rows_diff_at_last_axis_index": {},
    "first_diffs": []
   },
   "opp_cycle": {
    "status": "NOT_PORTED",
-   "rows": 48451,
+   "rows": 49816,
    "equal": 0,
-   "not_ported": 48451,
+   "not_ported": 49816,
    "dtype_shape_diff": 0,
    "rows_diff_at_last_axis_index": {},
    "first_diffs": []
   },
   "opp_past": {
    "status": "NOT_PORTED",
-   "rows": 48451,
+   "rows": 49816,
    "equal": 0,
-   "not_ported": 48451,
+   "not_ported": 49816,
    "dtype_shape_diff": 0,
    "rows_diff_at_last_axis_index": {},
    "first_diffs": []
   },
   "own_ability": {
    "status": "NOT_PORTED",
-   "rows": 48451,
+   "rows": 49816,
    "equal": 0,
-   "not_ported": 48451,
+   "not_ported": 49816,
    "dtype_shape_diff": 0,
    "rows_diff_at_last_axis_index": {},
    "first_diffs": []
   },
   "past": {
    "status": "NOT_PORTED",
-   "rows": 48451,
+   "rows": 49816,
    "equal": 0,
-   "not_ported": 48451,
+   "not_ported": 49816,
    "dtype_shape_diff": 0,
    "rows_diff_at_last_axis_index": {},
    "first_diffs": []
   },
   "projectiles": {
    "status": "NOT_PORTED",
-   "rows": 48451,
+   "rows": 49816,
    "equal": 0,
-   "not_ported": 48451,
+   "not_ported": 49816,
    "dtype_shape_diff": 0,
    "rows_diff_at_last_axis_index": {},
    "first_diffs": []
   },
   "sc": {
    "status": "DIFF",
-   "rows": 48451,
+   "rows": 49816,
    "equal": 0,
    "not_ported": 0,
    "dtype_shape_diff": 0,
    "rows_diff_at_last_axis_index": {
-    "3": 31204,
-    "5": 48451
+    "5": 49816
    },
    "first_diffs": [
     {
@@ -550,737 +265,48 @@
   },
   "slot_card": {
    "status": "NOT_PORTED",
-   "rows": 48451,
+   "rows": 49816,
    "equal": 0,
-   "not_ported": 48451,
+   "not_ported": 49816,
    "dtype_shape_diff": 0,
    "rows_diff_at_last_axis_index": {},
    "first_diffs": []
   },
   "slot_form": {
    "status": "NOT_PORTED",
-   "rows": 48451,
+   "rows": 49816,
    "equal": 0,
-   "not_ported": 48451,
+   "not_ported": 49816,
    "dtype_shape_diff": 0,
    "rows_diff_at_last_axis_index": {},
    "first_diffs": []
   },
   "tok": {
-   "status": "DIFF",
-   "rows": 48451,
-   "equal": 17435,
+   "status": "IDENTICAL",
+   "rows": 49816,
+   "equal": 49816,
    "not_ported": 0,
    "dtype_shape_diff": 0,
-   "rows_diff_at_last_axis_index": {
-    "0": 13306,
-    "1": 4572,
-    "2": 4485,
-    "4": 5546,
-    "5": 5544,
-    "6": 4301,
-    "7": 4301,
-    "8": 11355,
-    "9": 30945,
-    "10": 30758,
-    "11": 30945,
-    "12": 5546,
-    "13": 5546
-   },
-   "first_diffs": [
-    {
-     "tag": "obsid0",
-     "side": 0,
-     "tick": 240,
-     "index": [
-      [
-       0,
-       8
-      ],
-      [
-       0,
-       9
-      ],
-      [
-       0,
-       11
-      ],
-      [
-       1,
-       8
-      ],
-      [
-       1,
-       9
-      ],
-      [
-       1,
-       11
-      ]
-     ],
-     "prod": [
-      [
-       2.0,
-       1.0,
-       0.0,
-       0.0,
-       0.47216665744781494,
-       0.984375,
-       1.0,
-       1.0,
-       0.0,
-       0.0,
-       0.0,
-       0.0,
-       1.0,
-       0.0
-      ]
-     ],
-     "java": [
-      [
-       2.0,
-       1.0,
-       0.0,
-       0.0,
-       0.47216665744781494,
-       0.984375,
-       1.0,
-       1.0,
-       1.0,
-       1.0,
-       0.0,
-       1.0,
-       1.0,
-       0.0
-      ]
-     ]
-    },
-    {
-     "tag": "obsid0",
-     "side": 0,
-     "tick": 250,
-     "index": [
-      [
-       0,
-       0
-      ],
-      [
-       0,
-       8
-      ],
-      [
-       0,
-       9
-      ],
-      [
-       0,
-       11
-      ],
-      [
-       1,
-       0
-      ],
-      [
-       1,
-       8
-      ]
-     ],
-     "prod": [
-      [
-       7.0,
-       0.0,
-       1.0,
-       0.0,
-       0.5279444456100464,
-       0.03578124940395355,
-       1.0,
-       1.0,
-       0.0,
-       0.0,
-       0.0,
-       0.0,
-       1.0,
-       0.0
-      ]
-     ],
-     "java": [
-      [
-       110.0,
-       0.0,
-       1.0,
-       0.0,
-       0.5279444456100464,
-       0.03578124940395355,
-       1.0,
-       1.0,
-       1.0,
-       1.0,
-       0.0,
-       1.0,
-       1.0,
-       0.0
-      ]
-     ]
-    },
-    {
-     "tag": "obsid0:opp",
-     "side": 1,
-     "tick": 250,
-     "index": [
-      [
-       0,
-       0
-      ],
-      [
-       0,
-       8
-      ],
-      [
-       0,
-       9
-      ],
-      [
-       0,
-       11
-      ],
-      [
-       1,
-       0
-      ],
-      [
-       1,
-       8
-      ]
-     ],
-     "prod": [
-      [
-       7.0,
-       1.0,
-       0.0,
-       0.0,
-       0.4720555543899536,
-       0.9642187356948853,
-       1.0,
-       1.0,
-       0.0,
-       0.0,
-       0.0,
-       0.0,
-       1.0,
-       0.0
-      ]
-     ],
-     "java": [
-      [
-       110.0,
-       1.0,
-       0.0,
-       0.0,
-       0.4720555543899536,
-       0.9642187356948853,
-       1.0,
-       1.0,
-       1.0,
-       1.0,
-       0.0,
-       1.0,
-       1.0,
-       0.0
-      ]
-     ]
-    },
-    {
-     "tag": "obsid2",
-     "side": 0,
-     "tick": 240,
-     "index": [
-      [
-       0,
-       0
-      ],
-      [
-       0,
-       8
-      ],
-      [
-       0,
-       9
-      ],
-      [
-       0,
-       11
-      ],
-      [
-       1,
-       0
-      ],
-      [
-       1,
-       8
-      ]
-     ],
-     "prod": [
-      [
-       7.0,
-       1.0,
-       0.0,
-       0.0,
-       0.47227779030799866,
-       0.9653124809265137,
-       1.0,
-       1.0,
-       0.0,
-       0.0,
-       0.0,
-       0.0,
-       1.0,
-       0.0
-      ]
-     ],
-     "java": [
-      [
-       110.0,
-       1.0,
-       0.0,
-       0.0,
-       0.47227779030799866,
-       0.9653124809265137,
-       1.0,
-       1.0,
-       1.0,
-       1.0,
-       0.0,
-       1.0,
-       1.0,
-       0.0
-      ]
-     ]
-    },
-    {
-     "tag": "obsid2:opp",
-     "side": 1,
-     "tick": 240,
-     "index": [
-      [
-       0,
-       0
-      ],
-      [
-       0,
-       8
-      ],
-      [
-       0,
-       9
-      ],
-      [
-       0,
-       11
-      ],
-      [
-       1,
-       0
-      ],
-      [
-       1,
-       8
-      ]
-     ],
-     "prod": [
-      [
-       7.0,
-       0.0,
-       1.0,
-       0.0,
-       0.5277222394943237,
-       0.034687500447034836,
-       1.0,
-       1.0,
-       0.0,
-       0.0,
-       0.0,
-       0.0,
-       1.0,
-       0.0
-      ]
-     ],
-     "java": [
-      [
-       110.0,
-       0.0,
-       1.0,
-       0.0,
-       0.5277222394943237,
-       0.034687500447034836,
-       1.0,
-       1.0,
-       1.0,
-       1.0,
-       0.0,
-       1.0,
-       1.0,
-       0.0
-      ]
-     ]
-    }
-   ]
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
   },
   "unit_form": {
-   "status": "DIFF",
-   "rows": 48451,
-   "equal": 24625,
+   "status": "IDENTICAL",
+   "rows": 49816,
+   "equal": 49816,
    "not_ported": 0,
    "dtype_shape_diff": 0,
-   "rows_diff_at_last_axis_index": {
-    "0": 9508,
-    "1": 10323,
-    "2": 9177,
-    "3": 8189,
-    "4": 6679,
-    "5": 5398,
-    "6": 4451,
-    "7": 3216,
-    "8": 2247,
-    "9": 1573,
-    "10": 1107,
-    "11": 723,
-    "12": 513,
-    "13": 391,
-    "14": 293,
-    "15": 243,
-    "16": 193,
-    "17": 139,
-    "18": 121,
-    "19": 87,
-    "20": 81,
-    "21": 72,
-    "22": 53,
-    "23": 37,
-    "24": 22,
-    "25": 9,
-    "26": 5,
-    "27": 12,
-    "28": 15,
-    "29": 7,
-    "30": 12,
-    "31": 8,
-    "32": 4,
-    "33": 6,
-    "34": 6,
-    "35": 3,
-    "40": 1,
-    "42": 1,
-    "45": 1
-   },
-   "first_diffs": [
-    {
-     "tag": "obsid0",
-     "side": 0,
-     "tick": 240,
-     "index": [
-      [
-       0
-      ],
-      [
-       1
-      ]
-     ],
-     "prod": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-     ],
-     "java": [
-      2,
-      2,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-     ]
-    },
-    {
-     "tag": "obsid0",
-     "side": 0,
-     "tick": 250,
-     "index": [
-      [
-       3
-      ],
-      [
-       4
-      ]
-     ],
-     "prod": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-     ],
-     "java": [
-      0,
-      0,
-      0,
-      2,
-      2,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-     ]
-    },
-    {
-     "tag": "obsid0:opp",
-     "side": 1,
-     "tick": 250,
-     "index": [
-      [
-       3
-      ],
-      [
-       4
-      ]
-     ],
-     "prod": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-     ],
-     "java": [
-      0,
-      0,
-      0,
-      2,
-      2,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-     ]
-    },
-    {
-     "tag": "obsid0",
-     "side": 0,
-     "tick": 260,
-     "index": [
-      [
-       3
-      ],
-      [
-       4
-      ]
-     ],
-     "prod": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-     ],
-     "java": [
-      0,
-      0,
-      0,
-      2,
-      2,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-     ]
-    },
-    {
-     "tag": "obsid0:opp",
-     "side": 1,
-     "tick": 260,
-     "index": [
-      [
-       3
-      ],
-      [
-       4
-      ]
-     ],
-     "prod": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-     ],
-     "java": [
-      0,
-      0,
-      0,
-      2,
-      2,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-     ]
-    }
-   ]
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
   },
   "_sc_prepare": {
-   "status": "DIFF",
-   "rows": 48451,
-   "equal": 17247,
+   "status": "IDENTICAL",
+   "rows": 49816,
+   "equal": 49816,
    "not_ported": 0,
    "dtype_shape_diff": 0,
-   "rows_diff_at_last_axis_index": {
-    "3": 31204
-   },
-   "first_diffs": [
-    {
-     "tag": "obsid0",
-     "side": 0,
-     "tick": 240,
-     "index": [
-      [
-       3
-      ]
-     ]
-    },
-    {
-     "tag": "obsid0",
-     "side": 0,
-     "tick": 250,
-     "index": [
-      [
-       3
-      ]
-     ]
-    },
-    {
-     "tag": "obsid0:opp",
-     "side": 1,
-     "tick": 250,
-     "index": [
-      [
-       3
-      ]
-     ]
-    },
-    {
-     "tag": "obsid2",
-     "side": 0,
-     "tick": 240,
-     "index": [
-      [
-       3
-      ]
-     ]
-    },
-    {
-     "tag": "obsid0",
-     "side": 0,
-     "tick": 260,
-     "index": [
-      [
-       3
-      ]
-     ]
-    }
-   ]
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
   }
  },
  "stamp": {
@@ -1294,6 +320,15 @@
    "cards_vintage": "15.535.29 client (2026, LIVE build family)",
    "cards_json_hash_source": "embedded"
   }
+ },
+ "facade_hero_rule": "heroBody",
+ "facade_src_sha256": {
+  "CfCore.java": "1fa04dc235151280388bdcdb5f8745fc08b5ec02ff6b6fde9a29dba1b259460d",
+  "pipeline/crforge_core.py": "ab29a40740973f54c02fca71f0f27b4beb4acf7d0266db5c387961c3959c4fd4",
+  "pipeline/royale_env.py": "5125e31742df791bc5da44fed1bc4b7a5df6b9915455a1b786e22371c34703a0",
+  "pipeline/e1_eval.py": "0af6eb5f4c98d22334644452e19dd6e73f7558897c4879962bfeb156fce5a14f",
+  "pipeline/obs_contract.py": "953a15d913f1b646de4f6f9559c7d29c0ba0e546795776bca25e53e6ab8dc3b2",
+  "pipeline/body_identity.py": "120150eda21c958871c932f9090aba74a80c4058018a53aec4e1c5db11305114"
  },
  "note": "prod = e1_eval prepare + gen_row; java = BUILDERS on the same facade battle and tick. Keys starting '_' are aux checks, not GenModel keys: _sc_prepare = prepare()'s sc before GenPolicy.row zeroes the hand one-hots. sc[5] (opponent elixir) of the Java builder is the engine truth: replaced by -1, never compared as equal and never logged."
 }

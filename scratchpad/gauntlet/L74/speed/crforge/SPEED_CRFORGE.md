@@ -305,3 +305,32 @@ python -I project.py results/loop_n2048_c2_t24.json --extra-core-s 0.05   # lapt
   5. **Identity / form**: the builder's name table (body_map first entry) gives the Hero Ice Wizard body cls 110 form 2,
      production gives cls 7 form 0 (facade status flags 0 -> fv6 `resolve_board`); tok col 0 13.3k rows at x0,
      unit_form 24k. The table must come from production's identity rule (and the 9 by-root names from the root play).
+
+## S3b-3a2: the Java builder at feature version 6 (`CfSpeed.Match.fv6`, `obsid/CfObsBind.FacadeMatch`)
+
+- **Changes.** `CfSpeed.Match.fv6` (default false = S3's fv4 path, unchanged): no spell tokens, deploying / age
+  columns 8-11 left 0 (`body_only_board`), my elixir `getElixir() / 10 / 1000.0 / 10.0`. `FacadeMatch` overrides
+  `unitCode`: a body is a token as `raw()` + `from_engine` fv6 make it one (alive; a card from the facade's own tables,
+  body_map by name and the 9 split names by the root play's card; dead with a known max dropped), and its class / form
+  come from production's `body_identity.resolve_board` on that body with the side's tower level factor (key
+  "card|body row|max_hp|form|tower", filled from Python on first sight; the Hero Ice Wizard rows read 'IceWizard' as
+  `royale_heroiw.public_identity` names them). STATUS_HERO comes from the facade's own method by reflection
+  (`heroBody` at 3531b83, `heroCard` at ee7896c, none before), so the bit follows the facade.
+- **Elixir: the builder was wrong, the facade is right (a, code).** RoyaleSim's `PlayerState.elixir_milli` is an
+  integer and `raw()` reads `elixir_milli / 1000`, so fin16 feeds the model milli. The facade's `getElixir() / 10`
+  is that unit, and flooring keeps crforge's own affordability (raw >= 10,000 cost exactly when floor(raw / 10) >=
+  1,000 cost). What the live reader feeds was not checked (b).
+- **Result (a), 56 matches each, `obsid/results/`, sources pinned by sha256 in each JSON (`facade_src_sha256`):**
+
+  | facade | cfg | seat-rows | tok | mask | sc (all but sc[5]) | unit_form |
+  |---|---|---:|---|---|---|---|
+  | 3531b83 (F1c-1b, hero bit) | extrapolate 0 (`x0.json`) | 49,816 | **identical** | **identical** | **identical** | **identical** |
+  | 3531b83 | live cfg (`live.json`) | 48,751 | 22,513 equal | identical | 0 equal (sc[0..3]) | 42,787 equal |
+  | ee7896c (F1c-1, `/workspace/f1c1/build`) | extrapolate 0 (`x0_f1c1.json`) | 49,782 | identical | identical | identical | identical |
+  | 087ca4c-era HEAD (no hero bit) | extrapolate 0 (`x0_head.json`) | 48,451 | identical | identical | identical | identical |
+
+  The live-cfg differences are the 26-tick extrapolation, not ported: sc[0..2] (t), sc[3] (31,368 rows: the
+  look-ahead's elixir), tok positions 4 / 5 and, through the re-sorted rows, cols 0-2 / 6 and unit_form (b: the
+  attribution of shifted rows). sc[5] stays masked (the counter is not ported). S3b-3a's `live.json` / `x0.json`
+  (fv4 builder) are in git at 087ca4c.
+- Not re-run: S3's `cf_obs.py` on the edited CfSpeed (the fv4 path is a mechanical refactor, b).

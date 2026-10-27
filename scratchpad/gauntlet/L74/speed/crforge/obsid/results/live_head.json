@@ -1,0 +1,910 @@
+{
+ "ticket": "S3b-3a",
+ "matches": 56,
+ "skipped": [],
+ "seat_rows": 49229,
+ "tick_mismatch": 0,
+ "wall_s": 546.1,
+ "cfg_overrides": {},
+ "feature_version": 6,
+ "gen_row_keys": [
+  "tok",
+  "mask",
+  "sc",
+  "past",
+  "hand_card",
+  "hand_form",
+  "next_card",
+  "next_form",
+  "deck_card",
+  "deck_form",
+  "hand_slot",
+  "slot_card",
+  "slot_form",
+  "unit_form",
+  "opp_past",
+  "opp_cycle",
+  "projectiles",
+  "effects",
+  "own_ability",
+  "cue"
+ ],
+ "acceptance": {
+  "min_rows": 38400,
+  "rows_ok": true,
+  "core_keys_identical": {
+   "tok": false,
+   "mask": true,
+   "sc": false,
+   "unit_form": true
+  },
+  "sc_identical_except_opp_elixir": false
+ },
+ "status_by_key": {
+  "_sc_prepare": "DIFF",
+  "cue": "NOT_PORTED",
+  "deck_card": "NOT_PORTED",
+  "deck_form": "NOT_PORTED",
+  "effects": "NOT_PORTED",
+  "hand_card": "NOT_PORTED",
+  "hand_form": "NOT_PORTED",
+  "hand_slot": "NOT_PORTED",
+  "mask": "IDENTICAL",
+  "next_card": "NOT_PORTED",
+  "next_form": "NOT_PORTED",
+  "opp_cycle": "NOT_PORTED",
+  "opp_past": "NOT_PORTED",
+  "own_ability": "NOT_PORTED",
+  "past": "NOT_PORTED",
+  "projectiles": "NOT_PORTED",
+  "sc": "DIFF",
+  "slot_card": "NOT_PORTED",
+  "slot_form": "NOT_PORTED",
+  "tok": "DIFF",
+  "unit_form": "IDENTICAL"
+ },
+ "keys": {
+  "cue": {
+   "status": "NOT_PORTED",
+   "rows": 49229,
+   "equal": 0,
+   "not_ported": 49229,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "deck_card": {
+   "status": "NOT_PORTED",
+   "rows": 49229,
+   "equal": 0,
+   "not_ported": 49229,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "deck_form": {
+   "status": "NOT_PORTED",
+   "rows": 49229,
+   "equal": 0,
+   "not_ported": 49229,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "effects": {
+   "status": "NOT_PORTED",
+   "rows": 49229,
+   "equal": 0,
+   "not_ported": 49229,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "hand_card": {
+   "status": "NOT_PORTED",
+   "rows": 49229,
+   "equal": 0,
+   "not_ported": 49229,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "hand_form": {
+   "status": "NOT_PORTED",
+   "rows": 49229,
+   "equal": 0,
+   "not_ported": 49229,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "hand_slot": {
+   "status": "NOT_PORTED",
+   "rows": 49229,
+   "equal": 0,
+   "not_ported": 49229,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "mask": {
+   "status": "IDENTICAL",
+   "rows": 49229,
+   "equal": 49229,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "next_card": {
+   "status": "NOT_PORTED",
+   "rows": 49229,
+   "equal": 0,
+   "not_ported": 49229,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "next_form": {
+   "status": "NOT_PORTED",
+   "rows": 49229,
+   "equal": 0,
+   "not_ported": 49229,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "opp_cycle": {
+   "status": "NOT_PORTED",
+   "rows": 49229,
+   "equal": 0,
+   "not_ported": 49229,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "opp_past": {
+   "status": "NOT_PORTED",
+   "rows": 49229,
+   "equal": 0,
+   "not_ported": 49229,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "own_ability": {
+   "status": "NOT_PORTED",
+   "rows": 49229,
+   "equal": 0,
+   "not_ported": 49229,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "past": {
+   "status": "NOT_PORTED",
+   "rows": 49229,
+   "equal": 0,
+   "not_ported": 49229,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "projectiles": {
+   "status": "NOT_PORTED",
+   "rows": 49229,
+   "equal": 0,
+   "not_ported": 49229,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "sc": {
+   "status": "DIFF",
+   "rows": 49229,
+   "equal": 0,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {
+    "0": 49117,
+    "1": 158,
+    "2": 168,
+    "3": 32834,
+    "5": 49229
+   },
+   "first_diffs": [
+    {
+     "tag": "obsid0",
+     "side": 0,
+     "tick": 90,
+     "index": [
+      [
+       5
+      ]
+     ]
+    },
+    {
+     "tag": "obsid0:opp",
+     "side": 1,
+     "tick": 90,
+     "index": [
+      [
+       5
+      ]
+     ]
+    },
+    {
+     "tag": "obsid1:opp",
+     "side": 0,
+     "tick": 90,
+     "index": [
+      [
+       5
+      ]
+     ]
+    },
+    {
+     "tag": "obsid1",
+     "side": 1,
+     "tick": 90,
+     "index": [
+      [
+       5
+      ]
+     ]
+    },
+    {
+     "tag": "obsid2",
+     "side": 0,
+     "tick": 90,
+     "index": [
+      [
+       5
+      ]
+     ]
+    }
+   ]
+  },
+  "slot_card": {
+   "status": "NOT_PORTED",
+   "rows": 49229,
+   "equal": 0,
+   "not_ported": 49229,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "slot_form": {
+   "status": "NOT_PORTED",
+   "rows": 49229,
+   "equal": 0,
+   "not_ported": 49229,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "tok": {
+   "status": "DIFF",
+   "rows": 49229,
+   "equal": 21411,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {
+    "0": 13827,
+    "1": 9704,
+    "2": 9704,
+    "4": 27521,
+    "5": 27808,
+    "6": 12273
+   },
+   "first_diffs": [
+    {
+     "tag": "obsid0",
+     "side": 0,
+     "tick": 240,
+     "index": [
+      [
+       0,
+       4
+      ],
+      [
+       0,
+       5
+      ],
+      [
+       1,
+       4
+      ],
+      [
+       1,
+       5
+      ],
+      [
+       2,
+       0
+      ],
+      [
+       2,
+       1
+      ]
+     ],
+     "prod": [
+      [
+       7.0,
+       0.0,
+       1.0,
+       0.0,
+       0.6308777928352356,
+       0.06435000151395798,
+       1.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      [
+       7.0,
+       0.0,
+       1.0,
+       0.0,
+       0.4177555441856384,
+       0.050043750554323196,
+       1.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ]
+     ],
+     "java": [
+      [
+       7.0,
+       0.0,
+       1.0,
+       0.0,
+       0.5950555801391602,
+       0.03737499937415123,
+       1.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      [
+       7.0,
+       0.0,
+       1.0,
+       0.0,
+       0.4587777853012085,
+       0.03346874937415123,
+       1.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ]
+     ]
+    },
+    {
+     "tag": "obsid0",
+     "side": 0,
+     "tick": 250,
+     "index": [
+      [
+       1,
+       4
+      ],
+      [
+       1,
+       5
+      ],
+      [
+       2,
+       4
+      ],
+      [
+       2,
+       5
+      ],
+      [
+       3,
+       0
+      ],
+      [
+       3,
+       1
+      ]
+     ],
+     "prod": [
+      [
+       7.0,
+       0.0,
+       1.0,
+       0.0,
+       0.6810555458068848,
+       0.1417749971151352,
+       1.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      [
+       7.0,
+       0.0,
+       1.0,
+       0.0,
+       0.6894888877868652,
+       0.0668250024318695,
+       1.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ]
+     ],
+     "java": [
+      [
+       7.0,
+       0.0,
+       1.0,
+       0.0,
+       0.6189444661140442,
+       0.0663750022649765,
+       1.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      [
+       7.0,
+       0.0,
+       1.0,
+       0.0,
+       0.4156666696071625,
+       0.041593749076128006,
+       1.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ]
+     ]
+    },
+    {
+     "tag": "obsid0:opp",
+     "side": 1,
+     "tick": 250,
+     "index": [
+      [
+       1,
+       4
+      ],
+      [
+       1,
+       5
+      ],
+      [
+       2,
+       4
+      ],
+      [
+       2,
+       5
+      ],
+      [
+       3,
+       0
+      ],
+      [
+       3,
+       1
+      ]
+     ],
+     "prod": [
+      [
+       7.0,
+       1.0,
+       0.0,
+       0.0,
+       0.34841111302375793,
+       0.8995000123977661,
+       1.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      [
+       7.0,
+       1.0,
+       0.0,
+       0.0,
+       0.6353703737258911,
+       0.9458395838737488,
+       1.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ]
+     ],
+     "java": [
+      [
+       7.0,
+       1.0,
+       0.0,
+       0.0,
+       0.3810555636882782,
+       0.9336249828338623,
+       1.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      [
+       7.0,
+       1.0,
+       0.0,
+       0.0,
+       0.5843333601951599,
+       0.9584062695503235,
+       1.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ]
+     ]
+    },
+    {
+     "tag": "obsid0:opp",
+     "side": 1,
+     "tick": 260,
+     "index": [
+      [
+       1,
+       4
+      ],
+      [
+       1,
+       5
+      ],
+      [
+       2,
+       4
+      ],
+      [
+       2,
+       5
+      ],
+      [
+       3,
+       4
+      ],
+      [
+       3,
+       5
+      ]
+     ],
+     "prod": [
+      [
+       7.0,
+       1.0,
+       0.0,
+       0.0,
+       0.2842555642127991,
+       0.8485749959945679,
+       1.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      [
+       7.0,
+       1.0,
+       0.0,
+       0.0,
+       0.3257555663585663,
+       0.8745874762535095,
+       1.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ]
+     ],
+     "java": [
+      [
+       7.0,
+       1.0,
+       0.0,
+       0.0,
+       0.3541666567325592,
+       0.9100000262260437,
+       1.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      [
+       7.0,
+       1.0,
+       0.0,
+       0.0,
+       0.39277777075767517,
+       0.9365000128746033,
+       1.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ]
+     ]
+    },
+    {
+     "tag": "obsid2",
+     "side": 0,
+     "tick": 240,
+     "index": [
+      [
+       0,
+       4
+      ],
+      [
+       0,
+       5
+      ],
+      [
+       1,
+       4
+      ],
+      [
+       1,
+       5
+      ],
+      [
+       2,
+       4
+      ],
+      [
+       2,
+       5
+      ]
+     ],
+     "prod": [
+      [
+       7.0,
+       1.0,
+       0.0,
+       0.0,
+       0.5575666427612305,
+       0.9686999917030334,
+       1.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      [
+       7.0,
+       1.0,
+       0.0,
+       0.0,
+       0.4344777762889862,
+       0.9749875068664551,
+       1.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ]
+     ],
+     "java": [
+      [
+       7.0,
+       1.0,
+       0.0,
+       0.0,
+       0.46177777647972107,
+       0.9679999947547913,
+       1.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      [
+       7.0,
+       1.0,
+       0.0,
+       0.0,
+       0.5161111354827881,
+       0.9858437776565552,
+       1.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ]
+     ]
+    }
+   ]
+  },
+  "unit_form": {
+   "status": "IDENTICAL",
+   "rows": 49229,
+   "equal": 49229,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {},
+   "first_diffs": []
+  },
+  "_sc_prepare": {
+   "status": "DIFF",
+   "rows": 49229,
+   "equal": 112,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "rows_diff_at_last_axis_index": {
+    "0": 49117,
+    "1": 158,
+    "2": 168,
+    "3": 32834
+   },
+   "first_diffs": [
+    {
+     "tag": "obsid0",
+     "side": 0,
+     "tick": 100,
+     "index": [
+      [
+       0
+      ],
+      [
+       3
+      ]
+     ]
+    },
+    {
+     "tag": "obsid0:opp",
+     "side": 1,
+     "tick": 100,
+     "index": [
+      [
+       0
+      ],
+      [
+       3
+      ]
+     ]
+    },
+    {
+     "tag": "obsid1:opp",
+     "side": 0,
+     "tick": 100,
+     "index": [
+      [
+       0
+      ],
+      [
+       3
+      ]
+     ]
+    },
+    {
+     "tag": "obsid1",
+     "side": 1,
+     "tick": 100,
+     "index": [
+      [
+       0
+      ],
+      [
+       3
+      ]
+     ]
+    },
+    {
+     "tag": "obsid2",
+     "side": 0,
+     "tick": 100,
+     "index": [
+      [
+       0
+      ],
+      [
+       3
+      ]
+     ]
+    }
+   ]
+  }
+ },
+ "stamp": {
+  "engine": "crforge",
+  "crforge": "ad8ef3a532ada8dea732bf1ecdeb01beef0fb4b0",
+  "tables": "16.402.22",
+  "tables_sha": "97869d43e0745841430d11d7b4286ac0f8057363",
+  "body_map_sha256": "47c7c71390ace5225673beae4255a7dacb76ae384f60a677dddcb734873326d5",
+  "catalogue": {
+   "cards_json_fnv1a64": "803ec02c7eac9fd3",
+   "cards_vintage": "15.535.29 client (2026, LIVE build family)",
+   "cards_json_hash_source": "embedded"
+  }
+ },
+ "facade_sets_hero": false,
+ "facade_src_sha256": {
+  "CfCore.java": "6284dadf72ab05b37cb7cde91ff03071881b67ece063c6eed1d9ac0d3a7400d2",
+  "pipeline/crforge_core.py": "e72adf73f8b4d80b0ee1b241c5c2ca8633333a9c03c92e7098b7adc5cc308864",
+  "pipeline/royale_env.py": "5125e31742df791bc5da44fed1bc4b7a5df6b9915455a1b786e22371c34703a0",
+  "pipeline/e1_eval.py": "0af6eb5f4c98d22334644452e19dd6e73f7558897c4879962bfeb156fce5a14f",
+  "pipeline/obs_contract.py": "953a15d913f1b646de4f6f9559c7d29c0ba0e546795776bca25e53e6ab8dc3b2",
+  "pipeline/body_identity.py": "120150eda21c958871c932f9090aba74a80c4058018a53aec4e1c5db11305114"
+ },
+ "note": "prod = e1_eval prepare + gen_row; java = BUILDERS on the same facade battle and tick. Keys starting '_' are aux checks, not GenModel keys: _sc_prepare = prepare()'s sc before GenPolicy.row zeroes the hand one-hots. sc[5] (opponent elixir) of the Java builder is the engine truth: replaced by -1, never compared as equal and never logged."
+}
