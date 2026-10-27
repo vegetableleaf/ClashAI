@@ -203,6 +203,39 @@ def derive_sides(path, m, events, first, my, hp, names, cat, by_name, uhp, tt):
     return out
 
 
+_SUMMON = None
+
+
+def summoning_spells():
+    """Spell cards that summon a unit (Rage's RageBottle): their area is not made by castSpell, so the round-1 made
+    dating does not apply (as sme_live.fx_spells)."""
+    global _SUMMON
+    if _SUMMON is None:
+        rows = json.load(open(Path(TABLES) / 'spells_other.json'))['rows']
+        _SUMMON = {n for n, r in rows.items() if r['columns'].get('SummonCharacter')}
+    return _SUMMON
+
+
+def crforge_casts(path, plays, sides):
+    """Ability casts seen_casts does not give, dated for crforge (SME.md fix rounds 2.2 / 2.3 / 3.1; the rules live in
+    crforge/pilot/sme so the SME layer and this extractor share one copy):
+    - Golden Knight: one cast per dash burst (sme_live.gk_dashes);
+    - Archer Queen / Boss Bandit / Goblinstein: from the phase-2 ability buffs (sme_live.buff_casts);
+    - a hero Ice Golem 'cast' that is its death (same area card id) is dropped (sme_live.golem_death_cast)."""
+    sme_dir = str(HERE.parent / 'sme')
+    if sme_dir not in sys.path:
+        sys.path.insert(0, sme_dir)
+    import live_frames
+    import sme_live
+    frames = {f['t']: f for f in live_frames.convert(path)}
+    out = [p for p in plays if not sme_live.golem_death_cast(p, frames)]
+    for g in sme_live.gk_dashes(frames) + sme_live.buff_casts(frames):
+        deck = sides[g['side']]['deck']
+        if g['card'] in deck:
+            out.append(dict(g, deck_index=deck.index(g['card']), name=g['card'], form=0))
+    return out
+
+
 def match(path, bl=None, names=None, cat=None, shims=None, tt=None, uhp=None, by_name=None, api=True):
     """-> (record, None) or (None, skip reason). api=False (A2b-1b): no battle-log entry; sides from derive_sides.
     With an entry, the record also carries 'derived' (derive_sides on the same log) to validate A2b-1b against."""
@@ -271,7 +304,8 @@ def match(path, bl=None, names=None, cat=None, shims=None, tt=None, uhp=None, by
         row = dict(side=e['side'], kind=e['kind'], card=None if k is None else sides[e['side']]['deck'][k], deck_index=k,
                    name=e['name'], form=e.get('form', 0), run_ticks=[e.get('lo', e['tick']), e.get('hi', e['tick'])],
                    tick=e['tick'], source=e['source'])
-        if e.get('source') == 'spell_seen' and e.get('made') is not None and row['run_ticks'][0] == row['run_ticks'][1]:
+        if e.get('source') == 'spell_seen' and e.get('made') is not None and row['run_ticks'][0] == row['run_ticks'][1] \
+                and row['card'] not in summoning_spells():   # Rage: a RageBottle unit, not castSpell (run11 vs run10)
             # crforge casts an area-effect spell in the command's own step (castSpell, opening cleanup), so its run
             # tick is the area's made tick; seen_casts gives RoyaleSim's made - 1 (Tornado already made: PULL_AREAS lag).
             # SME.md fix round 1 (A2c): measured on 138 live matches, Lightning/Earthquake/Poison 1 tick late otherwise.
@@ -285,6 +319,7 @@ def match(path, bl=None, names=None, cat=None, shims=None, tt=None, uhp=None, by
         if e.get('inferred'):
             row['inferred'] = True
         (plays if k is not None else unplaced).append(row)
+    plays = crforge_casts(path, plays, sides)
     build = next(((json.loads(r).get('phase2') or {}).get('build') for r in open(path, 'rb') if b'"phase2"' in r), None)
     # RNG-free: no deck card is a drawer. Without the API only seen cards are known; an unseen slot was never played (it
     # is unseen because no play of it was extracted), and G0's drawers draw only when played (crforge: Arrows / Princess

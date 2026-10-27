@@ -551,6 +551,40 @@ The three 13000xxx ids are evolved forms (Bats / Witch / Skeleton-type in the on
 |---|---|---|---:|---:|---|
 | start (run9) | | | 28 / 109 | 204,647 | |
 | 3.1 (run10) | Archer Queen / Boss Bandit / Goblinstein ability casts never extracted | input: casts dated from the reader's phase-2 ability buffs (`SME_CHAMP=1`) | **31 / 109** | 220,450 | 0 (+3) |
+| 3.2 | hero Valkyrie spin late in crforge | **none**: not crforge (below), no fork patch | 31 / 109 | 220,450 | 0 (+0) |
+| 3.3 (run12) | SME-layer input rules | moved into `extract.py`; inputs regenerated (`/workspace/pilot/inputs_v2`); SME input flags off | 31 / 109 | 220,450 | 0 (+0; 138 / 138 matches identical to run10) |
+
+**Stop rule:** two sub-rounds in a row gained 0 (3.2, 3.3), so round 3 stops before 3.4. The body-position
+dossier rerun is owed.
+
+## 3.2: the "late hero Valkyrie spin" is a consequence, not crforge (a; `valk_late.py`, run10)
+- **All 10 late casts sit on a board that was already diverged at the cast.** At `083722`/3101, for example,
+  the recorded frame holds a hero Ice Wizard and units the sim lacks.
+- **Why crforge waits:** its spin starts when `ValkyrieHero_Charge_Target` (`WaitForTarget`,
+  `ValkyrieHero_Charge_Shape` radius 5,500) finds a ground target. On those boards the target the game had was
+  missing or elsewhere.
+- **On exact boards the spin is on time:** 0 casts are late; the 24 aligned casts all start at R+2, as in the game.
+- **No patch.** The fork branch `clashbot-fix` is still the pin.
+
+## 3.3: one copy of the input rules (a)
+**What moved:** `extract.py` (`crforge_casts`) now applies the Golden Knight dash casts, the champion buff casts,
+the hero Ice Golem death-cast drop and the round-1 made dating.
+- It imports the functions from `sme_live.py` / `live_frames.py`, so the SME layer and the extractor share one copy.
+- `fights.seen_casts` is not edited, because RoyaleSim's dating differs.
+
+**Checks:**
+- **Parity harness tests (`L74/parity/tests`), before and after:** identical, 97 passed and 1 failed. The failure is
+  the pre-existing `test_own_timing::test_ext_forms_map_reader_ids_to_catalog_forms`.
+- **`test_extract.py`:** passes, with unchanged numbers.
+
+**Regenerated inputs:**
+- `regen_inputs.py` re-extracted the same 138 matches with the same battle-log entries, written to pod
+  `/workspace/pilot/inputs_v2/inputs_rngfree.jsonl` (sha256 `ff769468…`). Flags are unchanged on 138 / 138.
+- The first regeneration (run11) differed on 3 matches. Its made dating also shifted Rage, whose area comes from a
+  RageBottle unit, not `castSpell`; the SME rule never shifted Rage.
+- With summoning spells excluded (`summoning_spells`), **run12 equals run10 on 138 / 138 matches** (counts and first
+  divergence). Runs no longer need `SME_FX_SHIFT` / `SME_GK` / `SME_GOLEM` / `SME_CHAMP`.
+- Rage's own dating is left open (b). On run11 it was mixed: 2 matches 2 ticks worse, 1 match +738 exact frames.
 
 ## 3.1: champion casts from ability buffs (a)
 These three champions show no dash, unlike the Golden Knight. **Their cast shows in the reader's phase-2 unit buff
