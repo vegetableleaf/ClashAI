@@ -1,0 +1,3 @@
+RESULT brute_side=0 drawsA=6735 statesA=107760 deal_fits=4 survivors=2 seed_preimages=4 brute_s=25.7 threads=54 constraintB=order flags=[]
+STATE s3=-1462933474 s4=-1139018279 draw0=120756199 draw1=65276459 orderB=[5, 3, 7, 0, 6, 2, 4, 1] seeds=[2032924539, -2060719996]
+STATE s3=-1043283422 s4=-351882264 draw0=237977057 draw1=83446809 orderB=[5, 3, 7, 0, 6, 2, 4, 1] seeds=[-2064661162, 2028985001]

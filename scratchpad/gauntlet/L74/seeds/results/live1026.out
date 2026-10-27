@@ -1,0 +1,3 @@
+RESULT brute_side=1 drawsA=6707 statesA=107312 deal_fits=48371 survivors=0 by_misfit=[0, 0, 8244, 15958] seed_preimages=0 brute_s=24.2 threads=54 constraintB=plays(37) flags=[]
+CHECK s3=-1462933474 orderA_ok=true orderB=[2, 7, 1, 6, 3, 5, 0, 4] misfit=2
+CHECK s3=-1043283422 orderA_ok=true orderB=[2, 7, 1, 6, 3, 5, 0, 4] misfit=2
