@@ -1134,3 +1134,130 @@ Rows: `results/live/bp3/aim3_bp2c.jsonl.gz`; tables: `results/live/bp3/aim_censu
 variant_h4.py (scratch). `fork/bp/clashbot-bp_0003_MoveProbe.patch`. `results/live/bp3/`. Pod 32657:
 `/workspace/pilot/bp3/` (lib_bp3, build_aim, lib_h4 scratch), `/workspace/pilot/sme_live/bp3R0` (repro), `bp3h4`
 (partial, scratch).
+
+# A2c-M: the crforge / unknown-mechanics cluster (worker a2cm, pod 33308)
+
+Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
+
+Baseline: `m0` is r6xc rerun on pod 33308 (inputs_v14, repr_v2, comparator flags as r6xc, MIXPH + SNAP). It equals
+r6xc exactly: **79 / 109, 256,184 exact frames**, the same torn counts (a). Runs live in `/workspace/mech/` on 33308
+(`run_m.sh`). m2 and m3 re-ran only the matches their change touches (`m2`: the 15 matches whose inputs changed; `m3`:
+the 60 matches not exact in m1 or touched by m2). The other rows were merged from the run before, because a match's
+result depends only on its own inputs, and CROSS only re-classes div frames after the repair.
+
+| run | mechanism | layer | change | exact apart from torn (unflagged) | exact frames | regressions | gained |
+|---|---|---|---|---:|---:|---|---|
+| m0 | | | r6xc rerun | 79 / 109 | 256,184 | | |
+| **m1** | evolved Goblin Barrel point; Goblin Drill dig start; hero Balloon throw dating | extractor | `mech_rules` SME_MECH_GB + DRILL + HB | **83 / 109** | **260,224** | 0 | `165839`, `041602`, `235355`, `235915` |
+| m2 | Zap dated from its ZapFreeze buff | extractor | SME_MECH_ZAP | 83 / 109 | 260,224 | 0 | 0 |
+| **m3** | a body crossed between t and t+1 in an in-step read | comparator | `mech_torn` SME_MECH_CROSS | **84 / 109** | 260,224 | 0 | `192935` |
+
+**Net: 79 -> 84 / 109, +4,040 exact frames, 0 regressions in each step (a).** The match crforge refused (`225213`)
+now runs. **No crforge patch:** no case in this cluster was traced to crforge's mechanics. The fork branch
+`clashbot-mech` (pod 33308 `/workspace/crforge_mech`, cut from `008aa626`) has no commits, so core tests were not re-run.
+
+## Evolved Goblin Barrel decoy (`165839`@2539, `041602`@2276): the play point, not the decoy (c for crforge)
+- **The game's flights:** both barrels start at the king's centre and fly to x = 9000 ± d. At 041602 they move
+  (95, 388) a tick from (9000, 3000), toward 14500 and 3500.
+- **crforge has the same rule:** the decoy is thrown from the barrel's start to `18000 - aimX`
+  (ActionMirroredExtraSpell, BattleEvolutionTest).
+- **The cause is the extractor's point.** It averaged the two barrels into x = 9000, so crforge threw both
+  barrels almost straight ahead.
+- **How the real barrel is told apart:** it lands Goblins (323 hp) and the decoy lands GoblinDummy (130 hp), under one
+  reader card id.
+- **Rule SME_MECH_GB:** when two mirrored barrel projectiles show, x becomes the mean x of the landing group with the
+  higher hp.
+  - It changes 2 of the 45 Goblin Barrel plays, the only evolved ones: 9000 -> 6499 and 9000 -> 14500.
+  - **Both matches become exact (a)**, decoy flights included, so crforge's decoy is right.
+
+## `225213` refused by crforge: the evolved Goblin Drill's point was its dig start (a)
+- **Why crforge refused:** the play at 2415 was given at (9228, 28177), on the player's own king. That is where the
+  reader first shows the evolved drill's dig body (card 13000108, kind 15) leaving the king.
+- **Why the extractor missed the surface:** `drill_surface` found none for this evolved drill, so the point stayed.
+  The drill surfaced at (4000, 9000) on 2487.
+- **What followed:** crforge refused the play at its placement. The next Goblin Drill play then hit
+  `checkCountKnown`: "after a play of it refused at its placement ... not modelled".
+- **Rule SME_MECH_DRILL:** a drill play within 2000 of a king takes the first kind-12 drill row of its side within
+  150 ticks.
+  - 2 plays change: `225213`@2415 and `174147`@2496. 174147 is flagged and was the other refused match.
+  - **Both matches now run (a).**
+- **225213's new first divergence is 3588, not a drill:**
+  - our elixir is 2.0 below the sim's, our hand is unchanged, and our hero Ice Wizard is 13 / 8 units off;
+  - no Ice Wizard ability is in the inputs after 3061;
+  - so it is an own Ice Wizard press that was not extracted (b; it belongs to the own-press rules, not mine).
+
+## Hero Balloon throw (`235355`@2681; also fixes `235915`): extractor dating (a)
+- **crforge:** it shows `BalloonHero_Skeletrooper_Projectile` first on line R+3 on 9 / 9 casts (`hb_census.py`).
+- **The game:** the reader shows the throw as a moving projectile row of card 203000006.
+  - On 6 casts, the first sighting minus (R+3) is 0 or +1, which is the frame sampling.
+  - The others are -9, -1 and +2.
+- **Why the dating is off:** `seen_casts` dates the cast from the trooper's landing with RoyaleSim's flight speeds.
+- **Rule SME_MECH_HB:** R = (first frame with the throw) - 3, with the window back to the frame before.
+  - 5 of 11 windows change.
+  - **235355 and 235915 become exact (a).**
+  - The table's reading of 235355 ("Balloon death bomb, a no-hp character dropped by repr") is **(c) contradicted**:
+    the balloon is alive, at 2046 hp, and the projectile is the throw.
+
+## Zap: dating confirmed but no gain; two Zaps never extracted (`204518`@723, `010245`@573)
+- **Dating (a):** a Zap puts ZapFreeze (500 ms) on everything it hits, so the buff's made tick c is exact.
+  - crforge, given the Zap at run R, hits on line R+1 with a fresh buff, so R = c - 1.
+  - Of the 36 extracted Zaps (`a2cm_zap_census.txt`), 22 sit at c - 1 and 12 at c - 2.
+  - Every Zap the SME repair had moved went to c - 1.
+  - With SME_MECH_ZAP, `001702`'s evolved Knight is exact at 2492: it was 60 units off.
+- **No match gained:** 001702 still diverges at 2492, on a Skeleton.
+  - That Zap is `inferred` (no area row), at the point (2300, 17836). The game's Zap killed a Skeleton at
+    (3106, 14059), which lies outside the sim's area.
+  - So the inferred point is about 1000+ units off (b).
+- **The 2 missed Zaps (a):**
+  - 204518@723: our X-Bow takes ZapFreeze (450 ms left, made 722) and 306 damage.
+  - 010245@573: our princess tower takes ZapFreeze and 77 damage, Zap's tower damage (77 on all 13 tower hits of
+    extracted Zaps).
+  - Neither match has a Zap play, and the reader showed no Zap area.
+  - That accounts for the X-Bow's 306 and the tower's 77 in the table.
+- **Why they are not added (b):** 951 ZapFreeze groups in the 138 matches have no extracted Zap. Other sources give
+  the same damage, for example 204518@1077 / 1119 (306 on a princess tower, which a Zap would hit for 77). A rule
+  needs a discriminator, such as a sim check in the repair stage. Not done.
+
+## `192935`@382: a read between the game's per-entity updates (a); comparator rule SME_MECH_CROSS
+- **What the frame shows:**
+  - our Knight at its t point with its t+1 hp (the Mega Knight's 429 already taken);
+  - every other object at t, our elixir t's;
+  - the X-Bow bolt removed, but the Mega Knight it hits not yet damaged;
+  - the next frames exact. It is the match's only div frame.
+- **Why SnapRun cannot match it:** crforge's in-step states move every body before any hit. `EntityHolder.tick` runs
+  its passes slot by slot (the snapdiff shows the impact state with all bodies moved).
+- **Rule:** an isolated div frame where every object is a sim t / t+1 tuple, or the cross (t position, t+1 hp) /
+  (t+1 position, t hp) of one sim body present on both lines. Our elixir and hand are checked as in torn_mixed.
+- **Planted checks (`mech_torn_test.py`): 13 / 13 caught.**
+  - The crossed rows hp ±1, x+1, y-1, or another body's t+1 hp.
+  - Our elixir +1, an extra projectile, another body moved 1 unit.
+- **It re-classes exactly 1 frame in the 60 matches it ran on.**
+
+## Not fixed: evidence for the next owner
+- **`222712`@4183 ("Earthquake pulse") is two things:**
+  - The frame is an in-step read of 4184: our elixir is sim 4184's, and our hero IW cube still sits on its deploy
+    point. The reader does not show EarthquakeHiddenDamage there yet; it shows it from 4186.
+  - A Skeleton next to our hero IW deploy at (499, 18499) is pushed further in the game. The game moves it
+    1655 -> 1803 by that read; the sim moves it 1655 -> 1730 -> 1773 -> 1802 over 4183-4185.
+  - The (30, -33) offset persists through 4186-4191. That points at crforge's deploy-overlap push profile
+    (b, crforge candidate; a census of deploy pushes is owed).
+- **`172835`@2831:** crforge's Knight swerves for 2 ticks, (16, -48) and (26, -43) instead of (36, -35), at the tick
+  the WitchMother takes 429 and starts moving. The game's Knight walks straight. No body is within 4500 of it. It is
+  a target or route change (b; it needs the BpRun target trace).
+- **`001141`@5399:** the game's Golden Knight dashes 5399 -> 5401 (791 units in 2 ticks), with no GoldenKnightCharge
+  buff and no GK ability in inputs_v14 between 5350 and 5450. crforge's walking GK takes an X-Bow bolt (-98) that the
+  dashing one does not. It is a missed GK dash cast (b; bp_rules GK owner).
+- **`000233`:** skipped (BP2).
+
+## Files (A2c-M)
+- Code:
+  - `mech_rules.py`: input rules, the same hook shape as bp_rules; `mech_inputs.py` applies them to an inputs file.
+  - `mech_torn.py` and `mech_torn_test.py`: the CROSS rule and its planted checks.
+  - `mech_hooks.diff`: the two hooks for the extract.py / sme_live.py owners to merge.
+- Tools:
+  - `near.py` (rec vs sim rows near a point), `snapdiff.py` (frame vs crforge's in-step states);
+  - `hb_census.py`, `buff_census.py` (buff casts against plays, with hp drops).
+- Results: `results/live/a2cm_m{1,2,3}_{cmp.txt,results.jsonl}`, `results/live/a2cm_zap_census.txt`.
+- Pod 33308 `/workspace/mech/`:
+  - `in_m1` = inputs_v14 with GB + DRILL + HB; `in_m2` = in_m1 with ZAP;
+  - `sme_m/` is a copy of pilot/sme with the CROSS hook.

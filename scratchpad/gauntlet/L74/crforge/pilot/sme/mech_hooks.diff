@@ -1,0 +1,19 @@
+A2c-M hooks for the file owners to merge (both behind flags, off by default).
+
+--- sme_live.py (comparator: SME_MECH_CROSS, after the SME_BP_SNAP reclass in main)
++++ sme_live.py
+@@ after: an = bp_snap.reclass(runnable(plan), frames, me, an, o, os.path.join(mo, 'work')) @@
+             if SNAP:  # A2c-BP: isolated div frames that are crforge's own in-step states (bp_snap.py)
+                 import bp_snap
+                 an = bp_snap.reclass(runnable(plan), frames, me, an, o, os.path.join(mo, 'work'))
++            if int(os.environ.get("SME_MECH_CROSS", "0")):  # A2c-M: a body crossed between t and t+1 (mech_torn.py)
++                import mech_torn
++                an = mech_torn.reclass(an, o, frames, me)
+             by = {x['t']: x for x in o}
+
+--- extract.py (inputs: SME_MECH_GB / DRILL / HB / ZAP, after the bp_rules.apply block in match())
++++ extract.py
++    import mech_rules  # A2c-M (sme/mech_rules.py, SME_MECH_* flags, all off by default)
++    if mech_rules.GB or mech_rules.DRILL or mech_rules.HB or mech_rules.ZAP:
++        import live_frames
++        plays = mech_rules.apply(str(path), plays, sides, {f['t']: f for f in live_frames.convert(path)})
