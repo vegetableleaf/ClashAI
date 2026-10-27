@@ -1040,3 +1040,85 @@ in-step SNAP. Pod 33308 got the same lib by copy (core jar sha256 `73b19425f039d
 - **Not extractor (b):** `181217`. The hero Mini PEKKA leaves the reader's unit list at 3041, 2 frames after its cast
   timer starts; crforge keeps it. That is a representation or crforge question.
 - **`224856` (hero Goblins second wave) is not traced.**
+
+# A2c-BP3: the near-node rebuild census and the body-position singles (pod 32657)
+
+**Base: bp2c reproduced (a).** `bp2/runB.sh bp3R0 bp2/in_press lib_bp2 SME_BP_FITNEXT=1` against bp2c: 79 / 109 -> 79 / 109,
+246,887 -> 246,887 exact frames, 0 regressions, 0 gained.
+
+## Instrumentation: fork patch 0003 MoveProbe (a)
+- `fork/bp/clashbot-bp_0003_MoveProbe.patch` (branch `clashbot-bp3` c9889402 on 05533954, worktree
+  `/workspace/pilot/bp3/crforge`; applied by `bp3/apply_moveprobe.py`). When `MoveProbe.CURRENT` is set it is told:
+  - `disp`: every displacement (start point, aim point, budget, arrival bit);
+  - `replan`: every ground route search (goal changed, held route kept, new route size / next node / the node after it,
+    the held route's next node, goal node, held goal node, reference point, and the goal the reference's point at the
+    start of the tick would give, computed by a probe-only `MovementQueries.probeEndpointFromTickStart`; the endpoint
+    scan is pure there: no visitor, stateless predicates).
+- Unset, nothing calls it. Core tests 2,140, 0 failures, 2 skipped. Traces of all 138 plans on lib_bp2 vs lib_bp3:
+  138 identical, the same 2 GoblinDrill refusals (`results/live/bp3/trace_ident_bp3.txt`).
+- Tracer `bp3/AimRun.java` (from BpRun by `bp3/mk_aimrun.py`): per tick the probe events and every character
+  (id, name, side, x, y, hp, reference). Dossier tool `bp3/aim_one.py RUN MATCH T0 T1 [IDs]`.
+
+## Item 1: every rebuild with a near node, crforge's aim vs the game (a)
+`bp3/aim_census.py` on bp2c's plans (136 runnable): a search whose first displacement arrives at the new route's next
+node in the same step. For each, the step toward two alternatives is computed: alt1 = the new route's next-but-one node
+(the game pops the near node first), alt0 = the held route's next node (the game does not rebuild). An event counts
+when (1) a pure step toward an alternative differs from the step toward crforge's aim and (2) the body matched a
+recorded body exactly at the frame before. The outcome is read at the next frame: the recorded body sits at crforge's
+point, or at the point moved by an alternative's difference (+-3 units), or neither.
+Rows: `results/live/bp3/aim3_bp2c.jsonl.gz`; tables: `results/live/bp3/aim_census_bp2c.txt`.
+
+| events | crforge | alt1 | alt0 | neither | gone |
+|---|---:|---:|---:|---:|---:|
+| 70,154 found; 50,051 deciding with an exact frame before | 49,495 | 41 | 26 | 326 | 163 |
+| of those, in clean stretches (t <= first divergence) | **40,451** | 2 | 1 | 38 | 131 |
+
+- **(c) "the game pops a near node before stepping" is contradicted:** in clean stretches the game follows crforge's
+  aim at the near node 40,451 times; 3 events go the other way, and they are the onsets themselves (000233@4598/4599,
+  180336@2910).
+- **(c) "the game takes the reference where it stood at the start of the tick" (H4) is contradicted twice:**
+  - scratch build `bp3/variant_h4.py` (not committed): of 41 matches finished, 23 exact matches diverge, 7 diverge
+    earlier, 0 gain (`results/live/bp3/h4_partial_vs_bp2c.txt`; run stopped);
+  - census: 6,979 clean events where the reference's own move earlier in the same tick is what changed the goal
+    (`by_ref_move`: the tick-start goal equals the held goal) follow crforge; 2 do not (the onsets).
+- **000233@4599 is a consequence, not the cause (a for the arithmetic, b for the cause).** Skeleton 5000119's goal
+  flips from node 1215 to 1251 because its reference (skeleton 5000116, moved earlier in the step) puts cell 1251's
+  centre 936.08 units away. The game's 5000116 is 2 units off at 4599 ((13703, 16313)), 938.18 units away. A range
+  between those two values keeps the held goal, so there is no rebuild, which is the game's move toward the old node.
+  The earlier onset is 5000116 itself at 4598-4599. No character is within 1,800 units (Manhattan) of it and there is no
+  area. Yet its displacements run off the pure step (4597: (-18, 124) for a 90 budget). Hypothesis (b, untested): it is
+  clamped along the bridge cell edge by GridMove. **Owed (b):** the skeleton's attack range (to confirm the 936 / 938
+  window), and a census of bridge-edge clamps (GridMove proposal vs outcome on edge cells) in clean stretches.
+- **No fork change** (no census evidence for one).
+
+## Item 2: the singles, the combination that makes each one unique
+- **164443@3213, Ram landing (a for the game's move).** From 3211 (exact), the game's Ram is exactly two pure 60 steps
+  with **no push at 3212**: (9848, 17100) -> (9840, 17159) -> (9836, 17218) = the recorded point. crforge pushes
+  the Ram (-16, -2) by the enemy Skeleton 5000058 on its first visit after the jump (3212). The skeleton's recorded push
+  (148, 24) points from the Ram's point before its 3212 move (b: by hand (147, 24); crforge (149, 15) from its moved
+  point). Combination: **first moving visit after a river-jump landing + an overlapping enemy ground body + a lander
+  whose push from that body is not zero** (crforge's layer test `(ownerHeight > 0) == (other.zTotal < 1)`; the
+  landing visit leaves the last arc sample's height until the next pre-hook). Earlier census: 7 clean contact
+  landings (HogRider 5, RoyalHog 1, RoyalHog_EV1 1) vs this 1. **Owed:** for those 7, whether crforge pushed the lander
+  on that visit (if it did and the game agreed, the subtype is the Ram's mass / attached rider).
+- **180336@2910, Elite Archer hero (a for the event, b for the game).** A near-node rebuild whose goal change comes
+  from the reference's (Knight 5000057) move earlier in the step. The census subtype holds 6,979 clean agreeing
+  events, so this is not the combination. Neither alternative reproduces the game's (109, -38) two-step move
+  (length 115 < 120; the archer stops at 2911 in both). **Owed:** the archer's stop-in-range point (attack range vs
+  the moving Knight), dossier of 2911 with the targeting fields.
+- **211239@1532, opponent hero IW (a for the timing).** Its target (our IW 5000022) dies at 1527 while it stands
+  still (budget 0) 6,478 units from it. crforge moves it first at 1533 (replan to the princess tower); the recorded
+  body moves at 1532, one tick earlier. Combination: **target death while the hero IW stands with a target out of
+  attack range**. **Owed:** census of target-death -> first move delay per unit type (BpRun's targeting timers).
+- **014928@5183, hero IW 29 units (a for the event).** Walking to the left bridge on route node (3250, 18750), no
+  rebuild in crforge 5177-5189. The game turns about 16 degrees further down from 5182 (two-tick moves (35, -113),
+  (26, -116), (21, -117), (17, -118)). No body within 2,500 units but its own cube; a same-side BarbLog
+  released a Barbarian at (2500, 15000) at 5172 and it starts moving at 5184. Combination (b): **a ground route
+  after a same-side BarbLog ends on the lane**. **Owed:** whether the game rebuilt at 5182 (a cost-overlay change from
+  the log's end or the Barbarian's start) - MoveProbe replan census around every BarbLog end.
+
+## Files (A2c-BP3)
+`bp3/`: MoveProbe.java, apply_moveprobe.py, mk_aimrun.py, AimRun.java, aim_census.py, aim_one.py, aim_sum.py,
+variant_h4.py (scratch). `fork/bp/clashbot-bp_0003_MoveProbe.patch`. `results/live/bp3/`. Pod 32657:
+`/workspace/pilot/bp3/` (lib_bp3, build_aim, lib_h4 scratch), `/workspace/pilot/sme_live/bp3R0` (repro), `bp3h4`
+(partial, scratch).

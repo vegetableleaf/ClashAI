@@ -1,0 +1,44 @@
+== all pre
+   ('now', False) {'crforge': 1325, 'neither': 9, 'gone': 6}
+   ('now', True) {'crforge': 8756, 'neither': 56, 'alt1': 15, 'alt0': 6, 'gone': 28}
+   ('other', False) {'crforge': 40, 'neither': 2}
+   ('prev', False) {'crforge': 12368, 'gone': 42, 'neither': 54, 'alt1': 13, 'alt0': 7}
+   ('prev', True) {'crforge': 3}
+   ('still', False) {'crforge': 13744, 'gone': 60, 'neither': 64, 'alt1': 10, 'alt0': 5}
+   ('still', True) {'crforge': 1}
+   ('unknown', False) {'crforge': 13187, 'neither': 141, 'alt0': 8, 'gone': 27, 'alt1': 3}
+   ('unknown', True) {'crforge': 71}
+== clean
+   ('now', False) {'crforge': 1131, 'gone': 5, 'neither': 4}
+   ('now', True) {'crforge': 6979, 'neither': 10, 'gone': 22, 'alt0': 1, 'alt1': 1}
+   ('other', False) {'crforge': 28}
+   ('prev', False) {'crforge': 10240, 'gone': 29, 'neither': 4, 'alt1': 1}
+   ('prev', True) {'crforge': 3}
+   ('still', False) {'crforge': 11308, 'gone': 51, 'neither': 5}
+   ('still', True) {'crforge': 1}
+   ('unknown', False) {'crforge': 10709, 'gone': 24, 'neither': 15}
+   ('unknown', True) {'crforge': 52}
+clean by_ref_move rows:
+  20261026_080408 343 Skeleton now crforge True False 970
+
+raw (out by sub, pre):
+('goal', False, 'alt0') 7
+('goal', False, 'alt1') 57
+('goal', False, 'crforge') 591
+('goal', False, 'gone') 16
+('goal', False, 'neither') 3738
+('goal', None, 'nodisc') 15667
+('goal', True, 'alt0') 25
+('goal', True, 'alt1') 41
+('goal', True, 'crforge') 49397
+('goal', True, 'gone') 163
+('goal', True, 'neither') 326
+('overlay', False, 'crforge') 15
+('overlay', False, 'neither') 7
+('overlay', None, 'nodisc') 5
+('overlay', True, 'alt0') 1
+('overlay', True, 'crforge') 98
+clean discriminating events not following crforge (alt0 / alt1):
+  20261026_180336 2910 EliteArcherHero ref_mode now by_ref_move True -> alt0 (rec-sim -9,-23)
+  20261027_000233 4598 Skeleton 5000116 ref_mode prev -> alt1 (rec-sim -2,-2)
+  20261027_000233 4599 Skeleton 5000119 ref_mode now by_ref_move True -> alt1 (rec-sim -2,-1)

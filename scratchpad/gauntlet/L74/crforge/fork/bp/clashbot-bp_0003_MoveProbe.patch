@@ -1,0 +1,219 @@
+From c98894027adfd71f35045bc52eea5c1d504ee3ae Mon Sep 17 00:00:00 2001
+From: vegetableleaf <vegetableleaf@users.noreply.github.com>
+Date: Tue, 27 Oct 2026 22:23:07 +0000
+Subject: [PATCH] clashbot-bp3: MoveProbe (instrumentation only, no behaviour
+ change): each displacement and ground route search, with the goal a
+ tick-start reference would give
+
+---
+ .../core/pathfinding/GridMovementQueries.java | 31 +++++++++++
+ .../core/pathfinding/move/MoveProbe.java      | 52 +++++++++++++++++++
+ .../core/pathfinding/move/MovementChain.java  |  8 +++
+ .../pathfinding/move/MovementQueries.java     |  9 ++++
+ .../pathfinding/move/RoutePreparation.java    | 22 ++++++++
+ 5 files changed, 122 insertions(+)
+ create mode 100644 core/src/main/java/org/crforge/core/pathfinding/move/MoveProbe.java
+
+diff --git a/core/src/main/java/org/crforge/core/pathfinding/GridMovementQueries.java b/core/src/main/java/org/crforge/core/pathfinding/GridMovementQueries.java
+index 222427a7..61be3e05 100644
+--- a/core/src/main/java/org/crforge/core/pathfinding/GridMovementQueries.java
++++ b/core/src/main/java/org/crforge/core/pathfinding/GridMovementQueries.java
+@@ -218,6 +218,37 @@ public final class GridMovementQueries implements MovementQueries {
+         null);
+   }
+ 
++  /** Instrumentation only (MoveProbe): see {@link MovementQueries#probeEndpointFromTickStart}. */
++  @Override
++  public int probeEndpointFromTickStart(int radius) {
++    TargetView target = targetingOn ? unit.targeting().getReference() : null;
++    if (target == null || target.getEntity() == null) {
++      return -1;
++    }
++    GridEntity entity = unit.entity();
++    GridEntity other = target.getEntity();
++    int px = other.getPrevX();
++    int py = other.getPrevY();
++    int packed =
++        ReferenceEndpoint.selectEndpoint(
++            grid.getWidth(),
++            grid.getHeight(),
++            entity.getX(),
++            entity.getY(),
++            px / org.crforge.core.pathfinding.grid.TileMap.CELL_UNITS,
++            py / org.crforge.core.pathfinding.grid.TileMap.CELL_UNITS,
++            radius,
++            entity.isAir(),
++            PathfindingGlobals.KS_POS_TO_TARGET_FLYING_NO_WATER,
++            PathfindingGlobals.KS_POS_TO_TARGET_GROUND_AVOID_BUILDINGS,
++            ReferenceEndpoint.everyCellInBounds(grid.getWidth(), grid.getHeight()),
++            (x, y) -> FixedMath.squaredDistance(px, py, x, y),
++            grid::water,
++            (col, row) -> CellTests.overlayBlocks(grid, col, row),
++            null);
++    return packed < 0 ? -1 : (packed & 0xffff) * grid.getWidth() + (packed >> 16);
++  }
++
+   /** 1 for a hovering unit, which a push does not move off water. */
+   @Override
+   public int hovering() {
+diff --git a/core/src/main/java/org/crforge/core/pathfinding/move/MoveProbe.java b/core/src/main/java/org/crforge/core/pathfinding/move/MoveProbe.java
+new file mode 100644
+index 00000000..4019e995
+--- /dev/null
++++ b/core/src/main/java/org/crforge/core/pathfinding/move/MoveProbe.java
+@@ -0,0 +1,52 @@
++/*
++ * crforge - https://github.com/voonhous/crforge
++ * SPDX-License-Identifier: Apache-2.0
++ * Porting this code? Please cite this file and the commit you read: see the README.
++ */
++
++package org.crforge.core.pathfinding.move;
++
++/**
++ * Instrumentation only (clashbot-bp, A2c-BP3): when {@link #CURRENT} holds a probe, it is told of
++ * each displacement a movement chain runs and of each route search route preparation runs, so a
++ * caller can see where an entity aimed inside a step. Unset (the default), nothing calls it and the
++ * battle runs as before.
++ */
++@FunctionalInterface
++public interface MoveProbe {
++
++  /** The probe in use, or null for none. */
++  MoveProbe[] CURRENT = {null};
++
++  /**
++   * One event.
++   *
++   * <ul>
++   *   <li>{@code disp}: a displacement; v = start x, start y, target x, target y, budget, reached
++   *       bit after it.
++   *   <li>{@code replan}: a ground route search; v = goal changed bit, kept the held route bit,
++   *       new route size, new route's next node, the node after it (-1 none), the held route's next
++   *       node before the search (-1 none), the goal node, the held route's goal node (-1 none), the
++   *       reference point x and y (-1 none), the goal node the reference's point at the start of
++   *       the tick would give (-1 none).
++   * </ul>
++   *
++   * @param point the event
++   * @param entityId the entity it is about
++   * @param v the event's values, as listed above
++   */
++  void at(String point, int entityId, int[] v);
++
++  /** True when a probe is in use; callers test this before building the values. */
++  static boolean on() {
++    return CURRENT[0] != null;
++  }
++
++  /** Tells the probe in use, if any. */
++  static void tell(String point, int entityId, int[] v) {
++    MoveProbe p = CURRENT[0];
++    if (p != null) {
++      p.at(point, entityId, v);
++    }
++  }
++}
+diff --git a/core/src/main/java/org/crforge/core/pathfinding/move/MovementChain.java b/core/src/main/java/org/crforge/core/pathfinding/move/MovementChain.java
+index 96aebd11..3890345c 100644
+--- a/core/src/main/java/org/crforge/core/pathfinding/move/MovementChain.java
++++ b/core/src/main/java/org/crforge/core/pathfinding/move/MovementChain.java
+@@ -239,6 +239,8 @@ public final class MovementChain {
+    */
+   public MovementOutcome displace(
+       int targetX, int targetY, int budget, int updateFacing, int attackFlag) {
++    int startX = owner.getX();
++    int startY = owner.getY();
+     Displacement.displace(
+         component,
+         owner,
+@@ -252,6 +254,12 @@ public final class MovementChain {
+         budget,
+         updateFacing,
+         attackFlag);
++    if (MoveProbe.on()) {
++      MoveProbe.tell(
++          "disp",
++          owner.getId(),
++          new int[] {startX, startY, targetX, targetY, budget, component.getWaypointReached()});
++    }
+     return new MovementOutcome(owner.getX(), owner.getY(), component.getWaypointReached());
+   }
+ 
+diff --git a/core/src/main/java/org/crforge/core/pathfinding/move/MovementQueries.java b/core/src/main/java/org/crforge/core/pathfinding/move/MovementQueries.java
+index 2dc722e1..7b2bdfb9 100644
+--- a/core/src/main/java/org/crforge/core/pathfinding/move/MovementQueries.java
++++ b/core/src/main/java/org/crforge/core/pathfinding/move/MovementQueries.java
+@@ -56,6 +56,15 @@ public interface MovementQueries {
+    */
+   int endpoint(int referenceCol, int referenceRow, int radius);
+ 
++  /**
++   * Instrumentation only (MoveProbe): the goal node {@link #endpoint} would answer with the
++   * reference where it stood when the tick began, or -1 when that cannot be told. Nothing in the
++   * simulation calls it.
++   */
++  default int probeEndpointFromTickStart(int radius) {
++    return -1;
++  }
++
+   /**
+    * Moves a position off water to the nearest usable cell centre and returns it packed as {@code x
+    * | (y << 16)} in game units.
+diff --git a/core/src/main/java/org/crforge/core/pathfinding/move/RoutePreparation.java b/core/src/main/java/org/crforge/core/pathfinding/move/RoutePreparation.java
+index 3b030d9c..62bc63e5 100644
+--- a/core/src/main/java/org/crforge/core/pathfinding/move/RoutePreparation.java
++++ b/core/src/main/java/org/crforge/core/pathfinding/move/RoutePreparation.java
+@@ -64,6 +64,7 @@ public final class RoutePreparation {
+     int width = grid.getWidth();
+     int goalCol;
+     int goalRow;
++    int probeRadius = 0;
+     int explicitX = component.getExplicitX();
+     int explicitY = component.getExplicitY();
+     if (explicitX >= 0 && explicitY >= 0) {
+@@ -72,6 +73,7 @@ public final class RoutePreparation {
+     } else if (reference != null) {
+       chain.mark("endpoint");
+       int radius = queries.attackRange();
++      probeRadius = radius;
+       int packed =
+           queries.endpoint(
+               reference.x() / TileMap.CELL_UNITS, reference.y() / TileMap.CELL_UNITS, radius);
+@@ -126,6 +128,8 @@ public final class RoutePreparation {
+ 
+     boolean compare = !goalChanged && globals.samePathEpsilon() >= 1;
+     Route saved = compare ? route.copy() : new Route();
++    int heldNext = route.size() >= 1 ? route.last() : -1;
++    int heldGoal = route.size() >= 1 ? route.get(0) : -1;
+     int startCol = FixedMath.div(owner.getX(), TileMap.CELL_UNITS);
+     int startRow = FixedMath.div(owner.getY(), TileMap.CELL_UNITS);
+     chain.mark("search");
+@@ -152,6 +156,24 @@ public final class RoutePreparation {
+             grid.getCurrent(), grid.getPrevious(), saved, deduplicated)) {
+       component.setRoute(saved);
+     }
++    if (MoveProbe.on()) {
++      MoveProbe.tell(
++          "replan",
++          owner.getId(),
++          new int[] {
++            goalChanged ? 1 : 0,
++            component.getRoute() == saved ? 1 : 0,
++            deduplicated.size(),
++            deduplicated.size() >= 1 ? deduplicated.last() : -1,
++            deduplicated.size() >= 2 ? deduplicated.get(deduplicated.size() - 2) : -1,
++            heldNext,
++            goalRow * width + goalCol,
++            heldGoal,
++            reference == null ? -1 : reference.x(),
++            reference == null ? -1 : reference.y(),
++            reference == null ? -1 : queries.probeEndpointFromTickStart(probeRadius)
++          });
++    }
+     if (reference != null) {
+       chain.mark("farther");
+       component.setRouteLeadsAway(queries.farther() & 1);
+-- 
+2.43.0
+
