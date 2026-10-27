@@ -1,59 +1,74 @@
+/workspace/f1/rl/scratchpad/gauntlet/L74/speed/crforge/obsid/CfObsBind.java:62: warning: [rawtypes] found raw type: HashMap
+    HashMap<Integer, int[]>[] prev = new HashMap[] {new HashMap<Integer, int[]>(), new HashMap<Integer, int[]>()},
+                                         ^
+  missing type arguments for generic class HashMap<K,V>
+  where K,V are type-variables:
+    K extends Object declared in class HashMap
+    V extends Object declared in class HashMap
+/workspace/f1/rl/scratchpad/gauntlet/L74/speed/crforge/obsid/CfObsBind.java:63: warning: [rawtypes] found raw type: HashMap
+        back = new HashMap[] {new HashMap<Integer, int[]>(), new HashMap<Integer, int[]>()};
+                   ^
+  missing type arguments for generic class HashMap<K,V>
+  where K,V are type-variables:
+    K extends Object declared in class HashMap
+    V extends Object declared in class HashMap
+2 warnings
 /workspace/s3b3a2/c3/rl/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
   self.encoder = nn.TransformerEncoder(enc, layers)
-{"tag": "obsid6", "decisions": 320, "seat_rows": 5101, "wall_s": 61}
-{"tag": "obsid4", "decisions": 338, "seat_rows": 5524, "wall_s": 66}
-{"tag": "obsid3", "decisions": 367, "seat_rows": 6174, "wall_s": 73}
-{"tag": "obsid1", "decisions": 462, "seat_rows": 7733, "wall_s": 91}
-{"tag": "obsid0", "decisions": 491, "seat_rows": 8156, "wall_s": 96}
-{"tag": "obsid7", "decisions": 508, "seat_rows": 8413, "wall_s": 99}
-{"tag": "obsid5", "decisions": 515, "seat_rows": 8539, "wall_s": 100}
-{"tag": "obsid2", "decisions": 610, "seat_rows": 8846, "wall_s": 104}
-{"tag": "obsid10", "decisions": 304, "seat_rows": 11172, "wall_s": 130}
-{"tag": "obsid9", "decisions": 360, "seat_rows": 11346, "wall_s": 132}
-{"tag": "obsid12", "decisions": 300, "seat_rows": 13184, "wall_s": 152}
-{"tag": "obsid8", "decisions": 507, "seat_rows": 13212, "wall_s": 153}
-{"tag": "obsid14", "decisions": 386, "seat_rows": 14622, "wall_s": 168}
-{"tag": "obsid15", "decisions": 388, "seat_rows": 15277, "wall_s": 175}
-{"tag": "obsid11", "decisions": 496, "seat_rows": 15995, "wall_s": 183}
-{"tag": "obsid13", "decisions": 491, "seat_rows": 16884, "wall_s": 193}
-{"tag": "obsid17", "decisions": 397, "seat_rows": 17612, "wall_s": 201}
-{"tag": "obsid16", "decisions": 524, "seat_rows": 19493, "wall_s": 222}
-{"tag": "obsid20", "decisions": 318, "seat_rows": 19587, "wall_s": 223}
-{"tag": "obsid22", "decisions": 315, "seat_rows": 20935, "wall_s": 238}
-{"tag": "obsid19", "decisions": 499, "seat_rows": 21218, "wall_s": 242}
-{"tag": "obsid18", "decisions": 516, "seat_rows": 21369, "wall_s": 244}
-{"tag": "obsid23", "decisions": 373, "seat_rows": 22741, "wall_s": 259}
-{"tag": "obsid21", "decisions": 498, "seat_rows": 23365, "wall_s": 266}
-{"tag": "obsid26", "decisions": 301, "seat_rows": 24359, "wall_s": 278}
-{"tag": "obsid24", "decisions": 490, "seat_rows": 25485, "wall_s": 290}
-{"tag": "obsid28", "decisions": 316, "seat_rows": 26162, "wall_s": 298}
-{"tag": "obsid25", "decisions": 449, "seat_rows": 26541, "wall_s": 302}
-{"tag": "obsid27", "decisions": 378, "seat_rows": 27074, "wall_s": 308}
-{"tag": "obsid30", "decisions": 361, "seat_rows": 28804, "wall_s": 326}
-{"tag": "obsid29", "decisions": 497, "seat_rows": 29500, "wall_s": 334}
-{"tag": "obsid34", "decisions": 377, "seat_rows": 32175, "wall_s": 362}
-{"tag": "obsid31", "decisions": 603, "seat_rows": 32187, "wall_s": 363}
-{"tag": "obsid32", "decisions": 513, "seat_rows": 32838, "wall_s": 370}
-{"tag": "obsid33", "decisions": 452, "seat_rows": 33060, "wall_s": 373}
-{"tag": "obsid35", "decisions": 457, "seat_rows": 33989, "wall_s": 383}
-{"tag": "obsid36", "decisions": 510, "seat_rows": 35471, "wall_s": 400}
-{"tag": "obsid37", "decisions": 441, "seat_rows": 35840, "wall_s": 404}
-{"tag": "obsid38", "decisions": 496, "seat_rows": 37762, "wall_s": 425}
-{"tag": "obsid40", "decisions": 443, "seat_rows": 39345, "wall_s": 443}
-{"tag": "obsid42", "decisions": 427, "seat_rows": 39776, "wall_s": 448}
-{"tag": "obsid43", "decisions": 395, "seat_rows": 40310, "wall_s": 454}
-{"tag": "obsid39", "decisions": 521, "seat_rows": 40454, "wall_s": 456}
-{"tag": "obsid41", "decisions": 495, "seat_rows": 40872, "wall_s": 460}
-{"tag": "obsid45", "decisions": 436, "seat_rows": 42547, "wall_s": 478}
-{"tag": "obsid46", "decisions": 315, "seat_rows": 42805, "wall_s": 481}
-{"tag": "obsid44", "decisions": 514, "seat_rows": 43816, "wall_s": 492}
-{"tag": "obsid48", "decisions": 404, "seat_rows": 46284, "wall_s": 519}
-{"tag": "obsid47", "decisions": 611, "seat_rows": 48165, "wall_s": 540}
-{"tag": "obsid49", "decisions": 484, "seat_rows": 48593, "wall_s": 545}
-{"tag": "obsid50", "decisions": 502, "seat_rows": 48760, "wall_s": 547}
-{"tag": "obsid52", "decisions": 415, "seat_rows": 49034, "wall_s": 550}
-{"tag": "obsid51", "decisions": 603, "seat_rows": 49168, "wall_s": 552}
-{"tag": "obsid53", "decisions": 480, "seat_rows": 49653, "wall_s": 558}
-{"tag": "obsid55", "decisions": 316, "seat_rows": 49756, "wall_s": 560}
-{"tag": "obsid54", "decisions": 506, "seat_rows": 49816, "wall_s": 561}
-{"seat_rows": 49816, "tick_mismatch": 0, "acceptance": {"min_rows": 38400, "rows_ok": true, "core_keys_identical": {"tok": true, "mask": true, "sc": false, "unit_form": true}, "sc_identical_except_opp_elixir": true}, "status_by_key": {"_sc_prepare": "IDENTICAL", "cue": "NOT_PORTED", "deck_card": "NOT_PORTED", "deck_form": "NOT_PORTED", "effects": "NOT_PORTED", "hand_card": "NOT_PORTED", "hand_form": "NOT_PORTED", "hand_slot": "NOT_PORTED", "mask": "IDENTICAL", "next_card": "NOT_PORTED", "next_form": "NOT_PORTED", "opp_cycle": "NOT_PORTED", "opp_past": "NOT_PORTED", "own_ability": "NOT_PORTED", "past": "NOT_PORTED", "projectiles": "NOT_PORTED", "sc": "DIFF", "slot_card": "NOT_PORTED", "slot_form": "NOT_PORTED", "tok": "IDENTICAL", "unit_form": "IDENTICAL"}}
+{"tag": "obsid6", "decisions": 320, "seat_rows": 5101, "wall_s": 57}
+{"tag": "obsid4", "decisions": 338, "seat_rows": 5524, "wall_s": 61}
+{"tag": "obsid3", "decisions": 367, "seat_rows": 6174, "wall_s": 69}
+{"tag": "obsid1", "decisions": 462, "seat_rows": 7733, "wall_s": 87}
+{"tag": "obsid0", "decisions": 491, "seat_rows": 8156, "wall_s": 92}
+{"tag": "obsid7", "decisions": 508, "seat_rows": 8413, "wall_s": 94}
+{"tag": "obsid5", "decisions": 515, "seat_rows": 8539, "wall_s": 96}
+{"tag": "obsid2", "decisions": 610, "seat_rows": 8846, "wall_s": 99}
+{"tag": "obsid10", "decisions": 304, "seat_rows": 11172, "wall_s": 122}
+{"tag": "obsid9", "decisions": 360, "seat_rows": 11346, "wall_s": 124}
+{"tag": "obsid12", "decisions": 300, "seat_rows": 13184, "wall_s": 143}
+{"tag": "obsid8", "decisions": 507, "seat_rows": 13212, "wall_s": 144}
+{"tag": "obsid14", "decisions": 386, "seat_rows": 14622, "wall_s": 158}
+{"tag": "obsid15", "decisions": 388, "seat_rows": 15277, "wall_s": 165}
+{"tag": "obsid11", "decisions": 496, "seat_rows": 15995, "wall_s": 172}
+{"tag": "obsid13", "decisions": 491, "seat_rows": 16884, "wall_s": 182}
+{"tag": "obsid17", "decisions": 397, "seat_rows": 17612, "wall_s": 189}
+{"tag": "obsid16", "decisions": 524, "seat_rows": 19493, "wall_s": 209}
+{"tag": "obsid20", "decisions": 318, "seat_rows": 19587, "wall_s": 210}
+{"tag": "obsid22", "decisions": 315, "seat_rows": 20935, "wall_s": 224}
+{"tag": "obsid19", "decisions": 499, "seat_rows": 21218, "wall_s": 227}
+{"tag": "obsid18", "decisions": 516, "seat_rows": 21369, "wall_s": 229}
+{"tag": "obsid23", "decisions": 373, "seat_rows": 22741, "wall_s": 244}
+{"tag": "obsid21", "decisions": 498, "seat_rows": 23365, "wall_s": 251}
+{"tag": "obsid26", "decisions": 301, "seat_rows": 24359, "wall_s": 261}
+{"tag": "obsid24", "decisions": 490, "seat_rows": 25485, "wall_s": 274}
+{"tag": "obsid28", "decisions": 316, "seat_rows": 26162, "wall_s": 282}
+{"tag": "obsid25", "decisions": 449, "seat_rows": 26541, "wall_s": 286}
+{"tag": "obsid27", "decisions": 378, "seat_rows": 27074, "wall_s": 292}
+{"tag": "obsid30", "decisions": 361, "seat_rows": 28804, "wall_s": 309}
+{"tag": "obsid29", "decisions": 497, "seat_rows": 29500, "wall_s": 317}
+{"tag": "obsid34", "decisions": 377, "seat_rows": 32175, "wall_s": 344}
+{"tag": "obsid31", "decisions": 603, "seat_rows": 32187, "wall_s": 344}
+{"tag": "obsid32", "decisions": 513, "seat_rows": 32838, "wall_s": 352}
+{"tag": "obsid33", "decisions": 452, "seat_rows": 33060, "wall_s": 354}
+{"tag": "obsid35", "decisions": 457, "seat_rows": 33989, "wall_s": 364}
+{"tag": "obsid36", "decisions": 510, "seat_rows": 35471, "wall_s": 380}
+{"tag": "obsid37", "decisions": 441, "seat_rows": 35840, "wall_s": 384}
+{"tag": "obsid38", "decisions": 496, "seat_rows": 37762, "wall_s": 405}
+{"tag": "obsid40", "decisions": 443, "seat_rows": 39345, "wall_s": 423}
+{"tag": "obsid42", "decisions": 427, "seat_rows": 39776, "wall_s": 428}
+{"tag": "obsid43", "decisions": 395, "seat_rows": 40310, "wall_s": 435}
+{"tag": "obsid39", "decisions": 521, "seat_rows": 40454, "wall_s": 436}
+{"tag": "obsid41", "decisions": 495, "seat_rows": 40872, "wall_s": 441}
+{"tag": "obsid45", "decisions": 436, "seat_rows": 42547, "wall_s": 459}
+{"tag": "obsid46", "decisions": 315, "seat_rows": 42805, "wall_s": 461}
+{"tag": "obsid44", "decisions": 514, "seat_rows": 43816, "wall_s": 472}
+{"tag": "obsid48", "decisions": 404, "seat_rows": 46284, "wall_s": 498}
+{"tag": "obsid47", "decisions": 611, "seat_rows": 48165, "wall_s": 518}
+{"tag": "obsid49", "decisions": 484, "seat_rows": 48593, "wall_s": 523}
+{"tag": "obsid50", "decisions": 502, "seat_rows": 48760, "wall_s": 525}
+{"tag": "obsid52", "decisions": 415, "seat_rows": 49034, "wall_s": 528}
+{"tag": "obsid51", "decisions": 603, "seat_rows": 49168, "wall_s": 529}
+{"tag": "obsid53", "decisions": 480, "seat_rows": 49653, "wall_s": 535}
+{"tag": "obsid55", "decisions": 316, "seat_rows": 49756, "wall_s": 537}
+{"tag": "obsid54", "decisions": 506, "seat_rows": 49816, "wall_s": 538}
+{"seat_rows": 49816, "tick_mismatch": 0, "diag": {"rows_lookahead": 0, "rows_pend": 0, "rows_own_pending": 0, "rows_opp_pending": 0, "rows_own_fx": 0, "rows_drops": 0, "bodies_moved": 0, "rows_moved": 0}, "acceptance": {"min_rows": 38400, "rows_ok": true, "core_keys_identical": {"tok": true, "mask": true, "sc": false, "unit_form": true}, "sc_identical_except_opp_elixir": true}, "status_by_key": {"_sc_prepare": "IDENTICAL", "cue": "NOT_PORTED", "deck_card": "NOT_PORTED", "deck_form": "NOT_PORTED", "effects": "NOT_PORTED", "hand_card": "NOT_PORTED", "hand_form": "NOT_PORTED", "hand_slot": "NOT_PORTED", "mask": "IDENTICAL", "next_card": "NOT_PORTED", "next_form": "NOT_PORTED", "opp_cycle": "NOT_PORTED", "opp_past": "NOT_PORTED", "own_ability": "NOT_PORTED", "past": "NOT_PORTED", "projectiles": "NOT_PORTED", "sc": "DIFF", "slot_card": "NOT_PORTED", "slot_form": "NOT_PORTED", "tok": "IDENTICAL", "unit_form": "IDENTICAL"}}

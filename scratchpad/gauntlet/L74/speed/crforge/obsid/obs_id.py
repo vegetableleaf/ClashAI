@@ -122,9 +122,11 @@ class JavaMain:
         decks, deal = s.env.decks[s.side], s.env.deal[s.side]
         inv = [slot_of.get(list(decks).index(n), 8) for n in deal]
         self.Bind.bind(m, core._cf, int(s.side), self.Int(inv))
+        m.extrap = int(s.cfg.get("extrapolate_ticks") or 0)
         self._obs(m, int(s.side))
         if self.names.missing.size():                     # new names: fill the tables, build again
             self.resolve()
+            m.rewind(int(s.side))                         # the rebuild sees this decision's previous state again
             self._obs(m, int(s.side))
         sc = self.v["sc"].copy()
         sc[OPP_EL] = -1.0                                 # the truth is never compared or logged (port: the counter)
@@ -133,7 +135,8 @@ class JavaMain:
         mask = self.v["mask"].copy()
         assert mask.max() <= 1
         return {"tok": self.v["tok"].reshape(64, 14).copy(), "mask": mask.astype(bool), "sc": sc,
-                "unit_form": self.v["form"].copy(), "_sc_prepare": sc_pre, "_tick": int(core._cf.tick())}
+                "unit_form": self.v["form"].copy(), "_sc_prepare": sc_pre, "_tick": int(core._cf.tick()),
+                "_n_bodies_moved": int(m.movedLast), "_n_rows_moved": int(m.movedLast > 0)}
 
 
 BUILDERS: list = []   # filled in main (they need the JVM); a later ticket appends one builder per ported key
@@ -143,6 +146,7 @@ BUILDERS: list = []   # filled in main (they need the JVM); a later ticket appen
 class Report:
     def __init__(self, first: int):
         self.first, self.keys, self.rows, self.tick_mismatch = first, {}, 0, 0
+        self.diag = {}                                    # '_n_*' counters the builders / the hook report
 
     def _k(self, key):
         return self.keys.setdefault(key, dict(rows=0, equal=0, not_ported=0, dtype_shape_diff=0, per_index=None,
@@ -151,6 +155,8 @@ class Report:
     def add(self, s, prod: dict, java: dict, prod_sc_prepare) -> None:
         self.rows += 1
         tick = int(s._cur[0])
+        for k in [k for k in java if k.startswith("_n_")]:
+            self.diag[k[3:]] = self.diag.get(k[3:], 0) + int(java.pop(k))
         if java.pop("_tick", tick) != tick:
             self.tick_mismatch += 1
         aux = {"_sc_prepare": np.array(prod_sc_prepare, copy=True)}
@@ -232,7 +238,12 @@ def main():
 
     def gen_row(self, policy):
         row = orig(self, policy)
-        java = {}
+        # rows whose production view took a look-ahead / showed pending plays (e1_eval.Match.prepare's h, pend;
+        # SelfPlaySide.pending = my decided play not yet run, other.pending = the opponent's)
+        java = {"_n_rows_lookahead": int(self._view_tick != self._cur[0]), "_n_rows_pend": int(bool(self.pend)),
+                "_n_rows_own_pending": int(getattr(self, "pending", None) is not None),
+                "_n_rows_opp_pending": int(getattr(getattr(self, "other", None), "pending", None) is not None),
+                "_n_rows_own_fx": int(self.own_fx is not None), "_n_rows_drops": int(self.drops is not None)}
         for b in BUILDERS:
             java.update(b(self))
         rep.add(self, row, java, self._obs[2])
@@ -260,7 +271,8 @@ def main():
     keys = rep.result()
     core4 = ("tok", "mask", "sc", "unit_form")
     out = dict(
-        ticket="S3b-3a", matches=len(done), skipped=skips, seat_rows=rep.rows, tick_mismatch=rep.tick_mismatch,
+        ticket="S3b-3e", matches=len(done), skipped=skips, seat_rows=rep.rows, tick_mismatch=rep.tick_mismatch,
+        diag=rep.diag,
         wall_s=round(time.time() - t0, 1), cfg_overrides=over, feature_version=cfg["feature_version"],
         gen_row_keys=list(E.gen_row_keys(model.model)),
         acceptance=dict(min_rows=a.min_rows, rows_ok=rep.rows >= a.min_rows,
@@ -276,7 +288,7 @@ def main():
               f"one-hots. sc[{OPP_EL}] (opponent elixir) of the Java builder is the engine truth: replaced by -1, "
               "never compared as equal and never logged."))
     Path(a.out).write_text(json.dumps(out, indent=1, default=str))
-    print(json.dumps({k: out[k] for k in ("seat_rows", "tick_mismatch", "acceptance", "status_by_key")}, default=str))
+    print(json.dumps({k: out[k] for k in ("seat_rows", "tick_mismatch", "diag", "acceptance", "status_by_key")}, default=str))
 
 
 if __name__ == "__main__":

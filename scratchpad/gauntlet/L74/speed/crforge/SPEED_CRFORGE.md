@@ -334,3 +334,29 @@ python -I project.py results/loop_n2048_c2_t24.json --extra-core-s 0.05   # lapt
   attribution of shifted rows). sc[5] stays masked (the counter is not ported). S3b-3a's `live.json` / `x0.json`
   (fv4 builder) are in git at 087ca4c.
 - Not re-run: S3's `cf_obs.py` on the edited CfSpeed (the fv4 path is a mechanical refactor, b).
+
+## S3b-3e: the look-ahead (extrapolated) view in the Java builder (`CfSpeed.Match` hooks, `FacadeMatch`)
+
+- **What the live cfg runs (a, code + counts).** `search_s0.live_cfg` sets `extrapolate_ticks` 26 and none of
+  `own_effects`, `predict_drops`, `pipeline_decisions`. So `extrapolate()` there is: h = 26 from a seat's second
+  decision on; each body paired with the seat's previous decision state (entity id, side, card) moves
+  x + (x - px) * h / gap, clamped to the board; tick + h; my elixir + `regen_between` (opp_elixir_count's
+  REGEN_SCHEDULE) capped at 10. `retrack` needs own_effects, the drop tracker predict_drops, the pending board
+  pipeline_decisions: the live cfg runs none of them (rows_own_fx 0, rows_drops 0, rows_pend 0 of 48,751).
+  `advance_public_objects` feeds only the projectile / effect keys (fv6: no spell tokens). Ported: the active part.
+- **Pending plays (c).** On the facade path no row has a pending play the observation could show: e1's
+  `pipeline_decisions` board is off (rows_pend 0), and a seat's own decided play is never pending at its next
+  decision (rows_own_pending 0; F1b: a seat decides again only after the engine runs its play). The opponent's
+  `SelfPlaySide.pending` was never set at a decision either (rows_opp_pending 0; b: its 6-tick e1 wait ends between
+  10-tick decisions). Exercising the pending board needs `--set pipeline_decisions=true`, not the live cfg.
+- **Code.** `CfSpeed.Match`: hooks `lookahead` / `ahead` / `regen` / `observed` (S3's default: none). `FacadeMatch`:
+  per-seat previous-state snapshot, dead reckoning, the regen schedule, `rewind(seat)` (a rebuild after new names
+  must not see itself as the previous state: that bug moved no body on 1% of rows in the first smoke).
+- **Result (a), facade 3531b83, sources pinned (`facade_src_sha256`), 56 matches each:**
+
+  | cfg | seat-rows | rows with look-ahead | rows where a body moved | tok | mask | sc (all but sc[5]) | unit_form |
+  |---|---:|---:|---:|---|---|---|---|
+  | live (`results/live.json`) | 48,751 | 48,639 | 26,238 (88,092 bodies) | **identical** | **identical** | **identical** | **identical** |
+  | extrapolate 0 (`results/x0.json`, regression) | 49,816 | 0 | 0 | identical | identical | identical | identical |
+
+  S3b-3a2's live / x0 JSONs are in git at 4a8075f.

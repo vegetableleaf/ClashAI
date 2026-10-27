@@ -83,6 +83,15 @@ public class CfSpeed {
       return hp <= 0 ? -1 : names.unitCode(w.getData().name());
     }
 
+    // Look-ahead hooks (S3b-3e; CfObsBind.FacadeMatch implements production's extrapolate): the ticks a seat's view
+    // is ahead, a body's position then (false = where it stands), my elixir regenerated over [t0, t1), and a call after
+    // each obs. S3: none (h = 0).
+    protected int lookahead(int seat) { return 0; }
+    protected boolean ahead(WorldEntity w, int seat, int h, double[] xy) { return false; }
+    protected double regen(int t0, int t1) { return 0.0; }
+    protected void observed(int seat) {}
+    final double[] xy = new double[2];
+
     public void reset(int seed, String[] d0, int[] s0, String[] d1, int[] s1, int[] map0, int[] map1) {
       std = new Standard1v1Battle(tables, LEVEL);
       std.getWorld().seed(seed);
@@ -144,7 +153,7 @@ public class CfSpeed {
     public void obs(int seat, Names names, FloatBuffer tok, int tokOff, ByteBuffer mask, int maskOff, FloatBuffer sc,
         int scOff, ByteBuffer form, int formOff) {
       final boolean mirror = seat == 1;
-      final int tick = tick();
+      final int tick = tick(), h = lookahead(seat);
       int n = 0;
       // towers: my K, L, R, opp K, L, R ; [hp_frac, alive]
       float[] twFrac = new float[6];
@@ -155,6 +164,7 @@ public class CfSpeed {
         HitPoints hpp = w.getHitPoints();
         int hp = hpp == null ? -1 : hpp.getHitPoints(), mhp = hpp == null ? -1 : hpp.getMaximum();
         double X = w.x(), Y = w.y();
+        if (h > 0 && !(w instanceof TowerEntity) && ahead(w, seat, h, xy)) { X = xy[0]; Y = xy[1]; }
         if (mirror) { X = 18000.0 - X; Y = 32000.0 - Y; }
         double x = X / 18000.0, y = 1.0 - Y / 32000.0;
         if (w instanceof TowerEntity) {
@@ -234,7 +244,7 @@ public class CfSpeed {
         }
       }
       // scalars
-      double t = tick * 0.05;
+      double t = (tick + h) * 0.05;
       MatchSide me = std.getMatch().side(seat), them = std.getMatch().side(1 - seat);
       int[] slotOf = seat == 0 ? slotOf0 : slotOf1;
       int o = scOff;
@@ -242,14 +252,15 @@ public class CfSpeed {
       sc.put(o++, t >= 120.0 ? 1f : 0f);
       sc.put(o++, t >= 180.0 ? 1f : 0f);
       // fv6: the facade's elixir_milli (crforge's 1/10,000 floored to milli, RoyaleSim's unit) / 1000, as raw() reads it
-      sc.put(o++, fv6 ? (float) (me.getElixir() / 10 / 1000.0 / 10.0)
-          : (float) (me.getElixir() / (double) MatchSide.SCALE / 10.0));
+      double el = me.getElixir() / 10 / 1000.0;
+      if (h > 0) el = Math.min(10.0, el + regen(tick, tick + h));   // extrapolate: + regen_between, capped at 10
+      sc.put(o++, fv6 ? (float) (el / 10.0) : (float) (me.getElixir() / (double) MatchSide.SCALE / 10.0));
       sc.put(o++, 1f);
       sc.put(o++, (float) (them.getElixir() / (double) MatchSide.SCALE / 10.0));
       sc.put(o++, 1f);
       int[] hand = me.getHand().slots();
-      for (int h = 0; h < 4; h++) {
-        int s = h < hand.length && hand[h] >= 0 ? slotOf[hand[h]] : 8;
+      for (int hi = 0; hi < 4; hi++) {
+        int s = hi < hand.length && hand[hi] >= 0 ? slotOf[hand[hi]] : 8;
         for (int k = 0; k < 9; k++) sc.put(o++, k == s ? 1f : 0f);
       }
       List<Integer> q = me.getHand().queue();
@@ -258,6 +269,7 @@ public class CfSpeed {
       for (int k = 0; k < 6; k++) sc.put(o++, twFrac[k]);
       for (int k = 0; k < 6; k++) sc.put(o++, 1f);
       for (int k = 0; k < 6; k++) sc.put(o++, twAlive[k] ? 1f : 0f);
+      observed(seat);
     }
   }
 

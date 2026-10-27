@@ -1,10 +1,20 @@
 {
- "ticket": "S3b-3a",
+ "ticket": "S3b-3e",
  "matches": 56,
  "skipped": [],
  "seat_rows": 49816,
  "tick_mismatch": 0,
- "wall_s": 560.9,
+ "diag": {
+  "rows_lookahead": 0,
+  "rows_pend": 0,
+  "rows_own_pending": 0,
+  "rows_opp_pending": 0,
+  "rows_own_fx": 0,
+  "rows_drops": 0,
+  "bodies_moved": 0,
+  "rows_moved": 0
+ },
+ "wall_s": 537.9,
  "cfg_overrides": {
   "extrapolate_ticks": 0
  },
