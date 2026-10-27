@@ -80,10 +80,17 @@ def _all_buffs(d):
 
 
 def _tbl(sim):
-    """Card/buff/projectile tables of the embedded 160402017 card table, indexed once per royalesim module."""
+    """Card/buff/projectile tables of the embedded 160402017 card table, indexed once per royalesim module. Under
+    ROYALE_RUNTIME=fin16-linux: the table the battle runs on, the 10-19 one (royale_heroiw.CARD_TABLE). A module without
+    the 10-19 text (older wheels; live_unit_state's 10-06 namespace) keeps the 10-06 table, and then nothing is imported."""
     t = _tables.get(id(sim))
     if t is None:
-        d = json.loads(sim.EMBEDDED_CARDS_160402017_JSON)
+        text = sim.EMBEDDED_CARDS_160402017_JSON
+        if hasattr(sim, 'EMBEDDED_CARDS_160402017_20261019_JSON'):
+            from .royale_heroiw import FIN16
+            if FIN16:
+                text = sim.EMBEDDED_CARDS_160402017_20261019_JSON
+        d = json.loads(text)
         char = {c['name']: c for c in d['towers']} | {c['name']: c for c in d['cards']}
         for c in d['cards'] + d['evolutions'] + d['hero_forms']:      # unit type name -> its card row
             char.setdefault(c.get('summon_character'), c)

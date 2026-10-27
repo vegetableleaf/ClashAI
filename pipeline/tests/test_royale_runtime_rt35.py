@@ -70,6 +70,44 @@ def test_fin15_selection():
     assert out['options'] == {'calibration_overrides': {'cards.CARD_TABLE': 'client160402017_20261006'}}
 
 
+def test_fin16_selection():
+    """A1 10-27: fin16-linux = fin15 + the client-dated 10-19 card table in /workspace/venvf16 (parity/fin16/setup_fin16.sh),
+    Hero IW adapter on, the battle on the 10-19 table."""
+    out = probe('fin16-linux')
+    assert out['id'] == 'fin16-linux' and out['heroiw'] is True
+    assert out['manifest'] == 'scratchpad/gauntlet/L74/parity/fin16/build_manifest_fin16.json'
+    assert out['options'] == {'calibration_overrides': {'cards.CARD_TABLE': 'client160402017_20261019'}}
+    m = json.loads((ROOT/out['manifest']).read_text())
+    assert m['pins']['RoyaleSim'] == '3f5676076fa7293de5355fa7c76275ddfbf4322c' and m['card_table'] == 'client160402017_20261019'
+
+
+@pytest.mark.parametrize('runtime', ['', '20261006', '20261006-linux', '20261012', '20261012-linux', '20261016-linux',
+                                     'fork36-linux', 'fin13-linux', 'fin15-linux', 'fork', 'unpinned-linux'])
+def test_ids_unchanged_by_fin16(runtime):
+    now, before = probe(runtime), probe(runtime, '0f2d82f5541a96bb40fae430b6cc8dd8472b73fa')   # the commit before fin16-linux
+    assert (ROOT/now.pop('runtime')).resolve() == (ROOT/before.pop('runtime')).resolve() and now == before
+
+
+CUE_PROBE = '''
+import json, types
+from pipeline import sim_unit_state as s
+tab = lambda v: json.dumps(dict(towers=[], cards=[dict(name=v)], evolutions=[], hero_forms=[], buffs={}, projectiles={}))
+both = types.SimpleNamespace(EMBEDDED_CARDS_160402017_JSON=tab('t1006'), EMBEDDED_CARDS_160402017_20261019_JSON=tab('t1019'))
+old = types.SimpleNamespace(EMBEDDED_CARDS_160402017_JSON=tab('t1006'))
+print(json.dumps([list(s._tbl(both)['cards']), list(s._tbl(old)['cards'])]))
+'''
+
+
+@pytest.mark.parametrize('runtime, want', [('fin16-linux', 't1019'), ('fin15-linux', 't1006'), ('', 't1006')])
+def test_cue_table_follows_fin16(runtime, want):
+    """sim_unit_state reads the battle's table: the 10-19 one only under fin16-linux; a module without the 10-19 text
+    (older wheels, live_unit_state's namespace) always the 10-06 one."""
+    p = subprocess.run([sys.executable, '-c', CUE_PROBE], cwd=ROOT, env=dict(os.environ, ROYALE_RUNTIME=runtime, PYTHONPATH=str(ROOT)),
+                       text=True, capture_output=True)
+    assert p.returncode == 0, p.stderr
+    assert json.loads(p.stdout) == [[want], ['t1006']]
+
+
 @pytest.mark.parametrize('runtime', ['fork36-linux', 'fin13-linux'])
 def test_fork_ids_unchanged_by_fin15(runtime):
     now, before = probe(runtime), probe(runtime, '3f727662229e36ed4f890b5deb0a5a39a523acc2')   # the last selector commit before fin15
