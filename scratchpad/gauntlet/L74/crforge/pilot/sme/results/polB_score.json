@@ -1,0 +1,167 @@
+{
+ "seed": -2064661162,
+ "frames": 2068,
+ "exact_frames": 2044,
+ "exact_share": 0.988394584139265,
+ "exact_board_frames": 2044,
+ "exact_side1_frames": 2065,
+ "label_shift_frames": [
+  682
+ ],
+ "exact_or_shift_frames": 2045,
+ "first_divergence": [
+  971,
+  [
+   [
+    "P_rec_only",
+    [
+     0,
+     576,
+     7943
+    ],
+    [
+     -2,
+     0
+    ]
+   ],
+   [
+    "P_rec_only",
+    [
+     0,
+     619,
+     7933
+    ],
+    [
+     7,
+     -2
+    ]
+   ],
+   [
+    "P_rec_only",
+    [
+     0,
+     650,
+     7923
+    ],
+    [
+     -2,
+     1
+    ]
+   ],
+   [
+    "P_rec_only",
+    [
+     0,
+     740,
+     7879
+    ],
+    [
+     11,
+     -7
+    ]
+   ],
+   [
+    "P_sim_only",
+    [
+     0,
+     574,
+     7943
+    ],
+    [
+     2,
+     0
+    ]
+   ],
+   [
+    "P_sim_only",
+    [
+     0,
+     626,
+     7931
+    ],
+    [
+     -7,
+     2
+    ]
+   ],
+   [
+    "P_sim_only",
+    [
+     0,
+     648,
+     7924
+    ],
+    [
+     2,
+     -1
+    ]
+   ],
+   [
+    "P_sim_only",
+    [
+     0,
+     751,
+     7872
+    ],
+    [
+     -11,
+     7
+    ]
+   ]
+  ]
+ ],
+ "census_objects": {
+  "frame_label_shift+1": 1,
+  "P_rec_only": 60,
+  "P_sim_only": 66,
+  "T_rec_only": 1,
+  "T_sim_only": 1,
+  "U_rec_only": 36,
+  "U_sim_only": 36,
+  "S0_elixir": 1,
+  "S1_elixir": 2,
+  "S1_hand": 1
+ },
+ "census_frames": {
+  "frame_label_shift+1": 1,
+  "P_rec_only": 20,
+  "P_sim_only": 21,
+  "U_sim_only": 2,
+  "S1_elixir": 2,
+  "T_rec_only": 1,
+  "T_sim_only": 1,
+  "U_rec_only": 2,
+  "S0_elixir": 1,
+  "S1_hand": 1
+ },
+ "planted_tick": null,
+ "sim_ended_tick": 4136,
+ "rec_last_tick": 4136,
+ "sme_pass": false,
+ "p3_frames": 2004,
+ "p3_exact_board": 1982,
+ "p3_nonexact_ticks": [
+  972,
+  974,
+  977,
+  979,
+  981,
+  983,
+  984,
+  986,
+  1512,
+  1514,
+  1515,
+  1517,
+  1520,
+  1521,
+  2799,
+  3808,
+  3810,
+  3812,
+  3814,
+  3816,
+  3818,
+  3820
+ ]
+}

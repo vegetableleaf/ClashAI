@@ -1,0 +1,95 @@
+{
+ "seed": 2032924539,
+ "frames": 2067,
+ "exact_frames": 1479,
+ "exact_share": 0.7155297532656023,
+ "exact_board_frames": 1479,
+ "exact_side1_frames": 2064,
+ "label_shift_frames": [
+  682
+ ],
+ "exact_or_shift_frames": 1480,
+ "first_divergence": [
+  1511,
+  [
+   [
+    "P_sim_only",
+    [
+     0,
+     13134,
+     14760
+    ],
+    null
+   ],
+   [
+    "P_sim_only",
+    [
+     0,
+     13159,
+     14793
+    ],
+    null
+   ],
+   [
+    "P_sim_only",
+    [
+     0,
+     13204,
+     14838
+    ],
+    null
+   ],
+   [
+    "P_sim_only",
+    [
+     0,
+     13239,
+     14866
+    ],
+    null
+   ],
+   [
+    "P_sim_only",
+    [
+     0,
+     13352,
+     14924
+    ],
+    null
+   ]
+  ]
+ ],
+ "census_objects": {
+  "frame_label_shift+1": 1,
+  "P_sim_only": 138,
+  "P_rec_only": 181,
+  "U_rec_only": 1277,
+  "U_sim_only": 971,
+  "T_rec_only": 940,
+  "T_sim_only": 939,
+  "S0_elixir": 1,
+  "S1_elixir": 1,
+  "S1_hand": 1,
+  "A_sim_only": 56,
+  "A_rec_only": 56,
+  "frame_missing_in_sim": 1
+ },
+ "census_frames": {
+  "frame_label_shift+1": 1,
+  "P_sim_only": 114,
+  "P_rec_only": 144,
+  "U_sim_only": 288,
+  "U_rec_only": 282,
+  "S1_elixir": 1,
+  "S0_elixir": 1,
+  "T_sim_only": 493,
+  "T_rec_only": 493,
+  "S1_hand": 1,
+  "A_sim_only": 36,
+  "A_rec_only": 36
+ },
+ "planted_tick": null,
+ "sim_ended_tick": 4135,
+ "rec_last_tick": 4136,
+ "sme_pass": false
+}

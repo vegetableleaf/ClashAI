@@ -1,0 +1,808 @@
+{
+ "seed": -2064661162,
+ "playerData": [
+  1,
+  1
+ ],
+ "words": [
+  29372692,
+  83616782
+ ],
+ "decks": [
+  [
+   "GoblinBarrel",
+   "Valkyrie",
+   "SkeletonArmy",
+   "Wallbreakers",
+   "Princess",
+   "BlowdartGoblin",
+   "IceSpirits",
+   "Cannon"
+  ],
+  [
+   "Knight",
+   "IceWizard",
+   "Tesla",
+   "Log",
+   "Xbow",
+   "Rocket",
+   "Tornado",
+   "Skeletons"
+  ]
+ ],
+ "slots": [
+  [
+   1,
+   2,
+   1,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   1,
+   2,
+   1,
+   0,
+   0,
+   0,
+   0,
+   0
+  ]
+ ],
+ "towers": [
+  [
+   16,
+   16
+  ],
+  [
+   16,
+   16
+  ]
+ ],
+ "cmds": [
+  {
+   "kind": "play",
+   "given": 177,
+   "run": 197,
+   "side": 0,
+   "card": "IceSpirits",
+   "level": 15,
+   "x": 9500,
+   "y": 500
+  },
+  {
+   "kind": "play",
+   "given": 181,
+   "run": 201,
+   "side": 1,
+   "card": "Skeletons",
+   "level": 16,
+   "x": 9500,
+   "y": 30982
+  },
+  {
+   "kind": "play",
+   "given": 231,
+   "run": 251,
+   "side": 0,
+   "card": "Wallbreakers",
+   "level": 16,
+   "x": 8499,
+   "y": 14500
+  },
+  {
+   "kind": "play",
+   "given": 255,
+   "run": 275,
+   "side": 1,
+   "card": "Log",
+   "level": 16,
+   "x": 14500,
+   "y": 17500
+  },
+  {
+   "kind": "play",
+   "given": 273,
+   "run": 293,
+   "side": 0,
+   "card": "BlowdartGoblin",
+   "level": 16,
+   "x": 3499,
+   "y": 14500
+  },
+  {
+   "kind": "play",
+   "given": 296,
+   "run": 316,
+   "side": 1,
+   "card": "Knight",
+   "level": 16,
+   "x": 3499,
+   "y": 17499
+  },
+  {
+   "kind": "play",
+   "given": 431,
+   "run": 451,
+   "side": 0,
+   "card": "Valkyrie",
+   "level": 16,
+   "x": 8499,
+   "y": 12500
+  },
+  {
+   "kind": "play",
+   "given": 527,
+   "run": 547,
+   "side": 1,
+   "card": "Tesla",
+   "level": 16,
+   "x": 7000,
+   "y": 18000
+  },
+  {
+   "kind": "play",
+   "given": 577,
+   "run": 597,
+   "side": 0,
+   "card": "GoblinBarrel",
+   "level": 16,
+   "x": 3499,
+   "y": 25500
+  },
+  {
+   "kind": "play",
+   "given": 621,
+   "run": 641,
+   "side": 1,
+   "card": "IceWizard",
+   "level": 16,
+   "x": 2499,
+   "y": 27574
+  },
+  {
+   "kind": "play",
+   "given": 651,
+   "run": 671,
+   "side": 1,
+   "card": "Skeletons",
+   "level": 16,
+   "x": 1462,
+   "y": 25522
+  },
+  {
+   "kind": "play",
+   "given": 921,
+   "run": 941,
+   "side": 0,
+   "card": "Princess",
+   "level": 16,
+   "x": 499,
+   "y": 7500
+  },
+  {
+   "kind": "play",
+   "given": 946,
+   "run": 966,
+   "side": 1,
+   "card": "Xbow",
+   "level": 16,
+   "x": 15500,
+   "y": 19500
+  },
+  {
+   "kind": "play",
+   "given": 961,
+   "run": 981,
+   "side": 0,
+   "card": "IceSpirits",
+   "level": 15,
+   "x": 1499,
+   "y": 14500
+  },
+  {
+   "kind": "play",
+   "given": 974,
+   "run": 994,
+   "side": 1,
+   "card": "Knight",
+   "level": 16,
+   "x": 15500,
+   "y": 17499
+  },
+  {
+   "kind": "play",
+   "given": 995,
+   "run": 1015,
+   "side": 0,
+   "card": "Wallbreakers",
+   "level": 16,
+   "x": 15500,
+   "y": 14500
+  },
+  {
+   "kind": "play",
+   "given": 1032,
+   "run": 1052,
+   "side": 0,
+   "card": "Valkyrie",
+   "level": 16,
+   "x": 15500,
+   "y": 14500
+  },
+  {
+   "kind": "play",
+   "given": 1112,
+   "run": 1132,
+   "side": 1,
+   "card": "Log",
+   "level": 16,
+   "x": 2500,
+   "y": 17500
+  },
+  {
+   "kind": "play",
+   "given": 1146,
+   "run": 1166,
+   "side": 0,
+   "card": "SkeletonArmy",
+   "level": 16,
+   "x": 8469,
+   "y": 9601
+  },
+  {
+   "kind": "play",
+   "given": 1236,
+   "run": 1256,
+   "side": 1,
+   "card": "IceWizard",
+   "level": 16,
+   "x": 3487,
+   "y": 17573
+  },
+  {
+   "kind": "play",
+   "given": 1311,
+   "run": 1331,
+   "side": 0,
+   "card": "Cannon",
+   "level": 16,
+   "x": 15500,
+   "y": 13500
+  },
+  {
+   "kind": "play",
+   "given": 1462,
+   "run": 1482,
+   "side": 0,
+   "card": "Princess",
+   "level": 16,
+   "x": 13500,
+   "y": 14500
+  },
+  {
+   "kind": "play",
+   "given": 1486,
+   "run": 1506,
+   "side": 1,
+   "card": "Tesla",
+   "level": 16,
+   "x": 11000,
+   "y": 18000
+  },
+  {
+   "kind": "play",
+   "given": 1907,
+   "run": 1927,
+   "side": 1,
+   "card": "Skeletons",
+   "level": 16,
+   "x": 8490,
+   "y": 31039
+  },
+  {
+   "kind": "play",
+   "given": 1997,
+   "run": 2017,
+   "side": 1,
+   "card": "Knight",
+   "level": 16,
+   "x": 8499,
+   "y": 31000
+  },
+  {
+   "kind": "play",
+   "given": 2005,
+   "run": 2025,
+   "side": 0,
+   "card": "GoblinBarrel",
+   "level": 16,
+   "x": 3499,
+   "y": 25500
+  },
+  {
+   "kind": "play",
+   "given": 2161,
+   "run": 2181,
+   "side": 0,
+   "card": "Valkyrie",
+   "level": 16,
+   "x": 7499,
+   "y": 6500
+  },
+  {
+   "kind": "play",
+   "given": 2185,
+   "run": 2205,
+   "side": 1,
+   "card": "Xbow",
+   "level": 16,
+   "x": 15500,
+   "y": 19500
+  },
+  {
+   "kind": "play",
+   "given": 2246,
+   "run": 2266,
+   "side": 0,
+   "card": "BlowdartGoblin",
+   "level": 16,
+   "x": 14500,
+   "y": 12500
+  },
+  {
+   "kind": "play",
+   "given": 2253,
+   "run": 2273,
+   "side": 0,
+   "card": "IceSpirits",
+   "level": 15,
+   "x": 14500,
+   "y": 14500
+  },
+  {
+   "kind": "play",
+   "given": 2261,
+   "run": 2281,
+   "side": 0,
+   "card": "Wallbreakers",
+   "level": 16,
+   "x": 16500,
+   "y": 14500
+  },
+  {
+   "kind": "play",
+   "given": 2271,
+   "run": 2291,
+   "side": 1,
+   "card": "IceWizard",
+   "level": 16,
+   "x": 12500,
+   "y": 17574
+  },
+  {
+   "kind": "play",
+   "given": 2303,
+   "run": 2323,
+   "side": 1,
+   "card": "Log",
+   "level": 16,
+   "x": 15500,
+   "y": 17500
+  },
+  {
+   "kind": "play",
+   "given": 2361,
+   "run": 2381,
+   "side": 1,
+   "card": "Skeletons",
+   "level": 16,
+   "x": 14501,
+   "y": 17707
+  },
+  {
+   "kind": "play",
+   "given": 2421,
+   "run": 2441,
+   "side": 0,
+   "card": "SkeletonArmy",
+   "level": 16,
+   "x": 9530,
+   "y": 9601
+  },
+  {
+   "kind": "play",
+   "given": 2463,
+   "run": 2483,
+   "side": 1,
+   "card": "Knight",
+   "level": 16,
+   "x": 15500,
+   "y": 17499
+  },
+  {
+   "kind": "play",
+   "given": 2495,
+   "run": 2515,
+   "side": 0,
+   "card": "Valkyrie",
+   "level": 16,
+   "x": 15500,
+   "y": 14500
+  },
+  {
+   "kind": "play",
+   "given": 2547,
+   "run": 2567,
+   "side": 1,
+   "card": "Tornado",
+   "level": 16,
+   "x": 14500,
+   "y": 11500
+  },
+  {
+   "kind": "play",
+   "given": 2612,
+   "run": 2632,
+   "side": 0,
+   "card": "BlowdartGoblin",
+   "level": 16,
+   "x": 9500,
+   "y": 9500
+  },
+  {
+   "kind": "play",
+   "given": 2644,
+   "run": 2664,
+   "side": 0,
+   "card": "IceSpirits",
+   "level": 15,
+   "x": 10500,
+   "y": 14500
+  },
+  {
+   "kind": "play",
+   "given": 2704,
+   "run": 2724,
+   "side": 1,
+   "card": "IceWizard",
+   "level": 16,
+   "x": 10500,
+   "y": 24499
+  },
+  {
+   "kind": "play",
+   "given": 2831,
+   "run": 2851,
+   "side": 1,
+   "card": "Xbow",
+   "level": 16,
+   "x": 15500,
+   "y": 19500
+  },
+  {
+   "kind": "play",
+   "given": 2894,
+   "run": 2914,
+   "side": 0,
+   "card": "GoblinBarrel",
+   "level": 16,
+   "x": 3499,
+   "y": 25500
+  },
+  {
+   "kind": "play",
+   "given": 2911,
+   "run": 2931,
+   "side": 0,
+   "card": "Wallbreakers",
+   "level": 16,
+   "x": 1499,
+   "y": 14500
+  },
+  {
+   "kind": "play",
+   "given": 2931,
+   "run": 2951,
+   "side": 0,
+   "card": "SkeletonArmy",
+   "level": 16,
+   "x": 14528,
+   "y": 14192
+  },
+  {
+   "kind": "play",
+   "given": 2931,
+   "run": 2951,
+   "side": 1,
+   "card": "Skeletons",
+   "level": 16,
+   "x": 3506,
+   "y": 27567
+  },
+  {
+   "kind": "ability",
+   "given": 2957,
+   "run": 2977,
+   "side": 1,
+   "unit": "cmd40_0"
+  },
+  {
+   "kind": "play",
+   "given": 2961,
+   "run": 2981,
+   "side": 1,
+   "card": "Log",
+   "level": 16,
+   "x": 3500,
+   "y": 27500
+  },
+  {
+   "kind": "play",
+   "given": 2971,
+   "run": 2991,
+   "side": 0,
+   "card": "Valkyrie",
+   "level": 16,
+   "x": 14546,
+   "y": 14512
+  },
+  {
+   "kind": "play",
+   "given": 3024,
+   "run": 3044,
+   "side": 1,
+   "card": "Knight",
+   "level": 16,
+   "x": 15500,
+   "y": 27499
+  },
+  {
+   "kind": "ability",
+   "given": 3093,
+   "run": 3113,
+   "side": 0,
+   "unit": "cmd48_0"
+  },
+  {
+   "kind": "play",
+   "given": 3111,
+   "run": 3131,
+   "side": 1,
+   "card": "IceWizard",
+   "level": 16,
+   "x": 11500,
+   "y": 17499
+  },
+  {
+   "kind": "play",
+   "given": 3192,
+   "run": 3212,
+   "side": 1,
+   "card": "Tornado",
+   "level": 16,
+   "x": 10500,
+   "y": 26500
+  },
+  {
+   "kind": "play",
+   "given": 3272,
+   "run": 3292,
+   "side": 0,
+   "card": "IceSpirits",
+   "level": 15,
+   "x": 10500,
+   "y": 12500
+  },
+  {
+   "kind": "play",
+   "given": 3361,
+   "run": 3381,
+   "side": 0,
+   "card": "GoblinBarrel",
+   "level": 16,
+   "x": 3499,
+   "y": 25500
+  },
+  {
+   "kind": "play",
+   "given": 3396,
+   "run": 3416,
+   "side": 1,
+   "card": "Skeletons",
+   "level": 16,
+   "x": 3506,
+   "y": 27567
+  },
+  {
+   "kind": "play",
+   "given": 3422,
+   "run": 3442,
+   "side": 1,
+   "card": "Log",
+   "level": 16,
+   "x": 3500,
+   "y": 28500
+  },
+  {
+   "kind": "play",
+   "given": 3431,
+   "run": 3451,
+   "side": 0,
+   "card": "Wallbreakers",
+   "level": 16,
+   "x": 16500,
+   "y": 14500
+  },
+  {
+   "kind": "play",
+   "given": 3472,
+   "run": 3492,
+   "side": 1,
+   "card": "Knight",
+   "level": 16,
+   "x": 14500,
+   "y": 20499
+  },
+  {
+   "kind": "play",
+   "given": 3506,
+   "run": 3526,
+   "side": 0,
+   "card": "BlowdartGoblin",
+   "level": 16,
+   "x": 9500,
+   "y": 8500
+  },
+  {
+   "kind": "play",
+   "given": 3563,
+   "run": 3583,
+   "side": 0,
+   "card": "Valkyrie",
+   "level": 16,
+   "x": 16500,
+   "y": 14500
+  },
+  {
+   "kind": "play",
+   "given": 3564,
+   "run": 3584,
+   "side": 1,
+   "card": "IceWizard",
+   "level": 16,
+   "x": 17500,
+   "y": 21574
+  },
+  {
+   "kind": "ability",
+   "given": 3604,
+   "run": 3624,
+   "side": 0,
+   "unit": "cmd60_0"
+  },
+  {
+   "kind": "play",
+   "given": 3606,
+   "run": 3626,
+   "side": 1,
+   "card": "Tornado",
+   "level": 16,
+   "x": 14500,
+   "y": 11500
+  },
+  {
+   "kind": "play",
+   "given": 3711,
+   "run": 3731,
+   "side": 0,
+   "card": "IceSpirits",
+   "level": 15,
+   "x": 10500,
+   "y": 14500
+  },
+  {
+   "kind": "play",
+   "given": 3731,
+   "run": 3751,
+   "side": 1,
+   "card": "Skeletons",
+   "level": 16,
+   "x": 10500,
+   "y": 17715
+  },
+  {
+   "kind": "play",
+   "given": 3757,
+   "run": 3777,
+   "side": 0,
+   "card": "Princess",
+   "level": 16,
+   "x": 8499,
+   "y": 12500
+  },
+  {
+   "kind": "play",
+   "given": 3761,
+   "run": 3781,
+   "side": 1,
+   "card": "Tesla",
+   "level": 16,
+   "x": 11000,
+   "y": 18000
+  },
+  {
+   "kind": "play",
+   "given": 3878,
+   "run": 3898,
+   "side": 1,
+   "card": "Xbow",
+   "level": 16,
+   "x": 15500,
+   "y": 19500
+  },
+  {
+   "kind": "play",
+   "given": 3914,
+   "run": 3934,
+   "side": 0,
+   "card": "SkeletonArmy",
+   "level": 16,
+   "x": 15533,
+   "y": 12584
+  },
+  {
+   "kind": "play",
+   "given": 3941,
+   "run": 3961,
+   "side": 1,
+   "card": "IceWizard",
+   "level": 16,
+   "x": 17500,
+   "y": 19499
+  },
+  {
+   "kind": "play",
+   "given": 3947,
+   "run": 3967,
+   "side": 0,
+   "card": "GoblinBarrel",
+   "level": 16,
+   "x": 15500,
+   "y": 20500
+  },
+  {
+   "kind": "play",
+   "given": 3976,
+   "run": 3996,
+   "side": 1,
+   "card": "Log",
+   "level": 16,
+   "x": 14500,
+   "y": 27500
+  },
+  {
+   "kind": "play",
+   "given": 3981,
+   "run": 4001,
+   "side": 0,
+   "card": "Valkyrie",
+   "level": 16,
+   "x": 13500,
+   "y": 11500
+  },
+  {
+   "kind": "play",
+   "given": 4004,
+   "run": 4024,
+   "side": 1,
+   "card": "Skeletons",
+   "level": 16,
+   "x": 16501,
+   "y": 26498
+  }
+ ]
+}

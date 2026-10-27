@@ -1,0 +1,73 @@
+{
+ "seed": 2032924539,
+ "frames": 2068,
+ "exact_frames": 2064,
+ "exact_share": 0.9980657640232108,
+ "exact_board_frames": 2064,
+ "exact_side1_frames": 2065,
+ "label_shift_frames": [
+  682
+ ],
+ "exact_or_shift_frames": 2065,
+ "first_divergence": [
+  198,
+  [
+   [
+    "U_rec_only",
+    [
+     0,
+     9500,
+     500,
+     312
+    ],
+    [
+     0,
+     0,
+     -1
+    ]
+   ],
+   [
+    "U_sim_only",
+    [
+     0,
+     9500,
+     500,
+     311
+    ],
+    [
+     0,
+     0,
+     1
+    ]
+   ]
+  ]
+ ],
+ "census_objects": {
+  "U_rec_only": 37,
+  "U_sim_only": 37,
+  "frame_label_shift+1": 1,
+  "T_rec_only": 1,
+  "T_sim_only": 1,
+  "P_rec_only": 1,
+  "P_sim_only": 4,
+  "S0_elixir": 1,
+  "S1_elixir": 2,
+  "S1_hand": 1
+ },
+ "census_frames": {
+  "U_sim_only": 3,
+  "U_rec_only": 3,
+  "frame_label_shift+1": 1,
+  "S1_elixir": 2,
+  "T_sim_only": 1,
+  "S0_elixir": 1,
+  "P_sim_only": 1,
+  "T_rec_only": 1,
+  "P_rec_only": 1,
+  "S1_hand": 1
+ },
+ "planted_tick": 198,
+ "sim_ended_tick": 4136,
+ "rec_last_tick": 4136,
+ "sme_pass": false
+}
