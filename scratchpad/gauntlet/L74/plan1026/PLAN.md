@@ -126,8 +126,10 @@ battles tick-exact, but that data is private (b). Only our own measurement decid
     extraction (levels, deal, seed, play ticks), the game version, or crforge itself? Fix it in the extractor or our
     crforge fork, then re-pilot on fresh matches.
   - Training stays on fin16 meanwhile.
-  - If crforge's own design proves unable to reach exactness, the same SME target moves to a fin16-based engine with
-    crforge-confirmed laws ported one by one. That is a change of route, reported with the evidence, not a dropped target.
+  - ~~If crforge's own design proves unable to reach exactness, the same SME target moves to a fin16-based engine with
+    crforge-confirmed laws ported one by one.~~ **Struck by the owner 10-27: no fin16-based fallback.** crforge is
+    iterated until SME >= 99/109 (D1, 90%) and >= 107/109 (D2, 0.98); a plateau means deeper per-class investigation,
+    never a route change and never a looser comparator (planted-divergence checks on every comparator rule).
 - **Stage 2 (days 8-22): integration.**
   - New `pipeline/crforge_core.py`, the same interface as RoyaleSim's engine. It covers reset / step / state / save_state /
     load_state, and the forking that `search_s0` and `cf_credit` need. It outputs RoyaleSim's units, so nothing
