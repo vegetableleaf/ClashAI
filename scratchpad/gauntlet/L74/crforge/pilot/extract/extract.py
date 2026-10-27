@@ -232,6 +232,19 @@ def bottle_lag(card):
     return b['DeployTime'] // 50 if ch and b.get('DeathAreaEffect') and b.get('DeployTime') else None
 
 
+_COST = {}
+
+
+def card_cost(name):
+    """A card's elixir cost (ManaCost in the spells_* tables), 0 if none."""
+    if not _COST:
+        for f in ('spells_characters', 'spells_buildings', 'spells_other'):
+            for n, r in json.load(open(Path(TABLES) / f'{f}.json'))['rows'].items():
+                if r['columns'].get('ManaCost') is not None:
+                    _COST.setdefault(n, r['columns']['ManaCost'])
+    return _COST.get(name, 0)
+
+
 def crforge_casts(path, plays, sides, my=None, fx=None):
     """Ability casts seen_casts does not give, dated for crforge (SME.md fix rounds 2.2 / 2.3 / 3.1; the rules live in
     crforge/pilot/sme so the SME layer and this extractor share one copy):
@@ -242,6 +255,13 @@ def crforge_casts(path, plays, sides, my=None, fx=None):
       SME_IW_DEPLOY=1, round 6.7);
     - an opponent hero Ice Wizard cast is dated by its ability's first 50 ms area (sme_live.iw_area_cast,
       SME_IW_AREA=1, round 6.8);
+    - opponent hero casts from the reader's pending rise / the hero Balloon throw from its projectile (sme_live.hero7_cast,
+      SME_HERO7=1, round 7.1);
+    - our own tap-dated card plays and presses on a shared drop dated by the elixir drop, split by card cost
+      (sme_live.own_play_elixir / own_press_elixir, SME_OWNPLAY7=1, round 7.3);
+    - a Rascals play whose girls stand on the back edge goes to the edge (sme_live.rascals_back, SME_RASCAL7=1, round 7.4);
+    - a hero Ice Golem 'cast' whose areas all read <= 1000 ms is its death and is dropped (sme_live.golem_death_fx,
+      SME_GOLEM7=1, round 7.2);
     - a hero Valkyrie cast_seen cast goes 1 tick earlier (sme_live.valk_shift, round 4.2);
     - our own ability presses are dated by our elixir drop (sme_live.own_press_elixir, round 5.1; with SME_OWN_CAST=1
       also the cast_seen ones on our side, round 6.2)."""
@@ -255,8 +275,15 @@ def crforge_casts(path, plays, sides, my=None, fx=None):
     # our own ability presses dated by our elixir drop (round 5.1, sme_live.own_press_elixir)
     # round 6.2: also our own cast_seen presses (no logged tap), and not on a drop that holds one of our card plays
     own_ticks = {t for q in plays if q['kind'] == 'play' and q['side'] == my for t in range(q['run_ticks'][0], q['run_ticks'][1] + 1)}
-    out = [sme_live.iw_area_cast(sme_live.own_press_elixir(sme_live.valk_shift(p), frames, my, own_ticks), fx, my) for p in plays
-           if not sme_live.golem_death_cast(p, frames) and not sme_live.iw_deploy_cast(p, frames, plays)]
+    rises = sme_live.pending_rises(path) if sme_live.HERO7 else []   # round 7.1
+    # round 7.3: our card plays with their elixir cost (run window, ManaCost) for the shared-drop split and tap dating
+    own_plays = [(q['run_ticks'][0], q['run_ticks'][1], card_cost(q['card'])) for q in plays if q['kind'] == 'play' and q['side'] == my]
+    out = [sme_live.hero7_cast(sme_live.iw_area_cast(sme_live.own_press_elixir(
+        sme_live.rascals_back(sme_live.own_play_elixir(sme_live.valk_shift(p), frames, my, own_plays), frames), frames, my,
+        own_ticks, own_plays),
+        fx, my), frames, rises, my) for p in plays
+           if not sme_live.golem_death_cast(p, frames) and not sme_live.iw_deploy_cast(p, frames, plays)
+           and not sme_live.golem_death_fx(p, fx)]
     for g in sme_live.gk_dashes(frames) + sme_live.buff_casts(frames):
         deck = sides[g['side']]['deck']
         if g['card'] in deck:
@@ -367,7 +394,7 @@ def match(path, bl=None, names=None, cat=None, shims=None, tt=None, uhp=None, by
     # A2c-BP (sme/bp_rules.py, SME_BP_* flags, all off by default): hero Valkyrie / Golden Knight / hero Giant casts
     # dated from the reader's charge / stun buff countdowns, Golden Knight pushes dropped, Rascals point from its girls
     import bp_rules  # crforge_casts put sme/ on sys.path
-    if bp_rules.VALK or bp_rules.GK or bp_rules.GIANT or bp_rules.RASCALS:
+    if bp_rules.VALK or bp_rules.GK or bp_rules.GIANT or bp_rules.RASCALS or bp_rules.PRESS:
         import live_frames
         plays = bp_rules.apply(path, plays, sides, {f['t']: f for f in live_frames.convert(path)})
     build = next(((json.loads(r).get('phase2') or {}).get('build') for r in open(path, 'rb') if b'"phase2"' in r), None)

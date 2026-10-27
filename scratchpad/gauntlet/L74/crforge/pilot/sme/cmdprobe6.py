@@ -1,5 +1,6 @@
 """Set chosen commands to chosen run ticks and score the whole match (ticket A2c round 6.0 probes).
-    SME_... python3 cmdprobe6.py RUNDIR INPUTS M:K:R[,K:R...] ...   (M = match suffix, K = command index, R = run tick)
+    SME_... python3 cmdprobe6.py RUNDIR INPUTS M:K:R[:Y][,K:R[:Y]...] ...   (M = match suffix, K = command index, R = run
+    tick, Y = an optional play y)
 Prints the baseline and each variant: first true divergence and frame counts."""
 import json, os, shutil, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -20,9 +21,11 @@ def main():
         frs[m] = load_frames(os.path.join(FRAMES, m + '.jsonl'))
         p = json.loads(json.dumps(plan))
         for kr in rest.split(','):
-            k, R = map(int, kr.split(':'))
+            k, R, *y = map(int, kr.split(':'))   # optional K:R:Y also sets the play's y
             p['cmds'][k]['given'] += R - p['cmds'][k]['run']
             p['cmds'][k]['run'] = R
+            if y:
+                p['cmds'][k]['y'] = y[0]
         for q, tag in ((plan, 'base'), (p, rest)):
             jobs.append((runnable(q), max(frs[m]) + 3, 0))
             meta.append((m, tag))

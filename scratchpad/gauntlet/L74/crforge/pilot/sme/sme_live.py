@@ -160,6 +160,7 @@ def gk_dashes(frames):
 
 
 VALK_LAG = int(os.environ.get('SME_VALK', '0'))  # round 4.2
+OWNPLAY7 = int(os.environ.get('SME_OWNPLAY7', '0'))  # round 7.3: shared drop pairs split by card cost; own taps by the drop
 OWN_CAST = int(os.environ.get('SME_OWN_CAST', '0'))  # round 6.2: own cast_seen presses dated by our elixir too
 
 
@@ -173,7 +174,7 @@ def valk_shift(p):
     return p
 
 
-def own_press_elixir(p, frames, my=None, own_ticks=()):
+def own_press_elixir(p, frames, my=None, own_ticks=(), own_plays=()):
     """Our own ability press dated by our elixir (SME.md round 5.1): crforge takes the cost on the run tick R and shows
     it on line R+1, so the press runs in [prev, first - 1] of the frame pair where our elixir drops by >= 1.5 elixir,
     the drop nearest the tap-dated tick within 15 ticks. The tap-dated tick is kept when it is inside that window,
@@ -187,7 +188,9 @@ def own_press_elixir(p, frames, my=None, own_ticks=()):
     ts = sorted(frames)
     R = p['tick']
     drops = [(a, b) for a, b in zip(ts, ts[1:]) if R - 15 <= b <= R + 15 and frames[a]['el'] - frames[b]['el'] >= 15000
-             and not (own_cast and any(a - 1 <= t <= b for t in own_ticks))]
+             and not (own_cast and any(a - 1 <= t <= b for t in own_ticks) and not (
+                 OWNPLAY7 and frames[a]['el'] - frames[b]['el'] - 10000 * sum(k for lo, hi, k in own_plays if a - 1 <= lo <= b)
+                 >= 15000))]
     if not drops:
         return p
     a, b = min(drops, key=lambda ab: min(abs(ab[0] - R), abs(ab[1] - 1 - R)))
@@ -253,6 +256,115 @@ def iw_area_cast(p, fx, my):
         if e:
             r = t - (50 - e[4]) // 50 - 4
             return p if r == R else dict(p, tick=r, run_ticks=[r, r], dated='iw_area')
+    return p
+
+
+HERO7 = int(os.environ.get('SME_HERO7', '0'))  # round 7.1
+BALLOON_HERO_ID = 203000006
+
+
+def pending_rises(path):
+    """Reader phase-2 ability rows: (side, unit name, tick of the first frame with pending_on_body 1, previous frame,
+    last tick it stayed 1) for each run of pending frames."""
+    out, cur, seen, last_t = [], {}, set(), None
+    for line in open(path, 'rb'):
+        if b'"frame"' not in line[:40]:
+            continue
+        d = json.loads(line)
+        t = d.get('tick')
+        if t is None or t in seen:
+            continue
+        seen.add(t)
+        for u in (d.get('phase2') or {}).get('units', []):
+            ab = u.get('ability') or {}
+            k = u.get('generation')
+            if ab.get('pending_on_body') == 1:
+                if k not in cur:
+                    cur[k] = [u['side'], u['name'], t, last_t, t]
+                cur[k][4] = t
+            elif k in cur:
+                out.append(tuple(cur.pop(k)))
+        last_t = t
+    return out + [tuple(v) for v in cur.values()]
+
+
+def own_play_elixir(p, frames, my, own_plays):
+    """Round 7.3 (SME_OWNPLAY7=1): one of our card plays dated by its tap lies BEFORE the frame pair where our elixir
+    drops by its cost (that pair holding no other play of ours): it runs in [prev, first - 1] of that drop. ownplay7.py
+    over the 138: 4,741 of 4,837 tap-dated plays sit in their drop window, 95 on its last frame (the round-2.1 read)
+    and 1 before it: 171753's Knight, tapped 1768, elixir down between 1770 and 1773."""
+    if not OWNPLAY7 or p['kind'] != 'play' or p['side'] != my or p.get('source') != 'own_tap' or not frames:
+        return p
+    k = next((c for lo, hi, c in own_plays if (lo, hi) == tuple(p['run_ticks'])), None)
+    if not k:
+        return p
+    ts = sorted(frames)
+    R = p['tick']
+    drops = [(a, b) for a, b in zip(ts, ts[1:]) if R - 15 <= a <= R + 15 and frames[a]['el'] - frames[b]['el'] >= 10000 * k - 1100]
+    if not drops or any(a <= R <= b for a, b in drops):   # R inside a drop pair (incl. the round-2.1 read on b)
+        return p
+    a, b = min(drops, key=lambda ab: abs(ab[0] - R))
+    if a < R or any(a - 1 <= lo <= b for lo, hi, c in own_plays if (lo, hi) != tuple(p['run_ticks'])):
+        return p
+    return dict(p, tick=a, run_ticks=[a, b - 1], dated='own_play_elixir')
+
+
+RASCAL7 = int(os.environ.get('SME_RASCAL7', '0'))  # round 7.4
+RASCALS_CARD = 26000053
+
+
+def rascals_back(p, frames):
+    """Round 7.4 (SME_RASCAL7=1): a Rascals play whose two girls stand at the back edge of the arena (y 31000 for side
+    1, 1000 for side 0; bp_rules.rascals_point leaves these) was played on the back row. fights' point (the boy's y
+    + LEAD_AHEAD) put crforge's boy 2,000 short and its girls 278 short (010613@2186). Any y at or past the edge gives the
+    same crforge formation (probe: 31000 / 31499 / 31508 / 31768 identical), so y = the edge."""
+    if not RASCAL7 or p['kind'] != 'play' or p['card'] != 'Rascals' or p.get('source') != 'first_seen':
+        return p
+    edge = 31000 if p['side'] == 1 else 1000
+    for t in sorted(t for t in frames if p['tick'] < t <= p['tick'] + 8):
+        es = [e for e in frames[t]['E'] if e[0] == p['side'] and e[3] == RASCALS_CARD and e[2] == edge]
+        if any(abs(abs(a[1] - b[1]) - 2446) <= 4 and abs((a[1] + b[1]) / 2 - p['x']) <= 600 for a in es for b in es):
+            return p if p['y'] == edge else dict(p, y=edge, dated=(p.get('dated') or '') + 'rascals_back')
+    return p
+
+
+GOLEM7 = int(os.environ.get('SME_GOLEM7', '0'))  # round 7.2
+
+
+def golem_death_fx(p, fx):
+    """Round 7.2 (SME_GOLEM7=1): a hero Ice Golem 'cast' whose 203000038 areas, first read in [R, R+4], all hold <= 1000 ms
+    is its death (Death_Aeo 1 s + the death explosion), which golem_death_cast (round 2.3, body test) missed at 101112@658
+    (areas 1000 / 0 ms). Every real cast on the 138 reads its 3 s ability area at 2950 ms on R+2 (7 / 7)."""
+    if not GOLEM7 or not fx or p['kind'] != 'ability' or p['card'] != 'IceGolemite' or p.get('source') != 'cast_seen':
+        return False
+    rem = [e[4] for t in range(p['tick'], p['tick'] + 5) for e in fx.get(t, ()) if e[0] == p['side'] and e[3] == GOLEM_HERO_ID]
+    return bool(rem) and max(rem) <= 1000
+
+
+def hero7_cast(p, frames, rises, my):
+    """Round 7.1 (SME_HERO7=1), opponent hero casts with an exact dating signal (herobuf7.py census over the 138):
+    - a press the reader shows pending (pending_on_body 1) for >= 3 ticks before the cast_seen tick, on the hero unit
+      (card + 'Hero'), runs at the pending rise: R in [prev frame, rise - 1]. crforge holds a pending press through a
+      freeze as the game does (183044: the Bowler pressed at 2834 inside an Ice Wizard freeze, cast on its end; R 2833 /
+      2834 and 2912 / 2913 all give an exact match, 2915 does not). Balloon and Valkyrie keep their own dating.
+    - a hero Balloon throw: its projectile (card 203000006) is first read 4 ticks after the press on 8 of 11 throws;
+      R = first - 4, window [prev - 3, first - 4] (235915: first 3050, R 3046 exact; cast_seen gave 3044 / 3045)."""
+    if not HERO7 or p['kind'] != 'ability' or p.get('source') != 'cast_seen' or p['side'] == my:
+        return p
+    R = p['tick']
+    if p['card'] == 'Balloon':
+        ts = sorted(frames)
+        has = lambda t: any(q[0] == p['side'] and q[3] == BALLOON_HERO_ID for q in frames[t]['P'])  # noqa: E731
+        # the first frame in [R, R+30] that shows the hero's projectile when the frame before does not (a new throw)
+        first, prev = next(((b, a) for a, b in zip(ts, ts[1:]) if R <= b <= R + 30 and has(b) and not has(a)), (None, None))
+        if first is None or first - 4 == R:
+            return p
+        return dict(p, tick=first - 4, run_ticks=[min(prev - 3, first - 4), first - 4], dated='balloon_proj')
+    if p['card'] == 'Valkyrie':
+        return p
+    for side, name, rise, prev, end in rises:
+        if side == p['side'] and name == p['card'] + 'Hero' and R - 200 <= rise <= R - 3 and end >= R - 6 and prev is not None:
+            return dict(p, tick=rise - 1, run_ticks=[prev, rise - 1], dated='pending_rise')
     return p
 
 
@@ -346,6 +458,7 @@ TORN_STEP = int(os.environ.get('SME_TORN_STEP', '0'))  # round 4.1
 STEP_MOVE = 200  # game units: more than one step of the fastest walker read here (~180 per tick)
 STEP_CLOCK = int(os.environ.get('SME_STEP_CLOCK', '0'))  # round 6.1: our elixir as the step clock
 SNAP = int(os.environ.get('SME_BP_SNAP', '0'))  # A2c-BP: in-step reads by crforge's own in-step states
+FITNEXT = int(os.environ.get('SME_BP_FITNEXT', '0'))  # A2c-BP2: the fitter also varies a command just after the onset
 MIX_PH = int(os.environ.get('SME_BP_MIXPH', '0'))  # A2c-BP: torn_mixed reads the hp -1 placeholder as the main comparison does (round 2.4)
 
 
@@ -492,7 +605,9 @@ def variants_at(plan, d, rec_frames_end):
     vs = []
     for i, c in enumerate(plan['cmds']):
         s = c['_src']
-        if not (d - WIN <= c['run'] <= d):
+        # A2c-BP2 (SME_BP_FITNEXT=1): a command run after the onset whose window reaches back to it is varied too
+        # (080929: our Log run 3132, window [3131, 3133], the game's cost read at 3131; R = 3131 heals 3131-3216)
+        if not (d - WIN <= c['run'] <= d or (FITNEXT and s['lo'] <= d < c['run'])):
             continue
         for R in range(s['lo'], s['hi'] + 1):
             if R != c['run']:

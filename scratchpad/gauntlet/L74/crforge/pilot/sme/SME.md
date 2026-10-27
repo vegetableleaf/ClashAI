@@ -991,3 +991,52 @@ the FITNEXT patch; comparator = bpD's (r63b + MIXPH + SNAP on SnapRun2). Each ro
   exact. It needs the aim print as a TickProbe-style hook (instrumentation) in the clashbot-bp fork.
   - `replan_census.py` does not see these events: the node is popped in the same step, so line to line the next node
     looks unchanged.
+
+---
+
+# Fix loop round 7 (worker a2c6)
+
+Same config as r6xc (inputs_v14 and every comparator flag). The main run uses `lib_bp`, the clashbot-bp TickProbe build
+(fork 008aa626 + `clashbot-bp_0001_TickProbe.patch`, built on pod 33920 with gradle offline), and SnapRun2 for the
+in-step SNAP. Pod 33308 got the same lib by copy (core jar sha256 `73b19425f039dd4e`).
+
+| sub-round | class | layer | change | exact apart from torn (unflagged) | exact frames | gained |
+|---|---|---|---|---:|---:|---|
+| start (r6xc) | | | | 79 / 109 | 256,184 | |
+| **7.0 (r70)** | in-step reads | comparator | SNAP on SnapRun2 / `lib_bp` (bpD's build) | **81 / 109** | 256,184 | `154319`, `233957` |
+| **7.1 (r71)** | Bowler press held through a freeze; Balloon throw dated 1-2 ticks off | extractor | `hero7_cast` (`SME_HERO7=1`; inputs_v15, 4 casts) | **83 / 109** | **256,991** | `183044`, `235915` |
+| **7.3 + 7.4 (r74)** | own Knight tapped before its elixir drop; own press on a drop shared with Skeletons; Rascals girls on the back edge | extractor | `own_play_elixir` + a cost-split drop pair (`SME_OWNPLAY7=1`) and `rascals_back` (`SME_RASCAL7=1`; inputs_v17) | **85 / 109** | **257,585** | `004031`, `010613` |
+
+0 regressions in every row, against the row before and against bpD.
+
+## Dating signals, checked on every cast of the hero (a)
+- **Hero Bowler, 183044: the press is held through a freeze.**
+  - The reader shows `pending_on_body` = 1 from 2834 to 2912, while the Bowler is frozen (`IceWizardHero_FreezeBuff`);
+    the cast follows the freeze's end.
+  - crforge holds a pending press through a freeze too. R = 2833 / 2834 (the pending rise) and 2912 / 2913 all give an
+    exact match. cast_seen's 2915 does not.
+  - Census (`herobuf7.py`): pending rises on 1 of 3 Bowler casts. Balloon has 1 rise, but its throw is dated by its
+    projectile instead. Wizard, Knight, Mini PEKKA, Dark Prince, Mega Minion, Ice Golem, Mighty Miner, Musketeer, Electro
+    Wizard, Elite Archer and Tombstone have 0.
+  - `BowlerHero_ability_buff` is made at R+4..5 on all 3 casts, so it cannot tell the held press.
+- **Hero Balloon: the throw's projectile (card 203000006) is first read 4 ticks after the press on 8 of 11 throws.**
+  - Rule: R = first - 4, from the first frame that shows a NEW projectile.
+  - 4 throws move: `235915` 3044 -> 3046 (the sweep's exact tick), `230512`@2558, `235355`@4913.
+  - The Balloon unit has no ability or buff field at its throws.
+- **Hero Ice Golem, 101112@658, was a death read as a cast (round 2.3's class; the body test missed it).**
+  - Its 203000038 areas read 1000 / 0 ms. Every real cast reads its 3 s area at 2950 ms on R+2 (7 / 7).
+  - Rule `golem_death_fx` (`SME_GOLEM7=1`, inputs_v18): r75.
+- **Own plays (`ownplay7.py`): 4,741 of 4,837 tap-dated plays sit inside their elixir-drop pair.**
+  - 95 sit on the pair's last frame: that is the round-2.1 read, already torn_cmd.
+  - **1 sits before it:** `171753`'s Knight (tap 1768, drop 1770 -> 1773). Moved to 1770, its onset moves to 1789; still
+    open.
+  - `004031`'s press shares its drop with our Skeletons (3 elixir = 2 + 1). The pair is now kept when the drop minus
+    the costs of the plays in the pair is still >= 1.5 elixir. `004031` is exact.
+- **Rascals, 010613@2186: the case `bp_rules.rascals_point` leaves out.**
+  - The girls stand on the back edge (y 31000), so the formation cannot be read from them.
+  - Any play y at or past the edge gives crforge the game's formation (31000 / 31499 / 31508 / 31768 all identical),
+    so y = the edge.
+  - Two plays move: `010613` (now exact) and `004901` (stays exact).
+- **Not extractor (b):** `181217`. The hero Mini PEKKA leaves the reader's unit list at 3041, 2 frames after its cast
+  timer starts; crforge keeps it. That is a representation or crforge question.
+- **`224856` (hero Goblins second wave) is not traced.**
