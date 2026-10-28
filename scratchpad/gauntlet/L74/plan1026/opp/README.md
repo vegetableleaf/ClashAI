@@ -21,7 +21,7 @@ python cbt/.../opp/level_a.py --ckpt runs/NAME/opp_NAME_s0.pt --data hf_slot_NEW
 ```
 Live split: `live_split.json` (frozen 2026-10-28 09:06 EDT, never rewritten; sealed = every log from 20261028_090648).
 
-## STATUS (P2-OPP re-dispatch, account 2; updated 2026-10-28 18:25 UTC; keep current)
+## STATUS (P2-OPP re-dispatch, account 2; updated 2026-10-28 20:20 UTC; keep current). Nothing of mine is running.
 1. Pretrain run 2 FINISHED (40k steps, best held-out total 5.515 at step 40k, 11.2 M params, 2.0 h; ckpt
    `/workspace/opp/v0/m10/opp_m10_s0.pt` sha256 99c231bf...). Level A on HF test split 2 (1.95 M rows, 2,667 replays), THRESHOLDS
    v3 sha 0c42e914 (its A section == v4's, checked): `results/v0_m10_run2/level_a_hf_test.json` (run 1 = step 10k: `results/v0_m10_run1/`).
@@ -51,14 +51,33 @@ Live split: `live_split.json` (frozen 2026-10-28 09:06 EDT, never rewritten; sea
    P2-SCORE allref.py, a d2tt gap run). cgroup memory usage was 117.97 GB of 125 GB at 18:30 (incl. page cache; Codex poll);
    my load then = 24 closed-loop workers (~1.2 GB RSS each, measured after the restart: 12 workers = 15.0 GB) + 2 rl smokes.
    Whether my load tipped it is (b) untested. Relaunched at 12 workers 18:42 UTC; smokes relaunched (old logs *_killed.log).
-   Level B rows RUNNING (33308, since 18:42 UTC, 12 workers): `/workspace/opp/score/rows/v0m10/` (driver log /workspace/opp/score/v0m10.out),
+   Level B rows (33308, 18:42-19:57 UTC, 12 workers; DONE): `/workspace/opp/score/rows/v0m10/` (driver log /workspace/opp/score/v0m10.out),
    CLXIII vs v0 at T 1, crforge a677e080, G2 OFF (same as P2-SCORE's E4 / iu40 rows), seeds 741200 742000 (paired with them), 24 workers.
    Restart (resumable per 480-game block): `cd /workspace/opp/score && (CB=/workspace/opp/cbs LIB=/workspace/crforge_main/a677e080/plain OPP_CKPT=opp_ckpt/opp_m10_s0_sim.pt OPP_T=1.0 WORKERS=12 setsid nohup bash /workspace/opp/cbs/scratchpad/gauntlet/L74/opp_model/humanlike/run_closed.sh v0m10 /workspace/opp/score/rows/v0m10 741200 742000 >> /workspace/opp/score/v0m10.out 2>&1 < /dev/null &)` (24 workers preceded the container restart)
    Score (laptop, after fetching the rows to humanlike/rows/v0m10): `card.py score --name v0m10 --sim .../rows/v0m10 --no-d`.
-   rl_royale --smoke before / after this change RUNNING (33308): trees /workspace/opp/cbs_base (6b13c25^) and /workspace/opp/cbs
+   rl_royale --smoke before / after this change (33308; DONE): trees /workspace/opp/cbs_base (6b13c25^) and /workspace/opp/cbs
    (6b13c25), logs /workspace/opp/logs/p2opp_smoke_{before,after}.log (`bash /workspace/opp/pod_rl_smoke.sh TREE RUN`); the W16
    batch / weight shas must be identical. NOTE: pushed BEFORE this smoke finished (COMMON asks for it before the push). RESULT (a): on a677e080 BOTH trees fail the same way (ActorCrash: crforge giantbuffer_enchanting_buff on LittlePrince, logs *_a677.log); on fe364ceb (lead 10-28: the new default lib; facade c003fc74 compiled into /workspace/opp/score/facade_fe364ceb; `LIB=... FAC=... pod_rl_smoke.sh`) BOTH SMOKE PASS, config sha b5e2a2bbafef, W16 u0000 batch 8377367c / weights 3e07cff4, u0001 batch 30c3c03f / weights 542bd835 identical, w16_batch / w16_matches u0000-u0001 files byte-identical (logs p2opp_fe_{before,after}.log). Level B v0m10 stays on a677e080 (started there; pairs with the E4 / iu40 rows); new closed-loop runs go on fe364ceb.
-   Codex: `.foreman/scratch/a2/codex/P2OPP_1.md` (low): babysit both, fetch + score, tabulate.
+   Codex: `.foreman/scratch/a2/codex/P2OPP_1.md` (low): babysit both, fetch + score, tabulate -> BLOCKED after 697 s (33308 ssh
+   timed out = the container restart); the rest was done by hand.
+   LEVEL B DONE (19:57 UTC, 960 games, 480 + 480; `results/v0_m10_run2/level_b_card_v0m10.txt`, `level_b_tab.json`,
+   `level_b_ENGINE.json`). Scored under THRESHOLDS **v5** (sha 438a7692, registered by P2-SCORE before this score; B-live / C-live
+   on the all-matches recency-weighted human reference, 4,752 matches, n_eff 3,417), `--no-d` (sealed block never opened). (a):
+
+   | item | live humans | v0 (960) | E4 (1,913; same v5 reference, rescored here) |
+   |---|---|---|---|
+   | B-live RMS d, 25 stats (limit 0.10) | - | **0.34** (13 TOST fails; model games >= 1,900: no) | 0.60 (19 fails) |
+   | worst stats | | gap_p10 -0.74, pocket_share -0.72, split_rate +0.59, spell_depth +0.57, react_s -0.53 | react_lift +1.55, react_3s +1.25, react_s -1.06 |
+   | C-live AUC (limit 0.56) | | 0.978 [0.972, 0.985] | 0.984 [0.980, 0.988] |
+   | X-Bow lock rate | 0.47 | 0.76 (+0.29) | 0.57 (+0.10) |
+   | zero-lock share | 0.12 | 0.01 | 0.03 |
+   | P(lock / prev failed) | 0.36 | 0.68 | - |
+   | CLXIII win (live Ranked ~48%) | | 89.1% (855/960), OT 31.5% | - |
+   | opponent plays / min, refused | | 8.84, 5.5% | - |
+
+   Reading: v0 nearly halves E4's style distance on the same reference (0.34 vs 0.60) but is 3.4x the limit, trivially told apart
+   (C 0.978), and far weaker than humans (CLXIII 89% vs ~48% live; it lets X-Bows lock 76% vs 47%). VERDICT FAIL (A not given to
+   card.py: level A is item 1 above).
 3. NOT STARTED: live opponent-seat slot rows. Spec for the build (reuses opp_model/o1_records.py + slot_redrive.sidecar + rows_to_npz):
    blocks from live_split.json by log NAME before any read (the sealed block is never opened; live_table.main reads every graded log,
    so do not call it); o1_records.build with FRAME_EVERY 2 (its counter miss was the 8-tick cadence) and --spell-targets; the
@@ -70,6 +89,25 @@ Live split: `live_split.json` (frozen 2026-10-28 09:06 EDT, never rewritten; sea
    era 2; deck ids via --deck-map of the HF rows; the 99% self-check on OUR seat = o1_finalize's check on the new records (O1 missed it
    on the public opponent-elixir counter, 93.8 / 96.2%, and on train-era unit counts, 96.8%). Then `train_gen --init opp_m10_s0.pt`
    on the TRAIN block (+ 20% HF share, lr 1e-5..3e-5, stop on a time-ordered tail of the train block), level A on the calibration block.
+4. NEXT (no-discard: each is an iteration, nothing dropped), in order:
+   a. Data + schedule: pretrain on ALL 241 shards (60,102 replays; v0 used 168 = 36,727) with a longer schedule; the held-out curve
+      still fell at 40k with lr annealed to 0 (5.5455 -> 5.5152 over the last 7.5k steps) (a). Plus seed 2 (memory seed gap).
+   b. Cell head: v0 has NO CellRefine (REPORT section 2 specifies cell head + CellRefine); cell exact 22.4% vs ceiling 27.5% is the
+      largest level-A gap (a); CellRefine closing it is (b) untested.
+   c. Tick head: held-out tick NLL 2.0795 = ln 8 from step 2,500 on = uniform over the 8 occupied in-slot ticks: no within-slot
+      signal learned (a). Harmless for decode (draws stay on the support) but the timing KS 0.045 is the hazard (rescaled mean 1.029,
+      hazard mean 0.0772 vs rate 0.0752: ~3% over-prediction (a)) + this.
+   d. Level-A sufficiency: card / cell ECE need n >= 200k decisions; the HF test split gives 115,665 / 136,966 even at 1.95 M rows,
+      so ECE can only pass on split 1+2 or more replays: a scoring-size decision for P2-SCORE / the lead (c: cannot pass as defined).
+   e. SIM decode gaps found (a, 4 diagnosed smoke games): Mirror refused 7x for not_enough_elixir (our cost table has Mirror's
+      nominal cost, the engine charges last card + 1); hero Mega Minion refused at 4.9-6.7 elixir (cause unknown, b); a play at
+      game end ('game_over'). Learned ability head is not decoded in the SIM (the env's v2 rule presses for the seat); ability KS 0.43.
+   f. B-live sufficiency needs >= 1,900 model games: next v0 / v1 closed loop = 4 blocks on fe364ceb (lead 10-28) with a CLXIII-vs-E4
+      fe364ceb baseline from P2-SCORE if a paired comparison is wanted; G2 on once the follow_ups tap fix lands.
+   g. Strength (CLXIII 89% vs ~48% live) is the REPORT's calibration step (band token, then card / cell T, then fixed-lambda RL with
+      frozen timing) and comes after B improves; the live fine-tune (step 3, bands 4/5/6) is the first lever on both.
+   h. Style latent z: only if B3 (between-match spread) fails once the means are close; today B fails on means (RMS 0.34), so the
+      B3 fail is not yet evidence for z (b).
 
 ## STATUS history (P2-OPP1, updated 2026-10-28 ~13:57 EDT pod clock)
 Done + pushed: step 1 model / trainer options + tests (70cd720); live split frozen (0bc4874); slot re-drive, rows_to_npz,

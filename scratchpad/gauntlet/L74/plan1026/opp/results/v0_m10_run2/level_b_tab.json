@@ -1,0 +1,1 @@
+{"rows": 960, "outcomes": {"win": 855, "loss": 105}, "learner_win": 0.8906, "mean_end_tick": 3984.1, "ot_share": 0.315, "opp_plays_per_row": 28.94, "opp_refused_share": 0.0551, "opp_ppm": 8.84, "crowns_against": 0.278, "crowns_for": 1.201}
