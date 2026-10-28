@@ -87,6 +87,10 @@ Labels: (a) measured, (b) untested, (c) contradicted.
   LIB SWITCH (lead 10-28): run.sh / bench.sh / 33308 cmp.sh default to /workspace/crforge_main/fe364ceb/plain/lib
   (core 3440d441664b7caa) + tables 16.635.3, facade build loop/jbuild_fe364ceb. Results before it (1, 2a, lint_ms1)
   are on lib_cfclone + 16.402.22; 2b/2c and the 33553 numbers are on fe364ceb.
+  RUNNING at the hand-off (10-28 ~20:15 EDT): Codex LOOP-INT_3 (medium; .foreman/scratch/a2/codex/LOOP-INT_3.md) on 33553:
+  ref_bench K 3 x M 256 (768 matches / update), 2 actors, XMX 4g, eager then graphs, learner alongside, with the
+  rows-used fraction per update; laptop process sh.exe PIDs 57644 / 5112 (detached: no notification), output
+  .foreman/scratch/a2/int/bench_grid3.md / .json, events codex_LOOP-INT_3.jsonl; pod runs bench3_k3_m256_{eager,graphs}.
   Codex dispatches: LOOP-INT_1 (medium): stopped by me (OOM design error, my ticket; its Codex process tree killed by PID
   incl. a Codex-spawned StudioMCP child); LOOP-INT_2 (medium): BLOCKED on the 62 GB cap (correct per its decision tree).
 - Restart: (all 33308 unless noted) compare: `[FASTLOOP_MEMHASH=1] CPUS=140-151 [GPU=1] bash /workspace/loop/cmp.sh MSG.pkl
