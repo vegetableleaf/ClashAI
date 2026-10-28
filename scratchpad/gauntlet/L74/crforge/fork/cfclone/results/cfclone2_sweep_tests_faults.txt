@@ -1,0 +1,202 @@
+core tests 2186 failures 0 errors 0 skipped 29
+BUILD SUCCESSFUL in 1m
+rc=0
+core tests 2186 failures 0 errors 0 skipped 6
+BUILD SUCCESSFUL in 55s
+rc=0
+built lib_fix2 837df942c267b460
+built lib_fix2snap 71a0b072fbcaed97
+done
+
+cp_fix2_402.tsv scenes 19430 forms 335 with a clone 5797 spawner copies 4 clone children 3109
+2 forms | UnsupportedOperationException: # collects elixir outside a match, where no king holds any | Elixir Collector,Elixir Collector_hero
+1 forms | UnsupportedOperationException: Arrows_hero casts several projectiles of a random spread, which is not modelled | Arrows_hero
+1 forms | UnsupportedOperationException: BarbLogHero_override_ability_button_when_rolling outside a match, which has no champion slots | BarbLog_hero
+1 forms | UnsupportedOperationException: GoblinHero_Reset_Ability_Charges outside a match, which has no champion slots | Goblins_hero
+1 forms | UnsupportedOperationException: the area effect Graveyard spawns characters and was not made by an ability, or hits, chains or runs an action too, which is not modelled | Graveyard_hero
+1 forms | UnsupportedOperationException: MegaMinion_hero_hide_ability_button outside a match, which has no champion slots | MegaMinion_hero
+1 forms | IllegalArgumentException: Mirror summons no character | Mirror
+1 forms | IllegalArgumentException: Mirror_hero summons no character | Mirror_hero
+
+cp_fix2_635.tsv scenes 19430 forms 335 with a clone 5761 spawner copies 4 clone children 3114
+2 forms | UnsupportedOperationException: # collects elixir outside a match, where no king holds any | Elixir Collector,Elixir Collector_hero
+1 forms | UnsupportedOperationException: Arrows_hero casts several projectiles of a random spread, which is not modelled | Arrows_hero
+1 forms | UnsupportedOperationException: BarbLogHero_override_ability_button_when_rolling outside a match, which has no champion slots | BarbLog_hero
+1 forms | UnsupportedOperationException: Giant_EV1 sets columns the battle does not model: [AttackSequenceList] | Giant_EV1
+1 forms | UnsupportedOperationException: GoblinHero_Reset_Ability_Charges outside a match, which has no champion slots | Goblins_hero
+1 forms | UnsupportedOperationException: the area effect Graveyard spawns characters and was not made by an ability, or hits, chains or runs an action too, which is not modelled | Graveyard_hero
+1 forms | UnsupportedOperationException: MegaMinion_hero_hide_ability_button outside a match, which has no champion slots | MegaMinion_hero
+1 forms | IllegalArgumentException: Mirror summons no character | Mirror
+1 forms | IllegalArgumentException: Mirror_EV1 summons no character | Mirror_EV1
+1 forms | IllegalArgumentException: Mirror_hero summons no character | Mirror_hero
+
+cpm_fix2_402.tsv scenes 19430 forms 335 with a clone 7783 spawner copies 0 clone children 5695
+3 forms | UnsupportedOperationException: # leaves a pulled state for a clone's setup, not modelled | Fisherman,Fisherman_EV1,Fisherman_hero
+2 forms | IllegalStateException: no deal holds Elixir Collector | Elixir Collector,Elixir Collector_EV1
+2 forms | UnsupportedOperationException: Mirror in an evolution or hero slot, which is the Mirror or a variant card, is held by no reference | Mirror_EV1,Mirror_hero
+1 forms | UnsupportedOperationException: Arrows in a hero slot, a spell card with no hero form, is held by no reference | Arrows_hero
+1 forms | UnsupportedOperationException: BombTower in a hero slot, a building card with no hero form, is held by no reference | BombTower_hero
+1 forms | UnsupportedOperationException: Cannon in a hero slot, a building card with no hero form, is held by no reference | Cannon_hero
+1 forms | UnsupportedOperationException: Clone in a hero slot, a spell card with no hero form, is held by no reference | Clone_hero
+1 forms | UnsupportedOperationException: DarkMagic in a hero slot, a spell card with no hero form, is held by no reference | DarkMagic_hero
+1 forms | UnsupportedOperationException: Earthquake in a hero slot, a spell card with no hero form, is held by no reference | Earthquake_hero
+1 forms | UnsupportedOperationException: Elixir Collector in a hero slot, a building card with no hero form, is held by no reference | Elixir Collector_hero
+1 forms | UnsupportedOperationException: Fireball in a hero slot, a spell card with no hero form, is held by no reference | Fireball_hero
+1 forms | UnsupportedOperationException: FirespiritHut in a hero slot, a building card with no hero form, is held by no reference | FirespiritHut_hero
+1 forms | UnsupportedOperationException: Freeze in a hero slot, a spell card with no hero form, is held by no reference | Freeze_hero
+1 forms | UnsupportedOperationException: GoblinBarrel in a hero slot, a spell card with no hero form, is held by no reference | GoblinBarrel_hero
+1 forms | UnsupportedOperationException: GoblinCage in a hero slot, a building card with no hero form, is held by no reference | GoblinCage_hero
+1 forms | UnsupportedOperationException: GoblinCurse in a hero slot, a spell card with no hero form, is held by no reference | GoblinCurse_hero
+1 forms | UnsupportedOperationException: GoblinDrill in a hero slot, a building card with no hero form, is held by no reference | GoblinDrill_hero
+1 forms | UnsupportedOperationException: GoblinHut in a hero slot, a building card with no hero form, is held by no reference | GoblinHut_hero
+1 forms | UnsupportedOperationException: Graveyard in a hero slot, a spell card with no hero form, is held by no reference | Graveyard_hero
+1 forms | UnsupportedOperationException: Heal in a hero slot, a spell card with no hero form, is held by no reference | Heal_hero
+1 forms | UnsupportedOperationException: InfernoTower in a hero slot, a building card with no hero form, is held by no reference | InfernoTower_hero
+1 forms | UnsupportedOperationException: Lightning in a hero slot, a spell card with no hero form, is held by no reference | Lightning_hero
+1 forms | UnsupportedOperationException: Log in a hero slot, a spell card with no hero form, is held by no reference | Log_hero
+1 forms | IllegalStateException: no deal holds Mirror | Mirror
+1 forms | UnsupportedOperationException: Mortar in a hero slot, a building card with no hero form, is held by no reference | Mortar_hero
+1 forms | UnsupportedOperationException: Poison in a hero slot, a spell card with no hero form, is held by no reference | Poison_hero
+1 forms | UnsupportedOperationException: Rage in a hero slot, a spell card with no hero form, is held by no reference | Rage_hero
+1 forms | UnsupportedOperationException: Rocket in a hero slot, a spell card with no hero form, is held by no reference | Rocket_hero
+1 forms | UnsupportedOperationException: RoyalDelivery in a hero slot, a spell card with no hero form, is held by no reference | RoyalDelivery_hero
+1 forms | UnsupportedOperationException: Snowball in a hero slot, a spell card with no hero form, is held by no reference | Snowball_hero
+1 forms | UnsupportedOperationException: Tesla in a hero slot, a building card with no hero form, is held by no reference | Tesla_hero
+1 forms | UnsupportedOperationException: Tornado in a hero slot, a spell card with no hero form, is held by no reference | Tornado_hero
+1 forms | UnsupportedOperationException: Vines in a hero slot, a spell card with no hero form, is held by no reference | Vines_hero
+1 forms | UnsupportedOperationException: Xbow in a hero slot, a building card with no hero form, is held by no reference | Xbow_hero
+1 forms | UnsupportedOperationException: Zap in a hero slot, a spell card with no hero form, is held by no reference | Zap_hero
+
+cpm_fix2_635.tsv scenes 19430 forms 335 with a clone 7783 spawner copies 0 clone children 5695
+3 forms | UnsupportedOperationException: # leaves a pulled state for a clone's setup, not modelled | Fisherman,Fisherman_EV1,Fisherman_hero
+2 forms | IllegalStateException: no deal holds Elixir Collector | Elixir Collector,Elixir Collector_EV1
+2 forms | UnsupportedOperationException: Mirror in an evolution or hero slot, which is the Mirror or a variant card, is held by no reference | Mirror_EV1,Mirror_hero
+1 forms | UnsupportedOperationException: Arrows in a hero slot, a spell card with no hero form, is held by no reference | Arrows_hero
+1 forms | UnsupportedOperationException: BombTower in a hero slot, a building card with no hero form, is held by no reference | BombTower_hero
+1 forms | UnsupportedOperationException: Cannon in a hero slot, a building card with no hero form, is held by no reference | Cannon_hero
+1 forms | UnsupportedOperationException: Clone in a hero slot, a spell card with no hero form, is held by no reference | Clone_hero
+1 forms | UnsupportedOperationException: DarkMagic in a hero slot, a spell card with no hero form, is held by no reference | DarkMagic_hero
+1 forms | UnsupportedOperationException: Earthquake in a hero slot, a spell card with no hero form, is held by no reference | Earthquake_hero
+1 forms | UnsupportedOperationException: Elixir Collector in a hero slot, a building card with no hero form, is held by no reference | Elixir Collector_hero
+1 forms | UnsupportedOperationException: Fireball in a hero slot, a spell card with no hero form, is held by no reference | Fireball_hero
+1 forms | UnsupportedOperationException: FirespiritHut in a hero slot, a building card with no hero form, is held by no reference | FirespiritHut_hero
+1 forms | UnsupportedOperationException: Freeze in a hero slot, a spell card with no hero form, is held by no reference | Freeze_hero
+1 forms | UnsupportedOperationException: GoblinBarrel in a hero slot, a spell card with no hero form, is held by no reference | GoblinBarrel_hero
+1 forms | UnsupportedOperationException: GoblinCage in a hero slot, a building card with no hero form, is held by no reference | GoblinCage_hero
+1 forms | UnsupportedOperationException: GoblinCurse in a hero slot, a spell card with no hero form, is held by no reference | GoblinCurse_hero
+1 forms | UnsupportedOperationException: GoblinDrill in a hero slot, a building card with no hero form, is held by no reference | GoblinDrill_hero
+1 forms | UnsupportedOperationException: GoblinHut in a hero slot, a building card with no hero form, is held by no reference | GoblinHut_hero
+1 forms | UnsupportedOperationException: Graveyard in a hero slot, a spell card with no hero form, is held by no reference | Graveyard_hero
+1 forms | UnsupportedOperationException: Heal in a hero slot, a spell card with no hero form, is held by no reference | Heal_hero
+1 forms | UnsupportedOperationException: InfernoTower in a hero slot, a building card with no hero form, is held by no reference | InfernoTower_hero
+1 forms | UnsupportedOperationException: Lightning in a hero slot, a spell card with no hero form, is held by no reference | Lightning_hero
+1 forms | UnsupportedOperationException: Log in a hero slot, a spell card with no hero form, is held by no reference | Log_hero
+1 forms | IllegalStateException: no deal holds Mirror | Mirror
+1 forms | UnsupportedOperationException: Mortar in a hero slot, a building card with no hero form, is held by no reference | Mortar_hero
+1 forms | UnsupportedOperationException: Poison in a hero slot, a spell card with no hero form, is held by no reference | Poison_hero
+1 forms | UnsupportedOperationException: Rage in a hero slot, a spell card with no hero form, is held by no reference | Rage_hero
+1 forms | UnsupportedOperationException: Rocket in a hero slot, a spell card with no hero form, is held by no reference | Rocket_hero
+1 forms | UnsupportedOperationException: RoyalDelivery in a hero slot, a spell card with no hero form, is held by no reference | RoyalDelivery_hero
+1 forms | UnsupportedOperationException: Snowball in a hero slot, a spell card with no hero form, is held by no reference | Snowball_hero
+1 forms | UnsupportedOperationException: Tesla in a hero slot, a building card with no hero form, is held by no reference | Tesla_hero
+1 forms | UnsupportedOperationException: Tornado in a hero slot, a spell card with no hero form, is held by no reference | Tornado_hero
+1 forms | UnsupportedOperationException: Vines in a hero slot, a spell card with no hero form, is held by no reference | Vines_hero
+1 forms | UnsupportedOperationException: Xbow in a hero slot, a building card with no hero form, is held by no reference | Xbow_hero
+1 forms | UnsupportedOperationException: Zap in a hero slot, a spell card with no hero form, is held by no reference | Zap_hero
+== red3 16.402.22
+core tests 37 failures 3 errors 0 skipped 0
+[('UnsupportedOperationException', 3)]
+[('BattleCloneTest', 3)]
+[1] UnsupportedOperationException | java.lang.UnsupportedOperationException: GoblinGiant_0 is cloned with a deploy countdown and carries riders, not modelled | 
+[1] UnsupportedOperationException | java.lang.UnsupportedOperationException: mk is cloned with a deploy countdown and its clone's row spawns an area object or a push as it deploys, not modelled | 
+[1] UnsupportedOperationException | java.lang.UnsupportedOperationException: demolisher_clone0 moves apart from its clone without its movement component, not modelled | 
+== green3 16.402.22
+core tests 37 failures 0 errors 0 skipped 0
+== red3 16.635.3
+core tests 37 failures 3 errors 0 skipped 0
+[('UnsupportedOperationException', 3)]
+[('BattleCloneTest', 3)]
+[1] UnsupportedOperationException | java.lang.UnsupportedOperationException: GoblinGiant_0 is cloned with a deploy countdown and carries riders, not modelled | 
+[1] UnsupportedOperationException | java.lang.UnsupportedOperationException: mk is cloned with a deploy countdown and its clone's row spawns an area object or a push as it deploys, not modelled | 
+[1] UnsupportedOperationException | java.lang.UnsupportedOperationException: demolisher_clone0 moves apart from its clone without its movement component, not modelled | 
+== green3 16.635.3
+core tests 37 failures 0 errors 0 skipped 0
+
+{
+ "out": "/workspace/d1c/f20k_cfclone2",
+ "replays": 20000,
+ "outcomes": {
+  "ran": 19988,
+  "fault": 7,
+  "out_of_scope": 5
+ },
+ "in_scope": 19995,
+ "faults": 7,
+ "fault_rate_in_scope": 0.00035,
+ "fault_rate_ci95": [
+  0.00017,
+  0.00072
+ ],
+ "fault_rate_all": 0.00035,
+ "first_fault_kind": {
+  "error": 2,
+  "unsupported": 5
+ },
+ "first_fault_detail": {
+  "unsupported:mirror": 5,
+  "error:java.lang.UnsupportedOperationException:java.lang.UnsupportedOperationException:": 2
+ },
+ "skips_not_faults": {
+  "after_crforge_end": 11866,
+  "not_in_hand": 11726,
+  "not_enough_elixir": 4555,
+  "ability_identity_unavailable": 2564,
+  "no_hero": 2123,
+  "ability_not_ready": 29,
+  "ability_spent": 16
+ },
+ "princess_only": {
+  "n": 17406,
+  "fault": 6,
+  "fault_rate": 0.00034,
+  "ran_every_input": 8060,
+  "crowns_match": 5907,
+  "towers_match": 442
+ },
+ "any_troop": {
+  "n": 2589,
+  "fault": 1,
+  "fault_rate": 0.00039,
+  "ran_every_input": 1329,
+  "crowns_match": 891,
+  "towers_match": 102
+ },
+ "by_troop": {
+  "dagger-duchess": {
+   "n": 1060,
+   "fault": 0,
+   "fault_rate": 0.0,
+   "ran_every_input": 493,
+   "crowns_match": 336,
+   "towers_match": 36
+  },
+  "cannoneer": {
+   "n": 355,
+   "fault": 0,
+   "fault_rate": 0.0,
+   "ran_every_input": 179,
+   "crowns_match": 121,
+   "towers_match": 11
+  },
+  "royal-chef": {
+   "n": 1230,
+   "fault": 1,
+   "fault_rate": 0.00081,
+   "ran_every_input": 688,
+   "crowns_match": 450,
+   "towers_match": 57
+  }
+ }
+}
+DIFF 6f7a74b756b34bae8b0f67cebab4de5f {'accepted': (90, 133), 'crowns_match': (False, True), 'outcome': ('fault', 'ran'), 'faults': ([['error', 4830, 'java.lang.UnsupportedOperationException:java.lang.UnsupportedOperationException: c82_0_clone0 moves apart from its clone without its movement component, not modelled']], []), 'terminated': (False, True), 'end_tick': (4831, 6219)}
+replays identical on common keys 19999 differing 1

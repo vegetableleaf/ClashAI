@@ -499,3 +499,53 @@ Labels as above. Files: `crforge/fork/cfclone/` (`patches/0001`, `CloneProbe.jav
     clones' children were made: 3,097 clone children in total on 16.402.
 - **Not done:** the d2t deterministic-CUDA u0001 rollout was not re-run on the new lib (b: the refusal it hit no
   longer exists in the code).
+
+### CF-CLONE-2 (2026-10-28): Clone on a unit still deploying; Clone on the kamikaze Goblin Demolisher
+Supersedes the "not modelled here" list above. **Branch `clashbot-cfclone` = `bac75659`** (62558795 + 1 commit;
+`patches/0002`).
+- **Deploying unit (b, not traced; no live, HF or table evidence):** both deploy-countdown refusals are removed.
+  - The tables hold no Clone or deploy column that decides it.
+  - The model is crforge's own creator order plus the setter's entry into the deploying state:
+    - A carrier's clone (Goblin Giant, Ram, hero Ice Wizard) is set up before its countdown. It never enters the
+      deploying state and makes no riders. Each rider's clone takes its rider's countdown and is attached to it.
+    - Any other clone enters the deploying state through its setter before its setup. So a Mega Knight's clone pushes
+      again from where it stands (SpawnPushback 1000 / radius 1000).
+- **Goblin Demolisher (a, cause measured):** the clone is of `GoblinDemolisher_kamikaze_form` (LifeTime 20000).
+  - The kamikaze form's lifetime drain step is set from its full maximum when it is made; the clone setter then cuts
+    it to 1 of 1. The clone's registration visit drains that 1 point, so it dies (hp 0) before `startCloneMove`.
+  - The refusal came from the death switching its movement component off. A unit that its registration visit has
+    ended now takes no move apart; a living unit without movement is still refused.
+  - (b): the instant death follows crforge's drain step and is not traced for a clone. The building refusal ("whose
+    lifetime the hit points' visit counts differently for a clone") hints the game may count a clone's lifetime
+    differently.
+- **HF fault 6f7a74b7 is this card (a):** the opponent's deck holds Goblin Demolisher and Clone. Event 82 (= facade
+  command c82, no skips in that replay) is the opponent's goblin-demolisher at tick 4563; event 89 is the opponent's
+  Clone at tick 4811; the fault is at 4830.
+  - With CF-CLONE-2 the replay runs all 133 inputs to the end, and crforge's crowns match HF's (1-0).
+- **Red/green (a):** BattleCloneTest gets 3 cases: a deploying carrier with its riders (replaces the refusal test), a
+  deploying Mega Knight's clone pushing, and the Demolisher clone with no move apart. On the base code 3/37 fail
+  with the three refusals on both versions; after the fix 37/37 pass on both.
+- **Core tests (a):** 16.402.22 2186/0 (29 skipped); 16.635.3 2186/0 (6 skipped).
+- **SME (a):** run `cf2` (h11b's command, `lib_cfclone2` = bac75659 + TickProbe, core jar `71a0b072`) gives 109/109,
+  0 regressions, exact frames 250,797 / 278,872, plants 65,874 with 0 missed. `results.jsonl` is byte-identical to
+  h11b (`1e7e893fd09858ef`).
+- **HF fault sample (a, `lib_fix2`):** faults 8 -> 7 (engine 3 -> 2; the Goblin Demolisher fault is gone). 19,999 /
+  20,000 replays are identical on common keys; the one that differs is 6f7a74b7, fault -> ran.
+- **Clone sweep, both versions (a):**
+  - Scene mode (as before): **0 Clone refusals in 19,430 scenes per version.**
+  - What is left are not Clone refusals, and they end their scenes before the Clone:
+    - the Mirror alone;
+    - Elixir Collector, a building;
+    - hero forms whose own actions refuse outside a match: Goblins_hero, MegaMinion_hero, BarbLog_hero;
+    - non-forms: Arrows_hero, Graveyard_hero;
+    - Giant_EV1, unreleased, 16.635 only.
+  - A match mode (`CLONEPROBE_MATCH=1`: a Ladder match, the form dealt into the first hand, the scene 100 ticks later)
+    covers the hero forms:
+    - Goblins_hero 17, MegaMinion_hero 20 and BarbLog_hero 11 of 58 scenes have a clone, with no refusal.
+    - **One new Clone refusal: Fisherman (+EV1, hero), "leaves a pulled state for a clone's setup, not modelled"**
+      (`GridStateSetter.exitPulled`). It occurs in 1 of 58 scenes, a Clone at T=150 while his hook drags him. The
+      Fisherman is in 5 of the 223 census decks. **Not modelled** (a third mechanism, outside CF-CLONE-2's two items).
+    - Caveat: in a match an evolution slot's first play is not evolved, so match mode does not cover evolved forms;
+      scene mode does.
+    - The 16.402 and 16.635 match-mode outputs are byte-identical. The forms the two versions treat differently
+      (Skeletons_EV1, Giant_EV1) are played plain there.

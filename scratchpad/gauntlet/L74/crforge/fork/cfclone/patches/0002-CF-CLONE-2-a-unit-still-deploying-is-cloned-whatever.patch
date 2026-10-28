@@ -1,0 +1,250 @@
+From bac75659fc9cc9626ad24c8865bde93890a0eca6 Mon Sep 17 00:00:00 2001
+From: vegetableleaf <benzhu2029@u.northwestern.edu>
+Date: Wed, 28 Oct 2026 11:25:52 +0000
+Subject: [PATCH 2/2] CF-CLONE-2: a unit still deploying is cloned whatever it
+ carries; a clone its registration visit ends takes no move apart
+
+Two Clone refusals are removed:
+
+- "is cloned with a deploy countdown and carries riders / as a carrier's rider" and "... and its clone's row spawns an
+  area object or a push as it deploys". The creator's order (countdown setter before the setup, after it for a
+  carrier) and the setter's entry into the deploying state now run as they are: a carrier's clone never enters the
+  deploying state and makes no riders, and its riders' clones take their riders' countdowns; any other clone enters
+  the deploying state through its setter, so a Mega Knight's clone pushes again. Not traced from the client and held
+  by no recording (b): it follows crforge's own creator and setter.
+- "moves apart from its clone without its movement component": a character its registration visit has ended takes no
+  move apart. The kamikaze Goblin Demolisher's clone, cut to 1 hit point after its lifetime drain step was set from
+  its full maximum, loses that 1 at its first hit points' visit and dies before its move apart; its original moves
+  apart alone. A living character without its movement component is still refused.
+
+BattleCloneTest: the deploying carrier's refusal test becomes the carrier cloned with its riders; a Mega Knight
+cloned as it deploys, its clone pushing; the kamikaze Goblin Demolisher's clone dying with no move apart.
+---
+ .../core/battle/unit/CharacterEntity.java     | 45 ++++-----
+ .../core/battle/unit/BattleCloneTest.java     | 95 ++++++++++++++++++-
+ docs/battle-core.md                           |  8 +-
+ 3 files changed, 115 insertions(+), 33 deletions(-)
+
+diff --git a/core/src/main/java/org/crforge/core/battle/unit/CharacterEntity.java b/core/src/main/java/org/crforge/core/battle/unit/CharacterEntity.java
+index 01f05163..80061aac 100644
+--- a/core/src/main/java/org/crforge/core/battle/unit/CharacterEntity.java
++++ b/core/src/main/java/org/crforge/core/battle/unit/CharacterEntity.java
+@@ -1133,12 +1133,14 @@ public class CharacterEntity extends WorldEntity {
+   /**
+    * The perform's tests of a Clone's action: a unit a Clone passes by, a dead unit and a rider are
+    * refused, and the refusal told. A clone the battle does not model is refused outright: one made
+-   * by anything but an area effect, of a carrier still deploying or one of its riders, of a unit
+-   * still deploying whose clone's row spawns an area object or a push as it enters the deploying
+-   * state - for a carrier, of any of its riders too, each cloned with it - or of a carrier's rider
+-   * running an air-to-ground action. Any other unit still deploying is cloned with its countdown. A
+-   * row with a cloned version and the runs are modelled: the clone is made of the cloned version,
+-   * the runs stay the unit's, and an air-to-ground run is started again on the clone, copied.
++   * by anything but an area effect, or of a carrier's rider running an air-to-ground action. A unit
++   * still deploying is cloned with its countdown, a carrier and its riders included: the creator
++   * sets a carrier's clone up before its countdown, so it never enters the deploying state and
++   * makes no riders, and each rider's clone takes its rider's countdown; any other clone enters the
++   * deploying state through its setter before its setup, so a row whose entry spawns an area object
++   * or a push (the Mega Knight's) spawns it again from the clone. A row with a cloned version and
++   * the runs are modelled: the clone is made of the cloned version, the runs stay the unit's, and
++   * an air-to-ground run is started again on the clone, copied.
+    *
+    * <p>The perform does not ask whether the unit is a clone itself: a clone it reaches is cloned
+    * again. A Clone's area never reaches one, its filter dropping clones, so a clone the action
+@@ -1176,23 +1178,9 @@ public class CharacterEntity extends WorldEntity {
+       cloned.addAll(riders);
+     }
+     for (CharacterEntity unit : cloned) {
+-      // A clone of a unit still deploying takes its countdown and enters the deploying state
+-      // before its setup. Not modelled: a carrier or its riders still deploying, whose clone the
+-      // creator sets up first; and a row whose entry into the deploying state spawns an area object
+-      // or a push, which the clone's entry would spawn again.
+-      if (unit.getView().getDeployCountdown() > 0) {
+-        UnitData row = unit.cloneRow();
+-        String refused = null;
+-        if (getData().spawnAttach()) {
+-          refused = unit == this ? "and carries riders" : "as a carrier's rider";
+-        } else if (row.spawnAreaObject() != null || row.pushesOnDeploy()) {
+-          refused = "and its clone's row spawns an area object or a push as it deploys";
+-        }
+-        if (refused != null) {
+-          throw new UnsupportedOperationException(
+-              unit.name() + " is cloned with a deploy countdown " + refused + ", not modelled");
+-        }
+-      }
++      // A clone of a unit still deploying takes its countdown (see enterCloneSetup): the
++      // creator's own order, with the setter's entry into the deploying state, decides what it
++      // makes; nothing is refused for it.
+       // The creator tells each run the unit has listed of the clone; every class but the
+       // air-to-ground one does nothing with it, so the runs stay the unit's. That one starts its
+       // action again on the clone, which copies the unit's run. A rider is never held by one (the
+@@ -1273,14 +1261,21 @@ public class CharacterEntity extends WorldEntity {
+    * run pass, from the next tick on; at the clone duration it resumes the character, still set up
+    * as a clone, and finishes.
+    *
+-   * <p>Refused rather than guessed: a character without its movement component on, which keeps no
+-   * route.
++   * <p>A character its registration visit has ended - a clone of a row with a lifetime, whose hit
++   * points' visit drains its 1 hit point at once (the Goblin Demolisher's kamikaze form) - takes no
++   * move apart: its death has switched its movement component off, and it leaves at the cleanup.
++   *
++   * <p>Refused rather than guessed: a living character without its movement component on, which
++   * keeps no route.
+    *
+    * @param fromX the original's position, along the width
+    * @param fromY the original's position, along the length
+    * @param action the Clone's action
+    */
+   void startCloneMove(int fromX, int fromY, Clone action) {
++    if (!HitPoints.alive(getHitPoints())) {
++      return;
++    }
+     actionHolder().list(new CloneMove(action));
+     if (!getView().isMovementComponent() || !getView().isMovementActive()) {
+       throw new UnsupportedOperationException(
+diff --git a/core/src/test/java/org/crforge/core/battle/unit/BattleCloneTest.java b/core/src/test/java/org/crforge/core/battle/unit/BattleCloneTest.java
+index 5fbdf3b4..2e68df42 100644
+--- a/core/src/test/java/org/crforge/core/battle/unit/BattleCloneTest.java
++++ b/core/src/test/java/org/crforge/core/battle/unit/BattleCloneTest.java
+@@ -873,16 +873,101 @@ class BattleCloneTest {
+   }
+ 
+   @Test
+-  @DisplayName("a carrier still deploying as the Clone reaches it is refused")
+-  void aDeployingCarrierIsRefused(@TempDir Path folder) throws IOException {
++  @DisplayName(
++      "a carrier still deploying as the Clone reaches it is cloned with its riders: the carrier's"
++          + " clone is set up before its countdown and makes no riders of its own, and each"
++          + " rider's clone takes its rider's countdown")
++  void aDeployingCarrierIsClonedWithItsRiders(@TempDir Path folder) throws IOException {
+     GameTables tables = carrierTables(folder);
+     Scene scene = new Scene(tables);
+     scene.match.play(
+         CAST_TICK, new BattleRecords(tables).card("GoblinGiant"), LEVEL, 0, X, Y, "GoblinGiant");
++    scene.clone(CAST_TICK + 2);
+ 
+-    assertThatThrownBy(() -> scene.clone(CAST_TICK + 2))
+-        .isInstanceOf(UnsupportedOperationException.class)
+-        .hasMessageContaining("is cloned with a deploy countdown and carries riders");
++    CharacterEntity giant = scene.match.getPlays().get(0).units().get(0);
++    List<CharacterEntity> riders = List.copyOf(giant.riders());
++    assertThat(riders).hasSize(2);
++    assertThat(giant.getView().getDeployCountdown()).isPositive();
++    assertThat(scene.cloneNames())
++        .containsExactly(
++            giant.name() + "_clone0",
++            riders.get(0).name() + "_clone0",
++            riders.get(1).name() + "_clone0");
++    CharacterEntity clone = scene.clones.get(0);
++    assertThat(clone.riders()).containsExactlyElementsOf(scene.clones.subList(1, 3));
++    assertThat(clone.getView().getState()).isEqualTo(GridEntityState.CLONE_SETUP);
++    assertThat(clone.getView().getDeployCountdown())
++        .isEqualTo(giant.getView().getDeployCountdown());
++    for (int i = 0; i < 2; i++) {
++      CharacterEntity riderClone = scene.clones.get(1 + i);
++      assertThat(riderClone.getView().getState()).isEqualTo(GridEntityState.CLONE_SETUP);
++      assertThat(riderClone.getView().getDeployCountdown())
++          .isEqualTo(riders.get(i).getView().getDeployCountdown());
++    }
++    // Through the countdown and the move apart: two riders and their two clones, no more.
++    scene.step(40);
++    long spearGoblins =
++        scene.match.getBattle().getHolder().entities().stream()
++            .filter(e -> e instanceof CharacterEntity c && c.getData() == riders.get(0).getData())
++            .count();
++    assertThat(spearGoblins).isEqualTo(4);
++  }
++
++  @Test
++  @DisplayName(
++      "a Mega Knight still deploying is cloned with its countdown, and its clone's entry into the"
++          + " deploying state pushes the enemies around it again")
++  void aDeployingMegaKnightsClonePushesAgain() {
++    Scene scene = new Scene();
++    List<String> pushes = new ArrayList<>();
++    scene
++        .match
++        .getWorld()
++        .addObserver(
++            new WorldObserver() {
++              @Override
++              public void deployPushed(
++                  int tick,
++                  CharacterEntity unit,
++                  int radius,
++                  int distance,
++                  List<WorldEntity> found,
++                  List<WorldEntity> pushed) {
++                pushes.add(unit.name());
++              }
++            });
++    CharacterEntity knight =
++        scene.match.deploy(CAST_TICK, GameData.unit("MegaKnight"), LEVEL, 0, X, Y, "mk");
++    scene.clone(CAST_TICK + 2);
++
++    assertThat(knight.getView().getDeployCountdown()).isPositive();
++    assertThat(scene.cloneNames()).containsExactly("mk_clone0");
++    CharacterEntity clone = scene.clones.get(0);
++    assertThat(clone.getView().getDeployCountdown())
++        .isEqualTo(knight.getView().getDeployCountdown());
++    // The scene places the Mega Knight directly, which makes no entry of its own: the one push is
++    // its clone's.
++    assertThat(pushes).containsExactly("mk_clone0");
++  }
++
++  @Test
++  @DisplayName(
++      "a clone its registration visit ends takes no move apart: the kamikaze Goblin Demolisher's"
++          + " clone drains its 1 hit point at once, and its original moves apart alone")
++  void aCloneEndedAtItsRegistrationTakesNoMoveApart() {
++    Scene scene = new Scene();
++    CharacterEntity demolisher =
++        scene.match.deploy(
++            0, GameData.unit("GoblinDemolisher_kamikaze_form"), LEVEL, 0, X, Y, "demolisher");
++    scene.clone(CAST_TICK);
++
++    assertThat(scene.cloneNames()).containsExactly("demolisher_clone0");
++    CharacterEntity clone = scene.clones.get(0);
++    assertThat(clone.getHitPoints().getHitPoints()).isZero();
++    assertThat(clone.actionHolder().running()).noneMatch(run -> run.getAction() instanceof Clone);
++    assertThat(cloneDuration(demolisher)).isPositive();
++    scene.step(15);
++    assertThat(scene.match.getWorld().present()).contains(demolisher).doesNotContain(clone);
+   }
+ 
+   /** The written action that spawns the written landing area. */
+diff --git a/docs/battle-core.md b/docs/battle-core.md
+index 8a1a942b..5a15102b 100644
+--- a/docs/battle-core.md
++++ b/docs/battle-core.md
+@@ -911,7 +911,7 @@ Nothing moves a unit off the river otherwise. A formation played into the pocket
+   - A clone's death spawns made clones.
+   - A Goblin Giant with written riders cloned with them, each rider's clone attached to the Giant's clone on its rider's angle and riding there through the move, with no rider of the clone's own.
+   - A Knight written to deploy for 1500 ms cloned as it deploys, both set up with the countdown, held still with NO_MOVE past the move apart's duration and resumed by it once the countdown has ended.
+-  - The refusal of a carrier still deploying.
++  - A carrier still deploying cloned with its riders: its clone set up before its countdown, making no riders of its own, each rider's clone with its rider's countdown. A Mega Knight still deploying cloned, its clone's entry into the deploying state pushing again. A kamikaze Goblin Demolisher's clone dying in its registration visit with no move apart, its original moving apart alone.
+   - The copies of a Knight's written buffs listed on its clone with no start action and no charge reset. A copy of a row that is not cloned is taken off with its remove action, the walk passing over the copy moved down onto its index. A copy running out on the clone runs its remove action, as its unit's does.
+   - Written area effects a clone's action spawns marked a clone's and dealing the damage the original's deals, one they spawn in turn marked too and the Knight they spawn a clone of 1 of 1. An area effect that only hits is chained unmarked, and one that runs an action refused. A clone's death area is marked and spawns a clone where the original's spawns a plain Knight.
+   - Area effects with a buff over a Knight's and a Minion's clones: a Rage buffing both, a Heal Spirit's area refusing both, a Zap killing both before its buff, a Tornado's pull asking the test before its buff, and an Earthquake buffing the ground clone until it dies and refusing the air one by its air test after the buff test.
+@@ -2486,6 +2486,10 @@ These are supplied answers, recorded on the classes that carry them and listed h
+ 
+   A unit still deploying as the Clone reaches it is cloned with its countdown. The countdown setter puts the clone into the deploying state with the unit's countdown, and the clone then leaves it for state 8 with the countdown kept. The unit goes to 8 with its own.
+ 
++  The clone's entry into the deploying state is its setter's, so a row whose entry spawns an area object or a push spawns it again from the clone: a Mega Knight cloned as it deploys pushes the enemies around its clone. A carrier's clone is set up before its countdown, so it never enters the deploying state and makes no riders; its riders still deploying are cloned with their own countdowns and attached to it. Neither is traced from the client or held by a recording: both follow the creator's order and the setter's entry as crforge has them (CF-CLONE-2).
++
++  A clone that its registration visit ends takes no move apart. A row with a lifetime drains its hit points from a step set from its maximum as it is made, so its clone, cut to 1 of 1 after, loses that 1 at its first hit points' visit: the Goblin Demolisher's kamikaze form cloned dies at once, before any move apart, and its original moves apart alone.
++
+   In 8 both countdowns run down 50 a visit with no resume at 0. A move apart that reaches its ten visits while its unit's countdown still runs sets NO_MOVE on itself, which the unit carries while the run is listed, holding it still, and asks again each visit. Once the countdown has ended it resumes the unit and finishes.
+ 
+   The burst clock of a unit that walks in bursts steps by half the buff-scaled 100 a visit, so under the Clone buff's speed of -100 it stands still.
+@@ -2494,8 +2498,6 @@ These are supplied answers, recorded on the classes that carry them and listed h
+ 
+   - a clone made by anything but an area effect
+   - a clone of a unit whose rider runs an air-to-ground action
+-  - a clone of a unit that carries riders while it or a rider still deploys, whose clone the creator sets up before its countdown
+-  - a clone of a unit still deploying whose clone's row spawns an area object or a push as it enters the deploying state, which that entry would spawn again
+   - a clone of a building with hit points, whose lifetime the hit points' visit counts differently for a clone
+   - a unit whose hit destroys it and launches a projectile that spawns a character or a projectile, makes an area effect that spawns a character, or runs an action (the evolved Ice Spirit's), whose spawns would be clones and whose action no recording shows for a clone
+ 
+-- 
+2.43.0
+

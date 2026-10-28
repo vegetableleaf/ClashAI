@@ -1,7 +1,7 @@
 From 625587956dda81973fcc577530b8b5f1deccc69e Mon Sep 17 00:00:00 2001
 From: vegetableleaf <benzhu2029@u.northwestern.edu>
 Date: Wed, 28 Oct 2026 10:37:51 +0000
-Subject: [PATCH] CF-CLONE: a clone's copy of a spawner buff carries the
+Subject: [PATCH 1/2] CF-CLONE: a clone's copy of a spawner buff carries the
  spawner as the original left it
 
 A Clone's copy of a buff instance now takes the instance's spawner with its other counters: the
