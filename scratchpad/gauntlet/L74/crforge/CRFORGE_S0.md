@@ -662,3 +662,37 @@ Not pushed to any remote (none set up); `current` link untouched on all pods; no
   matches), since F1FIX-3 is not to merge on (b) alone; (2) the 4 deflected-copy faults: find the deflecting unit and model
   or keep refused; (3) then gates 1-6 (`gates30408.sh NO_HF=1`, `sme_gate.sh` on 32657 with WORKERS<=24, `clone_sweep.sh`
   on 33920), squash, report before any merge.
+
+### F1FIX-3 WATCH LIST + deflect decision (2026-10-28 ~18:30 EDT, worker F1FIX-3, account 2)
+**Head stays `ea7f623f` (no code change): (b) paths stay MODELLED (refusing them restores ~319 HF faults), the 4
+deflect-copy faults stay REFUSED (below).** Detector: `crforge/fork/f1fix3/tools/watch_detect.py` (reads an SME input
+jsonl = inputs_v30 / f1_gen2_rf format; flags matches where the Rune Giant's enchant reaches a (b) path, same side as
+the GiantBuffer; self-check `--self-check` OK). It is a deck pre-filter (over-flags; the exact replay of a flagged match
+is the confirmation): a flagged fresh/live match that ENG-SME replays frame-exact promotes that path (b) -> (a); a
+divergence on a flagged match is a bug to fix. All conditions below are measured from the shipped 16.402.22 tables.
+
+| path | engine condition (GiantBufferBuff / WorldEntity) | fires for (deck card -> form) | table support | evidence |
+|---|---|---|---|---|
+| attack_sequence | `actionAttackSequence()` now false when every sequence entry hits or launches a projectile (keeps the row's hit hooks); only an entry whose action replaces the hit is refused | BowlerHero (Bowler, hero: 3 proj entries), EliteArcherHero (EliteArcher, hero: 2 proj), Musketeer_EV1 (Musketeer, evo), Princess_EV1 (Princess, evo), AngryBarbarian_EV1/_2 (AngryBarbarians=Elite Barbarians, evo: dmg+proj), LittlePrince (base: 3 proj) | base Bowler/EliteArcher/Musketeer/Princess have a single Projectile and NO sequence, so only the hero/evo form fires | LittlePrince (a, live 10-22/10-27); EliteArcherHero proj `EliteArcherHero_Ability_Power_Shot_Projectile_Middle` @340 in the buff row (b); rest (b) |
+| berserker_index | `Run.attackEnded` Berserker branch skipped because `actionAttackSequenceUniform()` (all entries identical) | Berserker (base AND hero; both have 3 identical dmg entries 40/40/40) | base + hero Berserker both uniform | (b); BerserkerHero_BearForm @340 in the buff row |
+| attached_children | `actionSpawnsAttached()` path: copies omitted because every row the child hits through takes multiplier 0 | GoblinGiant (base+evo: SpawnAttach SpearGoblinGiant, SpearGoblinGiantProjectile mult 0), RamRider (base+evo: SpawnAttach rider, RamRiderBola mult 0) | SpearGoblinGiantProjectile=0, RamRiderBola=0 in DamageMultiplierPerUnitValues | (b) |
+| maker_left | the instigator walk reaches a giver whose `actionCreator()==null` (the Rune Giant fell with its GiantBuffProjectile in the air), and `finishIfInstigatorDies(500) >= minAttackInterval*(attackAmount-1)` so no count completes first -> `run.finish()` | any match with GiantBuffer (the Giant dying mid-flight is runtime, not deck-decidable) | FinishIfInstigatorDies=500, AttackAmount=3 | (b) |
+
+**Dropped from the ticket's list (table-measured, not newly-reached):** Archer_EV1 (plain Projectile, no AttackSequence -> the
+normal projectile-copy path, Archer live-held, not a new reach); BattleRam (DeathSpawnCharacter Barbarian, not SpawnAttach
+during life -> no attached-children path; the "Ram" rider is RamRider).
+
+**Detector run (a):** on inputs_v30 (138 dev) 0 flagged; on f1_gen2_rf (9 fresh, = FRESH1) 1 flagged:
+`live_play_20261028_010824` side1 maker_left? (this is SME-F1FIX's live 010824 = the enchanted Inferno Dragon match,
+already frame-exact). ENG-SME should run watch_detect.py on every FRESH2 input to accrue (a) evidence for the (b) rows.
+
+**Deflect-copy faults (item 3, 4/20,000, KEPT REFUSED):** replays 93da8133, ea4aa5e2, b1d928dc (Monk + Royal Giant +
+Rune Giant) and 4f76d259 (Monk + Rune Giant) -- verified: a **Monk** in each (the owner confirms only the Monk's ability
+deflects; tables: only `Monk`/`MegaMonk` have `DeflectProjectilesEnabled`). F1FIX makes the Rune Giant enchant a friendly
+unit; that unit's projectile carries the enchant copy (a listener); the Monk's `Deflect` area effect bounces it, hitting
+the pre-existing `BattleWorld.carriesListeners()` refusal ("is deflected carrying copies that change its damage"). **Not
+modelled: the shipped Deflect/MegaDeflect area-effect row carries only `DeflectProjectilesEnabled` + visual effects
+(`DeflectedProjectileEffect`, `DeflectionFBEffect`) -- NO column defines whether the reflected projectile keeps its
+enchant copy, nor the copy's target / side / damage after the projectile's side and target flip.** So the tables do not
+define it; the base engine refuses it for the same reason; no live frames exist (HF holds plays only; needs a
+Monk-vs-RuneGiant match with reader frames). Stays refused; detector flags it (`REFUSED_deflect_copy`) so it is tracked.
