@@ -44,6 +44,9 @@ plays + [0, 4] ticks.
   the server (`cell_fn(rows, slots)`), the lane bias added in the producer.
 
 ## 3. Findings
+- (a) POOL.json v3 (pushed after c78d7a9): pilot.yaml sha c8cd3ad7b5b8 -> w14opp_I exploiter share 0.125 (T .1, tau .2,
+  decide 20) + PFSP gamma 1e-9 (uniform) over init B0 (76d786192f7e, fv6 cue memory, now loads on LF pods) + 5 externals
+  + E4. Opponents' T_gate stays None (= their T): the learner's T_gate 0.1 never reaches an opponent (actor_main).
 - (a) POOL.json is now built from pilot/ops/pilot.yaml (sha 6adcf953841c; its opponent blocks = x_s101's: w14opp_I + the
   5 externals; E4 not in it). B0 grafted (984bf572) does NOT load on an LF tree: its memory_v2 meta records
   counter_priors.json / lock_head.json sha256 4312a8ad / 15065623 = the LAPTOP's CRLF working copies; git (LF, the pods)
