@@ -721,7 +721,6 @@ class JavaMem:
             self.stats["bench_ns_sum"] = self.stats.get("bench_ns_sum", 0) + ns
             self.stats["bench_n"] = self.stats.get("bench_n", 0) + 1
             self.stats["bench_ns_last"] = ns
-            self.stats["bench_events_last"] = int(side._loopmem.nv)
 
     def table_result(self) -> dict:
         return {k: dict(status="IDENTICAL" if r[1] == r[0] else "DIFF", tables=r[0], equal=r[1], first_diffs=r[2])
