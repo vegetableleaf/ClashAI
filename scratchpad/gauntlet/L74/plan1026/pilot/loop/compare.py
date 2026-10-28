@@ -36,6 +36,8 @@ def main():
     ap.add_argument("--threads", type=int, default=1)
     ap.add_argument("--max-jobs", type=int, default=0)
     ap.add_argument("--server", default=None, help="eager | graphs: fast-loop forwards on serve.py (LOOP-SRV)")
+    ap.add_argument("--init", default="icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt",
+                    help="server mode: the learner architecture checkpoint (the run's init; fastloop passes cfg init)")
     a = ap.parse_args()
     base, update, sd, jobs = pickle.loads(Path(a.msg).read_bytes())
     if a.max_jobs:
@@ -45,7 +47,7 @@ def main():
     servers, srv = [], None
     if a.server:
         from bench import start_servers
-        servers = start_servers(base, update, sd, jobs, [a.device], a.server, max(a.matches, 64), "/dev/shm/loopcmp")
+        servers = start_servers({**base, "init_path": a.init}, update, sd, jobs, [a.device], a.server, max(a.matches, 64), "/dev/shm/loopcmp")
         srv = "/dev/shm/loopcmp/srv0.sock"
     P = Producer(base, a.matches, a.threads, "cpu" if srv else a.device,
                  Path(__import__("os").environ["CRFORGE_FACADE_BUILD"]), server=srv)

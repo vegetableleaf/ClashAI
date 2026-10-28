@@ -13,8 +13,36 @@ Labels: (a) measured, (b) untested, (c) contradicted.
   = 14,251 IW labels, BCE 0.0771 -> 0.0393).
   - compare (a) LABEL msg (warm start, 16 of 128 jobs, in-process cuda, 8 in flight; 33308 cmp_pa_label_b8.json):
     16/16 matches identical (every traj key incl. ab_cand / ab_feat / ab_q: 1,827 labels), ability result fields 16/16,
-    presses 22 / 17 per side both paths; lp max 1.9e-6. OPEN: memory tables 13/16 equal (vals / vpe differ in 3), MEM
-    rows 4,418 / 5,201: under diagnosis (decisions unaffected at B0: mem.out = 0).
+    presses 22 / 17 per side both paths; lp max 1.9e-6. Memory: first run tables 13/16 (out_value_10 / vpe of 3 early
+    plays, fast > prod), MEM rows 4,418 / 5,201; a rerun of the same msg 16/16 tables, 5,201 / 5,201 rows
+    (cmp_pa_label_b8d.json) = run-to-run variation. Cause (b, consistent with both runs): producer._mem_bodies took the
+    FIRST stopped match holding a missing body's entity id, and entity ids restart in every battle; which matches stop
+    together depends on thread timing. Fixed (cc3473d): CfTrain.memBodyKey -- only a match whose entity gives the same
+    CfMem key is a candidate, all candidates must resolve to one unit, else RuntimeError.
+  - compare (a) HEAD msg, SERVER mode (lint_pa3 u0001 = the pilot with the warm-started head, barrel_decoy_sim on, 16 of
+    32 jobs, 8 in flight; 33308 cmp_pa_head_srv.json): 16/16 identical, ability results 16/16 (1,850 head decisions, 24
+    presses; engine presses 23 / 26 per side both paths), memory tables 16/16, MEM rows 5,245 / 5,245, v_old max 8.1e-7,
+    wver 0 mismatches; lp max gate 1.06e-5, card 3.0e-6, cell 9.6e-6, ab_lp 2.3e-6 (server bar 5e-5). The fix fired:
+    mem_eid_in_other_matches 1 (an id held by another match with another key), mem_eid_shared 5.
+  - dev run (a) lint_pa3 = pilot.yaml on the fast loop + E=8 max_updates=3 n_actors=8 screen_entries=8 (2 producers x 16,
+    server eager, 33308): warm start 128 matches / 14,398 labels, init screen 24 matches 59 s, u0000-u0002 (critic
+    warm-up) rollout 72-96 s for 32 matches, ability dec 3,057-4,072 per update. Records for LOOP-LRN / LEARNER-SCALE:
+    33308:/workspace/loop/records/lint_pa3/records_u000{0,1,2}.pkl. compare.py --init (server mode: the learner's
+    architecture; was opps[0], which hung the head compare on a strict state-dict mismatch).
+  - 33308 container restart ~16:53 EDT (all processes, incl. ENG-SME's gap.py, died; reported to the lead). Lead budget:
+    LOOP-INT2 <= 40 GB on 33308, one job at a time, memory.usage_in_bytes checked before each launch.
+  - Codex LOOP-INT_3 (medium, .foreman/scratch/a2/codex/LOOP-INT_3.md): DONE (its BLOCKED = one K2 GPU metric only).
+    33553, ref_bench (B0 + memory, no abilities, T_gate 0.3), K 3 x M 256 = 768 matches / update, 2 actors, learner
+    alongside, means of u0001-u0002 (.foreman/scratch/a2/int/bench_grid3.md / .json):
+    | | eager | graphs |
+    |---|---|---|
+    | rollout wall s / matches per h | 130 / 21.2k | 91 / 30.5k |
+    | learner s | 110 | 117 |
+    | update period s / updates per h | 384 / 10.5 | 330 / 12.7 |
+    | overall matches per h | 8.1k | 9.7k |
+    | peak container GB / max producer RSS GB / GPU MiB | 44.2 / 9.6 / 17,955 | 44.5 / 9.7 / 18,137 |
+    | kl_stop step / rows-used fraction | e0 mb138-195 / 0.17 | e0 mb138-238 / 0.19 |
+    Busy CPU 4-5 cores: the rollout is round-latency bound, not core bound.
 - DONE, correctness (a): compare.py (production actor_main vs producer, same process, cuda, TF32 off) 16/16 matches
   identical at batch 1 and at 8 in flight, with the fast decide too (`33308:/workspace/loop/cmp_*.json`), lp max 2.3e-6.
   rl_royale-vs-fastloop through the learner, 3 updates with PPO policy updates (`lint_c3_rl` / `lint_c3_fast`, 33308):
@@ -117,6 +145,55 @@ Labels: (a) measured, (b) untested, (c) contradicted.
   A/B arms: `33308: cd /workspace/loop/cb && scratchpad/gauntlet/L74/plan1026/pilot/loop/run.sh rl|fast RUN CPUS k=v`.
   compare: `bash /workspace/loop/cmp.sh MSG.pkl OUT.json [--in-flight 8 --matches 8 --threads 4]` (33308).
 - Nothing left running by me (33308 lint_* runs DONE; 33553 bench exited). 33553 is KEEP (clean throughput pod).
+
+## Pilot on 33308: two arms (lead 10-28 evening; LOOP-INT2)
+- Tree: 33308:/workspace/loop/cb = origin/main pipeline/ (incl. 2072dc7 barrel_decoy_sim, 3866761 micro_batch) + pilot.yaml
+  (barrel_decoy_sim true) + loop/ files (synced by .foreman/scratch/a2/int/sync.sh). Engine fe364ceb plain lib + tables
+  16.635.3 (run.sh defaults); JDK 17; CfAbil.EXACT checked by the producer at start (RuntimeError if false).
+- One arm = `loop/pilot_arm.sh ARM GPU CPUS k=v...`: learner + serve.py (eager) on that GPU, 3 producers x 256 matches x 4
+  threads + ActorPool actors on CPUS, out dir /workspace/loop/pilot/pilot_ARM (throughput.jsonl, STOP, FINAL), log
+  /workspace/loop/logs/pilot_ARM.log, checkpoints /workspace/loop/cb/icebow/data/bench/rl_royale/pilot_ARM/. STOP_AT=epoch
+  writes STOP then (rl_royale finishes the update, saves _latest, fastloop writes FINAL = the last numbered checkpoint).
+- Laptop mirror: `bash scratchpad/gauntlet/L74/plan1026/pilot/loop/pull_ckpt.sh pilot_S` (and pilot_L), in the background:
+  every 300 s each new numbered checkpoint -> C:/Users/benpe/pod_backup_weekend/loop/pilot_ARM/ sha256-verified; at FINAL
+  also _latest.pt. LOOP-OPS' launcher NOT used: it builds a fresh tree + venv + 84 artifacts per W and 33308 has 9.3 GB free.
+- READY_TO_TRAIN_ON_33308 (POSTPONED by the owner 10-28 ~19:30 until opponent v1; do not start). Before the start:
+  re-sync origin/main pipeline/ + loop/ into /workspace/loop/cb (LOOP-ASYNC is editing fastloop.py / the producer protocol
+  in the shared tree: take only committed code), the lead clears the pod, then (STOP_AT = the lead's auto-stop epoch):
+  `cd /workspace/loop/cb && STOP_AT=T bash scratchpad/gauntlet/L74/plan1026/pilot/loop/pilot_arm.sh S 0 0-119 E=192 n_actors=16 save_every=5`
+  `cd /workspace/loop/cb && STOP_AT=T bash scratchpad/gauntlet/L74/plan1026/pilot/loop/pilot_arm.sh L 1 128-247 E=192 n_actors=16 save_every=3 minibatch=65536 micro_batch=1024 lr=1.6e-4`
+  (start L ~60 s after S: both compile the same facade build dir), then on the laptop `pull_ckpt.sh pilot_S` /
+  `pull_ckpt.sh pilot_L` in the background. Expected (b, from LOOP-INT_3's measured 768-match point without abilities):
+  arm S ~384 s / update = ~10 updates/h, ~8k matches/h, save_every 5 = ~30 min; arm L ~130 s rollout + LEARNER-SCALE's
+  4-5 min learner + ~140 s overhead = ~6-7 updates/h, ~5k matches/h, save_every 3 = ~30 min. Start-up ~20 min (proagree,
+  128-match B6 warm start, 702-match init screen on 16 actors), then 5 critic warm-up updates (no policy steps).
+  Memory (b): ~44.5 GB measured per arm at 768 matches + 14 more idle actors x ~0.6 GB = ~53 GB per arm, ~106 GB both,
+  inside the 125 GB cap only with the pod cleared; fallback MATCHES=192 E=144 (576 matches) per arm. GPU ~18 GB per arm.
+- Any process outside rl_royale that plays the pilot's conditions (compare.py, e1_eval gate scripts, remote actors) must
+  export CRFORGE_BARREL_DECOY_SIM=1 and ROYALE_HEROIW_PRESS=live (rl_royale sets both for its own children).
+
+## Opponent as the learner (v1 strength calibration, REPORT_opponents 3 step 4.3; lead 10-28 ~19:30) -- gap analysis
+What exists (a, read 10-28): e1_eval timing-head decode (is_timing, timing_cfg, timing_decide_batch, th_ability, th_costs,
+th_decided; P2-OPP 6b13c25) for a FROZEN opponent seat; rl_royale's KL to the frozen init with beta in [beta_min, beta_max]
+(beta0 = beta_min = beta_max = lambda already gives a FIXED pull to the init); shaping none + advantage gae = win-only;
+league_external / league_opp_live (bot pool on our decks), league_learner_icebow_share (learner decks from the census).
+What is missing (each opt-in, absent = identical):
+1. e1_eval: timing_cfg refuses `record`; a timing-head LEARNER seat needs records: per play row lp_card / lp_cell (T),
+   allowed mask, the slot rows (hazard / tick draws: frozen, ratio 1) only as critic / GAE rows; th_ability presses likewise.
+2. rl_royale: no timing path at all (no is_timing): minibatch_loss assumes a gate head (heads["gate"], lp_gate); the
+   learner needs (a) `freeze_heads` (requires_grad False on hazard / tick / ab_hazard / ab_tick + their exclusion from the
+   PPO terms), (b) the card / cell PPO + KL terms on play rows only, (c) `kl_ref_fixed: lambda` (= fixed beta, no
+   adapt_beta, KL to the frozen imitation init on card / cell; or an alias of beta0 = beta_min = beta_max), (d) the
+   update-0 identity assert for a gate-less model, (e) partner mix 60 / 40 (bot pool over our decks / human model vs
+   itself on census deck pairs) -- check sample_matchups' existing keys first.
+3. Fast loop: CfTrain ports the delayed-play schedule only (setJob refuses delay <= 0) -- a timing seat (frozen opponent
+   OR learner) needs SelfPlaySide.apply's timing branch (th_tick re-decide at slot + j, play issued at the drawn tick, the
+   next slot), per-seat extrapolate_ticks (0 for timing; CfTrain's extrap is per producer today), held plays + th_costs
+   (Mirror) + th_decided in the decide, th_ability queued j ticks on through CfAbil (a 4th seat mode), and the producer's
+   decide calling production's timing_decide_batch. compare.py then exercises the opponent-as-learner path.
+Proposed split: (A) fast-loop timing seats for FROZEN P2 opponents (needed by the pilot too once v1 is in the pool) +
+compare; (B) rl_royale / e1_eval opponent-learner keys + tests + smoke (pipeline owner = a learner worker, hunk commits);
+(C) fast-loop routing of (B) + compare exactness. A before C; B in parallel.
 
 ## Lead rulings 10-28 (after the re-dispatch report)
 - lp bar: in-process forwards 1e-5; SERVER mode 5e-5 WITH actions / outcomes / event tables / memory rows identical
