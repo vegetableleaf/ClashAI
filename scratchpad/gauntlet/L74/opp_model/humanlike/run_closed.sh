@@ -12,7 +12,9 @@ PY=${PY:-/workspace/venvf16/bin/python}; W=${WORKERS:-40}; CPUS=${CPUS:-0-255}
 TABLES=${CRFORGE_TABLES:-/workspace/crforge_cache/tables/16.402.22}
 FAC=$OUT/facade
 G=icebow/data/models/ICEBOW/ICEBOW_Mark_CLXIII_NOLEAK.pt
-G2="--tap-loss 1x:0.0180,2x:0.0363,ot2x:0.0388,ot3x:0.0890 --tap-slow 0.151:17"        # o4_gate v2 G2 (W18 measured)
+# o4_gate v2 G2 (W18 measured). OFF by default: e1_eval HEAD refuses tap_loss / tap_slow with the live stack's follow_ups plays
+# (ValueError in SelfPlaySide.apply, 10-28); set G2_ON=on once that is fixed. ENGINE.json records which was used.
+G2=""; [ "${G2_ON:-}" = on ] && G2="--tap-loss 1x:0.0180,2x:0.0363,ot2x:0.0388,ot3x:0.0890 --tap-slow 0.151:17"
 mkdir -p "$OUT"
 if [ ! -f "$FAC/CfCore.class" ]; then
   mkdir -p "$FAC" && cp "$CB/scratchpad/gauntlet/L74/crforge/facade/CfCore.java" "$FAC/" && javac -nowarn -cp "$LIB/lib/*" -d "$FAC" "$FAC/CfCore.java"

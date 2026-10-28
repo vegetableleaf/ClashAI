@@ -52,7 +52,7 @@ TPS, WIN, RIVER, BR = 20, 160, 16.0, 3.0
 
 CORE9, POS4, EXTRA = SC.CORE9, SC.POS4, SC.EXTRA
 NEW7 = ['ppm_ot', 'lane_left', 'split_rate', 'troop_depth', 'spell_depth', 'pocket_share', 'ans_spell_3s']
-STATS26 = CORE9 + POS4 + EXTRA + NEW7
+STATS = CORE9 + POS4 + [k for k in EXTRA if k != 'repeat_rate'] + NEW7    # 25: repeat_rate dropped (a card cannot be played twice in a row; HF SD 0)
 
 
 # ------------------------------------------------------------------ the time split
@@ -177,7 +177,11 @@ def live_records(block='calibration', _allow_sealed=False):
 
 def _canon_sim(name):
     from pipeline import vocab
-    return (vocab.engine_key(str(name).split('@')[0]) or str(name)).replace('-', '_')
+    k = (vocab.engine_key(str(name).split('@')[0]) or str(name)).replace('-', '_')
+    for suf in ('_evo', '_hero'):                          # the board record names forms ('knight_evo'); live / HF keys are bases
+        if k.endswith(suf):
+            k = k[: -len(suf)]
+    return k
 
 
 def sim_records(root):
@@ -260,8 +264,8 @@ def rows(recs):
     return [stat_row(r, r['arch']) for r in recs]
 
 
-# ------------------------------------------------------------------ level B (B-live and B-HF share the rule; feats = STATS26)
-def level_b(L, S, th, feats=STATS26, margin=None, rms_max=None):
+# ------------------------------------------------------------------ level B (B-live and B-HF share the rule; feats = STATS)
+def level_b(L, S, th, feats=STATS, margin=None, rms_max=None):
     B = th['B']
     c = SC.cohen(L, S, feats, B['min_n_per_side_for_a_stat'])
     have = [k for k in feats if not math.isnan(c[k][6])]
@@ -325,7 +329,7 @@ FACT_KEYS = ('lock_rate', 'zero_lock', 'p_lock_after_fail', 'cond_gap')
 def siege(L, S, th, B=400, seed=0):
     """SIM minus live per fact, match-cluster bootstrap 90% CI; pass = CI inside +-margin (THRESHOLDS 'S'); + per archetype lock rate."""
     Sg = th.get('S') or dict(lock_rate_pp=0.05, zero_lock_pp=0.05, p_lock_after_fail_pp=0.10, cond_gap_pp=0.10,
-                             arch_lock_rate_pp=0.10, arch_min_live_xbows=30)
+                             arch_lock_rate_pp=0.10, arch_min_live_xbows=600)
     lm, sm = siege_facts(L), siege_facts(S)
     fl, fs = _facts(lm), _facts(sm)
     rng = random.Random(seed)
@@ -460,7 +464,7 @@ def score(name, sim_root, th, sha, a_args, hf_sim=None, do_c=True, out_dir=None)
     # B-HF
     if hf_sim:
         Hs, meta = hf_records(th['_hf_ref'], split=2)
-        bh = level_b(rows(Hs), rows(sim_records(hf_sim)), th, feats=[k for k in STATS26 if k not in ('opp_el', 'pocket_share')],
+        bh = level_b(rows(Hs), rows(sim_records(hf_sim)), th, feats=[k for k in STATS if k not in ('opp_el', 'pocket_share')],
                      margin=th['B']['b_hf_per_stat_abs_d_max'])
         rep['B_HF'] = bh
         lines.append(print_b('## B-HF', bh))
@@ -567,12 +571,9 @@ def selftest(th, hf_path=None, nsp=50, out=None):
         a, b = halves(LR, seed)
         r = level_b(a, b, th)
         cnt['rms'] += r['pass_rms']; cnt['tost'] += r['pass_tost']; cnt['b3'] += r['pass_b3']; cnt['all'] += r['passed']
-    lines.append(f'B-live human control, {nsp} random halves of the calibration block (n ~{len(LR) // 2}/side, {len(STATS26)} stats): '
+    lines.append(f'B-live human control, {nsp} random halves of the calibration block (n ~{len(LR) // 2}/side, {len(STATS)} stats): '
                  f'RMS {cnt["rms"]}/{nsp} TOST {cnt["tost"]}/{nsp} B3 {cnt["b3"]}/{nsp} full {cnt["all"]}/{nsp}')
-    T = live_records('train')
-    TR = rows(T)
-    r = level_b(TR, LR, th)
-    lines.append(print_b(f'era control: train-block CLXIII ({len(TR)}) as "model" vs calibration ({len(LR)})', r).replace('n model', 'n train'))
+    lines.append(f'train-block CLXIII matches: {len(live_records("train"))} (CLXIII went live 10-25: no era control at one Mark)')
     a, b = halves(LR, 0)
     bad = [dict(x, react_s=x['react_s'] * 1.15, troop_depth=x['troop_depth'] + 1.0) for x in b]
     r1 = level_b(a, bad, th)
@@ -596,7 +597,7 @@ def selftest(th, hf_path=None, nsp=50, out=None):
         H, meta = hf_records(hf_path)
         HR = rows(H)
         lines.append(f'HF tier-A side records: {len(H)} (crforge build {meta.get("manifest", {}).get("crforge_sha", "?")[:8]})')
-        feats = [k for k in STATS26 if k not in ('opp_el', 'pocket_share')]
+        feats = [k for k in STATS if k not in ('opp_el', 'pocket_share')]
         tags = sorted({r['tag'] for r in H})
         cnt = Counter()
         n_ctl = 20

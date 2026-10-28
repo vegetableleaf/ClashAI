@@ -146,9 +146,6 @@ def selftest(hf, out=None):
     bad = [dict(x, plays=[[p[0] + 20] + p[1:] for p in x['plays']]) for x in b]
     r = train_eval(a, bad, 0)
     lines.append(f'planted: half B plays 1 s later: AUC {r["auc"]:.3f} [{r["ci"][0]:.3f}, {r["ci"][1]:.3f}]')
-    T = CD.live_records('train')
-    r = train_eval(T, L, 0)
-    lines.append(f'era control: train-block CLXIII ({len(T)}) vs calibration ({len(L)}): AUC {r["auc"]:.3f} [{r["ci"][0]:.3f}, {r["ci"][1]:.3f}]')
     if hf:
         H, _ = CD.hf_records(hf)
         tags = sorted({x['tag'] for x in H})

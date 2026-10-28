@@ -108,3 +108,16 @@ Closest to passing is B u20 vs Ranked at 0.53, still 5.3x over; the human 12k-vs
 - Pod code copy needed (a): icebow/ tree minus data (clashrl), all tracked scratchpad .py/.json/.yaml/.txt (L68 live_reader),
   the L74 tree, fin16 manifest; jpype linked into the copy root (gap.py resets PYTHONPATH to the copy root). Push script used:
   git archive of HEAD in 150-path chunks (Windows argument limit).
+- 14:35 update (all (a), human data only, no model scored yet):
+  - Live reference = calibration block CLXIII: 856 matches (train block has 0 CLXIII matches: CLXIII went live 10-25).
+  - B-live rule (25 stats, TOST |d| < 0.20 each, RMS <= 0.10, B3 CI) on human controls: calibration halves (428/side) RMS 47/50,
+    TOST 0/50, full 0/50; HF humans at the DESIGN size (856 vs 1,920, 23 stats, 40 draws) full 31/40 = 78%. The all-stats TOST at
+    0.20 does not reach the >= 95% human pass rate with 25 stats at n_live 856 (c). Needs the coordinator's decision (v4 rule
+    shape or more live reference data); until then card.py reports B-live under the v3 margins on the 25-stat list, labelled unregistered.
+  - Siege facts on live calibration: 3,108 reach X-Bows, lock 0.466, zero-lock share 0.118 (n 754 matches with >= 2), P(lock | prev
+    failed) 0.356 (n 1,267) vs P(lock | prev locked) 0.511 (n 1,007), X-Bow again in 30 s after fail 0.653 / after lock 0.564 =
+    persistence 1.16. Design-size margins for a 95% human pass (bootstrap SE x (1.645 + 1.96) x sqrt(1 + 856/1920)): lock 0.046,
+    zero-lock 0.051, P(lock|fail) 0.064, cond gap 0.095; per archetype only hog (0.100), other (0.094), weak_other (0.072) are
+    certifiable at +-0.10 (>= ~600 live X-Bows) -> arch_min_live_xbows 600. Halves control (428/side): 0/25 full (smaller n than the design).
+  - Runs: pod 32657 `/workspace/score/rows/e4` and `/workspace/score/rows/iu40` (40 workers each, ~16 rows/min each, G2 OFF:
+    e1_eval HEAD raises "tap_loss / tap_slow are not defined for follow_ups plays" with the live stack). Restart = same command (resumable per block).
