@@ -1,0 +1,10 @@
+match	set	baseline_counts	baseline_first_div	new_counts	new_first_div	new_flags_empty	plants_missed	refused_plays	ability_nonzero_offset	classification	exact_delta
+live_play_20261026_164130	dev	{"div":1372,"exact":394}	939	{"exact":1765,"torn_step":1}	null	true	[]	[]	[["ability",1],["ability",1]]	fixed	1371
+live_play_20261026_185736	dev	{"div":1096,"exact":1928,"torn_step":1,"torn_t1":1}	4012	{"exact":3023,"torn_snap":1,"torn_step":2,"torn_t1":1}	null	true	[]	[]	[["ability",1]]	fixed	1095
+live_play_20261026_201258	dev	{"div":1788,"exact":343,"torn_cmd":2}	827	{"div":1747,"exact":453,"torn_cmd":2}	827	true	[]	[]	[]	same_class	110
+live_play_20261027_003506	dev	{"div":1565,"exact":200}	550	{"div":1672,"exact":1362,"torn_step":1}	2873	true	[]	[]	[]	same_class	1162
+live_play_20261027_023839	dev	{"div":397,"exact":1368,"torn_step":1}	2889	{"exact":1765,"torn_step":1}	null	true	[]	[]	[]	fixed	397
+live_play_20261027_031722	dev	{"div":1215,"exact":551}	1252	{"exact":1765,"torn_mixed":1}	null	true	[]	[]	[["ability",1],["ability",1]]	fixed	1214
+live_play_20261028_004256	fresh1	{"div":1517,"exact":43}	237	{"div":1517,"exact":43}	237	false	[]	[["cmd3",462,false,0,9],["cmd17",2101,false,0,9],["cmd20",2316,false,0,9],["cmd22",2485,false,0,9]]	[]	same_class	0
+live_play_20261028_100341	fresh2	{"div":374,"exact":1384}	2930	{"exact":1758}	null	true	[]	[]	[]	fixed	374
+live_play_20261028_145600	fresh3	{"div":2090,"exact":579}	1308	{"exact":2695}	null	true	[]	[]	[]	fixed	2116

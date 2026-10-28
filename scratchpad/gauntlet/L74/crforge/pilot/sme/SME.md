@@ -2453,7 +2453,11 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
   flags (SME_TOMB_HERO, SME_BB_RISE, SME_OWN_SPAWN, SME_OWN_NEARDEAD, SME_NEAR_BIGGER; all off by default, planted checks).
   Single-match probes: 8 go exact (apart from torn), 142926 moves 254 -> 581 (8 div). 091720 is not an engine bug (c).
   Open: 123045 (body position, b), 142926 own Skeletons under client lag (b). No engine fork branch was needed.
-- **Running:** Codex ENG-FIX_1b (TOMB_HERO dev/fresh regen + SME of changed matches, `engfix/r1/`), then ENG-FIX_2 (all
+- **SME_TOMB_HERO no-regression (Codex ENG-FIX_1b, a; `engfix/r1/table.txt`, `changes.txt`):** flag-off inputs equal the
+  pod's on all 4 sets (dev v30 c5b197f5, FRESH1 d365b39c, FRESH2 chain 40, FRESH3 13efec70). 9 records change; fixed 6
+  (dev 164130, 185736, 023839, 031722; FRESH2 100341; FRESH3 145600), improved 2 (dev 003506 first div 550 -> 2873,
+  201258 +110 exact, first div 827 unrelated), FRESH1 004256 flagged and unchanged; 0 regressions, plants 0 missed.
+- **Running:** ENG-FIX_2 (all
   five flags, `engfix/r2/`, ticket `.foreman/scratch/a2/codex/ENG-FIX_2.md`). Restart: `sh .foreman/scratch/a2/codex_full.sh
   .foreman/scratch/a2/codex/ENG-FIX_2.md medium .foreman/scratch/a2/codex/out/ENG-FIX_2.jsonl` (fresh OUT name).
 - **Lead queue 10-28 (P4 audit):** (1) crforge refusal `Deflect ... from the king tower ... without a target` is a

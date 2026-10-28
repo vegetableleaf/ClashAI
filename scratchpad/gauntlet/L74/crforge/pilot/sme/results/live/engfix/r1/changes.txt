@@ -1,0 +1,55 @@
+
+SET dev
+OFF sha256=c5b197f5e407a73d239e9805ce7597690691c3021b65180ecc9e0d6538f11f92 lines=138
+ON sha256=fe4401f9705e22bc79f2b07043998ee89d9d0774525faa2108a6628815f02046 lines=138
+OFF equality: PASS; fresh2 fallback=False; differences={}
+
+SET fresh1
+OFF sha256=d365b39c3d1f3fd78a084ef5b14c5fab58d9162466ab287263d0bab68e1f5d96 lines=9
+ON sha256=54bad62fd75038d4ecad41ade4ea87d0581fafcf5dd2cd84d2f28f01860529ec lines=9
+OFF equality: PASS; fresh2 fallback=False; differences={}
+
+SET fresh2
+OFF sha256=f8bf661165ada144167bf9669f5b755af4d193709a9b5cbf2636821f3554a263 lines=40
+ON sha256=3a6bb251a7780cf1bb424aa4701e80ab4c7547e1080bd8317b25cf09dfa84b49 lines=40
+OFF equality: PASS; fresh2 fallback=False; differences={}
+
+SET fresh3
+OFF sha256=13efec704045c250ee32ed95b03e79af68f997b800fedf5b5efca7dccc6a0423 lines=17
+ON sha256=2a9f987da2554c9aa326a3bbc5f65c00304bf69118b84fb3c39f91ed244ff6ef lines=17
+OFF equality: PASS; fresh2 fallback=False; differences={}
+
+dev: changed matches=6
+live_play_20261026_164130 fields={"fields": ["plays"], "line_text_equal": false}
+OFF Tombstone ability: [{"run_ticks": [1486, 1487], "side": 1, "source": "cast_seen", "tick": 1486, "tomb_swap": null, "unit_index": null}, {"run_ticks": [2932, 2933], "side": 1, "source": "cast_seen", "tick": 2932, "tomb_swap": null, "unit_index": null}]
+ON Tombstone ability: [{"run_ticks": [937, 938], "side": 1, "source": "tomb_active", "tick": 937, "tomb_swap": [937, 939, 0], "unit_index": 2}, {"run_ticks": [2534, 2535], "side": 1, "source": "tomb_active", "tick": 2534, "tomb_swap": [2534, 2536, 1], "unit_index": 2}]
+live_play_20261026_185736 fields={"fields": ["plays"], "line_text_equal": false}
+OFF Tombstone ability: [{"run_ticks": [4483, 4484], "side": 1, "source": "cast_seen", "tick": 4483, "tomb_swap": null, "unit_index": null}, {"run_ticks": [5329, 5330], "side": 1, "source": "cast_seen", "tick": 5329, "tomb_swap": null, "unit_index": null}]
+ON Tombstone ability: [{"run_ticks": [4010, 4011], "side": 1, "source": "tomb_active", "tick": 4010, "tomb_swap": [4010, 4012, 0], "unit_index": 2}, {"run_ticks": [4981, 4982], "side": 1, "source": "tomb_active", "tick": 4981, "tomb_swap": [4981, 4983, 1], "unit_index": 2}]
+live_play_20261026_201258 fields={"fields": ["plays"], "line_text_equal": false}
+OFF Tombstone ability: [{"run_ticks": [2806, 2807], "side": 0, "source": "cast_seen", "tick": 2806, "tomb_swap": null, "unit_index": null}]
+ON Tombstone ability: [{"run_ticks": [2500, 2501], "side": 0, "source": "tomb_active", "tick": 2500, "tomb_swap": [2500, 2502, 1], "unit_index": 2}]
+live_play_20261027_003506 fields={"fields": ["plays"], "line_text_equal": false}
+OFF Tombstone ability: [{"run_ticks": [877, 878], "side": 1, "source": "cast_seen", "tick": 877, "tomb_swap": null, "unit_index": null}, {"run_ticks": [1836, 1837], "side": 1, "source": "cast_seen", "tick": 1836, "tomb_swap": null, "unit_index": null}, {"run_ticks": [3338, 3339], "side": 1, "source": "cast_seen", "tick": 3338, "tomb_swap": null, "unit_index": null}, {"run_ticks": [4453, 4454], "side": 1, "source": "cast_seen", "tick": 4453, "tomb_swap": null, "unit_index": null}, {"run_ticks": [4974, 4975], "side": 1, "source": "cast_seen", "tick": 4974, "tomb_swap": null, "unit_index": null}, {"run_ticks": [5753, 5754], "side": 1, "source": "cast_seen", "tick": 5753, "tomb_swap": null, "unit_index": null}]
+ON Tombstone ability: [{"run_ticks": [548, 549], "side": 1, "source": "tomb_active", "tick": 548, "tomb_swap": [548, 550, 1], "unit_index": 2}, {"run_ticks": [1603, 1604], "side": 1, "source": "tomb_active", "tick": 1603, "tomb_swap": [1603, 1605, 1], "unit_index": 2}, {"run_ticks": [2875, 2876], "side": 1, "source": "tomb_active", "tick": 2875, "tomb_swap": [2876, 2877, 0], "unit_index": 2}, {"run_ticks": [4049, 4050], "side": 1, "source": "tomb_active", "tick": 4049, "tomb_swap": [4049, 4051, 1], "unit_index": 2}, {"run_ticks": [4677, 4679], "side": 1, "source": "tomb_active", "tick": 4678, "tomb_swap": [4677, 4680, 1], "unit_index": 2}, {"run_ticks": [5437, 5438], "side": 1, "source": "tomb_active", "tick": 5437, "tomb_swap": [5437, 5439, 1], "unit_index": 2}]
+live_play_20261027_023839 fields={"fields": ["plays"], "line_text_equal": false}
+OFF Tombstone ability: [{"run_ticks": [3429, 3430], "side": 0, "source": "cast_seen", "tick": 3429, "tomb_swap": null, "unit_index": null}]
+ON Tombstone ability: [{"run_ticks": [2887, 2888], "side": 0, "source": "tomb_active", "tick": 2887, "tomb_swap": [2887, 2889, 1], "unit_index": 2}, {"run_ticks": [3011, 3012], "side": 0, "source": "tomb_active", "tick": 3011, "tomb_swap": [3011, 3013, 1], "unit_index": 2}]
+live_play_20261027_031722 fields={"fields": ["plays"], "line_text_equal": false}
+OFF Tombstone ability: [{"run_ticks": [1430, 1431], "side": 1, "source": "cast_seen", "tick": 1430, "tomb_swap": null, "unit_index": null}, {"run_ticks": [3376, 3377], "side": 1, "source": "cast_seen", "tick": 3376, "tomb_swap": null, "unit_index": null}]
+ON Tombstone ability: [{"run_ticks": [1250, 1251], "side": 1, "source": "tomb_active", "tick": 1250, "tomb_swap": [1250, 1252, 1], "unit_index": 2}, {"run_ticks": [3092, 3093], "side": 1, "source": "tomb_active", "tick": 3092, "tomb_swap": [3092, 3094, 0], "unit_index": 2}]
+
+fresh1: changed matches=1
+live_play_20261028_004256 fields={"fields": ["plays"], "line_text_equal": false}
+OFF Tombstone ability: [{"run_ticks": [1657, 1658], "side": 1, "source": "cast_seen", "tick": 1657, "tomb_swap": null, "unit_index": null}, {"run_ticks": [2971, 2972], "side": 1, "source": "cast_seen", "tick": 2971, "tomb_swap": null, "unit_index": null}]
+ON Tombstone ability: [{"run_ticks": [1300, 1301], "side": 1, "source": "tomb_active", "tick": 1300, "tomb_swap": [1300, 1302, 1], "unit_index": 2}, {"run_ticks": [2578, 2579], "side": 1, "source": "tomb_active", "tick": 2578, "tomb_swap": [2578, 2580, 1], "unit_index": 2}]
+
+fresh2: changed matches=1
+live_play_20261028_100341 fields={"fields": ["plays"], "line_text_equal": false}
+OFF Tombstone ability: [{"run_ticks": [3476, 3477], "side": 1, "source": "cast_seen", "tick": 3476, "tomb_swap": null, "unit_index": null}]
+ON Tombstone ability: [{"run_ticks": [2928, 2929], "side": 1, "source": "tomb_active", "tick": 2928, "tomb_swap": [2928, 2930, 1], "unit_index": 2}]
+
+fresh3: changed matches=1
+live_play_20261028_145600 fields={"fields": ["plays"], "line_text_equal": false}
+OFF Tombstone ability: [{"run_ticks": [1713, 1714], "side": 0, "source": "cast_seen", "tick": 1713, "tomb_swap": null, "unit_index": null}, {"run_ticks": [3942, 3943], "side": 0, "source": "cast_seen", "tick": 3942, "tomb_swap": null, "unit_index": null}]
+ON Tombstone ability: [{"run_ticks": [1305, 1307], "side": 0, "source": "tomb_active", "tick": 1306, "tomb_swap": [1305, 1308, 1], "unit_index": 2}, {"run_ticks": [3618, 3619], "side": 0, "source": "tomb_active", "tick": 3618, "tomb_swap": [3618, 3620, 1], "unit_index": 2}]
