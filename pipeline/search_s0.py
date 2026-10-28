@@ -417,9 +417,11 @@ def hab_plays(side) -> list:
 # ------------------------------------------------------------------------------------------------------
 # forking
 # ------------------------------------------------------------------------------------------------------
-def fork_into(m, env2, blob: bytes):
+def fork_into(m, env2, blob: bytes, fresh: tuple = ()):
     """A copy of SelfPlayMatch ``m`` on the pooled env ``env2``: engine = ``blob`` (m.env.core.save_state()), env python
-    fields and both sides' python state deep-copied; models / cfg / deck / modules shared. -> a SelfPlayMatch."""
+    fields and both sides' python state deep-copied; models / cfg / deck / modules shared. -> a SelfPlayMatch.
+    ``fresh``: side attributes started EMPTY in the fork instead of copied (rl_royale cf_credit: the record ``traj``,
+    which no decision reads and which grows to hundreds of rows)."""
     env = m.env
     for k, v in env.__dict__.items():
         if k not in ("core", "eng"):
@@ -433,7 +435,8 @@ def fork_into(m, env2, blob: bytes):
     new = {}
     for s in (m.learner, m.opp):
         c = object.__new__(type(s))
-        c.__dict__.update({k: (v if k in SHARED_SIDE else copy.deepcopy(v)) for k, v in s.__dict__.items()})
+        c.__dict__.update({k: (v if k in SHARED_SIDE else type(v)() if k in fresh else copy.deepcopy(v))
+                           for k, v in s.__dict__.items()})
         c.env = env2
         new[id(s)] = c
     f.learner, f.opp = new[id(m.learner)], new[id(m.opp)]

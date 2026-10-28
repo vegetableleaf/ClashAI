@@ -170,6 +170,7 @@ from pipeline import reward_terms as RT                                         
 from pipeline import spell_value as SV                                          # noqa: E402
 from pipeline import habit_terms as HT                                          # noqa: E402
 from pipeline import adaptive_opponents as AO                                  # noqa: E402
+from pipeline import cf_credit as CF                                            # noqa: E402
 from pipeline.model_v3 import hand_mask_from_sc                                 # noqa: E402
 
 RUN_ROOT = REPO / "scratchpad" / "gauntlet" / "L68" / "rl"
@@ -252,6 +253,8 @@ def actor_cfg(base: dict, kind: str, aid: int, dev: str) -> dict:
         #                                                       W10 rocket_tower: "rocket_dmg" = the tracker measures Rockets)
     if kind == "rollout" and base.get("habit_track"):         # L74 habit terms: the learner's board samples + row ticks
         cfg["habit_track"] = cfg["record_tick"] = True
+    if kind == "rollout" and base.get("cf"):                  # cf_credit: SIM forks at selected learner decisions
+        cfg["cf"] = dict(base["cf"])
     return cfg
 
 
@@ -2006,7 +2009,7 @@ def _py(x):
 def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_loo",
             shaping: Optional[dict] = None, gamma_tick: Optional[float] = None,
             gae_terminal_gap: bool = False, spell: Optional[dict] = None,
-            crown: Optional[dict] = None, habit: Optional[dict] = None) -> tuple[dict, dict]:
+            crown: Optional[dict] = None, habit: Optional[dict] = None, cf: Optional[dict] = None) -> tuple[dict, dict]:
     """Rollout result records (each with ``traj`` = ``Match._traj_arrays``) -> numpy batch of the CONTRIBUTING rows
     (gate sampled or card/cell played) with per-row A, per-match weight w, match id, and the stored log-probs.
     ``advantage="gae"`` adds ``r_step`` (``terminal_rewards``, the UNSHAPED win/loss reward); A stays the LOO value
@@ -2019,7 +2022,9 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
     its rows (by the traj ``tick``) into r_step, ``phi`` = 0 when no shaping made one (the residual critic at the config's
     scale), and the per-update monitors under ``st["spell"]``. ``crown`` (gae only; ``crown_cfg``'s dict, L74 W6): + each
     result's ``reward_terms.row_terms`` on its kept rows (by the traj ``tick``) into r_step, the princess_redirect potential
-    into ``phi`` (added to a shaping phi), ``phi`` = 0 otherwise, and the monitors under ``st["crown"]``."""
+    into ``phi`` (added to a shaping phi), ``phi`` = 0 otherwise, and the monitors under ``st["crown"]``.
+    ``cf`` (gae only; ``cf_credit.cf_cfg``'s dict): every result's cf alternatives become extra rows APPENDED after the real
+    rows (``cf_append``; ``B["cf"]`` marks them), ``st`` stays the real rows' + ``st["cf"]``."""
     if gae_terminal_gap:
         if advantage != "gae" or gamma_tick is None:
             raise ValueError("gae_terminal_gap true needs advantage gae AND gamma_tick (gae_gamma_unit tick)")
@@ -2170,7 +2175,63 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
         st["crown"] = RT.batch_stats([RT.match_summary(results[j]["crown"]) for j in use], [cr[j] for j in use])
     if habit is not None:                                     # L74 habit monitors
         st["habit"] = HT.batch_stats([hbr[j] for j in use])
+    if cf is not None:                                        # cf_credit: chosen rows re-credited, alternatives appended
+        if advantage != "gae":
+            raise ValueError("cf_credit needs advantage gae")
+        st["cf"] = cf_append(B, results, use, keep, W, cf)
     return B, st
+
+
+def cf_append(B: dict, results: list[dict], use: list, keep: list, W: list, cf: dict) -> dict:
+    """cf_credit (in place). Every fork sample of a kept match whose decision is a kept row and whose forks all returned
+    a value: ``cf_credit.batch_advantages`` -> per candidate A_i = Q_i - mean_j Q_j (shrunk by its trigger's batch
+    reliability). ``B["cf_q"]`` = A_0 on the decision's own real row (``gae_batch`` puts it in place of the row's GAE
+    advantage), NaN on the other real rows; each alternative becomes a row APPENDED after all real rows: the decision's own
+    inputs (its traj row) with the alternative's action (played, slot, cell) and behaviour log-probs, ``cf_q`` = its A_i,
+    the match's row weight, no reward / discount / Phi / posture / press term. ``B["cf"]`` = False on the real rows, True
+    on the appended ones. Every row-aligned key of B must have a rule (a new batch key fails loudly here instead of riding
+    along wrong). -> the per-update monitors (``cf_credit.batch_stats``)."""
+    n = len(B["A"])
+    off = dict(zip(use, np.cumsum([0] + [int(keep[j].sum()) for j in use]).tolist()))
+    used, where = [], []
+    for j in use:
+        for smp in (results[j].get("cf") or {}).get("samples", []):
+            di = int(smp["row"])
+            if (di < len(keep[j]) and keep[j][di] and len(smp["cands"]) > 1
+                    and all(q is not None for a in smp["cands"] for q in a["q"])):
+                used.append(smp)
+                where.append((j, di))
+    adv, rel = CF.batch_advantages(used, cf)
+    cfq = np.full(n, np.nan)
+    alt_q: list = []
+    add: dict = {k: [] for k in B if not k.startswith("mem_tab_")}
+    for smp, (j, di), a in zip(used, where, adv):
+        cfq[off[j] + int(keep[j][:di].sum())] = a[0]
+        t = results[j]["traj"]
+        for cand, ai in zip(smp["cands"][1:], a[1:]):
+            alt_q.append(float(ai))
+            over = {"played": bool(cand["play"]), "slot": int(cand["slot"]), "cell": int(cand["cell"]),
+                    "lp_gate": cand["lp_gate"], "lp_card": cand["lp_card"], "lp_cell": cand["lp_cell"],
+                    "lp_old": cand["lp_gate"] + cand["lp_card"] + cand["lp_cell"], "A": float(ai), "w": W[j][0],
+                    "match": j, "mem_row_tab": use.index(j), "r_step": 0.0, "gamma_row": 1.0, "phi": 0.0,
+                    "w_post": 0.0, "w_ab": 0.0, "ab_sampled": False, "ab_press": False, "ab_lp": 0.0,
+                    "posture_new": False, "posture_lp": 0.0}
+            if "mem_row_t" in add:
+                over["mem_row_t"] = t["mem_t"][di]
+            for k in add:
+                if k in over:
+                    add[k].append(over[k])
+                elif k in t:
+                    add[k].append(t[k][di])
+                else:
+                    raise ValueError(f"cf_credit: no rule for batch key {k!r} on an alternative row")
+    m = len(alt_q)
+    if m:
+        for k, v in add.items():
+            B[k] = np.concatenate([B[k], np.asarray(v, dtype=B[k].dtype).reshape((m,) + B[k].shape[1:])])
+    B["cf"] = np.concatenate([np.zeros(n, dtype=bool), np.ones(m, dtype=bool)])
+    B["cf_q"] = np.concatenate([cfq, np.asarray(alt_q, dtype=np.float64)])
+    return CF.batch_stats(results, used, adv, rel, m)
 
 
 def value_phi_rewards(raw, ticks, shaping: dict) -> dict:
@@ -2335,10 +2396,10 @@ def policy_terms(model, B: dict, idx, tau: float, T: float, value: bool = False,
 
 
 @torch.no_grad()
-def value_rows(model, B: dict, chunk: int = 512, ctx_head=None) -> torch.Tensor:
-    """V(s) (``value_scalar``) of every row under ``model``, no grad: the encoder + value head only (+ ``ctx_head``
-    on ``B["ctx"]`` under critic_ctx)."""
-    N = len(B["A"])
+def value_rows(model, B: dict, chunk: int = 512, ctx_head=None, n: Optional[int] = None) -> torch.Tensor:
+    """V(s) (``value_scalar``) of every row (the first ``n``) under ``model``, no grad: the encoder + value head only (+
+    ``ctx_head`` on ``B["ctx"]`` under critic_ctx)."""
+    N = len(B["A"]) if n is None else int(n)
     out = []
     if "v_shared" in B:                                       # LOOP-LRN: ref_terms' V, same weights (Learner.one_update)
         return B.pop("v_shared")[:N]
@@ -2436,17 +2497,22 @@ def gae_batch(model, B: dict, cfg: dict, ctx_head=None) -> dict:
     ``ctx_head`` (critic_ctx; needs ``B["ctx"]``): v_net includes the ``CtxHead`` residual, and ``ctx_tank`` splits
     the value loss / explained variance by the match's final tank flag (``ctx_tank_stats``)."""
     c = adv_cfg(cfg)
-    v = value_rows(model, B, ctx_head=ctx_head)
-    gam = B["gamma_row"].cpu().numpy() if "gamma_row" in B else c["gae_gamma"]
-    vn, m, r = v.cpu().numpy(), B["match"].cpu().numpy(), B["r_step"].cpu().numpy()
+    cfm = B["cf"].cpu().numpy() if "cf" in B else None        # cf_credit: GAE over the real rows only (they come first)
+    sl = slice(None) if cfm is None else slice(0, int((~cfm).sum()))
+    if cfm is not None and cfm[sl].any():
+        raise ValueError("cf_credit: alternative rows must come after every real row")
+    v = value_rows(model, B, ctx_head=ctx_head, n=sl.stop)    # (cf rows: V never used -- no value target -- so 0 below)
+    gam = B["gamma_row"].cpu().numpy()[sl] if "gamma_row" in B else c["gae_gamma"]
+    vn, m, r = v.cpu().numpy()[sl], B["match"].cpu().numpy()[sl], B["r_step"].cpu().numpy()[sl]
     if "phi" not in B:
         A, ret = gae(r, vn, m, gam, c["gae_lambda"])
         st = {"adv_mean": float(A.mean()) if len(A) else None, "adv_std": float(A.std()) if len(A) else None,
-              "ret_mean": float(ret.mean()) if len(ret) else None, "v_mean": float(v.mean()) if len(v) else None,
-              "explained_var": explained_variance(v.cpu().numpy(), ret) if len(A) else None}
+              "ret_mean": float(ret.mean()) if len(ret) else None,
+              "v_mean": (float(v.mean()) if cfm is None else float(vn.mean())) if len(vn) else None,
+              "explained_var": explained_variance(vn, ret) if len(A) else None}
         target = ret
     else:
-        phi, sc = B["phi"].cpu().numpy(), float(c["shaping_critic_scale"])
+        phi, sc = B["phi"].cpu().numpy()[sl], float(c["shaping_critic_scale"])
         veff = phi + sc * vn
         A, ret = gae(r, veff, m, gam, c["gae_lambda"])
         a_r1, _ = gae(r, vn, m, gam, c["gae_lambda"])
@@ -2464,7 +2530,21 @@ def gae_batch(model, B: dict, cfg: dict, ctx_head=None) -> dict:
     if ctx_head is not None:
         st["ctx_tank"] = ctx_tank_stats(vn if "phi" not in B else veff, ret, vn, target, B["ctx"].cpu().numpy(), m)
     dev = B["A"].device
-    B["A"] = torch.from_numpy((A - A.mean()) / (A.std() + 1e-8) if len(A) else A).to(dev)
+    An = (A - A.mean()) / (A.std() + 1e-8) if len(A) else A
+    if cfm is not None:                                       # cf_credit: the fork advantages in the real rows' units, in
+        cc = CF.cf_cfg(cfg)                                   # place of the decision rows' GAE A and on the appended rows
+        sd = float(A.std()) if len(A) > 1 else 1.0
+        q = B["cf_q"].cpu().numpy()                           # cf_append: A_i (value units) or NaN
+        m = len(q) - sl.stop
+        has = np.isfinite(q)
+        An = np.concatenate([An, np.zeros(m)])
+        An[has] = cc["cf_w"] * np.clip(q[has] / (sd + 1e-8), -cc["cf_clip"], cc["cf_clip"])
+        st["cf"] = {"rows": int(m), "replaced": int(has[:sl.stop].sum()), "sd": sd,
+                    "A_abs_mean": float(np.abs(An[has]).mean()) if has.any() else None,
+                    "clipped_share": float((np.abs(q[has] / (sd + 1e-8)) >= cc["cf_clip"]).mean()) if has.any() else None}
+        target = np.concatenate([target, np.zeros(m)])
+        v = torch.cat([v, v.new_zeros(m)])
+    B["A"] = torch.from_numpy(An).to(dev)
     B["ret"] = torch.from_numpy(target).to(dev)
     B["v_old"] = v
     return st
@@ -2535,9 +2615,12 @@ def ref_terms(ref, B: dict, tau: float, T: float, chunk: int = 512, T_gate: Opti
         sel = gs & low
         R["kl_lo_init"] = float(bern_kl(R["x"][sel], xi[sel]).mean()) if sel.any() else None
         R["x"], R["low"] = torch.where(low, xi, R["x"]), low
-    R["ent"] = {"gate": float(bern_ent(R["x"][gs]).mean()) if gs.any() else None,
-                "card": float(cat_ent(R["card_lp"][played]).mean()) if played.any() else None,
-                "cell": float(cat_ent(R["cell_lp"]).mean()) if len(R["cell_lp"]) else None}
+    ge, pe, ce = gs, played, R["cell_lp"]
+    if "cf" in B:                                             # cf_credit: the entropy baseline over the real rows only
+        ge, pe, ce = gs & ~B["cf"], played & ~B["cf"], ce[~B["cf"][played]]
+    R["ent"] = {"gate": float(bern_ent(R["x"][ge]).mean()) if ge.any() else None,
+                "card": float(cat_ent(R["card_lp"][pe]).mean()) if pe.any() else None,
+                "cell": float(cat_ent(ce).mean()) if len(ce) else None}
     return R
 
 
@@ -2622,6 +2705,12 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
     pg = -torch.min(ratio * A, ratio.clamp(1 - clip, 1 + clip) * A)
     l_pg = (w * pg).sum() * (n_total / len(idx))
     gs, pl = B["gate_sampled"][idx], B["played"][idx]
+    cl = t["cell_lp"]
+    real = None
+    if "cf" in B:                                             # cf_credit alternative rows: L_pg (+ the ratio monitors) only --
+        real = ~B["cf"][idx]                                  # no KL, no entropy monitor, no value loss
+        cl = cl[real[pl]] if cl is not None else cl
+        gs, pl = gs & real, pl & real
     zero = lp_new.new_zeros(())
     kl_gi = None
     if "low" in R:                                            # F6': low rows -> their own term, high rows -> KL_gate
@@ -2631,9 +2720,9 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
         if lo_gs.any():
             kl_gi = bern_kl(t["x"][lo_gs], R["x"][idx][lo_gs]).mean()
     kl_g = bern_kl(t["x"][gs], R["x"][idx][gs]).mean() if gs.any() else zero
-    gs = B["gate_sampled"][idx]                               # the entropy monitor below: every gate-sampled row
+    gs = B["gate_sampled"][idx] if real is None else B["gate_sampled"][idx] & real   # the entropy monitor below
     kl_c = cat_kl(t["card_lp"][pl], R["card_lp"][idx][pl]).mean() if pl.any() else zero
-    kl_x = cat_kl(t["cell_lp"], R["cell_lp"][R["play_pos"][idx[pl]]]).mean() if pl.any() else zero
+    kl_x = cat_kl(cl, R["cell_lp"][R["play_pos"][idx[pl]]]).mean() if pl.any() else zero
     if "kl_heads" in R:                                       # K1: only the leashed heads' KL enters the loss
         loss = l_pg + beta * sum({"gate": kl_g, "card": kl_c, "cell": kl_x}[h] for h in R["kl_heads"])
     else:
@@ -2674,7 +2763,8 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
     if vf is not None:
         v, v_old, ret = t["v"], B["v_old"][idx], B["ret"][idx]
         v_clip = v_old + (v - v_old).clamp(-float(vf["clip"]), float(vf["clip"]))
-        l_v = (w * 0.5 * torch.max((v - ret) ** 2, (v_clip - ret) ** 2)).sum() * (n_total / len(idx))
+        wv = w if real is None else w * real                  # cf_credit: the alternative rows carry no value target
+        l_v = (wv * 0.5 * torch.max((v - ret) ** 2, (v_clip - ret) ** 2)).sum() * (n_total / len(idx))
         loss = (loss if vf["policy"] else 0.0) + float(vf["coef"]) * l_v
     with torch.no_grad():
         dev_ = (ratio - 1).abs()
@@ -2684,7 +2774,7 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
               "lp_maxdiff": {k: float((t[k] - B[k][idx]).abs().max()) for k in ("lp_gate", "lp_card", "lp_cell")},
               "ent_gate": float(bern_ent(t["x"][gs]).mean()) if gs.any() else None,
               "ent_card": float(cat_ent(t["card_lp"][pl]).mean()) if pl.any() else None,
-              "ent_cell": float(cat_ent(t["cell_lp"]).mean()) if pl.any() else None}
+              "ent_cell": float(cat_ent(cl).mean()) if pl.any() else None}
         if "low" in R:
             st["kl_gate_imit_low"] = None if kl_gi is None else float(kl_gi)
         if vf is not None:
@@ -2964,6 +3054,7 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
                         c["ability"] = {**c["ability"], "head": ahead}
                     elif k == "rollout":
                         c["ability"] = {"mode": "label", "n_feat": c["ability"]["n_feat"]}
+                        c.pop("cf", None)                     # the B6 warm start's rule rollouts: no cf forks
                     else:
                         del c["ability"]
                 return c
@@ -3403,7 +3494,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                               "memory_zero_empty", "learner_deterministic", "kl_stop_prev", "stored_values",
                               "ent_init_rows") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS and k not in CROWN_KEYS
-                and k not in HT.KEYS):
+                and k not in HT.KEYS and k not in CF.KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
         cfg[k] = yaml.safe_load(v)
     if type(cfg["hero_abilities"]) is not bool:
@@ -3442,6 +3533,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
         raise SystemExit(f"remote_actors must be null or an endpoints file (one host:port per line), got {ra!r}")
     tau_phase_cfg(cfg)                                        # 10-23: absent = no-op
     memory_cfg(cfg)                                           # Plan A memory: absent / null = no memory = no-op
+    CF.cf_cfg(cfg)                                            # cf_credit: absent / null / false = no-op
     rr = cfg.get("kl_ref_refresh_every")                     # W16 moving KL anchor: absent / null = the frozen init
     if rr is not None and not (type(rr) is int and rr >= 1):
         raise SystemExit(f"kl_ref_refresh_every must be null or an int >= 1, got {rr!r}")
@@ -3565,6 +3657,7 @@ def config_sha(cfg: dict) -> str:
         else:
             cfg = {**cfg, wk: float(RT.DEFAULTS[wk] if cfg.get(wk) is None else cfg[wk])}
     cfg = HT.canonical(cfg)                                  # L74 habit terms: off (absent / null / false) = historical
+    cfg = CF.canonical(cfg)                                  # cf_credit: off (absent / null / false) = historical
     return hashlib.sha256(json.dumps(cfg, sort_keys=True, default=str).encode()).hexdigest()
 
 
@@ -4380,12 +4473,20 @@ class Learner:
         sv = spell_cfg(cfg)                                   # L74 combo (None = off: the call unchanged)
         ct = crown_cfg(cfg)                                   # L74 W6 (None = off: the call unchanged)
         hbt = HT.habit_cfg(cfg)                               # L74 habit terms (None = off: the call unchanged)
+        cfc = CF.cf_cfg(cfg)                                  # cf_credit (None = off: the call unchanged)
         Bn, bst = collate(results, float(cfg["adv_clip"]), advantage=ac["advantage"], shaping=shp,
                           **({"gamma_tick": ac["gae_gamma_tick"]} if tick_unit else {}),
                           **({"gae_terminal_gap": True} if ac["gae_terminal_gap"] else {}),
                           **({"spell": sv} if sv is not None else {}),
                           **({"crown": ct} if ct is not None else {}),
-                          **({"habit": hbt} if hbt is not None else {}))
+                          **({"habit": hbt} if hbt is not None else {}),
+                          **({"cf": cfc} if cfc is not None else {}))
+        if cfc is not None and os.environ.get("CF_DUMP"):    # cf_credit L1 pilot: every sample of this update (no cfg key)
+            with open(os.environ["CF_DUMP"], "a", encoding="utf-8") as fh:
+                for r in results:
+                    if "cf" in r:
+                        fh.write(json.dumps({"update": u, "outcome": r.get("outcome"), "end_tick": r.get("end_tick"),
+                                             "wall_s": r.get("wall_s"), "cf": r["cf"]}, default=_py) + "\n")
         gamma_row_mean = float(Bn["gamma_row"].mean()) if tick_unit and len(Bn["gamma_row"]) else None
         ab_acc = ([sum(dict(r.get("ability_presses", {}).get(r["side"], {})).values()) for r in results]
                   if getattr(self, "ability_head", None) is not None else None)   # B6: engine-accepted learner presses
@@ -4707,6 +4808,16 @@ class Learner:
                     f" gave {f(bst['crown'].get('gave_back_per_match'), '{:.2f}')} king_end "
                     f"{f(bst['crown'].get('king_end_per_match'), '{:.2f}')} tor>king {f(bst['crown'].get('tornado_to_king_per_match'), '{:.2f}')}"
                     if "crown" in bst else "")
+                 + (f" | cf samples {bst['cf']['used']}/{bst['cf']['samples']} rows +{bst['cf']['rows']} A0 "
+                    f"{f(bst['cf']['chosen']['a_mean'], '{:+.4f}')} |A| {f((gst or {}).get('cf', {}).get('A_abs_mean'), '{:.3f}')}"
+                    f" fork ticks/match tick {f(bst['cf']['fork_ticks_per_match_tick'], '{:.2f}')} fork "
+                    f"{f(bst['cf']['wall_s_per_match'], '{:.1f}')}s/m"
+                    + "".join(f" [{k} vals {v['n']} snr {f(v['snr'], '{:.2f}')} x{f(v['factor'], '{:.2f}')}]"
+                              for k, v in bst["cf"]["reliability"].items() if not k.startswith("_"))
+                    + (f" slope {f(bst['cf']['audit']['levels']['slope'], '{:.2f}')}/{bst['cf']['audit']['levels']['n']}"
+                       if bst["cf"]["audit"]["levels"]["n"] else "")
+                    + (f" MISSING {bst['cf']['matches_missing']}" if bst["cf"]["matches_missing"] else "")
+                    if "cf" in bst else "")
                  + (f" | habit r/m idle {f(bst['habit']['idle_r_mean'], '{:+.4f}')} trade "
                     f"{f(bst['habit']['trade_r_mean'], '{:+.4f}')} thr/m {f(bst['habit']['thr_per_match'], '{:.2f}')} idle/m "
                     f"{f(bst['habit']['idle_per_match'], '{:.2f}')} push/m {f(bst['habit']['push_per_match'], '{:.2f}')}"
@@ -4835,6 +4946,15 @@ class Learner:
             base["crown_track"] = "+".join(fl) if fl else True
         if HT.habit_cfg(self.cfg) is not None:                # L74 habit terms -> actor_cfg habit_track (absent by default)
             base["habit_track"] = True
+        cfc = CF.cf_cfg(self.cfg)
+        if cfc is not None:                                   # cf_credit -> actor_cfg cf (absent by default); the fork value
+            ac = adv_cfg(self.cfg)                            # is V_eff: s x v_net under the residual critic, else v_net
+            residual = (self.cfg.get("shaping", "none") != "none" or spell_cfg(self.cfg) is not None or ct is not None
+                        or HT.habit_cfg(self.cfg) is not None)   # (collate's "phi" rule; cf_cfg refuses all of these today)
+            base["cf"] = {**cfc, "v_scale": float(ac["shaping_critic_scale"]) if residual else 1.0,
+                          "gamma_tick": float(ac["gae_gamma_tick"]),
+                          **({"phi_mode": ac["shaping"], "phi_params": {k: ac[k] for k in STATE_PHI_KEYS}}
+                             if ac["shaping"] in RS.STATE_PHI_MODES else {})}   # cf_cfg: tower_phat only
         return base
 
     def start_actors(self) -> None:

@@ -1,0 +1,860 @@
+"""Counterfactual credit from SIM forks (plan1026 Pillar 3 P3, R_fork; rl_royale ``cf_credit``, opt-in: absent / null /
+false = the trainer exactly as before, same config hash, same rows). Revised per REWARD_REVIEW.md section 4.
+
+At a TRIGGER (a learner decision of a PPO rollout, below) the actor forks the SIM (search_s0.fork_into: engine
+save_state / load_state into pooled envs + deep copies of the env's and both sides' python state, RNGs included) into
+K x C copies: C CANDIDATES (candidate 0 = the policy's ACTUAL decision, then up to cf_max_alts alternatives) x K paired
+continuations with COMMON RANDOM NUMBERS (continuation 0 keeps the real match's RNG states, so candidate 0's copy replays
+the real continuation draw for draw; continuation k >= 1 reseeds every side RNG the same way for every candidate). Every
+copy plays its candidate, then both sides play on with their own policies (learner: the rollout's sampler on the same
+weights; opponent: the match's own opponent -- model, cfg, decode -- so the pillar-2 human-like opponents fork with the
+match once rollouts use them), until the learner's first decision at >= root + cf_horizon_ticks (or the match end; roots
+within cf_end_ticks of tick END_TICK always run to the end):
+    Q[i, k] = gamma^(T_end - root) R_win          (the copy's match ended: +1 / -1 / 0)
+            = gamma^(t - root) (Phi(s_t) + v_scale v_net(s_t))    (stopped at learner decision t)
+i.e. the trainer's own return (review fix 1): GAE's per-tick gamma, its V_eff = Phi + s v_net (rl_royale.gae_batch); the
+root's own V_eff cancels in every difference. Phi = the config's state potential at the stop (shaping tower_phat, the
+fast loop's Phi = P_hat(win) - 0.5, from the same reward_shaping row the actor records; 0 with shaping none); cf_cfg refuses
+every other shaping and every in-window reward besides R_win.
+Advantage (review fix 2, one baseline per decision): per continuation A[i, k] = Q[i, k] - mean_j Q[j, k] (CRN-paired), A_i
+= mean_k A[i, k] = Q_i - mean_j Q_j. Candidate 0's A REPLACES its real row's GAE advantage; each alternative becomes an
+extra PPO row (its decision's inputs, its own action and behaviour log-probs) with its A. Noise control: A is shrunk per
+trigger by its batch reliability (``reliability``: between-continuation covariance / variance of the K-mean, the empirical
+Bayes factor), then scaled to the real rows' units (rl_royale.gae_batch: cf_w x clip(A / sd, +-cf_clip), sd = the std of
+the batch's raw real-row GAE advantages).
+Coverage (review fix 3): the ``random`` trigger forks a random decision with policy-sampled alternatives.
+Audit: a cf_audit_p share of samples runs its continuation-0 copies on to the match end (``q_end``), for the critic-slope
+check (``slope_audit``: terminal return on the horizon Q, PLAN band [0.7, 1.3]); training still reads the horizon Q.
+
+Triggers (PLAN P3 table; each fires with probability cf_p[name] when its condition holds, >= cf_gap_ticks after its last
+sample; one sample per decision, the first firing trigger in TRIGGERS order that has an alternative):
+  rocket_played   the policy plays the Rocket           -> wait, second_card (its best other card)
+  rocket          Rocket affordable, not played          -> rocket_clump, rocket_princess (weakest enemy princess)
+  wincon          an enemy building-targeting troop on our half -> wait, rocket_on, troop_on (its best troop), cheap_on
+  siege           an enemy building locked on our tower, or an enemy X-Bow / Mortar in reach of one
+                                                         -> wait, rocket_on, front (best troop in front of the princess), troop_on
+  xbow_after_fail X-Bow affordable <= cf_xbow_fail_window_ticks after one of our reach X-Bows died without a lock
+                                                         -> wait, xbow_defensive, rocket_princess, xbow_reach
+  xbow            the policy plays a reach X-Bow         -> wait, xbow_defensive, xbow_other_lane
+  idle_full       the policy waits at >= cf_full_elixir  -> play_now (its best card, argmax cell)
+  log_bait        the policy plays the Log after the opponent showed a bait card -> wait
+  random          any sampled decision                   -> cf_random_alts policy-sampled actions
+A restricted alternative takes the policy's own argmax cell inside its cell set. Not here yet (NOT dropped; next ticket):
+the Rocket + Tornado combo, the Tornado redirect and P6 macro prefixes (multi-step alternatives).
+
+Record (``SelfPlayMatch.result()["cf"]``, the interface the fast loop also produces; JSON-able):
+  {"samples": [{"row": traj row index of the decision, "tick", "trigger", "fired": [...], "audit": bool, "to_end": bool,
+                "cands": [{"kind", "play", "slot", "cell", "lp_gate", "lp_card", "lp_cell", "q": [K], "end": [K],
+                           "terminal": [K], "q_end": float | None (audit, continuation 0)}],   # cands[0] = the decision
+                "fork_ticks", "wall_s"}],
+   "triggers": {name: samples}, "capped": {name: n}, "decisions", "fork_ticks", "wall_s", "xbow_failed", "k"}"""
+from __future__ import annotations
+
+import math
+import random
+import time
+import zlib
+from collections import Counter
+from typing import Optional
+
+import numpy as np
+
+TRIGGERS = ("rocket_played", "rocket", "wincon", "siege", "xbow_after_fail", "xbow", "idle_full", "log_bait", "random")
+P_DEFAULT = {"rocket_played": 0.5, "rocket": 0.01, "wincon": 0.1, "siege": 0.25, "xbow_after_fail": 0.5, "xbow": 0.25,
+             "idle_full": 0.05, "log_bait": 0.5, "random": 0.0003}   # ~1-2 samples / match: L1 pilot tunes to <= 1x rollouts
+DEFAULTS = {"cf_horizon_ticks": 600, "cf_k": 2, "cf_w": 1.0, "cf_clip": 3.0, "cf_max_alts": 3, "cf_gap_ticks": 100,
+            "cf_cap_ticks": 8000, "cf_audit_p": 0.1, "cf_end_ticks": 1200, "cf_shrink": True, "cf_shrink_min": 30,
+            "cf_p": None, "cf_random_alts": 2, "cf_rocket_min_value": 2.0, "cf_siege_radius_tiles": 2.0,
+            "cf_front_min_tiles": 5.0, "cf_front_max_tiles": 8.0, "cf_xbow_fail_window_ticks": 600, "cf_full_elixir": 9.9}
+KEYS = ("cf_credit",) + tuple(DEFAULTS)
+INTS = ("cf_horizon_ticks", "cf_k", "cf_max_alts", "cf_gap_ticks", "cf_cap_ticks", "cf_end_ticks", "cf_shrink_min",
+        "cf_random_alts", "cf_xbow_fail_window_ticks")
+END_TICK = 6000                       # royale_env: normal play stops at tick 6000 (2 min overtime)
+SIEGE_NAMES = ("xbow", "mortar")
+WINCON = frozenset(("giant", "golem", "royalgiant", "hogrider", "ramrider", "battleram", "balloon", "lavahound",
+                    "elixirgolem", "goblingiant", "electrogiant", "wallbreakers", "royalhogs", "skeletonbarrel",
+                    "runegiant"))  # ponytail: hand list of building-targeting troops; a catalogue target flag replaces it
+NO_BUILDING_DAMAGE = ("tornado",)     # ponytail: icebow's one spell that cannot hurt a building
+TERRITORY_Y_TILES = 17.0              # my frame: own troop territory starts at row 17; ponytail: an opened pocket is not used
+PHI_MODES = ("none", "tower_phat")   # shapings whose Phi the forks compute (reward_shaping.state_record / state_phi)
+FORK_FRESH = ("traj",)                # side attributes a fork starts empty (search_s0.fork_into ``fresh``)
+TILE = 18000.0                        # RoyaleSim units per tile
+
+
+def _num(v) -> bool:
+    return isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v)
+
+
+def cf_cfg(cfg: dict) -> Optional[dict]:
+    """The cf keys of a config, validated (SystemExit naming the bad key): None when ``cf_credit`` is absent / null / false
+    (the other cf keys must then be unset), else {key: value} with DEFAULTS filled (``cf_p`` merged over P_DEFAULT). Needs
+    advantage gae, gae_gamma_unit tick and league; refuses every path whose return the forks cannot value (any shaping,
+    spell / crown / habit terms) or whose rows the alternative rows are not wired for."""
+    on = cfg.get("cf_credit")
+    if on is None or on is False:
+        stray = [k for k in DEFAULTS if cfg.get(k) is not None]
+        if stray:
+            raise SystemExit(f"bad cf_credit config: {stray} set without cf_credit on")
+        return None
+    c = {k: (v if cfg.get(k) is None else cfg[k]) for k, v in DEFAULTS.items()}
+    bad = [] if on is True else [f"cf_credit must be on / off (a bool), got {on!r}"]
+    for k in INTS:
+        lo = 1 if k in ("cf_horizon_ticks", "cf_k", "cf_max_alts") else 0
+        if not (isinstance(c[k], int) and not isinstance(c[k], bool) and c[k] >= lo):
+            bad.append(f"{k} must be an integer >= {lo}, got {c[k]!r}")
+    for k in ("cf_w", "cf_rocket_min_value", "cf_front_min_tiles", "cf_full_elixir"):
+        if not (_num(c[k]) and c[k] >= 0):
+            bad.append(f"{k} must be a finite number >= 0, got {c[k]!r}")
+    for k in ("cf_clip", "cf_siege_radius_tiles", "cf_front_max_tiles"):
+        if not (_num(c[k]) and c[k] > 0):
+            bad.append(f"{k} must be a finite number > 0, got {c[k]!r}")
+    if not (_num(c["cf_audit_p"]) and 0 <= c["cf_audit_p"] <= 1):
+        bad.append(f"cf_audit_p must be in [0, 1], got {c['cf_audit_p']!r}")
+    if type(c["cf_shrink"]) is not bool:
+        bad.append(f"cf_shrink must be a bool, got {c['cf_shrink']!r}")
+    if _num(c["cf_front_min_tiles"]) and _num(c["cf_front_max_tiles"]) and c["cf_front_min_tiles"] > c["cf_front_max_tiles"]:
+        bad.append(f"cf_front_min_tiles {c['cf_front_min_tiles']} > cf_front_max_tiles {c['cf_front_max_tiles']}")
+    p = c["cf_p"] if c["cf_p"] is not None else {}
+    if not isinstance(p, dict) or any(k not in TRIGGERS for k in p) or not all(_num(v) and 0 <= v <= 1 for v in p.values()):
+        bad.append(f"cf_p must map trigger names {TRIGGERS} to probabilities in [0, 1], got {p!r}")
+        p = {}
+    if cfg.get("advantage", "match_loo") != "gae" or cfg.get("gae_gamma_unit", "row") != "tick":
+        bad.append("cf_credit needs advantage gae and gae_gamma_unit tick (the fork return uses GAE's per-tick gamma)")
+    if not cfg.get("league"):
+        bad.append("cf_credit needs league true (the forks are self-play matches)")
+    for k in ("branch_gate", "posture_head", "posture", "critic_ctx", "kl_ref_gate_max_elixir", "spell_value",
+              "habit_reward", "learner_pipeline_frac", "stored_values"):
+        if cfg.get(k) not in (None, False, 0, 0.0):
+            bad.append(f"cf_credit with {k} is not supported (its rows / rewards are not in the fork return)")
+    if cfg.get("shaping", "none") not in PHI_MODES:
+        bad.append(f"cf_credit needs shaping in {PHI_MODES} (a Phi the forks do not compute would change the return)")
+    from pipeline import reward_terms as RT
+    if any(cfg.get(k) not in (None, False) for k in RT.TERMS):
+        bad.append("cf_credit with crown terms is not supported (their rewards are not in the fork return)")
+    if bad:
+        raise SystemExit("bad cf_credit config: " + "; ".join(bad))
+    out = {k: (int(v) if k in INTS else v if k in ("cf_shrink", "cf_p") else float(v)) for k, v in c.items()}
+    out["cf_p"] = {**P_DEFAULT, **{k: float(v) for k, v in p.items()}}
+    return out
+
+
+def canonical(cfg: dict) -> dict:
+    """rl_royale.config_sha's view: off (absent / null / false) = the cf keys dropped (the historical hash); on = every
+    default filled (one hash for implicit / explicit)."""
+    if cfg.get("cf_credit") is None or cfg.get("cf_credit") is False:
+        return {k: v for k, v in cfg.items() if k not in KEYS}
+    c = {k: (v if cfg.get(k) is None else cfg[k]) for k, v in DEFAULTS.items()}
+    c["cf_p"] = {**P_DEFAULT, **{k: float(v) for k, v in (cfg.get("cf_p") or {}).items()}}
+    return {**cfg, "cf_credit": True, **{k: (int(v) if k in INTS else v if k in ("cf_shrink", "cf_p") else float(v))
+                                         for k, v in c.items()}}
+
+
+# ------------------------------------------------------------------------------------------------------
+# board reading (a prepared learner side + its decision)
+# ------------------------------------------------------------------------------------------------------
+def _norm(name) -> str:
+    from pipeline.archetypes import ALIAS
+    n = "".join(ch for ch in str(name).split("@")[0].lower() if ch.isalnum())
+    return ALIAS.get(n, n)
+
+
+def slot_names(s) -> list[str]:
+    """Normalised engine card name of each deck slot of side ``s`` (form suffix dropped)."""
+    return [_norm(s.engine_deck[s.deck_index_of_slot[k]]) for k in range(len(s.deck_index_of_slot))]
+
+
+def slot_kinds(s) -> list[str]:
+    """RoyaleSim catalogue kind (TROOP / BUILDING / SPELL ...) of each deck slot of ``s`` (cached on its env)."""
+    env = s.env
+    kinds = getattr(env, "_cf_kinds", None)
+    if kinds is None:
+        kinds = env._cf_kinds = {int(c.card_id): str(c.card_kind).upper() for c in env.core.cards()}
+    return [kinds.get(int(env.deck_ids[s.side][s.deck_index_of_slot[k]]), "") for k in range(len(s.deck_index_of_slot))]
+
+
+def _crown(es, team_pred) -> dict:
+    from royalegym.protocol import EntityKind
+    return {e.uid: e for e in es.entities if team_pred(int(e.team)) and e.hp > 0
+            and e.kind in (EntityKind.KING_TOWER, EntityKind.PRINCESS_TOWER)}
+
+
+def _dist(a, b) -> float:
+    return math.hypot(a.x - b.x, a.y - b.y) / TILE
+
+
+def siege_target(env, side: int, es=None) -> Optional[dict]:
+    """The enemy building to answer, from the engine state ``es`` (read if None): alive, team != ``side``, and locked on
+    one of ``side``'s crown towers (``target_uid``) or an X-Bow / Mortar within XBOW_REACH_TILES (centre to centre) of
+    one; locked first, then the closest. -> {uid, name, x, y (engine units), locked, princess: (x, y) of the threatened
+    princess -- the locked one, else the alive princess nearest the building; None without one} or None."""
+    from royalegym.protocol import EntityKind
+    from pipeline.decision_options import XBOW_REACH_TILES
+    es = env.core.state() if es is None else es
+    towers = _crown(es, lambda t: t == side)
+    if not towers:
+        return None
+    princesses = [t for t in towers.values() if t.kind == EntityKind.PRINCESS_TOWER]
+    best = None
+    for e in es.entities:
+        if int(e.team) == side or e.kind != EntityKind.BUILDING or e.hp <= 0:
+            continue
+        name = _norm(env.names.get(e.card_id, ""))
+        d = min(_dist(e, t) for t in towers.values())
+        tu = getattr(e, "target_uid", None)
+        locked = tu in towers
+        if not (locked or (name in SIEGE_NAMES and d <= XBOW_REACH_TILES)):
+            continue
+        key = (not locked, d)
+        if best is None or key < best[0]:
+            pr = towers[tu] if locked and towers[tu].kind == EntityKind.PRINCESS_TOWER else (
+                min(princesses, key=lambda t: _dist(e, t)) if princesses else None)
+            best = (key, {"uid": int(e.uid), "name": name, "x": float(e.x), "y": float(e.y), "locked": bool(locked),
+                          "princess": None if pr is None else (float(pr.x), float(pr.y))})
+    return None if best is None else best[1]
+
+
+def xbow_watch(st: dict, env, side: int, tick: int, es) -> None:
+    """Our X-Bows on the engine state ``es`` (one call per learner decision while any is tracked or on the board):
+    ``st["xb"]`` uid -> [reach (placed within XBOW_REACH_TILES of an alive enemy crown tower), locked (its target_uid was
+    an enemy crown tower at some decision)]; one that is gone counts in ``xb_failed`` (+ ``xb_fail_tick``) when it had
+    reach and never locked. ponytail: locks are sampled at the learner's decisions (every >= 10 ticks)."""
+    from royalegym.protocol import EntityKind
+    from pipeline.decision_options import XBOW_REACH_TILES
+    foe = _crown(es, lambda t: t != side)
+    seen = set()
+    for e in es.entities:
+        if int(e.team) != side or e.kind != EntityKind.BUILDING or e.hp <= 0 or _norm(env.names.get(e.card_id, "")) != "xbow":
+            continue
+        seen.add(int(e.uid))
+        w = st["xb"].setdefault(int(e.uid), [any(_dist(e, t) <= XBOW_REACH_TILES for t in foe.values()), False])
+        w[1] = w[1] or getattr(e, "target_uid", None) in foe
+    for uid in [u for u in st["xb"] if u not in seen]:
+        reach, locked = st["xb"].pop(uid)
+        if reach and not locked:
+            st["xb_failed"] += 1
+            st["xb_fail_tick"] = int(tick)
+
+
+def board_tiles(x: float, y: float, mirror: bool) -> tuple[float, float]:
+    """RoyaleSim engine (x, y) -> board tiles in a side's own frame (me at the bottom): obs_contract._engine_xy x (18, 32)."""
+    from pipeline.obs_contract import _engine_xy
+    bx, by = _engine_xy(float(x) / 18.0, float(y) / 18.0, mirror)
+    return bx * 18.0, by * 32.0
+
+
+def raw_tiles(e: dict, mirror: bool) -> tuple[float, float]:
+    """A raw (royale_env.raw) row's x, y -> board tiles in a side's own frame."""
+    from pipeline.obs_contract import _engine_xy
+    bx, by = _engine_xy(float(e["x"]), float(e["y"]), mirror)
+    return bx * 18.0, by * 32.0
+
+
+def siege_cells(bx: float, by: float, grid: str, kind: str, name: str, radius: float) -> np.ndarray:
+    """[2304] bool candidate cells for a card answering a unit at board tiles (bx, by): the Rocket -- cells within
+    ``radius`` of it that do not cover the enemy king; any other card -- own-territory cells within ``radius`` of the
+    territory's nearest point to it."""
+    from pipeline import decision_options as DO
+    x, y = DO.cell_centres_tiles(grid)
+    d = np.hypot(x - bx, y - by)
+    if "SPELL" in kind and name == "rocket":
+        return (d <= radius) & ~DO.tower_cover_cells(grid, DO.rocket_radius_tiles())[0]
+    own = y >= TERRITORY_Y_TILES
+    return own & (d <= d[own].min() + radius)
+
+
+def front_cells(px: float, py: float, grid: str, lo: float, hi: float) -> np.ndarray:
+    """[2304] bool own-territory cells of the lane of my princess at board tiles (px, py), nearer the river than it
+    (smaller y: forward is DECREASING y in my frame), lo..hi tiles from it."""
+    from pipeline import decision_options as DO
+    x, y = DO.cell_centres_tiles(grid)
+    d = np.hypot(x - px, y - py)
+    return (y >= TERRITORY_Y_TILES) & ((x < 9.0) == (px < 9.0)) & (y < py) & (d >= lo) & (d <= hi)
+
+
+def xbow_reach_cells(s, grid: str) -> np.ndarray:
+    """[2304] bool own-territory cells within XBOW_REACH_TILES of an alive enemy crown tower (side ``s``'s frame)."""
+    from pipeline import decision_options as DO
+    x, y = DO.cell_centres_tiles(grid)
+    reach = np.zeros(len(x), dtype=bool)
+    for t in s.state["episode"]["crown_towers"]:
+        if int(t["side"]) != s.side and not t.get("destroyed") and t["hp"] > 0:
+            tx, ty = raw_tiles(t, s.mirror)
+            reach |= np.hypot(x - tx, y - ty) <= DO.XBOW_REACH_TILES
+    return reach & (y >= TERRITORY_Y_TILES)
+
+
+def own_elixir(s) -> float:
+    return float(next(pl for pl in s.state["players"] if int(pl["side"]) == s.side)["elixir_exact"])
+
+
+def bait_seen(m) -> bool:
+    """The opponent has played a log-bait card (archetypes.BAIT) by now: every play is public once it lands."""
+    from pipeline.archetypes import BAIT
+    return any(_norm(c) in BAIT for _, c in getattr(m.opp, "accepted", ()))
+
+
+# ------------------------------------------------------------------------------------------------------
+# log-probs + candidates
+# ------------------------------------------------------------------------------------------------------
+def gate_logprob(z_gate: float, d: dict, cfg: dict, play: bool = True) -> float:
+    """log P(gate open / closed) under the sampler (decision_options.decide, decode sample): sigmoid((z - logit(tau_row)) /
+    T_gate), tau_row = the row's own gate_tau (tau_phase) else cfg tau, overflow-safe; 0.0 for a row whose gate was not
+    sampled."""
+    if not d.get("gate_sampled"):
+        return 0.0
+    tau = float(d.get("gate_tau", cfg["tau"]))
+    T_gate = float(cfg.get("T_gate") or cfg.get("T", 0.5))
+    x = (float(z_gate) - math.log(tau / (1.0 - tau))) / T_gate
+    return -float(np.logaddexp(0.0, -x if play else x))
+
+
+def _card_lp(heads, d: dict, T: float) -> np.ndarray:
+    import torch
+    with torch.no_grad():
+        allowed = torch.from_numpy(np.asarray(d["allowed"], bool)).to(heads["card"].device)
+        cl = heads["card"][0].clone().masked_fill(~allowed, float("-inf"))
+        return torch.log_softmax(cl.double() / T, dim=-1).cpu().numpy()
+
+
+def alt_logprobs(model, enc, heads, d: dict, slot: int, cell: int, cfg: dict, cell_logits=None) -> dict:
+    """The behaviour policy's log-probs of PLAYING (slot, cell) -- or, slot < 0, of WAITING -- at a decision with forward
+    (enc, heads) of ONE row and decision dict ``d`` (allowed, gate_sampled, gate_tau): the sampler's float64 tempered
+    distributions (card softmax over allowed / T, cell softmax over 2304 / T), which rl_royale.policy_terms recomputes."""
+    import torch
+    z = float(heads["gate"].detach().cpu().numpy().astype(np.float64).reshape(-1)[0])
+    if slot < 0:
+        return {"lp_gate": gate_logprob(z, d, cfg, play=False), "lp_card": 0.0, "lp_cell": 0.0}
+    T = float(cfg.get("T", 0.5))
+    with torch.no_grad():
+        if cell_logits is None:
+            cell_logits = model.cell_logits(enc, torch.tensor([int(slot)], device=heads["card"].device))[0]
+        px = torch.log_softmax(cell_logits.double() / T, dim=-1).cpu().numpy()
+    return {"lp_gate": gate_logprob(z, d, cfg), "lp_card": float(_card_lp(heads, d, T)[int(slot)]),
+            "lp_cell": float(px[int(cell)])}
+
+
+def forward_one(s):
+    """(enc, heads) of side ``s``'s decision row as the decide saw it (its ``_gen_row`` / ``_obs``; nothing re-observed)."""
+    from pipeline import e1_eval as E
+    model = s.model
+    if isinstance(model, E.GenPolicy):
+        enc, heads, _, _ = model.forward_batch([s._gen_row], s.cfg["device"])
+    else:
+        enc, heads, _, _ = E.model_forward_batch(model, *zip(*[s._obs]), device=s.cfg["device"])
+    return enc, heads
+
+
+def _slot_of(names, allowed, card) -> Optional[int]:
+    return next((k for k in range(len(names)) if names[k] == card and allowed[k]), None)
+
+
+class _Pol:
+    """The decision's forward (computed once, on first use) + the policy's per-card cell logits (cached)."""
+
+    def __init__(self, s, d):
+        self.s, self.d, self._f, self._cl = s, d, None, {}
+
+    def f(self):
+        if self._f is None:
+            self._f = forward_one(self.s)
+        return self._f
+
+    def cl(self, slot: int):
+        import torch
+        if slot not in self._cl:
+            enc, heads = self.f()
+            with torch.no_grad():
+                self._cl[slot] = self.s.model.cell_logits(enc, torch.tensor([slot], device=heads["card"].device))[0]
+        return self._cl[slot]
+
+    def best_card(self, ok) -> Optional[int]:
+        """The allowed slot (``ok`` mask) with the highest card logit, or None."""
+        ok = np.asarray(ok, bool) & np.asarray(self.d["allowed"], bool)
+        if not ok.any():
+            return None
+        z = self.f()[1]["card"][0].detach().double().cpu().numpy()
+        return int(np.flatnonzero(ok)[np.argmax(z[ok])])
+
+    def cand(self, kind: str, slot: int, where) -> Optional[dict]:
+        """A play of ``slot`` at ``where`` (a cell, a [2304] mask -> the policy's argmax inside, "argmax"), or a wait
+        (slot < 0), with its behaviour log-probs; None when the mask is empty."""
+        import torch
+        from pipeline import decision_options as DO
+        enc, heads = self.f()
+        if slot < 0:
+            return {"kind": kind, "play": False, "slot": -1, "cell": -1,
+                    **alt_logprobs(self.s.model, enc, heads, self.d, -1, -1, self.s.cfg)}
+        cl = self.cl(slot)
+        if isinstance(where, tuple):                       # ("clump", eligible): rocket_value_cell's aim inside the blast
+            cell = DO.rocket_value_cell(cl, where[1])
+        elif isinstance(where, str):
+            cell = int(cl.argmax())
+        elif isinstance(where, (int, np.integer)):
+            cell = int(where)
+        else:
+            if not where.any():
+                return None
+            cell = int(cl.masked_fill(~torch.from_numpy(where).to(cl.device), float("-inf")).argmax())
+        if not math.isfinite(float(cl[cell])):
+            return None
+        return {"kind": kind, "play": True, "slot": int(slot), "cell": int(cell),
+                **alt_logprobs(self.s.model, enc, heads, self.d, slot, cell, self.s.cfg, cell_logits=cl)}
+
+
+def sampled_alts(pol: _Pol, n: int, rng, seen: set) -> list[dict]:
+    """``n`` actions drawn from the behaviour policy itself (gate, then card, then cell; tempered as the sampler), each
+    distinct from ``seen`` (20 draws at most per action), with the cf RNG (never the policy's streams)."""
+    import torch
+    s, d = pol.s, pol.d
+    enc, heads = pol.f()
+    T = float(s.cfg.get("T", 0.5))
+    z = float(heads["gate"].detach().cpu().numpy().astype(np.float64).reshape(-1)[0])
+    p_open = math.exp(gate_logprob(z, d, s.cfg)) if d.get("gate_sampled") else 1.0
+    pc = np.exp(_card_lp(heads, d, T))
+    out = []
+    for _ in range(n):
+        for _try in range(20):
+            if rng.random() >= p_open:
+                key = (-1, -1)
+            else:
+                slot = int(rng.choice(len(pc), p=pc / pc.sum()))
+                with torch.no_grad():
+                    px = torch.softmax(pol.cl(slot).double() / T, dim=-1).cpu().numpy()
+                key = (slot, int(rng.choice(len(px), p=px / px.sum())))
+            if key not in seen:
+                seen.add(key)
+                a = pol.cand("sampled", key[0], key[1])
+                if a is not None:
+                    out.append(a)
+                break
+    return out
+
+
+def candidates(m, s, d: dict, trig: str, c: dict) -> list[dict]:
+    """[chosen] + the alternatives of trigger ``trig`` at learner side ``s``'s decision ``d`` (prepared, decided, not
+    applied), distinct actions, at most cf_max_alts alternatives (module docstring)."""
+    from pipeline import decision_options as DO
+    allowed = np.asarray(d["allowed"], bool)
+    names, kinds = slot_names(s), slot_kinds(s)
+    grid = s.cfg["grid"]
+    rk, xk = _slot_of(names, allowed, "rocket"), _slot_of(names, allowed, "xbow")
+    troop = np.array(["SPELL" not in k for k in kinds])
+    chosen = {"kind": "chosen", "play": bool(d["play"]), "slot": int(d["slot"]) if d["play"] else -1,
+              "cell": int(d["cell"]) if d["play"] else -1, "lp_gate": float(d["lp_gate"]),
+              "lp_card": float(d["lp_card"]), "lp_cell": float(d["lp_cell"])}
+    pol = _Pol(s, d)
+    seen = {(chosen["slot"], chosen["cell"])}
+    if trig == "random":
+        return [chosen] + sampled_alts(pol, c["cf_random_alts"], m.cf_state["rng"], seen)
+    want = []                                             # (kind, slot, where); slot -1 = wait
+    if d["play"] and trig in ("rocket_played", "wincon", "siege", "xbow_after_fail", "xbow", "log_bait"):
+        want.append(("wait", -1, None))
+    if trig == "rocket_played":
+        sc = pol.best_card(np.arange(len(names)) != int(d["slot"]))
+        if sc is not None:
+            want.append(("second_card", sc, "argmax"))
+    if trig in ("rocket", "xbow_after_fail") and rk is not None:
+        bs = s._cur[1]
+        if trig == "rocket":
+            value, elig = DO.best_rocket_clump(DO.rocket_bodies(bs, "cost"), grid, "edge", None, 0.0,
+                                               towers=DO.enemy_princesses_alive(bs))
+            if elig is not None and value >= c["cf_rocket_min_value"]:
+                want.append(("rocket_clump", rk, ("clump", elig)))
+        hps = DO.enemy_princess_hps(s.state["episode"]["crown_towers"], s.side)
+        if hps:
+            want.append(("rocket_princess", rk, DO.lethal_rocket_cell(min(hps, key=lambda k: (hps[k], k)), grid)))
+    if trig in ("wincon", "siege"):
+        tg = m.cf_state["target"]
+        bx, by = tg["bx"], tg["by"]
+        if rk is not None:
+            want.append(("rocket_on", rk, siege_cells(bx, by, grid, "SPELL", "rocket", c["cf_siege_radius_tiles"])))
+        ok = troop & np.array([n not in NO_BUILDING_DAMAGE for n in names])
+        tk = pol.best_card(ok)
+        if trig == "siege" and tg.get("princess") is not None and tk is not None:
+            want.append(("front", tk, front_cells(*tg["princess"], grid, c["cf_front_min_tiles"],
+                                                    c["cf_front_max_tiles"])))
+        if tk is not None:
+            want.append(("troop_on", tk, siege_cells(bx, by, grid, kinds[tk], names[tk], c["cf_siege_radius_tiles"])))
+        costs = getattr(s, "costs", None)
+        if trig == "wincon" and costs is not None and (ok & allowed).any():
+            ch = int(min(np.flatnonzero(ok & allowed), key=lambda k: (costs[k], k)))
+            if ch != tk:
+                want.append(("cheap_on", ch, siege_cells(bx, by, grid, kinds[ch], names[ch], c["cf_siege_radius_tiles"])))
+    if trig in ("xbow_after_fail", "xbow") and xk is not None:
+        reach = xbow_reach_cells(s, grid)
+        x, y = DO.cell_centres_tiles(grid)
+        want.append(("xbow_defensive", xk, (y >= TERRITORY_Y_TILES) & ~reach))
+        if trig == "xbow" and d["play"]:
+            want.append(("xbow_other_lane", xk, reach & ((x < 9.0) != (x[int(d["cell"])] < 9.0))))
+        if trig == "xbow_after_fail":
+            want.append(("xbow_reach", xk, reach))
+    if trig == "idle_full":
+        b = pol.best_card(np.ones(len(names), bool))
+        if b is not None:
+            want.append(("play_now", b, "argmax"))
+    out = [chosen]
+    for kind, slot, where in want:
+        if len(out) > c["cf_max_alts"]:
+            break
+        a = pol.cand(kind, slot, where)
+        if a is not None and (a["slot"], a["cell"]) not in seen:
+            seen.add((a["slot"], a["cell"]))
+            out.append(a)
+    return out
+
+
+# ------------------------------------------------------------------------------------------------------
+# triggers + the actor's runner
+# ------------------------------------------------------------------------------------------------------
+def new_state(s) -> dict:
+    """A match's cf bookkeeping (on the real SelfPlayMatch as ``cf_state``): a trigger RNG of its own (the policy's
+    streams are never drawn), last sample tick per trigger, X-Bow watch, the samples, costs."""
+    seed = zlib.crc32(f"{s.tag}:cf:{s.k}:{int(s.cfg.get('rollout_index', 0))}:{int(s.cfg.get('update', 0))}".encode())
+    return {"seed": seed, "rng": np.random.default_rng(seed), "n": Counter(), "capped": Counter(), "fired": Counter(),
+            "last": {}, "target": None, "xb": {}, "xb_failed": 0, "xb_fail_tick": -10 ** 9, "samples": [],
+            "wall_s": 0.0, "fork_ticks": 0, "decisions": 0, "k": int((s.cfg.get("cf") or {}).get("cf_k", 2))}
+
+
+def match_record(st: dict) -> dict:
+    """SelfPlayMatch.result()'s ``cf`` entry (picklable, JSON-able)."""
+    return {"samples": st["samples"], "wall_s": round(st["wall_s"], 3), "triggers": dict(st["n"]),
+            "fired": dict(st["fired"]), "capped": dict(st["capped"]), "decisions": st["decisions"],
+            "fork_ticks": st["fork_ticks"], "xbow_failed": st["xb_failed"], "k": st["k"]}
+
+
+def triggers(m, s, d: dict, c: dict) -> list[str]:
+    """The triggers firing at learner decision ``d`` of match ``m``, in TRIGGERS order (draws only the match's own cf
+    RNG). Keeps the X-Bow watch current at every decision; reads the engine state only when an enemy building or one of
+    our X-Bows is on the board. Sets ``m.cf_state["target"]`` for wincon / siege."""
+    st, env, tick = m.cf_state, m.env, int(s._cur[0])
+    ents = s.state["entities"]
+    es = None
+    if st["xb"] or any(int(e["side"]) == s.side and _norm(e.get("name", "")) == "xbow" for e in ents):
+        es = env.core.state()
+        xbow_watch(st, env, s.side, tick, es)
+    allowed = np.asarray(d["allowed"], bool)
+    if d.get("forced") or not d.get("gate_sampled") or not allowed.any():
+        return []
+    names = slot_names(s)
+    rk, xk = _slot_of(names, allowed, "rocket"), _slot_of(names, allowed, "xbow")
+    played = names[int(d["slot"])] if d["play"] else None
+    cond = {"rocket_played": played == "rocket", "rocket": rk is not None and played != "rocket",
+            "xbow_after_fail": xk is not None and st["xb_failed"] > 0
+            and tick - st["xb_fail_tick"] <= c["cf_xbow_fail_window_ticks"],
+            "xbow": played == "xbow" and bool(xbow_reach_cells(s, s.cfg["grid"])[int(d["cell"])]),
+            "idle_full": not d["play"] and own_elixir(s) >= c["cf_full_elixir"],
+            "log_bait": played == "log" and bait_seen(m), "random": True}
+    wc = [e for e in ents if int(e["side"]) != s.side and _norm(e.get("name", "")) in WINCON]
+    wc = [(e, raw_tiles(e, s.mirror)) for e in wc]
+    wc = [(e, xy) for e, xy in wc if xy[1] >= 16.0]       # on our half (my frame: forward = decreasing y)
+    cond["wincon"] = bool(wc)
+    sg = None
+    if any(int(e["side"]) != s.side and int(e.get("kind", -1)) in (1, 12) for e in ents):
+        sg = siege_target(env, s.side, es)
+    cond["siege"] = sg is not None
+    out = []
+    for t in TRIGGERS:
+        if cond[t] and tick - st["last"].get(t, -10 ** 9) >= c["cf_gap_ticks"] and st["rng"].random() < c["cf_p"][t]:
+            out.append(t)
+    if "wincon" in out:                                   # the deepest one into our half (largest y)
+        e, (bx, by) = max(wc, key=lambda z: z[1][1])
+        st["wincon_target"] = {"name": _norm(e["name"]), "bx": bx, "by": by}
+    if "siege" in out:
+        bx, by = board_tiles(sg["x"], sg["y"], s.mirror)
+        st["siege_target"] = {**sg, "bx": bx, "by": by,
+                              "princess": None if sg["princess"] is None else board_tiles(*sg["princess"], s.mirror)}
+    st["fired"].update(out)
+    return out
+
+
+def reward(word: str) -> float:
+    return {"win": 1.0, "loss": -1.0}.get(word, 0.0)
+
+
+def reseed(f, seed: int, k: int) -> None:
+    """Continuation ``k``'s common random numbers: every top-level numpy Generator / random.Random of both fork sides
+    replaced by one seeded from (seed, k, side, attribute) -- the same for every candidate of the sample. ponytail: RNGs
+    nested inside sub-objects and the engine's own stay copied (common to all k: a little less noise between k)."""
+    for s in (f.learner, f.opp):
+        for name, v in list(s.__dict__.items()):
+            if isinstance(v, (np.random.Generator, random.Random)):
+                h = zlib.crc32(f"{seed}:{k}:{s.side}:{name}".encode())
+                s.__dict__[name] = np.random.default_rng(h) if isinstance(v, np.random.Generator) else random.Random(h)
+
+
+class Runner:
+    """One per ``e1_eval.run_selfplay_batch`` call with cfg["cf"] (the actor): ``hook(live, todo)`` after every round's
+    decide, before any apply. ``make_env`` = the batch's own env factory (forks run on pooled copies of it). ``phi`` =
+    the state potential of the return (None = 0; see the module docstring)."""
+
+    def __init__(self, make_env, c: dict, phi=None):
+        self.make_env, self.c, self.phi = make_env, c, phi
+        self.pool: list = []
+        self.last_forks: list = []                        # the last fork set (tests)
+
+    def hook(self, live, todo) -> None:
+        by = {id(m.learner): m for m in live}
+        c = self.c
+        for s, p, d in todo:
+            m = by.get(id(s))
+            if m is None:
+                continue
+            t0 = time.perf_counter()
+            if getattr(m, "cf_state", None) is None:
+                m.cf_state = new_state(s)
+            st = m.cf_state
+            st["decisions"] += 1
+            cands, trig = None, None
+            for t in triggers(m, s, d, c):
+                if t in ("wincon", "siege"):
+                    st["target"] = st[f"{t}_target"]
+                cands = candidates(m, s, d, t, c)
+                if len(cands) > 1:
+                    trig = t
+                    break
+            tick = int(s._cur[0])
+            to_end = tick >= END_TICK - c["cf_end_ticks"]
+            if trig is not None:
+                est = c["cf_k"] * len(cands) * (max(END_TICK - tick, 1) if to_end else c["cf_horizon_ticks"])
+                if st["fork_ticks"] + est > c["cf_cap_ticks"]:
+                    st["capped"][trig] += 1
+                    trig = None
+            if trig is None:
+                st["wall_s"] += time.perf_counter() - t0
+                continue
+            st["n"][trig] += 1
+            st["last"][trig] = tick
+            audit = bool(st["rng"].random() < c["cf_audit_p"]) and not to_end
+            entries = [(x, px, dx) for x, px, dx in todo if x is m.learner or x is m.opp]
+            seed = zlib.crc32(f"{st['seed']}:{len(st['samples'])}".encode())
+            res = self.rollouts(m, entries, cands, seed, audit)
+            for a, r in zip(cands, res["cands"]):
+                a.update(r)
+            st["fork_ticks"] += res["fork_ticks"]
+            wall = time.perf_counter() - t0
+            st["wall_s"] += wall
+            st["samples"].append({"row": len(s.traj), "tick": tick, "trigger": trig, "audit": audit,
+                                  "to_end": to_end, "cands": cands, "fork_ticks": res["fork_ticks"],
+                                  "wall_s": round(wall, 3),
+                                  "target": dict(st["target"]) if trig in ("wincon", "siege") else None})
+
+    def phi_of(self, x) -> float:
+        """Phi(s) of a stopped learner side: ``self.phi`` (tests) or the config's state potential (cf["phi_mode"]), else 0."""
+        if self.phi is not None:
+            return float(self.phi(x))
+        mode = self.c.get("phi_mode")
+        if not mode:
+            return 0.0
+        from pipeline import reward_shaping as RS
+        row = RS.state_record(mode, x.state, x.side, x.env, {})
+        return float(RS.state_phi(mode, [row], self.c.get("phi_params") or {})[0])
+
+    def _q(self, sides, ticks, root) -> list[float]:
+        """gamma^(t - root) (Phi + v_scale v_net) at each stopped learner side (prepared, at its decision tick)."""
+        import torch
+        from pipeline import e1_eval as E
+        from pipeline.rl_royale import value_scalar
+        model, dev = sides[0].model, sides[0].cfg["device"]
+        if isinstance(model, E.GenPolicy):
+            enc, _, _, _ = model.forward_batch([x.gen_row(model) for x in sides], dev)
+            net = model.model
+        else:
+            enc, _, _, _ = E.model_forward_batch(model, *zip(*[x._obs for x in sides]), device=dev)
+            net = model
+        with torch.no_grad():
+            v = value_scalar(net.value_head(enc["g"])).cpu().numpy()
+        g, sc = float(self.c.get("gamma_tick", 1.0)), float(self.c.get("v_scale", 1.0))
+        return [g ** (t - root) * (self.phi_of(x) + sc * float(vi))
+                for x, t, vi in zip(sides, ticks, v)]
+
+    def rollouts(self, m, entries, cands, seed: int, audit: bool = False) -> dict:
+        """Fork ``m`` (its due sides prepared and decided as ``entries`` [(side, p, decision)], nothing applied) into K x C
+        copies (continuation-major; k >= 1 reseeded by ``reseed``), apply the root (the learner's decision replaced by each
+        candidate's action), then lockstep rounds (``e1_eval.selfplay_decide`` over every copy's due sides) until each
+        copy's learner decides at >= root + horizon (-> ``_q``) or its match ends (-> gamma^(T - root) R_win). ``audit``:
+        the continuation-0 copies run on to the match end (``q_end``; their ``q`` stays the horizon value). ``m`` is never
+        touched (its engine is only read by save_state). -> {"cands": [{q, end, terminal, q_end}], "fork_ticks"}."""
+        from pipeline import e1_eval as E
+        from pipeline.search_s0 import fork_into
+        c, env, L = self.c, m.env, m.learner
+        K, C = c["cf_k"], len(cands)
+        while len(self.pool) < K * C:
+            self.pool.append(self.make_env())
+        blob = env.core.save_state()
+        root = int(env.tick)
+        stop = 10 ** 9 if root >= END_TICK - c["cf_end_ticks"] else root + c["cf_horizon_ticks"]
+        g = float(c.get("gamma_tick", 1.0))
+        forks, meta = [], []
+        for k in range(K):
+            for i, a in enumerate(cands):
+                f = fork_into(m, self.pool[len(forks)], blob, fresh=FORK_FRESH)
+                if k:
+                    reseed(f, seed, k)
+                for s, p, d in entries:
+                    if s is not L:
+                        f.opp.apply(p, dict(d))
+                    elif i == 0:
+                        f.learner.apply(p, dict(d))
+                    else:                                     # (a decided second play belongs to the decision's card)
+                        f.learner.apply(p, {**{x: v for x, v in d.items() if x != "follow_ups"}, "play": a["play"],
+                                            "slot": a["slot"], "cell": a["cell"], "why": "cf", "lp_gate": a["lp_gate"],
+                                            "lp_card": a["lp_card"], "lp_cell": a["lp_cell"]})
+                forks.append(f)
+                meta.append((i, k))
+        out = [{"q": [None] * K, "end": [None] * K, "terminal": [None] * K, "q_end": None} for _ in cands]
+        extend = {fi for fi, (i, k) in enumerate(meta) if audit and k == 0}
+        active, done_h = list(range(len(forks))), set()
+        while active:
+            due, stopping = [], []
+            for fi in list(active):
+                f = forks[fi]
+                i, k = meta[fi]
+                got = f.due()
+                if not got:                                   # over: the terminal reward
+                    T = int(f.env.tick)
+                    q = g ** (T - root) * reward(f.learner._outcome()[0])
+                    if fi in done_h:
+                        out[i]["q_end"] = q
+                    else:
+                        out[i]["q"][k], out[i]["end"][k], out[i]["terminal"][k] = q, T, True
+                        if fi in extend:
+                            out[i]["q_end"] = q
+                    active.remove(fi)
+                    continue
+                for s in got:
+                    s.prepare()
+                if f.learner in got and int(f.env.tick) >= stop and fi not in done_h:
+                    stopping.append(fi)
+                    if fi not in extend:
+                        active.remove(fi)
+                        continue
+                    done_h.add(fi)
+                due += got
+            if stopping:
+                qs = self._q([forks[fi].learner for fi in stopping], [int(forks[fi].env.tick) for fi in stopping], root)
+                for fi, q in zip(stopping, qs):
+                    i, k = meta[fi]
+                    out[i]["q"][k], out[i]["end"][k], out[i]["terminal"][k] = float(q), int(forks[fi].env.tick), False
+            if due:
+                for s, p, d in E.selfplay_decide(due):
+                    s.apply(p, d)
+        self.last_forks = forks
+        return {"cands": out, "fork_ticks": int(sum(int(f.env.tick) - root for f in forks))}
+
+
+# ------------------------------------------------------------------------------------------------------
+# the learner side (pure numpy: shared with the fast loop)
+# ------------------------------------------------------------------------------------------------------
+def sample_adv(cands: list[dict]) -> np.ndarray:
+    """[C, K] per-continuation advantages A[i, k] = q[i, k] - mean_j q[j, k] (the K continuations are CRN-paired across
+    candidates). The training advantage is the row mean, = Q_i - mean_j Q_j."""
+    q = np.asarray([a["q"] for a in cands], dtype=np.float64)
+    return q - q.mean(axis=0, keepdims=True)
+
+
+def reliability(advs: list[np.ndarray]) -> dict:
+    """Over [C, K] advantage arrays (one trigger, one batch): signal var = mean covariance between two different
+    continuations' advantages (each candidate a draw), total = var of the K-mean. -> {n (candidate values), factor =
+    clip(signal / total, 0, 1) (the empirical-Bayes shrink of the K-mean toward 0), snr = sqrt(signal / noise) of the
+    K-mean (noise = total - signal), r_split (K = 2: the correlation of the two continuations' advantages)}."""
+    if not advs:
+        return {"n": 0, "factor": None, "snr": None, "r_split": None}
+    A = np.concatenate(advs, axis=0)
+    n, K = A.shape
+    out = {"n": int(n), "factor": None, "snr": None, "r_split": None}
+    if K < 2 or n < 3:
+        return out
+    m = A.mean(axis=1)
+    total = float(np.mean(m ** 2))                     # advantages are centred per sample: mean 0 by construction
+    sig = float(np.mean([np.mean(A[:, a] * A[:, b]) for a in range(K) for b in range(K) if a != b]))
+    out["factor"] = float(np.clip(sig / total, 0.0, 1.0)) if total > 0 else 0.0
+    noise = total - sig
+    out["snr"] = float(math.sqrt(max(sig, 0.0) / noise)) if noise > 0 else (math.inf if sig > 0 else 0.0)
+    if K == 2:
+        sd = math.sqrt(float(np.mean(A[:, 0] ** 2)) * float(np.mean(A[:, 1] ** 2)))
+        out["r_split"] = float(np.mean(A[:, 0] * A[:, 1]) / sd) if sd > 0 else None
+    return out
+
+
+def batch_advantages(samples: list[dict], c: dict) -> tuple[list[np.ndarray], dict]:
+    """The used samples of one batch -> (per sample the [C] training advantage, shrunk by its trigger's reliability
+    factor when cf_shrink and the trigger has >= cf_shrink_min candidate values, else by the pooled factor when that has
+    them, else unshrunk), {trigger: reliability}."""
+    adv = [sample_adv(s["cands"]) for s in samples]
+    by: dict = {}
+    for s, a in zip(samples, adv):
+        by.setdefault(s["trigger"], []).append(a)
+    rel = {t: reliability(v) for t, v in sorted(by.items())}
+    pooled = reliability(adv)
+    out = []
+    for s, a in zip(samples, adv):
+        f = 1.0
+        if c.get("cf_shrink", True):
+            r = rel[s["trigger"]]
+            if r["n"] >= c["cf_shrink_min"] and r["factor"] is not None:
+                f = r["factor"]
+            elif pooled["n"] >= c["cf_shrink_min"] and pooled["factor"] is not None:
+                f = pooled["factor"]
+        out.append(f * a.mean(axis=1))
+    return out, {**rel, "_pooled": pooled}
+
+
+def slope_audit(samples: list[dict]) -> dict:
+    """The critic-slope audit over audit samples: OLS slope of the terminal return (q_end) on the horizon return (the
+    continuation-0 q) over candidates that stopped at the horizon (not terminal), levels and within-sample differences
+    (candidate i minus candidate 0). PLAN band [0.7, 1.3]."""
+    x, y, dx, dy = [], [], [], []
+    for s in samples:
+        if not s.get("audit"):
+            continue
+        cs = [a for a in s["cands"] if a.get("q_end") is not None and not a["terminal"][0]]
+        x += [a["q"][0] for a in cs]
+        y += [a["q_end"] for a in cs]
+        if len(cs) == len(s["cands"]) and len(cs) > 1:
+            dx += [a["q"][0] - cs[0]["q"][0] for a in cs[1:]]
+            dy += [a["q_end"] - cs[0]["q_end"] for a in cs[1:]]
+
+    def ols(a, b):
+        a, b = np.asarray(a, float), np.asarray(b, float)
+        if len(a) < 3 or a.var() == 0:
+            return {"n": int(len(a)), "slope": None, "se": None}
+        sl = float(np.cov(a, b, bias=True)[0, 1] / a.var())
+        res = b - b.mean() - sl * (a - a.mean())
+        se = float(math.sqrt(float(np.sum(res ** 2)) / (len(a) - 2) / (len(a) * a.var())))
+        return {"n": int(len(a)), "slope": sl, "se": se}
+    return {"levels": ols(x, y), "diffs": ols(dx, dy)}
+
+
+def _agg(v) -> dict:
+    v = np.asarray(v, dtype=np.float64)
+    return {"n": int(len(v)), "a_mean": float(v.mean()) if len(v) else None,
+            "a_abs_mean": float(np.abs(v).mean()) if len(v) else None,
+            "pos_share": float((v > 0).mean()) if len(v) else None}
+
+
+def batch_stats(results: list[dict], used: list[dict], adv: list[np.ndarray], rel: dict, rows_added: int) -> dict:
+    """Per-update cf monitors: matches with / without a cf record (without = an actor that ran no cf code), samples per
+    trigger (fired / capped too), the training advantage (after shrink, value units) of the chosen action and of the
+    alternatives by kind, the per-trigger reliability (n = candidate values), fork ticks per match tick (the cost in
+    engine ticks) and fork wall seconds per match, the audit slopes."""
+    recs = [r["cf"] for r in results if "cf" in r]
+    trig, fired, capped = Counter(), Counter(), Counter()
+    for x in recs:
+        trig.update(x["triggers"])
+        fired.update(x.get("fired", {}))
+        capped.update(x.get("capped", {}))
+    chosen = [float(a[0]) for a in adv]
+    by_kind: dict = {}
+    for s, a in zip(used, adv):
+        for cnd, ai in zip(s["cands"][1:], a[1:]):
+            by_kind.setdefault(cnd["kind"], []).append(float(ai))
+    allsamples = [smp for x in recs for smp in x["samples"]]
+    mt = sum(int(r.get("end_tick") or 0) for r in results if "cf" in r)
+    ft = sum(int(x.get("fork_ticks", 0)) for x in recs)
+    wall = [x["wall_s"] for x in recs]
+    return {"matches": len(recs), "matches_missing": len(results) - len(recs), "triggers": dict(trig),
+            "fired": dict(fired), "capped": dict(capped), "samples": len(allsamples), "used": len(used),
+            "rows": int(rows_added), "chosen": _agg(chosen), "by_kind": {k: _agg(v) for k, v in sorted(by_kind.items())},
+            "reliability": rel, "fork_ticks_per_match_tick": ft / mt if mt else None,
+            "wall_s_per_match": float(np.mean(wall)) if wall else None, "audit": slope_audit(allsamples)}
+    # (no share of the matches' own wall_s: in-flight matches interleave, so a match's wall counts the others' time)

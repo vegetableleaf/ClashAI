@@ -2170,6 +2170,9 @@ class SelfPlayMatch:
             r["crown"] = self.crown.result()
         if getattr(self, "habit", None) is not None:          # habit_track: habit_terms.HabitTracker.result
             r["habit"] = self.habit.result(self.learner)
+        if getattr(self, "cf_state", None) is not None:       # rl_royale cf_credit: the fork samples (cf_credit.Runner)
+            from pipeline.cf_credit import match_record
+            r["cf"] = match_record(self.cf_state)
         return r
 
 
@@ -2215,6 +2218,11 @@ def run_selfplay_batch(make_env, learner, opponents: dict, jobs, cfg: dict, n: i
                 continue
             live.append(m)
 
+    # rl_royale cf_credit (opt-in; no cfg["cf"] = None = this loop exactly as before): SIM forks at selected learner decisions
+    cf = None
+    if cfg.get("cf"):
+        from pipeline.cf_credit import Runner
+        cf = Runner(make_env, cfg["cf"])
     fill()
     while live:
         due: list[SelfPlaySide] = []
@@ -2229,35 +2237,45 @@ def run_selfplay_batch(make_env, learner, opponents: dict, jobs, cfg: dict, n: i
         fill()
         for s in due:
             s.prepare()
-        groups: dict = {}
-        for s in due:
-            # A caller may reuse a policy object for both sides; style decode
-            # must still never enter the learner's group.
-            key = (id(s.model), "opponent_style") if "_opp_style" in s.cfg else id(s.model)
-            groups.setdefault(key, []).append(s)
-        todo = []
-        for sides in groups.values():
-            model, c = sides[0].model, sides[0].cfg
-            if isinstance(model, GenPolicy):
-                enc, heads, p, hand = model.forward_batch([s.gen_row(model) for s in sides], c["device"])
-            else:
-                enc, heads, p, hand = model_forward_batch(model, *zip(*[s._obs for s in sides]), device=c["device"])
-            pre = [s.pre(hand[r]) for r, s in enumerate(sides)]
-            allowed = np.stack([x[1] for x in pre])
-            stalled = np.array([x[2] for x in pre], dtype=bool)
-            from .decision_options import match_kwargs
-            if "_opp_style" in c:
-                from pipeline.adaptive_opponents import styled_decisions
-                decisions = styled_decisions(model, enc, heads, p, allowed, stalled, sides)
-            elif c["policy"] == "live":                     # (rl_royale C1: posture_live; no posture = unchanged)
-                ability_decide(sides, enc, c)               # rl_royale ability_head, greedy (no cfg key = no-op)
-                tau, kw = posture_live(sides, enc, c, c["tau"], match_kwargs(sides))
-                decisions = live_decide_batch(model, enc, heads, p, allowed, stalled, tau=tau, device=c["device"], **kw)
-            else:
-                decisions = sample_decide_batch(model, enc, heads, p, allowed, stalled, sides, c)
-            todo += [(s, p[r], decisions[r]) for r, s in enumerate(sides)]
+        todo = selfplay_decide(due)
+        if cf is not None:                                  # forks only: the real sides / decisions are never touched
+            cf.hook(live, todo)
         for s, pr, d in todo:
             s.apply(pr, d)
+
+
+def selfplay_decide(due) -> list:
+    """``run_selfplay_batch``'s per-round decide on PREPARED sides: ONE forward + one batched decide per policy group
+    (the learner, each frozen / styled opponent), each side on its own cfg and RNGs. -> [(side, p_gate, decision)] in
+    group order (the apply order). cf_credit's fork rollouts call it on their fork sides."""
+    groups: dict = {}
+    for s in due:
+        # A caller may reuse a policy object for both sides; style decode
+        # must still never enter the learner's group.
+        key = (id(s.model), "opponent_style") if "_opp_style" in s.cfg else id(s.model)
+        groups.setdefault(key, []).append(s)
+    todo = []
+    for sides in groups.values():
+        model, c = sides[0].model, sides[0].cfg
+        if isinstance(model, GenPolicy):
+            enc, heads, p, hand = model.forward_batch([s.gen_row(model) for s in sides], c["device"])
+        else:
+            enc, heads, p, hand = model_forward_batch(model, *zip(*[s._obs for s in sides]), device=c["device"])
+        pre = [s.pre(hand[r]) for r, s in enumerate(sides)]
+        allowed = np.stack([x[1] for x in pre])
+        stalled = np.array([x[2] for x in pre], dtype=bool)
+        from .decision_options import match_kwargs
+        if "_opp_style" in c:
+            from pipeline.adaptive_opponents import styled_decisions
+            decisions = styled_decisions(model, enc, heads, p, allowed, stalled, sides)
+        elif c["policy"] == "live":                     # (rl_royale C1: posture_live; no posture = unchanged)
+            ability_decide(sides, enc, c)               # rl_royale ability_head, greedy (no cfg key = no-op)
+            tau, kw = posture_live(sides, enc, c, c["tau"], match_kwargs(sides))
+            decisions = live_decide_batch(model, enc, heads, p, allowed, stalled, tau=tau, device=c["device"], **kw)
+        else:
+            decisions = sample_decide_batch(model, enc, heads, p, allowed, stalled, sides, c)
+        todo += [(s, p[r], decisions[r]) for r, s in enumerate(sides)]
+    return todo
 
 
 def run_liveness(env, entry: dict, cfg: dict) -> dict:
