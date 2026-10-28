@@ -75,9 +75,18 @@ log "artifacts: $n entries verified by sha256 ($(wc -l < $W/need.txt) pulled fro
 export ROYALE_RUNTIME=fin16-linux ROYALE_ENGINE=crforge ROYALE_HEROIW_FORM=hero CRFORGE_LIB=$W/crforge/lib \
   CRFORGE_TABLES=$W/crforge/tables/$TABLES OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 \
   PYTHONNOUSERSITE=1 PYTHONPATH=$CB:$W/pylib RL_BATCH_SHA=1 CUBLAS_WORKSPACE_CONFIG=:4096:8 CRFORGE_FACADE_BUILD=$W/jbuild
+# LOOP-IW (LOOP_IW.md 55fe195): every JVM gets the incubator FFI (CfAbil.EXACT = glibc exp / pow, byte-exact abilities)
+export JAVA_TOOL_OPTIONS="--add-modules=jdk.incubator.foreign --enable-native-access=ALL-UNNAMED"
 unset ROYALE_HEROIW_PRESS
 cp $W/in/pilot.yaml $R/pilot.yaml
 cd $CB
+# exactness gate on THIS machine before any rollout (an unseen CPU, e.g. AVX512, must not quietly break byte-exactness):
+# CfAbil + the obsid builders compiled as LOOP-IW's abilcheck.sh, then exact_gate.py (numpy exp / dot, CfAbil.EXACT, self-tests)
+S=$CB/scratchpad/gauntlet/L74/speed/crforge; GB=$W/jbuild_gate; mkdir -p $GB
+javac -nowarn -d $GB -cp "$CRFORGE_LIB/*" $CB/scratchpad/gauntlet/L74/crforge/facade/CfCore.java $S/CfSpeed.java $S/obsid/CfObsBind.java \n  $S/obsid/CfOppElixir.java $S/obsid/CfIdent.java $S/obsid/CfCue.java $S/obsid/CfPubObj.java $S/obsid/CfAbil.java > $W/gate_javac.log 2>&1 \n  || die "javac of the exactness-gate classes (see $W/gate_javac.log)"
+$V/bin/python -B scratchpad/gauntlet/L74/plan1026/pilot/ops/exact_gate.py $CRFORGE_LIB $GB > $W/exact_gate.log 2>&1 || true   # verdict = the grep below
+while read -r l; do log "exact gate: $l"; done < $W/exact_gate.log
+grep -q '^EXACT_GATE PASS' $W/exact_gate.log || die "EXACT GATE FAILED on this machine -- no rollout started (see $W/exact_gate.log)"
 if [ -f scratchpad/gauntlet/L74/plan1026/pilot/loop/producer.py ]; then   # = loop/run.sh: facade + obsid builders + CfTrain
   $V/bin/python -c "import sys, os, pathlib; sys.path.insert(0, 'scratchpad/gauntlet/L74/plan1026/pilot/loop'); import producer; producer.compile_java(pathlib.Path(os.environ['CRFORGE_FACADE_BUILD']), pathlib.Path(os.environ['CRFORGE_LIB']))" || die "javac (producer.compile_java)"
 fi

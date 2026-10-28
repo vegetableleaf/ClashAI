@@ -8,6 +8,15 @@ Labels: (a) measured, (b) untested, (c) contradicted.
   dry run 2 with the REAL fastloop.py + loop/ref_v0.yaml: boot -> 83 artifacts -> loop start OK, then the loop crashed (missing
   ghost_pool/pool_env_v1_split.json -- now an artifact -- and a fastloop.py FINAL bug, `R.CKPT_ROOT / run` with run a function,
   reported to LOOP-INT); the launcher's crash path worked ("LOOP EXITED WITHOUT ... FINAL", "NOT DONE").
+- DONE (a) 10-28 ~11:40: live `--gate-sample T` (63b0693 + 92a0d37; off by default; LIVE_OPTIONS untouched, live = CLXIII):
+  flag OFF replay == the pre-change tree on 1,718 decisions (dicts / taps / RNG, head log-probs 0.0); flag ON T .1 on 3 seeds
+  (4,533 draws): live fires 637 (0.1405) vs the trainer's decide(decode='sample') 639 (0.1410) vs expected 630.1 (0.1390):
+  z +0.62 / +0.80 / live - trainer -0.13; p_b == formula exactly (gate_sample_check.py). Deploy for trial30 = add
+  `--gate-sample 0.1` to LIVE_OPTIONS (lead / owner step).
+- DONE (a): LOOP-IW boot gate in pod_boot.sh: every JVM gets JAVA_TOOL_OPTIONS=--add-modules=jdk.incubator.foreign
+  --enable-native-access=ALL-UNNAMED; before the loop starts, exact_gate.py (numpy exp == glibc on 200,000, numpy dot ==
+  sequential on 20,000, CfAbil.EXACT, CfAbil self-tests draw / libm / sum) must print EXACT_GATE PASS, else BOOT FAILED.
+  33308 (AMD EPYC 7702, no AVX512): PASS with the flags; without them FAIL (EXACT false, libm 83 mismatches) = the gate works.
 - PENDING: LOOP-INT's FINAL fix -> re-run dry run 2 (restart command below); LOOP-MEM (memory in CfTrain), LOOP-IW (hero presses)
   and LOOP-OPP (opp_style / exploiter decode) before pilot.yaml itself runs in fastloop (NotImplementedError until then, per INT);
   LOOP-LRN tower_phat; CF-MAIN jars (interim lib_cfclone staged); a live sampled-gate option (deploy side) before trial30.
