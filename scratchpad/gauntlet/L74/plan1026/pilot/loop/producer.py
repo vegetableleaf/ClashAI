@@ -144,6 +144,8 @@ class Producer:
         self.v = Rows(L, self.n)
         self.serial = 0
         self.stats = Counter()
+        self.tm = Counter()                                  # seconds per stage (java / fill / start / decide / forward ...)
+        self.progress = None                                 # bench.py: called after every round with the totals
 
     # ------------------------------------------------------------------------------------------------ tables
     def _fill(self) -> int:
@@ -345,7 +347,7 @@ class Producer:
         for i in range(self.n):
             if todo:
                 live[i] = self._start(i, todo.pop(), cfg, opps)
-        tm = Counter()
+        tm = self.tm
         while live:
             a = time.perf_counter()
             L.step()
@@ -363,11 +365,15 @@ class Producer:
                 else:
                     results.append(self._result(int(i), m))
                 if todo:
+                    s0 = time.perf_counter()
                     live[int(i)] = self._start(int(i), todo.pop(), cfg, opps)
+                    tm["start"] += time.perf_counter() - s0
             c = time.perf_counter()
             self._decide(live)
             tm["decide"] += time.perf_counter() - c
             st["rounds"] += 1
+            if self.progress is not None:
+                self.progress(len(results), int(L.rowsBuilt.get()))
         results.sort(key=R.row_key)
         stats = {"wall_s": time.perf_counter() - t0, "matches": len(results), "rounds": st["rounds"],
                  "crashed": len(skipped), "fills": self.stats["fills"], "time": dict(tm),
@@ -407,6 +413,7 @@ class Producer:
                 batch[k] = ids[:, a:b] if b is not None else ids[:, a]
             batch["sc"][:, SC_SLOT_COLS] = 0.0                # GenPolicy.row's zeroing (batch["sc"] is a copy)
             keys = E.gen_row_keys(model.model)
+            f0 = time.perf_counter()
             with torch.no_grad():
                 tb = {k: torch.from_numpy(np.ascontiguousarray(batch[k])).to(c["device"]) for k in keys}
                 enc, heads = model.heads_t(tb)
@@ -414,6 +421,9 @@ class Producer:
                 hand = torch.zeros(B, 9, dtype=torch.bool, device=heads["card"].device)
                 hand = hand.scatter(1, tb["hand_slot"], True)[:, :8].cpu().numpy()
                 p = torch.sigmoid(heads["gate"]).cpu().tolist()
+            self.tm["forward"] += time.perf_counter() - f0      # incl. H2D / D2H (the .cpu() syncs)
+            self.tm["fwd_rows"] += len(idx)
+            self.tm["fwd_calls"] += 1
             for j, s in enumerate(sides):                    # Match.prepare's state the decide / record read
                 r = idx[j]
                 tick, vt = int(v.meta[r, 3]), int(v.meta[r, 4])
