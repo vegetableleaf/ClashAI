@@ -114,3 +114,19 @@ Labels: (a) measured, (b) untested, (c) contradicted. Spec: ../LOOP_SPEC.md.
   and the facade build from d2t/buildH (/workspace/lrn/buildH, CfCore.java c003fc74 = HEAD).
 - env: `source /workspace/lrn/cb/scratchpad/gauntlet/L74/plan1026/pilot/lrn/env.sh`. Smoke: `bash .../smoke.sh crforge RUN`.
   Logs go to /workspace/lrn/logs.
+
+## STATUS at the account switch (10-28, STOP)
+- Pushed: 7a80ac6, bbf3fdf, 8c58db4, e9471f5 (shared pass), 8f47480 (stored_values / ent_init_rows / matches_per_update).
+- (i) lazy_refine IN PROGRESS, NOT committed to pipeline/: GenModel.lazy_refine (opt-in attribute) builds the
+  cell_refine / tower_refine cell features in cell_logits_gen on its rows only. The edit is edit_lazy_refine.py (apply
+  it to pipeline/model_gen.py). Gate (lazy_gate.py, 33920, update 5, recompute mode): NOT bit-identical. Final weights
+  max |diff| 6.4e-6 (batch-size-dependent conv kernels), advantages and returns 0.0, same stop step 145. Update
+  68.5 -> 57.7 s (ref pass 39.6 -> 34.4 s, step 189 -> 156 ms). The stored-mode half was still running on 33920 at
+  the switch: /workspace/lrn/logs/lazy_gate.log, results in /workspace/lrn/lazy/.
+  Restart: `cd /workspace/lrn/cb && source scratchpad/gauntlet/L74/plan1026/pilot/lrn/env.sh && RL_PROFILE=1 $PY -u
+  scratchpad/gauntlet/L74/plan1026/pilot/lrn/lazy_gate.py --config scratchpad/gauntlet/L74/plan1026/pilot/ops/pilot.yaml
+  --keep /workspace/lrn/id1/keep --out /workspace/lrn/lazy` (the pod tree's model_gen.py already has the edit).
+- NEXT: (1) report the 6.4e-6 diff to the lead and get a decision; if adopted, wire a `lazy_refine` config key in
+  rl_royale (set on model + ref before the ref copies are made), then pyflakes + smoke + push. (2) entropy baseline:
+  the lead's choice between ent_init_rows 20000 (~3%) and the paired epoch-0 rows. (3) a real loop_learner process
+  run with producers once INT's loop runs; matches_per_update follows INT's 33553 bench. (4) DDP: only if still needed.
