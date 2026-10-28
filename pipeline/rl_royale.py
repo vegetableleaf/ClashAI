@@ -1249,7 +1249,7 @@ def load_ability_head(path, device: str = "cpu") -> Optional[dict]:
 def trunk_g(model, B: dict, idx) -> torch.Tensor:
     """The trunk feature g of rows ``idx`` (S1 encode or GenModel encode_gen, as policy_terms)."""
     if "hand_card" in B:
-        return model.encode_gen(E.gen_batch(model, B, idx))["g"]
+        return model.encode_gen(gen_rows(model, B, idx))["g"]
     return model.encode(B["tok"][idx], B["mask"][idx], B["sc"][idx], B["past"][idx])["g"]
 
 
@@ -2362,6 +2362,48 @@ def _logit(p: float) -> float:
     return math.log(p / (1.0 - p))
 
 
+class MemRowCache:
+    """LEARNER-SCALE ``mem_row_cache``: e1_eval.gen_batch rebuilds a memory model's MEM_KEYS rows from the per-match event
+    tables (CPU match_memory.rows_features) on EVERY forward -- 25-38% of a PPO step (SCALE.md 2). This builds each row's
+    features once per update, the first time any forward (policy, lazy anchor, entropy pair, value) asks for it, and
+    serves later forwards from the cache. rows_features is row-wise, so the bytes are gen_batch's
+    (test_learner_fast_cache). One cache per (memory version, gid) -- the model / ref copies share it; any other
+    pair falls back to gen_batch. CPU numpy (pages are touched only for the rows filled)."""
+
+    def __init__(self, n: int):
+        self.n, self.have, self.arr, self.key = n, np.zeros(n, bool), None, None
+
+    def rows(self, model, B: dict, idx) -> dict:
+        from pipeline.match_memory import MEM_KEYS, rows_features
+        key = (getattr(model.mem, "version", "v1"), getattr(model.mem, "gid", None))
+        if self.key is not None and key != self.key:
+            return E.gen_batch(model, B, idx)
+        ids = idx.cpu().numpy() if torch.is_tensor(idx) else np.asarray(idx)
+        miss = np.unique(ids[~self.have[ids]])
+        if len(miss):
+            deck = B["deck_card"].cpu().numpy() if torch.is_tensor(B["deck_card"]) else np.asarray(B["deck_card"])
+            packed = {k[8:]: v for k, v in B.items() if k.startswith("mem_tab_")}
+            m = rows_features(packed, B["mem_row_tab"], B["mem_row_t"], deck, miss, key[0], key[1])
+            if self.arr is None:
+                self.key = key
+                self.arr = {k: np.empty((self.n,) + v.shape[1:], v.dtype) for k, v in m.items()}
+            for k, v in m.items():
+                self.arr[k][miss] = v
+            self.have[miss] = True
+        b = {k: B[k][idx] for k in E.gen_row_keys(model) if k not in MEM_KEYS}
+        dev = B["sc"].device if torch.is_tensor(B["sc"]) else "cpu"
+        b.update({k: torch.from_numpy(v[ids]).to(dev) for k, v in self.arr.items()})
+        return b
+
+
+def gen_rows(model, B: dict, idx) -> dict:
+    """e1_eval.gen_batch(model, B, idx), through B's MemRowCache when it carries one (``mem_row_cache``; else unchanged)."""
+    c = B.get("_mem_cache")
+    if c is None or getattr(model, "mem", None) is None:
+        return E.gen_batch(model, B, idx)
+    return c.rows(model, B, idx)
+
+
 def policy_terms(model, B: dict, idx, tau: float, T: float, value: bool = False, value_trunk: bool = True,
                  T_gate: Optional[float] = None, ctx_head=None) -> dict:
     """Recompute the behaviour log-probs of rows ``idx`` exactly as ``e1_eval.sample_decide_batch`` defined them:
@@ -2376,7 +2418,7 @@ def policy_terms(model, B: dict, idx, tau: float, T: float, value: bool = False,
     ``ctx_head`` (critic_ctx): ``v`` also adds the ``CtxHead`` residual on ``B["ctx"]`` (same g, same detach rule)."""
     if "hand_card" in B:
         pol = E.GenPolicy(model, ())
-        enc, heads = pol.heads_t(E.gen_batch(model, B, idx))
+        enc, heads = pol.heads_t(gen_rows(model, B, idx))
         cell_of = pol.cell_logits
     else:
         tok, mask, sc, past = B["tok"][idx], B["mask"][idx], B["sc"][idx], B["past"][idx]
@@ -2423,7 +2465,7 @@ def value_rows(model, B: dict, chunk: int = 512, ctx_head=None, n: Optional[int]
     for s in range(0, N, chunk):
         idx = torch.arange(s, min(s + chunk, N), device=B["A"].device)
         if "hand_card" in B:
-            enc = model.encode_gen(E.gen_batch(model, B, idx))
+            enc = model.encode_gen(gen_rows(model, B, idx))
         else:
             enc = model.encode(B["tok"][idx], B["mask"][idx], B["sc"][idx], B["past"][idx])
         out.append(value_scalar(critic_logits(model, enc["g"], ctx_head,
@@ -2442,7 +2484,7 @@ def posture_snapshot(model, head, B: dict, chunk: int = 512) -> Optional[dict]:
     for s in range(0, len(ch), chunk):
         c = ch[s:s + chunk]
         if "hand_card" in B:
-            gs.append(model.encode_gen(E.gen_batch(model, B, c))["g"])
+            gs.append(model.encode_gen(gen_rows(model, B, c))["g"])
         else:
             gs.append(model.encode(B["tok"][c], B["mask"][c], B["sc"][c], B["past"][c])["g"])
     g = torch.cat(gs)
@@ -2647,7 +2689,7 @@ def row_subset(B: dict, rows) -> dict:
     n = len(B["A"])
     r_np = rows.cpu().numpy()
     return {k: v if k.startswith("mem_tab_") or len(v) != n else (v[rows] if torch.is_tensor(v) else v[r_np])
-            for k, v in B.items()}
+            for k, v in B.items() if k != "_mem_cache"}            # (LEARNER-SCALE: the cache is keyed by B's rows)
 
 
 class LazyRef(dict):
@@ -3585,7 +3627,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                               "ot_start_share", "xbow_start_share", "remote_actors", "kl_ref_refresh_every",
                               "tau_phase", "memory", "memory_aux", "memory_encoder_frozen",
                               "memory_zero_empty", "learner_deterministic", "kl_stop_prev", "stored_values",
-                              "ent_init_rows", "lazy_refine", "ent_pair_every", "matches_per_update", "micro_batch",
+                              "ent_init_rows", "lazy_refine", "ent_pair_every", "matches_per_update", "micro_batch", "mem_row_cache",
                               "barrel_decoy_sim") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS and k not in CROWN_KEYS
                 and k not in HT.KEYS and k not in CF.KEYS):
@@ -3647,6 +3689,8 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
         if cfg.get("ent_init_rows") is not None:
             raise SystemExit("ent_pair_every replaces ent_init_rows: set one of them")
     mi = cfg.get("micro_batch")                              # LEARNER-SCALE gradient accumulation: absent / null = off
+    if cfg.get("mem_row_cache") is not None and type(cfg["mem_row_cache"]) is not bool:
+        raise SystemExit(f"mem_row_cache must be a bool or null, got {cfg['mem_row_cache']!r}")
     if mi is not None and (type(mi) is not int or mi < 1):
         raise SystemExit(f"micro_batch must be null or an int >= 1, got {mi!r}")
     frac = cfg.get("learner_pipeline_frac", 0.0)
@@ -3707,6 +3751,8 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "ent_pair_every"}
     if cfg.get("micro_batch") is None:                       # LEARNER-SCALE accumulation off = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "micro_batch"}
+    if not cfg.get("mem_row_cache"):                         # LEARNER-SCALE MEM row cache off = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "mem_row_cache"}
     if cfg.get("memory") is None:                            # Plan A memory off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "memory"}
     elif cfg["memory"] == "v2":                              # S1c: the version AND the artifacts its features read
@@ -4628,6 +4674,8 @@ class Learner:
         if tau_phase_cfg(cfg) is not None and len(Bn["A"]) and "gate_tau" not in Bn:
             raise SystemExit("tau_phase: the rollout rows carry no gate_tau (an actor without the tau_phase code?)")
         B = to_device(Bn, self.dev)
+        if cfg.get("mem_row_cache") and getattr(self.model, "mem", None) is not None and "mem_row_t" in B:
+            B["_mem_cache"] = MemRowCache(len(B["A"]))       # LEARNER-SCALE: MEM_KEYS rows built once per update
         mark("to_device")
         gate_ref = getattr(self, "gate_ref", None)            # F6 kl_ref_gate (None = the init ref for all heads)
         glo = gate_lo_cfg(cfg)                                # F6' (None = off)

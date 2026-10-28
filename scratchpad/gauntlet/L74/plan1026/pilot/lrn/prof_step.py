@@ -70,7 +70,11 @@ def main():
         d.mkdir(parents=True, exist_ok=True)
     L = R.Learner(cfg, run, R.RUN_ROOT / run, R.CKPT_ROOT / run, R.Log(R.RUN_ROOT / run), False)
     LL.adopt_init_ability_head(L)
-    res = [LR.to_result(LR.decode(p.read_bytes())) for p in sorted(a.keep.glob("*.rec"))[:a.max_matches]]
+    if a.keep.is_dir():
+        res = [LR.to_result(LR.decode(p.read_bytes())) for p in sorted(a.keep.glob("*.rec"))[:a.max_matches]]
+    else:                                                     # LOOP-INT records_uNNNN.pkl, comma-separated
+        import pickle
+        res = [r for f in str(a.keep).split(",") for r in pickle.loads(Path(f).read_bytes())["results"]][:a.max_matches]
     Bn, _ = R.collate(res, float(cfg["adv_clip"]), **collate_kw(cfg))
     del res
     B = R.to_device(Bn, L.dev)

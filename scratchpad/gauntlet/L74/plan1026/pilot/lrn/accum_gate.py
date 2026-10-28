@@ -30,6 +30,7 @@ def main():
     ap.add_argument("--big", default="32768,65536")
     ap.add_argument("--micro", type=int, default=1024)
     ap.add_argument("--arms", default="base,acc64,big")
+    ap.add_argument("--big-lr", type=float, default=None, help="bigc arms' lr (default: the config's)")
     ap.add_argument("--out", type=Path, required=True)
     a = ap.parse_args()
     a.out.parent.mkdir(parents=True, exist_ok=True)
@@ -49,6 +50,12 @@ def main():
         arms.append(("base", {}))
     if "acc64" in want:
         arms.append(("acc64", {"micro_batch": 64}))
+    if "cache" in want:                                       # mem_row_cache: expect bit-identical weights to base
+        arms.append(("cache", {"mem_row_cache": True}))
+    if "bigc" in want:                                        # the large minibatch with the cache (time only)
+        for mb in [int(x) for x in a.big.split(",")]:
+            arms.append((f"big{mb}c", {"minibatch": mb, "micro_batch": a.micro, "lr": a.big_lr or float(base["lr"]),
+                                        "mem_row_cache": True}))
     if "big" in want:
         for mb in [int(x) for x in a.big.split(",")]:
             arms.append((f"big{mb}", {"minibatch": mb, "micro_batch": a.micro, "lr": float(base["lr"]) * math.sqrt(mb / 256)}))

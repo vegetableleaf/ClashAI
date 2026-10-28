@@ -1,0 +1,59 @@
+{
+ "det": true,
+ "rows": 29997,
+ "lazy_refine": true,
+ "params": 2227067,
+ "mb": {
+  "256": {
+   "ms_median": {
+    "gen_batch": 42.85532400081138,
+    "forward_ex_gen": 43.8890959994751,
+    "backward": 56.78670750012316,
+    "clip": 2.4476004996358824,
+    "optim": 2.8054979993612505,
+    "total": 146.03516449960807
+   },
+   "rows_per_s": 1753.0024420980267,
+   "ms_per_row": 0.570449861326594,
+   "peak_mb": 2574.44921875,
+   "kernels_per_step": 5257.0,
+   "gpu_kernel_ms_per_step": 274.2919929999996,
+   "prof_flops_per_step": 388386593165.3333,
+   "achieved_tflops": 2.659541587097508
+  },
+  "1024": {
+   "ms_median": {
+    "gen_batch": 168.7003319998439,
+    "forward_ex_gen": 99.61697849985285,
+    "backward": 161.72540800016577,
+    "clip": 2.918622499691992,
+    "optim": 3.350224500081822,
+    "total": 436.87714750012674
+   },
+   "rows_per_s": 2343.908363848908,
+   "ms_per_row": 0.4266378393555925,
+   "peak_mb": 8403.52294921875,
+   "kernels_per_step": 5711.666666666667,
+   "gpu_kernel_ms_per_step": 1111.9723336666689,
+   "prof_flops_per_step": 1372367133104.3333,
+   "achieved_tflops": 3.141311329643158
+  },
+  "2048": {
+   "ms_median": {
+    "gen_batch": 328.5946784999396,
+    "forward_ex_gen": 164.2163554997751,
+    "backward": 310.0289035005517,
+    "clip": 3.2135359997482738,
+    "optim": 3.398165500129835,
+    "total": 810.5519780001487
+   },
+   "rows_per_s": 2526.6732493244554,
+   "ms_per_row": 0.3957773330078851,
+   "peak_mb": 16058.46142578125,
+   "kernels_per_step": 5905.0,
+   "gpu_kernel_ms_per_step": 1859.8781260000012,
+   "prof_flops_per_step": 2442743829354.0,
+   "achieved_tflops": 3.013679437783757
+  }
+ }
+}

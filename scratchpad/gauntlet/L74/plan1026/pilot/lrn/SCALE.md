@@ -3,25 +3,26 @@
 Labels: (a) measured (number + source), (b) plausible, untested, (c) contradicted. Owner mandate 10-28: learning progress
 per wall-clock hour x50-100+, fp32 only (TF32 off), kl_stop_prev 0.02. Rent only on a measured >= ~50x projection.
 
-## STATUS (keep current; 10-28 ~21:45 EDT)
-- DONE (a) 335f151: step 1 noise scale, T 0.3 records, raw critic (section 1).
-- DONE (a) 3866761: `micro_batch` (section 3a): tests, absent-key smoke, step profile (section 2).
-- DONE (a), this commit:
-  - warm-critic noise scale, T 0.1 noise scale (96 matches; section 1b);
-  - accum_gate (section 3b: identity, and the sqrt-lr rule CONTRADICTED);
-  - micro_batch=32 smoke PASS: config 27c4dc830ce9, u0000 e816a6a4 / 3e07cff4 (bit-equal to off), u0001 f060b678 /
-    f46b1818 (fp32 order);
-  - the cap-fixed learning-speed model (section 4).
-- RUNNING (33920 GPU): `lr_sweep.py`: warmed-Adam large-minibatch lr sweep with the held-out surrogate gain per update.
-  - Command: `/workspace/lrn/sweep/run.sh`; log sweep.log; done marker `done`; ~1 h.
-  - Restart: `cd /workspace/lrn/sweep && setsid nohup bash run.sh &`.
-- Pilot (owner 10-28): postponed until opponent v1 is usable; no arm S / L run tonight.
-- 33308 tree (mine): /workspace/lscale/cb (setup_ls.sh: copies of pipeline + my lrn scripts, symlinks into LOOP-INT2's
-  /workspace/loop/cb; env_ls.sh). GPU1 + <= 30 GB RSS (lead).
-- Codex dispatches: LEARNER-SCALE_1 (low): profiler runs + PROF_TABLE.md. DONE in 779 s; I checked the numbers against
-  the JSONs.
-- NEXT (lead order): lr sweep result -> final arm L lr (and the opt-in KL fixes if one step still overshoots) ->
-  per-row fp32 fixes (gen_batch features once per update, kernel count) -> DDP on 33308's 2 GPUs -> projection.
+## STATUS (keep current; 10-29 ~00:30 EDT; worker context exhausted -> handover)
+- Commits: 335f151 (noise scale), 3866761 (micro_batch), e09c4cd (reruns, accum_gate, model); this commit: mem_row_cache +
+  lr sweep + 2-GPU probe (section 5).
+- Opt-in keys landed (absent = byte-identical, hash unchanged, smokes PASS): `micro_batch` (gradient accumulation),
+  `mem_row_cache` (MEM features once per update).
+- NOTHING RUNNING (33920 idle; 33308: my tree /workspace/lscale/cb, outputs /workspace/lscale/out, no process).
+- Codex dispatches:
+  - LEARNER-SCALE_1 (low): profiler. DONE.
+  - LEARNER-SCALE_2 (low): BLOCKED, GPU0 busy.
+  - LEARNER-SCALE_2b (low): 2-GPU probe. DONE in ~5 min.
+  - I checked all numbers against the JSONs.
+- NEXT (split for a fresh worker, in order):
+  1. Scale the held-out J set (Codex: 1,024+ held-out matches; T 0.1 records once LOOP-INT2 has a few hundred) and
+     re-run lr_sweep at equal KL: 32k at 3e-5; 65k at 3e-5 / 4e-5. If one step still overshoots: build the opt-in
+     KL-adaptive lr (toward cap / 4 per step) and the no-grad KL check (lead approved both as opt-in).
+  2. The noise scale on >= 300 T 0.1 matches (noise_scale.py --keep pkl list; 33308 GPU1, <= 30 GB).
+  3. Per-row fp32 fix 2: the kernel count (~5,200 per step, 3,160 fill_), via CUDA graphs / torch.compile where exact.
+     Identity at the Adam floor (gradients <= 1e-7, monitors <= 1e-4).
+  4. DDP only when the update has enough rows to split (section 5).
+  5. Projection (section 4), with the measured sweep result: no rent case yet.
 
 ## 1. Gradient noise scale (noise_scale.py)
 Method: B_simple = tr(Sigma) / |G|^2. The loss is split into components: gate / card / cell = -sum w A lp_head (the L_pg
@@ -174,3 +175,43 @@ update (the cap fixes its KL at ~0.02).
     lead / owner decision (PROJECTION.md way 1).
 - Not measured yet: I_new / I_today (lr_sweep, then the SIM A/B), T_learn on the box (per-row fixes + DDP: next steps),
   and the overlap.
+
+## 5. Warmed-Adam lr sweep, mem_row_cache, 2-GPU probe (a; 10-28 night)
+lr_sweep.py (33920, T 0.3). Each arm: 3 consecutive updates with a persistent Adam on disjoint 256-match batches.
+J = held-out surrogate gain over B0 on a never-trained 256-match batch, cumulative after u7; file sweep/sweep.json.
+
+| arm | steps per update (u5/u6/u7) | cap fired | rows used per update | PPO s per update | J after u7 (+- se) |
+|---|---|---|---|---|---|
+| base mb 256, lr 1e-5 | 103 / 16 / 14 | yes | 26k / 4k / 3.6k | 28 / 4.4 / 3.8 | +0.00090 +- 0.00046 |
+| 32k, lr 1.5e-5 | 6 / 6 / 6 | no | 197k | ~110 | +0.00044 +- 0.00035 |
+| 32k, lr 2.5e-5 | 6 / 6 / 6 | no | 197k | ~104 | +0.00059 +- 0.00048 |
+| 32k, lr 4e-5 | 1 / 2 / 3 | yes (stop KL 0.025 / 0.046 / 0.020) | 33-98k | 58-83 | +0.00015 +- 0.00051 |
+| 65k, lr 1e-5 / 1.4e-5 / 2e-5 | 4 / 4 / 4 | no (KL <= 0.008) | 262k | ~113 | +0.00028 / +0.00039 / +0.00047 (se ~0.00025) |
+
+- (a) With a persistent Adam, today's learner hits the cap after ~15 steps (~4k rows) from the 2nd update on: ~4 s of
+  PPO per update.
+- (a) No large-minibatch arm beats base on J after 3 updates (all within ~1-2 se), and base is ~25x cheaper per update
+  on one GPU.
+- (a) The large-batch lr window is narrow: 32k at 2.5e-5 never reaches the cap; at 4e-5 one step overshoots to
+  0.025-0.046.
+- (b) The thesis "large clean steps make the KL budget signal" is NOT supported at this scale. Per update, J is
+  unresolved at 256 held-out matches. Per hour on one GPU, base wins clearly.
+- Owed before any conclusion on I: a larger held-out set (lead: scale it via Codex) and the SIM A/B.
+
+mem_row_cache (opt-in `mem_row_cache: true`; MemRowCache / gen_rows in rl_royale): each row's MEM_KEYS features are built
+once per update, then served from the cache.
+- (a) Unit test pipeline/tests/test_learner_fast_cache.py (3): bytes = gen_batch for any request order / overlap;
+  absent = gen_batch; row_subset drops the cache; another memory version falls back to gen_batch.
+- (a) Pod 33920: 102 passed (+ match_memory, accum, kl_stop_prev, lazy_refine, ent_pair, rl_gen, rl_royale); pyflakes
+  clean.
+- (a) Absent-key smoke with this code: b5e2a2bbafef, e816a6a4 / 3e07cff4, f060b678 / 5c61ac04 = reference.
+- (a) accum_gate (accum/cache_gate.json), u5 on 512 matches: weights max |diff| vs base = 0.0 (bit-identical), same 145
+  steps; PPO 41.2 -> 31.4 s (-24%).
+
+2-GPU probe (Codex LEARNER-SCALE_2b; ddp/DDP_PROBE.md, 33308 2x4090):
+- (a) NCCL all-reduce of the 2.0M fp32 gradient: p50 0.85 ms, deterministic.
+- (a) Both GPUs stepping at once vs alone: rows/s ratio 0.98-1.01 at mb 256 / 1024 / 2048. No CPU / PCIe contention at 2
+  GPUs.
+- (b) DDP is compute-bound: all-reduce is <= 0.2% of a 1,024-row step.
+- But DDP only helps if each update has enough rows to split. Today's steady-state update is ~15 steps x 256 rows,
+  i.e. too few rows to share across GPUs (64 rows / GPU at 4-way: 1.6 ms/row vs 0.66 ms/row at 256).
