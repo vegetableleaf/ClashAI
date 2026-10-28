@@ -517,6 +517,8 @@ def match(path, bl=None, names=None, cat=None, shims=None, tt=None, uhp=None, by
     tz = []   # ENG-SME (SME_TOWER_ZAP): an unseen opponent Zap on a princess tower that vanishes at <= Zap damage
     if mech_rules.TOWER_ZAP:
         plays, tz, _ = mech_rules.tower_zaps(mech_rules.raw_frames(path), plays, sides, reader_hidden(path, cat))
+    if mech_rules.TOMB_HERO:   # ENG-FIX (SME_TOMB_HERO): the hero Tombstone press from its monster's row swap
+        plays = mech_rules.tomb_presses(str(path), plays, sides)
     build = next(((json.loads(r).get('phase2') or {}).get('build') for r in open(path, 'rb') if b'"phase2"' in r), None)
     # RNG-free: no deck card is a drawer. Without the API only seen cards are known; an unseen slot was never played (it
     # is unseen because no play of it was extracted), and G0's drawers draw only when played (crforge: Arrows / Princess

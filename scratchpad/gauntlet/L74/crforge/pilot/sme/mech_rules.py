@@ -418,3 +418,66 @@ def tower_zaps(fr, plays, sides, hidden=()):
                             run_ticks=[max(tp, t - 2), R], tick=R, source='spell_seen', x=x, y=y, tile=[x // 1000, y // 1000],
                             n=0, inferred=True, mech='tower_zap'))
     return (sorted(list(plays) + add, key=lambda p: p['tick']) if add else plays), fired, blocked
+
+
+# ENG-FIX (SME_TOMB_HERO=1): the hero Tombstone's ability press. The press has no cast state, no pending flag and no
+# ability area in the reader (FRESH2 100341@2930, FRESH3 145600@1308: phase-2 ability {pending_on_body 0,
+# cast_timer_ms_raw 0} on every frame before it). Its one public effect is the row swap crforge also makes on the press
+# step (TombstoneHeroTest.theTapWakesTheMonster): the passive monster (same generation) is listed as
+# TombstoneHero_Monster_Active. The swap is the press only: Tombstone_hero_Ability is a pressed champion ability
+# (ManaCost 5, MaxCharges 1, OnActivationAction Tombstone_hero_OnAbilityActivationGroup); 144 / 207 passive monsters
+# on 50 logs never swap (tomb_census.txt). It may come while the building stands (42) or after the building's death,
+# while the passive monster lingers on its drain (21; dev 164130@939, 185736@4012: the broken dummy listed, passive hp
+# 195 / 703 of 846, then active 6,748). -> one ability row on
+# the play's monster (unit 2 of the hero row's three listed characters: dummy, building, monster), R = t - TOMB_LAG,
+# window [tp, t - 1] (tp = the last frame with the passive row). TOMB_LAG = 2: with the window [tp, t - 1] the fitter
+# put all 3 presses of the two matches on t - 2 (145600: 1308 -> 1306, 3620 -> 3618; 100341: 2930 -> 2928), and both
+# matches went exact (ENG-FIX t1). SME_TOMB_PIN=1 pins the window to [R, R] (the per-lag over-fit probe). A cast_seen 'Tombstone' ability is the active
+# monster's death area (TombstoneHero card, 2,000 ms, at its death point, skeletons on the next frame: 4 / 4 on the two
+# matches), not a press: it is dropped.
+TOMB_HERO = int(os.environ.get('SME_TOMB_HERO', '0'))
+TOMB_LAG = int(os.environ.get('SME_TOMB_LAG', '2'))
+TOMB_PIN = int(os.environ.get('SME_TOMB_PIN', '0'))
+TOMB_UNIT = 2
+
+
+def tomb_swaps(path):
+    """[(side, generation, tp, t, building listed at t)] of a raw live log: the passive hero Tombstone monster first
+    listed active at t (last passive at tp)."""
+    import json
+    last, out, done = {}, [], set()
+    for line in open(path, 'rb'):
+        if b'"frame"' not in line[:40] or b'TombstoneHero' not in line:
+            continue
+        d = json.loads(line)
+        t = d['tick']
+        if t is None or t < 0:
+            continue
+        us = (d.get('phase2') or {}).get('units', [])
+        build = {u.get('side') for u in us if u.get('name') == 'TombstoneHero'}
+        for u in us:
+            n, g, s = u.get('name'), u.get('generation'), u.get('side')
+            if n == 'TombstoneHero_Monster_Passive':
+                last[g] = t
+            elif n == 'TombstoneHero_Monster_Active' and g in last and g not in done:
+                done.add(g)
+                out.append((s, g, last[g], t, s in build))
+    return out
+
+
+def tomb_presses(path, plays, sides, log=None):
+    """SME_TOMB_HERO (above). sides: {side: side_info}. Swaps whose side has no hero Tombstone in its deck are skipped."""
+    out = [p for p in plays if not (p['kind'] == 'ability' and p['card'] == 'Tombstone' and p.get('source') == 'cast_seen')]
+    if log is not None:
+        log.extend(('tomb_drop_cast', p['side'], p['tick']) for p in plays if p not in out)
+    for s, g, tp, t, standing in tomb_swaps(path):
+        deck = sides[s]['deck']
+        if 'Tombstone' not in deck:
+            continue
+        R = t - TOMB_LAG
+        out.append(dict(side=s, kind='ability', card='Tombstone', deck_index=deck.index('Tombstone'), name='Tombstone', form=0,
+                        run_ticks=[R, R] if TOMB_PIN else [min(tp, R), max(t - 1, R)], tick=R, source='tomb_active', unit_index=TOMB_UNIT,
+                        tomb_swap=[tp, t, int(standing)]))
+        if log is not None:
+            log.append(('tomb_press', s, g, tp, t, R))
+    return plays if out == plays else out   # no hero Tombstone event: the same plays object (inputs byte-identical)
