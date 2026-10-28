@@ -1,0 +1,1 @@
+{'casts': 50, 'real_before': 30, 'real_after': 49, 'moved_by_barrel_lane': 10, 'still_wrong_Skeletons': 0, 'moved_by_None': 0, 'still_wrong_Tesla': 1, 'moved_by_log_barrel': 9, 'still_wrong_Log': 0, 'still_wrong_IceWizard': 0, 'still_wrong_Knight': 0, 'still_wrong_Tornado': 0}

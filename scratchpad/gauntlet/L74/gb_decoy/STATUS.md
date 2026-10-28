@@ -8,6 +8,10 @@
 - Fix prepared, NOT wired: `pipeline/barrel_decoy.py` + `pipeline/tests/test_barrel_decoy.py` (4 tests);
   `wiring.diff` (two lines; needs lead + owner go + blind verifier).
 
+- Checks (a): `mark_check.py` -> decoy_indices marks the landing-labelled decoy on 50/50 evo casts, 0/501 plain;
+  `rule_replay.py` (rules only, model card/timing held fixed) -> real-lane first answers 30/50 -> 49/50 (Log 9 by
+  log_barrel, troops 10 by barrel_lane; 1 Tesla left).
+
 ## Next
 - Model-level replay of the 50 evo windows (baseline vs barrel_decoy.objects) through the real GenPilot, as
   `scratchpad/gauntlet/L74/speed/live_profile.py` does; run on a pod (not the live laptop). Not started.
