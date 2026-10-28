@@ -2448,8 +2448,8 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
 - **Fix 1 SME_ZAP_CHAIN1 (d4c7b44):** 130148 now 1,767/1,767 exact; the 109 unchanged. Open FRESH2 failures (5): 091720
   (Boss Bandit death vs hit order, b), 100341 (hero Tombstone repr), 101018 (Goblinstein), 110715 (our X-Bow 1 tile off), 123045 (Witch).
 - **FRESH3 (a):** 9/13 (CP 0.427), strict 9/13, on fe364ceb, no fixes; pooled FRESH2 + FRESH3 31/41 (section 6).
-- **Running:** pod 33308 Codex ENG-SME_3d (D2 tower troops; `tail -qn1 /workspace/d2tt/ev/*.out`; restart: ENG-SME_3d.md
-  procedure; gate.sh skips seeds with 480 rows). Nothing else of mine is running.
+- **D2 tower troops (a, section 4):** crforge 70.47% / 56.09% vs fin16 74.53% / 59.32% (E4 / iu40); gap -4.06 / -3.23 pp.
+- **Running:** nothing.
 - **Next:** the fix loop (section 7): first the hero Tombstone pair (2 cases) and the 091720 death-vs-hit order
   (engine: fork branch off fe364ceb, to the lead), then the own-play points (110715, 142926). FRESH4 about daily:
   `fresh/freeze.py 20261028_1500 FRESH4.tsv` (after FRESH3's battle-log end 19:00:33Z = 15:00 EDT), `fresh_prep.sh`,
@@ -2543,7 +2543,7 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
   FRESH1 unchanged; other FRESH2 records unchanged. Planted `f1fix/zap_chain_test.py` ok 3. `results/live/eng_sme/zap_chain1.txt`.
 - fresh/fresh_prep.sh now sets SME_ZAP_CHAIN1=1 (FRESH3+); no new dev input version was pushed to the pod (the 109 are unchanged).
 
-## 4. D2 leftover: CLXIII re-baseline WITH tower troops (pod 33308, Codex ENG-SME_3 .. 3d; running)
+## 4. D2 leftover: CLXIII re-baseline WITH tower troops (pod 33308, Codex ENG-SME_3 .. 3d + lead finish; DONE)
 - Setup (a): `/workspace/d2tt/cb` = `cp -al /workspace/d2/cb` (b24e6b1, the earlier gate's tree) + 3 files from origin/main
   (pipeline/crforge_core.py with set_tower_troops, its test, CfCore.java); facade rebuilt against the same lib
   (/workspace/d2/stage/lib, 16.402.22); tower-troop smoke 1 passed (ROYALE_RUNTIME=fin16-linux). gate_tt.sh =
@@ -2555,6 +2555,19 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
 - Pod 33308's container restarted at ~18:41 UTC mid-run (cause unknown, b; the last check before it showed 166 GB
   available). Kept: both controls and tt_{cf,rs}_e4_741200 (480 each). Relaunched at W=12 (ENG-SME_3d). Results land in
   `plan1026/d2g/results/gate_tt/` (score_e4.txt, score_iu40.txt, troop_effect.txt, control_cmp.txt, README.txt).
+
+- **Result (a; plan1026/d2g/results/gate_tt/TABLE.md), 4 x 480 paired games per cell:**
+
+  | suite | engine | no troops (earlier) | with troops | troop effect (paired) |
+  |---|---|---:|---:|---:|
+  | E4 | crforge | 70.10% | 70.47% | +0.36 pp [-0.32, +1.05] |
+  | E4 | fin16 | 74.58% | 74.53% | -0.05 pp [-0.66, +0.55] |
+  | iu40 | crforge | 56.04% | 56.09% | +0.05 pp [-0.62, +0.72] |
+  | iu40 | fin16 | 59.43% | 59.32% | -0.10 pp [-0.72, +0.51] |
+
+  crforge - fin16 with troops: E4 -4.06 pp [-6.63, -1.50] (was -4.48), iu40 -3.23 pp [-5.94, -0.52] (was -3.39). Tower
+  troops barely move either engine; the crforge gap stays significant. The 33308 container restarted again ~20:53 UTC;
+  the last 3 seeds ran at 6-8 workers inside ENG-SME's 25 GB budget (lead 10-28).
 
 ## 5. crforge upstream sync 2026-10-28 (Codex ENG-SME_4 .. 4e; `crforge/fork/main/results/sync_20261028/SUMMARY.txt`)
 - 19 upstream commits merged conflict-free onto 624eeb45 -> `clashbot-upstream-20261028` = 0a1a18e9 (pod 30408). Core tests
@@ -2592,7 +2605,7 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
 | match | first div | mechanism so far | layer |
 |---|---:|---|---|
 | FRESH2 091720 | 3519 | our evo Knight (13000000) takes a 392 hit in crforge at step 3517-3518 that the game never lands: the opponent's Boss Bandit (26000103, 162 hp) hitting it dies in that gap (diagF on F2_H: 3471-3517 exact, 3519 hp 1684 vs 2076). Death-before-hit order on one tick (b) | engine (b) |
-| FRESH2 100341, FRESH3 145600 | 2930, 1308 | hero Tombstone: reader rows Tombstone (hp -1 placeholder at the play point) + a 6,748-hp row 106 / 106 units off; crforge rows TombstoneHero_Monster_Passive (502-703 hp) + TombstoneHero_visual_dummy (4,089,995 hp). No representation rule pairs them (b) | comparator REPR / engine (b) |
+| FRESH2 100341, FRESH3 145600 | 2930, 1308 | **a (145600): the opponent pressed the hero Tombstone ability and the inputs have no such command.** Reader phase-2 names: at 1308 TombstoneHero_Monster_Passive (506 hp, kind 13) becomes TombstoneHero_Monster_Active (6,748 hp, kind 15, moving), the visual dummy becomes TombstoneHero_broken_visual_dummy and the Tombstone leaves at 1310; crforge keeps the passive monster. No Tombstone ability is extracted in either match. Fix: date the press from the first Monster_Active frame (lag from an R sweep, as the other hero casts), then check that crforge models the ability (b) | extractor (a), engine (b) |
 | FRESH2 110715 | 4505 | our X-Bow: game x 1500, tap point 2500; 1 of 813 own single-body plays (a, census); why the game moved it is untraced | extractor or reader (b) |
 | FRESH2 101018, 123045; FRESH3 141254 | 5968, 1768, 3044 | body positions a few units off (Goblinstein / Witch skeletons / Hog Rider) | untraced |
 | FRESH3 142334, 142926 | 1693, 254 | own hero IW press + elixir; own Knight point 3,000 / 7,000 off | extractor (b) |

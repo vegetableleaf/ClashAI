@@ -1,0 +1,72 @@
+== /workspace/d2tt/ev/ctl_cf_e4/ctl_cf_e4_741200/SUMMARY.txt
+GAP: one checkpoint, four decision setups; 480 paired games each (CAL c, E4 T .1; Hero IW + live press).
+Draws count as non-wins. Paired deltas, 10,000 bootstrap draws within census/side.
+D3: win 69.58% (334/480); plays/game 37.6; tower HP diff/game +1212
+== /workspace/d2tt/ev/ctl_rs_e4/ctl_rs_e4_741200/SUMMARY.txt
+GAP: one checkpoint, four decision setups; 480 paired games each (CAL c, E4 T .1; Hero IW + live press).
+Draws count as non-wins. Paired deltas, 10,000 bootstrap draws within census/side.
+D3: win 72.92% (350/480); plays/game 39.9; tower HP diff/game +1910
+== /workspace/d2tt/ev/tt_cf_e4/tt_cf_e4_741200/SUMMARY.txt
+GAP: one checkpoint, four decision setups; 480 paired games each (CAL c, E4 T .1; Hero IW + live press).
+Draws count as non-wins. Paired deltas, 10,000 bootstrap draws within census/side.
+D3: win 69.38% (333/480); plays/game 37.7; tower HP diff/game +1189
+== /workspace/d2tt/ev/tt_cf_e4/tt_cf_e4_742000/SUMMARY.txt
+GAP: one checkpoint, four decision setups; 480 paired games each (CAL c, E4 T .1; Hero IW + live press).
+Draws count as non-wins. Paired deltas, 10,000 bootstrap draws within census/side.
+D3: win 68.96% (331/480); plays/game 37.9; tower HP diff/game +1059
+== /workspace/d2tt/ev/tt_cf_e4/tt_cf_e4_743000/SUMMARY.txt
+GAP: one checkpoint, four decision setups; 480 paired games each (CAL c, E4 T .1; Hero IW + live press).
+Draws count as non-wins. Paired deltas, 10,000 bootstrap draws within census/side.
+D3: win 73.12% (351/480); plays/game 39.0; tower HP diff/game +1401
+== /workspace/d2tt/ev/tt_cf_e4/tt_cf_e4_744000/SUMMARY.txt
+GAP: one checkpoint, four decision setups; 480 paired games each (CAL c, E4 T .1; Hero IW + live press).
+Draws count as non-wins. Paired deltas, 10,000 bootstrap draws within census/side.
+D3: win 70.42% (338/480); plays/game 37.6; tower HP diff/game +1337
+== /workspace/d2tt/ev/tt_cf_iu40/tt_cf_iu40_741200/SUMMARY.txt
+GAP: one checkpoint, four decision setups; 480 paired games each (CAL c, E4 T .1; Hero IW + live press).
+Draws count as non-wins. Paired deltas, 10,000 bootstrap draws within census/side.
+D3: win 57.29% (275/480); plays/game 37.6; tower HP diff/game -1102
+== /workspace/d2tt/ev/tt_cf_iu40/tt_cf_iu40_742000/SUMMARY.txt
+GAP: one checkpoint, four decision setups; 480 paired games each (CAL c, E4 T .1; Hero IW + live press).
+Draws count as non-wins. Paired deltas, 10,000 bootstrap draws within census/side.
+D3: win 57.08% (274/480); plays/game 37.4; tower HP diff/game -1034
+== /workspace/d2tt/ev/tt_cf_iu40/tt_cf_iu40_743000/SUMMARY.txt
+GAP: one checkpoint, four decision setups; 480 paired games each (CAL c, E4 T .1; Hero IW + live press).
+Draws count as non-wins. Paired deltas, 10,000 bootstrap draws within census/side.
+D3: win 56.25% (270/480); plays/game 38.2; tower HP diff/game -1106
+== /workspace/d2tt/ev/tt_cf_iu40/tt_cf_iu40_744000/SUMMARY.txt
+GAP: one checkpoint, four decision setups; 480 paired games each (CAL c, E4 T .1; Hero IW + live press).
+Draws count as non-wins. Paired deltas, 10,000 bootstrap draws within census/side.
+D3: win 53.75% (258/480); plays/game 37.3; tower HP diff/game -1416
+== /workspace/d2tt/ev/tt_rs_e4/tt_rs_e4_741200/SUMMARY.txt
+GAP: one checkpoint, four decision setups; 480 paired games each (CAL c, E4 T .1; Hero IW + live press).
+Draws count as non-wins. Paired deltas, 10,000 bootstrap draws within census/side.
+D3: win 73.75% (354/480); plays/game 40.1; tower HP diff/game +1959
+== /workspace/d2tt/ev/tt_rs_e4/tt_rs_e4_742000/SUMMARY.txt
+GAP: one checkpoint, four decision setups; 480 paired games each (CAL c, E4 T .1; Hero IW + live press).
+Draws count as non-wins. Paired deltas, 10,000 bootstrap draws within census/side.
+D3: win 74.17% (356/480); plays/game 42.0; tower HP diff/game +1912
+== /workspace/d2tt/ev/tt_rs_e4/tt_rs_e4_743000/SUMMARY.txt
+GAP: one checkpoint, four decision setups; 480 paired games each (CAL c, E4 T .1; Hero IW + live press).
+Draws count as non-wins. Paired deltas, 10,000 bootstrap draws within census/side.
+D3: win 73.33% (352/480); plays/game 42.3; tower HP diff/game +1673
+== /workspace/d2tt/ev/tt_rs_e4/tt_rs_e4_744000/SUMMARY.txt
+GAP: one checkpoint, four decision setups; 480 paired games each (CAL c, E4 T .1; Hero IW + live press).
+Draws count as non-wins. Paired deltas, 10,000 bootstrap draws within census/side.
+D3: win 76.88% (369/480); plays/game 40.2; tower HP diff/game +1868
+== /workspace/d2tt/ev/tt_rs_iu40/tt_rs_iu40_741200/SUMMARY.txt
+GAP: one checkpoint, four decision setups; 480 paired games each (CAL c, E4 T .1; Hero IW + live press).
+Draws count as non-wins. Paired deltas, 10,000 bootstrap draws within census/side.
+D3: win 61.67% (296/480); plays/game 41.4; tower HP diff/game -246
+== /workspace/d2tt/ev/tt_rs_iu40/tt_rs_iu40_742000/SUMMARY.txt
+GAP: one checkpoint, four decision setups; 480 paired games each (CAL c, E4 T .1; Hero IW + live press).
+Draws count as non-wins. Paired deltas, 10,000 bootstrap draws within census/side.
+D3: win 61.88% (297/480); plays/game 41.4; tower HP diff/game -385
+== /workspace/d2tt/ev/tt_rs_iu40/tt_rs_iu40_743000/SUMMARY.txt
+GAP: one checkpoint, four decision setups; 480 paired games each (CAL c, E4 T .1; Hero IW + live press).
+Draws count as non-wins. Paired deltas, 10,000 bootstrap draws within census/side.
+D3: win 59.38% (285/480); plays/game 43.0; tower HP diff/game -316
+== /workspace/d2tt/ev/tt_rs_iu40/tt_rs_iu40_744000/SUMMARY.txt
+GAP: one checkpoint, four decision setups; 480 paired games each (CAL c, E4 T .1; Hero IW + live press).
+Draws count as non-wins. Paired deltas, 10,000 bootstrap draws within census/side.
+D3: win 54.38% (261/480); plays/game 42.0; tower HP diff/game -975

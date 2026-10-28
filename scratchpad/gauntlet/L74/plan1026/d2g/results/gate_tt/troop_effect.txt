@@ -1,0 +1,20 @@
+== cf_e4: first = with troops, second = earlier no troops
+rows: crforge 1920, fin16 1920, paired 1920 (seeds [741200, 742000, 743000, 744000])
+crforge  win 1353/1920 = 70.47% [68.39, 72.47]
+fin16    win 1346/1920 = 70.10% [68.02, 72.11]
+paired crforge - fin16: +0.36 pp [-0.32, +1.05]; discordant 26 cf-only wins / 19 fin16-only wins
+== cf_iu40: first = with troops, second = earlier no troops
+rows: crforge 1920, fin16 1920, paired 1920 (seeds [741200, 742000, 743000, 744000])
+crforge  win 1077/1920 = 56.09% [53.86, 58.30]
+fin16    win 1076/1920 = 56.04% [53.81, 58.25]
+paired crforge - fin16: +0.05 pp [-0.62, +0.72]; discordant 22 cf-only wins / 21 fin16-only wins
+== rs_e4: first = with troops, second = earlier no troops
+rows: crforge 1920, fin16 1920, paired 1920 (seeds [741200, 742000, 743000, 744000])
+crforge  win 1431/1920 = 74.53% [72.53, 76.43]
+fin16    win 1432/1920 = 74.58% [72.59, 76.48]
+paired crforge - fin16: -0.05 pp [-0.66, +0.55]; discordant 17 cf-only wins / 18 fin16-only wins
+== rs_iu40: first = with troops, second = earlier no troops
+rows: crforge 1920, fin16 1920, paired 1920 (seeds [741200, 742000, 743000, 744000])
+crforge  win 1139/1920 = 59.32% [57.11, 61.50]
+fin16    win 1141/1920 = 59.43% [57.21, 61.60]
+paired crforge - fin16: -0.10 pp [-0.72, +0.51]; discordant 17 cf-only wins / 19 fin16-only wins
