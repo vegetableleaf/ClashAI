@@ -138,11 +138,14 @@ def barrel_decoy_sim_objects() -> dict[str, tuple[str, int]]:
     spell_objects does not walk) becomes a Goblin Barrel FLIGHT spell row, as a plain cast's. Its decoy
     (GoblinBarrelSpell_EV1_Decoy, actions GoblinBarrel_EV1_CreateDecoy) stays unmapped: a crown-tower shot that
     projectile_observation.objects drops, so the policy sees one barrel, as live's --barrel-decoy on shows a checkpoint
-    whose vocab lacks barrel_decoy.DECOY_KEY (every one so far). A successor that adds DECOY_KEY sees it live, not here."""
+    whose vocab lacks barrel_decoy.DECOY_KEY (every one so far). A successor that adds DECOY_KEY sees it live, not here.
+    The same key maps the evolved Snowball's projectile (spells_evolved Snowball_EV1: SnowballSpell_EV1, else a tower shot
+    with no token) to a Snowball FLIGHT row, as a plain cast's (LOOP-DECOY follow-up 10-28). The evolved Zap's area is
+    already a Zap row (CfCore.areaCard), as live's evo-Zap effect rows."""
     flag = os.environ.get("CRFORGE_BARREL_DECOY_SIM", "0")
     if flag not in ("0", "1"):
         raise ValueError(f"CRFORGE_BARREL_DECOY_SIM must be 0 or 1, got {flag!r}")
-    return {"GoblinBarrelSpell_EV1": ("GoblinBarrel", 0)} if flag == "1" else {}
+    return {"GoblinBarrelSpell_EV1": ("GoblinBarrel", 0), "SnowballSpell_EV1": ("Snowball", 0)} if flag == "1" else {}
 
 
 class _Battle:

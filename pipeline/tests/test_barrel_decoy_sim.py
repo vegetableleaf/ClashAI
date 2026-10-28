@@ -68,7 +68,7 @@ def test_crforge_core_objects_by_env(monkeypatch):
     monkeypatch.delenv('CRFORGE_BARREL_DECOY_SIM', raising=False)
     assert cc.barrel_decoy_sim_objects() == {}
     monkeypatch.setenv('CRFORGE_BARREL_DECOY_SIM', '1')
-    assert cc.barrel_decoy_sim_objects() == {'GoblinBarrelSpell_EV1': ('GoblinBarrel', 0)}
+    assert cc.barrel_decoy_sim_objects() == {'GoblinBarrelSpell_EV1': ('GoblinBarrel', 0), 'SnowballSpell_EV1': ('Snowball', 0)}
     monkeypatch.setenv('CRFORGE_BARREL_DECOY_SIM', 'yes')
     with pytest.raises(ValueError):
         cc.barrel_decoy_sim_objects()
@@ -86,3 +86,18 @@ def test_rl_royale_key(monkeypatch):
     monkeypatch.setenv('CRFORGE_BARREL_DECOY_SIM', '0')
     with pytest.raises(SystemExit):
         R.barrel_decoy_sim_cfg({'barrel_decoy_sim': True})
+
+
+def test_evolved_snowball_key_on_matches_live():
+    # crforge: an evolved Snowball (SnowballSpell_EV1) is a crown-tower shot (no token) unless the key maps it to a Snowball
+    # FLIGHT row; live lists it under the Snowball card (28000017, or the evo form 13000094: both decode to Snowball)
+    xy = dict(team=1, x=9000 * SCALE, y=28224 * SCALE, aim_x=3500 * SCALE, aim_y=6500 * SCALE)
+    off = NS(spells=[], projectiles=[NS(**xy, target_uid=-1, splash=0, firer_card_id=-1)])
+    on = NS(spells=[NS(**xy, card_id=125, motion=0, delay_ticks=0, travelled=0, length=0, hits=0)], projectiles=[])
+    gid, names = {'giant-snowball': 7}, {125: 'Snowball'}
+    sim = lambda st: tokens(objects(sim_objects(st, names, SCALE), source='sim'), gid)   # noqa: E731
+    assert not sim(off)[:, 0].any()
+    for card in (28000017, 13000094):
+        row = dict(side=1, x=9000, y=28224, card_id=card, target_x=3500, target_y=6500, generation_key=4000001)
+        live_tok = tokens(B.objects(dict(projectiles=[row], effects=[]), source='reader'), gid)
+        assert (sim(on) == live_tok).all() and (live_tok[:, 0] != 0).sum() == 1

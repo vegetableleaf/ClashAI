@@ -30,7 +30,8 @@
 #  - crforge tables 16.635.3 (lead 10-28: the live client); the gate runs both models on the same tables + jars.
 #  - seed 1028; max_updates 1000 (~512k matches, ~1.7 h at 300k matches/h); save_every 25 = the off-pod streaming interval.
 #  - barrel_decoy_sim true (LOOP-DECOY 10-28): an evolved Goblin Barrel's real barrel is a Goblin Barrel token in flight and
-#    its decoy is not, as live's --barrel-decoy on shows B0 (CRFORGE_BARREL_DECOY_SIM=1; pipeline/crforge_core.py). Any
+#    its decoy is not, as live's --barrel-decoy on shows B0; the evolved Snowball is a Snowball token in flight, as live
+#    lists it (CRFORGE_BARREL_DECOY_SIM=1; pipeline/crforge_core.py; the key name stays, gb_decoy/STATUS.md). Any
 #    eval / gate run outside rl_royale (e1_eval, compare.py) must export CRFORGE_BARREL_DECOY_SIM=1 to see the same SIM.
 init: icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt
 pool: icebow/data/ghost_pool/pool_env_v1.jsonl

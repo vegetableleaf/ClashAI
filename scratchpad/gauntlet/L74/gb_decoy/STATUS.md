@@ -87,3 +87,32 @@
   compare `DECOY=1 CPUS=236-247 GPU=1 bash /workspace/decoy/cmp.sh MSG OUT.json --in-flight 8 --matches 8 --threads 4`;
   smoke `CPUS=a-b bash /workspace/decoy/smoke.sh TREE RUN [barrel_decoy_sim=true]`.
 - Codex: LOOP-DECOY_1 (medium) BLOCKED correctly (GPU 0 busy, not covered); LOOP-DECOY_2 (medium) DONE: smokes + compares on GPU 1 (.foreman/scratch/a2/decoy/codex2_result.md; checked here).
+
+## Follow-up (LOOP-DECOY, lead 10-28 evening): evolved Snowball / Zap and GoblinDummy bodies in the SIM vs live
+- Evolved Snowball: GAP, closed under the SAME key (no rename; the key now covers every evolved-spell object live shows).
+  (a) SIM key off: the evo cast (SnowballSpell_EV1) is a crown-tower shot, 0/30 in-flight ticks with a giant-snowball token
+  (plain: 30/30). (b) live: no opponent with an evolved Snowball in 704 battle-log battles, so not observed; inferred from
+  the two evolved spells observed live, which both show their card's object (evo GB under 28000004, evo Zap under its form id
+  13000085); either Snowball id (28000017 / form 13000094) decodes to the same giant-snowball token. Fix: crforge_core maps
+  SnowballSpell_EV1 -> Snowball FLIGHT when CRFORGE_BARREL_DECOY_SIM=1.
+  (a) probe `decoy_probe.py --card Snowball` seeds 5-10: 10 evo casts key off 0/240 ticks with a token, key on 240/240
+  exactly one = the live reader view of the same board 240/240; 24 plain casts identical; entity rows identical 1,496/1,496.
+  `--card GoblinBarrel` re-run on the new code: unchanged (6 evo casts 144/144, entity rows 1,056/1,056).
+- Evolved Zap: NO token gap. (a) SIM: the evo cast's areas are already Zap rows (CfCore.areaCard) -> 'zap' effects, a
+  100-tick area + a ~37-tick second one (3 ticks with 3); plain Zap: no object at all (resolves inside its tick). (a) live:
+  12 matches vs evo-Zap decks; plain Zap (28000008) never appears; the evo cast shows 13000085 ('Zap' form 1 -> 'zap')
+  objects per cast: 98-99 ticks (4.9 s) + 29-31 ticks (1.5 s) + 7-9 ticks (0.4 s) (7 logs, `.foreman/scratch/a2/decoy/
+  zap_life.py`). Fidelity only (b, untested on tokens): the SIM's second / third area lifetimes differ from live's by a few
+  ticks; no change made.
+- GoblinDummy bodies: NO gap. (a) SIM: the decoy's 3 bodies are GoblinBarrel-card rows, max_hp 130 (real BarrelGoblins 323),
+  body_map vocab key 'goblins'; live (090643): 28000004 bodies, max_hp 130 (dummies) / 323 (real); both read as goblins.
+- OWED to the successor (lead 10-28, deferred): a successor whose card vocab adds DECOY_KEY ('goblin-barrel-decoy') sees the
+  decoy barrel as its own token live (barrel_decoy.objects) but NOT in the SIM, where the decoy is a crown-tower shot that
+  projectile objects drop. Before such a successor trains: give the decoy a public name -> DECOY_KEY in the SIM
+  (projectile_observation.sim_objects / royale_env.names, plus CfPubObj's objKey in the fast loop) and re-run decoy_probe
+  with that vocab (test_known_limit_a_vocab_with_the_decoy_key in pipeline/tests/test_barrel_decoy_sim.py flips).
+- Follow-up evidence (a): compare.py on a planted message (lint_pn2 u0000 with r10's SkeletonArmy@evolution ->
+  Snowball@evolution: 8/32 jobs with evo Snowball + evo GB; `.foreman/scratch/a2/decoy/plant_snow.py`): key off 32/32
+  identical, key on 32/32 identical, 8/32 matches change with the key; lint_pn2 key on (new code) 32/32 identical. Smokes:
+  base (2072dc7 crforge_core) = key absent: config sha b5e2a2bbafef, u0000 1258dce43c686622, u0001 6639f4986ccd0c49; key on
+  5cefd49d1734 / d0fdbde9f2ed131e / 2c2d81f70c225d5b; 3/3 SMOKE PASS. Tests 12 pass (pod). Codex: LOOP-DECOY_3 (medium).

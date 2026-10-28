@@ -1,14 +1,15 @@
 """LOOP-INT step 3 / LOOP-DECOY (GB-DECOY in the SIM): what production's crforge SIM path shows a policy during an evolved
-Goblin Barrel cast, with barrel_decoy_sim off (CRFORGE_BARREL_DECOY_SIM unset = today) and on. Plays the same seeded
-sequence of Goblin Barrels from side 0 (every third one evolved) through RoyaleSelfPlayEnv (the e1_eval / rl_royale env)
+Goblin Barrel (--card GoblinBarrel) or evolved Snowball (--card Snowball) cast, with barrel_decoy_sim off
+(CRFORGE_BARREL_DECOY_SIM unset = today) and on. Plays the same seeded sequence of that card from side 0 (every third one
+evolved) through RoyaleSelfPlayEnv (the e1_eval / rl_royale env)
 once per arm and checks, per tick:
   - entity rows (state()'s 'entities') identical in both arms (the mapping only labels the spell object);
-  - arm off in flight: no barrel token (today's gap); arm on: the projectile tokens equal live's --barrel-decoy on tokens
-    on the same situation (the reader frame live would read: both barrels under the Goblin Barrel card, the real one
-    created first = the lower generation key; pipeline.barrel_decoy.objects), for the vocab given (B0's card_vocab when
-    --ckpt is given, else {'goblin-barrel': 42}); exactly one barrel token, at the real barrel's landing;
+  - arm off in flight: no token of the card (today's gap); arm on: the projectile tokens equal live's --barrel-decoy on
+    tokens on the same situation (the reader frame live would read: every object under the card's reader id; for the
+    barrel the real one created first = the lower generation key; pipeline.barrel_decoy.objects), for the vocab given
+    (B0's card_vocab when --ckpt is given, else {key: 42}); exactly one token, at the real object's landing;
   - plain casts: tokens identical in both arms.
-usage (pod, run.sh's env incl. CRFORGE_FACADE_BUILD): python decoy_probe.py [--casts 6] [--seed 5] [--ckpt B0.pt] [--out J]
+usage (pod, run.sh's env incl. CRFORGE_FACADE_BUILD): python decoy_probe.py [--card GoblinBarrel] [--casts 6] [--seed 5] [--ckpt B0.pt] [--out J]
 """
 import argparse
 import json
@@ -20,6 +21,7 @@ HERE = Path(__file__).resolve().parent
 sys.path[:0] = [str(HERE.parents[5])]
 
 ap = argparse.ArgumentParser()
+ap.add_argument("--card", default="GoblinBarrel", choices=("GoblinBarrel", "Snowball"))
 ap.add_argument("--casts", type=int, default=6)
 ap.add_argument("--seed", type=int, default=5)
 ap.add_argument("--ckpt", default=None, help="checkpoint whose card_vocab gives the gid (B0)")
@@ -30,15 +32,16 @@ from pipeline import projectile_observation as PO  # noqa: E402
 from pipeline import barrel_decoy as B  # noqa: E402
 from pipeline.projectile_motion import ProjectileMotion  # noqa: E402
 
-GB_READER = 28000004                     # the reader's Goblin Barrel card id
+READER = {"GoblinBarrel": 28000004, "Snowball": 28000017}[a.card]    # the reader's card id of both forms' objects
+KEY = {"GoblinBarrel": "goblin-barrel", "Snowball": "giant-snowball"}[a.card]
 if a.ckpt:
     import torch
     vocab = torch.load(a.ckpt, map_location="cpu", weights_only=False)["card_vocab"]
     GID = {k: i + 1 for i, k in enumerate(vocab)}          # membership is what matters (tokens_from_objects drops misses)
 else:
-    GID = {"goblin-barrel": 42}
-print("gid has goblin-barrel", "goblin-barrel" in GID, "decoy key", B.DECOY_KEY in GID, flush=True)
-d0 = ["GoblinBarrel@evolution", "BarbLog", "Fireball", "Minions", "Rascals", "MovingCannon", "Mortar", "Knight"]
+    GID = {KEY: 42}
+print("gid has", KEY, KEY in GID, "decoy key", B.DECOY_KEY in GID, flush=True)
+d0 = [f"{a.card}@evolution", "BarbLog", "Fireball", "Minions", "Rascals", "MovingCannon", "Mortar", "Knight"]
 d1 = ["BarbLog", "Fireball", "Minions", "Rascals", "MovingCannon", "Mortar", "Knight", "Goblins"]
 
 
@@ -54,9 +57,9 @@ def arm(flag):
     env = RoyaleSelfPlayEnv(decision_ticks=10, forms_mode="deck", hero_abilities=False, ability_features="base")
     env.reset(d0, d1, a.seed)
     spell_obj = {str(k): int(env.core._cf.spellObj.get(k)) for k in env.core._cf.spellObj.keySet()
-                 if "GoblinBarrel" in str(k)}
-    bi = [i for i, n in enumerate(env.decks[0]) if "GoblinBarrel" in str(n)][0]
-    gb = env.ids["GoblinBarrel"]
+                 if a.card in str(k)}
+    bi = [i for i, n in enumerate(env.decks[0]) if a.card in str(n)][0]
+    gb = env.ids[a.card]
     casts, tick, rec = 0, int(env.tick), []
     m_sim, m_live = ProjectileMotion(catalog_fallback=True), ProjectileMotion(catalog_fallback=True)
     while casts < a.casts and tick < 9000:
@@ -79,12 +82,12 @@ def arm(flag):
                     rows, g = [], 5000
                     for s in spells:
                         for o in [s] + [p for p in shots if p.aim_x + s.aim_x == 324000 and p.aim_y == s.aim_y]:
-                            rows.append(dict(side=o.team, x=o.x / SCALE, y=o.y / SCALE, card_id=GB_READER,
+                            rows.append(dict(side=o.team, x=o.x / SCALE, y=o.y / SCALE, card_id=READER,
                                              target_x=o.aim_x / SCALE, target_y=o.aim_y / SCALE, generation_key=g))
                             g += 1
                         g += 10                                  # separate casts are not back-to-back objects
                     lv = toks(m_live, B.objects(dict(projectiles=rows, effects=[]), source="reader"), t)
-                ts = ts[ts[:, 0] == GID["goblin-barrel"]]          # barrel tokens (other shots: the reader frame lacks them)
+                ts = ts[ts[:, 0] == GID[KEY]]                     # the card's tokens (other shots: the reader frame lacks them)
                 lv = None if lv is None else lv[lv[:, 0] != 0]
                 n = len(ts)
                 rec.append(dict(cast=casts, t=t, evo=evo, n_tok=n, tok=ts.round(6).tolist(),
@@ -104,14 +107,14 @@ def arm(flag):
 
 so0, off = arm(False)
 so1, on = arm(True)
-print("spellObj GoblinBarrel* off", so0, "on", so1)
+print("spellObj", a.card, "off", so0, "on", so1)
 assert len(off) == len(on) and [r["t"] for r in off] == [r["t"] for r in on], "the arms diverged in cast timing"
 ent_diff = [r["t"] for r, q in zip(off, on) if r["ents"] != q["ents"]]
 summary = dict(ticks=len(on), entity_rows_differ_ticks=ent_diff, casts={})
 for c in sorted({r["cast"] for r in on}):
     ro, rn = [r for r in off if r["cast"] == c], [r for r in on if r["cast"] == c]
-    evo_flight = [r for r in rn if len(r["shots"]) >= 1 and r["spells"] and len(ro[rn.index(r)]["shots"]) >= 2]
-    plain = not any(len(r["shots"]) >= 2 for r in ro)
+    plain = not rn[0]["evo"][0][2]                             # the evo row's "this play is evolved" flag
+    evo_flight = [r for r in rn if r["spells"]] if not plain else []
     summary["casts"][c] = dict(
         plain=plain, evo=rn[0]["evo"],
         off_ticks_with_barrel_token=sum(r["n_tok"] > 0 for r in ro),
