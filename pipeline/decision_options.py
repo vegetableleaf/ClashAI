@@ -93,8 +93,8 @@ class DecisionOptions:
             raise ValueError('log_aim must be argmax or log_barrel')
         if self.log_air not in ('off', 'retarget', 'block'):
             raise ValueError('log_air must be off, retarget or block')
-        if self.gate_decode not in ('threshold', 'hazard', 'hazard_below_tau'):
-            raise ValueError('gate_decode must be threshold, hazard or hazard_below_tau')
+        if self.gate_decode not in ('threshold', 'hazard', 'hazard_below_tau', 'timing_head'):
+            raise ValueError('gate_decode must be threshold, hazard or hazard_below_tau (or timing_head)')
         if not math.isfinite(self.gate_hazard_min_elixir) or not 0 <= self.gate_hazard_min_elixir <= 10:
             raise ValueError('gate_hazard_min_elixir must be in [0, 10]')
         for k in ('gate_hazard_threatened', 'gate_hazard_threat_radius'):
@@ -413,6 +413,37 @@ def gate_rate(p):
         e = np.exp(r * PLAY_WINDOW_S)
         r = r - (WAIT_STRIDE_S * r * e - o) / (WAIT_STRIDE_S * e * (1 + PLAY_WINDOW_S * r))
     return np.maximum(r, 0.0)
+
+
+# P2 opponents (REPORT_opponents 2, "Decoding in the SIM"): gate_decode 'timing_head' = the decode of a checkpoint with
+# the slot timing head (model_gen SLOT_TICKS): at every 10-tick grid tick draw Bernoulli(h_s), then the tick inside the
+# slot; at that tick the card and the cell are drawn (temperature T; the timing head is always T = 1). No gate, tau or
+# anti-stall. e1_eval runs it (timing_decide_batch / SelfPlaySide); ``decide`` refuses it.
+TIMING_SLOT_TICKS = 10
+
+
+def timing_slot_draw(hazard_logit: float, tick_logits, rng):
+    """Stage 1 of timing_head, one row: -> the tick inside the slot of a play (0..9), or None (no play this slot)."""
+    h = 1.0 / (1.0 + math.exp(-float(hazard_logit)))
+    if rng.random() >= h:
+        return None
+    z = np.asarray(tick_logits, dtype=np.float64)
+    q = np.exp(z - z.max())
+    return int(rng.choice(len(q), p=q / q.sum()))
+
+
+def timing_play_draw(card_logits, allowed, cell_logits_fn, rng, T: float = 1.0):
+    """Stage 2 of timing_head, one row at the play tick: -> (slot, cell), or None when no allowed card (no play).
+    ``card_logits`` [8] over deck slots, ``cell_logits_fn(slot)`` -> [N_CELLS] logits; both drawn at temperature T."""
+    allowed = np.asarray(allowed, dtype=bool)
+    if not allowed.any():
+        return None
+    z = np.where(allowed, np.asarray(card_logits, dtype=np.float64) / T, -np.inf)
+    q = np.exp(z - z.max())
+    slot = int(rng.choice(len(q), p=q / q.sum()))
+    c = np.asarray(cell_logits_fn(slot), dtype=np.float64) / T
+    q = np.exp(c - c.max())
+    return slot, int(rng.choice(len(q), p=q / q.sum()))
 
 
 def hazard_play(p, step_s, rng):
@@ -2022,6 +2053,8 @@ def decide(heads, p, allowed, stalled, *, tau, options, rngs, cell_logits, card_
     sample = decode == 'sample'
     if decode not in ('greedy', 'sample'):
         raise ValueError(f'decode must be greedy or sample, got {decode!r}')
+    if options.gate_decode == 'timing_head':
+        raise ValueError("gate_decode timing_head has no gate: e1_eval.timing_decide_batch decodes it, not decide()")
     if sample and options != sample_rules(options):
         raise ValueError('a sampled decide runs only the SAMPLE_RULES options (sample_rules)')
     tr = [dict() for _ in range(n)] if trace is not None else None

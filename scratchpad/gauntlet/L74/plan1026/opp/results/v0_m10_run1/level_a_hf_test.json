@@ -1,0 +1,63 @@
+{
+ "ckpt": "v0/m10_run1/opp_m10_s0.pt",
+ "data": "v0/hf_slot_v0_test",
+ "split": 2,
+ "rows": 1950054,
+ "thresholds_sha256": "0c42e9142d70842b1c59623b7fbe71ea4da890192e55bb3c2f677916712ec703",
+ "card": {
+  "n": 115665,
+  "agreement": 0.548895517226473,
+  "nll": 1.0316780805587769,
+  "ece_pp": 3.1573972836834443
+ },
+ "cell": {
+  "n": 136966,
+  "agreement": 0.18853584101163792,
+  "nll": 3.318538188934326,
+  "ece_pp": 1.1700589932218344
+ },
+ "timing": {
+  "slots": 1813088,
+  "events": 136392,
+  "nll_per_slot": 0.3921738862991333,
+  "hazard_mean": 0.0877322256565094,
+  "event_rate": 0.07522635415379728,
+  "ece_slot_pp": 1.2505878809665463,
+  "gaps": 136325,
+  "ks_rescaled": 0.12813653025599775,
+  "rescaled_mean": 1.1829964054341988
+ },
+ "ability": {
+  "slots": 465108,
+  "presses": 5835,
+  "gaps": 1755,
+  "ks_rescaled": 0.5167904996220835,
+  "ece_slot_pp": 0.023872371265926368
+ },
+ "memory_used": {
+  "late_rows": 709524,
+  "matches": 2131,
+  "nll_gain_real_vs_other_match": 0.12688001990318298,
+  "match_mean_gain_ci90": [
+   0.09629131853580475,
+   0.1030334085226059
+  ],
+  "seed_gap": null,
+  "note": "THRESHOLDS asks gain > seed gap; one seed trained -> seed gap not measured"
+ },
+ "pass": {
+  "card_agreement": true,
+  "cell_agreement": false,
+  "ece_card": false,
+  "ece_top_cell": false,
+  "ece_timing_slot": false,
+  "timing_ks": false,
+  "ability_ks": false,
+  "memory_used": null
+ },
+ "notes": [
+  "timing KS pooled over archetypes (THRESHOLDS asks >= 5000 gaps PER archetype: not split here)",
+  "ability KS pooled over heroes (per-hero n not split)",
+  "nll_vs_per_deck_finetune: not run (no per-deck fine-tunes)"
+ ]
+}

@@ -21,7 +21,34 @@ python cbt/.../opp/level_a.py --ckpt runs/NAME/opp_NAME_s0.pt --data hf_slot_NEW
 ```
 Live split: `live_split.json` (frozen 2026-10-28 09:06 EDT, never rewritten; sealed = every log from 20261028_090648).
 
-## STATUS (P2-OPP1, updated 2026-10-28 ~13:57 EDT pod clock; keep current)
+## STATUS (P2-OPP re-dispatch, account 2; updated 2026-10-28 18:25 UTC; keep current)
+1. Pretrain run 2 FINISHED (40k steps, best held-out total 5.515 at step 40k, 11.2 M params, 2.0 h; ckpt
+   `/workspace/opp/v0/m10/opp_m10_s0.pt` sha256 99c231bf...). Level A on HF test split 2 (1.95 M rows, 2,667 replays), THRESHOLDS
+   v3 sha 0c42e914 (its A section == v4's, checked): `results/v0_m10_run2/level_a_hf_test.json` (run 1 = step 10k: `results/v0_m10_run1/`).
+
+   | level A (a, measured) | threshold | run 1 (10k) | run 2 (40k) | pass |
+   |---|---|---|---|---|
+   | card top-1 agreement | >= 43.7% (human ceiling) | 54.9% | 62.2% | yes |
+   | cell exact top-1 | >= 27.5% | 18.9% | 22.4% | no |
+   | card / cell NLL | (O2b 0.531 / 3.05, other data) | 1.032 / 3.319 | 0.882 / 3.003 | - |
+   | card / cell ECE | <= 1.0 pp, n >= 200k | 3.16 / 1.17 | 1.23 / 0.40 (n 115,665 / 136,966) | no (n) |
+   | timing slot ECE | <= 0.5 pp | 1.25 | 0.20 | yes |
+   | timing rescaled-gap KS | <= 0.02 (>= 5k gaps per archetype) | 0.128 | 0.045 (136,325 gaps pooled) | no |
+   | ability press KS | <= 0.05 (>= 2k per hero) | 0.517 | 0.430 (1,755 gaps pooled) | no |
+   | memory: late NLL gain real vs other match | > seed gap | 0.127 | 0.125 nats/row, match CI90 [0.109, 0.114] | seed gap not measured (1 seed) |
+2. SIM decode `gate_decode='timing_head'` (decision_options.timing_slot_draw / timing_play_draw; e1_eval timing_cfg /
+   timing_decide_batch / SelfPlaySide; test pipeline/tests/test_timing_head_decode.py, 8 tests). A timing-head checkpoint
+   decodes only this way (by checkpoint content; every other model byte-identical). Needs `opp_sim` in the checkpoint:
+   `python attach_sim.py --ckpt X.pt --data TRAIN_ROWS --out X_sim.pt` (band 1 hf_pol, mode 1, era 1; 211 deck ids).
+   Seat: slot grid tick % 10 == 0, Bernoulli(h) then the tick j, card + cell drawn at T (cfg T = --opp-T; timing T = 1) from the
+   observation AT slot + j, no action delay / look-ahead / anti-stall; slots held by crforge's 20-tick command delay are not
+   choosable and their cost is off the elixir (smoke: refusals 6/23 -> 0/19 on the same seed).
+   Pod copy for closed loop (33308): `/workspace/opp/cbs` = 32657's /workspace/score/cb (b84b440 tree, P2-SCORE's E4/iu40 rows)
+   + pipeline/ of this commit; icebow/data -> /workspace/d2/cb/icebow/data (CLXIII 8d328a43, GEN 05db85a0, E4 430faaee == 32657);
+   crforge a677e080 plain copied to /workspace/crforge_main/a677e080/plain (SHA256SUMS OK); tables 16.402.22 identical.
+   Opponent: `/workspace/opp/cbs/opp_ckpt/opp_m10_s0_sim.pt` (sha256 88f8bc16...). Smokes: `bash /workspace/opp/smoke.sh CKPT OUT SEEDS T`.
+
+## STATUS history (P2-OPP1, updated 2026-10-28 ~13:57 EDT pod clock)
 Done + pushed: step 1 model / trainer options + tests (70cd720); live split frozen (0bc4874); slot re-drive, rows_to_npz,
 level_a (3c1bcdd, 27988a7, + spool converter).
 Running (pod 33308, root@157.157.221.29 -p 33308):

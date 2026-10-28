@@ -392,6 +392,8 @@ def live_decide(model, enc, heads, p_gate: float, allowed: np.ndarray, *, tau: f
     no allowed slot -> WAIT ('no_affordable'); slot = argmax over allowed of the hand-masked card logits;
     p <= tau and not stalled -> WAIT; else cell = argmax of the card-conditioned cell logits."""
     import torch
+    if "hazard" in heads and "gate" not in heads:              # P2 timing head: p is h_s, never a gate to threshold
+        raise ValueError("a timing-head model has no gate: run its seat with policy sample (timing_decide_batch)")
     if decision_options is not None and decision_options.active:
         from .decision_options import decide_batch
         return decide_batch(model, enc, heads, [p_gate], np.asarray(allowed, bool)[None], np.array([stalled]),
@@ -486,6 +488,8 @@ def live_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.nda
     elementwise (bit-identical to a per-row loop); ONE ``cell_logits`` call covers every row that plays, so this
     is O(1) GPU calls per round, not O(matches) (L68e)."""
     import torch
+    if "hazard" in heads and "gate" not in heads:              # P2 timing head: p is h_s, never a gate to threshold
+        raise ValueError("a timing-head model has no gate: run its seat with policy sample (timing_decide_batch)")
     if decision_options is not None and decision_options.active:
         from .decision_options import decide_batch
         return decide_batch(model, enc, heads, p, allowed, stalled, tau=tau, device=device,
@@ -591,6 +595,8 @@ def sample_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.n
     draw (gate: p > tau; card/cell: argmax) and its log-prob stays 0 -- an EVAL-ONLY decomposition (10-13 GAP), not for
     PPO rows. The finishers (lethal_rocket / lethal_log / lethal_quiet) and barrel_lane in ``cfg`` run as in live
     (decision_options.SAMPLE_RULES); their rows carry ``forced`` True (left out of PPO). No such key in cfg = as before."""
+    if "hazard" in heads and "gate" not in heads:              # P2 opponents: a timing-head model has no gate
+        return timing_decide_batch(model, enc, heads, allowed, matches, cfg)
     from dataclasses import replace
     from .decision_options import (BARREL_KEY, DecisionOptions, decide, match_kwargs, model_cell_logits,
                                    options_from_config, sample_rules)
@@ -643,10 +649,78 @@ GEN_CUE_KEYS = ("cue",)                # step c (rl_royale cue_inputs): a model 
 CUE_MATCH_TILES = 3.0                  # sim_cue_rows: a token takes the nearest same-side SIM body within this (tiles)
 
 
+def opp_ctx_keys(model) -> tuple:
+    """P2 opponents: a deck-encoder / context-token GenModel's extra row keys (deck_gid, ctx_<name>); () for every other
+    model (a legacy GenModel's ``opp`` has neither)."""
+    o = getattr(model, "opp", None) or {}
+    return (("deck_gid",) if o.get("deck_enc") else ()) + tuple(f"ctx_{k}" for k in o.get("ctx_tokens") or {})
+
+
+def is_timing(policy) -> bool:
+    """A GenPolicy whose GenModel has the P2 slot timing head (no gate): decoded only by gate_decode 'timing_head'."""
+    return bool((getattr(getattr(policy, "model", None), "opp", None) or {}).get("timing"))
+
+
+def timing_cfg(cfg: dict) -> dict:
+    """The seat cfg of a timing-head opponent (decision_options 'timing_head'): the 10-tick slot grid, plays issued at
+    the drawn tick (no action delay of ours; crforge's own command delay still applies, as in the HF re-drive the rows
+    came from), no look-ahead and no anti-stall (the rows have neither). The retired knobs refuse: a decide_every other
+    than the slot, or a mechanism this decode does not define."""
+    from .decision_options import TIMING_SLOT_TICKS
+    bad = [k for k in ("pipeline_decisions", "tap_loss", "tap_slow", "record", "posture", "ability", "_opp_style")
+           if cfg.get(k)]
+    if bad or cfg.get("gate_decode", "timing_head") != "timing_head":
+        raise ValueError(f"a timing-head seat cannot run {bad or cfg.get('gate_decode')}")
+    if int(cfg.get("decide_every", TIMING_SLOT_TICKS)) != TIMING_SLOT_TICKS:
+        raise ValueError(f"a timing-head seat decides every {TIMING_SLOT_TICKS} ticks (opp_decide_every is retired for it)")
+    return dict(cfg, gate_decode="timing_head", decide_every=TIMING_SLOT_TICKS, action_delay_ticks=0,
+                extrapolate_ticks=0, stall_elixir=None)
+
+
+def timing_decide_batch(model, enc, heads, allowed: np.ndarray, matches: Sequence, cfg: dict) -> list[dict]:
+    """gate_decode 'timing_head' on one shared forward. A side at a slot start (``_th_slot`` None) draws Bernoulli(h_s)
+    and the tick j inside the slot from ITS ``rng_behave`` (decision_options.timing_slot_draw); j > 0 -> no play now,
+    the side decides again at slot + j (SelfPlaySide.apply, ``th_tick``). j = 0, or a side at its drawn tick, draws the
+    card (allowed slots) and the cell at cfg['T'] from these heads -- its observation AT the play tick, as the play
+    rows were built (decision_options.timing_play_draw). The card is drawn among the slots the seat can REALLY play:
+    crforge runs a play engine_delay_ticks after it is issued and charges / cycles it only then, so the board still shows
+    the elixir and the hand from before my plays it holds; those slots are not choosable and their cost is taken off
+    the elixir (a human's client charges at the tap: the re-driven human commands never overspend)."""
+    from .decision_options import model_cell_logits, timing_play_draw, timing_slot_draw
+    if not all(hasattr(m, "_th_slot") for m in matches):
+        raise ValueError("timing_head decodes a SelfPlaySide seat only")
+    allowed = np.array(allowed, dtype=bool)
+    for r, m in enumerate(matches):
+        eng = int(getattr(m.env, "engine_delay_ticks", 0))
+        held = [s for t, s, *_ in m.done_plays if t + eng >= int(m._cur[0])]  # issued, not yet run (the board at
+        #                                                                       its run tick is still the one before)
+        if held:
+            allowed[r, held] = False
+            el = math.floor(float(m._cur[2].my_elixir) - sum(m.costs[s] for s in held) + 1e-9)
+            allowed[r] &= np.asarray(m.costs) <= el
+    T = float(cfg.get("T", 1.0))
+    hz = heads["hazard"].detach().float().cpu().numpy()
+    tk = heads["tick"].detach().float().cpu().numpy()
+    card = heads["card"].detach().float().cpu().numpy()
+    cell = model_cell_logits(model, enc, heads["card"].device)
+    out = []
+    for r, m in enumerate(matches):
+        if m._th_slot is None:
+            j = timing_slot_draw(hz[r], tk[r], m.rng_behave)
+            if j is None or j > 0:
+                out.append({"play": False, "slot": -1, "cell": -1, "why": "timing_wait" if j is None else "timing_slot",
+                            **({"th_tick": j} if j else {})})
+                continue
+        got = timing_play_draw(card[r], allowed[r], lambda s: cell([r], [s])[0].detach().float().cpu().numpy(), m.rng_behave, T)
+        out.append({"play": False, "slot": -1, "cell": -1, "why": "no_affordable"} if got is None else
+                   {"play": True, "slot": got[0], "cell": got[1], "why": "timing"})
+    return out
+
+
 def gen_row_keys(model):
     version = getattr(model, 'feature_version', 1)
     keys = (GEN_ROW_KEYS + (GEN_V3_KEYS if version >= 3 else ()) + (GEN_V31_KEYS if version >= 4 else ())
-            + (GEN_CUE_KEYS if getattr(model, "cue_in", None) is not None else ()))
+            + (GEN_CUE_KEYS if getattr(model, "cue_in", None) is not None else ()) + opp_ctx_keys(model))
     if getattr(model, "mem", None) is not None:              # Plan A memory v1: the match_memory MEM_KEYS
         from pipeline.match_memory import MEM_KEYS
         keys += MEM_KEYS
@@ -770,10 +844,28 @@ class GenPolicy:
     head for that slot's card IDENTITY + decked form (per-row tables ``slot_card`` / ``slot_form`` carried in ``enc``).
     The chosen slot goes to ``Match.apply`` as S1's does (slot -> engine deck index -> ``env.eng.act``)."""
 
-    def __init__(self, model, card_vocab: Sequence[str]):
+    def __init__(self, model, card_vocab: Sequence[str], opp_sim: Optional[dict] = None):
         from pipeline.dataset_gen import checkpoint_gid
         self.model = model
         self.gid = checkpoint_gid(card_vocab)              # 0 = <pad>; + stand-ins for cards newer than the vocab
+        # P2 opponents (a deck-encoder / context-token model only; None for every other): the checkpoint's "opp_sim"
+        # (plan1026/opp/attach_sim.py) = the context token ids to play under + the training deck-id table
+        self.opp_sim = None
+        if opp_ctx_keys(model):
+            if not opp_sim or set(model.opp["ctx_tokens"]) - set(opp_sim.get("ctx") or {}):
+                raise ValueError("this opponent model needs its checkpoint's opp_sim (ctx ids + deck_keys): "
+                                 "scratchpad/gauntlet/L74/plan1026/opp/attach_sim.py")
+            self.opp_sim = {"ctx": {k: int(opp_sim["ctx"][k]) for k in model.opp["ctx_tokens"]},
+                            "deck": {tuple(int(v) for v in key): i + 1 for i, key in enumerate(opp_sim.get("deck_keys") or [])}}
+
+    def opp_inputs(self, row: dict) -> dict:
+        """The context row keys (opp_ctx_keys) of a GenPolicy.row: deck_gid = the training id of the row's (card, form)
+        set in rows_to_npz's key order (deck_card ascending, its forms), 0 = unknown; ctx_<name> = opp_sim's id."""
+        out = {f"ctx_{k}": np.int64(v) for k, v in self.opp_sim["ctx"].items()}
+        if self.model.opp["deck_enc"]:
+            key = tuple(int(v) for v in row["deck_card"]) + tuple(int(v) for v in row["deck_form"])
+            out["deck_gid"] = np.int64(self.opp_sim["deck"].get(key, 0))
+        return out
 
     def slot_ident(self, engine_deck: Sequence[str], deck_index_of_slot: dict) -> tuple[np.ndarray, np.ndarray]:
         """[9] card id / form per deck slot; index 8 (the sc one-hots' 'unknown' column) = pad (0, FORM_PAD)."""
@@ -819,6 +911,8 @@ class GenPolicy:
         card = torch.full((B, N_SLOTS + 1), float("-inf"), dtype=h["card"].dtype, device=h["card"].device)
         card = card.scatter(1, b["hand_slot"], h["card"])[:, :N_SLOTS]       # col 8 = unknown positions, dropped
         enc = {**enc, "slot_card": b["slot_card"], "slot_form": b["slot_form"]}
+        if "gate" not in h:                                  # P2 timing head: the slot hazard + tick (no gate)
+            return enc, {"card": card, "card_hand": h["card"], "hazard": h["hazard"], "tick": h["tick"]}
         return enc, {"gate": h["gate"], "card": card, "card_hand": h["card"]}
 
     def forward_batch(self, rows: Sequence[dict], device: str = "cpu"):
@@ -832,7 +926,7 @@ class GenPolicy:
             B = heads["card"].shape[0]
             hand = torch.zeros(B, N_SLOTS + 1, dtype=torch.bool, device=heads["card"].device)
             hand = hand.scatter(1, b["hand_slot"], True)[:, :N_SLOTS]        # = model_v3.hand_mask_from_sc(sc)
-            p = torch.sigmoid(heads["gate"]).cpu().tolist()
+            p = torch.sigmoid(heads["gate"] if "gate" in heads else heads["hazard"]).cpu().tolist()   # timing: h_s
         return enc, heads, p, hand.cpu().numpy()
 
     def cell_logits(self, enc: dict, slot):
@@ -856,7 +950,7 @@ def load_policy(ckpt, device: str = "cpu"):
     from pipeline.model_gen import load_model
     model, st = load_model(ckpt, torch.device(device))
     model.eval()
-    return GenPolicy(model, st["card_vocab"]), {"gen": True, "epoch": st.get("epoch"), "n_params": st.get("n_params"),
+    return GenPolicy(model, st["card_vocab"], st.get("opp_sim")), {"gen": True, "epoch": st.get("epoch"), "n_params": st.get("n_params"),
                                                  "deck": st.get("deck"), "grid": str(st["args"].get("grid", "lattice"))}
 
 
@@ -1143,6 +1237,8 @@ class Match:
         """The current prepared state as a generalist row (``GenPolicy.row``); call after ``prepare``. Kept until the
         next ``prepare`` so cfg["record"] stores the row the GenModel actually saw (``apply``)."""
         self._gen_row = policy.row(*self._obs, *policy.slot_ident(self.engine_deck, self.deck_index_of_slot))
+        if getattr(policy, "opp_sim", None) is not None:          # P2 opponents: deck id + context tokens
+            self._gen_row.update(policy.opp_inputs(self._gen_row))
         if getattr(policy.model, "feature_version", 1) >= 3:
             self._gen_row.update(sim_v3_features(self, policy))
         if getattr(policy.model, "cue_in", None) is not None:    # step c: the model has a cue layer -> its cue rows
@@ -1789,6 +1885,10 @@ class SelfPlaySide(Match):
     def __init__(self, env, names: Sequence[str], side: int, tag: str, k: int, cfg: dict, model=None):
         if policy_feature_version(model) >= 3:
             cfg = dict(cfg, feature_version=policy_feature_version(model))
+        self.timing = is_timing(model)                      # P2 opponents: gate_decode 'timing_head' (timing_cfg)
+        if self.timing:
+            cfg = timing_cfg(cfg)
+            self._th_slot = None                            # the slot start of a play drawn for a later tick
         self._setup(env, selfplay_deck(names), k, cfg)
         self.entry, self.model = {"tag": tag}, model
         self.side, self.mirror = int(side), int(side) == 1
@@ -1806,6 +1906,8 @@ class SelfPlaySide(Match):
         self._fu: Optional[dict] = None                     # the open follow-up plan of my last play (see _follow_start)
         self.fu_tasks: list = []                            # its unresolved follow-ups (SelfPlayMatch.due evaluates them)
         self.next_tick = int(env.tick)
+        if self.timing:                                     # the rows' grid: slots start at engine tick % 10 == 0
+            self.next_tick = -(-self.next_tick // cfg["decide_every"]) * cfg["decide_every"]
         st = getattr(env, "scenario_start", None)           # W15 lever 2: a mid-match start (None = from tick 0)
         if st is not None and self.opp_mode:                # the counter starts there at the TRUE opponent elixir
             self._counter_start = (int(st["tick"]), float(st["elixir"][1 - self.side]))
@@ -1832,6 +1934,15 @@ class SelfPlaySide(Match):
         if getattr(self.env, "hero_abilities", False):
             for side, commands in self._ability_commands.items():
                 self.env.queue_abilities(side, commands, self.delay)
+        if getattr(self, "timing", False):                    # gate_decode 'timing_head' (timing_decide_batch)
+            if d.get("th_tick"):                              # a play drawn for tick j of this slot: decide then
+                self._th_slot, self.next_tick = tick, tick + int(d["th_tick"])
+                return
+            if d["play"]:
+                self._land(p, d, tick, True)                  # issued now; crforge runs it its own delay later
+            slot, self._th_slot = (tick if self._th_slot is None else self._th_slot), None
+            self.next_tick = slot + self.cfg["decide_every"]  # the next slot, whatever the engine still holds
+            return
         de, delay = self.cfg["decide_every"], self.delay
         eng = int(getattr(self.env, "engine_delay_ticks", 0))   # crforge's own command delay; 0 on RoyaleSim
         if "_opp_style" in self.cfg:
