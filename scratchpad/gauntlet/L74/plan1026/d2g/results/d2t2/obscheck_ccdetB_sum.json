@@ -1,0 +1,793 @@
+{
+ "seat_rows": 564737,
+ "tick_mismatch": 0,
+ "actors": 18,
+ "batches": 72,
+ "skipped": {},
+ "errors": {
+  "Traceback (most recent call last):\n  File \"/workspace/d2t2/hook/actor_obscheck.py\", line 70, in gen_row\n    java.update(b(self))\n                ^^^^^^^\n  File \"/workspace/d2t2/src/obsid/obs_id.py\", line 181, in __call__\n    decks, deal = s.env.decks[s.side], s.env.deal[s.side]\n                  ^^^^^^^^^^^\nAttributeError: 'RoyalePoolEnv' object has no attribute 'decks'\n": 208731
+ },
+ "diag": {
+  "bodies_moved": 1389934,
+  "rows_moved": 438913,
+  "cue_py_ns": 522274341906,
+  "cue_fast_ns": 203231955839,
+  "cue_java_ns": 30329454016,
+  "cue_jcall_ns": 39070126959,
+  "rows_cue_active": 308778,
+  "cue_tokens": 1552708,
+  "cue_col00": 1552708,
+  "cue_col01": 94659,
+  "cue_col02": 650464,
+  "cue_col03": 611877,
+  "cue_col04": 193219,
+  "cue_col05": 1218,
+  "cue_col06": 499,
+  "cue_col07": 772,
+  "cue_col08": 1676,
+  "cue_col09": 43687,
+  "cue_col10": 885925,
+  "cue_col11": 164035,
+  "cue_col12": 959004,
+  "cue_col13": 545842,
+  "cue_col14": 47862,
+  "cue_col15": 452841,
+  "cue_col16": 26234,
+  "cue_col17": 112734,
+  "cue_col18": 5530,
+  "cue_col19": 17225,
+  "cue_col20": 40748,
+  "cue_col21": 112734,
+  "view_tick_mismatch": 6192,
+  "own_events_mismatch": 6192,
+  "own_events": 9263358,
+  "rows_proj": 188739,
+  "rows_eff": 60060,
+  "rows_abil": 212615,
+  "rows_abil_known": 212615,
+  "rows_cycle": 545458,
+  "rows_abil_not_ready": 46435,
+  "rows_abil_spent": 46390,
+  "rows_abil_cooldown": 69,
+  "rows_abil_spent_identical": 45868
+ },
+ "status_by_key": {
+  "_sc_prepare": "IDENTICAL 564737/564737",
+  "cue": "IDENTICAL 333917/333917",
+  "deck_card": "IDENTICAL 564737/564737",
+  "deck_form": "IDENTICAL 564737/564737",
+  "effects": "DIFF 564022/564737",
+  "hand_card": "IDENTICAL 564737/564737",
+  "hand_form": "IDENTICAL 564737/564737",
+  "hand_slot": "IDENTICAL 564737/564737",
+  "mask": "IDENTICAL 564737/564737",
+  "next_card": "IDENTICAL 564737/564737",
+  "next_form": "IDENTICAL 564737/564737",
+  "opp_cycle": "DIFF 558760/564737",
+  "opp_past": "IDENTICAL 564737/564737",
+  "own_ability": "DIFF 560200/564737",
+  "past": "IDENTICAL 564737/564737",
+  "projectiles": "DIFF 562550/564737",
+  "sc": "IDENTICAL 564737/564737",
+  "slot_card": "IDENTICAL 564737/564737",
+  "slot_form": "IDENTICAL 564737/564737",
+  "tok": "IDENTICAL 564737/564737",
+  "unit_form": "IDENTICAL 564737/564737"
+ },
+ "keys": {
+  "cue": {
+   "rows": 333917,
+   "equal": 333917,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "deck_card": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "deck_form": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "effects": {
+   "rows": 564737,
+   "equal": 564022,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [
+    {
+     "tag": "sp0002_32",
+     "side": 1,
+     "tick": 740,
+     "index": [
+      [
+       0,
+       0
+      ],
+      [
+       0,
+       1
+      ],
+      [
+       0,
+       2
+      ],
+      [
+       0,
+       3
+      ],
+      [
+       0,
+       4
+      ]
+     ],
+     "prod": [
+      [
+       60.0,
+       1.0,
+       0.27105554938316345,
+       0.42503124475479126,
+       -1.0,
+       0.0
+      ]
+     ],
+     "java": [
+      [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     ]
+    },
+    {
+     "tag": "sp0002_32",
+     "side": 1,
+     "tick": 750,
+     "index": [
+      [
+       0,
+       0
+      ],
+      [
+       0,
+       1
+      ],
+      [
+       0,
+       2
+      ],
+      [
+       0,
+       3
+      ],
+      [
+       0,
+       4
+      ]
+     ],
+     "prod": [
+      [
+       60.0,
+       1.0,
+       0.27105554938316345,
+       0.42503124475479126,
+       -1.0,
+       0.0
+      ]
+     ],
+     "java": [
+      [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     ]
+    },
+    {
+     "tag": "sp0002_32:opp",
+     "side": 0,
+     "tick": 750,
+     "index": [
+      [
+       0,
+       0
+      ],
+      [
+       0,
+       2
+      ],
+      [
+       0,
+       3
+      ],
+      [
+       0,
+       4
+      ]
+     ],
+     "prod": [
+      [
+       60.0,
+       0.0,
+       0.7289444208145142,
+       0.5749687552452087,
+       -1.0,
+       0.0
+      ]
+     ],
+     "java": [
+      [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     ]
+    }
+   ],
+   "status": "DIFF"
+  },
+  "hand_card": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "hand_form": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "hand_slot": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "mask": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "next_card": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "next_form": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "opp_cycle": {
+   "rows": 564737,
+   "equal": 558760,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [
+    {
+     "tag": "sp0002_32",
+     "side": 1,
+     "tick": 220,
+     "index": [
+      [
+       0,
+       3
+      ]
+     ],
+     "prod": [
+      [
+       58.0,
+       0.0,
+       0.0,
+       1.2999999523162842
+      ]
+     ],
+     "java": [
+      [
+       58.0,
+       0.0,
+       0.0,
+       211.39999389648438
+      ]
+     ]
+    },
+    {
+     "tag": "sp0002_32",
+     "side": 1,
+     "tick": 250,
+     "index": [
+      [
+       0,
+       3
+      ]
+     ],
+     "prod": [
+      [
+       58.0,
+       0.0,
+       0.0,
+       2.799999952316284
+      ]
+     ],
+     "java": [
+      [
+       58.0,
+       0.0,
+       0.0,
+       211.39999389648438
+      ]
+     ]
+    },
+    {
+     "tag": "sp0002_32:opp",
+     "side": 0,
+     "tick": 250,
+     "index": [
+      [
+       0,
+       3
+      ]
+     ],
+     "prod": [
+      [
+       104.0,
+       0.0,
+       0.0,
+       1.2999999523162842
+      ]
+     ],
+     "java": [
+      [
+       104.0,
+       0.0,
+       0.0,
+       209.89999389648438
+      ]
+     ]
+    }
+   ],
+   "status": "DIFF"
+  },
+  "opp_past": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "own_ability": {
+   "rows": 564737,
+   "equal": 560200,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [
+    {
+     "tag": "sp0002_32",
+     "side": 1,
+     "tick": 90,
+     "index": [
+      [
+       0,
+       0
+      ],
+      [
+       0,
+       1
+      ],
+      [
+       0,
+       2
+      ],
+      [
+       0,
+       3
+      ],
+      [
+       0,
+       4
+      ],
+      [
+       0,
+       5
+      ]
+     ],
+     "prod": [
+      [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     ],
+     "java": [
+      [
+       62.0,
+       2.0,
+       2.0,
+       1.0,
+       1.0,
+       1.0,
+       0.0
+      ]
+     ]
+    },
+    {
+     "tag": "sp0002_32",
+     "side": 1,
+     "tick": 100,
+     "index": [
+      [
+       0,
+       0
+      ],
+      [
+       0,
+       1
+      ],
+      [
+       0,
+       2
+      ],
+      [
+       0,
+       3
+      ],
+      [
+       0,
+       4
+      ],
+      [
+       0,
+       5
+      ]
+     ],
+     "prod": [
+      [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     ],
+     "java": [
+      [
+       62.0,
+       2.0,
+       2.0,
+       1.0,
+       1.0,
+       1.0,
+       0.0
+      ]
+     ]
+    },
+    {
+     "tag": "sp0002_32",
+     "side": 1,
+     "tick": 110,
+     "index": [
+      [
+       0,
+       0
+      ],
+      [
+       0,
+       1
+      ],
+      [
+       0,
+       2
+      ],
+      [
+       0,
+       3
+      ],
+      [
+       0,
+       4
+      ],
+      [
+       0,
+       5
+      ]
+     ],
+     "prod": [
+      [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     ],
+     "java": [
+      [
+       62.0,
+       2.0,
+       2.0,
+       1.0,
+       1.0,
+       1.0,
+       0.0
+      ]
+     ]
+    }
+   ],
+   "status": "DIFF"
+  },
+  "past": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "projectiles": {
+   "rows": 564737,
+   "equal": 562550,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [
+    {
+     "tag": "sp0002_32",
+     "side": 1,
+     "tick": 620,
+     "index": [
+      [
+       0,
+       0
+      ],
+      [
+       0,
+       2
+      ],
+      [
+       0,
+       3
+      ],
+      [
+       0,
+       4
+      ],
+      [
+       0,
+       5
+      ],
+      [
+       0,
+       6
+      ]
+     ],
+     "prod": [
+      [
+       111.0,
+       0.0,
+       0.3055555522441864,
+       0.5956249833106995,
+       0.3055555522441864,
+       0.546875,
+       -1.0,
+       0.0
+      ]
+     ],
+     "java": [
+      [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     ]
+    },
+    {
+     "tag": "sp0002_32",
+     "side": 1,
+     "tick": 630,
+     "index": [
+      [
+       0,
+       0
+      ],
+      [
+       0,
+       2
+      ],
+      [
+       0,
+       3
+      ],
+      [
+       0,
+       4
+      ],
+      [
+       0,
+       5
+      ],
+      [
+       0,
+       6
+      ]
+     ],
+     "prod": [
+      [
+       111.0,
+       0.0,
+       0.3055555522441864,
+       0.515625,
+       0.3055555522441864,
+       0.23125000298023224,
+       -1.0,
+       0.0
+      ]
+     ],
+     "java": [
+      [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     ]
+    },
+    {
+     "tag": "sp0002_32:opp",
+     "side": 0,
+     "tick": 630,
+     "index": [
+      [
+       0,
+       0
+      ],
+      [
+       0,
+       1
+      ],
+      [
+       0,
+       2
+      ],
+      [
+       0,
+       3
+      ],
+      [
+       0,
+       4
+      ],
+      [
+       0,
+       5
+      ]
+     ],
+     "prod": [
+      [
+       111.0,
+       1.0,
+       0.6944444179534912,
+       0.484375,
+       0.6944444179534912,
+       0.768750011920929,
+       -1.0,
+       0.0
+      ]
+     ],
+     "java": [
+      [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     ]
+    }
+   ],
+   "status": "DIFF"
+  },
+  "sc": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "slot_card": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "slot_form": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "tok": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "unit_form": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "_sc_prepare": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  }
+ }
+}

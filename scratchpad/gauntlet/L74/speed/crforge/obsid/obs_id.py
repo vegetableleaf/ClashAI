@@ -87,7 +87,7 @@ class JavaMain:
         self.facade_hero_rule = str(self.Bind.facadeHeroRule())
         self.names = self.CfSpeed.Names()
         self.card_names = None
-        self.match = {}                                   # id(core) -> FacadeMatch reading that core's battle
+        self.match = {}                                   # unused since D2-T2 (core._obsid_match per core object)
         BB = jpype.JClass("java.nio.ByteBuffer")
         order = jpype.JClass("java.nio.ByteOrder").nativeOrder()
         self.b = {k: BB.allocateDirect(n).order(order) for k, n in
@@ -171,9 +171,9 @@ class JavaMain:
     def __call__(self, s) -> dict:
         from pipeline.dataset_gen import SC_SLOT_COLS
         core = s.env.core
-        m = self.match.get(id(core))
-        if m is None:
-            m = self.match[id(core)] = self.Match(self.tables)
+        m = core.__dict__.get("_obsid_match")             # D2-T2: per core OBJECT (an id(core) key is reused by a
+        if m is None:                                     # later env's core once the old one is freed)
+            m = core._obsid_match = self.Match(self.tables)
         if self.card_names is None:
             self.card_names = dict(s.env.names)              # raw()'s card id -> name
         # crforge deck index = the env's deal order (RoyaleSelfPlayEnv.deal, ShuffleMode.NONE); our slots index env.decks
@@ -216,7 +216,7 @@ class JavaIdent:
                ("deck_card", 8), ("deck_form", 8), ("slot_card", 9), ("slot_form", 9))
 
     def __init__(self, policy):
-        self.Ident, self.gid, self.ident = jpype.JClass("CfIdent"), policy.gid, {}   # id(core) -> CfIdent
+        self.Ident, self.gid, self.ident = jpype.JClass("CfIdent"), policy.gid, {}   # unused since D2-T2 (core._obsid_ident)
         BB = jpype.JClass("java.nio.ByteBuffer")
         order = jpype.JClass("java.nio.ByteOrder").nativeOrder()
         self.bi, self.bp = BB.allocateDirect(8 * 48).order(order), BB.allocateDirect(4 * 15).order(order)
@@ -228,9 +228,9 @@ class JavaIdent:
         """The CfIdent of ``s``'s core (cfg and the gid table set on first sight)."""
         from pipeline.dataset_gen import card_key
         core = s.env.core
-        j = self.ident.get(id(core))
+        j = core.__dict__.get("_obsid_ident")
         if j is None:
-            j = self.ident[id(core)] = self.Ident()
+            j = core._obsid_ident = self.Ident()
             j.extrap = int(s.cfg.get("extrapolate_ticks") or 0)
             j.cellOff = 0.5 if s.cfg["grid"] == "floor" else 0.0
         for cid, nm in zip(s.env.deck_ids[s.side], s.engine_deck):     # env deck order, slot_ident's names
@@ -345,9 +345,9 @@ class JavaPub:
 
     def of(self, env):
         core = env.core
-        j = self.pub.get(id(core))
+        j = core.__dict__.get("_obsid_pub")
         if j is None:
-            j = self.pub[id(core)] = self.C(core._cf, self.T)
+            j = core._obsid_pub = self.pub[len(self.pub)] = self.C(core._cf, self.T)
         return j
 
     def __call__(self, s) -> dict:
@@ -358,7 +358,7 @@ class JavaPub:
         j.extrap = int(s.cfg.get("extrapolate_ticks") or 0)
         while not j.update(seat):
             self.resolve()
-        m = self.main.match.get(id(s.env.core))
+        m = s.env.core.__dict__.get("_obsid_match")
         opp = m.opp(seat, self.main.keys) if m is not None and hasattr(m, "opp") else None
         if opp is not None:                                   # CfOppElixir key -> card_key's key (opp_cycle dedup)
             cyc = list(self.T.cyc)

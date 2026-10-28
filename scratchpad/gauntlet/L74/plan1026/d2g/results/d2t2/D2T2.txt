@@ -30,3 +30,30 @@ Item 4 baseline (HEAD = unit-type cache, no Java obs) -- in progress
   Seed 101 (the D2-T seed), default CUDA: the crforge run crashed in the u0001 rollout (actor 17 twice, the Clone on
   evolved Skeletons gap: 'c65_1_0 is cloned carrying SkeletonDuplication_EV1'), so the CF-CLONE gap is not only a
   deterministic-CUDA case (a). Chain restarted with seed=102 (all runs of the pairs).
+  Seed 102 pair 1 (OLD lib /workspace/d2/stage/lib, before CF-CLONE; cf CPUs 0-25 cuda:0, rs 32-57 cuda:1; s102/):
+    u0001-u0003 crforge 18,733 core-s (actors + learner), wall 920 s, 239,082 rows; fin16 19,631, 1,058 s, 241,053 rows
+    -> crforge / fin16 CPU 0.954, wall 0.870, CPU per row 0.962 (one pair: no spread; the other two pairs were
+    dropped when CF-CLONE landed, the chain moved to the new lib).
+
+CF-CLONE (coordinator 10-28: e1e8deb, lib_fix on 30408 /workspace/cfclone) -- lib copied to 33308 /workspace/d2t2/lib_cfclone
+  (6 jars sha-equal to lib_fix; only core-1.0-SNAPSHOT.jar differs from the old stage lib: 3e86169b vs e94447c0).
+  run3t.sh / obscheck.sh take CF_LIB (default = the old stage lib, unchanged).
+  D2-T seed 101 on the new lib, learner_deterministic: true, 18 actors, max_updates 3, CPUs 64-83 / 96-115 (a):
+    ccdetA (plain) and ccdetC (with the obs check hook): no crash; batch_sha u0000 e5b5de1dc833544c,
+    u0001 2d49eecf4481377b, u0002 d643a544a55f1f6b IDENTICAL between the two runs (and ccdetB = the same three), so
+    the hook does not change a row and the rollouts are deterministic over 2 updates (u0001 / u0002 are played
+    with weights after 1 / 2 deterministic updates). u0000 differs from D2-T's old-lib f18ce1e8 (new core jar).
+  Java builders vs production on those rows (u0000-u0002 rollouts + warm start, all seats):
+    ccdetB (obs_id as committed): tok / mask / sc / ... identical, but projectiles 2,187, effects 715, own_ability
+      4,537, opp_cycle 5,977 rows DIFF (results/d2t2/obscheck_ccdetB_sum.json), all from stale CfPubObj state (first
+      diffs: own_ability shows a card at tick 90, opp_cycle age 211.4 s = an older match's clock). Cause (a, code +
+      the stale values; b: the exact core pairs not logged): obs_id kept the per-core Java objects in dicts keyed by
+      id(core); run_selfplay_batch makes new envs per batch, a freed core's id is reused by a new core, and
+      CfPubObj (bound to its core at construction) then read the OLD battle. oc2 (2 batches per actor) did not hit it.
+      Fix: obs_id.py keeps them on the core object (core._obsid_match / _obsid_ident / _obsid_pub).
+    ccdetC (fixed): 564,737 self-play seat-rows, tick mismatch 0, ALL 20 GenModel keys IDENTICAL on every row (cue on
+      the 333,917 rows with a cue layer) -- results/d2t2/obscheck_ccdetC_sum.json. 208,731 screen rows (RoyalePoolEnv)
+      not covered (as in oc2).
+  NOT done (the coordinator's 'flag on vs off' check): there is no production module / flag yet (item 2a's module,
+  item 3, 2b). ccdetC is the closest available evidence: the Java rows equal the rows PPO trained on in a run whose
+  three batch shas equal the hook-free run's, over 2 deterministic updates on the D2-T seed.

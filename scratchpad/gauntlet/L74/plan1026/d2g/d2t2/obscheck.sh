@@ -4,7 +4,7 @@
 # production config on crforge with hook/sitecustomize.py (D2T2_OBSCHECK): every actor compares the builders with the
 # production row per key -> /workspace/d2t2/$RUN/<pid>.json.
 T=$1; SRC=$2; RUN=$3; CPUS=$4; N=$5; shift 5
-B=/workspace/d2t2/build_$RUN; L=/workspace/d2/stage/lib
+B=/workspace/d2t2/build_$RUN; L=${CF_LIB:-/workspace/d2/stage/lib}
 mkdir -p $B /workspace/d2t/logs
 javac -Xlint:all -d $B -cp "$L/*" $T/scratchpad/gauntlet/L74/crforge/facade/CfCore.java $SRC/CfSpeed.java $SRC/obsid/CfObsBind.java \
   $SRC/obsid/CfOppElixir.java $SRC/obsid/CfIdent.java $SRC/obsid/CfCue.java $SRC/obsid/CfPubObj.java > $B.javac.log 2>&1 || exit 1

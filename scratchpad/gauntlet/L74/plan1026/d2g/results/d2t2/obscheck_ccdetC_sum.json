@@ -1,0 +1,247 @@
+{
+ "seat_rows": 564737,
+ "tick_mismatch": 0,
+ "actors": 18,
+ "batches": 72,
+ "skipped": {},
+ "errors": {
+  "Traceback (most recent call last):\n  File \"/workspace/d2t2/hook/actor_obscheck.py\", line 70, in gen_row\n    java.update(b(self))\n                ^^^^^^^\n  File \"/workspace/d2t2/src/obsid/obs_id.py\", line 181, in __call__\n    decks, deal = s.env.decks[s.side], s.env.deal[s.side]\n                  ^^^^^^^^^^^\nAttributeError: 'RoyalePoolEnv' object has no attribute 'decks'\n": 208731
+ },
+ "diag": {
+  "bodies_moved": 1389934,
+  "rows_moved": 438913,
+  "cue_py_ns": 503865983014,
+  "cue_fast_ns": 206215377305,
+  "cue_java_ns": 24432431488,
+  "cue_jcall_ns": 30627453203,
+  "rows_cue_active": 308778,
+  "cue_tokens": 1552708,
+  "cue_col00": 1552708,
+  "cue_col01": 94659,
+  "cue_col02": 650464,
+  "cue_col03": 611877,
+  "cue_col04": 193219,
+  "cue_col05": 1218,
+  "cue_col06": 499,
+  "cue_col07": 772,
+  "cue_col08": 1676,
+  "cue_col09": 43687,
+  "cue_col10": 885925,
+  "cue_col11": 164035,
+  "cue_col12": 959004,
+  "cue_col13": 545842,
+  "cue_col14": 47862,
+  "cue_col15": 452841,
+  "cue_col16": 26234,
+  "cue_col17": 112734,
+  "cue_col18": 5530,
+  "cue_col19": 17225,
+  "cue_col20": 40748,
+  "cue_col21": 112734,
+  "view_tick_mismatch": 0,
+  "own_events_mismatch": 0,
+  "own_events": 9263358,
+  "rows_proj": 190926,
+  "rows_eff": 60775,
+  "rows_abil": 210982,
+  "rows_abil_known": 210982,
+  "rows_cycle": 545458,
+  "rows_abil_not_ready": 46435,
+  "rows_abil_spent": 46390,
+  "rows_abil_cooldown": 69,
+  "rows_abil_spent_identical": 46390
+ },
+ "status_by_key": {
+  "_sc_prepare": "IDENTICAL 564737/564737",
+  "cue": "IDENTICAL 333917/333917",
+  "deck_card": "IDENTICAL 564737/564737",
+  "deck_form": "IDENTICAL 564737/564737",
+  "effects": "IDENTICAL 564737/564737",
+  "hand_card": "IDENTICAL 564737/564737",
+  "hand_form": "IDENTICAL 564737/564737",
+  "hand_slot": "IDENTICAL 564737/564737",
+  "mask": "IDENTICAL 564737/564737",
+  "next_card": "IDENTICAL 564737/564737",
+  "next_form": "IDENTICAL 564737/564737",
+  "opp_cycle": "IDENTICAL 564737/564737",
+  "opp_past": "IDENTICAL 564737/564737",
+  "own_ability": "IDENTICAL 564737/564737",
+  "past": "IDENTICAL 564737/564737",
+  "projectiles": "IDENTICAL 564737/564737",
+  "sc": "IDENTICAL 564737/564737",
+  "slot_card": "IDENTICAL 564737/564737",
+  "slot_form": "IDENTICAL 564737/564737",
+  "tok": "IDENTICAL 564737/564737",
+  "unit_form": "IDENTICAL 564737/564737"
+ },
+ "keys": {
+  "cue": {
+   "rows": 333917,
+   "equal": 333917,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "deck_card": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "deck_form": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "effects": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "hand_card": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "hand_form": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "hand_slot": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "mask": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "next_card": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "next_form": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "opp_cycle": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "opp_past": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "own_ability": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "past": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "projectiles": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "sc": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "slot_card": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "slot_form": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "tok": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "unit_form": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  },
+  "_sc_prepare": {
+   "rows": 564737,
+   "equal": 564737,
+   "not_ported": 0,
+   "dtype_shape_diff": 0,
+   "first_diffs": [],
+   "status": "IDENTICAL"
+  }
+ }
+}
