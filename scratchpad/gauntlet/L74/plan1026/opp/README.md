@@ -45,3 +45,13 @@ Not started (need their own tickets): live slot rows for opponent seats (step 3)
   results/v0_m10_run1/). Run 2 relaunched from scratch, same command (`v0/m10/`, log v0/m10/train.log). main_opp has
   no mid-run resume: an OOM means a fresh restart (or --init from the last checkpoint with a new schedule).
   Level-A test rows are the EXTRACTED dir `/workspace/opp/v0/hf_slot_v0_test` (1,950,054 rows, 2,667 split-2 replays).
+- STOP (account switch, ~16:05 UTC). State:
+  * RUNNING on 33308: pretrain run 2, PID 96607, GPU1, `/workspace/opp/v0/m10/` (step 10,000 of 40,000 reached, ~4.8 steps/s,
+    ~1.8 h left; best checkpoint opp_m10_s0.pt written at each better held-out total). If it dies: restart from scratch with
+    `cd /workspace/opp && setsid nohup bash cbt/scratchpad/gauntlet/L74/plan1026/opp/run_pretrain.sh /workspace/opp/v0/hf_slot_v0 /workspace/opp/v0/m10 m10 320 7 40000 1 > v0/m10/train.log 2>&1 &`
+  * RUNNING on 33308: level A on run 1's step-10k checkpoint, PID 112745, GPU1, -> `v0/m10_run1/level_a_hf_test.json`
+    (first attempt hit CUDA OOM: fixed by streaming batches). Re-run command = the README step 4 with --data v0/hf_slot_v0_test.
+  * NEXT: when run 2 finishes, level_a.py on v0/m10/opp_m10_s0.pt; copy curve + level A json to results/; then the
+    split tickets: (3) live slot rows for opponent seats (2-tick detection, 10-tick grid, cycle-rule hand, >= 99% self-check)
+    + fine-tune with --init on the frozen train block, level A on the calibration block; (4) SIM timing-head decoder
+    (decide every 10 ticks, Bernoulli(h), tick-in-slot) + level B vs CLXIII in crforge.

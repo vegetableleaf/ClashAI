@@ -139,7 +139,7 @@ def main(argv=None) -> int:
     R = {k: [] for k in ("i", "h", "pt", "card_p", "card_top", "card_ok", "cell_p", "cell_top", "cell_ok", "nll", "abh", "abpt")}
 
     def run(ids):
-        out = []
+        """Yields one batch at a time (GPU tensors freed per batch; keeping them all ran a 24 GB GPU out of memory)."""
         for s0 in range(0, len(ids), a.bs):
             b = rows.batch(ids[s0:s0 + a.bs])
             o = model(b, card=b["card"], form=b["form"])
@@ -152,8 +152,7 @@ def main(argv=None) -> int:
             cell_lp = torch.where(play, cl.gather(1, lab.clamp(min=0)[:, None])[:, 0], torch.zeros_like(cl[:, 0]))
             s = b["slot_ok"] > 0
             tnll = torch.where(s, slot_nll(o["hazard"].float(), o["tick"].float(), b["slot_ev"], b["slot_tick"]), torch.zeros_like(cell_lp))
-            out.append(dict(card_lp=card_lp, cell_lp=cell_lp, tnll=tnll, o=o, b=b, play=play, lab=lab, cl=cl, ck=ck))
-        return out
+            yield dict(card_lp=card_lp, cell_lp=cell_lp, tnll=tnll, o=o, b=b, play=play, lab=lab, cl=cl, ck=ck)
 
     ids = np.asarray(idx)
     for chunk in run(ids):
@@ -200,7 +199,7 @@ def main(argv=None) -> int:
             for i in ids:
                 tabs[i] = first_tab.get((int(rot[int(arrs["rep"][i])]), int(arrs["side"][i])), -1)
             rows.memory = (packed, tabs, arrs["tick"])
-            shuf = np.concatenate([np.stack([-c["card_lp"], -c["cell_lp"], c["tnll"]], 1).cpu().numpy() for c in run(ids[late])])
+            shuf = np.concatenate([torch.stack([-c["card_lp"], -c["cell_lp"], c["tnll"]], 1).cpu().numpy() for c in run(ids[late])])
             real = R["nll"][late]
             d = (shuf - real).sum(1)                                   # > 0 = the real memory predicts better
             per = {}
