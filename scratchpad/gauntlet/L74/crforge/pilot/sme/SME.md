@@ -2003,3 +2003,106 @@ on the same tick, an input fact that the reader shows.
 - `results/live/bp9/`: `bp9Y1_{results.jsonl,cmp.txt}`, `bp9{S1,I0,R0}_cmp.txt`, `bp9S1_results.jsonl`, `order_v{25o,27o}.log`,
   `samerun_r87.log`, census logs.
 - Pod 32657: `/workspace/pilot/inputs_v27o` (`ab3c7114`), `/workspace/pilot/bp9`, runs `sme_live/bp9{R0,I0,S1,Y1}`.
+
+---
+
+# A2c-9N: the opponent hero Ice Wizard press held pending; same-tick order in extract.py (worker a2c9n, pod 33920)
+
+Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted. **No crforge change and no comparator change**:
+the cause is the dating of an opponent press, which is an extractor fact.
+
+**Base reproduced (a).**
+- `n93` (r93's command on 33920: `a2c9/run9.sh`, CODE=sme9, inputs_v27) matches r93: sorted results sha256 `eed5f304`.
+- `n9Y` (bp9Y1's command: `bp9/run9.sh`, SME_DIR=sme9, inputs_v27o) matches bp9Y1: sorted `5893ab91`, 106 / 109.
+
+| run | change | layer | inputs | exact apart from torn (unflagged) | exact frames | regressions | gained |
+|---|---|---|---|---:|---:|---|---|
+| bp9Y1 = n9Y | (9R) | | v27o `ab3c7114` | 106 / 109 | 276,782 | | |
+| **n9P** | opponent hero IW press window back to its last valid-target frame (SME_IWPEND9); the fitter picks the run | extractor | **v28** `65b5e131` = v27o + 10 windows in 7 matches | **108 / 109** | **278,863** (+2,081) | **0** (133 matches byte-identical) | `171753`, `014928` (`211239` 1532 -> 4894) |
+
+## 1. SME_SAMETICK_ORDER: A2c-9R's order rule inside extract.py (a)
+- `extract.match` runs `bp9/order_inputs.reorder` on the record when the flag is set. It uses `live_frames.convert` frames, the
+  same function that wrote frames2. `reorder` gained an optional `fr` argument; the post-pass CLI is unchanged.
+- Proof (`a2c9n/regen9n.sh` = v27's flag set: regen9z.sh + ZAP_ADD / ZAP_POINT / LATE9 / MADE9; `results/live/a2c9n/regen_hashes.txt`):
+  - flag off: `157e183a` = v27 byte for byte;
+  - flag on: `ab3c7114` = v27o byte for byte after CRLF -> LF. The laptop writes CRLF (v27 has it too). v27o's LF is the pod's
+    text-mode read in `order_inputs.py`; no other byte differs.
+- n9Y on v27o reproduces bp9Y1, so a regen with the flag gives the same run.
+
+## 2. 171753@3293: the opponent pressed the hero IW ability at 3291; the cast came at 3333 (a)
+- **Frames vs crforge (AimRun7 / AimRun9 on r93's plan, `a2c9n/` on 32657):**
+  - On its step into 3292 the game's IW aims at node 1480 (2250, 20750). That is the first node of a route searched afresh
+    from its cell (3, 42). The 1-unit y at 3293 is that one-tick aim; the later turn (aims 1409 -> 1373 -> 1337, column 5) is
+    that route.
+  - crforge keeps the route it searched at 3259 and aims at 1445, then 1409 -> 1374 (column 6): 30 units at 3303.
+  - Every goal near 871 gives the same first nodes from (3, 42). The endpoint scan keeps 871 (nearest plain cell). No overlay
+    change in crforge at 3292.
+- **The trigger is the ability press (a).** crforge's ability press re-searches the hero's route. With the opponent's IW press
+  (cmd 47) re-run at 3291 instead of its cast tick 3333, crforge reproduces frames 3291-3297 exactly. It also casts on the
+  same tick as the game: the press is held pending and the cube flies when the Tesla first carries IceWizardHeroSlow (3333).
+  Single-match chk: exact 1573 -> 1888, first div 3293 -> 3886.
+- **Why the press precedes the cast (a, tables):**
+  - `IceWizardHero_ability_activation_actions` waits (`IceWizardHero_wait_to_activate_ability`, checked every 50 ms) for a target.
+  - The target comes from `IceWizardHero_target_resolver`: Global shape, enemy characters only while they carry the hero's
+    IceWizardHeroCold / IceWizardHeroSlow (`FilterIfNotBuffedByChecker`).
+  - A press with no chilled enemy is held until the first one.
+  - The reader shows nothing of an opponent's held press: the IW reads `pending_on_body` 0 and no cast timer, with no field
+    change over 3237-3345. Its elixir is not read either.
+- **Same mechanism in 014928@5183 and 211239@1532 (a):**
+  - 014928: press 5215 -> 5181 makes the match exact on every frame. This is BP5's "fresh route search at 5182 with no
+    crforge trigger".
+  - 211239: press 1571 -> 1531 moves the onset to 1582. This is BP4/BP5's "first move one tick early after target death".
+    The press re-search moves the IW at 1532.
+
+## 3. Census (a; `a2c9n/iwpress.py`, `results/live/a2c9n/iwpress_v27o.txt`)
+Every hero IW press on both sides in the 138 matches (153), with the valid-target test read from the reader's buffs (an enemy
+of the hero's side carrying its Cold / Slow, by `source_side_cached`):
+- **Our side, ground truth (tap or charge-drop dated):**
+  - 13 presses were made with no valid target: 12 `own_press` + 1 `charge_drop`. 11 cast later (the first valid frame comes
+    33-1,513 ticks after the press). 2 never get a valid target, so they are presses with no cast: 222240@3598, and
+    225213@3587 (round 8.7). In n9Y all 13 matches are exact or torn from the press through the cast or the hero's end
+    (230512's first div 4942 is after it). The 2 no-cast ones are own-side ground truth for A2c-10's ghost press.
+  - So crforge's held press and its re-search agree with the game wherever the press tick is known.
+  - 3 own presses with a valid target cast at once.
+- **Opponent, cast_seen:**
+  - 10 casts with a valid target on the frame before: press = cast, kept.
+  - 10 casts with none: all 10 sit on the first valid frame (R or R+1). A press at the cast would land on the first valid
+    tick by chance alone only rarely, so these were held. These are the 10 windows of v28 (`inputs_v27o_v28.txt`).
+- **Rule (`sme_live.iw_pending`, SME_IWPEND9, extractor):**
+  - Applies to an opponent hero IW cast_seen press whose frame before has no valid target.
+  - run window = [max(hero play + 1, last valid frame), cast]; the dated tick stays the cast. With no onset in reach nothing
+    changes; at an onset FITNEXT varies the run inside the window.
+  - Self-check `a2c9n/iwpend_test.py` (ok, 8 asserts): the window, the last-valid bound, a valid frame before the cast, the
+    other side's buff, our side, other sources, no hero play, flag off.
+  - Known wart: an `iw_area`-dated cast (014151@1264) has its `dated` overwritten with `iw_pending`; the tick is unchanged.
+
+## 4. Over-fit probe for every press the fitter moved (a; `a2c9n/sweep9n.py`, every R of the window, whole match)
+| match | press | window | fitter's R | full-window sweep | frames worse than base |
+|---|---|---|---:|---|---:|
+| 171753 | cmd 47 | [3237, 3333] | 3291 | exact 1888 at 3291 only; 3282 / 3289 / 3290 / 3294 1887 (3289 / 3290 lose frame 3291); 3293 1700; >= 3295 base. 3237-3260 = base (a press before the deploy end changes nothing) | 0 |
+| 014928 | cmd 100 | [5139, 5215] | 5181 | only 5181 is exact on every frame (3033 + 1 torn); 5182 leaves 90 div | 0 |
+| 211239 | cmd 15 | [1526, 1571] | 1531 | 1531: 71 div; 1530: 89; every other: 113 (base) | 0 |
+
+- Each chosen tick explains the game's turn: the step after it aims at the fresh route's first node.
+- 155552 (2 windows) and 014151 (1, 403 variants) were searched at onsets and kept at the cast; their results counts are
+  unchanged.
+- 174147, 204202 and 211239@3490 / @5262 had no onset in reach.
+- **Deterministic dating is not available from the reader (a):** the opponent's held press shows no reader field. The fit
+  is what pins it, uniquely in all 3 (table).
+
+## 5. What fails now (n9P, 1 / 109)
+- `211239`@4894: the opponent's hero IW (cmd 64) turns 5 units off. A2c-10 found the same press, but one that never casts
+  (the hero dies at 4912, no valid target after 4762): a ghost press at R = 4892 makes the match exact. That is their rule
+  (SME_IWGHOST10, run a10G1 on 32657).
+- **D1: the remaining failures trace to 1 mechanism.**
+
+## Files (A2c-9N)
+- **Code:** `extract/extract.py` (SME_SAMETICK_ORDER hook; SME_IWPEND9 call), `sme/sme_live.py` (`iw_valid_ticks`,
+  `iw_pending`), `sme/bp9/order_inputs.py` (`reorder(..., fr=None)`).
+- **Tools (`a2c9n/`):** `regen9n.sh` (v27 flag set), `env9.sh` (r93 flags for single-match tools), `iwpress.py` (census),
+  `iwpend_test.py`, `sweep9n.py`, `abdump.py` (reader phase-2 rows), `indiff2.py`, `rows.py`.
+- **Results (`results/live/a2c9n/`):** `n9P_{results.jsonl,cmp.txt}` (sorted sha256 `e38bb85e`), `n9Y_cmp.txt`,
+  `regen_hashes.txt`, `iwpress_v27o.txt`, `inputs_v27o_v28.txt`, `sweep_{171753,211239,014928}.txt`.
+- **Pods:**
+  - 33920: `/workspace/pilot/{sme9, inputs_v27, inputs_v27o, inputs_v28, a2c9n}`, runs `sme_live/{n93, n9Y, n9P}`;
+  - 32657: `/workspace/pilot/a2c9n` (AimRun7 / 9 traces of 171753).

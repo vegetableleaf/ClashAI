@@ -1,4 +1,14 @@
 
+## Remaining failures of n9P (1 unflagged; 108 / 109, 278,863 exact frames; A2c-9N on bp9Y1)
+n9P = bp9Y1's command (sme9 code, lib_f635c, SME_LATE9 + SME_MADE9, `bp9/run9.sh`) on inputs_v28 (`65b5e131` = v27o +
+SME_IWPEND9: 10 opponent hero Ice Wizard presses in 7 matches get the run window back to their last valid-target frame).
+0 regressions; 133 matches byte-identical to bp9Y1 (reproduced on pod 33920 as n9Y, sorted sha256 `5893ab91`). Fixed by it:
+`171753` (press 3333 -> 3291), `014928` (5215 -> 5181); `211239` 1532 -> 4894 (1571 -> 1531) (SME.md A2c-9N).
+
+| match | first div | class | mechanism (D1) | evidence |
+|---|---:|---|---|---|
+| `20261026_211239` | 4894 | body position | an opponent hero IW press held pending and never cast (the hero dies first); its re-search is the 5-unit turn | A2c-10 (ghost press, R = 4892 the only exact run in a 149-run sweep) |
+
 ## Remaining failures of bp9Y1 (3 unflagged; 106 / 109, 276,782 exact frames; A2c-9R on r93)
 bp9Y1 = r93 (sme9 code, SME_LATE9 + SME_MADE9) on inputs_v27o (`ab3c7114`: same-tick plays of the two sides in the reader's
 creation order, `bp9/order_inputs.py`); 0 regressions, 115 unchanged-input matches byte-identical to r93. Fixed by it:
