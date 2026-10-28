@@ -3,26 +3,30 @@
 Labels: (a) measured (number + source), (b) plausible, untested, (c) contradicted. Owner mandate 10-28: learning progress
 per wall-clock hour x50-100+, fp32 only (TF32 off), kl_stop_prev 0.02. Rent only on a measured >= ~50x projection.
 
-## STATUS (keep current; 10-29 ~00:30 EDT; worker context exhausted -> handover)
-- Commits: 335f151 (noise scale), 3866761 (micro_batch), e09c4cd (reruns, accum_gate, model); this commit: mem_row_cache +
-  lr sweep + 2-GPU probe (section 5).
-- Opt-in keys landed (absent = byte-identical, hash unchanged, smokes PASS): `micro_batch` (gradient accumulation),
-  `mem_row_cache` (MEM features once per update).
-- NOTHING RUNNING (33920 idle; 33308: my tree /workspace/lscale/cb, outputs /workspace/lscale/out, no process).
+## STATUS (keep current; LEARNER-SCALE2, 10-28 ~23:45 EDT)
+- Previous seat's commits: 335f151, 3866761, e09c4cd, e8da717. This seat: kl_lr_target + T 0.1 records + section 6
+  (this commit).
+- Opt-in keys landed (absent = byte-identical, hash unchanged):
+  - `micro_batch`, `mem_row_cache` (previous seat).
+  - `kl_lr_target` (this seat): the KL-adaptive lr, section 6a. Smoke ls2_smoke_off on 33920 with this code: config
+    b5e2a2bbafef, u0000 e816a6a4 / 3e07cff4, u0001 f060b678 / 5c61ac04 = the reference. SMOKE PASS.
+- Records (a): 6 x 512 B0 matches at T_gate 0.1 (pilot.yaml at HEAD e8222884), each with LOOP-REC byte-identity PASS.
+  - Engine: 33920's crforge lib d2/stage, NOT the pilot's fe364ceb lib (b: the engine difference is not measured).
+  - Location: 33920:/dev/shm/lscale/t01_s{2101..2106}/keep, ~2.5 GB each, in RAM: a pod restart loses them.
+  - Rebuild: /workspace/lrn/cap_t01.sh (Codex LEARNER-SCALE_3), and chain_ls2.sh for 2105 / 2106.
+- RUNNING on 33920: /workspace/lrn/chain_ls2.sh (log /workspace/lrn/logs/chain_ls2.log). Steps, in order:
+  1. capture 2105 and 2106;
+  2. lr_sweep at equal KL (log sweep2.log, out /workspace/lrn/sweep2/sweep_t01.json);
+  3. the noise scale on 1,024 T 0.1 matches (noise2.log, /workspace/lrn/noise2/ns_t01_1024.json).
+  Restart: `cd /workspace/lrn && setsid nohup bash chain_ls2.sh > logs/chain_ls2.log 2>&1 &`. It skips the captures
+  already done; the sweep and the noise run start over.
 - Codex dispatches:
-  - LEARNER-SCALE_1 (low): profiler. DONE.
-  - LEARNER-SCALE_2 (low): BLOCKED, GPU0 busy.
-  - LEARNER-SCALE_2b (low): 2-GPU probe. DONE in ~5 min.
-  - I checked all numbers against the JSONs.
-- NEXT (split for a fresh worker, in order):
-  1. Scale the held-out J set (Codex: 1,024+ held-out matches; T 0.1 records once LOOP-INT2 has a few hundred) and
-     re-run lr_sweep at equal KL: 32k at 3e-5; 65k at 3e-5 / 4e-5. If one step still overshoots: build the opt-in
-     KL-adaptive lr (toward cap / 4 per step) and the no-grad KL check (lead approved both as opt-in).
-  2. The noise scale on >= 300 T 0.1 matches (noise_scale.py --keep pkl list; 33308 GPU1, <= 30 GB).
-  3. Per-row fp32 fix 2: the kernel count (~5,200 per step, 3,160 fill_), via CUDA graphs / torch.compile where exact.
-     Identity at the Adam floor (gradients <= 1e-7, monitors <= 1e-4).
-  4. DDP only when the update has enough rows to split (section 5).
-  5. Projection (section 4), with the measured sweep result: no rent case yet.
+  - Previous seat: LEARNER-SCALE_1 (profiler) DONE; _2 BLOCKED; _2b (2-GPU probe) DONE.
+  - This seat: LEARNER-SCALE_3 (low), the T 0.1 capture (4 x 512): DONE in 27 min, 4/4 PASS. I checked its numbers
+    against the log.
+- NEXT: read the sweep and the noise results into section 6, then the projection (section 6d).
+
+Previous seat's STATUS (10-29 ~00:30, superseded): `git show e8da717:scratchpad/gauntlet/L74/plan1026/pilot/lrn/SCALE.md`.
 
 ## 1. Gradient noise scale (noise_scale.py)
 Method: B_simple = tr(Sigma) / |G|^2. The loss is split into components: gate / card / cell = -sum w A lp_head (the L_pg
@@ -215,3 +219,65 @@ once per update, then served from the cache.
 - (b) DDP is compute-bound: all-reduce is <= 0.2% of a 1,024-row step.
 - But DDP only helps if each update has enough rows to split. Today's steady-state update is ~15 steps x 256 rows,
   i.e. too few rows to share across GPUs (64 rows / GPU at 4-way: 1.6 ms/row vs 0.66 ms/row at 256).
+
+## 6. LEARNER-SCALE2 (10-28 night)
+
+### 6a. kl_lr_target: the KL-adaptive lr (opt-in, lead-approved)
+Key `kl_lr_target: x` (a finite float > 0; absent / null = off; the hash is unchanged when absent).
+- What it does: on policy steps only (a no-op in the critic warm-up), before each step the lr is multiplied by
+  clamp(sqrt(x / dKL), 0.5, 2).
+  - dKL = this minibatch's KL to the anchor minus the previous minibatch's: the KL the last step added. The rule
+    assumes KL ~ lr^2.
+  - The lr is bounded to [lr / 16, 16 lr] of the config lr.
+  - It lives in opt.param_groups, so it carries across updates and checkpoints.
+  - The update record gets `lr_end`.
+- Use: x ~ kl_stop_prev / 4 (0.005) with large minibatches, so the cap is reached in ~4 steps instead of one overshooting
+  step (3b: one 32k step at 1.13e-4 = 5x the cap).
+- Known ceiling: dKL comes from two different minibatches, so it is noisy. This matters at mb 256, not at 8k+ rows.
+  A negative dKL reads as a tiny step and doubles the lr.
+- Tests (a): pipeline/tests/test_learner_fast_kllr.py, 4/4 on 33920:
+  - off / null are byte-identical (with and without the value loss);
+  - the warm-up leaves the weights and lr untouched;
+  - the lr sequence equals the rule replayed from the measured KLs, for 3 targets;
+  - the bounds hold;
+  - config validation and hash.
+  With test_learner_fast_accum and test_kl_stop_prev: 7 passed. pyflakes clean.
+- The no-grad KL check before the backward is NOT built. 3b's cost model says it pays only at <= 2 steps per update, and
+  kl_lr_target aims at ~4. Build it if the sweep shows 1-2 step updates.
+
+### 6b. Where a step's GPU time goes now (prof_mod.py; 33920 4090; pilot.yaml + mem_row_cache; id1 T 0.3; prof2/)
+| mb | fwd ms | bwd ms | clip + Adam ms | total ms | ms / row | kernels / step |
+|---:|---:|---:|---:|---:|---:|---:|
+| 256 | 48.2 | 57.2 | 4.9 | 110.6 | 0.43 | 5,329 |
+| 1,024 | 108.2 | 164.1 | 5.9 | 278.5 | 0.27 | 5,786 |
+
+(a) With mem_row_cache, gen_batch is off the step: at 256 rows the step is 110.6 ms, vs 170 ms in section 2.
+
+(a) Kernel time per step at 1,024 rows (prof_mod_kern_mb1024.txt / _stack_):
+- Memory-movement ops: fill_ 31 ms (2,126 calls), clone 30 ms (221), copy_ 29 ms (380), index_put_ 16 ms (25), zeros
+  10 ms (65). Together ~117 ms, ~42% of the step.
+- The rest: attention backward (cutlass mem-efficient, fp32), conv backward (CellRefine), mm / addmm, Adam ~4.5 ms.
+- The kernel count barely depends on rows (5,329 -> 5,786).
+
+(a) Module forward split: the trunk encoder and the memory encoder take ~10 ms each of the 256-row forward. Most of the
+rest is glue outside nn.Module forwards: indexing, masks, cat, loss terms, and the lazy refine features (a method).
+
+### 6c. torch.compile probe (compile_probe.py; fp32, TF32 off; prof2/compile_enc.json)
+| target | mb | eager ms | compiled ms | speedup | loss rel | grad max diff / global max grad |
+|---|---:|---:|---:|---:|---:|---:|
+| whole minibatch_loss, dynamic=True | - | - | - | - | - | InductorError (inductor assert on a dynamic size, torch 2.11) |
+| trunk encoder + memory encoder only | 256 | 107.1 | 78.3 | 1.37x | 2.5e-6 | 2.6e-6 |
+| trunk encoder + memory encoder only | 1,024 | 264.4 | 209.1 | 1.26x | 1.5e-6 | 4.9e-5 |
+
+- (a) The compiled encoders are NOT inside the identity bar: gradients agree to ~5e-5 of the largest gradient, against
+  the bar of 1e-7 rel. The worst single tensor is tower_refine.cell.out.bias, whose gradient is ~0 (rel 2-4): the
+  Adam-eps case.
+- (b) Compile + removing the fill / clone / copy glue (~42%) could reach ~1.5-2x per row. That is not the 15-20x
+  target.
+- Why not more:
+  - The model is small: 2.0M parameters, d 128, so each kernel does little work.
+  - FLOPs per row are low (section 2: ~1.4 GFLOP per row in mm + conv), so per-kernel work is memory-bound, not
+    compute-bound.
+  - Even a perfect fusion is bounded by the attention and conv kernels, ~35-40% of the step.
+- CUDA graphs: they need static shapes. The played-row subsets and the token counts change per minibatch, so they need
+  padding to fixed buckets first. Not built.

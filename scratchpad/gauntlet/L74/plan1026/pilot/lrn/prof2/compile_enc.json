@@ -1,0 +1,31 @@
+{
+ "mode": "default",
+ "target": "encoders",
+ "torch": "2.11.0+cu128",
+ "mb": {
+  "256": {
+   "eager_ms": 107.0990624721162,
+   "compiled_ms": 78.32482951926067,
+   "speedup": 1.3673705149371531,
+   "compile_warm_s": 29.976276351022534,
+   "loss_rel_max": 2.506859997641886e-06,
+   "grad_rel_to_global_max": 2.6028214237190257e-06,
+   "worst_tensor_rel": [
+    4.068014276673288,
+    "tower_refine.cell.out.bias"
+   ]
+  },
+  "1024": {
+   "eager_ms": 264.430288458243,
+   "compiled_ms": 209.12896801019087,
+   "speedup": 1.2644364430916968,
+   "compile_warm_s": 10.816492122015916,
+   "loss_rel_max": 1.5287496005413542e-06,
+   "grad_rel_to_global_max": 4.878860892985995e-05,
+   "worst_tensor_rel": [
+    2.1383889878504347,
+    "tower_refine.cell.out.bias"
+   ]
+  }
+ }
+}

@@ -1,0 +1,26 @@
+aten::fill_ calls/step 1988 cuda ms/step 7.31
+  
+
+aten::copy_ calls/step 380 cuda ms/step 5.72
+  
+
+aten::clone calls/step 221 cuda ms/step 5.61
+  
+
+aten::index calls/step 117 cuda ms/step 0.34
+  
+
+aten::zero_ calls/step 109 cuda ms/step 1.26
+  
+
+aten::cat calls/step 81 cuda ms/step 0.41
+  
+
+aten::zeros calls/step 65 cuda ms/step 2.19
+  
+
+aten::masked_fill calls/step 28 cuda ms/step 0.12
+  
+
+aten::index_put_ calls/step 25 cuda ms/step 4.10
+  

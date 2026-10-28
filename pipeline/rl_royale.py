@@ -2968,6 +2968,9 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
     micro = int(cfg.get("micro_batch") or 0)                  # LEARNER-SCALE gradient accumulation (0 = off)
     if micro and ("cf" in B or "low" in R):
         raise SystemExit("micro_batch: cf_credit rows / kl_ref_gate_max_elixir are not supported (their monitors)")
+    ka = cfg.get("kl_lr_target")                              # LEARNER-SCALE KL-adaptive lr (None = off); policy steps only
+    ka = None if ka is None or (vf is not None and not vf["policy"]) else float(ka)
+    kl_last, lr0 = None, (float(cfg["lr"]) if ka is not None else None)
 
     def summary(nonfinite: Optional[str]) -> dict:
         """Every key present even on the non-finite early exit (one_update logs them; None = not measured)."""
@@ -2987,7 +2990,8 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
                     "ent_pair_rows": sum(x["n"] for x in pr)}
                    if pe else {}),
                 "ratio_mean": avg(ratios), "clip_frac": avg(clips), "grad_norm_mean": avg(gnorms),
-                **({"l_v": mean(last_ep, "l_v"), "l_v_first": first["l_v"] if first else None} if vf is not None else {})}
+                **({"l_v": mean(last_ep, "l_v"), "l_v_first": first["l_v"] if first else None} if vf is not None else {}),
+                **({"lr_end": opt.param_groups[0]["lr"]} if ka is not None else {})}
 
     for ep in range(int(cfg["ppo_epochs"])):
         perm = torch.from_numpy(rng.permutation(N)).to(dev)
@@ -3044,6 +3048,13 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
                 if not torch.isfinite(ga):
                     return summary(f"ability_head grad norm {float(ga)} at epoch {ep} minibatch {s // mb}")
                 ab_opt.step()
+            if ka is not None:                                # kl_lr_target: the KL the previous step added (this
+                kn = float(st["kl_gate"] + st["kl_card"] + st["kl_cell"])   # minibatch's KL to the anchor minus the last
+                if kl_last is not None:                       # one's; KL ~ lr^2) steers this step's lr toward ka per step
+                    g = min(2.0, max(0.5, math.sqrt(ka / max(kn - kl_last, ka * 1e-2))))
+                    for pg in opt.param_groups:               # ponytail: x[0.5, 2] per step, [lr/16, 16 lr] overall
+                        pg["lr"] = min(max(pg["lr"] * g, lr0 / 16), lr0 * 16)
+                kl_last = kn
             opt.step()
             (ep0 if ep == 0 else []).append(st)
             if ep == int(cfg["ppo_epochs"]) - 1:
@@ -3628,7 +3639,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                               "tau_phase", "memory", "memory_aux", "memory_encoder_frozen",
                               "memory_zero_empty", "learner_deterministic", "kl_stop_prev", "stored_values",
                               "ent_init_rows", "lazy_refine", "ent_pair_every", "matches_per_update", "micro_batch", "mem_row_cache",
-                              "barrel_decoy_sim") + OPP_TEMPO_KEYS
+                              "barrel_decoy_sim", "kl_lr_target") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS and k not in CROWN_KEYS
                 and k not in HT.KEYS and k not in CF.KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
@@ -3693,6 +3704,9 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
         raise SystemExit(f"mem_row_cache must be a bool or null, got {cfg['mem_row_cache']!r}")
     if mi is not None and (type(mi) is not int or mi < 1):
         raise SystemExit(f"micro_batch must be null or an int >= 1, got {mi!r}")
+    ka = cfg.get("kl_lr_target")                             # LEARNER-SCALE KL-adaptive lr: absent / null = off
+    if ka is not None and (isinstance(ka, bool) or not isinstance(ka, (int, float)) or not (math.isfinite(ka) and ka > 0)):
+        raise SystemExit(f"kl_lr_target must be null or a finite number > 0, got {ka!r}")
     frac = cfg.get("learner_pipeline_frac", 0.0)
     if isinstance(frac, bool) or not isinstance(frac, (int, float)) or not 0 <= frac <= 1:
         raise SystemExit("learner_pipeline_frac must be a finite number in [0, 1]")
@@ -3753,6 +3767,8 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "micro_batch"}
     if not cfg.get("mem_row_cache"):                         # LEARNER-SCALE MEM row cache off = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "mem_row_cache"}
+    if cfg.get("kl_lr_target") is None:                      # LEARNER-SCALE KL-adaptive lr off = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "kl_lr_target"}
     if cfg.get("memory") is None:                            # Plan A memory off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "memory"}
     elif cfg["memory"] == "v2":                              # S1c: the version AND the artifacts its features read
