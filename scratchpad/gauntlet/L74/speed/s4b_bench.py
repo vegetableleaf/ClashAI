@@ -91,7 +91,7 @@ def main():
         wall = max(g[2] for g in got)
         rows = sum(g[0] for g in got)
         row = dict(block=K, producers=P, rows_per_s=round(rows / wall), play_frac=round(sum(g[1] for g in got) / rows, 3),
-                   vs_bare=round(rows / wall / res["bare_forward_rows_per_s"], 3), serialized_cells=srv.serialized_cells,
+                   vs_bare=round(rows / wall / res["bare_forward_rows_per_s"], 3),
                    mean_batch=round(S["rows"] / max(S["batches"], 1)),
                    cell_calls_per_batch=round(S["cell_calls"] / max(S["batches"], 1), 2),
                    server_s={k: round(S[k], 2) for k in ("stack_s", "forward_s", "cell_s", "idle_s")},

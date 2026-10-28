@@ -13,26 +13,53 @@ actions against the same decide run block by block.
 
 Forward modes: eager; ``graphs`` = CUDA graphs captured per padded batch bucket (static buffers; padding rows are
 copies of row 0 and are dropped); ``compile`` = torch.compile(mode="max-autotune-no-cudagraphs") of the same call.
+
+``PolicyServer`` (LOOP-SRV, the fast loop's server; S4b's ``ProcServer`` is its one-model form): producer processes
+decide; one server per GPU forwards SEVERAL models (the learner and the frozen opponent pool, any architecture or
+feature version, each batched on its own), hot-swaps the learner's weight versions (every row is tagged with the
+version that produced it) and answers cell / ability-head calls from the same batch's encodings and weights.
 """
 from __future__ import annotations
 
+import contextlib
+import copy
+import os
 import queue
 import threading
 import time
+from collections import deque
 from concurrent.futures import Future
+from pathlib import Path
 from typing import Optional
 
 import numpy as np
 import torch
 
 BUCKETS = (64, 128, 256, 512, 1024, 2048, 4096, 8192)
+# PolicyServer: every batch is padded to one of these (a new shape costs ~210 ms on first use, SPEED.md j5); steps of
+# 1/4-1/2 above 512 keep the padding waste low where the GPU is saturated
+BUCKETS_FINE = (64, 128, 192, 256, 384, 512, 768, 1024, 1280, 1536, 1792, 2048, 2560, 3072, 3584, 4096)
 
 
-def bucket(n: int) -> int:
-    for b in BUCKETS:
+def bucket(n: int, buckets=BUCKETS) -> int:
+    for b in buckets:
         if n <= b:
             return b
-    raise ValueError(f"batch {n} > {BUCKETS[-1]}")
+    raise ValueError(f"batch {n} > {buckets[-1]}")
+
+
+def configure(precision: str = "fp32", deterministic: bool = False):
+    """Process-wide numerics. ``fp32`` (default, the identical path): no TF32 in matmuls NOR in cuDNN convolutions
+    (cell_refine's convs: torch's cudnn.allow_tf32 defaults to True); ``tf32``: both on; ``bf16``: TF32 off, the
+    Forward autocasts. ``deterministic``: deterministic algorithms + a fixed cuBLAS workspace (set before the first
+    cuBLAS call of the process, i.e. before any forward)."""
+    if precision not in ("fp32", "tf32", "bf16"):
+        raise ValueError(precision)
+    torch.backends.cuda.matmul.allow_tf32 = torch.backends.cudnn.allow_tf32 = precision == "tf32"
+    if deterministic:
+        os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
+        torch.use_deterministic_algorithms(True)
+        torch.backends.cudnn.deterministic, torch.backends.cudnn.benchmark = True, False
 
 
 _TF_CONST: dict = {}
@@ -55,13 +82,20 @@ def _graph_safe_tower_features(sc):
 
 class Forward:
     """``policy`` (an e1_eval.GenPolicy, or batched_rollout.LazyRefine of one) as one device call on a dict of numpy
-    arrays -> (enc, heads, p [n] float64, hand bool [n, 8]); ``mode`` eager / graphs / compile."""
+    arrays -> (enc, heads, p [n] float64 or None for a model without a gate, hand bool [n, 8]); ``mode`` eager /
+    graphs / compile. ``pad``: pad to ``buckets`` (default: every mode but eager); ``graph_max``: graphs mode replays
+    a graph only up to this bucket (eager above); ``precision`` bf16 = autocast. ``last_graph``: the last call's
+    outputs are a graph's static buffers (the next replay overwrites them)."""
 
-    def __init__(self, policy, device: str = "cuda", mode: str = "eager"):
+    def __init__(self, policy, device: str = "cuda", mode: str = "eager", buckets=BUCKETS, pad: Optional[bool] = None,
+                 graph_max: float = float("inf"), precision: str = "fp32"):
         from pipeline import e1_eval as E
         self.E, self.policy, self.device, self.mode = E, policy, device, mode
         self.keys = E.gen_row_keys(policy.model)
         self.graphs: dict = {}
+        self.buckets, self.pad, self.graph_max = tuple(buckets), mode != "eager" if pad is None else pad, graph_max
+        self.amp = (lambda: torch.autocast("cuda", dtype=torch.bfloat16)) if precision == "bf16" else contextlib.nullcontext
+        self.last_graph = False
         if mode == "graphs":                                       # the one host copy inside the CLXIII forward
             from pipeline import tower_refine
             _graph_safe_tower_features(torch.zeros(1, 70, device=device))
@@ -101,19 +135,19 @@ class Forward:
         E = self.E
         hs = b["hand_slot"][:n]
         hand = torch.zeros(n, E.N_SLOTS + 1, dtype=torch.bool, device=hs.device).scatter(1, hs, True)[:, :E.N_SLOTS]
-        p = torch.sigmoid(heads["gate"][:n]).double()
+        p = torch.sigmoid(heads["gate"][:n]).double() if "gate" in heads else None   # P2-OPP1 timing head: no gate
         return enc, heads, p, hand
 
     def __call__(self, arrs: dict, n: int):
-        with torch.no_grad():
-            if self.mode != "graphs":
+        with torch.no_grad(), self.amp():
+            B = bucket(n, self.buckets) if self.pad else n
+            self.last_graph = self.mode == "graphs" and B <= self.graph_max
+            if not self.last_graph:
                 b = {k: torch.from_numpy(arrs[k][:n]).to(self.device, non_blocking=True) for k in self.keys}
-                if self.mode == "compile":       # fixed shapes: pad to the bucket (dynamic=False recompiles per shape)
-                    B = bucket(n)
-                    b = {k: torch.cat([v, v[:1].expand(B - n, *v.shape[1:])]) if B > n else v for k, v in b.items()}
+                if B > n:                        # fixed shapes: pad to the bucket (rows = copies of row 0, dropped)
+                    b = {k: torch.cat([v, v[:1].expand(B - n, *v.shape[1:])]) for k, v in b.items()}
                 enc, heads = self.fn(b)
                 return self._post(enc, heads, b, n)
-            B = bucket(n)
             g = self.graphs.get(B)
             if g is None:
                 g = self.graphs[B] = self._capture(arrs, B)
@@ -135,7 +169,7 @@ class Forward:
                 self.fn(stat)
         torch.cuda.current_stream().wait_stream(s)
         graph = torch.cuda.CUDAGraph()
-        with torch.cuda.graph(graph):
+        with torch.cuda.graph(graph, capture_error_mode="thread_local"):     # a server's other threads keep running
             out = self.fn(stat)
         return {"in": stat, "out": out, "graph": graph}
 
@@ -310,13 +344,26 @@ class AsyncPolicyServer:
                         r.fut.set_exception(exc)
 
 
-# ---- S4b: decide in the producers, the server only forwards ------------------------------------------------------------
-def _layout(spec: dict, block_max: int):
-    """One shared-memory segment per producer: {key: (byte offset, shape, dtype)} (64-byte aligned) and its size."""
-    out, o = {}, 0
+# ---- S4b + LOOP-SRV: decide in the producers; the server forwards one or more models and swaps weight versions --------
+AUTHKEY = b"loopsrv"
+
+
+def _layout(spec: dict, block_max: int, base: int = 0):
+    """A model's region of a producer's shared-memory segment: {key: (byte offset, shape, dtype)} (64-byte aligned)
+    from ``base``, and the region's end."""
+    out, o = {}, base
     for k, (shape, dt) in spec.items():
         out[k] = (o, (block_max, *shape), np.dtype(dt))
         o += -(-int(np.prod((block_max, *shape))) * np.dtype(dt).itemsize // 64) * 64
+    return out, o
+
+
+def _layouts(table) -> tuple:
+    """Every model's region, one after the other: ([layout per model], segment size)."""
+    out, o = [], 0
+    for _, spec, block_max, _ in table:
+        lay, o = _layout(spec, block_max, o)
+        out.append(lay)
     return out, max(o, 1)
 
 
@@ -329,47 +376,100 @@ def row_spec(rows: dict, keys) -> dict:
     return {k: (tuple(rows[k].shape[1:]), rows[k].dtype.str) for k in keys}
 
 
-class Client:
-    """A producer's end (``ProcServer.clients[i]``; use it in ONE process). ``decide(rows, allowed, stalled, rngs)``
-    writes the block into its shared-memory slot, gets the forward's heads back, and runs the P1 decide HERE, in the
-    producer process; the cell logits of its playing rows come back from the server (computed from the same forward's
-    encodings). -> the block's decide dicts, what the in-server decide returns."""
+class Fwd:
+    """One block's forward, as a producer sees it: ``heads`` {name: numpy [n, ...]} (every head the model's heads_t
+    returns), ``p`` = sigmoid(gate) float64 (None without a gate), ``ver`` = the weight version that produced them."""
+    __slots__ = ("mi", "bid", "ver", "heads", "p")
 
-    def __init__(self, name: str, spec: dict, block_max: int, conn, cfg: dict):
-        self.name, self.spec, self.block_max, self.conn, self.cfg = name, spec, block_max, conn, cfg
+    def __init__(self, mi, bid, ver, heads, p):
+        self.mi, self.bid, self.ver, self.heads, self.p = mi, bid, ver, heads, p
+
+
+class Client:
+    """A producer's end (``PolicyServer.clients[i]`` passed to a spawned process, or ``connect(address)``; use it in
+    ONE process). ``forward([(model, rows, n), ...])`` writes each block into its model's shared-memory region, sends
+    them all, and returns their ``Fwd``s; ``cells`` / ``ability`` answer a decide's playing rows / pressable buttons
+    from the SAME batch (encodings and weights); ``done`` frees the batches. ``decide`` = S4b's P1 decide on top
+    (one block, decode 'sample'); every decide dict gets ``wver``."""
+
+    def __init__(self, name: str, table: list, conn, foreign: bool = False):
+        self.name, self.table, self.conn, self.foreign = name, table, conn, foreign
+        self.models = {t[0]: i for i, t in enumerate(table)}
         self._shm, self.view = None, None
 
     def _attach(self):
-        from multiprocessing import shared_memory
+        from multiprocessing import resource_tracker, shared_memory
         self._shm = shared_memory.SharedMemory(name=self.name)
-        self.view = _views(self._shm.buf, _layout(self.spec, self.block_max)[0])
+        if self.foreign:              # not a child of the server: its own tracker would unlink the server's segment
+            resource_tracker.unregister(self._shm._name, "shared_memory")
+        self.view = [_views(self._shm.buf, lay) for lay in _layouts(self.table)[0]]
 
-    def decide(self, rows: dict, allowed, stalled, rngs, tau_r=None) -> list:
-        from pipeline.decision_options import DecisionOptions, decide, sample_rules
+    def _mi(self, model) -> int:
+        return model if isinstance(model, int) else self.models[model]
+
+    def _recv(self):
+        msg = self.conn.recv()
+        if isinstance(msg, tuple) and msg and msg[0] == "err":
+            raise RuntimeError(f"policy server: {msg[1]}")
+        return msg
+
+    def forward(self, blocks) -> list:
+        """``blocks`` = [(model name or index, rows dict, n)], at most one per model -> [Fwd] in the same order. All
+        are sent before any answer is awaited, so the server batches them with the other producers' blocks."""
         if self.view is None:
             self._attach()
-        n = len(allowed)
-        if n > self.block_max:
-            raise ValueError(f"block of {n} rows > block_max {self.block_max}")
-        for k, v in self.view.items():
-            v[:n] = rows[k]
-        self.conn.send(("fwd", n))
-        _, bid, gate, card, p = self.conn.recv()
-        heads = {"gate": torch.from_numpy(gate), "card": torch.from_numpy(card)}
+        mis = [self._mi(m) for m, _, _ in blocks]
+        if len(set(mis)) != len(mis):
+            raise ValueError("one block per model per forward() (one shared-memory region per model)")
+        for mi, (_, rows, n) in zip(mis, blocks):
+            if n > self.table[mi][2]:
+                raise ValueError(f"block of {n} rows > block_max {self.table[mi][2]} ({self.table[mi][0]})")
+            for k, v in self.view[mi].items():
+                v[:n] = rows[k][:n]
+            self.conn.send(("fwd", mi, int(n)))
+        got = {}
+        for _ in mis:
+            _, mi, bid, ver, heads, p = self._recv()
+            got[mi] = Fwd(mi, bid, ver, heads, p)
+        return [got[mi] for mi in mis]
 
-        def cell_logits(ids, slots):
-            self.conn.send(("cell", bid, np.asarray(ids, np.int64), np.asarray(slots, np.int64)))
-            return torch.from_numpy(self.conn.recv())
-        c = self.cfg
-        tau, T = float(c["tau"]), float(c.get("T", 0.5))
+    def cells(self, f: Fwd, ids, slots) -> np.ndarray:
+        """decide's ``cell_logits(ids, slots)`` for rows ``ids`` of block ``f`` -> float32 [len(ids), N_CELLS]."""
+        self.conn.send(("cell", f.bid, np.asarray(ids, np.int64), np.asarray(slots, np.int64)))
+        return self._recv()
+
+    def ability(self, f: Fwd, ids, feat) -> np.ndarray:
+        """rl_royale's ability head (B6) on rows ``ids`` of block ``f``: z = head(g[ids], feat) -> float64 [len(ids)]
+        (e1_eval.ability_decide's z), from the version that produced ``f``."""
+        self.conn.send(("ab", f.bid, np.asarray(ids, np.int64), np.asarray(feat, np.float32)))
+        return self._recv()
+
+    def done(self, fs):
+        for f in fs:
+            self.conn.send(("done", f.bid))
+
+    def decide(self, rows: dict, allowed, stalled, rngs, tau_r=None, model=0) -> list:
+        (f,) = self.forward([(model, rows, len(allowed))])
         try:
-            return decide(heads, p, np.asarray(allowed, bool), np.asarray(stalled, bool), tau=tau,
-                          options=sample_rules(DecisionOptions()), rngs=[None] * n, decode="sample",
-                          sampler={"tau_r": tau_r, "T": T, "T_gate": float(c.get("T_gate") or T),
-                                   "heads": frozenset(("gate", "card", "cell")), "rngs": list(rngs)},
-                          cell_logits=cell_logits)
+            return self.decide_fwd(f, allowed, stalled, rngs, tau_r)
         finally:
-            self.conn.send(("done", bid))
+            self.done([f])
+
+    def decide_fwd(self, f: Fwd, allowed, stalled, rngs, tau_r=None) -> list:
+        """S4b's P1 decide (decision_options.decide, decode 'sample', the model's cfg) on forward ``f``'s heads, its
+        cell logits from the same batch; every dict tagged ``wver`` = f.ver. The caller sends ``done``."""
+        from pipeline.decision_options import DecisionOptions, decide, sample_rules
+        n = len(allowed)
+        c = self.table[f.mi][3]
+        tau, T = float(c["tau"]), float(c.get("T", 0.5))
+        out = decide({k: torch.from_numpy(v) for k, v in f.heads.items()}, f.p, np.asarray(allowed, bool),
+                     np.asarray(stalled, bool), tau=tau, options=sample_rules(DecisionOptions()), rngs=[None] * n,
+                     decode="sample", sampler={"tau_r": tau_r, "T": T, "T_gate": float(c.get("T_gate") or T),
+                                               "heads": frozenset(("gate", "card", "cell")), "rngs": list(rngs)},
+                     cell_logits=lambda ids, slots: torch.from_numpy(self.cells(f, ids, slots)))
+        for d in out:
+            d["wver"] = f.ver
+        return out
 
     def close(self):
         try:
@@ -381,179 +481,401 @@ class Client:
             self._shm.close()
 
 
-class ProcServer:
-    """The forward-only GPU server for producer PROCESSES (S4b). ``clients[i]`` (a ``Client``) goes to producer i --
-    start the producers (spawn) before ``start()``. Three server threads: a receiver; a double-buffered forward
-    thread -- whatever ``fwd`` blocks are
-    queued (up to ``max_batch`` rows; at most ``wait_ms`` for a fuller batch) -> stack from the producers' shared memory
-    into pinned buffers -> ONE forward -> each producer gets its rows' (gate, card, p); the batch's encodings stay until
-    every block of it says ``done``; ``cell`` requests (a decide's playing rows) are answered from them, the requests of
-    one batch that wait together in ONE call, by a cell thread on its own CUDA stream WHILE the next forward runs
-    (serialized with forwards for a policy with refine layers, whose forward swaps them out).
-    ``stats``: stack / forward / cell / idle seconds, batches, rows."""
+def connect(address, authkey: bytes = AUTHKEY) -> Client:
+    """A producer's Client for a running ``PolicyServer(listen=...)`` (any process on the machine)."""
+    from multiprocessing.connection import Client as _connect
+    conn = _connect(address, authkey=authkey)
+    _, name, table = conn.recv()
+    return Client(name, table, conn, foreign=True)
 
-    def __init__(self, policy, spec: dict, n_clients: int, block_max: int, cfg: dict, device: str = "cuda",
-                 max_batch: int = 2048, wait_ms: float = 1.0, mode: str = "eager"):
-        import multiprocessing as mp
-        from multiprocessing import shared_memory
-        self.policy, self.spec, self.block_max, self.device = policy, spec, int(block_max), device
-        self.max_batch, self.wait, self.mode = int(max_batch), wait_ms / 1000.0, mode
+
+class _Copy:
+    """One weight copy of a served model: the (split) policy, its Forward (own graphs), version, batches in flight,
+    and the ability head once a push carried one."""
+
+    def __init__(self, policy, fwd_kw: dict, version):
+        self.pol, self.version, self.refs, self.ability = policy, version, 0, None
+        self.fwd = Forward(policy, **fwd_kw)
+
+
+class PolicyServer:
+    """The forward-only GPU server (S4b + LOOP-SRV). ``models`` = [{name, policy (GenPolicy / LazyRefine), spec
+    (row_spec of its rows), cfg (Client.decide's tau / T / T_gate; optional), block_max (default ``block_max``),
+    version (default 0), swap (a second weight copy for ``push``; implied by watch), watch (a directory: the learner's
+    weight files, see ``_watch_loop``; the model serves nothing until its first version arrives)}].
+
+    Producers: ``clients[i]`` (``n_clients`` pre-wired, passed to spawned processes) and/or ``connect(self.address)``
+    (``listen`` True or an address). Each has one shared-memory segment with a region per model. Threads:
+      - receiver: fwd -> the model's queue; cell / ab -> the cell queue; done -> release the batch;
+      - forward (double-buffered): the model whose oldest request waited longest; its queued blocks up to
+        ``max_batch`` rows (waiting up to ``wait_ms`` from that request's arrival) -> pad to a bucket -> ONE forward of
+        the active weight copy -> each producer gets its rows' heads + the copy's version; the batch keeps its
+        encodings AND its copy until every block of it says done;
+      - cell: cell / ability calls on the batch's own encodings and copy, on a separate CUDA stream;
+      - watch (per watched model) and accept (``listen``).
+    ``push(name, version, state_dict)`` loads the spare copy IN PLACE (graph addresses stay valid) once no batch
+    holds it, then flips: a decide's forward and its cell / ability calls always use one version.
+    ``stats``: stack / forward / cell / idle / push seconds, batches, rows, pushes, per model rows / batches / padding."""
+
+    def __init__(self, models: list, n_clients: int = 0, block_max: int = 512, device: str = "cuda",
+                 max_batch: int = 2048, wait_ms: float = 1.0, mode: str = "eager", buckets=BUCKETS_FINE,
+                 graph_max: int = 512, precision: str = "fp32", deterministic: bool = False, listen=None,
+                 authkey: bytes = AUTHKEY):
+        if device.startswith("cuda"):
+            configure(precision, deterministic)
+        self.device, self.max_batch, self.wait, self.mode = device, int(max_batch), wait_ms / 1000.0, mode
+        if self.max_batch > buckets[-1]:
+            raise ValueError(f"max_batch {max_batch} > the largest bucket {buckets[-1]}")
+        self.fwd_kw = dict(device=device, mode=mode, buckets=buckets, pad=True, graph_max=graph_max,
+                           precision=precision)
+        self.models = []
+        for m in models:
+            m = dict(m)
+            m.setdefault("block_max", block_max)
+            if m["block_max"] > self.max_batch:
+                raise ValueError(f"{m['name']}: block_max {m['block_max']} > max_batch {max_batch}")
+            m["swap"] = bool(m.get("swap") or m.get("watch"))
+            self.models.append(m)
+        self.table = [(m["name"], m["spec"], m["block_max"], m.get("cfg")) for m in self.models]
+        self._names = {m["name"]: i for i, m in enumerate(self.models)}
+        self._lay, self._size = _layouts(self.table)
         self._shm, self.views, self.conns, self.clients = [], [], [], []
-        layout, size = _layout(spec, self.block_max)
-        for _ in range(n_clients):                          # one segment (one fd) per producer
-            s = shared_memory.SharedMemory(create=True, size=size)
-            self._shm.append(s)
+        self._lock = threading.Lock()                       # conns / batches / copies' refs and the active flips
+        for _ in range(n_clients):
+            import multiprocessing as mp
             a, b = mp.Pipe()
-            self.conns.append(a)
-            self.views.append(_views(s.buf, layout))
-            self.clients.append(Client(s.name, spec, self.block_max, b, cfg))
+            self.clients.append(Client(self._new_client(a), self.table, b))
+        self._listener, self.address = None, None
+        if listen:
+            from multiprocessing.connection import Listener
+            self._listener = Listener(None if listen is True else listen, authkey=authkey)
+            self.address, self._authkey = self._listener.address, authkey
         self.stats = {"batches": 0, "rows": 0, "stack_s": 0.0, "forward_s": 0.0, "cell_s": 0.0, "cell_calls": 0,
-                      "idle_s": 0.0}
+                      "idle_s": 0.0, "pushes": 0, "push_s": 0.0,
+                      "per_model": {m["name"]: {"rows": 0, "batches": 0, "pad_rows": 0} for m in self.models}}
         self._stop = False
 
-    def start(self):
-        if self.mode == "graphs":
-            raise ValueError("ProcServer: graphs mode reuses its output buffers, which a later cell call would read")
-        self.fwd = Forward(self.policy, self.device, self.mode)
+    def _new_client(self, conn) -> str:
+        """A producer's segment (one region per model) on server end ``conn`` -> the segment's name."""
+        from multiprocessing import shared_memory
+        s = shared_memory.SharedMemory(create=True, size=self._size)
+        with self._lock:
+            self._shm.append(s)
+            self.views.append([_views(s.buf, lay) for lay in self._lay])
+            self.conns.append(conn)
+        return s.name
+
+    def start(self, warm: Optional[dict] = None):
+        """Build the weight copies (two for a swapped model) and start the threads. ``warm`` {model name: rows dict
+        [k, ...]}: run every bucket up to max_batch through each copy first (pays the first-use cost of each shape and
+        captures the graphs now, not mid-run)."""
+        from pipeline import batched_rollout as BR
         self._cuda = self.device.startswith("cuda")
-        self._bufs = [{k: torch.empty((self.max_batch, *shape), dtype=torch.from_numpy(np.zeros(1, dt)).dtype)
-                       .pin_memory().numpy() if self._cuda else np.empty((self.max_batch, *shape), dtype=np.dtype(dt))
-                       for k, (shape, dt) in self.spec.items()} for _ in range(2)]      # double-buffered (_fwd_loop)
+        for m in self.models:
+            pol = m["policy"] if hasattr(m["policy"], "pol") else BR.LazyRefine(m["policy"])
+            pol.split()                 # refine layers: a refine-free forward copy, so cell calls never race a forward
+            watched = bool(m.get("watch"))
+            v0 = None if watched else m.get("version", 0)
+            m["copies"] = [_Copy(pol, self.fwd_kw, v0)] + ([_Copy(copy.deepcopy(pol), self.fwd_kw, v0)]
+                                                           if m["swap"] else [])
+            m["active"] = None if watched else 0
+            m["slot"] = 0
+            m["bufs"] = [{k: torch.empty((self.max_batch, *shape), dtype=torch.from_numpy(np.zeros(1, dt)).dtype)
+                          .pin_memory().numpy() if self._cuda else np.empty((self.max_batch, *shape), dtype=np.dtype(dt))
+                          for k, (shape, dt) in m["spec"].items()} for _ in range(2)]       # double-buffered
+            m["push_lock"] = threading.Lock()
+            if warm and m["name"] in warm:
+                self._warm(m, warm[m["name"]])
         self._bid = 0
-        lz = self.fwd.policy
-        if hasattr(lz, "split"):                            # refine layers: a separate forward copy, cells concurrent
-            lz.split()
-        has_refine = getattr(lz, "cr", None) is not None or getattr(lz, "tr", None) is not None
-        refine = has_refine and getattr(lz, "fwd_pol", None) is None
-        # an unsplit LazyRefine swaps its refine layers out during a forward: a cell call must not overlap one (the race
-        # S4 found); split, or without refine layers, cell calls run concurrently with forwards (their own CUDA stream).
-        self._gpu_lock = threading.Lock() if refine else contextlib_null()
-        self.serialized_cells = refine
-        self._cs = torch.cuda.Stream() if self.device.startswith("cuda") else None
-        self._fq: "queue.Queue" = queue.Queue()
+        self._cs = torch.cuda.Stream() if self._cuda else None
+        self._fq = [deque() for _ in self.models]
+        self._cv = threading.Condition()
         self._cq: "queue.Queue" = queue.Queue()
-        self._lock = threading.Lock()                       # batches bookkeeping
         self._batches: dict = {}
-        self._live = set(range(len(self.conns)))
-        self.th = [threading.Thread(target=f, daemon=True) for f in (self._recv_loop, self._fwd_loop, self._cell_loop)]
+        self._dead: set = set()
+        loops = [self._recv_loop, self._fwd_loop, self._cell_loop] + ([self._accept_loop] if self._listener else [])
+        self.th = [threading.Thread(target=f, daemon=True) for f in loops]
+        self.th += [threading.Thread(target=self._watch_loop, args=(mi,), daemon=True)
+                    for mi, m in enumerate(self.models) if m.get("watch")]
         for t in self.th:
             t.start()
         return self
 
+    def _warm(self, m, rows):
+        k = len(next(iter(rows.values())))
+        for c in m["copies"]:
+            for B in self.fwd_kw["buckets"]:
+                if B > self.max_batch:
+                    break
+                arr = {key: np.ascontiguousarray(rows[key][np.arange(B) % k]) for key in m["spec"]}
+                if self._cuda:
+                    arr = {key: torch.from_numpy(v).pin_memory().numpy() for key, v in arr.items()}
+                out = c.fwd(arr, B)
+                (out[2] if out[2] is not None else next(iter(out[1].values()))).cpu()
+
     def close(self):
         self._stop = True
-        for t in self.th:
+        if self._listener is not None:                  # wake a blocked accept(), then close
+            from multiprocessing.connection import Client as _connect
+            with contextlib.suppress(Exception):
+                _connect(self.address, authkey=self._authkey).close()
+            with contextlib.suppress(OSError):
+                self._listener.close()
+        if hasattr(self, "_cv"):
+            with self._cv:
+                self._cv.notify_all()
+        for t in getattr(self, "th", []):
             t.join(timeout=30)
         self.views = []
         for s in self._shm:
             s.close()
-            s.unlink()
+            with contextlib.suppress(FileNotFoundError):
+                s.unlink()
+
+    # ---- weight versions ----------------------------------------------------------------------------------------
+    def version(self, name) -> Optional[int]:
+        m = self.models[self._names.get(name, name) if not isinstance(name, int) else name]
+        return None if m["active"] is None else m["copies"][m["active"]].version
+
+    def push(self, name, version: int, state_dict: dict, timeout: float = 120.0):
+        """Load ``state_dict`` (strict, the model's own keys; rl_royale's actor message: the ability head's tensors
+        under ``rl_royale.ABILITY_SD``) as weight ``version`` (> the current one) and make it the active copy. Waits
+        until no batch still holds the spare copy."""
+        mi = name if isinstance(name, int) else self._names[name]
+        m = self.models[mi]
+        t0 = time.perf_counter()
+        with m["push_lock"]:
+            cur = self.version(mi)
+            if cur is not None and int(version) <= cur:
+                raise ValueError(f"{m['name']}: version {version} is not newer than {cur}")
+            tgt = 0 if m["active"] is None else 1 - m["active"]
+            if tgt >= len(m["copies"]):
+                raise ValueError(f"{m['name']}: not swappable (start it with swap=True or watch=DIR)")
+            c = m["copies"][tgt]
+            while True:
+                with self._lock:
+                    if c.refs == 0:
+                        break
+                if time.perf_counter() - t0 > timeout:
+                    raise TimeoutError(f"{m['name']}: the spare copy is still held by {c.refs} batch(es)")
+                time.sleep(0.001)
+            self._load(c, state_dict)
+            if self._cuda:
+                torch.cuda.synchronize(self.device)
+            c.version = int(version)
+            with self._cv:
+                with self._lock:
+                    m["active"] = tgt
+                self._cv.notify_all()
+        self.stats["pushes"] += 1
+        self.stats["push_s"] += time.perf_counter() - t0
+
+    def _load(self, c: _Copy, sd: dict):
+        sd = dict(sd)
+        asd = {}
+        if any(k.startswith("__ability__.") for k in sd):
+            from pipeline.rl_royale import ABILITY_SD, AbilityHead, pop_prefix
+            asd = pop_prefix(sd, ABILITY_SD)
+        with torch.no_grad():
+            c.pol.model.load_state_dict(sd)                              # strict, in place: graph addresses unchanged
+            fp = getattr(c.pol, "fwd_pol", None)
+            if fp is not None:                                           # the split forward copy: no cell_refine
+                fk = list(fp.model.state_dict())
+                extra = set(sd) - set(fk)
+                if any(not k.startswith("cell_refine.") for k in extra):
+                    raise KeyError(f"forward copy lacks {sorted(extra)[:5]}")
+                fp.model.load_state_dict({k: sd[k] for k in fk})
+            if asd:
+                if c.ability is None:
+                    w = asd["net.0.weight"]
+                    d_g = c.pol.model.value_head.in_features
+                    c.ability = AbilityHead(d_g, int(w.shape[0]), int(w.shape[1]) - d_g).to(self.device).eval()
+                c.ability.load_state_dict(asd)
+
+    def _watch_loop(self, mi: int):
+        """The learner's weight files: DIR/{name}.v{V:08d}.pt = {"version": V, "state_dict": SD} and DIR/{name}.latest
+        = "V" (each written to a .tmp, then os.replace). Polled every 0.2 s; a newer V is pushed. A file already
+        removed by the writer -> latest is read again."""
+        m = self.models[mi]
+        d = Path(m["watch"])
+        while not self._stop:
+            try:
+                v = int((d / f"{m['name']}.latest").read_text().strip())
+                cur = self.version(mi)
+                if cur is None or v > cur:
+                    obj = torch.load(d / f"{m['name']}.v{v:08d}.pt", map_location="cpu")
+                    self.push(mi, int(obj.get("version", v)), obj["state_dict"])
+                    continue
+            except (FileNotFoundError, ValueError):
+                pass
+            time.sleep(0.2)
+
+    # ---- threads ------------------------------------------------------------------------------------------------
+    def _accept_loop(self):
+        while not self._stop:
+            try:
+                conn = self._listener.accept()
+            except (OSError, EOFError):
+                if self._stop:
+                    return
+                continue
+            if self._stop:
+                return
+            conn.send(("hello", self._new_client(conn), self.table))
+
+    def _release(self, bid, i):
+        """Producer ``i`` is done with batch ``bid`` (caller holds _lock); the last one frees encodings and copy."""
+        b = self._batches.get(bid)
+        if b is not None:
+            b["left"].discard(i)
+            if not b["left"]:
+                del self._batches[bid]
+                b["c"].refs -= 1
 
     def _recv_loop(self):
-        """Every producer message: fwd -> the forward queue, cell -> the cell queue, done -> free the batch's encodings."""
+        """Every producer message: fwd -> its model's queue, cell / ab -> the cell queue, done -> release the batch."""
         from multiprocessing.connection import wait as mp_wait
-        idx = {id(c): i for i, c in enumerate(self.conns)}
-        while not self._stop and self._live:
-            for c in mp_wait([self.conns[i] for i in self._live], timeout=0.05):
-                i = idx[id(c)]
+        while not self._stop:
+            with self._lock:
+                live = {id(c): (i, c) for i, c in enumerate(self.conns) if i not in self._dead}
+            if not live:
+                time.sleep(0.01)
+                continue
+            for c in mp_wait([c for _, c in live.values()], timeout=0.05):
+                i = live[id(c)][0]
                 try:
                     msg = c.recv()
-                except EOFError:
-                    self._live.discard(i)
-                    continue
+                except (EOFError, OSError):
+                    msg = ("bye",)
                 if msg[0] == "fwd":
-                    self._fq.put((i, int(msg[1])))
-                elif msg[0] == "cell":
-                    self._cq.put((msg[1], i, msg[2], msg[3]))
+                    with self._cv:
+                        self._fq[msg[1]].append((i, int(msg[2]), time.perf_counter()))
+                        self._cv.notify()
+                elif msg[0] in ("cell", "ab"):
+                    self._cq.put((msg[0], msg[1], i, msg[2], msg[3]))
                 elif msg[0] == "done":
                     with self._lock:
-                        b = self._batches.get(msg[1])
-                        if b is not None:
-                            b["left"].discard(i)
-                            if not b["left"]:
-                                del self._batches[msg[1]]
+                        self._release(msg[1], i)
                 elif msg[0] == "bye":
-                    self._live.discard(i)
-        self._stop = True
+                    with self._lock:
+                        self._dead.add(i)
+                        for bid in list(self._batches):
+                            self._release(bid, i)
 
-    def _take(self, carry, block: bool):
-        """-> (take [(client, n)], n, carry): queued fwd blocks up to max_batch (waits up to wait_ms for more once one
-        is there; ``block`` False: returns ([], 0, carry) at once when nothing is queued)."""
-        first = carry
-        carry = None
-        if first is None:
-            try:
-                first = self._fq.get(timeout=0.05) if block else self._fq.get_nowait()
-            except queue.Empty:
-                return [], 0, None
-        take, n = [first], first[1]
-        deadline = time.perf_counter() + self.wait
-        while n < self.max_batch:
-            try:
-                r = self._fq.get(timeout=max(0.0, deadline - time.perf_counter()))
-            except queue.Empty:
-                break
-            if n + r[1] > self.max_batch:
-                carry = r
-                break
-            take.append(r)
-            n += r[1]
-        return take, n, carry
+    def _take(self, block: bool):
+        """-> (model index, [(client, n)], n) or None: the model whose oldest queued block arrived first (and has an
+        active version); its queued blocks up to max_batch rows, waiting until ``wait_ms`` after that block's arrival
+        for more. ``block`` False: None at once when nothing is ready."""
+        with self._cv:
+            while True:
+                ready = [mi for mi, q in enumerate(self._fq) if q and self.models[mi]["active"] is not None]
+                if ready or not block or self._stop:
+                    break
+                self._cv.wait(0.05)
+            if not ready:
+                return None
+            mi = min(ready, key=lambda j: self._fq[j][0][2])
+            q = self._fq[mi]
+            deadline = q[0][2] + self.wait
+            take, n = [], 0
+            while True:
+                while q and n + q[0][1] <= self.max_batch:
+                    i, k, _ = q.popleft()
+                    take.append((i, k))
+                    n += k
+                rem = deadline - time.perf_counter()
+                if q or n >= self.max_batch or rem <= 0 or self._stop:      # full, or the wait is over
+                    break
+                self._cv.wait(rem)
+        return mi, take, n
 
-    def _launch(self, take, n, slot):
-        """Stack ``take`` into pinned buffer set ``slot``, launch the forward and the device->host copies of the heads
-        (non-blocking, an event after them) -> the in-flight batch."""
-        buf = self._bufs[slot]
-        t0 = time.perf_counter()
-        off, o = {}, 0
-        for i, m in take:
-            off[i] = o
-            for k, v in self.views[i].items():
-                buf[k][o:o + m] = v[:m]
-            o += m
-        t1 = time.perf_counter()
-        with self._gpu_lock:
-            enc, heads, p, _ = self.fwd(buf, n)
-            host = {k: torch.empty((n, *x.shape[1:]), dtype=torch.float32 if k != "p" else torch.float64,
-                                   pin_memory=self._cuda) for k, x in (("gate", heads["gate"]), ("card", heads["card"]),
-                                                                       ("p", p))}
-            host["gate"].copy_(heads["gate"][:n].float(), non_blocking=True)
-            host["card"].copy_(heads["card"][:n].float(), non_blocking=True)
-            host["p"].copy_(p[:n], non_blocking=True)
-            ev = torch.cuda.Event() if self._cuda else None
-            if ev is not None:
-                ev.record()
+    def _launch(self, mi, take, n):
+        """Stack ``take`` into the model's pinned buffer set, launch the forward of its active copy and the
+        device->host copies of every head (non-blocking, an event after them) -> the in-flight batch."""
+        m = self.models[mi]
+        buf = m["bufs"][m["slot"]]
+        m["slot"] ^= 1
+        with self._lock:
+            c = m["copies"][m["active"]]
+            c.refs += 1
+        try:
+            t0 = time.perf_counter()
+            off, o = {}, 0
+            for i, k in take:
+                off[i] = o
+                for key, v in self.views[i][mi].items():
+                    buf[key][o:o + k] = v[:k]
+                o += k
+            t1 = time.perf_counter()
+            enc, heads, p, _ = c.fwd(buf, n)
+        except BaseException:
+            with self._lock:
+                c.refs -= 1
+            raise
+        if c.fwd.last_graph:                     # static graph outputs: the next replay overwrites them
+            enc = {k: v[:n].clone() if torch.is_tensor(v) else v for k, v in enc.items()}
+        host = {k: torch.empty((n, *x.shape[1:]), dtype=torch.float32, pin_memory=self._cuda) for k, x in heads.items()}
+        for k, x in heads.items():
+            host[k].copy_(x[:n].float(), non_blocking=True)
+        if p is not None:
+            host["_p"] = torch.empty(n, dtype=torch.float64, pin_memory=self._cuda)
+            host["_p"].copy_(p[:n], non_blocking=True)
+        ev = torch.cuda.Event() if self._cuda else None
+        if ev is not None:
+            ev.record()
         self.stats["stack_s"] += t1 - t0
-        return {"take": take, "n": n, "off": off, "enc": enc, "host": host, "ev": ev, "t": t1}
+        return {"mi": mi, "c": c, "take": take, "n": n, "off": off, "enc": enc, "host": host, "ev": ev, "t": t1,
+                "B": bucket(n, self.fwd_kw["buckets"])}
 
     def _finish(self, f):
-        """Wait for an in-flight batch's heads, register its encodings for cell calls, answer its producers."""
+        """Wait for an in-flight batch's heads, register its encodings + copy for cell calls, answer its producers."""
         S = self.stats
         if f["ev"] is not None:
             f["ev"].synchronize()
-        gate, card, pn = (f["host"][k].numpy() for k in ("gate", "card", "p"))
+        h = {k: v.numpy() for k, v in f["host"].items()}
+        p = h.pop("_p", None)
+        c = f["c"]
         with self._lock:
             bid = self._bid
             self._bid += 1
-            self._batches[bid] = {"enc": f["enc"], "n": f["n"], "off": f["off"], "left": {i for i, _ in f["take"]}}
-        for i, m in f["take"]:
+            left = {i for i, _ in f["take"] if i not in self._dead}
+            if left:
+                self._batches[bid] = {"enc": f["enc"], "n": f["n"], "off": f["off"], "left": left, "c": c}
+            else:
+                c.refs -= 1
+        for i, k in f["take"]:
             s0 = f["off"][i]
-            self.conns[i].send(("heads", bid, gate[s0:s0 + m], card[s0:s0 + m], pn[s0:s0 + m]))
+            with contextlib.suppress(BrokenPipeError, OSError):
+                self.conns[i].send(("heads", f["mi"], bid, c.version, {kk: v[s0:s0 + k] for kk, v in h.items()},
+                                    None if p is None else p[s0:s0 + k]))
         S["batches"] += 1
         S["rows"] += f["n"]
         S["forward_s"] += time.perf_counter() - f["t"]
+        pm = S["per_model"][self.models[f["mi"]]["name"]]
+        pm["rows"] += f["n"]
+        pm["batches"] += 1
+        pm["pad_rows"] += f["B"] - f["n"]
+
+    def _fail(self, take, exc):
+        for i, _ in take:
+            with contextlib.suppress(BrokenPipeError, OSError):
+                self.conns[i].send(("err", repr(exc)))
 
     def _fwd_loop(self):
         """Double-buffered: batch k+1 is stacked and launched while batch k is still on the GPU; k is answered once its
         heads are on the host."""
-        S, carry, inflight, slot = self.stats, None, None, 0
+        S, inflight = self.stats, None
         while not self._stop:
             t = time.perf_counter()
-            take, n, carry = self._take(carry, block=inflight is None)
+            got = self._take(block=inflight is None)
             if inflight is None:
                 S["idle_s"] += time.perf_counter() - t
-            nxt = self._launch(take, n, slot) if take else None
-            slot ^= 1 if take else 0
+            nxt = None
+            if got:
+                try:
+                    nxt = self._launch(*got)
+                except BaseException as exc:                   # noqa: BLE001 -- every waiting producer gets it
+                    self._fail(got[1], exc)
             if inflight is not None:
                 self._finish(inflight)
             inflight = nxt
@@ -561,7 +883,6 @@ class ProcServer:
             self._finish(inflight)
 
     def _cell_loop(self):
-        import contextlib
         S = self.stats
         while not self._stop:
             try:
@@ -575,29 +896,42 @@ class ProcServer:
                     break
             t0 = time.perf_counter()
             by: dict = {}
-            for bid, i, ids, slots in reqs:
-                by.setdefault(bid, []).append((i, ids, slots))
-            for bid, rr in by.items():
-                with self._lock:
-                    b = self._batches[bid]
-                ids = np.concatenate([r[1] + b["off"][r[0]] for r in rr])
-                slots = np.concatenate([r[2] for r in rr])
-                stream = torch.cuda.stream(self._cs) if self._cs is not None else contextlib.nullcontext()
-                with self._gpu_lock, torch.no_grad(), stream:
-                    lg = self.fwd.cell_logits(b["enc"], b["n"])(ids, slots).float().cpu().numpy()
+            for kind, bid, i, x, y in reqs:
+                by.setdefault((kind, bid), []).append((i, x, y))
+            for (kind, bid), rr in by.items():
+                try:
+                    with self._lock:
+                        b = self._batches[bid]
+                    ids = np.concatenate([x + b["off"][i] for i, x, _ in rr])
+                    stream = torch.cuda.stream(self._cs) if self._cs is not None else contextlib.nullcontext()
+                    with torch.no_grad(), stream:
+                        c = b["c"]
+                        if kind == "cell":
+                            out = c.fwd.cell_logits(b["enc"], b["n"])(ids, np.concatenate([y for _, _, y in rr]))
+                            out = out.float().cpu().numpy()
+                        elif c.ability is None:
+                            raise RuntimeError("ability call: this weight version carried no ability head")
+                        else:
+                            g = b["enc"]["g"]
+                            out = c.ability(g[torch.as_tensor(ids, device=g.device)],
+                                            torch.as_tensor(np.concatenate([y for _, _, y in rr]), device=g.device))
+                            out = out.double().cpu().numpy()
+                except BaseException as exc:                   # noqa: BLE001 -- the waiting producers get it
+                    for i, _, _ in rr:
+                        with contextlib.suppress(BrokenPipeError, OSError):
+                            self.conns[i].send(("err", repr(exc)))
+                    continue
                 S["cell_calls"] += 1
                 o = 0
-                for i, r, _ in rr:
-                    self.conns[i].send(lg[o:o + len(r)])
-                    o += len(r)
+                for i, x, _ in rr:
+                    with contextlib.suppress(BrokenPipeError, OSError):
+                        self.conns[i].send(out[o:o + len(x)])
+                    o += len(x)
             S["cell_s"] += time.perf_counter() - t0
 
 
-class contextlib_null:
-    """A no-op lock (``with`` only): the cell calls of a policy without refine layers need none."""
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, *exc):
-        return False
+def ProcServer(policy, spec: dict, n_clients: int, block_max: int, cfg: dict, device: str = "cuda",
+               max_batch: int = 2048, wait_ms: float = 1.0, mode: str = "eager", **kw) -> PolicyServer:
+    """S4b's one-model server: ``clients[i].decide(rows, allowed, stalled, rngs)`` (model 0, version 0)."""
+    return PolicyServer([{"name": "policy", "policy": policy, "spec": spec, "cfg": cfg}], n_clients, block_max, device,
+                        max_batch, wait_ms, mode, **kw)
