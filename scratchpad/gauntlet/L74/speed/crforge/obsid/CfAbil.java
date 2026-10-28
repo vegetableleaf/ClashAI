@@ -112,6 +112,22 @@ public final class CfAbil {
     }
   }
 
+  /** CPython 3.12 sum() of floats from start 0: the first item via int + float (0.0 + x), then Arnold Neumaier's
+   *  compensated sum, the compensation added at the end when nonzero and finite (bltinmodule.c builtin_sum_impl).
+   *  Production's sum(generator of floats) is this, not a left-to-right sum; its explicit += loops are left-to-right. */
+  public static final class PySum {
+    double f, c;
+    boolean any;
+    public void add(double x) {
+      if (!any) { f = 0.0 + x; any = true; return; }
+      double t = f + x;
+      if (Math.abs(f) >= Math.abs(x)) c += (f - t) + x; else c += (x - t) + f;
+      f = t;
+    }
+    public double get() { return c != 0 && Double.isFinite(c) ? f + c : f; }
+    public static double of(double[] v) { PySum s = new PySum(); for (double x : v) s.add(x); return s.get(); }
+  }
+
   static final class Miss extends RuntimeException {
     private static final long serialVersionUID = 1L;
     Miss() { super(null, null, false, false); }
@@ -563,17 +579,17 @@ public final class CfAbil {
 
   void around(int side, double px, double py, double[] r, int o) {
     int cnt = 0;
-    double el = 0;
+    PySum el = new PySum();                                         // sum(... for e in near): CPython's float sum
     boolean w = false;
     for (int i = 0; i < n; i++) {
       if (!foe(i, side)) continue;
       double dx = x[i] - px, dy = y[i] - py;
       if (dx * dx + dy * dy > 2.025e9) continue;                    // (2.5 * 18000) ** 2
       cnt++;
-      el += card[i] < t.bodyElixir.length ? t.bodyElixir[card[i]] : 0.;
+      el.add(card[i] < t.bodyElixir.length ? t.bodyElixir[card[i]] : 0.);
       w |= card[i] < t.wincon.length && t.wincon[card[i]];
     }
-    r[o] = cnt / 5.0; r[o + 1] = el / 10; r[o + 2] = w ? 1. : 0.;
+    r[o] = cnt / 5.0; r[o + 1] = el.get() / 10; r[o + 2] = w ? 1. : 0.;
   }
 
   // ---------------------------------------------------------------------------------------------- 3b: the IW live rule
@@ -642,7 +658,7 @@ public final class CfAbil {
     }
     if (tg < 0) return false;
     int ti = fr[tg], cnt = 0;
-    double value = 0;
+    PySum value = new PySum();                                     // sum(unit_values ... for e in frozen)
     boolean win = false;
     for (int a = 0; a < m; a++) {
       int i = fr[a];
@@ -652,10 +668,10 @@ public final class CfAbil {
       double[] nv = nat(nid[a]);
       if (nv[1] != 0) continue;                                    // BUILDINGS
       cnt++;
-      value += nv[0];
+      value.add(nv[0]);
       win |= nv[2] != 0 && (y[i] / K > 16000) == (side == 1);
     }
-    if (cnt >= 2 && value >= 4.0) return true;
+    if (cnt >= 2 && value.get() >= 4.0) return true;
     int[] h = core.s.std.getMatch().side(side).getHand().slots();
     boolean tesla = false;
     for (int k = 0; k < 4; k++) if (h[k] >= 0 && t.tesla[core.s.deckIds[side][h[k]]]) tesla = true;
@@ -686,33 +702,38 @@ public final class CfAbil {
       }
       ot[i] = o.ticks[i] / 20.0; oc[i] = t.keyCost[k]; ok[i] = t.keyKind[k]; om[i] = (yy > 16000) == up; ow[i] = t.keyWincon[k];
     }
-    double[] s = new double[12];   // n3 cost3 n6 cost6 troop6 spell6 bld6 mine6 theirs6 mine10
+    // build_features: counts are len(); every cost is float(sum(p["cost"] ...)) = CPython's float sum (PySum)
+    int n3 = 0, n6 = 0;
+    PySum[] s = new PySum[8];                                    // cost3 cost6 troop6 spell6 bld6 mine6 theirs6 mine10
+    for (int k = 0; k < 8; k++) s[k] = new PySum();
     double since = 20.0;
     boolean sinceSet = false, wm10 = false;
     for (int i = 0; i < no; i++) {
       if (!use[i]) continue;
       double d = ts - ot[i];
-      if (0.0 <= d && d <= 3) { s[0]++; s[1] += oc[i]; }
+      if (0.0 <= d && d <= 3) { n3++; s[0].add(oc[i]); }
       if (0.0 <= d && d <= 6) {
-        s[2]++; s[3] += oc[i];
-        if (ok[i] == 0) s[4] += oc[i];
-        if (ok[i] == 1) s[5] += oc[i];
-        if (ok[i] == 2) s[6] += oc[i];
-        if (om[i]) s[7] += oc[i]; else s[8] += oc[i];
+        n6++; s[1].add(oc[i]);
+        if (ok[i] == 0) s[2].add(oc[i]);
+        if (ok[i] == 1) s[3].add(oc[i]);
+        if (ok[i] == 2) s[4].add(oc[i]);
+        if (om[i]) s[5].add(oc[i]); else s[6].add(oc[i]);
       }
-      if (0.0 <= d && d <= 10) { if (om[i]) s[9] += oc[i]; wm10 |= om[i] && ow[i]; }
+      if (0.0 <= d && d <= 10) { if (om[i]) s[7].add(oc[i]); wm10 |= om[i] && ow[i]; }
       if (om[i] && 0.0 <= d && d <= 20 && (!sinceSet || d < since)) { since = d; sinceSet = true; }
     }
-    double own3 = 0, own6 = 0, ownCost6 = 0;
+    double own3 = 0, own6 = 0;
+    PySum ownCost6 = new PySum();
     for (int[] p : plays[side]) {
       if (t.iwSlug[p[1]] || p[0] > now) continue;
       double d = ts - p[0] * 0.05;
       if (0.0 <= d && d <= 3) own3++;
-      if (0.0 <= d && d <= 6) { own6++; ownCost6 += t.ownCost[p[1]]; }
+      if (0.0 <= d && d <= 6) { own6++; ownCost6.add(t.ownCost[p[1]]); }
     }
     f[0] = ts / 60.0; f[1] = ts >= 180 ? 1.0 : 0.0; f[2] = elixirMilli(side) * 10 / 1e4; f[3] = o.estimateAt(now);
-    for (int k = 0; k < 10; k++) f[4 + k] = s[k];
-    f[14] = since; f[15] = wm10 ? 1.0 : 0.0; f[16] = own3; f[17] = own6; f[18] = ownCost6;
+    f[4] = n3; f[5] = s[0].get(); f[6] = n6;
+    for (int k = 1; k < 8; k++) f[6 + k] = s[k].get();
+    f[14] = since; f[15] = wm10 ? 1.0 : 0.0; f[16] = own3; f[17] = own6; f[18] = ownCost6.get();
     double a = Math.min(Math.max((now - dep) * 0.05, KNOTS[0]), KNOTS[KNOTS.length - 1]);
     for (int j = 1; j < KNOTS.length; j++) {
       double lo = KNOTS[j - 1], mid = KNOTS[j];

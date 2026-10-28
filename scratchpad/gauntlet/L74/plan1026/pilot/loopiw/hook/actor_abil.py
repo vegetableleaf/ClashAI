@@ -37,7 +37,8 @@ def install(R) -> None:
             import jpype
             J["j"] = ability_id.JavaAbil(freeze=True)
             st["exact"] = bool(jpype.JClass("CfAbil").EXACT)
-            st["selftest"] = dict(draw_mismatch=ability_id.selftest_draw(), libm_mismatch=ability_id.selftest_libm())
+            st["selftest"] = dict(draw_mismatch=ability_id.selftest_draw(), libm_mismatch=ability_id.selftest_libm(),
+                                  sum_mismatch=ability_id.selftest_sum())
         return J["j"]
 
     def on(env):
@@ -147,17 +148,23 @@ def install(R) -> None:
                 st["java_ns"] += time.perf_counter_ns() - t
                 eq = len(j) == len(res)
                 f32 = eq
+                where = []
                 for o, r in zip(res, j):
                     eq &= tuple(int(v) for v in o["cmd"]) == tuple(int(v) for v in r[:3])
                     eq &= o["card"] == J["j"].names[int(r[1])]
                     a = np.asarray(o["feat"], np.float64)
                     eq &= a.shape == r[4:].shape and a.tobytes() == r[4:].tobytes()
+                    if a.shape == r[4:].shape and a.tobytes() != r[4:].tobytes():
+                        where += [(int(i), a[i].hex(), r[4 + i].hex()) for i in np.flatnonzero(a.view("u8") != r[4:].view("u8"))]
                     f32 &= a.shape == r[4:].shape and a.astype(np.float32).tobytes() == r[4:].astype(np.float32).tobytes()
                     if rule is not None:
                         eq &= np.float64(o["q"]).tobytes() == np.float64(r[3]).tobytes()
+                        if np.float64(o["q"]).tobytes() != np.float64(r[3]).tobytes():
+                            where.append(("q", float(o["q"]).hex(), float(r[3]).hex()))
                 diff("options" + ("_label" if rule is not None else ""), self, side,
                      [(o["cmd"], o.get("q"), [round(float(v), 6) for v in o["feat"]]) for o in res],
-                     [(tuple(int(v) for v in r[:3]), float(r[3]), [round(float(v), 6) for v in r[4:]]) for r in j], eq)
+                     [(tuple(int(v) for v in r[:3]), float(r[3]), [round(float(v), 6) for v in r[4:]]) for r in j], eq,
+                     dict(where=where[:8]))
                 rec("options_f32")["calls"] += 1
                 rec("options_f32")["equal"] += int(f32)
                 st["opt_rows"] = st.get("opt_rows", 0) + len(res)

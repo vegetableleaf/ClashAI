@@ -11,7 +11,7 @@ javac -d $B -cp "$L/*" $T/scratchpad/gauntlet/L74/crforge/facade/CfCore.java $S/
   $S/obsid/CfOppElixir.java $S/obsid/CfIdent.java $S/obsid/CfCue.java $S/obsid/CfPubObj.java $S/obsid/CfAbil.java \
   > $B.javac.log 2>&1 || exit 1
 cd $T || exit 1
-export PYTHONPATH=$H:$T:/workspace/cfspeed/pylib LIW_OUT=/workspace/loopiw/$RUN OBSID_DIR=$S/obsid OBSID_RL=$T \
+export PYTHONPATH=$H:$T:/workspace/loopiw/pylib LIW_OUT=/workspace/loopiw/$RUN OBSID_DIR=$S/obsid OBSID_RL=$T \
   JAVA_TOOL_OPTIONS="--add-modules=jdk.incubator.foreign --enable-native-access=ALL-UNNAMED" \
   ROYALE_RUNTIME=fin16-linux ROYALE_HEROIW_FORM=hero OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 \
   PYTHONNOUSERSITE=1 RL_BATCH_SHA=1 ROYALE_ENGINE=crforge CRFORGE_LIB=$L \

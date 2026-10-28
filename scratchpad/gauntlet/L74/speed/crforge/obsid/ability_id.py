@@ -156,6 +156,9 @@ class JavaAbil:
             self.setup(env)
         if not self.ranges and hasattr(env, "_hero_ranges"):
             self.fill_ranges(env)
+        if self.main.spell_cards is None:                    # the IW observers' spell table before their first update
+            from types import SimpleNamespace
+            self.main.spell_table(SimpleNamespace(env=env, state=env.raw()))
         self.of(env).reset(int(env.seed), str(getattr(env, "entry", {}).get("tag", "")), int(env.decision_ticks),
                            getattr(env, "_iw_policy", None) is not None, bool(env._iw_never))
 
@@ -199,4 +202,15 @@ def selftest_libm(n: int = 20000) -> int:
     for _ in range(n):
         z, q = rng.uniform(-40, 40), float(rng.randrange(1, 10 ** 12))
         bad += int(float(C.libmExp(z)) != math.exp(z)) + int(float(C.libmPow(q, .5)) != q ** .5)
+    return bad
+
+
+def selftest_sum(n: int = 20000) -> int:
+    """CfAbil.PySum vs CPython sum() of floats (3.12: Neumaier) on n random lists: mismatches (bits)."""
+    import random
+    S, rng, bad = jpype.JClass("CfAbil$PySum").of, random.Random(9), 0
+    Dbl = jpype.JArray(jpype.JDouble)
+    for _ in range(n):
+        v = [rng.choice([0.5, 0.8, 1.6, 3.0, 0.1, 1 / 3, 2.2, 1e-9]) * rng.choice([1, -1, 7]) for _ in range(rng.randrange(0, 9))]
+        bad += int(float(S(Dbl(v))).hex() != float(sum(v)).hex())
     return bad
