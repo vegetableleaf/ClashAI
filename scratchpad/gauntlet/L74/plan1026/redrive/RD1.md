@@ -5,9 +5,22 @@ Labels: (a) measured here, (b) plausible, untested, (c) contradicted.
 ## STATUS (keep current)
 - Done: pass-1 code (redrive.py, run.sh, build_lib.sh); 1k pilot; full run 1,010 shards on pod 33308
   `/workspace/redrive/full_bec5811a` (lib `/workspace/redrive/rd_lib_bec5811a`, code copy `/workspace/redrive/cb`).
-- In progress: re-drive of 12 shards whose files the 10-28 02:22 host reboot left empty (log
-  `/workspace/redrive/full_bec5811a.log`); then `verify_out.py` (must print `"bad": {}`) and the manifest.
-- Next: tower-troop re-drive into the same output (needs the D1-C facade, c1853e0 / 387f006):
+- **Pass 1 final, before the tower-troop redo (a):** 252,238 replays; **A 75,229 (29.8%)**, B 144,179 (57.2%),
+  unusable 32,830 (13.0%: tower troops 32,789 = Royal Chef 14,441 + Dagger Duchess 13,928 + Cannoneer 4,420; no plays
+  41). Top B reasons: game_over (crforge ended first) 46,348; not_enough_elixir 39,224; crowns_mismatch 27,790;
+  ability_identity_unavailable 15,986; no_hero 11,279; not_in_hand 3,104; engine UnsupportedOperationException 26.
+  No record_identity cuts (catalogue synced). 45,720,514 rows, 5.45 GB parquet, 1,010 files; manifest sha256
+  25dbd36b... (crforge bec5811a, core 63b78b8a, tables 16.402.22, facade f31af91c). `verify_out.py`: 1,010 shards,
+  `"bad": {}` after re-driving the 12 shards the 10-28 02:22 host reboot left as zero-length files (written before
+  the reboot, renamed without fsync; `_atomic` now fsyncs). Nothing else lost: the run resumed from 504 / 1,010.
+- In progress: tower-troop re-drive (D1-C facade, c1853e0 / 387f006; lib dir `rd_lib_bec5811a_tt` = the same jars,
+  facade recompiled from HEAD), log `/workspace/redrive/full_bec5811a_tt.log`, 40 workers. One-shard smoke
+  (part-000000_00000): 21 troop replays -> A 10 / B 11 / unusable 0; verify_out clean.
+  Restart if interrupted (resumable on `shards_redo/` markers):
+  `setsid -f bash -c "bash cb/scratchpad/gauntlet/L74/plan1026/redrive/run.sh rd_lib_bec5811a_tt full_bec5811a --workers 40 --redo unusable:tower_troop: > full_bec5811a_tt.log 2>&1"`
+- Lib hold (CF-MAIN, 10-28): stay on bec5811a; clashbot-main 624eeb45 had 328 faults vs 7 on 17,000 HF replays (Rune
+  Giant enchant paths). Its lib: 33308 `/workspace/crforge_main/624eeb45/plain` (cp -r to `/workspace/redrive/rd_lib_624eeb45`).
+- Steps used for the tower-troop redo (for a re-run):
   1. sync `pipeline/crforge_core.py`, `scratchpad/gauntlet/L74/crforge/facade/CfCore.java` and `redrive/` from HEAD into
      `/workspace/redrive/cb` (git archive HEAD ... | ssh ... tar -x --no-same-owner);
   2. `mkdir rd_lib_bec5811a_tt && cp -r rd_lib_bec5811a/lib rd_lib_bec5811a/BUILD.json rd_lib_bec5811a_tt/` (no facade/:
