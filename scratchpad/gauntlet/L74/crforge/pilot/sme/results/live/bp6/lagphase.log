@@ -1,0 +1,18 @@
+events 25808 Counter({'crforge': 25804, 'alt0': 4})
+alt0 lag sets [('20261026_101112', 5923, [1, 2, 3, 4, 5]), ('20261026_180336', 2910, [1, 2, 3, 4, 5, 6]), ('20261027_000233', 4598, [2]), ('20261027_000233', 4599, [1, 2, 3, 4, 5])]
+events where lag 0 is inconsistent 4
+abs P 2 best phase 0 inconsistent 6051
+abs P 3 best phase 2 inconsistent 9931
+abs P 4 best phase 2 inconsistent 11462
+abs P 5 best phase 3 inconsistent 11856
+abs P 6 best phase 2 inconsistent 11828
+acq P 2 best phase 1 inconsistent 5197
+acq P 3 best phase 2 inconsistent 8892
+acq P 4 best phase 3 inconsistent 10202
+acq P 5 best phase 4 inconsistent 10515
+acq P 6 best phase 5 inconsistent 10455
+id P 2 best phase 0 inconsistent 6119
+id P 3 best phase 0 inconsistent 10077
+id P 4 best phase 3 inconsistent 11488
+id P 5 best phase 3 inconsistent 11937
+id P 6 best phase 5 inconsistent 11872

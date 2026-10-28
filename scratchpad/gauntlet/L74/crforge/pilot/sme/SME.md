@@ -1476,3 +1476,80 @@ Kill attribution for the 2,052 delay-6 direct kills (`d5sum.log`):
 - `fork/bp/clashbot-bp_0005_DmgProbe.patch`. `results/live/bp5/`.
 - Pod 32657 `/workspace/pilot/bp5/`: worktree `crforge` (branch clashbot-bp5), lib_bp5, lib_bp5k, build_aim5-9,
   `fresh_bp4R0.jsonl.gz` (4.5 MB rows, not copied), scratch `crforge_v` / lib_vdep.
+
+# A2c-BP6: engine variants (a) unit position for the goal, (b) search start cell; replayed per event (pod 32657)
+
+Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted. All censuses on bp4R0's plans (136 runnable,
+= r78, 88 / 109), engine lib_bp5k (F635c + probes 0001-0005). **No crforge mechanic change**: no variant below keeps the
+targets without contradicting thousands of clean events, so nothing was patched or measured on the 109. Combined state
+unchanged: r78 = 88 / 109.
+
+## Machinery: AimRun10 (in-tracer engine variants, `bp6/mk_aimrun10.py`, census `bp6/var_census.py`)
+At every MoveProbe `disp` of a ground unit (start point, aim, budget; the callback runs after the step, so the end point is
+known) the tracer replays the variant decision with this tick's grid and the unit's real queries (`GridMovementQueries.search`,
+the endpoint scan re-implemented as `ReferenceEndpoint.selectEndpoint` with the unit point as a parameter; checked against
+crforge's own goal on every disp, 6,935 mismatching disps skipped: explicit / game-mode goals). An event is a variant whose
+predicted node gives a pure step other than crforge's; outcome at the first recorded frame >= t with the unit exact at the frame
+before: `crforge`, `var` (recorded body within 3 units of the sim point moved by the step difference), `neither`, `gone`.
+1,467,229 events, 1,164,174 clean with an exact frame before (`results/live/bp6/var.log`; rows of the targets and every `var`
+outcome: `var_targets.jsonl`; all rows on the pod, `var_bp4R0.jsonl.gz`, 18.7 MB).
+
+## (a) Goal from another unit position: (c), all six
+| variant (unit point for the endpoint scan) | clean crforge | var | kept targets |
+|---|---:|---:|---|
+| 1 end of t-1 (before this tick's pushes) | 5 | 0 | none |
+| 2 end of t-2 | 5,189 | 0 | none |
+| 3 end of this tick's move (after its push) | 5,003 | 0 | none |
+| 4 midpoint of start and end | 2,444 | 0 | none |
+| 5 start + (e1 - e2), extrapolated | 5,323 | 0 | none |
+| 6 start cell's centre | 5,880 | 0 | none |
+| 7 unit and reference both at end of t-1 | 7,386 | 3 | 101112@5923, 180336@2910, 000233@4599 |
+
+- In all 4 kept events, every unit-position variant gives crforge's new goal: the goal flip comes from the **reference's** point,
+  not the unit's (a). Only 7 (reference lagged, as BP5's k=1) keeps 3; 000233@4598 needs the reference at end of t-2 (lag set {2}).
+- **(c) A periodic refresh of the reference point** (`bp6/lagphase.py` on goal6 rows; lag = phase of a period P = 2..6 keyed by
+  absolute tick, ticks since acquisition, or unit id): best fit leaves >= 5,197 events inconsistent for every P and key
+  (`lagphase.log`; the 4 kept need lags {1-5}, {1-6}, {2}, {1-5}).
+- **(c) Swap-remove update order** (the game moving its last entity into a dead entity's slot, so the unit runs before its
+  reference; `bp6/swap_test.py`, `swap.log`): where it reorders unit and reference, the reference-at-e1 prediction keeps the held
+  goal in 1,507 clean events (all characters + projectiles + areas) or 1,527 (characters only), and the game follows crforge's
+  change in 1,506 / 1,525 of them.
+
+## (b) Route searched from another cell: (c), all fourteen
+| start cell | clean crforge | var | kept targets |
+|---|---:|---:|---|
+| 1 cell at end of t-1 | 6 | 0 | none |
+| 2 nearest-centre rounding ((x+250)/500) | 33,256 | 0 | none |
+| 3 held route's next node (cell being entered) | 25,798 | 3 | 000233@4598, 000233@4599, 101112@5923 |
+| 4 previous distinct aim node | 27,417 | 2 | 000233@4599, 101112@5923 |
+| 5 cell at end of this tick's move | 7,200 | 0 | none |
+| 6-13 the 8 neighbours of the start cell | 38,280 - 49,836 each | 0-1 | 000233@4598 (11, 12), 4599 (8) |
+| 14 last node reached (arrival bit) | 28,819 | 3 | 000233@4598, 000233@4599, 101112@5923 |
+
+- Shadow routes (each variant route held and aligned with crforge's route by nodes walked since the search, first difference
+  reported) cover the route-tail case. At 014928's 5146 search the variants that exist there (2, 5, 6-13; the unit had no held
+  route or reached node, and its e1 cell is its own) all differ at the first step, where the game is exact; none reproduces the
+  5182 turn.
+- (a) All 4 kept events re-aim at a node the unit popped 1-3 ticks before (000233 1215 and 1534, 101112 1180, 180336 1228);
+  variants 3 / 14 keep 3 of them, but BP4's repop census already holds 27,676 clean goal-change re-aims that the game follows.
+
+## 014928@5182: what triggers the re-search (b open; two triggers contradicted)
+- `fr2` (a fresh search from the start cell to the held goal on every disp; 642,288 clean follow the held route, **2 follow the
+  fresh one: 001141@5398 / 5399 GoldenKnight, step difference (1, 4) only**, 241 neither). 014928@5182 is `neither` here: its
+  2-tick frame holds two aims (1373, then 1337 after the pop), so one-step tests cannot decide it.
+- **(c) "Re-search when the unit enters a cell off its route"**: 014928's start cell 1408 is not on the route searched at 5146
+  and was entered at the 5182 visit; clean events with the same flags (off-route, cell changed) 37,796 + 1,262 follow the held
+  route, 0 the fresh one.
+- **No sub-tick evidence (a):** the IW does not attack from 5146 to 5198 (timers 0, state 1), its and its cube's hp are constant,
+  and no projectile or area comes from or near it; frames 5181 (exact) and 5183 bound the re-search to the 5182 visit.
+- **(b) Owed:** crforge ends the BarbLog Barbarian's deploy at 5183 (state 4 -> 1), and the recording's code 14 -> 15 also falls
+  between 5181 and 5183. If the game ended it at 5182, it coincides with the turn. A same-side deploy end as a re-search trigger
+  (not an occluder hash change: BP5's VDEP variant moved the hash at 5184 and retention kept the route) is untested: it needs a
+  census of every same-side deploy end against ground walkers' fresh-search events, then a scratch build. The GoldenKnight
+  (001141@5398) re-search follows its slow by the enemy hero IW cube (budget 60 -> 42 at 5397); 014928's IW has no speed change at
+  5182, so a speed-change trigger does not cover both (a).
+
+## Files (A2c-BP6)
+- `bp6/`: mk_aimrun10.py (AimRun10 from bp5 AimRun5), var_census.py, evd.py (event dossier), lagphase.py, swap_test.py.
+- `results/live/bp6/`: var.log, var_targets.jsonl, lagphase.log, swap.log.
+- Pod 32657 `/workspace/pilot/bp6/`: AimRun10.java, build_aim10, var_bp4R0.jsonl(.gz), work/all (AimRun5 traces of 136 matches).
