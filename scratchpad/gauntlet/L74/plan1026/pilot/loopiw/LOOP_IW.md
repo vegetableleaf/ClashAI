@@ -12,8 +12,13 @@ seat-rows at the live cfg (succ48_x_s101), through the facade, CF-CLONE lib. Con
   /workspace/loopiw/logs/liw_smoke_cf.log, liw_smoke_rs.log (old lib e94447c0: expect crforge e816a6a4 / f060b678,
   fin16 d4ef5467 / 6cd7292f). Restart: `cd /workspace/loopiw && ./smoke.sh crforge liw_smoke_cf
   /workspace/cfspeed/crforge/env/build/install/env/lib` (royalesim liw_smoke_rs for fin16).
-- NEXT: commit the cheap win once both shas match; CfAbil.java (3a features + 3c v2 rule + 3b IW live rule) + the
-  actor-path identity hook (ability_id); identity run; cost per seat-row; message LOOP-INT per part.
+- WRITTEN, UNVERIFIED: speed/crforge/obsid/CfAbil.java (3a + 3b + 3c in one class), obsid/ability_id.py (tables from
+  production + JavaAbil builder), hook/ (actor_abil.py + sitecustomize.py: actor-path comparison), abilcheck.sh,
+  abil_sum.py. Harness trial under --smoke: /workspace/loopiw/logs/liw_hs1.log, results /workspace/loopiw/liw_hs1/.
+  Restart: `cd /workspace/loopiw/cb/scratchpad/gauntlet/L74/plan1026/pilot/loopiw && ./abilcheck.sh RUN NACT
+  actor_device=cpu learner_device=cpu --smoke` (full run: `./abilcheck.sh RUN 12 max_updates=1`).
+- NEXT: commit the cheap win once both shas match; fix harness trial findings; full identity run (>= 38,400 seat-rows,
+  warm start = label mode + rollouts + screens); cost per seat-row; message LOOP-INT per part.
 
 ## Float exactness (a, pod 32657: AMD EPYC 7702, glibc 2.39, numpy + scipy-openblas, no AVX512)
 fp/ (fp_gen.py, FpProbe.java, Libm.java):
