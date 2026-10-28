@@ -87,7 +87,7 @@ up() {   # PORT [HOST]
     "ENTRY_ARGS='$ENTRY_ARGS'" "TABLES=$TABLES" "REQUIRE_ACK=$REQUIRE_ACK" "STREAM_EVERY=${STREAM_EVERY:-60}" > /tmp/loopops_run.env
   for f in /tmp/loopops_run.env:run.env $A:artifacts.tsv $D/requirements.txt:requirements.txt $CFG:pilot.yaml \
            $D/pod_boot.sh:pod_boot.sh; do
-    tr -d "" < "${f%%:*}" | $P "cat > $W/in/${f##*:}" || die "push ${f##*:} failed"   # CRLF checkouts
+    tr -d '' < "${f%%:*}" | $P "cat > $W/in/${f##*:}" || die "push ${f##*:} failed"   # CRLF checkouts
   done
   $P "cd $W && W=$W setsid nohup bash $W/in/pod_boot.sh > $W/boot.log 2>&1 < /dev/null & sleep 2; tail -3 $W/ops.log"
   echo "started $RUN on $host:$port (code ${sha:0:12}); follow: RUN=$RUN bash $D/loop_pod.sh status $port $host;"

@@ -1,0 +1,63 @@
+{'plain': 501, 'evo': 50, 'evo_unlabelled': 1}
+
+plain: casts 501, with an answer on my half within land+40: 467; first answer in the REAL lane 446, other lane 21
+   in flight (before land): 453, real lane 432
+   after land: 14, real lane 14
+   by card (card, real lane): [(('IceWizard', False), 6), (('IceWizard', True), 51), (('Knight', False), 1), (('Knight', True), 117), (('Log', False), 1), (('Log', True), 108), (('Skeletons', False), 3), (('Skeletons', True), 100), (('Tesla', False), 6), (('Tesla', True), 20), (('Tornado', False), 4), (('Tornado', True), 50)]
+   all answers in window: 844, real lane 786
+
+evo: casts 50, with an answer on my half within land+40: 50; first answer in the REAL lane 30, other lane 20
+   in flight (before land): 50, real lane 30
+   after land: 0, real lane 0
+   by card (card, real lane): [(('IceWizard', False), 2), (('IceWizard', True), 5), (('Knight', False), 4), (('Knight', True), 8), (('Log', False), 9), (('Log', True), 5), (('Skeletons', False), 3), (('Skeletons', True), 7), (('Tesla', False), 1), (('Tesla', True), 4), (('Tornado', False), 1), (('Tornado', True), 1)]
+   all answers in window: 98, real lane 53
+live_play_20261025_090631.jsonl 2833 land 54 real R bl None first ('Skeletons', 'R', 22, -32, None) ans [('Skeletons', 'R', 22, -32), ('Knight', 'L', 86, 32)]
+live_play_20261025_101722.jsonl 2542 land 56 real R bl None first ('Tesla', 'L', 18, -38, None) ans [('Tesla', 'L', 18, -38), ('IceWizard', 'L', 46, -10)]
+live_play_20261025_101722.jsonl 4257 land 54 real R bl None first ('Log', 'R', 21, -33, None) ans [('Log', 'R', 21, -33)]
+live_play_20261025_101722.jsonl 5845 land 56 real R bl None first ('Log', 'R', 30, -26, None) ans [('Log', 'R', 30, -26), ('Tesla', 'R', 88, 32)]
+live_play_20261025_153922.jsonl 3139 land 54 real R bl None first ('IceWizard', 'L', 29, -25, None) ans [('IceWizard', 'L', 29, -25)]
+live_play_20261025_200146.jsonl 2589 land 54 real L bl on first ('Log', 'R', 22, -32, None) ans [('Log', 'R', 22, -32)]
+live_play_20261025_200146.jsonl 4172 land 58 real L bl on first ('IceWizard', 'L', 6, -52, None) ans [('IceWizard', 'L', 6, -52), ('Log', 'L', 32, -26)]
+live_play_20261025_200146.jsonl 5588 land 54 real L bl on first ('Log', 'L', 31, -23, None) ans [('Log', 'L', 31, -23), ('Knight', 'R', 84, 30)]
+live_play_20261025_204958.jsonl 2956 land 56 real R bl on first ('Knight', 'R', 16, -40, None) ans [('Knight', 'R', 16, -40)]
+live_play_20261025_233106.jsonl 1880 land 54 real R bl on first ('Log', 'L', 16, -38, None) ans [('Log', 'L', 16, -38), ('Tesla', 'L', 42, -12)]
+live_play_20261025_233106.jsonl 4065 land 54 real R bl on first ('Tesla', 'R', 2, -52, None) ans [('Tesla', 'R', 2, -52), ('Log', 'R', 30, -24), ('Skeletons', 'L', 56, 2)]
+live_play_20261026_002910.jsonl 1893 land 66 real R bl on first ('Log', 'R', 30, -36, None) ans [('Log', 'R', 30, -36), ('Skeletons', 'R', 57, -9)]
+live_play_20261026_002910.jsonl 3944 land 56 real R bl on first ('Knight', 'L', 38, -18, None) ans [('Knight', 'L', 38, -18), ('Skeletons', 'R', 90, 34)]
+live_play_20261026_052316.jsonl 2437 land 54 real L bl on first ('Skeletons', 'L', 9, -45, None) ans [('Skeletons', 'L', 9, -45), ('Log', 'L', 36, -18)]
+live_play_20261026_053016.jsonl 2512 land 56 real L bl on first ('Knight', 'L', 54, -2, None) ans [('Knight', 'L', 54, -2)]
+live_play_20261026_085317.jsonl 2437 land 58 real L bl on first ('Knight', 'L', 5, -53, None) ans [('Knight', 'L', 5, -53)]
+live_play_20261026_130453.jsonl 2916 land 55 real R bl on first ('Skeletons', 'R', 9, -46, None) ans [('Skeletons', 'R', 9, -46), ('Log', 'R', 39, -16), ('Knight', 'L', 87, 32)]
+live_play_20261026_150458.jsonl 2642 land 64 real L bl on first ('Knight', 'L', 18, -46, None) ans [('Knight', 'L', 18, -46)]
+live_play_20261026_150458.jsonl 4367 land 54 real R bl on first ('Tesla', 'R', 5, -49, None) ans [('Tesla', 'R', 5, -49), ('Tornado', 'L', 32, -22)]
+live_play_20261026_174710.jsonl 2873 land 54 real L bl on first ('Knight', 'L', 26, -28, None) ans [('Knight', 'L', 26, -28), ('Log', 'R', 74, 20)]
+live_play_20261026_182725.jsonl 1952 land 55 real R bl on first ('Knight', 'R', 21, -34, None) ans [('Knight', 'R', 21, -34), ('Tornado', 'R', 47, -8)]
+live_play_20261026_182725.jsonl 3342 land 58 real R bl on first ('IceWizard', 'R', 10, -48, None) ans [('IceWizard', 'R', 10, -48), ('Log', 'R', 36, -22), ('Skeletons', 'L', 78, 20)]
+live_play_20261026_225533.jsonl 2468 land 54 real R bl on first ('Log', 'L', 10, -44, None) ans [('Log', 'L', 10, -44), ('Skeletons', 'L', 36, -18)]
+live_play_20261026_225533.jsonl 4202 land 56 real L bl on first ('Tesla', 'L', 8, -48, None) ans [('Tesla', 'L', 8, -48), ('Log', 'R', 34, -22)]
+live_play_20261026_225533.jsonl 5563 land 54 real R bl on first ('Knight', 'L', 16, -38, None) ans [('Knight', 'L', 16, -38)]
+live_play_20261026_231045.jsonl 2462 land 56 real L bl on first ('Tornado', 'R', 28, -28, None) ans [('Tornado', 'R', 28, -28)]
+live_play_20261026_231402.jsonl 1777 land 56 real R bl on first ('IceWizard', 'R', 12, -44, None) ans [('IceWizard', 'R', 12, -44), ('Knight', 'L', 38, -18)]
+live_play_20261026_231402.jsonl 4814 land 56 real R bl on first ('Log', 'R', 22, -34, None) ans [('Log', 'R', 22, -34), ('Skeletons', 'L', 48, -8), ('IceWizard', 'L', 85, 29)]
+live_play_20261026_231920.jsonl 2547 land 66 real R bl on first ('Skeletons', 'R', 20, -46, None) ans [('Skeletons', 'R', 20, -46), ('Log', 'R', 48, -18), ('Knight', 'L', 88, 22)]
+live_play_20261026_231920.jsonl 4117 land 56 real R bl on first ('Skeletons', 'L', 8, -48, None) ans [('Skeletons', 'L', 8, -48), ('Log', 'R', 34, -22)]
+live_play_20261027_012200.jsonl 2554 land 56 real R bl on first ('Knight', 'R', 12, -44, None) ans [('Knight', 'R', 12, -44)]
+live_play_20261027_035412.jsonl 2465 land 54 real R bl on first ('Skeletons', 'L', 10, -44, None) ans [('Skeletons', 'L', 10, -44), ('Log', 'R', 36, -18)]
+live_play_20261027_041602.jsonl 2276 land 54 real L bl on first ('Skeletons', 'L', 10, -44, None) ans [('Skeletons', 'L', 10, -44), ('Tornado', 'R', 36, -18), ('Knight', 'R', 62, 8)]
+live_play_20261027_071515.jsonl 2587 land 56 real R bl on first ('IceWizard', 'R', 14, -42, None) ans [('IceWizard', 'R', 14, -42), ('Tornado', 'R', 24, -32)]
+live_play_20261027_102455.jsonl 3289 land 56 real R bl on first ('Tornado', 'R', 6, -50, None) ans [('Tornado', 'R', 6, -50), ('Log', 'R', 62, 6)]
+live_play_20261027_122836.jsonl 3415 land 52 real L bl on first ('Log', 'R', 24, -28, None) ans [('Log', 'R', 24, -28), ('Skeletons', 'L', 60, 8)]
+live_play_20261027_144058.jsonl 4030 land 54 real R bl on first ('Skeletons', 'R', 5, -49, None) ans [('Skeletons', 'R', 5, -49), ('Log', 'L', 32, -22), ('IceWizard', 'L', 58, 4)]
+live_play_20261027_151657.jsonl 2589 land 56 real R bl on first ('Log', 'L', 38, -18, None) ans [('Log', 'L', 38, -18), ('IceWizard', 'R', 92, 36)]
+live_play_20261027_172512.jsonl 2877 land 54 real R bl on first ('Tesla', 'R', 6, -48, None) ans [('Tesla', 'R', 6, -48), ('Knight', 'R', 70, 16)]
+live_play_20261027_174036.jsonl 2724 land 55 real L bl on first ('IceWizard', 'R', 9, -46, None) ans [('IceWizard', 'R', 9, -46), ('Log', 'R', 33, -22)]
+live_play_20261027_174036.jsonl 4233 land 58 real R bl on first ('Knight', 'L', 10, -48, None) ans [('Knight', 'L', 10, -48), ('Skeletons', 'L', 36, -22)]
+live_play_20261027_175446.jsonl 2086 land 54 real L bl on first ('Knight', 'R', 19, -35, None) ans [('Knight', 'R', 19, -35), ('Skeletons', 'L', 48, -6), ('Tornado', 'R', 73, 19)]
+live_play_20261027_175446.jsonl 4146 land 56 real R bl on first ('Skeletons', 'R', 32, -24, None) ans [('Skeletons', 'R', 32, -24), ('IceWizard', 'L', 60, 4)]
+live_play_20261027_175446.jsonl 5497 land 55 real L bl on first ('Log', 'R', 31, -24, None) ans [('Log', 'R', 31, -24), ('Tesla', 'L', 81, 26)]
+live_play_20261027_213048.jsonl 3533 land 55 real R bl on first ('Log', 'L', 6, -49, None) ans [('Log', 'L', 6, -49), ('Tornado', 'L', 32, -23)]
+live_play_20261027_213048.jsonl 5193 land 54 real R bl on first ('Log', 'L', 6, -48, None) ans [('Log', 'L', 6, -48), ('Skeletons', 'R', 34, -20), ('Tesla', 'R', 62, 8)]
+live_play_20261028_015554.jsonl 2600 land 58 real R bl on first ('Knight', 'R', 33, -25, None) ans [('Knight', 'R', 33, -25)]
+live_play_20261028_090643.jsonl 1859 land 58 real R bl on first ('Log', 'L', 18, -40, None) ans [('Log', 'L', 18, -40), ('Knight', 'L', 46, -12)]
+live_play_20261028_090643.jsonl 4315 land 54 real R bl on first ('IceWizard', 'R', 8, -46, None) ans [('IceWizard', 'R', 8, -46), ('Log', 'R', 33, -21)]
+live_play_20261028_090643.jsonl 5497 land 56 real L bl on first ('Skeletons', 'R', 8, -48, None) ans [('Skeletons', 'R', 8, -48), ('Knight', 'L', 38, -18)]

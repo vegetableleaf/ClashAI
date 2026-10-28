@@ -1,0 +1,19 @@
+GB-DECOY wiring: NOT APPLIED. Needs the lead's and owner's go plus a blind verifier (live path: the model's projectile
+tokens change on evolved Goblin Barrel casts only). Unconditional form shown; a LIVE_OPTIONS flag
+(e.g. --gb-decoy on, default off) would gate both lines the way --identity-ext gates body_identity.extension.
+The successor's Java observation (LOOP spec: CfPubObj) must rename GoblinBarrelSpell_EV1_Decoy the same way.
+
+--- a/pipeline/public_observation.py
++++ b/pipeline/public_observation.py
+@@ -136,6 +136,6 @@ class PublicBattle:
+             self.ability_ticks.append(tick)
+             self.ability_rows.append(own)
+-        from .projectile_observation import objects
++        from .barrel_decoy import objects            # GB-DECOY: the evolved barrel's decoy renamed (CLXIII: dropped)
+         observed = self.motion.update(objects(frame, source=source), tick)
+--- a/pipeline/public_decision_audit.py
++++ b/pipeline/public_decision_audit.py
+@@ -3,3 +3,4 @@
+ from .live_mem import my_side_of
+ from .projectile_observation import objects, tokens_from_objects
++from .barrel_decoy import objects                    # GB-DECOY: the audit logs what the model saw

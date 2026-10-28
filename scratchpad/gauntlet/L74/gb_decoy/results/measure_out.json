@@ -1,0 +1,24179 @@
+[
+{
+"file": "live_play_20261025_085849.jsonl",
+"t0": 246,
+"tland": 300,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": null,
+"first": [
+"Log",
+"R",
+24,
+-30,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+24,
+-30
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+24
+]
+]
+},
+{
+"file": "live_play_20261025_085849.jsonl",
+"t0": 1797,
+"tland": 1853,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Log",
+"L",
+20,
+-36,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+20,
+-36
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.828
+],
+20
+]
+]
+},
+{
+"file": "live_play_20261025_085849.jsonl",
+"t0": 3015,
+"tland": 3069,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Tornado",
+"L",
+29,
+-25,
+null
+],
+"ans": [
+[
+"Tornado",
+"L",
+29,
+-25
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.472,
+0.828
+],
+29
+]
+]
+},
+{
+"file": "live_play_20261025_085849.jsonl",
+"t0": 3633,
+"tland": 3687,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261025_085849.jsonl",
+"t0": 4375,
+"tland": 4431,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Log",
+"L",
+19,
+-37,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+19,
+-37
+],
+[
+"Skeletons",
+"L",
+46,
+-10
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+19
+],
+[
+"Skeletons",
+[
+0.083,
+0.797
+],
+46
+]
+]
+},
+{
+"file": "live_play_20261025_085849.jsonl",
+"t0": 4934,
+"tland": 4989,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Tornado",
+"R",
+26,
+-29,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+26,
+-29
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.639,
+0.547
+],
+26
+]
+]
+},
+{
+"file": "live_play_20261025_090631.jsonl",
+"t0": 738,
+"tland": 792,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": null,
+"first": [
+"Skeletons",
+"R",
+4,
+-50,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+4,
+-50
+],
+[
+"Tornado",
+"R",
+30,
+-24
+],
+[
+"Log",
+"R",
+56,
+2
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+4
+],
+[
+"Tornado",
+[
+0.639,
+0.891
+],
+30
+],
+[
+"Log",
+[
+0.806,
+0.828
+],
+56
+]
+]
+},
+{
+"file": "live_play_20261025_090631.jsonl",
+"t0": 1883,
+"tland": 1937,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": null,
+"first": [
+"Tornado",
+"R",
+20,
+-34,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+20,
+-34
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.639,
+0.891
+],
+20
+]
+]
+},
+{
+"file": "live_play_20261025_090631.jsonl",
+"t0": 2833,
+"tland": 2887,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": null,
+"first": [
+"Skeletons",
+"R",
+22,
+-32,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+22,
+-32
+],
+[
+"Knight",
+"L",
+86,
+32
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+22
+],
+[
+"Knight",
+[
+0.083,
+0.797
+],
+86
+]
+]
+},
+{
+"file": "live_play_20261025_090951.jsonl",
+"t0": 333,
+"tland": 387,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Knight",
+"L",
+18,
+-36,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+18,
+-36
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+18
+]
+]
+},
+{
+"file": "live_play_20261025_090951.jsonl",
+"t0": 1802,
+"tland": 1870,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"IceWizard",
+"L",
+22,
+-46,
+null
+],
+"ans": [
+[
+"IceWizard",
+"L",
+22,
+-46
+],
+[
+"Log",
+"L",
+48,
+-20
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.083,
+0.828
+],
+22
+],
+[
+"Log",
+[
+0.139,
+0.953
+],
+48
+]
+]
+},
+{
+"file": "live_play_20261025_090951.jsonl",
+"t0": 2879,
+"tland": 2933,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Knight",
+"L",
+8,
+-46,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+8,
+-46
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+8
+]
+]
+},
+{
+"file": "live_play_20261025_090951.jsonl",
+"t0": 3822,
+"tland": 3878,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Tornado",
+"L",
+25,
+-31,
+null
+],
+"ans": [
+[
+"Tornado",
+"L",
+25,
+-31
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.417,
+0.859
+],
+25
+]
+]
+},
+{
+"file": "live_play_20261025_101722.jsonl",
+"t0": 689,
+"tland": 743,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Skeletons",
+"L",
+12,
+-42,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+12,
+-42
+],
+[
+"Log",
+"L",
+40,
+-14
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.083,
+0.828
+],
+12
+],
+[
+"Log",
+[
+0.194,
+0.859
+],
+40
+]
+]
+},
+{
+"file": "live_play_20261025_101722.jsonl",
+"t0": 1723,
+"tland": 1777,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": null,
+"first": [
+"Knight",
+"R",
+8,
+-46,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+8,
+-46
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+8
+]
+]
+},
+{
+"file": "live_play_20261025_101722.jsonl",
+"t0": 2542,
+"tland": 2598,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": null,
+"first": [
+"Tesla",
+"L",
+18,
+-38,
+null
+],
+"ans": [
+[
+"Tesla",
+"L",
+18,
+-38
+],
+[
+"IceWizard",
+"L",
+46,
+-10
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.444,
+0.562
+],
+18
+],
+[
+"IceWizard",
+[
+0.083,
+0.797
+],
+46
+]
+]
+},
+{
+"file": "live_play_20261025_101722.jsonl",
+"t0": 3095,
+"tland": 3151,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": null,
+"first": [
+"Tornado",
+"L",
+32,
+-24,
+null
+],
+"ans": [
+[
+"Tornado",
+"L",
+32,
+-24
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.361,
+0.891
+],
+32
+]
+]
+},
+{
+"file": "live_play_20261025_101722.jsonl",
+"t0": 3562,
+"tland": 3618,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": null,
+"first": [
+"Log",
+"R",
+8,
+-48,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+8,
+-48
+],
+[
+"Skeletons",
+"R",
+36,
+-20
+],
+[
+"IceWizard",
+"L",
+62,
+6
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+8
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+36
+],
+[
+"IceWizard",
+[
+0.417,
+0.766
+],
+62
+]
+]
+},
+{
+"file": "live_play_20261025_101722.jsonl",
+"t0": 4257,
+"tland": 4311,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": null,
+"first": [
+"Log",
+"R",
+21,
+-33,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+21,
+-33
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+21
+]
+]
+},
+{
+"file": "live_play_20261025_101722.jsonl",
+"t0": 5122,
+"tland": 5178,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": null,
+"first": [
+"Skeletons",
+"R",
+8,
+-48,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+8,
+-48
+],
+[
+"Log",
+"R",
+34,
+-22
+],
+[
+"Knight",
+"L",
+96,
+40
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+8
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+34
+],
+[
+"Knight",
+[
+0.417,
+0.703
+],
+96
+]
+]
+},
+{
+"file": "live_play_20261025_101722.jsonl",
+"t0": 5447,
+"tland": 5503,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": null,
+"first": [
+"Log",
+"R",
+-2,
+-58,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+-2,
+-58
+],
+[
+"Knight",
+"R",
+28,
+-28
+]
+],
+"plays": [
+[
+"Log",
+[
+0.75,
+0.547
+],
+-2
+],
+[
+"Knight",
+[
+0.806,
+0.859
+],
+28
+]
+]
+},
+{
+"file": "live_play_20261025_101722.jsonl",
+"t0": 5845,
+"tland": 5901,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": null,
+"first": [
+"Log",
+"R",
+30,
+-26,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+30,
+-26
+],
+[
+"Tesla",
+"R",
+88,
+32
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+30
+],
+[
+"Tesla",
+[
+0.667,
+0.562
+],
+88
+]
+]
+},
+{
+"file": "live_play_20261025_102241.jsonl",
+"t0": 218,
+"tland": 274,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": null,
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261025_102241.jsonl",
+"t0": 1194,
+"tland": 1250,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": null,
+"first": [
+"IceWizard",
+"R",
+12,
+-44,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+12,
+-44
+],
+[
+"Tornado",
+"R",
+52,
+-4
+],
+[
+"Skeletons",
+"R",
+85,
+29
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.917,
+0.797
+],
+12
+],
+[
+"Tornado",
+[
+0.639,
+0.891
+],
+52
+],
+[
+"Skeletons",
+[
+0.583,
+0.547
+],
+85
+]
+]
+},
+{
+"file": "live_play_20261025_102241.jsonl",
+"t0": 2315,
+"tland": 2371,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"IceWizard",
+"R",
+31,
+-25,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+31,
+-25
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.917,
+0.797
+],
+31
+]
+]
+},
+{
+"file": "live_play_20261025_102241.jsonl",
+"t0": 3004,
+"tland": 3058,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Log",
+"L",
+86,
+32,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+86,
+32
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.766
+],
+86
+]
+]
+},
+{
+"file": "live_play_20261025_102241.jsonl",
+"t0": 3549,
+"tland": 3605,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Log",
+"L",
+22,
+-34,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+22,
+-34
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+22
+]
+]
+},
+{
+"file": "live_play_20261025_102241.jsonl",
+"t0": 4176,
+"tland": 4248,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"IceWizard",
+"R",
+23,
+-49,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+23,
+-49
+],
+[
+"Skeletons",
+"R",
+50,
+-22
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.583,
+0.766
+],
+23
+],
+[
+"Skeletons",
+[
+0.917,
+0.828
+],
+50
+]
+]
+},
+{
+"file": "live_play_20261025_102241.jsonl",
+"t0": 4998,
+"tland": 5052,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"IceWizard",
+"R",
+0,
+-54,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+0,
+-54
+],
+[
+"Log",
+"L",
+28,
+-26
+],
+[
+"Skeletons",
+"R",
+56,
+2
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.972,
+0.766
+],
+0
+],
+[
+"Log",
+[
+0.194,
+0.859
+],
+28
+],
+[
+"Skeletons",
+[
+0.806,
+0.578
+],
+56
+]
+]
+},
+{
+"file": "live_play_20261025_102241.jsonl",
+"t0": 5487,
+"tland": 5543,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Skeletons",
+"L",
+16,
+-40,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+16,
+-40
+],
+[
+"Log",
+"L",
+42,
+-14
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.083,
+0.797
+],
+16
+],
+[
+"Log",
+[
+0.194,
+0.859
+],
+42
+]
+]
+},
+{
+"file": "live_play_20261025_102241.jsonl",
+"t0": 5882,
+"tland": 5938,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Log",
+"L",
+15,
+-41,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+15,
+-41
+],
+[
+"IceWizard",
+"R",
+42,
+-14
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+15
+],
+[
+"IceWizard",
+[
+0.917,
+0.797
+],
+42
+]
+]
+},
+{
+"file": "live_play_20261025_103905.jsonl",
+"t0": 190,
+"tland": 243,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Log",
+"L",
+36,
+-17,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+36,
+-17
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+36
+]
+]
+},
+{
+"file": "live_play_20261025_103905.jsonl",
+"t0": 1267,
+"tland": 1321,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": null,
+"first": [
+"Log",
+"R",
+90,
+36,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+90,
+36
+]
+],
+"plays": [
+[
+"Xbow",
+[
+0.861,
+0.609
+],
+12
+],
+[
+"Log",
+[
+0.806,
+0.828
+],
+90
+]
+]
+},
+{
+"file": "live_play_20261025_152140.jsonl",
+"t0": 1333,
+"tland": 1389,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Knight",
+"L",
+8,
+-48,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+8,
+-48
+],
+[
+"Skeletons",
+"L",
+35,
+-21
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.417,
+0.672
+],
+8
+],
+[
+"Skeletons",
+[
+0.083,
+0.797
+],
+35
+]
+]
+},
+{
+"file": "live_play_20261025_152140.jsonl",
+"t0": 2559,
+"tland": 2617,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Tesla",
+"L",
+0,
+-58,
+null
+],
+"ans": [
+[
+"Tesla",
+"L",
+0,
+-58
+],
+[
+"IceWizard",
+"L",
+27,
+-31
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.389,
+0.562
+],
+0
+],
+[
+"IceWizard",
+[
+0.083,
+0.797
+],
+27
+]
+]
+},
+{
+"file": "live_play_20261025_152140.jsonl",
+"t0": 3291,
+"tland": 3357,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Skeletons",
+"L",
+26,
+-40,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+26,
+-40
+],
+[
+"Log",
+"L",
+54,
+-12
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.194,
+0.859
+],
+26
+],
+[
+"Log",
+[
+0.194,
+0.922
+],
+54
+]
+]
+},
+{
+"file": "live_play_20261025_153922.jsonl",
+"t0": 184,
+"tland": 243,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Tesla",
+"L",
+-2,
+-61,
+null
+],
+"ans": [
+[
+"Tesla",
+"L",
+-2,
+-61
+],
+[
+"Log",
+"L",
+24,
+-35
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.389,
+0.562
+],
+-2
+],
+[
+"Log",
+[
+0.139,
+0.922
+],
+24
+]
+]
+},
+{
+"file": "live_play_20261025_153922.jsonl",
+"t0": 1293,
+"tland": 1345,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Knight",
+"L",
+18,
+-34,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+18,
+-34
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+18
+]
+]
+},
+{
+"file": "live_play_20261025_153922.jsonl",
+"t0": 3139,
+"tland": 3193,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": null,
+"first": [
+"IceWizard",
+"L",
+29,
+-25,
+null
+],
+"ans": [
+[
+"IceWizard",
+"L",
+29,
+-25
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.194,
+0.859
+],
+29
+]
+]
+},
+{
+"file": "live_play_20261025_160628.jsonl",
+"t0": 174,
+"tland": 228,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": null,
+"first": [
+"IceWizard",
+"R",
+14,
+-40,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+14,
+-40
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.861,
+0.859
+],
+14
+]
+]
+},
+{
+"file": "live_play_20261025_163551.jsonl",
+"t0": 775,
+"tland": 832,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": null,
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261025_163551.jsonl",
+"t0": 1832,
+"tland": 1890,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Skeletons",
+"R",
+18,
+-40,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+18,
+-40
+],
+[
+"Log",
+"L",
+46,
+-12
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.75,
+0.547
+],
+18
+],
+[
+"Log",
+[
+0.139,
+0.859
+],
+46
+]
+]
+},
+{
+"file": "live_play_20261025_170806.jsonl",
+"t0": 455,
+"tland": 510,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Tornado",
+"L",
+27,
+-28,
+null
+],
+"ans": [
+[
+"Tornado",
+"L",
+27,
+-28
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.472,
+0.828
+],
+27
+]
+]
+},
+{
+"file": "live_play_20261025_170806.jsonl",
+"t0": 1109,
+"tland": 1163,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Skeletons",
+"L",
+11,
+-43,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+11,
+-43
+],
+[
+"Knight",
+"L",
+37,
+-17
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.194,
+0.859
+],
+11
+],
+[
+"Knight",
+[
+0.083,
+0.797
+],
+37
+]
+]
+},
+{
+"file": "live_play_20261025_170806.jsonl",
+"t0": 1894,
+"tland": 1948,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Log",
+"L",
+28,
+-26,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+28,
+-26
+],
+[
+"Skeletons",
+"R",
+56,
+2
+]
+],
+"plays": [
+[
+"Xbow",
+[
+0.861,
+0.609
+],
+0
+],
+[
+"Log",
+[
+0.194,
+0.859
+],
+28
+],
+[
+"Skeletons",
+[
+0.917,
+0.547
+],
+56
+]
+]
+},
+{
+"file": "live_play_20261025_170806.jsonl",
+"t0": 2508,
+"tland": 2564,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Tesla",
+"L",
+12,
+-44,
+null
+],
+"ans": [
+[
+"Tesla",
+"L",
+12,
+-44
+],
+[
+"Log",
+"L",
+40,
+-16
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.389,
+0.562
+],
+12
+],
+[
+"Log",
+[
+0.194,
+0.859
+],
+40
+]
+]
+},
+{
+"file": "live_play_20261025_170806.jsonl",
+"t0": 3149,
+"tland": 3205,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Log",
+"L",
+18,
+-38,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+18,
+-38
+],
+[
+"Knight",
+"L",
+48,
+-8
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+18
+],
+[
+"Knight",
+[
+0.083,
+0.797
+],
+48
+]
+]
+},
+{
+"file": "live_play_20261025_170806.jsonl",
+"t0": 3562,
+"tland": 3617,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"IceWizard",
+"L",
+14,
+-41,
+null
+],
+"ans": [
+[
+"IceWizard",
+"L",
+14,
+-41
+],
+[
+"Knight",
+"L",
+43,
+-12
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.194,
+0.859
+],
+14
+],
+[
+"Knight",
+[
+0.083,
+0.734
+],
+43
+]
+]
+},
+{
+"file": "live_play_20261025_170806.jsonl",
+"t0": 4448,
+"tland": 4513,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Skeletons",
+"L",
+10,
+-55,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+10,
+-55
+],
+[
+"IceWizard",
+"L",
+37,
+-28
+],
+[
+"Knight",
+"L",
+63,
+-2
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.417,
+0.766
+],
+10
+],
+[
+"IceWizard",
+[
+0.083,
+0.828
+],
+37
+],
+[
+"Knight",
+[
+0.25,
+0.547
+],
+63
+]
+]
+},
+{
+"file": "live_play_20261025_170806.jsonl",
+"t0": 4923,
+"tland": 4977,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Skeletons",
+"L",
+6,
+-48,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+6,
+-48
+],
+[
+"Log",
+"L",
+34,
+-20
+],
+[
+"Knight",
+"L",
+62,
+8
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.194,
+0.859
+],
+6
+],
+[
+"Log",
+[
+0.194,
+0.859
+],
+34
+],
+[
+"Knight",
+[
+0.25,
+0.547
+],
+62
+]
+]
+},
+{
+"file": "live_play_20261025_170806.jsonl",
+"t0": 5335,
+"tland": 5390,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Tesla",
+"R",
+16,
+-39,
+null
+],
+"ans": [
+[
+"Tesla",
+"R",
+16,
+-39
+],
+[
+"Skeletons",
+"L",
+43,
+-12
+],
+[
+"IceWizard",
+"L",
+69,
+14
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.667,
+0.562
+],
+16
+],
+[
+"Skeletons",
+[
+0.083,
+0.797
+],
+43
+],
+[
+"IceWizard",
+[
+0.194,
+0.547
+],
+69
+]
+]
+},
+{
+"file": "live_play_20261025_170806.jsonl",
+"t0": 5949,
+"tland": 6000,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": null,
+"ans": [],
+"plays": [
+[
+"Xbow",
+[
+0.139,
+0.609
+],
+4
+]
+]
+},
+{
+"file": "live_play_20261025_172622.jsonl",
+"t0": 2322,
+"tland": 2378,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": null,
+"first": [
+"Tornado",
+"R",
+12,
+-44,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+12,
+-44
+],
+[
+"IceWizard",
+"R",
+38,
+-18
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.528,
+0.891
+],
+12
+],
+[
+"IceWizard",
+[
+0.917,
+0.797
+],
+38
+]
+]
+},
+{
+"file": "live_play_20261025_174232.jsonl",
+"t0": 779,
+"tland": 833,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Log",
+"L",
+22,
+-32,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+22,
+-32
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+22
+]
+]
+},
+{
+"file": "live_play_20261025_174232.jsonl",
+"t0": 2219,
+"tland": 2275,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"IceWizard",
+"L",
+62,
+6,
+null
+],
+"ans": [
+[
+"IceWizard",
+"L",
+62,
+6
+]
+],
+"plays": [
+[
+"Xbow",
+[
+0.139,
+0.609
+],
+14
+],
+[
+"IceWizard",
+[
+0.194,
+0.859
+],
+62
+]
+]
+},
+{
+"file": "live_play_20261025_174232.jsonl",
+"t0": 2637,
+"tland": 2693,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": null,
+"first": [
+"Tornado",
+"L",
+28,
+-28,
+null
+],
+"ans": [
+[
+"Tornado",
+"L",
+28,
+-28
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.472,
+0.828
+],
+28
+]
+]
+},
+{
+"file": "live_play_20261025_182526.jsonl",
+"t0": 157,
+"tland": 209,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": null,
+"first": [
+"Knight",
+"R",
+20,
+-32,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+20,
+-32
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.806,
+0.547
+],
+20
+]
+]
+},
+{
+"file": "live_play_20261025_182526.jsonl",
+"t0": 1408,
+"tland": 1462,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": null,
+"first": [
+"IceWizard",
+"R",
+16,
+-38,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+16,
+-38
+],
+[
+"Tornado",
+"R",
+42,
+-12
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.806,
+0.859
+],
+16
+],
+[
+"Tornado",
+[
+0.639,
+0.891
+],
+42
+]
+]
+},
+{
+"file": "live_play_20261025_182526.jsonl",
+"t0": 2595,
+"tland": 2651,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": null,
+"first": [
+"Tornado",
+"L",
+32,
+-24,
+null
+],
+"ans": [
+[
+"Tornado",
+"L",
+32,
+-24
+],
+[
+"Knight",
+"L",
+86,
+30
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.472,
+0.891
+],
+32
+],
+[
+"Knight",
+[
+0.028,
+0.953
+],
+86
+]
+]
+},
+{
+"file": "live_play_20261025_182526.jsonl",
+"t0": 3206,
+"tland": 3260,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": null,
+"first": [
+"Knight",
+"R",
+26,
+-28,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+26,
+-28
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+26
+]
+]
+},
+{
+"file": "live_play_20261025_182526.jsonl",
+"t0": 4202,
+"tland": 4257,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": null,
+"first": [
+"Tornado",
+"L",
+20,
+-35,
+null
+],
+"ans": [
+[
+"Tornado",
+"L",
+20,
+-35
+],
+[
+"Log",
+"R",
+55,
+0
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.472,
+0.891
+],
+20
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+55
+]
+]
+},
+{
+"file": "live_play_20261025_182526.jsonl",
+"t0": 4645,
+"tland": 4701,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": null,
+"first": [
+"Tornado",
+"R",
+4,
+-52,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+4,
+-52
+],
+[
+"Skeletons",
+"L",
+30,
+-26
+],
+[
+"Knight",
+"L",
+96,
+40
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.528,
+0.547
+],
+4
+],
+[
+"Skeletons",
+[
+0.083,
+0.797
+],
+30
+],
+[
+"Knight",
+[
+0.194,
+0.734
+],
+96
+]
+]
+},
+{
+"file": "live_play_20261025_185746.jsonl",
+"t0": 321,
+"tland": 375,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+20,
+-34,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+20,
+-34
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+20
+]
+]
+},
+{
+"file": "live_play_20261025_185746.jsonl",
+"t0": 1294,
+"tland": 1348,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+32,
+-22,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+32,
+-22
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.917,
+0.797
+],
+32
+]
+]
+},
+{
+"file": "live_play_20261025_185746.jsonl",
+"t0": 2523,
+"tland": 2579,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+29,
+-27,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+29,
+-27
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+29
+]
+]
+},
+{
+"file": "live_play_20261025_185746.jsonl",
+"t0": 2956,
+"tland": 3012,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+28,
+-28,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+28,
+-28
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+28
+]
+]
+},
+{
+"file": "live_play_20261025_185746.jsonl",
+"t0": 3601,
+"tland": 3655,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+9,
+-45,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+9,
+-45
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+9
+]
+]
+},
+{
+"file": "live_play_20261025_191133.jsonl",
+"t0": 385,
+"tland": 439,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+22,
+-32,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+22,
+-32
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+22
+]
+]
+},
+{
+"file": "live_play_20261025_191133.jsonl",
+"t0": 2479,
+"tland": 2533,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+2,
+-52,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+2,
+-52
+],
+[
+"Log",
+"R",
+35,
+-19
+],
+[
+"Skeletons",
+"L",
+66,
+12
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.639,
+0.922
+],
+2
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+35
+],
+[
+"Skeletons",
+[
+0.417,
+0.609
+],
+66
+]
+]
+},
+{
+"file": "live_play_20261025_191133.jsonl",
+"t0": 2853,
+"tland": 2909,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+10,
+-46,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+10,
+-46
+],
+[
+"Log",
+"R",
+86,
+30
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.583,
+0.672
+],
+10
+],
+[
+"Log",
+[
+0.806,
+0.828
+],
+86
+]
+]
+},
+{
+"file": "live_play_20261025_191133.jsonl",
+"t0": 3472,
+"tland": 3528,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+17,
+-39,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+17,
+-39
+],
+[
+"Knight",
+"R",
+45,
+-11
+],
+[
+"Skeletons",
+"L",
+80,
+24
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+17
+],
+[
+"Knight",
+[
+0.917,
+0.797
+],
+45
+],
+[
+"Skeletons",
+[
+0.417,
+0.703
+],
+80
+]
+]
+},
+{
+"file": "live_play_20261025_192143.jsonl",
+"t0": 254,
+"tland": 310,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"R",
+22,
+-34,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+22,
+-34
+],
+[
+"Skeletons",
+"R",
+48,
+-8
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.528,
+0.828
+],
+22
+],
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+48
+]
+]
+},
+{
+"file": "live_play_20261025_192143.jsonl",
+"t0": 1085,
+"tland": 1141,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+27,
+-29,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+27,
+-29
+],
+[
+"Skeletons",
+"R",
+54,
+-2
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+27
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+54
+]
+]
+},
+{
+"file": "live_play_20261025_192143.jsonl",
+"t0": 2138,
+"tland": 2191,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+10,
+-43,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+10,
+-43
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.806,
+0.859
+],
+10
+]
+]
+},
+{
+"file": "live_play_20261025_192143.jsonl",
+"t0": 2866,
+"tland": 2922,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261025_200146.jsonl",
+"t0": 427,
+"tland": 483,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+15,
+-41,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+15,
+-41
+],
+[
+"IceWizard",
+"L",
+56,
+0
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.139,
+0.859
+],
+15
+],
+[
+"IceWizard",
+[
+0.083,
+0.797
+],
+56
+]
+]
+},
+{
+"file": "live_play_20261025_200146.jsonl",
+"t0": 1733,
+"tland": 1787,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+16,
+-38,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+16,
+-38
+],
+[
+"Knight",
+"L",
+42,
+-12
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+16
+],
+[
+"Knight",
+[
+0.083,
+0.797
+],
+42
+]
+]
+},
+{
+"file": "live_play_20261025_200146.jsonl",
+"t0": 2589,
+"tland": 2643,
+"kind": "evo",
+"real": "L",
+"decoy": "R",
+"bl": "on",
+"first": [
+"Log",
+"R",
+22,
+-32,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+22,
+-32
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+22
+],
+[
+"Xbow",
+[
+0.861,
+0.609
+],
+84
+]
+]
+},
+{
+"file": "live_play_20261025_200146.jsonl",
+"t0": 3018,
+"tland": 3073,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+9,
+-46,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+9,
+-46
+],
+[
+"Log",
+"L",
+37,
+-18
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+9
+],
+[
+"Log",
+[
+0.194,
+0.859
+],
+37
+]
+]
+},
+{
+"file": "live_play_20261025_200146.jsonl",
+"t0": 3469,
+"tland": 3531,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+32,
+-30,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+32,
+-30
+],
+[
+"Tornado",
+"L",
+58,
+-4
+]
+],
+"plays": [
+[
+"Log",
+[
+0.139,
+0.953
+],
+32
+],
+[
+"Tornado",
+[
+0.472,
+0.828
+],
+58
+]
+]
+},
+{
+"file": "live_play_20261025_200146.jsonl",
+"t0": 4172,
+"tland": 4230,
+"kind": "evo",
+"real": "L",
+"decoy": "R",
+"bl": "on",
+"first": [
+"IceWizard",
+"L",
+6,
+-52,
+null
+],
+"ans": [
+[
+"IceWizard",
+"L",
+6,
+-52
+],
+[
+"Log",
+"L",
+32,
+-26
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.472,
+0.984
+],
+6
+],
+[
+"Log",
+[
+0.083,
+0.797
+],
+32
+]
+]
+},
+{
+"file": "live_play_20261025_200146.jsonl",
+"t0": 5001,
+"tland": 5055,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+26,
+-28,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+26,
+-28
+]
+],
+"plays": [
+[
+"Xbow",
+[
+0.139,
+0.609
+],
+-2
+],
+[
+"Knight",
+[
+0.917,
+0.797
+],
+26
+]
+]
+},
+{
+"file": "live_play_20261025_200146.jsonl",
+"t0": 5263,
+"tland": 5319,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+42,
+-14,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+42,
+-14
+]
+],
+"plays": [
+[
+"Xbow",
+[
+0.139,
+0.609
+],
+14
+],
+[
+"Log",
+[
+0.194,
+0.859
+],
+42
+]
+]
+},
+{
+"file": "live_play_20261025_200146.jsonl",
+"t0": 5588,
+"tland": 5642,
+"kind": "evo",
+"real": "L",
+"decoy": "R",
+"bl": "on",
+"first": [
+"Log",
+"L",
+31,
+-23,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+31,
+-23
+],
+[
+"Knight",
+"R",
+84,
+30
+]
+],
+"plays": [
+[
+"Xbow",
+[
+0.528,
+0.672
+],
+6
+],
+[
+"Log",
+[
+0.194,
+0.859
+],
+31
+],
+[
+"Knight",
+[
+0.806,
+0.859
+],
+84
+]
+]
+},
+{
+"file": "live_play_20261025_202924.jsonl",
+"t0": 413,
+"tland": 468,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"R",
+31,
+-24,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+31,
+-24
+],
+[
+"Knight",
+"L",
+71,
+16
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.528,
+0.828
+],
+31
+],
+[
+"Knight",
+[
+0.028,
+0.672
+],
+71
+]
+]
+},
+{
+"file": "live_play_20261025_202924.jsonl",
+"t0": 1612,
+"tland": 1668,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+22,
+-34,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+22,
+-34
+],
+[
+"IceWizard",
+"L",
+52,
+-4
+]
+],
+"plays": [
+[
+"Log",
+[
+0.139,
+0.922
+],
+22
+],
+[
+"IceWizard",
+[
+0.194,
+0.859
+],
+52
+]
+]
+},
+{
+"file": "live_play_20261025_202924.jsonl",
+"t0": 2549,
+"tland": 2605,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"L",
+30,
+-26,
+null
+],
+"ans": [
+[
+"Tornado",
+"L",
+30,
+-26
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.361,
+0.891
+],
+30
+]
+]
+},
+{
+"file": "live_play_20261025_202924.jsonl",
+"t0": 3558,
+"tland": 3613,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"L",
+26,
+-29,
+null
+],
+"ans": [
+[
+"Tornado",
+"L",
+26,
+-29
+],
+[
+"Knight",
+"L",
+73,
+18
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.472,
+0.891
+],
+26
+],
+[
+"Knight",
+[
+0.083,
+0.797
+],
+73
+]
+]
+},
+{
+"file": "live_play_20261025_202924.jsonl",
+"t0": 4357,
+"tland": 4412,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"L",
+24,
+-31,
+null
+],
+"ans": [
+[
+"Tornado",
+"L",
+24,
+-31
+],
+[
+"Knight",
+"L",
+76,
+21
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.472,
+0.891
+],
+24
+],
+[
+"Knight",
+[
+0.083,
+0.797
+],
+76
+]
+]
+},
+{
+"file": "live_play_20261025_204958.jsonl",
+"t0": 818,
+"tland": 872,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261025_204958.jsonl",
+"t0": 2213,
+"tland": 2269,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+26,
+-30,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+26,
+-30
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+26
+]
+]
+},
+{
+"file": "live_play_20261025_204958.jsonl",
+"t0": 2956,
+"tland": 3012,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"Knight",
+"R",
+16,
+-40,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+16,
+-40
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+16
+]
+]
+},
+{
+"file": "live_play_20261025_204958.jsonl",
+"t0": 3462,
+"tland": 3518,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+10,
+-46,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+10,
+-46
+],
+[
+"Skeletons",
+"R",
+39,
+-17
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+10
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+39
+]
+]
+},
+{
+"file": "live_play_20261025_205659.jsonl",
+"t0": 154,
+"tland": 210,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+14,
+-42,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+14,
+-42
+],
+[
+"Knight",
+"R",
+40,
+-16
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+14
+],
+[
+"Knight",
+[
+0.917,
+0.828
+],
+40
+]
+]
+},
+{
+"file": "live_play_20261025_205659.jsonl",
+"t0": 1194,
+"tland": 1248,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+18,
+-36,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+18,
+-36
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+18
+]
+]
+},
+{
+"file": "live_play_20261025_205659.jsonl",
+"t0": 2433,
+"tland": 2487,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+18,
+-36,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+18,
+-36
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+18
+]
+]
+},
+{
+"file": "live_play_20261025_205659.jsonl",
+"t0": 3110,
+"tland": 3164,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"R",
+16,
+-38,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+16,
+-38
+],
+[
+"IceWizard",
+"R",
+42,
+-12
+],
+[
+"Skeletons",
+"R",
+83,
+29
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.639,
+0.891
+],
+16
+],
+[
+"IceWizard",
+[
+0.917,
+0.797
+],
+42
+],
+[
+"Skeletons",
+[
+0.75,
+0.859
+],
+83
+]
+]
+},
+{
+"file": "live_play_20261025_205659.jsonl",
+"t0": 3313,
+"tland": 3369,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+-2,
+-58,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+-2,
+-58
+],
+[
+"Tornado",
+"R",
+81,
+25
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.694,
+0.547
+],
+-2
+],
+[
+"Tornado",
+[
+0.639,
+0.891
+],
+81
+]
+]
+},
+{
+"file": "live_play_20261025_213707.jsonl",
+"t0": 585,
+"tland": 640,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+16,
+-39,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+16,
+-39
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+16
+]
+]
+},
+{
+"file": "live_play_20261025_213707.jsonl",
+"t0": 2465,
+"tland": 2523,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+20,
+-38,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+20,
+-38
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.891
+],
+20
+],
+[
+"Xbow",
+[
+0.139,
+0.609
+],
+98
+]
+]
+},
+{
+"file": "live_play_20261025_213707.jsonl",
+"t0": 2923,
+"tland": 2987,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tesla",
+"R",
+0,
+-64,
+null
+],
+"ans": [
+[
+"Tesla",
+"R",
+0,
+-64
+],
+[
+"Log",
+"R",
+37,
+-27
+],
+[
+"Skeletons",
+"R",
+62,
+-2
+],
+[
+"IceWizard",
+"R",
+87,
+23
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.611,
+0.562
+],
+0
+],
+[
+"Log",
+[
+0.806,
+0.953
+],
+37
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+62
+],
+[
+"IceWizard",
+[
+0.806,
+0.859
+],
+87
+]
+]
+},
+{
+"file": "live_play_20261025_213707.jsonl",
+"t0": 3725,
+"tland": 3779,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+10,
+-44,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+10,
+-44
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+10
+]
+]
+},
+{
+"file": "live_play_20261025_213707.jsonl",
+"t0": 4179,
+"tland": 4245,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+17,
+-49,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+17,
+-49
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.806,
+0.859
+],
+17
+]
+]
+},
+{
+"file": "live_play_20261025_225805.jsonl",
+"t0": 624,
+"tland": 680,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+22,
+-34,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+22,
+-34
+],
+[
+"Skeletons",
+"R",
+50,
+-6
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+22
+],
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+50
+]
+]
+},
+{
+"file": "live_play_20261025_225805.jsonl",
+"t0": 3223,
+"tland": 3277,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"L",
+14,
+-40,
+null
+],
+"ans": [
+[
+"IceWizard",
+"L",
+14,
+-40
+],
+[
+"Skeletons",
+"L",
+41,
+-13
+],
+[
+"Knight",
+"L",
+68,
+14
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.083,
+0.797
+],
+14
+],
+[
+"Skeletons",
+[
+0.139,
+0.859
+],
+41
+],
+[
+"Knight",
+[
+0.361,
+0.672
+],
+68
+]
+]
+},
+{
+"file": "live_play_20261025_233106.jsonl",
+"t0": 312,
+"tland": 368,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+16,
+-40,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+16,
+-40
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+16
+]
+]
+},
+{
+"file": "live_play_20261025_233106.jsonl",
+"t0": 1081,
+"tland": 1135,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+22,
+-32,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+22,
+-32
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+22
+]
+]
+},
+{
+"file": "live_play_20261025_233106.jsonl",
+"t0": 1880,
+"tland": 1934,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"Log",
+"L",
+16,
+-38,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+16,
+-38
+],
+[
+"Tesla",
+"L",
+42,
+-12
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+16
+],
+[
+"Tesla",
+[
+0.389,
+0.562
+],
+42
+]
+]
+},
+{
+"file": "live_play_20261025_233106.jsonl",
+"t0": 2573,
+"tland": 2627,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+5,
+-49,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+5,
+-49
+],
+[
+"Log",
+"L",
+31,
+-23
+],
+[
+"IceWizard",
+"L",
+81,
+27
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.194,
+0.859
+],
+5
+],
+[
+"Log",
+[
+0.194,
+0.891
+],
+31
+],
+[
+"IceWizard",
+[
+0.417,
+0.766
+],
+81
+]
+]
+},
+{
+"file": "live_play_20261025_233106.jsonl",
+"t0": 3675,
+"tland": 3733,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+15,
+-43,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+15,
+-43
+],
+[
+"Tornado",
+"R",
+48,
+-10
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+15
+],
+[
+"Tornado",
+[
+0.583,
+0.828
+],
+48
+]
+]
+},
+{
+"file": "live_play_20261025_233106.jsonl",
+"t0": 4065,
+"tland": 4119,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"Tesla",
+"R",
+2,
+-52,
+null
+],
+"ans": [
+[
+"Tesla",
+"R",
+2,
+-52
+],
+[
+"Log",
+"R",
+30,
+-24
+],
+[
+"Skeletons",
+"L",
+56,
+2
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.667,
+0.562
+],
+2
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+30
+],
+[
+"Skeletons",
+[
+0.083,
+0.797
+],
+56
+]
+]
+},
+{
+"file": "live_play_20261025_233106.jsonl",
+"t0": 5144,
+"tland": 5200,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+8,
+-48,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+8,
+-48
+],
+[
+"Log",
+"R",
+34,
+-22
+],
+[
+"Skeletons",
+"L",
+86,
+30
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.806,
+0.859
+],
+8
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+34
+],
+[
+"Skeletons",
+[
+0.361,
+0.547
+],
+86
+]
+]
+},
+{
+"file": "live_play_20261025_233106.jsonl",
+"t0": 5496,
+"tland": 5550,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+34,
+-20,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+34,
+-20
+],
+[
+"Skeletons",
+"R",
+85,
+31
+]
+],
+"plays": [
+[
+"Xbow",
+[
+0.861,
+0.609
+],
+6
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+34
+],
+[
+"Skeletons",
+[
+0.694,
+0.547
+],
+85
+]
+]
+},
+{
+"file": "live_play_20261025_233619.jsonl",
+"t0": 813,
+"tland": 867,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261025_233619.jsonl",
+"t0": 2196,
+"tland": 2252,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"L",
+68,
+12,
+null
+],
+"ans": [
+[
+"IceWizard",
+"L",
+68,
+12
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.306,
+0.797
+],
+68
+]
+]
+},
+{
+"file": "live_play_20261025_233619.jsonl",
+"t0": 3122,
+"tland": 3178,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+40,
+-16,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+40,
+-16
+],
+[
+"Skeletons",
+"L",
+68,
+12
+]
+],
+"plays": [
+[
+"Xbow",
+[
+0.139,
+0.609
+],
+12
+],
+[
+"Log",
+[
+0.194,
+0.859
+],
+40
+],
+[
+"Skeletons",
+[
+0.028,
+0.578
+],
+68
+]
+]
+},
+{
+"file": "live_play_20261025_233619.jsonl",
+"t0": 3763,
+"tland": 3816,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+43,
+-10,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+43,
+-10
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+43
+]
+]
+},
+{
+"file": "live_play_20261025_234511.jsonl",
+"t0": 156,
+"tland": 212,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"R",
+20,
+-36,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+20,
+-36
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.528,
+0.891
+],
+20
+]
+]
+},
+{
+"file": "live_play_20261025_234511.jsonl",
+"t0": 1435,
+"tland": 1489,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tesla",
+"R",
+20,
+-34,
+null
+],
+"ans": [
+[
+"Tesla",
+"R",
+20,
+-34
+],
+[
+"Skeletons",
+"R",
+46,
+-8
+],
+[
+"Log",
+"R",
+84,
+30
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.833,
+0.875
+],
+20
+],
+[
+"Skeletons",
+[
+0.806,
+0.547
+],
+46
+],
+[
+"Log",
+[
+0.806,
+0.672
+],
+84
+]
+]
+},
+{
+"file": "live_play_20261025_234511.jsonl",
+"t0": 2656,
+"tland": 2712,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"R",
+58,
+2,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+58,
+2
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.583,
+0.828
+],
+58
+]
+]
+},
+{
+"file": "live_play_20261025_234511.jsonl",
+"t0": 3657,
+"tland": 3713,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"L",
+-2,
+-58,
+null
+],
+"ans": [
+[
+"IceWizard",
+"L",
+-2,
+-58
+],
+[
+"Skeletons",
+"R",
+28,
+-28
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.472,
+0.641
+],
+-2
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+28
+]
+]
+},
+{
+"file": "live_play_20261026_002910.jsonl",
+"t0": 304,
+"tland": 358,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+14,
+-40,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+14,
+-40
+],
+[
+"Knight",
+"R",
+40,
+-14
+],
+[
+"IceWizard",
+"L",
+86,
+32
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+14
+],
+[
+"Knight",
+[
+0.806,
+0.859
+],
+40
+],
+[
+"IceWizard",
+[
+0.083,
+0.547
+],
+86
+]
+]
+},
+{
+"file": "live_play_20261026_002910.jsonl",
+"t0": 919,
+"tland": 975,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+34,
+-22,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+34,
+-22
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+34
+]
+]
+},
+{
+"file": "live_play_20261026_002910.jsonl",
+"t0": 1893,
+"tland": 1959,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"Log",
+"R",
+30,
+-36,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+30,
+-36
+],
+[
+"Skeletons",
+"R",
+57,
+-9
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.984
+],
+30
+],
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+57
+]
+]
+},
+{
+"file": "live_play_20261026_002910.jsonl",
+"t0": 2844,
+"tland": 2908,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+14,
+-50,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+14,
+-50
+],
+[
+"Log",
+"R",
+41,
+-23
+],
+[
+"Knight",
+"R",
+68,
+4
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+14
+],
+[
+"Log",
+[
+0.806,
+0.984
+],
+41
+],
+[
+"Knight",
+[
+0.917,
+0.547
+],
+68
+]
+]
+},
+{
+"file": "live_play_20261026_002910.jsonl",
+"t0": 3340,
+"tland": 3394,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+12,
+-42,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+12,
+-42
+],
+[
+"Log",
+"R",
+38,
+-16
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+12
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+38
+]
+]
+},
+{
+"file": "live_play_20261026_002910.jsonl",
+"t0": 3944,
+"tland": 4000,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"Knight",
+"L",
+38,
+-18,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+38,
+-18
+],
+[
+"Skeletons",
+"R",
+90,
+34
+]
+],
+"plays": [
+[
+"Xbow",
+[
+0.861,
+0.609
+],
+12
+],
+[
+"Knight",
+[
+0.083,
+0.797
+],
+38
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+90
+]
+]
+},
+{
+"file": "live_play_20261026_005208.jsonl",
+"t0": 558,
+"tland": 612,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+0,
+-54,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+0,
+-54
+],
+[
+"Log",
+"L",
+26,
+-28
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.528,
+0.797
+],
+0
+],
+[
+"Log",
+[
+0.194,
+0.859
+],
+26
+]
+]
+},
+{
+"file": "live_play_20261026_005208.jsonl",
+"t0": 5663,
+"tland": 5717,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+0,
+-54,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+0,
+-54
+],
+[
+"Knight",
+"R",
+84,
+30
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.828
+],
+0
+],
+[
+"Knight",
+[
+0.806,
+0.859
+],
+84
+]
+]
+},
+{
+"file": "live_play_20261026_024936.jsonl",
+"t0": 2207,
+"tland": 2263,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261026_033711.jsonl",
+"t0": 248,
+"tland": 302,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+10,
+-44,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+10,
+-44
+],
+[
+"Skeletons",
+"R",
+36,
+-18
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+10
+],
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+36
+]
+]
+},
+{
+"file": "live_play_20261026_034437.jsonl",
+"t0": 727,
+"tland": 787,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tesla",
+"R",
+12,
+-48,
+null
+],
+"ans": [
+[
+"Tesla",
+"R",
+12,
+-48
+],
+[
+"Skeletons",
+"R",
+40,
+-20
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.833,
+0.719
+],
+12
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+40
+]
+]
+},
+{
+"file": "live_play_20261026_034437.jsonl",
+"t0": 1518,
+"tland": 1574,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+64,
+8,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+64,
+8
+]
+],
+"plays": [
+[
+"Log",
+[
+0.75,
+0.828
+],
+64
+]
+]
+},
+{
+"file": "live_play_20261026_044226.jsonl",
+"t0": 268,
+"tland": 322,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+18,
+-36,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+18,
+-36
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+18
+]
+]
+},
+{
+"file": "live_play_20261026_044226.jsonl",
+"t0": 1562,
+"tland": 1618,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+19,
+-37,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+19,
+-37
+],
+[
+"Skeletons",
+"R",
+47,
+-9
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+19
+],
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+47
+]
+]
+},
+{
+"file": "live_play_20261026_044226.jsonl",
+"t0": 2706,
+"tland": 2761,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+8,
+-47,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+8,
+-47
+],
+[
+"Tornado",
+"L",
+35,
+-20
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+8
+],
+[
+"Tornado",
+[
+0.472,
+0.766
+],
+35
+]
+]
+},
+{
+"file": "live_play_20261026_044226.jsonl",
+"t0": 3175,
+"tland": 3231,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+14,
+-42,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+14,
+-42
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.083,
+0.828
+],
+14
+],
+[
+"Xbow",
+[
+0.861,
+0.609
+],
+86
+]
+]
+},
+{
+"file": "live_play_20261026_050914.jsonl",
+"t0": 226,
+"tland": 284,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+30,
+-28,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+30,
+-28
+],
+[
+"Skeletons",
+"R",
+58,
+0
+],
+[
+"Tesla",
+"R",
+92,
+34
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+30
+],
+[
+"Skeletons",
+[
+0.806,
+0.547
+],
+58
+],
+[
+"Tesla",
+[
+0.667,
+0.562
+],
+92
+]
+]
+},
+{
+"file": "live_play_20261026_050914.jsonl",
+"t0": 869,
+"tland": 923,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+23,
+-31,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+23,
+-31
+],
+[
+"Skeletons",
+"R",
+50,
+-4
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+23
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+50
+]
+]
+},
+{
+"file": "live_play_20261026_051754.jsonl",
+"t0": 477,
+"tland": 532,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tesla",
+"L",
+0,
+-55,
+null
+],
+"ans": [
+[
+"Tesla",
+"L",
+0,
+-55
+],
+[
+"Tornado",
+"L",
+27,
+-28
+],
+[
+"Skeletons",
+"L",
+51,
+-4
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.389,
+0.562
+],
+0
+],
+[
+"Tornado",
+[
+0.472,
+0.828
+],
+27
+],
+[
+"Skeletons",
+[
+0.083,
+0.828
+],
+51
+]
+]
+},
+{
+"file": "live_play_20261026_051754.jsonl",
+"t0": 1330,
+"tland": 1384,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+20,
+-34,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+20,
+-34
+],
+[
+"Skeletons",
+"L",
+54,
+0
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+20
+],
+[
+"Skeletons",
+[
+0.083,
+0.828
+],
+54
+]
+]
+},
+{
+"file": "live_play_20261026_051754.jsonl",
+"t0": 2884,
+"tland": 2938,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+10,
+-44,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+10,
+-44
+],
+[
+"Knight",
+"L",
+36,
+-18
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.194,
+0.859
+],
+10
+],
+[
+"Knight",
+[
+0.083,
+0.797
+],
+36
+]
+]
+},
+{
+"file": "live_play_20261026_051754.jsonl",
+"t0": 3409,
+"tland": 3449,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"L",
+10,
+-30,
+null
+],
+"ans": [
+[
+"IceWizard",
+"L",
+10,
+-30
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.083,
+0.828
+],
+10
+]
+]
+},
+{
+"file": "live_play_20261026_051754.jsonl",
+"t0": 3919,
+"tland": 3973,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"L",
+22,
+-32,
+null
+],
+"ans": [
+[
+"Tornado",
+"L",
+22,
+-32
+],
+[
+"Log",
+"L",
+52,
+-2
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.194,
+0.547
+],
+22
+],
+[
+"Log",
+[
+0.194,
+0.859
+],
+52
+]
+]
+},
+{
+"file": "live_play_20261026_051754.jsonl",
+"t0": 5093,
+"tland": 5149,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"L",
+28,
+-28,
+null
+],
+"ans": [
+[
+"Tornado",
+"L",
+28,
+-28
+],
+[
+"Log",
+"L",
+54,
+-2
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.472,
+0.891
+],
+28
+],
+[
+"Log",
+[
+0.194,
+0.859
+],
+54
+]
+]
+},
+{
+"file": "live_play_20261026_051754.jsonl",
+"t0": 5523,
+"tland": 5578,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+12,
+-43,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+12,
+-43
+],
+[
+"Knight",
+"L",
+39,
+-16
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+12
+],
+[
+"Knight",
+[
+0.083,
+0.797
+],
+39
+]
+]
+},
+{
+"file": "live_play_20261026_051754.jsonl",
+"t0": 5820,
+"tland": 5862,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+2,
+-40,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+2,
+-40
+],
+[
+"Knight",
+"L",
+30,
+-12
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.194,
+0.859
+],
+2
+],
+[
+"Knight",
+[
+0.083,
+0.797
+],
+30
+]
+]
+},
+{
+"file": "live_play_20261026_052316.jsonl",
+"t0": 151,
+"tland": 205,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+10,
+-44,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+10,
+-44
+],
+[
+"Log",
+"R",
+34,
+-20
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+10
+],
+[
+"Log",
+[
+0.861,
+0.859
+],
+34
+]
+]
+},
+{
+"file": "live_play_20261026_052316.jsonl",
+"t0": 1084,
+"tland": 1138,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+15,
+-39,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+15,
+-39
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.139,
+0.859
+],
+15
+]
+]
+},
+{
+"file": "live_play_20261026_052316.jsonl",
+"t0": 2437,
+"tland": 2491,
+"kind": "evo",
+"real": "L",
+"decoy": "R",
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+9,
+-45,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+9,
+-45
+],
+[
+"Log",
+"L",
+36,
+-18
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.083,
+0.797
+],
+9
+],
+[
+"Log",
+[
+0.194,
+0.859
+],
+36
+]
+]
+},
+{
+"file": "live_play_20261026_052316.jsonl",
+"t0": 2823,
+"tland": 2877,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+2,
+-52,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+2,
+-52
+],
+[
+"Log",
+"L",
+28,
+-26
+],
+[
+"Knight",
+"L",
+54,
+0
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.194,
+0.859
+],
+2
+],
+[
+"Log",
+[
+0.194,
+0.891
+],
+28
+],
+[
+"Knight",
+[
+0.083,
+0.797
+],
+54
+]
+]
+},
+{
+"file": "live_play_20261026_053016.jsonl",
+"t0": 294,
+"tland": 348,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261026_053016.jsonl",
+"t0": 1533,
+"tland": 1587,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+10,
+-44,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+10,
+-44
+],
+[
+"Skeletons",
+"R",
+36,
+-18
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.828
+],
+10
+],
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+36
+]
+]
+},
+{
+"file": "live_play_20261026_053016.jsonl",
+"t0": 2512,
+"tland": 2568,
+"kind": "evo",
+"real": "L",
+"decoy": "R",
+"bl": "on",
+"first": [
+"Knight",
+"L",
+54,
+-2,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+54,
+-2
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.25,
+0.734
+],
+54
+]
+]
+},
+{
+"file": "live_play_20261026_053016.jsonl",
+"t0": 3287,
+"tland": 3343,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"L",
+2,
+-54,
+null
+],
+"ans": [
+[
+"IceWizard",
+"L",
+2,
+-54
+],
+[
+"Knight",
+"L",
+28,
+-28
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.472,
+0.766
+],
+2
+],
+[
+"Knight",
+[
+0.083,
+0.797
+],
+28
+]
+]
+},
+{
+"file": "live_play_20261026_054358.jsonl",
+"t0": 389,
+"tland": 443,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+14,
+-40,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+14,
+-40
+],
+[
+"Log",
+"R",
+40,
+-14
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+14
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+40
+]
+]
+},
+{
+"file": "live_play_20261026_054358.jsonl",
+"t0": 2049,
+"tland": 2114,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+0,
+-65,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+0,
+-65
+],
+[
+"Knight",
+"R",
+84,
+19
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.984
+],
+0
+],
+[
+"Knight",
+[
+0.75,
+0.547
+],
+84
+]
+]
+},
+{
+"file": "live_play_20261026_054358.jsonl",
+"t0": 2927,
+"tland": 2983,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+-2,
+-58,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+-2,
+-58
+],
+[
+"Skeletons",
+"R",
+24,
+-32
+],
+[
+"IceWizard",
+"R",
+50,
+-6
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.583,
+0.766
+],
+-2
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+24
+],
+[
+"IceWizard",
+[
+0.917,
+0.797
+],
+50
+]
+]
+},
+{
+"file": "live_play_20261026_054358.jsonl",
+"t0": 4647,
+"tland": 4711,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+46,
+-18,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+46,
+-18
+]
+],
+"plays": [
+[
+"Xbow",
+[
+0.139,
+0.609
+],
+14
+],
+[
+"Log",
+[
+0.806,
+0.953
+],
+46
+]
+]
+},
+{
+"file": "live_play_20261026_061305.jsonl",
+"t0": 265,
+"tland": 319,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+20,
+-34,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+20,
+-34
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+20
+]
+]
+},
+{
+"file": "live_play_20261026_061305.jsonl",
+"t0": 1226,
+"tland": 1280,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"R",
+22,
+-32,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+22,
+-32
+],
+[
+"Tesla",
+"R",
+94,
+40
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.639,
+0.891
+],
+22
+],
+[
+"Tesla",
+[
+0.5,
+0.688
+],
+94
+]
+]
+},
+{
+"file": "live_play_20261026_061305.jsonl",
+"t0": 3090,
+"tland": 3144,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+18,
+-36,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+18,
+-36
+],
+[
+"Knight",
+"R",
+44,
+-10
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+18
+],
+[
+"Knight",
+[
+0.861,
+0.547
+],
+44
+]
+]
+},
+{
+"file": "live_play_20261026_061305.jsonl",
+"t0": 3813,
+"tland": 3867,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+14,
+-40,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+14,
+-40
+],
+[
+"Log",
+"R",
+42,
+-12
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+14
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+42
+]
+]
+},
+{
+"file": "live_play_20261026_061305.jsonl",
+"t0": 4545,
+"tland": 4603,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+14,
+-44,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+14,
+-44
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.861,
+0.547
+],
+14
+]
+]
+},
+{
+"file": "live_play_20261026_072724.jsonl",
+"t0": 307,
+"tland": 363,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+20,
+-36,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+20,
+-36
+],
+[
+"Tornado",
+"R",
+45,
+-11
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.083,
+0.828
+],
+20
+],
+[
+"Tornado",
+[
+0.528,
+0.797
+],
+45
+]
+]
+},
+{
+"file": "live_play_20261026_072724.jsonl",
+"t0": 1613,
+"tland": 1667,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+23,
+-31,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+23,
+-31
+],
+[
+"IceWizard",
+"L",
+49,
+-5
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.139,
+0.547
+],
+23
+],
+[
+"IceWizard",
+[
+0.083,
+0.797
+],
+49
+]
+]
+},
+{
+"file": "live_play_20261026_072724.jsonl",
+"t0": 2384,
+"tland": 2438,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+10,
+-44,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+10,
+-44
+],
+[
+"Log",
+"R",
+45,
+-9
+],
+[
+"Skeletons",
+"R",
+90,
+36
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.861,
+0.547
+],
+10
+],
+[
+"Log",
+[
+0.861,
+0.859
+],
+45
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+90
+]
+]
+},
+{
+"file": "live_play_20261026_072724.jsonl",
+"t0": 2789,
+"tland": 2845,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+22,
+-34,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+22,
+-34
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+22
+]
+]
+},
+{
+"file": "live_play_20261026_072724.jsonl",
+"t0": 3422,
+"tland": 3480,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"L",
+44,
+-14,
+null
+],
+"ans": [
+[
+"IceWizard",
+"L",
+44,
+-14
+],
+[
+"Skeletons",
+"L",
+92,
+34
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.083,
+0.797
+],
+44
+],
+[
+"Skeletons",
+[
+0.194,
+0.859
+],
+92
+]
+]
+},
+{
+"file": "live_play_20261026_072724.jsonl",
+"t0": 4153,
+"tland": 4208,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+70,
+15,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+70,
+15
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.917,
+0.797
+],
+70
+]
+]
+},
+{
+"file": "live_play_20261026_083102.jsonl",
+"t0": 473,
+"tland": 527,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+12,
+-42,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+12,
+-42
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+12
+]
+]
+},
+{
+"file": "live_play_20261026_084957.jsonl",
+"t0": 175,
+"tland": 229,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+8,
+-46,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+8,
+-46
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.766
+],
+8
+]
+]
+},
+{
+"file": "live_play_20261026_084957.jsonl",
+"t0": 2263,
+"tland": 2317,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+18,
+-36,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+18,
+-36
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+18
+]
+]
+},
+{
+"file": "live_play_20261026_085317.jsonl",
+"t0": 614,
+"tland": 667,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"L",
+27,
+-26,
+null
+],
+"ans": [
+[
+"IceWizard",
+"L",
+27,
+-26
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.083,
+0.828
+],
+27
+]
+]
+},
+{
+"file": "live_play_20261026_085317.jsonl",
+"t0": 2043,
+"tland": 2097,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+26,
+-28,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+26,
+-28
+],
+[
+"Skeletons",
+"L",
+52,
+-2
+]
+],
+"plays": [
+[
+"Xbow",
+[
+0.139,
+0.609
+],
+0
+],
+[
+"Log",
+[
+0.194,
+0.859
+],
+26
+],
+[
+"Skeletons",
+[
+0.083,
+0.797
+],
+52
+]
+]
+},
+{
+"file": "live_play_20261026_085317.jsonl",
+"t0": 2437,
+"tland": 2495,
+"kind": "evo",
+"real": "L",
+"decoy": "R",
+"bl": "on",
+"first": [
+"Knight",
+"L",
+5,
+-53,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+5,
+-53
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.306,
+0.766
+],
+5
+]
+]
+},
+{
+"file": "live_play_20261026_085317.jsonl",
+"t0": 3162,
+"tland": 3218,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+12,
+-44,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+12,
+-44
+],
+[
+"Skeletons",
+"L",
+54,
+-2
+],
+[
+"Log",
+"L",
+92,
+36
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+12
+],
+[
+"Skeletons",
+[
+0.194,
+0.859
+],
+54
+],
+[
+"Log",
+[
+0.25,
+0.547
+],
+92
+]
+]
+},
+{
+"file": "live_play_20261026_130453.jsonl",
+"t0": 600,
+"tland": 654,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+16,
+-38,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+16,
+-38
+],
+[
+"Skeletons",
+"R",
+44,
+-10
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.861,
+0.859
+],
+16
+],
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+44
+]
+]
+},
+{
+"file": "live_play_20261026_130453.jsonl",
+"t0": 2026,
+"tland": 2082,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261026_130453.jsonl",
+"t0": 2916,
+"tland": 2971,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+9,
+-46,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+9,
+-46
+],
+[
+"Log",
+"R",
+39,
+-16
+],
+[
+"Knight",
+"L",
+87,
+32
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+9
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+39
+],
+[
+"Knight",
+[
+0.139,
+0.859
+],
+87
+]
+]
+},
+{
+"file": "live_play_20261026_130453.jsonl",
+"t0": 3383,
+"tland": 3437,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+10,
+-44,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+10,
+-44
+],
+[
+"Log",
+"R",
+36,
+-18
+],
+[
+"Knight",
+"L",
+86,
+32
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+10
+],
+[
+"Log",
+[
+0.806,
+0.891
+],
+36
+],
+[
+"Knight",
+[
+0.194,
+0.641
+],
+86
+]
+]
+},
+{
+"file": "live_play_20261026_130453.jsonl",
+"t0": 3969,
+"tland": 4013,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+0,
+-44,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+0,
+-44
+],
+[
+"Skeletons",
+"L",
+30,
+-14
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+0
+],
+[
+"Skeletons",
+[
+0.083,
+0.828
+],
+30
+]
+]
+},
+{
+"file": "live_play_20261026_143744.jsonl",
+"t0": 245,
+"tland": 298,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+20,
+-33,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+20,
+-33
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+20
+]
+]
+},
+{
+"file": "live_play_20261026_144615.jsonl",
+"t0": 203,
+"tland": 257,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261026_144615.jsonl",
+"t0": 1942,
+"tland": 1996,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+27,
+-27,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+27,
+-27
+],
+[
+"Tesla",
+"R",
+73,
+19
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+27
+],
+[
+"Tesla",
+[
+0.5,
+0.656
+],
+73
+]
+]
+},
+{
+"file": "live_play_20261026_144615.jsonl",
+"t0": 4042,
+"tland": 4098,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+30,
+-26,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+30,
+-26
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+30
+]
+]
+},
+{
+"file": "live_play_20261026_144615.jsonl",
+"t0": 4809,
+"tland": 4864,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+15,
+-40,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+15,
+-40
+],
+[
+"Knight",
+"R",
+43,
+-12
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+15
+],
+[
+"Knight",
+[
+0.917,
+0.797
+],
+43
+]
+]
+},
+{
+"file": "live_play_20261026_144615.jsonl",
+"t0": 5688,
+"tland": 5742,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+12,
+-42,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+12,
+-42
+],
+[
+"Knight",
+"R",
+48,
+-6
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.806,
+0.859
+],
+12
+],
+[
+"Knight",
+[
+0.917,
+0.797
+],
+48
+]
+]
+},
+{
+"file": "live_play_20261026_145247.jsonl",
+"t0": 151,
+"tland": 203,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+12,
+-40,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+12,
+-40
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+12
+]
+]
+},
+{
+"file": "live_play_20261026_145247.jsonl",
+"t0": 1279,
+"tland": 1333,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+28,
+-26,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+28,
+-26
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.194,
+0.859
+],
+28
+]
+]
+},
+{
+"file": "live_play_20261026_145247.jsonl",
+"t0": 3183,
+"tland": 3237,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"L",
+24,
+-30,
+null
+],
+"ans": [
+[
+"Tornado",
+"L",
+24,
+-30
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.472,
+0.891
+],
+24
+]
+]
+},
+{
+"file": "live_play_20261026_150458.jsonl",
+"t0": 714,
+"tland": 768,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+20,
+-34,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+20,
+-34
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+20
+]
+]
+},
+{
+"file": "live_play_20261026_150458.jsonl",
+"t0": 1869,
+"tland": 1931,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+22,
+-40,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+22,
+-40
+],
+[
+"Knight",
+"L",
+56,
+-6
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.891
+],
+22
+],
+[
+"Knight",
+[
+0.083,
+0.828
+],
+56
+]
+]
+},
+{
+"file": "live_play_20261026_150458.jsonl",
+"t0": 2642,
+"tland": 2706,
+"kind": "evo",
+"real": "L",
+"decoy": "R",
+"bl": "on",
+"first": [
+"Knight",
+"L",
+18,
+-46,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+18,
+-46
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.828
+],
+18
+],
+[
+"Xbow",
+[
+0.861,
+0.609
+],
+98
+]
+]
+},
+{
+"file": "live_play_20261026_150458.jsonl",
+"t0": 3343,
+"tland": 3405,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+22,
+-40,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+22,
+-40
+],
+[
+"Knight",
+"L",
+52,
+-10
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.891
+],
+22
+],
+[
+"Knight",
+[
+0.083,
+0.828
+],
+52
+]
+]
+},
+{
+"file": "live_play_20261026_150458.jsonl",
+"t0": 3755,
+"tland": 3811,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+60,
+4,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+60,
+4
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.139,
+0.547
+],
+60
+]
+]
+},
+{
+"file": "live_play_20261026_150458.jsonl",
+"t0": 4367,
+"tland": 4421,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"Tesla",
+"R",
+5,
+-49,
+null
+],
+"ans": [
+[
+"Tesla",
+"R",
+5,
+-49
+],
+[
+"Tornado",
+"L",
+32,
+-22
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.667,
+0.562
+],
+5
+],
+[
+"Tornado",
+[
+0.361,
+0.922
+],
+32
+]
+]
+},
+{
+"file": "live_play_20261026_150458.jsonl",
+"t0": 4928,
+"tland": 4983,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+15,
+-40,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+15,
+-40
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+15
+],
+[
+"Xbow",
+[
+0.861,
+0.609
+],
+85
+]
+]
+},
+{
+"file": "live_play_20261026_160527.jsonl",
+"t0": 214,
+"tland": 268,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261026_160527.jsonl",
+"t0": 1134,
+"tland": 1189,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+17,
+-38,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+17,
+-38
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+17
+]
+]
+},
+{
+"file": "live_play_20261026_160527.jsonl",
+"t0": 1937,
+"tland": 1993,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+20,
+-36,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+20,
+-36
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+20
+]
+]
+},
+{
+"file": "live_play_20261026_160527.jsonl",
+"t0": 2666,
+"tland": 2722,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+10,
+-46,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+10,
+-46
+],
+[
+"Log",
+"R",
+38,
+-18
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.861,
+0.547
+],
+10
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+38
+]
+]
+},
+{
+"file": "live_play_20261026_160527.jsonl",
+"t0": 3213,
+"tland": 3269,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+22,
+-34,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+22,
+-34
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+22
+]
+]
+},
+{
+"file": "live_play_20261026_162012.jsonl",
+"t0": 733,
+"tland": 789,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+2,
+-54,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+2,
+-54
+],
+[
+"IceWizard",
+"L",
+88,
+32
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.417,
+0.703
+],
+2
+],
+[
+"IceWizard",
+[
+0.083,
+0.797
+],
+88
+]
+]
+},
+{
+"file": "live_play_20261026_162012.jsonl",
+"t0": 1868,
+"tland": 1922,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"L",
+22,
+-32,
+null
+],
+"ans": [
+[
+"IceWizard",
+"L",
+22,
+-32
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.417,
+0.766
+],
+22
+]
+]
+},
+{
+"file": "live_play_20261026_162012.jsonl",
+"t0": 2952,
+"tland": 3007,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+51,
+-4,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+51,
+-4
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.639,
+0.734
+],
+51
+]
+]
+},
+{
+"file": "live_play_20261026_163641.jsonl",
+"t0": 169,
+"tland": 225,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+16,
+-40,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+16,
+-40
+],
+[
+"Skeletons",
+"R",
+42,
+-14
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+16
+],
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+42
+]
+]
+},
+{
+"file": "live_play_20261026_163641.jsonl",
+"t0": 1422,
+"tland": 1486,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+4,
+-60,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+4,
+-60
+],
+[
+"Tornado",
+"R",
+30,
+-34
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.583,
+0.766
+],
+4
+],
+[
+"Tornado",
+[
+0.639,
+0.891
+],
+30
+]
+]
+},
+{
+"file": "live_play_20261026_163641.jsonl",
+"t0": 2543,
+"tland": 2601,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+39,
+-19,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+39,
+-19
+],
+[
+"Skeletons",
+"R",
+78,
+20
+]
+],
+"plays": [
+[
+"Xbow",
+[
+0.472,
+0.672
+],
+12
+],
+[
+"IceWizard",
+[
+0.917,
+0.797
+],
+39
+],
+[
+"Skeletons",
+[
+0.583,
+0.547
+],
+78
+]
+]
+},
+{
+"file": "live_play_20261026_163641.jsonl",
+"t0": 3084,
+"tland": 3150,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+18,
+-48,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+18,
+-48
+],
+[
+"Log",
+"R",
+44,
+-22
+],
+[
+"Knight",
+"R",
+70,
+4
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+18
+],
+[
+"Log",
+[
+0.806,
+0.984
+],
+44
+],
+[
+"Knight",
+[
+0.861,
+0.891
+],
+70
+]
+]
+},
+{
+"file": "live_play_20261026_163641.jsonl",
+"t0": 3652,
+"tland": 3707,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+31,
+-24,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+31,
+-24
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.917,
+0.797
+],
+31
+]
+]
+},
+{
+"file": "live_play_20261026_163641.jsonl",
+"t0": 4648,
+"tland": 4702,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+16,
+-38,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+16,
+-38
+],
+[
+"Skeletons",
+"R",
+52,
+-2
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+16
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+52
+]
+]
+},
+{
+"file": "live_play_20261026_163641.jsonl",
+"t0": 5345,
+"tland": 5399,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+22,
+-32,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+22,
+-32
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+22
+],
+[
+"Xbow",
+[
+0.139,
+0.609
+],
+50
+]
+]
+},
+{
+"file": "live_play_20261026_165839.jsonl",
+"t0": 253,
+"tland": 313,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+22,
+-38,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+22,
+-38
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+22
+]
+]
+},
+{
+"file": "live_play_20261026_165839.jsonl",
+"t0": 1758,
+"tland": 1812,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+26,
+-28,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+26,
+-28
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+26
+]
+]
+},
+{
+"file": "live_play_20261026_165839.jsonl",
+"t0": 3462,
+"tland": 3514,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+10,
+-42,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+10,
+-42
+],
+[
+"Log",
+"L",
+36,
+-16
+],
+[
+"Skeletons",
+"R",
+76,
+24
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+10
+],
+[
+"Log",
+[
+0.194,
+0.859
+],
+36
+],
+[
+"Skeletons",
+[
+0.583,
+0.734
+],
+76
+]
+]
+},
+{
+"file": "live_play_20261026_173351.jsonl",
+"t0": 407,
+"tland": 461,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+15,
+-39,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+15,
+-39
+],
+[
+"Knight",
+"L",
+48,
+-6
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.083,
+0.797
+],
+15
+],
+[
+"Knight",
+[
+0.083,
+0.828
+],
+48
+]
+]
+},
+{
+"file": "live_play_20261026_173351.jsonl",
+"t0": 2174,
+"tland": 2238,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+16,
+-48,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+16,
+-48
+],
+[
+"Log",
+"L",
+42,
+-22
+],
+[
+"Knight",
+"L",
+68,
+4
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.083,
+0.828
+],
+16
+],
+[
+"Log",
+[
+0.139,
+0.922
+],
+42
+],
+[
+"Knight",
+[
+0.194,
+0.547
+],
+68
+]
+]
+},
+{
+"file": "live_play_20261026_174710.jsonl",
+"t0": 723,
+"tland": 777,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261026_174710.jsonl",
+"t0": 2289,
+"tland": 2345,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+96,
+40,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+96,
+40
+]
+],
+"plays": [
+[
+"Xbow",
+[
+0.139,
+0.609
+],
+10
+],
+[
+"IceWizard",
+[
+0.806,
+0.859
+],
+96
+]
+]
+},
+{
+"file": "live_play_20261026_174710.jsonl",
+"t0": 2873,
+"tland": 2927,
+"kind": "evo",
+"real": "L",
+"decoy": "R",
+"bl": "on",
+"first": [
+"Knight",
+"L",
+26,
+-28,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+26,
+-28
+],
+[
+"Log",
+"R",
+74,
+20
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+26
+],
+[
+"Log",
+[
+0.806,
+0.828
+],
+74
+]
+]
+},
+{
+"file": "live_play_20261026_174710.jsonl",
+"t0": 3542,
+"tland": 3598,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tesla",
+"L",
+12,
+-44,
+null
+],
+"ans": [
+[
+"Tesla",
+"L",
+12,
+-44
+],
+[
+"IceWizard",
+"L",
+38,
+-18
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.278,
+0.562
+],
+12
+],
+[
+"IceWizard",
+[
+0.083,
+0.797
+],
+38
+]
+]
+},
+{
+"file": "live_play_20261026_182725.jsonl",
+"t0": 244,
+"tland": 298,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+72,
+18,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+72,
+18
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.828
+],
+72
+]
+]
+},
+{
+"file": "live_play_20261026_182725.jsonl",
+"t0": 1066,
+"tland": 1121,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+25,
+-30,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+25,
+-30
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+25
+]
+]
+},
+{
+"file": "live_play_20261026_182725.jsonl",
+"t0": 1952,
+"tland": 2007,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"Knight",
+"R",
+21,
+-34,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+21,
+-34
+],
+[
+"Tornado",
+"R",
+47,
+-8
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+21
+],
+[
+"Tornado",
+[
+0.639,
+0.891
+],
+47
+]
+]
+},
+{
+"file": "live_play_20261026_182725.jsonl",
+"t0": 2605,
+"tland": 2659,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tesla",
+"R",
+18,
+-36,
+null
+],
+"ans": [
+[
+"Tesla",
+"R",
+18,
+-36
+],
+[
+"Log",
+"R",
+44,
+-10
+],
+[
+"Skeletons",
+"L",
+80,
+26
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.667,
+0.562
+],
+18
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+44
+],
+[
+"Skeletons",
+[
+0.417,
+0.703
+],
+80
+]
+]
+},
+{
+"file": "live_play_20261026_182725.jsonl",
+"t0": 2957,
+"tland": 3012,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+12,
+-43,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+12,
+-43
+],
+[
+"Log",
+"R",
+80,
+25
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+12
+],
+[
+"Log",
+[
+0.806,
+0.547
+],
+80
+]
+]
+},
+{
+"file": "live_play_20261026_182725.jsonl",
+"t0": 3342,
+"tland": 3400,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+10,
+-48,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+10,
+-48
+],
+[
+"Log",
+"R",
+36,
+-22
+],
+[
+"Skeletons",
+"L",
+78,
+20
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.583,
+0.766
+],
+10
+],
+[
+"Log",
+[
+0.806,
+0.953
+],
+36
+],
+[
+"Skeletons",
+[
+0.25,
+0.859
+],
+78
+]
+]
+},
+{
+"file": "live_play_20261026_183435.jsonl",
+"t0": 193,
+"tland": 247,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+13,
+-41,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+13,
+-41
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+13
+]
+]
+},
+{
+"file": "live_play_20261026_183435.jsonl",
+"t0": 1472,
+"tland": 1527,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tesla",
+"R",
+21,
+-34,
+null
+],
+"ans": [
+[
+"Tesla",
+"R",
+21,
+-34
+],
+[
+"Skeletons",
+"R",
+47,
+-8
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.667,
+0.562
+],
+21
+],
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+47
+]
+]
+},
+{
+"file": "live_play_20261026_183435.jsonl",
+"t0": 3243,
+"tland": 3299,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"L",
+40,
+-16,
+null
+],
+"ans": [
+[
+"Tornado",
+"L",
+40,
+-16
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.472,
+0.766
+],
+40
+]
+]
+},
+{
+"file": "live_play_20261026_194213.jsonl",
+"t0": 2234,
+"tland": 2288,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261026_194213.jsonl",
+"t0": 3118,
+"tland": 3172,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+24,
+-30,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+24,
+-30
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+24
+]
+]
+},
+{
+"file": "live_play_20261026_194858.jsonl",
+"t0": 196,
+"tland": 252,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261026_194858.jsonl",
+"t0": 1053,
+"tland": 1109,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261026_194858.jsonl",
+"t0": 2258,
+"tland": 2312,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261026_194858.jsonl",
+"t0": 3507,
+"tland": 3547,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+0,
+-40,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+0,
+-40
+],
+[
+"Skeletons",
+"R",
+28,
+-12
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.734
+],
+0
+],
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+28
+]
+]
+},
+{
+"file": "live_play_20261026_202916.jsonl",
+"t0": 206,
+"tland": 262,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+20,
+-36,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+20,
+-36
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+20
+]
+]
+},
+{
+"file": "live_play_20261026_202916.jsonl",
+"t0": 1218,
+"tland": 1274,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+10,
+-46,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+10,
+-46
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.806,
+0.859
+],
+10
+]
+]
+},
+{
+"file": "live_play_20261026_202916.jsonl",
+"t0": 2452,
+"tland": 2508,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"R",
+52,
+-4,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+52,
+-4
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.639,
+0.891
+],
+52
+]
+]
+},
+{
+"file": "live_play_20261026_202916.jsonl",
+"t0": 3055,
+"tland": 3111,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+14,
+-42,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+14,
+-42
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+14
+],
+[
+"Tornado",
+[
+0.417,
+0.172
+],
+86
+]
+]
+},
+{
+"file": "live_play_20261026_202916.jsonl",
+"t0": 3425,
+"tland": 3480,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+4,
+-51,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+4,
+-51
+],
+[
+"Skeletons",
+"R",
+50,
+-5
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+4
+],
+[
+"Skeletons",
+[
+0.806,
+0.547
+],
+50
+]
+]
+},
+{
+"file": "live_play_20261026_211757.jsonl",
+"t0": 283,
+"tland": 337,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+23,
+-31,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+23,
+-31
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+23
+]
+]
+},
+{
+"file": "live_play_20261026_211757.jsonl",
+"t0": 1212,
+"tland": 1268,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"L",
+58,
+2,
+null
+],
+"ans": [
+[
+"IceWizard",
+"L",
+58,
+2
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.25,
+0.734
+],
+58
+]
+]
+},
+{
+"file": "live_play_20261026_211757.jsonl",
+"t0": 2360,
+"tland": 2416,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261026_211757.jsonl",
+"t0": 3093,
+"tland": 3147,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+4,
+-50,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+4,
+-50
+],
+[
+"Knight",
+"R",
+32,
+-22
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.75,
+0.734
+],
+4
+],
+[
+"Knight",
+[
+0.694,
+0.797
+],
+32
+]
+]
+},
+{
+"file": "live_play_20261026_212111.jsonl",
+"t0": 525,
+"tland": 579,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"R",
+25,
+-29,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+25,
+-29
+],
+[
+"Skeletons",
+"R",
+52,
+-2
+],
+[
+"Tesla",
+"R",
+80,
+26
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.528,
+0.828
+],
+25
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+52
+],
+[
+"Tesla",
+[
+0.889,
+0.562
+],
+80
+]
+]
+},
+{
+"file": "live_play_20261026_212111.jsonl",
+"t0": 2166,
+"tland": 2222,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tesla",
+"R",
+0,
+-56,
+null
+],
+"ans": [
+[
+"Tesla",
+"R",
+0,
+-56
+],
+[
+"Knight",
+"R",
+26,
+-30
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.5,
+0.594
+],
+0
+],
+[
+"Knight",
+[
+0.917,
+0.797
+],
+26
+]
+]
+},
+{
+"file": "live_play_20261026_212111.jsonl",
+"t0": 4358,
+"tland": 4414,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+20,
+-36,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+20,
+-36
+],
+[
+"IceWizard",
+"R",
+72,
+16
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+20
+],
+[
+"IceWizard",
+[
+0.583,
+0.766
+],
+72
+]
+]
+},
+{
+"file": "live_play_20261026_212111.jsonl",
+"t0": 5483,
+"tland": 5535,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"R",
+18,
+-34,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+18,
+-34
+],
+[
+"IceWizard",
+"R",
+44,
+-8
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.806,
+0.953
+],
+18
+],
+[
+"IceWizard",
+[
+0.806,
+0.859
+],
+44
+]
+]
+},
+{
+"file": "live_play_20261026_214412.jsonl",
+"t0": 173,
+"tland": 227,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+6,
+-48,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+6,
+-48
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.766
+],
+6
+]
+]
+},
+{
+"file": "live_play_20261026_214412.jsonl",
+"t0": 982,
+"tland": 1038,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261026_223232.jsonl",
+"t0": 1155,
+"tland": 1211,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+12,
+-44,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+12,
+-44
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+12
+]
+]
+},
+{
+"file": "live_play_20261026_223232.jsonl",
+"t0": 2224,
+"tland": 2276,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+22,
+-30,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+22,
+-30
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+22
+]
+]
+},
+{
+"file": "live_play_20261026_223232.jsonl",
+"t0": 2946,
+"tland": 2998,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+2,
+-50,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+2,
+-50
+],
+[
+"Log",
+"R",
+82,
+30
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+2
+],
+[
+"Log",
+[
+0.806,
+0.797
+],
+82
+]
+]
+},
+{
+"file": "live_play_20261026_223232.jsonl",
+"t0": 3657,
+"tland": 3711,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tesla",
+"L",
+4,
+-50,
+null
+],
+"ans": [
+[
+"Tesla",
+"L",
+4,
+-50
+],
+[
+"Skeletons",
+"R",
+30,
+-24
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.389,
+0.562
+],
+4
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+30
+]
+]
+},
+{
+"file": "live_play_20261026_223232.jsonl",
+"t0": 4333,
+"tland": 4388,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+10,
+-45,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+10,
+-45
+],
+[
+"Log",
+"R",
+36,
+-19
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.583,
+0.547
+],
+10
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+36
+]
+]
+},
+{
+"file": "live_play_20261026_223232.jsonl",
+"t0": 4722,
+"tland": 4778,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+12,
+-44,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+12,
+-44
+],
+[
+"Knight",
+"R",
+38,
+-18
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+12
+],
+[
+"Knight",
+[
+0.917,
+0.797
+],
+38
+]
+]
+},
+{
+"file": "live_play_20261026_225533.jsonl",
+"t0": 172,
+"tland": 228,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+18,
+-38,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+18,
+-38
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+18
+]
+]
+},
+{
+"file": "live_play_20261026_225533.jsonl",
+"t0": 1592,
+"tland": 1656,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"L",
+30,
+-34,
+null
+],
+"ans": [
+[
+"Tornado",
+"L",
+30,
+-34
+],
+[
+"Skeletons",
+"L",
+56,
+-8
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.472,
+0.828
+],
+30
+],
+[
+"Skeletons",
+[
+0.083,
+0.828
+],
+56
+]
+]
+},
+{
+"file": "live_play_20261026_225533.jsonl",
+"t0": 2468,
+"tland": 2522,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"Log",
+"L",
+10,
+-44,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+10,
+-44
+],
+[
+"Skeletons",
+"L",
+36,
+-18
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+10
+],
+[
+"Skeletons",
+[
+0.194,
+0.859
+],
+36
+]
+]
+},
+{
+"file": "live_play_20261026_225533.jsonl",
+"t0": 3143,
+"tland": 3197,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+24,
+-30,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+24,
+-30
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+24
+]
+]
+},
+{
+"file": "live_play_20261026_225533.jsonl",
+"t0": 3712,
+"tland": 3777,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+30,
+-35,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+30,
+-35
+],
+[
+"IceWizard",
+"R",
+57,
+-8
+],
+[
+"Skeletons",
+"R",
+102,
+37
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.953
+],
+30
+],
+[
+"IceWizard",
+[
+0.806,
+0.859
+],
+57
+],
+[
+"Skeletons",
+[
+0.806,
+0.547
+],
+102
+]
+]
+},
+{
+"file": "live_play_20261026_225533.jsonl",
+"t0": 4202,
+"tland": 4258,
+"kind": "evo",
+"real": "L",
+"decoy": "R",
+"bl": "on",
+"first": [
+"Tesla",
+"L",
+8,
+-48,
+null
+],
+"ans": [
+[
+"Tesla",
+"L",
+8,
+-48
+],
+[
+"Log",
+"R",
+34,
+-22
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.389,
+0.562
+],
+8
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+34
+]
+]
+},
+{
+"file": "live_play_20261026_225533.jsonl",
+"t0": 4965,
+"tland": 5021,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+10,
+-46,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+10,
+-46
+],
+[
+"IceWizard",
+"R",
+51,
+-5
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+10
+],
+[
+"IceWizard",
+[
+0.806,
+0.859
+],
+51
+]
+]
+},
+{
+"file": "live_play_20261026_225533.jsonl",
+"t0": 5334,
+"tland": 5388,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+8,
+-46,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+8,
+-46
+],
+[
+"Log",
+"R",
+35,
+-19
+],
+[
+"Skeletons",
+"R",
+62,
+8
+],
+[
+"IceWizard",
+"L",
+89,
+35
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.806,
+0.859
+],
+8
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+35
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+62
+],
+[
+"IceWizard",
+[
+0.083,
+0.547
+],
+89
+]
+]
+},
+{
+"file": "live_play_20261026_225533.jsonl",
+"t0": 5563,
+"tland": 5617,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"Knight",
+"L",
+16,
+-38,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+16,
+-38
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+16
+]
+]
+},
+{
+"file": "live_play_20261026_231045.jsonl",
+"t0": 204,
+"tland": 270,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+25,
+-41,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+25,
+-41
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+25
+]
+]
+},
+{
+"file": "live_play_20261026_231045.jsonl",
+"t0": 1121,
+"tland": 1175,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+2,
+-52,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+2,
+-52
+],
+[
+"Log",
+"R",
+27,
+-27
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+2
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+27
+]
+]
+},
+{
+"file": "live_play_20261026_231045.jsonl",
+"t0": 2462,
+"tland": 2518,
+"kind": "evo",
+"real": "L",
+"decoy": "R",
+"bl": "on",
+"first": [
+"Tornado",
+"R",
+28,
+-28,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+28,
+-28
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.639,
+0.891
+],
+28
+]
+]
+},
+{
+"file": "live_play_20261026_231045.jsonl",
+"t0": 3264,
+"tland": 3320,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+19,
+-37,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+19,
+-37
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+19
+]
+]
+},
+{
+"file": "live_play_20261026_231402.jsonl",
+"t0": 193,
+"tland": 251,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+0,
+-58,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+0,
+-58
+],
+[
+"Skeletons",
+"R",
+26,
+-32
+],
+[
+"IceWizard",
+"R",
+52,
+-6
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.828
+],
+0
+],
+[
+"Skeletons",
+[
+0.806,
+0.672
+],
+26
+],
+[
+"IceWizard",
+[
+0.917,
+0.797
+],
+52
+]
+]
+},
+{
+"file": "live_play_20261026_231402.jsonl",
+"t0": 814,
+"tland": 874,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+20,
+-40,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+20,
+-40
+],
+[
+"IceWizard",
+"L",
+46,
+-14
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.139,
+0.734
+],
+20
+],
+[
+"IceWizard",
+[
+0.083,
+0.797
+],
+46
+]
+]
+},
+{
+"file": "live_play_20261026_231402.jsonl",
+"t0": 1777,
+"tland": 1833,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+12,
+-44,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+12,
+-44
+],
+[
+"Knight",
+"L",
+38,
+-18
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.917,
+0.797
+],
+12
+],
+[
+"Knight",
+[
+0.083,
+0.797
+],
+38
+]
+]
+},
+{
+"file": "live_play_20261026_231402.jsonl",
+"t0": 2506,
+"tland": 2560,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"L",
+18,
+-36,
+null
+],
+"ans": [
+[
+"IceWizard",
+"L",
+18,
+-36
+],
+[
+"Knight",
+"L",
+50,
+-4
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.194,
+0.859
+],
+18
+],
+[
+"Knight",
+[
+0.083,
+0.797
+],
+50
+]
+]
+},
+{
+"file": "live_play_20261026_231402.jsonl",
+"t0": 3909,
+"tland": 3965,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+-2,
+-58,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+-2,
+-58
+],
+[
+"Log",
+"L",
+26,
+-30
+],
+[
+"IceWizard",
+"L",
+52,
+-4
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.417,
+0.641
+],
+-2
+],
+[
+"Log",
+[
+0.194,
+0.859
+],
+26
+],
+[
+"IceWizard",
+[
+0.194,
+0.859
+],
+52
+]
+]
+},
+{
+"file": "live_play_20261026_231402.jsonl",
+"t0": 4814,
+"tland": 4870,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"Log",
+"R",
+22,
+-34,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+22,
+-34
+],
+[
+"Skeletons",
+"L",
+48,
+-8
+],
+[
+"IceWizard",
+"L",
+85,
+29
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+22
+],
+[
+"Skeletons",
+[
+0.194,
+0.859
+],
+48
+],
+[
+"IceWizard",
+[
+0.472,
+0.828
+],
+85
+]
+]
+},
+{
+"file": "live_play_20261026_231402.jsonl",
+"t0": 5487,
+"tland": 5529,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+4,
+-38,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+4,
+-38
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+4
+]
+]
+},
+{
+"file": "live_play_20261026_231920.jsonl",
+"t0": 814,
+"tland": 868,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tesla",
+"R",
+0,
+-54,
+null
+],
+"ans": [
+[
+"Tesla",
+"R",
+0,
+-54
+],
+[
+"Log",
+"R",
+26,
+-28
+],
+[
+"Skeletons",
+"R",
+52,
+-2
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.5,
+0.656
+],
+0
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+26
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+52
+]
+]
+},
+{
+"file": "live_play_20261026_231920.jsonl",
+"t0": 1516,
+"tland": 1572,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+26,
+-30,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+26,
+-30
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+26
+]
+]
+},
+{
+"file": "live_play_20261026_231920.jsonl",
+"t0": 2547,
+"tland": 2613,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+20,
+-46,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+20,
+-46
+],
+[
+"Log",
+"R",
+48,
+-18
+],
+[
+"Knight",
+"L",
+88,
+22
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+20
+],
+[
+"Log",
+[
+0.806,
+0.953
+],
+48
+],
+[
+"Knight",
+[
+0.083,
+0.828
+],
+88
+]
+]
+},
+{
+"file": "live_play_20261026_231920.jsonl",
+"t0": 3194,
+"tland": 3250,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+16,
+-40,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+16,
+-40
+],
+[
+"Skeletons",
+"R",
+50,
+-6
+],
+[
+"Log",
+"L",
+88,
+32
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.806,
+0.859
+],
+16
+],
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+50
+],
+[
+"Log",
+[
+0.139,
+0.547
+],
+88
+]
+]
+},
+{
+"file": "live_play_20261026_231920.jsonl",
+"t0": 3698,
+"tland": 3752,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"L",
+-2,
+-56,
+null
+],
+"ans": [
+[
+"IceWizard",
+"L",
+-2,
+-56
+],
+[
+"Skeletons",
+"R",
+26,
+-28
+],
+[
+"Log",
+"R",
+52,
+-2
+],
+[
+"Knight",
+"R",
+78,
+24
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.417,
+0.766
+],
+-2
+],
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+26
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+52
+],
+[
+"Knight",
+[
+0.917,
+0.547
+],
+78
+]
+]
+},
+{
+"file": "live_play_20261026_231920.jsonl",
+"t0": 4117,
+"tland": 4173,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+8,
+-48,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+8,
+-48
+],
+[
+"Log",
+"R",
+34,
+-22
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.417,
+0.547
+],
+8
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+34
+]
+]
+},
+{
+"file": "live_play_20261026_231920.jsonl",
+"t0": 4483,
+"tland": 4537,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+18,
+-36,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+18,
+-36
+],
+[
+"Log",
+"R",
+44,
+-10
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+18
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+44
+]
+]
+},
+{
+"file": "live_play_20261026_231920.jsonl",
+"t0": 4876,
+"tland": 4930,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+8,
+-46,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+8,
+-46
+],
+[
+"Log",
+"R",
+34,
+-20
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+8
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+34
+]
+]
+},
+{
+"file": "live_play_20261027_001702.jsonl",
+"t0": 162,
+"tland": 218,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+12,
+-44,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+12,
+-44
+],
+[
+"Skeletons",
+"L",
+38,
+-18
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.828
+],
+12
+],
+[
+"Skeletons",
+[
+0.083,
+0.797
+],
+38
+]
+]
+},
+{
+"file": "live_play_20261027_001702.jsonl",
+"t0": 1333,
+"tland": 1387,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+11,
+-43,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+11,
+-43
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.194,
+0.547
+],
+11
+]
+]
+},
+{
+"file": "live_play_20261027_001702.jsonl",
+"t0": 3303,
+"tland": 3369,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"L",
+32,
+-34,
+null
+],
+"ans": [
+[
+"Tornado",
+"L",
+32,
+-34
+],
+[
+"Log",
+"L",
+64,
+-2
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.417,
+0.859
+],
+32
+],
+[
+"Log",
+[
+0.028,
+0.984
+],
+64
+]
+]
+},
+{
+"file": "live_play_20261027_012200.jsonl",
+"t0": 204,
+"tland": 260,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+10,
+-46,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+10,
+-46
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.766
+],
+10
+]
+]
+},
+{
+"file": "live_play_20261027_012200.jsonl",
+"t0": 1053,
+"tland": 1105,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+12,
+-40,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+12,
+-40
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+12
+]
+]
+},
+{
+"file": "live_play_20261027_012200.jsonl",
+"t0": 2554,
+"tland": 2610,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"Knight",
+"R",
+12,
+-44,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+12,
+-44
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+12
+]
+]
+},
+{
+"file": "live_play_20261027_012200.jsonl",
+"t0": 3435,
+"tland": 3489,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+0,
+-54,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+0,
+-54
+],
+[
+"IceWizard",
+"R",
+48,
+-6
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+0
+],
+[
+"IceWizard",
+[
+0.917,
+0.797
+],
+48
+]
+]
+},
+{
+"file": "live_play_20261027_015446.jsonl",
+"t0": 1062,
+"tland": 1118,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"R",
+32,
+-24,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+32,
+-24
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.639,
+0.891
+],
+32
+]
+]
+},
+{
+"file": "live_play_20261027_030003.jsonl",
+"t0": 151,
+"tland": 203,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+8,
+-44,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+8,
+-44
+],
+[
+"Knight",
+"L",
+52,
+0
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.083,
+0.797
+],
+8
+],
+[
+"Knight",
+[
+0.083,
+0.828
+],
+52
+]
+]
+},
+{
+"file": "live_play_20261027_030003.jsonl",
+"t0": 1493,
+"tland": 1547,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261027_030003.jsonl",
+"t0": 2328,
+"tland": 2384,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+22,
+-34,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+22,
+-34
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+22
+]
+]
+},
+{
+"file": "live_play_20261027_030003.jsonl",
+"t0": 3063,
+"tland": 3117,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+10,
+-44,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+10,
+-44
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+10
+]
+]
+},
+{
+"file": "live_play_20261027_030003.jsonl",
+"t0": 3483,
+"tland": 3539,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+12,
+-44,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+12,
+-44
+],
+[
+"Tornado",
+"L",
+40,
+-16
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.417,
+0.547
+],
+12
+],
+[
+"Tornado",
+[
+0.417,
+0.797
+],
+40
+]
+]
+},
+{
+"file": "live_play_20261027_030951.jsonl",
+"t0": 502,
+"tland": 556,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+10,
+-44,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+10,
+-44
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.766
+],
+10
+]
+]
+},
+{
+"file": "live_play_20261027_030951.jsonl",
+"t0": 1917,
+"tland": 1973,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+8,
+-48,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+8,
+-48
+],
+[
+"Log",
+"R",
+34,
+-22
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.583,
+0.547
+],
+8
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+34
+]
+]
+},
+{
+"file": "live_play_20261027_030951.jsonl",
+"t0": 3110,
+"tland": 3164,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+40,
+-14,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+40,
+-14
+],
+[
+"Log",
+"R",
+82,
+28
+]
+],
+"plays": [
+[
+"Xbow",
+[
+0.472,
+0.672
+],
+4
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+40
+],
+[
+"Log",
+[
+0.806,
+0.922
+],
+82
+]
+]
+},
+{
+"file": "live_play_20261027_030951.jsonl",
+"t0": 3504,
+"tland": 3568,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+27,
+-37,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+27,
+-37
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.953
+],
+27
+]
+]
+},
+{
+"file": "live_play_20261027_033228.jsonl",
+"t0": 264,
+"tland": 320,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+8,
+-48,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+8,
+-48
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.583,
+0.547
+],
+8
+]
+]
+},
+{
+"file": "live_play_20261027_033228.jsonl",
+"t0": 1946,
+"tland": 2004,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+18,
+-40,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+18,
+-40
+],
+[
+"Tornado",
+"R",
+44,
+-14
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+18
+],
+[
+"Tornado",
+[
+0.75,
+0.953
+],
+44
+]
+]
+},
+{
+"file": "live_play_20261027_033228.jsonl",
+"t0": 2945,
+"tland": 3001,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+30,
+-26,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+30,
+-26
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+30
+]
+]
+},
+{
+"file": "live_play_20261027_033228.jsonl",
+"t0": 3747,
+"tland": 3802,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"L",
+16,
+-39,
+null
+],
+"ans": [
+[
+"Tornado",
+"L",
+16,
+-39
+],
+[
+"Skeletons",
+"L",
+43,
+-12
+],
+[
+"IceWizard",
+"L",
+69,
+14
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.472,
+0.828
+],
+16
+],
+[
+"Skeletons",
+[
+0.083,
+0.797
+],
+43
+],
+[
+"IceWizard",
+[
+0.306,
+0.547
+],
+69
+]
+]
+},
+{
+"file": "live_play_20261027_033228.jsonl",
+"t0": 4355,
+"tland": 4409,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"L",
+14,
+-40,
+null
+],
+"ans": [
+[
+"IceWizard",
+"L",
+14,
+-40
+],
+[
+"Knight",
+"L",
+48,
+-6
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.194,
+0.859
+],
+14
+],
+[
+"Knight",
+[
+0.083,
+0.797
+],
+48
+]
+]
+},
+{
+"file": "live_play_20261027_033228.jsonl",
+"t0": 5348,
+"tland": 5402,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+2,
+-52,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+2,
+-52
+],
+[
+"Tornado",
+"L",
+28,
+-26
+],
+[
+"IceWizard",
+"L",
+56,
+2
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.083,
+0.797
+],
+2
+],
+[
+"Tornado",
+[
+0.417,
+0.828
+],
+28
+],
+[
+"IceWizard",
+[
+0.083,
+0.797
+],
+56
+]
+]
+},
+{
+"file": "live_play_20261027_035412.jsonl",
+"t0": 423,
+"tland": 477,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+18,
+-36,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+18,
+-36
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+18
+]
+]
+},
+{
+"file": "live_play_20261027_035412.jsonl",
+"t0": 1385,
+"tland": 1441,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+0,
+-56,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+0,
+-56
+],
+[
+"IceWizard",
+"R",
+25,
+-31
+],
+[
+"Skeletons",
+"R",
+50,
+-6
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.528,
+0.734
+],
+0
+],
+[
+"IceWizard",
+[
+0.861,
+0.859
+],
+25
+],
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+50
+]
+]
+},
+{
+"file": "live_play_20261027_035412.jsonl",
+"t0": 2465,
+"tland": 2519,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+10,
+-44,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+10,
+-44
+],
+[
+"Log",
+"R",
+36,
+-18
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.194,
+0.859
+],
+10
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+36
+]
+]
+},
+{
+"file": "live_play_20261027_035412.jsonl",
+"t0": 3355,
+"tland": 3397,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+0,
+-42,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+0,
+-42
+],
+[
+"Log",
+"R",
+25,
+-17
+],
+[
+"Knight",
+"R",
+67,
+25
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.547
+],
+0
+],
+[
+"Log",
+[
+0.917,
+0.797
+],
+25
+],
+[
+"Knight",
+[
+0.861,
+0.547
+],
+67
+]
+]
+},
+{
+"file": "live_play_20261027_035412.jsonl",
+"t0": 3779,
+"tland": 3835,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+4,
+-52,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+4,
+-52
+],
+[
+"Skeletons",
+"R",
+40,
+-16
+],
+[
+"Tesla",
+"L",
+76,
+20
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+4
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+40
+],
+[
+"Tesla",
+[
+0.389,
+0.562
+],
+76
+]
+]
+},
+{
+"file": "live_play_20261027_041602.jsonl",
+"t0": 165,
+"tland": 221,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+16,
+-40,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+16,
+-40
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+16
+]
+]
+},
+{
+"file": "live_play_20261027_041602.jsonl",
+"t0": 1169,
+"tland": 1225,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"R",
+28,
+-28,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+28,
+-28
+],
+[
+"Skeletons",
+"R",
+56,
+0
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.528,
+0.828
+],
+28
+],
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+56
+]
+]
+},
+{
+"file": "live_play_20261027_041602.jsonl",
+"t0": 2276,
+"tland": 2330,
+"kind": "evo",
+"real": "L",
+"decoy": "R",
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+10,
+-44,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+10,
+-44
+],
+[
+"Tornado",
+"R",
+36,
+-18
+],
+[
+"Knight",
+"R",
+62,
+8
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.083,
+0.797
+],
+10
+],
+[
+"Tornado",
+[
+0.528,
+0.828
+],
+36
+],
+[
+"Knight",
+[
+0.806,
+0.734
+],
+62
+]
+]
+},
+{
+"file": "live_play_20261027_041602.jsonl",
+"t0": 2664,
+"tland": 2719,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+11,
+-44,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+11,
+-44
+],
+[
+"Skeletons",
+"R",
+42,
+-13
+],
+[
+"Knight",
+"R",
+86,
+31
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+11
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+42
+],
+[
+"Knight",
+[
+0.861,
+0.547
+],
+86
+]
+]
+},
+{
+"file": "live_play_20261027_041602.jsonl",
+"t0": 3168,
+"tland": 3224,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+17,
+-39,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+17,
+-39
+],
+[
+"Knight",
+"R",
+46,
+-10
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+17
+],
+[
+"Knight",
+[
+0.917,
+0.797
+],
+46
+]
+]
+},
+{
+"file": "live_play_20261027_071515.jsonl",
+"t0": 1195,
+"tland": 1250,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+15,
+-40,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+15,
+-40
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+15
+]
+]
+},
+{
+"file": "live_play_20261027_071515.jsonl",
+"t0": 1787,
+"tland": 1842,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+16,
+-39,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+16,
+-39
+],
+[
+"IceWizard",
+"R",
+30,
+-25
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+16
+],
+[
+"IceWizard",
+[
+0.861,
+0.859
+],
+30
+]
+]
+},
+{
+"file": "live_play_20261027_071515.jsonl",
+"t0": 2587,
+"tland": 2643,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+14,
+-42,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+14,
+-42
+],
+[
+"Tornado",
+"R",
+24,
+-32
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.528,
+0.984
+],
+14
+],
+[
+"Tornado",
+[
+0.528,
+0.797
+],
+24
+]
+]
+},
+{
+"file": "live_play_20261027_075105.jsonl",
+"t0": 918,
+"tland": 974,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261027_075105.jsonl",
+"t0": 3230,
+"tland": 3284,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+7,
+-47,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+7,
+-47
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.734
+],
+7
+]
+]
+},
+{
+"file": "live_play_20261027_075424.jsonl",
+"t0": 2408,
+"tland": 2464,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+14,
+-42,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+14,
+-42
+],
+[
+"IceWizard",
+"R",
+62,
+6
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+14
+],
+[
+"IceWizard",
+[
+0.806,
+0.859
+],
+62
+]
+]
+},
+{
+"file": "live_play_20261027_075424.jsonl",
+"t0": 2995,
+"tland": 3053,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+8,
+-50,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+8,
+-50
+],
+[
+"Tornado",
+"R",
+92,
+34
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.75,
+0.734
+],
+8
+],
+[
+"Tornado",
+[
+0.583,
+0.734
+],
+92
+]
+]
+},
+{
+"file": "live_play_20261027_075424.jsonl",
+"t0": 3474,
+"tland": 3526,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+24,
+-28,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+24,
+-28
+],
+[
+"Skeletons",
+"R",
+50,
+-2
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+24
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+50
+]
+]
+},
+{
+"file": "live_play_20261027_075424.jsonl",
+"t0": 4089,
+"tland": 4145,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+4,
+-52,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+4,
+-52
+],
+[
+"Tornado",
+"R",
+34,
+-22
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.861,
+0.734
+],
+4
+],
+[
+"Tornado",
+[
+0.75,
+0.953
+],
+34
+]
+]
+},
+{
+"file": "live_play_20261027_075424.jsonl",
+"t0": 4566,
+"tland": 4621,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"R",
+3,
+-52,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+3,
+-52
+],
+[
+"Knight",
+"R",
+29,
+-26
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.806,
+0.547
+],
+3
+],
+[
+"Knight",
+[
+0.917,
+0.797
+],
+29
+]
+]
+},
+{
+"file": "live_play_20261027_075424.jsonl",
+"t0": 5088,
+"tland": 5142,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+12,
+-42,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+12,
+-42
+],
+[
+"IceWizard",
+"R",
+38,
+-16
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+12
+],
+[
+"IceWizard",
+[
+0.806,
+0.859
+],
+38
+]
+]
+},
+{
+"file": "live_play_20261027_075424.jsonl",
+"t0": 5408,
+"tland": 5464,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"R",
+16,
+-40,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+16,
+-40
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.75,
+0.953
+],
+16
+]
+]
+},
+{
+"file": "live_play_20261027_083546.jsonl",
+"t0": 154,
+"tland": 210,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+14,
+-42,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+14,
+-42
+],
+[
+"Skeletons",
+"R",
+40,
+-16
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+14
+],
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+40
+]
+]
+},
+{
+"file": "live_play_20261027_083546.jsonl",
+"t0": 1127,
+"tland": 1181,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+22,
+-32,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+22,
+-32
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+22
+]
+]
+},
+{
+"file": "live_play_20261027_083546.jsonl",
+"t0": 1978,
+"tland": 2034,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+28,
+-28,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+28,
+-28
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.806,
+0.859
+],
+28
+]
+]
+},
+{
+"file": "live_play_20261027_083546.jsonl",
+"t0": 2725,
+"tland": 2779,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tesla",
+"R",
+22,
+-32,
+null
+],
+"ans": [
+[
+"Tesla",
+"R",
+22,
+-32
+],
+[
+"Log",
+"R",
+50,
+-4
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.667,
+0.562
+],
+22
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+50
+]
+]
+},
+{
+"file": "live_play_20261027_083546.jsonl",
+"t0": 3343,
+"tland": 3399,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+24,
+-32,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+24,
+-32
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+24
+]
+]
+},
+{
+"file": "live_play_20261027_083546.jsonl",
+"t0": 3842,
+"tland": 3898,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+2,
+-54,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+2,
+-54
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.806,
+0.641
+],
+2
+]
+]
+},
+{
+"file": "live_play_20261027_084552.jsonl",
+"t0": 178,
+"tland": 233,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+10,
+-45,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+10,
+-45
+],
+[
+"Knight",
+"L",
+45,
+-10
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.828
+],
+10
+],
+[
+"Knight",
+[
+0.083,
+0.797
+],
+45
+]
+]
+},
+{
+"file": "live_play_20261027_084552.jsonl",
+"t0": 1086,
+"tland": 1140,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tesla",
+"L",
+7,
+-47,
+null
+],
+"ans": [
+[
+"Tesla",
+"L",
+7,
+-47
+],
+[
+"Skeletons",
+"L",
+33,
+-21
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.278,
+0.562
+],
+7
+],
+[
+"Skeletons",
+[
+0.083,
+0.797
+],
+33
+]
+]
+},
+{
+"file": "live_play_20261027_084552.jsonl",
+"t0": 2527,
+"tland": 2581,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+16,
+-38,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+16,
+-38
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+16
+]
+]
+},
+{
+"file": "live_play_20261027_084552.jsonl",
+"t0": 3664,
+"tland": 3732,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"L",
+40,
+-28,
+null
+],
+"ans": [
+[
+"Tornado",
+"L",
+40,
+-28
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.361,
+0.891
+],
+40
+]
+]
+},
+{
+"file": "live_play_20261027_085408.jsonl",
+"t0": 224,
+"tland": 280,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+24,
+-32,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+24,
+-32
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.083,
+0.797
+],
+24
+]
+]
+},
+{
+"file": "live_play_20261027_085408.jsonl",
+"t0": 1145,
+"tland": 1197,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+14,
+-38,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+14,
+-38
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.083,
+0.797
+],
+14
+]
+]
+},
+{
+"file": "live_play_20261027_085408.jsonl",
+"t0": 2316,
+"tland": 2372,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"L",
+0,
+-56,
+null
+],
+"ans": [
+[
+"IceWizard",
+"L",
+0,
+-56
+],
+[
+"Log",
+"L",
+32,
+-24
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.472,
+0.984
+],
+0
+],
+[
+"Log",
+[
+0.194,
+0.859
+],
+32
+]
+]
+},
+{
+"file": "live_play_20261027_085408.jsonl",
+"t0": 2983,
+"tland": 3041,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+18,
+-40,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+18,
+-40
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.828
+],
+18
+]
+]
+},
+{
+"file": "live_play_20261027_092707.jsonl",
+"t0": 858,
+"tland": 914,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+0,
+-56,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+0,
+-56
+],
+[
+"Skeletons",
+"L",
+26,
+-30
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.25,
+0.547
+],
+0
+],
+[
+"Skeletons",
+[
+0.083,
+0.828
+],
+26
+]
+]
+},
+{
+"file": "live_play_20261027_092707.jsonl",
+"t0": 1881,
+"tland": 1935,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+16,
+-38,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+16,
+-38
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.547
+],
+16
+]
+]
+},
+{
+"file": "live_play_20261027_092707.jsonl",
+"t0": 3803,
+"tland": 3859,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+22,
+-34,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+22,
+-34
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+22
+]
+]
+},
+{
+"file": "live_play_20261027_092707.jsonl",
+"t0": 5173,
+"tland": 5227,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+4,
+-50,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+4,
+-50
+],
+[
+"Log",
+"L",
+32,
+-22
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.417,
+0.703
+],
+4
+],
+[
+"Log",
+[
+0.194,
+0.859
+],
+32
+]
+]
+},
+{
+"file": "live_play_20261027_092707.jsonl",
+"t0": 5579,
+"tland": 5634,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"L",
+20,
+-35,
+null
+],
+"ans": [
+[
+"Tornado",
+"L",
+20,
+-35
+],
+[
+"Skeletons",
+"L",
+47,
+-8
+],
+[
+"IceWizard",
+"R",
+78,
+23
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.361,
+0.891
+],
+20
+],
+[
+"Skeletons",
+[
+0.083,
+0.797
+],
+47
+],
+[
+"IceWizard",
+[
+0.583,
+0.766
+],
+78
+]
+]
+},
+{
+"file": "live_play_20261027_093547.jsonl",
+"t0": 687,
+"tland": 742,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+5,
+-50,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+5,
+-50
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.861,
+0.547
+],
+5
+]
+]
+},
+{
+"file": "live_play_20261027_093547.jsonl",
+"t0": 2686,
+"tland": 2752,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+30,
+-36,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+30,
+-36
+],
+[
+"IceWizard",
+"R",
+96,
+30
+]
+],
+"plays": [
+[
+"Log",
+[
+0.583,
+0.984
+],
+30
+],
+[
+"IceWizard",
+[
+0.583,
+0.766
+],
+96
+]
+]
+},
+{
+"file": "live_play_20261027_093547.jsonl",
+"t0": 3458,
+"tland": 3523,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+25,
+-40,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+25,
+-40
+],
+[
+"Tornado",
+"R",
+50,
+-15
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.583,
+0.984
+],
+25
+],
+[
+"Tornado",
+[
+0.583,
+0.984
+],
+50
+]
+]
+},
+{
+"file": "live_play_20261027_093901.jsonl",
+"t0": 510,
+"tland": 565,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+30,
+-25,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+30,
+-25
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+30
+]
+]
+},
+{
+"file": "live_play_20261027_093901.jsonl",
+"t0": 2201,
+"tland": 2265,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+28,
+-36,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+28,
+-36
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.083,
+0.797
+],
+28
+]
+]
+},
+{
+"file": "live_play_20261027_094807.jsonl",
+"t0": 710,
+"tland": 764,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+18,
+-36,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+18,
+-36
+],
+[
+"IceWizard",
+"R",
+44,
+-10
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+18
+],
+[
+"IceWizard",
+[
+0.861,
+0.859
+],
+44
+]
+]
+},
+{
+"file": "live_play_20261027_102455.jsonl",
+"t0": 1063,
+"tland": 1117,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tesla",
+"R",
+-2,
+-56,
+null
+],
+"ans": [
+[
+"Tesla",
+"R",
+-2,
+-56
+],
+[
+"Tornado",
+"R",
+22,
+-32
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.5,
+0.656
+],
+-2
+],
+[
+"Tornado",
+[
+0.639,
+0.891
+],
+22
+]
+]
+},
+{
+"file": "live_play_20261027_102455.jsonl",
+"t0": 2128,
+"tland": 2184,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+22,
+-34,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+22,
+-34
+],
+[
+"IceWizard",
+"R",
+46,
+-10
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+22
+],
+[
+"IceWizard",
+[
+0.806,
+0.859
+],
+46
+]
+]
+},
+{
+"file": "live_play_20261027_102455.jsonl",
+"t0": 3289,
+"tland": 3345,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"Tornado",
+"R",
+6,
+-50,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+6,
+-50
+],
+[
+"Log",
+"R",
+62,
+6
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.583,
+0.547
+],
+6
+],
+[
+"Log",
+[
+0.806,
+0.828
+],
+62
+]
+]
+},
+{
+"file": "live_play_20261027_102455.jsonl",
+"t0": 4172,
+"tland": 4228,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+34,
+-22,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+34,
+-22
+],
+[
+"Skeletons",
+"L",
+68,
+12
+],
+[
+"IceWizard",
+"L",
+94,
+38
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+34
+],
+[
+"Skeletons",
+[
+0.417,
+0.703
+],
+68
+],
+[
+"IceWizard",
+[
+0.417,
+0.766
+],
+94
+]
+]
+},
+{
+"file": "live_play_20261027_105846.jsonl",
+"t0": 218,
+"tland": 274,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+12,
+-44,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+12,
+-44
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.806,
+0.859
+],
+12
+]
+]
+},
+{
+"file": "live_play_20261027_105846.jsonl",
+"t0": 1176,
+"tland": 1232,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+22,
+-34,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+22,
+-34
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+22
+]
+]
+},
+{
+"file": "live_play_20261027_105846.jsonl",
+"t0": 1973,
+"tland": 2027,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+18,
+-36,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+18,
+-36
+],
+[
+"Knight",
+"R",
+44,
+-10
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.806,
+0.859
+],
+18
+],
+[
+"Knight",
+[
+0.861,
+0.547
+],
+44
+]
+]
+},
+{
+"file": "live_play_20261027_105846.jsonl",
+"t0": 2882,
+"tland": 2938,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+14,
+-42,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+14,
+-42
+],
+[
+"IceWizard",
+"R",
+40,
+-16
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+14
+],
+[
+"IceWizard",
+[
+0.917,
+0.797
+],
+40
+]
+]
+},
+{
+"file": "live_play_20261027_105846.jsonl",
+"t0": 3320,
+"tland": 3388,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+20,
+-48,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+20,
+-48
+],
+[
+"Log",
+"R",
+46,
+-22
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+20
+],
+[
+"Log",
+[
+0.806,
+0.953
+],
+46
+]
+]
+},
+{
+"file": "live_play_20261027_121810.jsonl",
+"t0": 269,
+"tland": 324,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+29,
+-26,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+29,
+-26
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+29
+]
+]
+},
+{
+"file": "live_play_20261027_121810.jsonl",
+"t0": 1099,
+"tland": 1153,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+12,
+-42,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+12,
+-42
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+12
+]
+]
+},
+{
+"file": "live_play_20261027_121810.jsonl",
+"t0": 2096,
+"tland": 2151,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+6,
+-49,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+6,
+-49
+],
+[
+"Log",
+"R",
+30,
+-25
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+6
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+30
+]
+]
+},
+{
+"file": "live_play_20261027_121810.jsonl",
+"t0": 3255,
+"tland": 3317,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+18,
+-44,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+18,
+-44
+],
+[
+"Log",
+"L",
+46,
+-16
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.083,
+0.828
+],
+18
+],
+[
+"Log",
+[
+0.194,
+0.891
+],
+46
+]
+]
+},
+{
+"file": "live_play_20261027_121810.jsonl",
+"t0": 4102,
+"tland": 4158,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+2,
+-54,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+2,
+-54
+],
+[
+"Skeletons",
+"L",
+28,
+-28
+],
+[
+"Log",
+"L",
+54,
+-2
+],
+[
+"IceWizard",
+"L",
+80,
+24
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+2
+],
+[
+"Skeletons",
+[
+0.194,
+0.547
+],
+28
+],
+[
+"Log",
+[
+0.194,
+0.859
+],
+54
+],
+[
+"IceWizard",
+[
+0.083,
+0.547
+],
+80
+]
+]
+},
+{
+"file": "live_play_20261027_121810.jsonl",
+"t0": 4929,
+"tland": 4991,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+0,
+-62,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+0,
+-62
+],
+[
+"Knight",
+"L",
+28,
+-34
+],
+[
+"IceWizard",
+"L",
+84,
+22
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.194,
+0.859
+],
+0
+],
+[
+"Knight",
+[
+0.083,
+0.797
+],
+28
+],
+[
+"IceWizard",
+[
+0.139,
+0.547
+],
+84
+]
+]
+},
+{
+"file": "live_play_20261027_121810.jsonl",
+"t0": 5323,
+"tland": 5379,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+11,
+-45,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+11,
+-45
+],
+[
+"IceWizard",
+"L",
+50,
+-6
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+11
+],
+[
+"IceWizard",
+[
+0.194,
+0.859
+],
+50
+]
+]
+},
+{
+"file": "live_play_20261027_122836.jsonl",
+"t0": 1360,
+"tland": 1414,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+24,
+-30,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+24,
+-30
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+24
+]
+]
+},
+{
+"file": "live_play_20261027_122836.jsonl",
+"t0": 2670,
+"tland": 2726,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+0,
+-56,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+0,
+-56
+],
+[
+"Log",
+"R",
+32,
+-24
+],
+[
+"Tesla",
+"R",
+60,
+4
+],
+[
+"Skeletons",
+"L",
+86,
+30
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.528,
+0.828
+],
+0
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+32
+],
+[
+"Tesla",
+[
+0.5,
+0.688
+],
+60
+],
+[
+"Skeletons",
+[
+0.472,
+0.547
+],
+86
+]
+]
+},
+{
+"file": "live_play_20261027_122836.jsonl",
+"t0": 3415,
+"tland": 3467,
+"kind": "evo",
+"real": "L",
+"decoy": "R",
+"bl": "on",
+"first": [
+"Log",
+"R",
+24,
+-28,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+24,
+-28
+],
+[
+"Skeletons",
+"L",
+60,
+8
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+24
+],
+[
+"Skeletons",
+[
+0.083,
+0.797
+],
+60
+]
+]
+},
+{
+"file": "live_play_20261027_124352.jsonl",
+"t0": 232,
+"tland": 288,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+34,
+-22,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+34,
+-22
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+34
+]
+]
+},
+{
+"file": "live_play_20261027_124352.jsonl",
+"t0": 1073,
+"tland": 1127,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+10,
+-44,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+10,
+-44
+],
+[
+"Tornado",
+"L",
+46,
+-8
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.083,
+0.828
+],
+10
+],
+[
+"Tornado",
+[
+0.361,
+0.922
+],
+46
+]
+]
+},
+{
+"file": "live_play_20261027_124352.jsonl",
+"t0": 2192,
+"tland": 2258,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+40,
+-26,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+40,
+-26
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.922
+],
+40
+]
+]
+},
+{
+"file": "live_play_20261027_124352.jsonl",
+"t0": 2879,
+"tland": 2935,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+10,
+-46,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+10,
+-46
+],
+[
+"Skeletons",
+"L",
+36,
+-20
+],
+[
+"IceWizard",
+"R",
+68,
+12
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+10
+],
+[
+"Skeletons",
+[
+0.194,
+0.859
+],
+36
+],
+[
+"IceWizard",
+[
+0.583,
+0.609
+],
+68
+]
+]
+},
+{
+"file": "live_play_20261027_124352.jsonl",
+"t0": 4203,
+"tland": 4257,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"L",
+50,
+-4,
+null
+],
+"ans": [
+[
+"Tornado",
+"L",
+50,
+-4
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.472,
+0.891
+],
+50
+]
+]
+},
+{
+"file": "live_play_20261027_124352.jsonl",
+"t0": 4763,
+"tland": 4828,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+0,
+-65,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+0,
+-65
+],
+[
+"Log",
+"L",
+40,
+-25
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.472,
+0.984
+],
+0
+],
+[
+"Log",
+[
+0.194,
+0.953
+],
+40
+],
+[
+"Xbow",
+[
+0.139,
+0.609
+],
+103
+]
+]
+},
+{
+"file": "live_play_20261027_124352.jsonl",
+"t0": 5177,
+"tland": 5233,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+20,
+-36,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+20,
+-36
+],
+[
+"Knight",
+"L",
+46,
+-10
+],
+[
+"IceWizard",
+"L",
+72,
+16
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.083,
+0.797
+],
+20
+],
+[
+"Knight",
+[
+0.25,
+0.547
+],
+46
+],
+[
+"IceWizard",
+[
+0.417,
+0.766
+],
+72
+]
+]
+},
+{
+"file": "live_play_20261027_131528.jsonl",
+"t0": 615,
+"tland": 670,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+10,
+-45,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+10,
+-45
+],
+[
+"IceWizard",
+"R",
+36,
+-19
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+10
+],
+[
+"IceWizard",
+[
+0.917,
+0.797
+],
+36
+]
+]
+},
+{
+"file": "live_play_20261027_131528.jsonl",
+"t0": 1400,
+"tland": 1456,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+20,
+-36,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+20,
+-36
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+20
+]
+]
+},
+{
+"file": "live_play_20261027_131528.jsonl",
+"t0": 2423,
+"tland": 2485,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"R",
+30,
+-32,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+30,
+-32
+],
+[
+"Log",
+"R",
+58,
+-4
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.639,
+0.891
+],
+30
+],
+[
+"Log",
+[
+0.806,
+0.891
+],
+58
+]
+]
+},
+{
+"file": "live_play_20261027_131528.jsonl",
+"t0": 3198,
+"tland": 3254,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+6,
+-50,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+6,
+-50
+],
+[
+"IceWizard",
+"R",
+34,
+-22
+],
+[
+"Log",
+"R",
+74,
+18
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+6
+],
+[
+"IceWizard",
+[
+0.861,
+0.859
+],
+34
+],
+[
+"Log",
+[
+0.861,
+0.547
+],
+74
+]
+]
+},
+{
+"file": "live_play_20261027_135813.jsonl",
+"t0": 391,
+"tland": 440,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261027_135813.jsonl",
+"t0": 1159,
+"tland": 1214,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+18,
+-37,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+18,
+-37
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+18
+]
+]
+},
+{
+"file": "live_play_20261027_135813.jsonl",
+"t0": 1974,
+"tland": 2032,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tesla",
+"R",
+10,
+-48,
+null
+],
+"ans": [
+[
+"Tesla",
+"R",
+10,
+-48
+],
+[
+"Log",
+"R",
+36,
+-22
+],
+[
+"IceWizard",
+"R",
+64,
+6
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.611,
+0.562
+],
+10
+],
+[
+"Log",
+[
+0.917,
+0.828
+],
+36
+],
+[
+"IceWizard",
+[
+0.972,
+0.828
+],
+64
+]
+]
+},
+{
+"file": "live_play_20261027_135813.jsonl",
+"t0": 2662,
+"tland": 2720,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+46,
+-12,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+46,
+-12
+],
+[
+"IceWizard",
+"R",
+96,
+38
+]
+],
+"plays": [
+[
+"Xbow",
+[
+0.861,
+0.609
+],
+18
+],
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+46
+],
+[
+"IceWizard",
+[
+0.972,
+0.578
+],
+96
+]
+]
+},
+{
+"file": "live_play_20261027_135813.jsonl",
+"t0": 3170,
+"tland": 3224,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+-2,
+-56,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+-2,
+-56
+],
+[
+"Knight",
+"R",
+34,
+-20
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.972,
+0.578
+],
+-2
+],
+[
+"Knight",
+[
+0.806,
+0.859
+],
+34
+]
+]
+},
+{
+"file": "live_play_20261027_135813.jsonl",
+"t0": 3583,
+"tland": 3637,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+18,
+-36,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+18,
+-36
+],
+[
+"Knight",
+"R",
+45,
+-9
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+18
+],
+[
+"Knight",
+[
+0.806,
+0.859
+],
+45
+]
+]
+},
+{
+"file": "live_play_20261027_140513.jsonl",
+"t0": 166,
+"tland": 222,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+10,
+-46,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+10,
+-46
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+10
+]
+]
+},
+{
+"file": "live_play_20261027_140513.jsonl",
+"t0": 1163,
+"tland": 1218,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+30,
+-25,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+30,
+-25
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+30
+]
+]
+},
+{
+"file": "live_play_20261027_140513.jsonl",
+"t0": 2256,
+"tland": 2310,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+26,
+-28,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+26,
+-28
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+26
+]
+]
+},
+{
+"file": "live_play_20261027_140513.jsonl",
+"t0": 3035,
+"tland": 3089,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"L",
+32,
+-22,
+null
+],
+"ans": [
+[
+"Tornado",
+"L",
+32,
+-22
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.361,
+0.922
+],
+32
+]
+]
+},
+{
+"file": "live_play_20261027_140513.jsonl",
+"t0": 3986,
+"tland": 4042,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+28,
+-28,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+28,
+-28
+],
+[
+"Knight",
+"R",
+54,
+-2
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+28
+],
+[
+"Knight",
+[
+0.917,
+0.797
+],
+54
+]
+]
+},
+{
+"file": "live_play_20261027_143738.jsonl",
+"t0": 346,
+"tland": 402,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261027_143738.jsonl",
+"t0": 1608,
+"tland": 1662,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tesla",
+"R",
+18,
+-36,
+null
+],
+"ans": [
+[
+"Tesla",
+"R",
+18,
+-36
+],
+[
+"Skeletons",
+"L",
+42,
+-12
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.667,
+0.562
+],
+18
+],
+[
+"Skeletons",
+[
+0.083,
+0.797
+],
+42
+]
+]
+},
+{
+"file": "live_play_20261027_144058.jsonl",
+"t0": 503,
+"tland": 558,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"R",
+23,
+-32,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+23,
+-32
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.639,
+0.891
+],
+23
+]
+]
+},
+{
+"file": "live_play_20261027_144058.jsonl",
+"t0": 1263,
+"tland": 1319,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+12,
+-44,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+12,
+-44
+],
+[
+"IceWizard",
+"R",
+36,
+-20
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+12
+],
+[
+"IceWizard",
+[
+0.917,
+0.797
+],
+36
+]
+]
+},
+{
+"file": "live_play_20261027_144058.jsonl",
+"t0": 4030,
+"tland": 4084,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+5,
+-49,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+5,
+-49
+],
+[
+"Log",
+"L",
+32,
+-22
+],
+[
+"IceWizard",
+"L",
+58,
+4
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+5
+],
+[
+"Log",
+[
+0.194,
+0.859
+],
+32
+],
+[
+"IceWizard",
+[
+0.139,
+0.547
+],
+58
+]
+]
+},
+{
+"file": "live_play_20261027_144058.jsonl",
+"t0": 4457,
+"tland": 4511,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tesla",
+"R",
+4,
+-50,
+null
+],
+"ans": [
+[
+"Tesla",
+"R",
+4,
+-50
+],
+[
+"Log",
+"R",
+30,
+-24
+],
+[
+"Skeletons",
+"R",
+58,
+4
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.667,
+0.562
+],
+4
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+30
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+58
+]
+]
+},
+{
+"file": "live_play_20261027_144058.jsonl",
+"t0": 5662,
+"tland": 5718,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+22,
+-34,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+22,
+-34
+],
+[
+"Log",
+"L",
+78,
+22
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.806,
+0.859
+],
+22
+],
+[
+"Log",
+[
+0.194,
+0.547
+],
+78
+]
+]
+},
+{
+"file": "live_play_20261027_151657.jsonl",
+"t0": 445,
+"tland": 501,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tesla",
+"R",
+20,
+-36,
+null
+],
+"ans": [
+[
+"Tesla",
+"R",
+20,
+-36
+],
+[
+"Tornado",
+"R",
+48,
+-8
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.667,
+0.562
+],
+20
+],
+[
+"Tornado",
+[
+0.639,
+0.891
+],
+48
+]
+]
+},
+{
+"file": "live_play_20261027_151657.jsonl",
+"t0": 1207,
+"tland": 1263,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261027_151657.jsonl",
+"t0": 2589,
+"tland": 2645,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"Log",
+"L",
+38,
+-18,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+38,
+-18
+],
+[
+"IceWizard",
+"R",
+92,
+36
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+38
+],
+[
+"IceWizard",
+[
+0.806,
+0.859
+],
+92
+]
+]
+},
+{
+"file": "live_play_20261027_151657.jsonl",
+"t0": 3136,
+"tland": 3190,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+-2,
+-56,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+-2,
+-56
+],
+[
+"Skeletons",
+"L",
+23,
+-31
+],
+[
+"IceWizard",
+"L",
+50,
+-4
+]
+],
+"plays": [
+[
+"Log",
+[
+0.861,
+0.547
+],
+-2
+],
+[
+"Skeletons",
+[
+0.083,
+0.797
+],
+23
+],
+[
+"IceWizard",
+[
+0.194,
+0.859
+],
+50
+]
+]
+},
+{
+"file": "live_play_20261027_152921.jsonl",
+"t0": 216,
+"tland": 272,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+24,
+-32,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+24,
+-32
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+24
+]
+]
+},
+{
+"file": "live_play_20261027_152921.jsonl",
+"t0": 965,
+"tland": 1020,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+59,
+4,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+59,
+4
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.806,
+0.734
+],
+59
+]
+]
+},
+{
+"file": "live_play_20261027_152921.jsonl",
+"t0": 2038,
+"tland": 2093,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+11,
+-44,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+11,
+-44
+],
+[
+"Knight",
+"R",
+36,
+-19
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+11
+],
+[
+"Knight",
+[
+0.917,
+0.797
+],
+36
+]
+]
+},
+{
+"file": "live_play_20261027_152921.jsonl",
+"t0": 2583,
+"tland": 2637,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+14,
+-40,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+14,
+-40
+],
+[
+"Knight",
+"R",
+42,
+-12
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+14
+],
+[
+"Knight",
+[
+0.917,
+0.797
+],
+42
+]
+]
+},
+{
+"file": "live_play_20261027_152921.jsonl",
+"t0": 3048,
+"tland": 3102,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"R",
+24,
+-30,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+24,
+-30
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.639,
+0.891
+],
+24
+]
+]
+},
+{
+"file": "live_play_20261027_152921.jsonl",
+"t0": 3947,
+"tland": 4003,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+0,
+-56,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+0,
+-56
+],
+[
+"Log",
+"R",
+28,
+-28
+],
+[
+"Knight",
+"R",
+54,
+-2
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.75,
+0.547
+],
+0
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+28
+],
+[
+"Knight",
+[
+0.75,
+0.547
+],
+54
+]
+]
+},
+{
+"file": "live_play_20261027_152921.jsonl",
+"t0": 4383,
+"tland": 4438,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+13,
+-42,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+13,
+-42
+],
+[
+"Log",
+"R",
+41,
+-14
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.806,
+0.859
+],
+13
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+41
+]
+]
+},
+{
+"file": "live_play_20261027_152921.jsonl",
+"t0": 4799,
+"tland": 4853,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+12,
+-42,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+12,
+-42
+],
+[
+"IceWizard",
+"R",
+39,
+-15
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+12
+],
+[
+"IceWizard",
+[
+0.917,
+0.797
+],
+39
+],
+[
+"Rocket",
+[
+0.778,
+0.234
+],
+86
+]
+]
+},
+{
+"file": "live_play_20261027_152921.jsonl",
+"t0": 5163,
+"tland": 5217,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+2,
+-52,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+2,
+-52
+],
+[
+"Log",
+"R",
+29,
+-25
+],
+[
+"IceWizard",
+"R",
+56,
+2
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.583,
+0.672
+],
+2
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+29
+],
+[
+"IceWizard",
+[
+0.806,
+0.859
+],
+56
+]
+]
+},
+{
+"file": "live_play_20261027_162805.jsonl",
+"t0": 687,
+"tland": 741,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+78,
+24,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+78,
+24
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+78
+]
+]
+},
+{
+"file": "live_play_20261027_162805.jsonl",
+"t0": 1866,
+"tland": 1922,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261027_162805.jsonl",
+"t0": 2756,
+"tland": 2812,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+32,
+-24,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+32,
+-24
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+32
+]
+]
+},
+{
+"file": "live_play_20261027_162805.jsonl",
+"t0": 3322,
+"tland": 3378,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"R",
+14,
+-42,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+14,
+-42
+],
+[
+"IceWizard",
+"R",
+86,
+30
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.528,
+0.766
+],
+14
+],
+[
+"IceWizard",
+[
+0.583,
+0.766
+],
+86
+]
+]
+},
+{
+"file": "live_play_20261027_172512.jsonl",
+"t0": 502,
+"tland": 558,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+6,
+-50,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+6,
+-50
+],
+[
+"IceWizard",
+"R",
+32,
+-24
+],
+[
+"Skeletons",
+"R",
+56,
+0
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.639,
+0.672
+],
+6
+],
+[
+"IceWizard",
+[
+0.917,
+0.797
+],
+32
+],
+[
+"Skeletons",
+[
+0.917,
+0.828
+],
+56
+]
+]
+},
+{
+"file": "live_play_20261027_172512.jsonl",
+"t0": 2366,
+"tland": 2422,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+0,
+-56,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+0,
+-56
+],
+[
+"Tornado",
+"R",
+28,
+-28
+],
+[
+"Skeletons",
+"R",
+56,
+0
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.972,
+0.766
+],
+0
+],
+[
+"Tornado",
+[
+0.583,
+0.828
+],
+28
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+56
+]
+]
+},
+{
+"file": "live_play_20261027_172512.jsonl",
+"t0": 2877,
+"tland": 2931,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"Tesla",
+"R",
+6,
+-48,
+null
+],
+"ans": [
+[
+"Tesla",
+"R",
+6,
+-48
+],
+[
+"Knight",
+"R",
+70,
+16
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.5,
+0.562
+],
+6
+],
+[
+"Knight",
+[
+0.917,
+0.797
+],
+70
+]
+]
+},
+{
+"file": "live_play_20261027_172512.jsonl",
+"t0": 3562,
+"tland": 3626,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"R",
+31,
+-33,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+31,
+-33
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.639,
+0.891
+],
+31
+]
+]
+},
+{
+"file": "live_play_20261027_174036.jsonl",
+"t0": 1460,
+"tland": 1526,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+20,
+-46,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+20,
+-46
+],
+[
+"Tornado",
+"R",
+48,
+-18
+],
+[
+"Skeletons",
+"R",
+77,
+11
+]
+],
+"plays": [
+[
+"Log",
+[
+0.861,
+0.922
+],
+20
+],
+[
+"Tornado",
+[
+0.806,
+0.547
+],
+48
+],
+[
+"Skeletons",
+[
+0.583,
+0.547
+],
+77
+]
+]
+},
+{
+"file": "live_play_20261027_174036.jsonl",
+"t0": 2106,
+"tland": 2161,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+14,
+-41,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+14,
+-41
+],
+[
+"Tesla",
+"R",
+58,
+3
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+14
+],
+[
+"Tesla",
+[
+0.889,
+0.562
+],
+58
+]
+]
+},
+{
+"file": "live_play_20261027_174036.jsonl",
+"t0": 2724,
+"tland": 2779,
+"kind": "evo",
+"real": "L",
+"decoy": "R",
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+9,
+-46,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+9,
+-46
+],
+[
+"Log",
+"R",
+33,
+-22
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.806,
+0.859
+],
+9
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+33
+]
+]
+},
+{
+"file": "live_play_20261027_174036.jsonl",
+"t0": 3216,
+"tland": 3270,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+12,
+-42,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+12,
+-42
+],
+[
+"Log",
+"R",
+39,
+-15
+],
+[
+"IceWizard",
+"R",
+62,
+8
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+12
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+39
+],
+[
+"IceWizard",
+[
+0.972,
+0.766
+],
+62
+],
+[
+"Tornado",
+[
+0.806,
+0.484
+],
+89
+]
+]
+},
+{
+"file": "live_play_20261027_174036.jsonl",
+"t0": 3498,
+"tland": 3554,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+20,
+-36,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+20,
+-36
+],
+[
+"Log",
+"R",
+48,
+-8
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+20
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+48
+]
+]
+},
+{
+"file": "live_play_20261027_174036.jsonl",
+"t0": 4233,
+"tland": 4291,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"Knight",
+"L",
+10,
+-48,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+10,
+-48
+],
+[
+"Skeletons",
+"L",
+36,
+-22
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.417,
+0.672
+],
+10
+],
+[
+"Skeletons",
+[
+0.083,
+0.828
+],
+36
+]
+]
+},
+{
+"file": "live_play_20261027_175446.jsonl",
+"t0": 412,
+"tland": 468,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"R",
+28,
+-28,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+28,
+-28
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.583,
+0.859
+],
+28
+]
+]
+},
+{
+"file": "live_play_20261027_175446.jsonl",
+"t0": 1001,
+"tland": 1055,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"L",
+12,
+-42,
+null
+],
+"ans": [
+[
+"IceWizard",
+"L",
+12,
+-42
+],
+[
+"Knight",
+"L",
+44,
+-10
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.083,
+0.797
+],
+12
+],
+[
+"Knight",
+[
+0.139,
+0.859
+],
+44
+]
+]
+},
+{
+"file": "live_play_20261027_175446.jsonl",
+"t0": 2086,
+"tland": 2140,
+"kind": "evo",
+"real": "L",
+"decoy": "R",
+"bl": "on",
+"first": [
+"Knight",
+"R",
+19,
+-35,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+19,
+-35
+],
+[
+"Skeletons",
+"L",
+48,
+-6
+],
+[
+"Tornado",
+"R",
+73,
+19
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+19
+],
+[
+"Skeletons",
+[
+0.083,
+0.797
+],
+48
+],
+[
+"Tornado",
+[
+0.806,
+0.547
+],
+73
+]
+]
+},
+{
+"file": "live_play_20261027_175446.jsonl",
+"t0": 2825,
+"tland": 2880,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+12,
+-43,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+12,
+-43
+],
+[
+"Log",
+"L",
+37,
+-18
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.194,
+0.859
+],
+12
+],
+[
+"Log",
+[
+0.194,
+0.859
+],
+37
+]
+]
+},
+{
+"file": "live_play_20261027_175446.jsonl",
+"t0": 3625,
+"tland": 3689,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+0,
+-64,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+0,
+-64
+],
+[
+"Knight",
+"R",
+28,
+-36
+],
+[
+"Skeletons",
+"R",
+55,
+-9
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.891
+],
+0
+],
+[
+"Knight",
+[
+0.917,
+0.547
+],
+28
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+55
+]
+]
+},
+{
+"file": "live_play_20261027_175446.jsonl",
+"t0": 4146,
+"tland": 4202,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+32,
+-24,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+32,
+-24
+],
+[
+"IceWizard",
+"L",
+60,
+4
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+32
+],
+[
+"IceWizard",
+[
+0.194,
+0.859
+],
+60
+]
+]
+},
+{
+"file": "live_play_20261027_175446.jsonl",
+"t0": 4649,
+"tland": 4703,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+28,
+-26,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+28,
+-26
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+28
+]
+]
+},
+{
+"file": "live_play_20261027_175446.jsonl",
+"t0": 5153,
+"tland": 5207,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+14,
+-40,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+14,
+-40
+],
+[
+"Log",
+"R",
+66,
+12
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.194,
+0.859
+],
+14
+],
+[
+"Log",
+[
+0.861,
+0.547
+],
+66
+]
+]
+},
+{
+"file": "live_play_20261027_175446.jsonl",
+"t0": 5497,
+"tland": 5552,
+"kind": "evo",
+"real": "L",
+"decoy": "R",
+"bl": "on",
+"first": [
+"Log",
+"R",
+31,
+-24,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+31,
+-24
+],
+[
+"Tesla",
+"L",
+81,
+26
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+31
+],
+[
+"Tesla",
+[
+0.389,
+0.562
+],
+81
+]
+]
+},
+{
+"file": "live_play_20261027_175446.jsonl",
+"t0": 5908,
+"tland": 5964,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+24,
+-32,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+24,
+-32
+],
+[
+"Skeletons",
+"L",
+50,
+-6
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+24
+],
+[
+"Skeletons",
+[
+0.083,
+0.797
+],
+50
+]
+]
+},
+{
+"file": "live_play_20261027_180006.jsonl",
+"t0": 157,
+"tland": 212,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+12,
+-43,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+12,
+-43
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+12
+]
+]
+},
+{
+"file": "live_play_20261027_180006.jsonl",
+"t0": 1273,
+"tland": 1327,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+14,
+-40,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+14,
+-40
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+14
+]
+]
+},
+{
+"file": "live_play_20261027_180006.jsonl",
+"t0": 2573,
+"tland": 2629,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+20,
+-36,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+20,
+-36
+],
+[
+"IceWizard",
+"R",
+46,
+-10
+],
+[
+"Skeletons",
+"L",
+72,
+16
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+20
+],
+[
+"IceWizard",
+[
+0.806,
+0.859
+],
+46
+],
+[
+"Skeletons",
+[
+0.139,
+0.547
+],
+72
+]
+]
+},
+{
+"file": "live_play_20261027_180006.jsonl",
+"t0": 3043,
+"tland": 3101,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+34,
+-24,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+34,
+-24
+],
+[
+"Log",
+"R",
+88,
+30
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.917,
+0.828
+],
+34
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+88
+]
+]
+},
+{
+"file": "live_play_20261027_180006.jsonl",
+"t0": 3680,
+"tland": 3734,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+20,
+-34,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+20,
+-34
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+20
+]
+]
+},
+{
+"file": "live_play_20261027_180006.jsonl",
+"t0": 4522,
+"tland": 4580,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"R",
+25,
+-33,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+25,
+-33
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.583,
+0.828
+],
+25
+]
+]
+},
+{
+"file": "live_play_20261027_180006.jsonl",
+"t0": 5079,
+"tland": 5131,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+6,
+-46,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+6,
+-46
+],
+[
+"Log",
+"R",
+32,
+-20
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.861,
+0.859
+],
+6
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+32
+]
+]
+},
+{
+"file": "live_play_20261027_180006.jsonl",
+"t0": 5413,
+"tland": 5467,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+16,
+-38,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+16,
+-38
+],
+[
+"Tornado",
+"R",
+50,
+-4
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+16
+],
+[
+"Tornado",
+[
+0.528,
+0.828
+],
+50
+]
+]
+},
+{
+"file": "live_play_20261027_180006.jsonl",
+"t0": 5690,
+"tland": 5746,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+20,
+-36,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+20,
+-36
+],
+[
+"Knight",
+"R",
+48,
+-8
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+20
+],
+[
+"Knight",
+[
+0.917,
+0.797
+],
+48
+]
+]
+},
+{
+"file": "live_play_20261027_181440.jsonl",
+"t0": 1471,
+"tland": 1525,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+12,
+-42,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+12,
+-42
+],
+[
+"Tesla",
+"R",
+40,
+-14
+],
+[
+"Skeletons",
+"R",
+68,
+14
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+12
+],
+[
+"Tesla",
+[
+0.556,
+0.688
+],
+40
+],
+[
+"Skeletons",
+[
+0.806,
+0.547
+],
+68
+]
+]
+},
+{
+"file": "live_play_20261027_181440.jsonl",
+"t0": 2665,
+"tland": 2719,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+28,
+-26,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+28,
+-26
+],
+[
+"Skeletons",
+"L",
+74,
+20
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+28
+],
+[
+"Skeletons",
+[
+0.083,
+0.547
+],
+74
+]
+]
+},
+{
+"file": "live_play_20261027_190633.jsonl",
+"t0": 902,
+"tland": 958,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+12,
+-44,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+12,
+-44
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+12
+]
+]
+},
+{
+"file": "live_play_20261027_190633.jsonl",
+"t0": 1733,
+"tland": 1787,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+6,
+-48,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+6,
+-48
+],
+[
+"IceWizard",
+"L",
+32,
+-22
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.417,
+0.547
+],
+6
+],
+[
+"IceWizard",
+[
+0.083,
+0.797
+],
+32
+]
+]
+},
+{
+"file": "live_play_20261027_190633.jsonl",
+"t0": 2778,
+"tland": 2832,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tesla",
+"R",
+18,
+-36,
+null
+],
+"ans": [
+[
+"Tesla",
+"R",
+18,
+-36
+],
+[
+"Knight",
+"L",
+46,
+-8
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.667,
+0.562
+],
+18
+],
+[
+"Knight",
+[
+0.083,
+0.797
+],
+46
+]
+]
+},
+{
+"file": "live_play_20261027_190633.jsonl",
+"t0": 3269,
+"tland": 3323,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+-2,
+-56,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+-2,
+-56
+],
+[
+"Knight",
+"L",
+26,
+-28
+],
+[
+"Log",
+"L",
+52,
+-2
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.028,
+0.578
+],
+-2
+],
+[
+"Knight",
+[
+0.083,
+0.797
+],
+26
+],
+[
+"Log",
+[
+0.194,
+0.859
+],
+52
+]
+]
+},
+{
+"file": "live_play_20261027_190633.jsonl",
+"t0": 3679,
+"tland": 3735,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+88,
+32,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+88,
+32
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.194,
+0.859
+],
+88
+]
+]
+},
+{
+"file": "live_play_20261027_192926.jsonl",
+"t0": 909,
+"tland": 963,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tesla",
+"R",
+18,
+-36,
+null
+],
+"ans": [
+[
+"Tesla",
+"R",
+18,
+-36
+],
+[
+"Skeletons",
+"R",
+44,
+-10
+],
+[
+"IceWizard",
+"R",
+70,
+16
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.778,
+0.875
+],
+18
+],
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+44
+],
+[
+"IceWizard",
+[
+0.917,
+0.797
+],
+70
+]
+]
+},
+{
+"file": "live_play_20261027_192926.jsonl",
+"t0": 2193,
+"tland": 2256,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+47,
+-16,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+47,
+-16
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.806,
+0.391
+],
+20
+],
+[
+"Skeletons",
+[
+0.917,
+0.828
+],
+47
+]
+]
+},
+{
+"file": "live_play_20261027_192926.jsonl",
+"t0": 3080,
+"tland": 3134,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+0,
+-54,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+0,
+-54
+],
+[
+"Log",
+"R",
+46,
+-8
+],
+[
+"Skeletons",
+"R",
+91,
+37
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.528,
+0.828
+],
+0
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+46
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+91
+]
+]
+},
+{
+"file": "live_play_20261027_192926.jsonl",
+"t0": 3772,
+"tland": 3828,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"R",
+38,
+-18,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+38,
+-18
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.528,
+0.828
+],
+38
+]
+]
+},
+{
+"file": "live_play_20261027_192926.jsonl",
+"t0": 4427,
+"tland": 4481,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+12,
+-42,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+12,
+-42
+],
+[
+"Log",
+"R",
+38,
+-16
+],
+[
+"IceWizard",
+"L",
+64,
+10
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+12
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+38
+],
+[
+"IceWizard",
+[
+0.417,
+0.766
+],
+64
+]
+]
+},
+{
+"file": "live_play_20261027_192926.jsonl",
+"t0": 5253,
+"tland": 5307,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+10,
+-44,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+10,
+-44
+],
+[
+"Knight",
+"R",
+36,
+-18
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+10
+],
+[
+"Knight",
+[
+0.917,
+0.797
+],
+36
+]
+]
+},
+{
+"file": "live_play_20261027_192926.jsonl",
+"t0": 5603,
+"tland": 5657,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+14,
+-40,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+14,
+-40
+],
+[
+"Log",
+"R",
+42,
+-12
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.75,
+0.547
+],
+14
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+42
+]
+]
+},
+{
+"file": "live_play_20261027_213048.jsonl",
+"t0": 488,
+"tland": 546,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"L",
+24,
+-34,
+null
+],
+"ans": [
+[
+"IceWizard",
+"L",
+24,
+-34
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.194,
+0.859
+],
+24
+]
+]
+},
+{
+"file": "live_play_20261027_213048.jsonl",
+"t0": 1618,
+"tland": 1672,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+12,
+-42,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+12,
+-42
+],
+[
+"Knight",
+"L",
+38,
+-16
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.083,
+0.797
+],
+12
+],
+[
+"Knight",
+[
+0.083,
+0.828
+],
+38
+]
+]
+},
+{
+"file": "live_play_20261027_213048.jsonl",
+"t0": 3533,
+"tland": 3588,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"Log",
+"L",
+6,
+-49,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+6,
+-49
+],
+[
+"Tornado",
+"L",
+32,
+-23
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+6
+],
+[
+"Tornado",
+[
+0.417,
+0.859
+],
+32
+]
+]
+},
+{
+"file": "live_play_20261027_213048.jsonl",
+"t0": 3869,
+"tland": 3922,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+0,
+-53,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+0,
+-53
+],
+[
+"Log",
+"R",
+29,
+-24
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.806,
+0.859
+],
+0
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+29
+]
+]
+},
+{
+"file": "live_play_20261027_213048.jsonl",
+"t0": 4372,
+"tland": 4428,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+6,
+-50,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+6,
+-50
+],
+[
+"Log",
+"R",
+50,
+-6
+],
+[
+"Skeletons",
+"R",
+96,
+40
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.806,
+0.859
+],
+6
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+50
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+96
+]
+]
+},
+{
+"file": "live_play_20261027_213048.jsonl",
+"t0": 5193,
+"tland": 5247,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"Log",
+"L",
+6,
+-48,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+6,
+-48
+],
+[
+"Skeletons",
+"R",
+34,
+-20
+],
+[
+"Tesla",
+"R",
+62,
+8
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+6
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+34
+],
+[
+"Tesla",
+[
+0.667,
+0.562
+],
+62
+],
+[
+"Tornado",
+[
+0.806,
+0.297
+],
+92
+]
+]
+},
+{
+"file": "live_play_20261027_213048.jsonl",
+"t0": 5444,
+"tland": 5500,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+6,
+-50,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+6,
+-50
+],
+[
+"Log",
+"R",
+34,
+-22
+],
+[
+"Skeletons",
+"L",
+68,
+12
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.861,
+0.547
+],
+6
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+34
+],
+[
+"Skeletons",
+[
+0.417,
+0.703
+],
+68
+],
+[
+"Tornado",
+[
+0.194,
+0.391
+],
+94
+]
+]
+},
+{
+"file": "live_play_20261027_230324.jsonl",
+"t0": 186,
+"tland": 248,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+14,
+-48,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+14,
+-48
+],
+[
+"Log",
+"L",
+40,
+-22
+],
+[
+"Knight",
+"L",
+66,
+4
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.083,
+0.828
+],
+14
+],
+[
+"Log",
+[
+0.194,
+0.891
+],
+40
+],
+[
+"Knight",
+[
+0.194,
+0.547
+],
+66
+]
+]
+},
+{
+"file": "live_play_20261027_230324.jsonl",
+"t0": 638,
+"tland": 694,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+12,
+-44,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+12,
+-44
+],
+[
+"Log",
+"L",
+37,
+-19
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.083,
+0.828
+],
+12
+],
+[
+"Log",
+[
+0.194,
+0.859
+],
+37
+]
+]
+},
+{
+"file": "live_play_20261027_230324.jsonl",
+"t0": 2252,
+"tland": 2304,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"L",
+28,
+-24,
+null
+],
+"ans": [
+[
+"Tornado",
+"L",
+28,
+-24
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.472,
+0.828
+],
+28
+]
+]
+},
+{
+"file": "live_play_20261027_230324.jsonl",
+"t0": 2983,
+"tland": 3041,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"L",
+54,
+-4,
+null
+],
+"ans": [
+[
+"Tornado",
+"L",
+54,
+-4
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.361,
+0.922
+],
+54
+]
+]
+},
+{
+"file": "live_play_20261027_230324.jsonl",
+"t0": 3784,
+"tland": 3836,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+22,
+-30,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+22,
+-30
+],
+[
+"Log",
+"L",
+50,
+-2
+],
+[
+"Knight",
+"L",
+78,
+26
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.417,
+0.547
+],
+22
+],
+[
+"Log",
+[
+0.083,
+0.828
+],
+50
+],
+[
+"Knight",
+[
+0.417,
+0.547
+],
+78
+]
+]
+},
+{
+"file": "live_play_20261028_003739.jsonl",
+"t0": 1650,
+"tland": 1704,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+-2,
+-56,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+-2,
+-56
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.306,
+0.766
+],
+-2
+]
+]
+},
+{
+"file": "live_play_20261028_003739.jsonl",
+"t0": 3022,
+"tland": 3080,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+17,
+-41,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+17,
+-41
+],
+[
+"IceWizard",
+"L",
+44,
+-14
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.891
+],
+17
+],
+[
+"IceWizard",
+[
+0.194,
+0.859
+],
+44
+]
+]
+},
+{
+"file": "live_play_20261028_003739.jsonl",
+"t0": 3618,
+"tland": 3674,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261028_003739.jsonl",
+"t0": 5132,
+"tland": 5198,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+4,
+-62,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+4,
+-62
+],
+[
+"Tornado",
+"L",
+30,
+-36
+],
+[
+"IceWizard",
+"L",
+56,
+-10
+],
+[
+"Skeletons",
+"L",
+82,
+16
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.417,
+0.703
+],
+4
+],
+[
+"Tornado",
+[
+0.361,
+0.609
+],
+30
+],
+[
+"IceWizard",
+[
+0.083,
+0.828
+],
+56
+],
+[
+"Skeletons",
+[
+0.417,
+0.547
+],
+82
+]
+]
+},
+{
+"file": "live_play_20261028_003739.jsonl",
+"t0": 5737,
+"tland": 5791,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tesla",
+"L",
+2,
+-52,
+null
+],
+"ans": [
+[
+"Tesla",
+"L",
+2,
+-52
+],
+[
+"Skeletons",
+"L",
+28,
+-26
+],
+[
+"Knight",
+"L",
+54,
+0
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.444,
+0.562
+],
+2
+],
+[
+"Skeletons",
+[
+0.194,
+0.859
+],
+28
+],
+[
+"Knight",
+[
+0.083,
+0.797
+],
+54
+]
+]
+},
+{
+"file": "live_play_20261028_005454.jsonl",
+"t0": 611,
+"tland": 665,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+4,
+-50,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+4,
+-50
+],
+[
+"Skeletons",
+"R",
+28,
+-26
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+4
+],
+[
+"Skeletons",
+[
+0.861,
+0.859
+],
+28
+]
+]
+},
+{
+"file": "live_play_20261028_005454.jsonl",
+"t0": 1652,
+"tland": 1718,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+16,
+-50,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+16,
+-50
+],
+[
+"IceWizard",
+"R",
+42,
+-24
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+16
+],
+[
+"IceWizard",
+[
+0.917,
+0.797
+],
+42
+]
+]
+},
+{
+"file": "live_play_20261028_005454.jsonl",
+"t0": 2928,
+"tland": 2982,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+26,
+-28,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+26,
+-28
+],
+[
+"Skeletons",
+"R",
+52,
+-2
+],
+[
+"IceWizard",
+"L",
+80,
+26
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+26
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+52
+],
+[
+"IceWizard",
+[
+0.361,
+0.547
+],
+80
+]
+]
+},
+{
+"file": "live_play_20261028_005454.jsonl",
+"t0": 3839,
+"tland": 3895,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+18,
+-38,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+18,
+-38
+],
+[
+"Tesla",
+"R",
+84,
+28
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+18
+],
+[
+"Tesla",
+[
+0.611,
+0.562
+],
+84
+]
+]
+},
+{
+"file": "live_play_20261028_013450.jsonl",
+"t0": 2404,
+"tland": 2458,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+0,
+-54,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+0,
+-54
+],
+[
+"Tornado",
+"R",
+46,
+-8
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.583,
+0.672
+],
+0
+],
+[
+"Tornado",
+[
+0.583,
+0.828
+],
+46
+]
+]
+},
+{
+"file": "live_play_20261028_013450.jsonl",
+"t0": 3177,
+"tland": 3231,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+14,
+-40,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+14,
+-40
+],
+[
+"Knight",
+"R",
+40,
+-14
+],
+[
+"Skeletons",
+"L",
+66,
+12
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+14
+],
+[
+"Knight",
+[
+0.861,
+0.734
+],
+40
+],
+[
+"Skeletons",
+[
+0.417,
+0.547
+],
+66
+]
+]
+},
+{
+"file": "live_play_20261028_013450.jsonl",
+"t0": 3747,
+"tland": 3801,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+14,
+-40,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+14,
+-40
+],
+[
+"Log",
+"R",
+39,
+-15
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.806,
+0.859
+],
+14
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+39
+]
+]
+},
+{
+"file": "live_play_20261028_014848.jsonl",
+"t0": 723,
+"tland": 778,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261028_014848.jsonl",
+"t0": 2187,
+"tland": 2241,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+19,
+-35,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+19,
+-35
+],
+[
+"Skeletons",
+"R",
+47,
+-7
+],
+[
+"Tornado",
+"R",
+89,
+35
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+19
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+47
+],
+[
+"Tornado",
+[
+0.528,
+0.797
+],
+89
+]
+]
+},
+{
+"file": "live_play_20261028_014848.jsonl",
+"t0": 3013,
+"tland": 3067,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+20,
+-34,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+20,
+-34
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+20
+]
+]
+},
+{
+"file": "live_play_20261028_015554.jsonl",
+"t0": 159,
+"tland": 213,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+12,
+-42,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+12,
+-42
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+12
+]
+]
+},
+{
+"file": "live_play_20261028_015554.jsonl",
+"t0": 1303,
+"tland": 1357,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"R",
+24,
+-30,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+24,
+-30
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.528,
+0.828
+],
+24
+]
+]
+},
+{
+"file": "live_play_20261028_015554.jsonl",
+"t0": 2600,
+"tland": 2658,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"Knight",
+"R",
+33,
+-25,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+33,
+-25
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+33
+]
+]
+},
+{
+"file": "live_play_20261028_015554.jsonl",
+"t0": 3093,
+"tland": 3147,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+22,
+-32,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+22,
+-32
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+22
+]
+]
+},
+{
+"file": "live_play_20261028_015554.jsonl",
+"t0": 3815,
+"tland": 3871,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+22,
+-34,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+22,
+-34
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+22
+]
+]
+},
+{
+"file": "live_play_20261028_021723.jsonl",
+"t0": 978,
+"tland": 1033,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261028_021723.jsonl",
+"t0": 1785,
+"tland": 1841,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"R",
+6,
+-50,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+6,
+-50
+],
+[
+"Skeletons",
+"R",
+32,
+-24
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.806,
+0.547
+],
+6
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+32
+]
+]
+},
+{
+"file": "live_play_20261028_021723.jsonl",
+"t0": 2592,
+"tland": 2648,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261028_021723.jsonl",
+"t0": 3134,
+"tland": 3189,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"L",
+14,
+-41,
+null
+],
+"ans": [
+[
+"Knight",
+"L",
+14,
+-41
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.083,
+0.797
+],
+14
+]
+]
+},
+{
+"file": "live_play_20261028_024721.jsonl",
+"t0": 917,
+"tland": 971,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+30,
+-24,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+30,
+-24
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.806,
+0.859
+],
+30
+]
+]
+},
+{
+"file": "live_play_20261028_024721.jsonl",
+"t0": 2251,
+"tland": 2305,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+36,
+-18,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+36,
+-18
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+36
+]
+]
+},
+{
+"file": "live_play_20261028_024721.jsonl",
+"t0": 2942,
+"tland": 2998,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+24,
+-32,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+24,
+-32
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+24
+]
+]
+},
+{
+"file": "live_play_20261028_024721.jsonl",
+"t0": 3806,
+"tland": 3869,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+21,
+-42,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+21,
+-42
+],
+[
+"Log",
+"R",
+49,
+-14
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+21
+],
+[
+"Log",
+[
+0.806,
+0.953
+],
+49
+]
+]
+},
+{
+"file": "live_play_20261028_024721.jsonl",
+"t0": 5705,
+"tland": 5772,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+2,
+-65,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+2,
+-65
+],
+[
+"Log",
+"R",
+38,
+-29
+],
+[
+"Skeletons",
+"R",
+65,
+-2
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.583,
+0.766
+],
+2
+],
+[
+"Log",
+[
+0.806,
+0.953
+],
+38
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+65
+]
+]
+},
+{
+"file": "live_play_20261028_034206.jsonl",
+"t0": 793,
+"tland": 847,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261028_034206.jsonl",
+"t0": 1800,
+"tland": 1856,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+10,
+-46,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+10,
+-46
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.917,
+0.797
+],
+10
+]
+]
+},
+{
+"file": "live_play_20261028_040751.jsonl",
+"t0": 150,
+"tland": 204,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+8,
+-46,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+8,
+-46
+],
+[
+"Knight",
+"R",
+35,
+-19
+],
+[
+"Log",
+"R",
+60,
+6
+],
+[
+"Tornado",
+"R",
+86,
+32
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+8
+],
+[
+"Knight",
+[
+0.861,
+0.734
+],
+35
+],
+[
+"Log",
+[
+0.806,
+0.828
+],
+60
+],
+[
+"Tornado",
+[
+0.583,
+0.828
+],
+86
+]
+]
+},
+{
+"file": "live_play_20261028_040751.jsonl",
+"t0": 1352,
+"tland": 1408,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+10,
+-46,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+10,
+-46
+],
+[
+"Skeletons",
+"R",
+34,
+-22
+],
+[
+"Knight",
+"R",
+62,
+6
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.583,
+0.766
+],
+10
+],
+[
+"Skeletons",
+[
+0.917,
+0.828
+],
+34
+],
+[
+"Knight",
+[
+0.75,
+0.547
+],
+62
+]
+]
+},
+{
+"file": "live_play_20261028_040751.jsonl",
+"t0": 2603,
+"tland": 2657,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+22,
+-32,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+22,
+-32
+],
+[
+"Skeletons",
+"R",
+52,
+-2
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.806,
+0.859
+],
+22
+],
+[
+"Skeletons",
+[
+0.917,
+0.828
+],
+52
+]
+]
+},
+{
+"file": "live_play_20261028_040751.jsonl",
+"t0": 3170,
+"tland": 3224,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+28,
+-26,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+28,
+-26
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+28
+]
+]
+},
+{
+"file": "live_play_20261028_061708.jsonl",
+"t0": 252,
+"tland": 308,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261028_061708.jsonl",
+"t0": 1317,
+"tland": 1371,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"L",
+24,
+-30,
+null
+],
+"ans": [
+[
+"IceWizard",
+"L",
+24,
+-30
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.083,
+0.797
+],
+24
+]
+]
+},
+{
+"file": "live_play_20261028_061708.jsonl",
+"t0": 2605,
+"tland": 2661,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+28,
+-28,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+28,
+-28
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.917,
+0.797
+],
+28
+]
+]
+},
+{
+"file": "live_play_20261028_061708.jsonl",
+"t0": 3576,
+"tland": 3648,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+38,
+-34,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+38,
+-34
+],
+[
+"Log",
+"L",
+72,
+0
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.891
+],
+38
+],
+[
+"Log",
+[
+0.194,
+0.891
+],
+72
+]
+]
+},
+{
+"file": "live_play_20261028_064121.jsonl",
+"t0": 503,
+"tland": 557,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+36,
+-18,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+36,
+-18
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+36
+]
+]
+},
+{
+"file": "live_play_20261028_064121.jsonl",
+"t0": 2863,
+"tland": 2918,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+-1,
+-56,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+-1,
+-56
+],
+[
+"Knight",
+"R",
+23,
+-32
+],
+[
+"Log",
+"R",
+49,
+-6
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.472,
+0.547
+],
+-1
+],
+[
+"Knight",
+[
+0.583,
+0.547
+],
+23
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+49
+]
+]
+},
+{
+"file": "live_play_20261028_064121.jsonl",
+"t0": 3336,
+"tland": 3390,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+2,
+-52,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+2,
+-52
+],
+[
+"Tornado",
+"R",
+86,
+32
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.583,
+0.766
+],
+2
+],
+[
+"Tornado",
+[
+0.583,
+0.547
+],
+86
+]
+]
+},
+{
+"file": "live_play_20261028_064121.jsonl",
+"t0": 3919,
+"tland": 3973,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261028_064739.jsonl",
+"t0": 1576,
+"tland": 1642,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+12,
+-54,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+12,
+-54
+],
+[
+"Log",
+"L",
+88,
+22
+]
+],
+"plays": [
+[
+"Log",
+[
+0.139,
+0.922
+],
+12
+],
+[
+"Log",
+[
+0.083,
+0.891
+],
+88
+]
+]
+},
+{
+"file": "live_play_20261028_064739.jsonl",
+"t0": 2543,
+"tland": 2615,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"L",
+26,
+-46,
+null
+],
+"ans": [
+[
+"IceWizard",
+"L",
+26,
+-46
+],
+[
+"Skeletons",
+"L",
+56,
+-16
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.417,
+0.672
+],
+26
+],
+[
+"Skeletons",
+[
+0.083,
+0.828
+],
+56
+]
+]
+},
+{
+"file": "live_play_20261028_064739.jsonl",
+"t0": 3074,
+"tland": 3140,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"L",
+16,
+-50,
+null
+],
+"ans": [
+[
+"Skeletons",
+"L",
+16,
+-50
+],
+[
+"Log",
+"L",
+42,
+-24
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.194,
+0.859
+],
+16
+],
+[
+"Log",
+[
+0.028,
+0.984
+],
+42
+]
+]
+},
+{
+"file": "live_play_20261028_064739.jsonl",
+"t0": 3496,
+"tland": 3554,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+14,
+-44,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+14,
+-44
+],
+[
+"Skeletons",
+"R",
+40,
+-18
+],
+[
+"Tesla",
+"R",
+68,
+10
+],
+[
+"Tornado",
+"R",
+94,
+36
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.528,
+0.734
+],
+14
+],
+[
+"Skeletons",
+[
+0.917,
+0.828
+],
+40
+],
+[
+"Tesla",
+[
+0.5,
+0.562
+],
+68
+],
+[
+"Tornado",
+[
+0.583,
+0.828
+],
+94
+]
+]
+},
+{
+"file": "live_play_20261028_064739.jsonl",
+"t0": 3983,
+"tland": 4053,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+14,
+-56,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+14,
+-56
+],
+[
+"Knight",
+"R",
+39,
+-31
+],
+[
+"Skeletons",
+"R",
+66,
+-4
+],
+[
+"IceWizard",
+"R",
+92,
+22
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.984
+],
+14
+],
+[
+"Knight",
+[
+0.917,
+0.797
+],
+39
+],
+[
+"Skeletons",
+[
+0.861,
+0.547
+],
+66
+],
+[
+"IceWizard",
+[
+0.639,
+0.547
+],
+92
+]
+]
+},
+{
+"file": "live_play_20261028_064739.jsonl",
+"t0": 4711,
+"tland": 4766,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+13,
+-42,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+13,
+-42
+],
+[
+"Knight",
+"R",
+38,
+-17
+],
+[
+"Skeletons",
+"R",
+73,
+18
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+13
+],
+[
+"Knight",
+[
+0.917,
+0.797
+],
+38
+],
+[
+"Skeletons",
+[
+0.583,
+0.547
+],
+73
+]
+]
+},
+{
+"file": "live_play_20261028_065703.jsonl",
+"t0": 526,
+"tland": 584,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tesla",
+"L",
+4,
+-54,
+null
+],
+"ans": [
+[
+"Tesla",
+"L",
+4,
+-54
+],
+[
+"Tornado",
+"R",
+30,
+-28
+],
+[
+"Skeletons",
+"R",
+56,
+-2
+],
+[
+"Log",
+"R",
+96,
+38
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.389,
+0.562
+],
+4
+],
+[
+"Tornado",
+[
+0.528,
+0.828
+],
+30
+],
+[
+"Skeletons",
+[
+0.917,
+0.797
+],
+56
+],
+[
+"Log",
+[
+0.806,
+0.547
+],
+96
+]
+]
+},
+{
+"file": "live_play_20261028_065703.jsonl",
+"t0": 1085,
+"tland": 1139,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261028_065703.jsonl",
+"t0": 2084,
+"tland": 2140,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+28,
+-28,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+28,
+-28
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+28
+]
+]
+},
+{
+"file": "live_play_20261028_065703.jsonl",
+"t0": 3543,
+"tland": 3609,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+32,
+-34,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+32,
+-34
+],
+[
+"Log",
+"R",
+62,
+-4
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+32
+],
+[
+"Log",
+[
+0.806,
+0.953
+],
+62
+]
+]
+},
+{
+"file": "live_play_20261028_065703.jsonl",
+"t0": 4587,
+"tland": 4645,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tesla",
+"L",
+12,
+-46,
+null
+],
+"ans": [
+[
+"Tesla",
+"L",
+12,
+-46
+],
+[
+"Log",
+"R",
+38,
+-20
+]
+],
+"plays": [
+[
+"Tesla",
+[
+0.389,
+0.562
+],
+12
+],
+[
+"Log",
+[
+0.861,
+0.922
+],
+38
+]
+]
+},
+{
+"file": "live_play_20261028_065703.jsonl",
+"t0": 5009,
+"tland": 5075,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+22,
+-44,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+22,
+-44
+],
+[
+"Skeletons",
+"R",
+50,
+-16
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.984
+],
+22
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+50
+],
+[
+"Xbow",
+[
+0.139,
+0.609
+],
+78
+]
+]
+},
+{
+"file": "live_play_20261028_065703.jsonl",
+"t0": 5305,
+"tland": 5361,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+11,
+-45,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+11,
+-45
+],
+[
+"Tornado",
+"R",
+38,
+-18
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+11
+],
+[
+"Tornado",
+[
+0.583,
+0.828
+],
+38
+]
+]
+},
+{
+"file": "live_play_20261028_065703.jsonl",
+"t0": 5684,
+"tland": 5738,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+20,
+-34,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+20,
+-34
+],
+[
+"IceWizard",
+"R",
+48,
+-6
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+20
+],
+[
+"IceWizard",
+[
+0.806,
+0.859
+],
+48
+]
+]
+},
+{
+"file": "live_play_20261028_071103.jsonl",
+"t0": 238,
+"tland": 297,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+26,
+-33,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+26,
+-33
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+26
+]
+]
+},
+{
+"file": "live_play_20261028_071103.jsonl",
+"t0": 1107,
+"tland": 1163,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+16,
+-40,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+16,
+-40
+],
+[
+"Tornado",
+"R",
+48,
+-8
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.917,
+0.797
+],
+16
+],
+[
+"Tornado",
+[
+0.639,
+0.891
+],
+48
+]
+]
+},
+{
+"file": "live_play_20261028_071103.jsonl",
+"t0": 2377,
+"tland": 2433,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"L",
+37,
+-19,
+null
+],
+"ans": [
+[
+"Tornado",
+"L",
+37,
+-19
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.417,
+0.859
+],
+37
+]
+]
+},
+{
+"file": "live_play_20261028_071103.jsonl",
+"t0": 3183,
+"tland": 3239,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+31,
+-25,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+31,
+-25
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+31
+]
+]
+},
+{
+"file": "live_play_20261028_080427.jsonl",
+"t0": 1275,
+"tland": 1330,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": null,
+"ans": [],
+"plays": []
+},
+{
+"file": "live_play_20261028_080427.jsonl",
+"t0": 3634,
+"tland": 3689,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"L",
+23,
+-32,
+null
+],
+"ans": [
+[
+"Tornado",
+"L",
+23,
+-32
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.417,
+0.859
+],
+23
+]
+]
+},
+{
+"file": "live_play_20261028_080427.jsonl",
+"t0": 4932,
+"tland": 4988,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"L",
+26,
+-30,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+26,
+-30
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.859
+],
+26
+]
+]
+},
+{
+"file": "live_play_20261028_080427.jsonl",
+"t0": 5332,
+"tland": 5386,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"L",
+20,
+-34,
+null
+],
+"ans": [
+[
+"Tornado",
+"L",
+20,
+-34
+],
+[
+"Knight",
+"L",
+46,
+-8
+],
+[
+"Skeletons",
+"R",
+84,
+30
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.417,
+0.859
+],
+20
+],
+[
+"Knight",
+[
+0.083,
+0.797
+],
+46
+],
+[
+"Skeletons",
+[
+0.583,
+0.734
+],
+84
+]
+]
+},
+{
+"file": "live_play_20261028_090643.jsonl",
+"t0": 195,
+"tland": 251,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+16,
+-40,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+16,
+-40
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+16
+]
+]
+},
+{
+"file": "live_play_20261028_090643.jsonl",
+"t0": 936,
+"tland": 990,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+19,
+-35,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+19,
+-35
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+19
+]
+]
+},
+{
+"file": "live_play_20261028_090643.jsonl",
+"t0": 1859,
+"tland": 1917,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"Log",
+"L",
+18,
+-40,
+null
+],
+"ans": [
+[
+"Log",
+"L",
+18,
+-40
+],
+[
+"Knight",
+"L",
+46,
+-12
+]
+],
+"plays": [
+[
+"Log",
+[
+0.194,
+0.891
+],
+18
+],
+[
+"Knight",
+[
+0.083,
+0.797
+],
+46
+]
+]
+},
+{
+"file": "live_play_20261028_090643.jsonl",
+"t0": 3284,
+"tland": 3338,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Log",
+"R",
+24,
+-30,
+null
+],
+"ans": [
+[
+"Log",
+"R",
+24,
+-30
+],
+[
+"Skeletons",
+"R",
+50,
+-4
+]
+],
+"plays": [
+[
+"Log",
+[
+0.806,
+0.859
+],
+24
+],
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+50
+]
+]
+},
+{
+"file": "live_play_20261028_090643.jsonl",
+"t0": 3827,
+"tland": 3881,
+"kind": "plain",
+"real": "L",
+"decoy": null,
+"bl": "on",
+"first": [
+"IceWizard",
+"L",
+8,
+-46,
+null
+],
+"ans": [
+[
+"IceWizard",
+"L",
+8,
+-46
+],
+[
+"Tornado",
+"L",
+32,
+-22
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.083,
+0.797
+],
+8
+],
+[
+"Tornado",
+[
+0.472,
+0.766
+],
+32
+]
+]
+},
+{
+"file": "live_play_20261028_090643.jsonl",
+"t0": 4315,
+"tland": 4369,
+"kind": "evo",
+"real": "R",
+"decoy": "L",
+"bl": "on",
+"first": [
+"IceWizard",
+"R",
+8,
+-46,
+null
+],
+"ans": [
+[
+"IceWizard",
+"R",
+8,
+-46
+],
+[
+"Log",
+"R",
+33,
+-21
+]
+],
+"plays": [
+[
+"IceWizard",
+[
+0.806,
+0.859
+],
+8
+],
+[
+"Log",
+[
+0.806,
+0.859
+],
+33
+]
+]
+},
+{
+"file": "live_play_20261028_090643.jsonl",
+"t0": 4732,
+"tland": 4788,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Tornado",
+"R",
+34,
+-22,
+null
+],
+"ans": [
+[
+"Tornado",
+"R",
+34,
+-22
+]
+],
+"plays": [
+[
+"Tornado",
+[
+0.583,
+0.828
+],
+34
+]
+]
+},
+{
+"file": "live_play_20261028_090643.jsonl",
+"t0": 5192,
+"tland": 5248,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Knight",
+"R",
+12,
+-44,
+null
+],
+"ans": [
+[
+"Knight",
+"R",
+12,
+-44
+],
+[
+"Tornado",
+"R",
+44,
+-12
+]
+],
+"plays": [
+[
+"Knight",
+[
+0.917,
+0.797
+],
+12
+],
+[
+"Tornado",
+[
+0.583,
+0.828
+],
+44
+]
+]
+},
+{
+"file": "live_play_20261028_090643.jsonl",
+"t0": 5497,
+"tland": 5553,
+"kind": "evo",
+"real": "L",
+"decoy": "R",
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+8,
+-48,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+8,
+-48
+],
+[
+"Knight",
+"L",
+38,
+-18
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+8
+],
+[
+"Knight",
+[
+0.083,
+0.797
+],
+38
+]
+]
+},
+{
+"file": "live_play_20261028_090643.jsonl",
+"t0": 5773,
+"tland": 5827,
+"kind": "plain",
+"real": "R",
+"decoy": null,
+"bl": "on",
+"first": [
+"Skeletons",
+"R",
+12,
+-42,
+null
+],
+"ans": [
+[
+"Skeletons",
+"R",
+12,
+-42
+],
+[
+"Knight",
+"R",
+40,
+-14
+]
+],
+"plays": [
+[
+"Skeletons",
+[
+0.806,
+0.859
+],
+12
+],
+[
+"Knight",
+[
+0.917,
+0.797
+],
+40
+]
+]
+}
+]
