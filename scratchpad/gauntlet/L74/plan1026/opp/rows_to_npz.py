@@ -217,7 +217,7 @@ def main(argv=None) -> int:
         remap[big] = np.arange(1, len(big) + 1)
         new["deck_keys"] = ukey[big].astype(np.int16)             # id i = row i - 1 (rows_to_npz --deck-map reads it)
     else:
-        dk = np.load(a.deck_map, mmap_mode="r")["deck_keys"]
+        dk = np.load(a.deck_map / "deck_keys.npy") if a.deck_map.is_dir() else np.load(a.deck_map)["deck_keys"]
         known = {tuple(r): i + 1 for i, r in enumerate(np.asarray(dk).tolist())}
         remap = np.array([known.get(tuple(r), 0) for r in ukey.tolist()], np.int32)
         big = np.where(remap > 0)[0]

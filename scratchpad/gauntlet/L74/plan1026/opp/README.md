@@ -36,3 +36,7 @@ Running: v0 pretrain on 33308 GPU1 (log /workspace/opp/v0/m10/train.log, curve v
 Restart (fresh; no mid-run resume): `bash cbt/.../opp/run_pretrain.sh /workspace/opp/v0/hf_slot_v0 /workspace/opp/v0/m10 m10 320 7 40000 1`
 (11.2 M params, ~1.45k rows/s measured), then the level-A test file + level_a.py on HF split 2.
 Not started (need their own tickets): live slot rows for opponent seats (step 3), SIM timing-head decoder + level B (step 4).
+- 14:40 update: slot re-drive FINISHED: 60,102 replays (A 18,062 / B 34,482 / unusable 7,558), 41.5 M rows, 241 shards.
+  v0 trains on the first 168 shards. Pretrain speed on the loaded pod: 3.7 steps/s (40k steps ~3 h).
+  Level-A test file building: `/workspace/opp/v0/hf_slot_v0_test.npz` (all 241 shards, split 2, every slot; log v0/rows_test.log).
+  Then: `python cbt/.../opp/level_a.py --ckpt v0/m10/opp_m10_s0.pt --data v0/hf_slot_v0_test.npz --memory-tables v0/hf_slot_v0_test_memory.npz --split 2 --out v0/m10/level_a_hf_test.json`
