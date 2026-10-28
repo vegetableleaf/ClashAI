@@ -549,3 +549,45 @@ Supersedes the "not modelled here" list above. **Branch `clashbot-cfclone` = `ba
       scene mode does.
     - The 16.402 and 16.635 match-mode outputs are byte-identical. The forms the two versions treat differently
       (Skeletons_EV1, Giant_EV1) are played plain there.
+
+### CF-CLONE-3 (2026-10-28): Clone on a pulled unit (Fisherman); Mirror and evolved forms in the Clone sweep
+**Branch `clashbot-cfclone` = `3ebb4115`** (bac75659 + 1 commit, `patches/0003`). Commits 62558795 and bac75659 are not
+rewritten; it is meant to be merged (CF-MAIN cherry-picks everything past bac75659).
+- **Model (b, no evidence):** `GridStateSetter.exitPulled` no longer refuses a clone's setup. A Clone reaching a pulled unit
+  sets it up from its pulled state:
+  - the exit runs as for any other state, and the setup's entry empties the route;
+  - the unit then follows the hook no more. A hook on a building drags its owner only while he is in his pulled state,
+    so it is let go; a pulled troop's hook flies back without it and is let go short of the Fisherman.
+  - Evidence searched: our live logs have 3 matches with an opponent Fisherman and Clone. Only 1 has reader frames;
+    its one clone (a 1-hp entity) is of another unit. HF holds plays only.
+- **Red/green (a):** BattleFishermanTest has 2 new scenes (a dragged Fisherman cloned, a pulled Knight cloned); the old
+  refusal test is removed. On the base code 2/31 fail with the refusal on both versions; after the fix 30/30 pass on
+  both.
+- **Core tests (a):** 16.402.22 2187/0 (29 skipped); 16.635.3 2187/0 (6 skipped). Libs: `lib_fix3` core
+  `d0123ab362d9cf14`, `lib_fix3snap` `e0aa99d84517cf31`.
+- **Sweep red/green (a):** the old match-mode probe's Fisherman scenes (Fisherman, _EV1, _hero at T=150) are refused
+  with lib_fix2 and OK with lib_fix3, on both versions (`results/cfclone3_fisherman_redgreen_probe.txt`).
+- **Sweep, 4 modes x 2 versions (a, `results/cfclone3_cp3_summary.txt`):** **0 Clone refusals in all 8 runs.**
+  - The modes: scene; match (evolution slot forced to evolve through reflection on `MatchSide.evolutionCounts`, probe
+    only); cm = Clone after a Mirror; mc = Mirror of a Clone. In the Mirror modes the cards are put into the first
+    hand with `Hand.rearrange`, because the Mirror is never dealt into a first hand.
+  - All 43 census-deck evolved forms played evolved in match mode. The 62-63 EV1 forms not played evolved are all
+    NotInUse rows (`results/cfclone3_nf*.txt`).
+  - What remains is not a Clone refusal:
+    - non-form rows (a hero slot holding a card with no hero form);
+    - the Mirror played as the first card;
+    - the forms refused outside a match (scene mode only);
+    - Giant_EV1 on 16.635 (unreleased);
+    - in cm, a Clone card refused with match code 4 (OVER, the match already decided) for Balloon / InfernoDragon_EV1
+      at late T.
+
+#### STATUS (CF-CLONE-3)
+- Done: fork commit 3ebb4115; core tests; the sweeps.
+- Running:
+  - SME `cf3` on pod 32657 (`/workspace/pilot/harden/cf3.sh`, lib `/workspace/pilot/lib_cfclone3`; result
+    `sme_live/cf3.cmp.txt`; restart = `bash harden/cf3.sh`).
+  - HF faults on pod 30408 (`/workspace/d1c/f20k_cfclone3`, log `f20k_cfclone3.log`; resumable: rerun
+    `CRFORGE_LIB=/workspace/cfclone/lib_fix3 bash /workspace/d1c/cb/scratchpad/gauntlet/L74/plan1026/d1c/faults.sh
+    /workspace/d1c/f20k_cfclone3 --limit 20000 --workers 48`).
+- Next: compare cf3 with h11b (expect `results.jsonl` sha `1e7e893fd09858ef`), and f20k_cfclone3 with f20k_cfclone2 (7
+  faults), using `grades_cmp.py`.

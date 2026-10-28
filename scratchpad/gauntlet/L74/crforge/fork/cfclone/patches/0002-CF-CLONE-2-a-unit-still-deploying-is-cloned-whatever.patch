@@ -1,7 +1,7 @@
 From bac75659fc9cc9626ad24c8865bde93890a0eca6 Mon Sep 17 00:00:00 2001
 From: vegetableleaf <benzhu2029@u.northwestern.edu>
 Date: Wed, 28 Oct 2026 11:25:52 +0000
-Subject: [PATCH 2/2] CF-CLONE-2: a unit still deploying is cloned whatever it
+Subject: [PATCH 2/3] CF-CLONE-2: a unit still deploying is cloned whatever it
  carries; a clone its registration visit ends takes no move apart
 
 Two Clone refusals are removed:

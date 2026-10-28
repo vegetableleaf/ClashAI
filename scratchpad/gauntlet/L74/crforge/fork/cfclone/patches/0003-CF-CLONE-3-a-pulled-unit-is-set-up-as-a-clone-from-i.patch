@@ -1,0 +1,201 @@
+From 3ebb4115dbf6b74615a125afb10f88838699ba51 Mon Sep 17 00:00:00 2001
+From: vegetableleaf <benzhu2029@u.northwestern.edu>
+Date: Wed, 28 Oct 2026 13:22:34 +0000
+Subject: [PATCH 3/3] CF-CLONE-3: a pulled unit is set up as a clone from its
+ pulled state
+
+The refusal "leaves a pulled state for a clone's setup, not modelled" (GridStateSetter.exitPulled) is removed: a Clone
+reaching a Fisherman his hook drags to a building, or a troop a hook pulls, sets it up from the pulled state. The exit
+runs as for any other state (components on, the point, move time, charge and pushback reset, a reference out of
+range dropped, the standing test), and the clone setup's entry empties the route. The unit then follows the hook no
+more: its state visit follows only in a pulled state, and a hook on a building drags its owner only while he is in
+his, so the hook flies on dragging nothing and is let go at its aim; a pulled troop's hook flies back without it and
+is let go short of the Fisherman, who goes on. Not traced from the client nor held by a recording (b): the exit and
+the hook's step as crforge has them.
+
+BattleFishermanTest: the refusal test of a pulled troop asked into a clone's setup becomes two scenes, a dragged
+Fisherman cloned and a pulled Knight cloned by its own side's Clone.
+---
+ .../core/pathfinding/GridStateSetter.java     | 16 +--
+ .../core/battle/unit/BattleFishermanTest.java | 99 ++++++++++++++++---
+ docs/battle-core.md                           |  6 +-
+ 3 files changed, 101 insertions(+), 20 deletions(-)
+
+diff --git a/core/src/main/java/org/crforge/core/pathfinding/GridStateSetter.java b/core/src/main/java/org/crforge/core/pathfinding/GridStateSetter.java
+index da167ebd..55cff31d 100644
+--- a/core/src/main/java/org/crforge/core/pathfinding/GridStateSetter.java
++++ b/core/src/main/java/org/crforge/core/pathfinding/GridStateSetter.java
+@@ -497,8 +497,15 @@ public final class GridStateSetter implements StateSetter {
+    * the unit aimed at, the move time and its copy, the charge and the pushback's bytes reset and a
+    * reference out of range dropped; then the standing test on the unit's cell, which moves it off a
+    * cell it may not stand on. The route the standard game empties here too is emptied, or prepared
+-   * afresh, by the entry of the standing or the moving state, the only two a pulled unit is asked
+-   * into.
++   * afresh, by the entry of the standing or the moving state, the two a hook asks a pulled unit
++   * into, or of a clone's setup, which empties it too.
++   *
++   * <p>A Clone reaching a pulled unit - a Fisherman his hook drags to a building, or a troop it
++   * pulls - sets it up as a clone from the pulled state: the exit runs as for any other state, and
++   * the setup's entry follows. The unit then follows the hook no more: its state visit follows only
++   * in a pulled state, and a hook on a building drags its owner only while he is in his, so it
++   * flies on as a hook whose owner is not dragged and is let go at its aim. Not traced from the
++   * client nor held by a recording (CF-CLONE-3): it is the exit and the hook's step as they stand.
+    *
+    * <p>The move time starting again from 0 gives a unit that walks and waits by turns (a row with a
+    * stop-movement-after time) a whole stretch of walking after the release: it walks on the first
+@@ -524,11 +531,6 @@ public final class GridStateSetter implements StateSetter {
+         following.dropReferenceOutOfRange();
+       }
+     }
+-    if (newState == GridEntityState.CLONE_SETUP) {
+-      // Cloned while pulled, the unit would go straight into the clone's setup.
+-      throw new UnsupportedOperationException(
+-          owner.getName() + " leaves a pulled state for a clone's setup, not modelled");
+-    }
+     following.standOrRelocate();
+   }
+ 
+diff --git a/core/src/test/java/org/crforge/core/battle/unit/BattleFishermanTest.java b/core/src/test/java/org/crforge/core/battle/unit/BattleFishermanTest.java
+index f64d8bab..ef2e245e 100644
+--- a/core/src/test/java/org/crforge/core/battle/unit/BattleFishermanTest.java
++++ b/core/src/test/java/org/crforge/core/battle/unit/BattleFishermanTest.java
+@@ -557,17 +557,6 @@ class BattleFishermanTest {
+     assertThat(f.getState()).isEqualTo(GridEntityState.MOVING);
+   }
+ 
+-  @Test
+-  @DisplayName("a troop pulled cannot be cloned")
+-  void aPulledTroopAskedElsewhere() {
+-    Scene other = new Scene();
+-    CharacterEntity pulled = other.still(0, 1, "Knight", X, Y + IN_RING, "K");
+-    other.stepToTheHook();
+-    assertThatThrownBy(() -> pulled.requestState(GridEntityState.CLONE_SETUP))
+-        .isInstanceOf(UnsupportedOperationException.class)
+-        .hasMessageContaining("clone's setup");
+-  }
+-
+   @Test
+   @DisplayName(
+       "a hook arriving at a dashing troop the untouchable test passes by does not hook it: it ends"
+@@ -876,6 +865,94 @@ class BattleFishermanTest {
+         .containsExactly("Damage");
+   }
+ 
++  /**
++   * Casts a Clone for a side on a unit's point at the scene's tick and steps until the Clone has
++   * made its clones, answering their names.
++   */
++  private static List<String> cloneOn(Scene scene, CharacterEntity unit) {
++    List<String> clones = new ArrayList<>();
++    scene
++        .match
++        .getWorld()
++        .addObserver(
++            new WorldObserver() {
++              @Override
++              public void cloned(
++                  int t,
++                  CharacterEntity original,
++                  CharacterEntity clone,
++                  SpawnHost instigator,
++                  List<Integer> visits) {
++                clones.add(clone.name());
++              }
++            });
++    GridEntity view = unit.getView();
++    scene.match.placeAreaEffect(
++        scene.match.getBattle().getTick(),
++        "Clone",
++        LEVEL,
++        unit.side(),
++        view.getX(),
++        view.getY(),
++        "C");
++    while (clones.isEmpty() && scene.tick < 200) {
++      scene.step(1);
++    }
++    return clones;
++  }
++
++  @Test
++  @DisplayName(
++      "a Fisherman cloned while his hook drags him to a building leaves the pulled state for the"
++          + " clone's setup: the hook drags him no more and is let go, and he moves apart from his"
++          + " clone and walks on")
++  void aDraggedFishermanCloned() {
++    Scene scene = new Scene();
++    scene.still(0, 1, "Cannon", X, Y + IN_RING, "C");
++    ProjectileEntity hook = scene.stepToTheHook();
++    scene.step(1);
++    GridEntity f = scene.fisherman.getView();
++    assertThat(f.getState()).isEqualTo(GridEntityState.FOLLOWING_REMOVED_BUILDING);
++
++    assertThat(cloneOn(scene, scene.fisherman)).containsExactly("F_clone0");
++    assertThat(f.getState()).isEqualTo(GridEntityState.CLONE_SETUP);
++    // The move apart's step, not the drag's.
++    int before = f.getY();
++    scene.step(1);
++    assertThat(f.getY() - before).isPositive().isLessThan(Shipped.number(HOOK, "DragSelfSpeed"));
++    assertThat(hook.isReleased()).isTrue();
++    while (f.getState() == GridEntityState.CLONE_SETUP && scene.tick < 200) {
++      scene.step(1);
++    }
++    assertThat(f.getState())
++        .isNotIn(GridEntityState.FOLLOWING_REMOVED_BUILDING, GridEntityState.CLONE_SETUP);
++    assertThat(scene.fisherman.isActive(CharacterEntity.MOVEMENT_SLOT)).isTrue();
++  }
++
++  @Test
++  @DisplayName(
++      "a troop cloned while a hook pulls it leaves the pulled state for the clone's setup: it"
++          + " follows the hook no more, which flies back and is let go, and the Fisherman goes on")
++  void aPulledTroopCloned() {
++    Scene scene = new Scene();
++    CharacterEntity knight = scene.still(0, 1, "Knight", X, Y + IN_RING, "K");
++    ProjectileEntity hook = scene.stepToTheHook();
++    scene.step(1);
++    assertThat(knight.getView().getState()).isEqualTo(GridEntityState.FOLLOWING_REMOVED);
++
++    assertThat(cloneOn(scene, knight)).containsExactly("K_clone0");
++    assertThat(knight.getView().getState()).isEqualTo(GridEntityState.CLONE_SETUP);
++    while (!hook.isReleased() && scene.tick < 200) {
++      scene.step(1);
++    }
++    assertThat(hook.isReleased()).isTrue();
++    // Let go short of the Fisherman, away from the troop, which moved apart on its own.
++    assertThat(knight.getView().getY()).isGreaterThan(hook.getY());
++    scene.step(2);
++    assertThat(scene.fisherman.getView().getState())
++        .isNotEqualTo(GridEntityState.COMPONENTS_DISABLED);
++  }
++
+   /** Steps a scene until its first hook is in flight, not yet arrived. */
+   private static void stepToTheFlight(Scene scene) {
+     while (scene.hooks.isEmpty() && scene.tick < 200) {
+diff --git a/docs/battle-core.md b/docs/battle-core.md
+index 5a15102b..acffa42c 100644
+--- a/docs/battle-core.md
++++ b/docs/battle-core.md
+@@ -892,7 +892,8 @@ Nothing moves a unit off the river otherwise. A formation played into the pocket
+   - a Fisherman who leaves or is stunned during the pull ending his hook with no second impact, the troop let go where the pull left it
+   - a troop that leaves during the pull letting the hook go at once
+   - a troop let go on the river moved off it
+-  - the refusals: a troop still followed asked to stand on the river or to be cloned, a hook flying at a dashing troop or arriving at a troop in the air
++  - a Fisherman a hook on a building drags, and a troop a hook pulls, cloned from the pulled state: the hook drags or pulls them no more and is let go, and they move apart from their clones
++  - the refusals: a troop still followed asked to stand on the river, a hook flying at a dashing troop or arriving at a troop in the air
+   - a hook arriving at a troop another holds a lock on ending as an ordinary arrival, at its aim, nothing asked into a hook's state
+   - the refusals of a hook arriving after such a lock is gone and of a pulled troop another then holds
+   - a special that lists its targets and a special range without a special projectile
+@@ -2429,7 +2430,8 @@ These are supplied answers, recorded on the classes that carry them and listed h
+ 
+   - a hook arriving after a lock it met during its flight is gone
+   - a pulled target someone else then holds (the hook lets it go at once)
+-  - a pulled troop asked into a clone's setup
++
++  A Clone reaching a pulled unit sets it up from its pulled state: the exit runs as for any other state, and the setup's entry empties the route. The unit then follows the hook no more, its state visit following only in a pulled state. A hook on a building drags its owner only while he is in his, so it flies on as a hook that drags nothing and is let go at its aim. A troop cloned as it is pulled moves apart from its clone while the hook flies back without it and is let go short of the Fisherman, who goes on. Neither is traced from the client or held by a recording (CF-CLONE-3).
+ 
+   A row with a MorphCharacter, which the hook's leaving would morph back into, is refused with its row.
+ 
+-- 
+2.43.0
+

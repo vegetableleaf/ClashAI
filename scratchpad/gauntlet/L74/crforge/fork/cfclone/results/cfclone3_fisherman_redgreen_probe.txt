@@ -1,0 +1,24 @@
+== cpm_fish2_402 (old match-mode probe, lib__402)
+form	T	outcome	tick	clones	spawner_copies	clone_children
+Fisherman	150	UnsupportedOperationException: A_0 leaves a pulled state for a clone's setup, not modelled	250	1	0	0
+Fisherman_EV1	150	UnsupportedOperationException: A_0 leaves a pulled state for a clone's setup, not modelled	250	1	0	0
+Fisherman_hero	150	UnsupportedOperationException: A_0 leaves a pulled state for a clone's setup, not modelled	250	1	0	0
+not OK: 3
+== cpm_fish3_402 (old match-mode probe, lib__402)
+form	T	outcome	tick	clones	spawner_copies	clone_children
+Fisherman	150	OK	649	2	0	0
+Fisherman_EV1	150	OK	649	2	0	0
+Fisherman_hero	150	OK	649	2	0	0
+not OK: 0
+== cpm_fish2_635 (old match-mode probe, lib__635)
+form	T	outcome	tick	clones	spawner_copies	clone_children
+Fisherman	150	UnsupportedOperationException: A_0 leaves a pulled state for a clone's setup, not modelled	250	1	0	0
+Fisherman_EV1	150	UnsupportedOperationException: A_0 leaves a pulled state for a clone's setup, not modelled	250	1	0	0
+Fisherman_hero	150	UnsupportedOperationException: A_0 leaves a pulled state for a clone's setup, not modelled	250	1	0	0
+not OK: 3
+== cpm_fish3_635 (old match-mode probe, lib__635)
+form	T	outcome	tick	clones	spawner_copies	clone_children
+Fisherman	150	OK	649	2	0	0
+Fisherman_EV1	150	OK	649	2	0	0
+Fisherman_hero	150	OK	649	2	0	0
+not OK: 0

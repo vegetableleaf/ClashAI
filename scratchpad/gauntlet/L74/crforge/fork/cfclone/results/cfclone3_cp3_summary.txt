@@ -1,0 +1,45 @@
+cp3_scene_402.tsv: scenes 19430, forms 335, with a clone 5797, spawner copies 4, not OK 522, Clone refusals 0
+   other (5 forms) refused outside a match: BarbLog_hero, Elixir Collector, Elixir Collector_hero, Goblins_hero, MegaMinion_hero
+   other (1 forms) UnsupportedOperationException: Arrows_hero casts several projectiles of a random spread, which is not modelled: Arrows_hero
+   other (1 forms) UnsupportedOperationException: the area effect Graveyard spawns characters and was not made by an ability, or : Graveyard_hero
+   other (1 forms) IllegalArgumentException: Mirror summons no character: Mirror
+   other (1 forms) IllegalArgumentException: Mirror_hero summons no character: Mirror_hero
+cp3_scene_635.tsv: scenes 19430, forms 335, with a clone 5761, spawner copies 4, not OK 638, Clone refusals 0
+   other (5 forms) refused outside a match: BarbLog_hero, Elixir Collector, Elixir Collector_hero, Goblins_hero, MegaMinion_hero
+   other (1 forms) UnsupportedOperationException: Arrows_hero casts several projectiles of a random spread, which is not modelled: Arrows_hero
+   other (1 forms) UnsupportedOperationException: Giant_EV1 sets columns the battle does not model: [AttackSequenceList]: Giant_EV1
+   other (1 forms) UnsupportedOperationException: the area effect Graveyard spawns characters and was not made by an ability, or : Graveyard_hero
+   other (1 forms) IllegalArgumentException: Mirror summons no character: Mirror
+   other (1 forms) IllegalArgumentException: Mirror_EV1 summons no character: Mirror_EV1
+   other (1 forms) IllegalArgumentException: Mirror_hero summons no character: Mirror_hero
+cp3_match_402.tsv: scenes 19430, forms 335, with a clone 5655, spawner copies 4, not OK 5626, Clone refusals 0
+   other (63 forms) NOT_FORM A not evolved: ArcherQueen_EV1, Arrows_EV1, Assassin_EV1, Balloon_EV1, BarbLog_EV1, BattleHealer_EV1, BombTower_EV1, Bowler_EV1, Clone_EV1, DarkPrince_EV1, DarkWitch_EV1, DartBarrell_EV1 ...
+   other (33 forms) slot holds no such form (a non-form row of the sweep): Arrows_hero, BombTower_hero, Cannon_hero, Clone_hero, DarkMagic_hero, Earthquake_hero, Elixir Collector_hero, Fireball_hero, FirespiritHut_hero, Freeze_hero, GoblinBarrel_hero, GoblinCage_hero ...
+   other (1 forms) IllegalArgumentException: Mirror summons no character: Mirror
+cp3_match_635.tsv: scenes 19430, forms 335, with a clone 5631, spawner copies 4, not OK 5626, Clone refusals 0
+   other (62 forms) NOT_FORM A not evolved: ArcherQueen_EV1, Arrows_EV1, Assassin_EV1, Balloon_EV1, BarbLog_EV1, BattleHealer_EV1, BombTower_EV1, Bowler_EV1, Clone_EV1, DarkPrince_EV1, DarkWitch_EV1, DartBarrell_EV1 ...
+   other (33 forms) slot holds no such form (a non-form row of the sweep): Arrows_hero, BombTower_hero, Cannon_hero, Clone_hero, DarkMagic_hero, Earthquake_hero, Elixir Collector_hero, Fireball_hero, FirespiritHut_hero, Freeze_hero, GoblinBarrel_hero, GoblinCage_hero ...
+   other (1 forms) UnsupportedOperationException: Giant_EV1 sets columns the battle does not model: [AttackSequenceList]: Giant_EV1
+   other (1 forms) IllegalArgumentException: Mirror summons no character: Mirror
+cp3_cm_402.tsv: scenes 18425, forms 335, with a clone 7725, spawner copies 3, not OK 5354, Clone refusals 0
+   other (63 forms) NOT_FORM A not evolved: ArcherQueen_EV1, Arrows_EV1, Assassin_EV1, Balloon_EV1, BarbLog_EV1, BattleHealer_EV1, BombTower_EV1, Bowler_EV1, Clone_EV1, DarkPrince_EV1, DarkWitch_EV1, DartBarrell_EV1 ...
+   other (33 forms) slot holds no such form (a non-form row of the sweep): Arrows_hero, BombTower_hero, Cannon_hero, Clone_hero, DarkMagic_hero, Earthquake_hero, Elixir Collector_hero, Fireball_hero, FirespiritHut_hero, Freeze_hero, GoblinBarrel_hero, GoblinCage_hero ...
+   other (3 forms) REFUSED C1 code 4: Balloon, Balloon_hero, InfernoDragon_EV1
+   other (1 forms) NOT_FORM A not evolved REFUSED C1 code 4: Balloon_EV1
+   other (1 forms) IllegalArgumentException: Mirror summons no character: Mirror
+cp3_cm_635.tsv: scenes 18425, forms 335, with a clone 7688, spawner copies 3, not OK 5354, Clone refusals 0
+   other (62 forms) NOT_FORM A not evolved: ArcherQueen_EV1, Arrows_EV1, Assassin_EV1, Balloon_EV1, BarbLog_EV1, BattleHealer_EV1, BombTower_EV1, Bowler_EV1, Clone_EV1, DarkPrince_EV1, DarkWitch_EV1, DartBarrell_EV1 ...
+   other (33 forms) slot holds no such form (a non-form row of the sweep): Arrows_hero, BombTower_hero, Cannon_hero, Clone_hero, DarkMagic_hero, Earthquake_hero, Elixir Collector_hero, Fireball_hero, FirespiritHut_hero, Freeze_hero, GoblinBarrel_hero, GoblinCage_hero ...
+   other (3 forms) REFUSED C1 code 4: Balloon, Balloon_hero, InfernoDragon_EV1
+   other (1 forms) NOT_FORM A not evolved REFUSED C1 code 4: Balloon_EV1
+   other (1 forms) UnsupportedOperationException: Giant_EV1 sets columns the battle does not model: [AttackSequenceList]: Giant_EV1
+   other (1 forms) IllegalArgumentException: Mirror summons no character: Mirror
+cp3_mc_402.tsv: scenes 19430, forms 335, with a clone 5630, spawner copies 4, not OK 5626, Clone refusals 0
+   other (63 forms) NOT_FORM A not evolved: ArcherQueen_EV1, Arrows_EV1, Assassin_EV1, Balloon_EV1, BarbLog_EV1, BattleHealer_EV1, BombTower_EV1, Bowler_EV1, Clone_EV1, DarkPrince_EV1, DarkWitch_EV1, DartBarrell_EV1 ...
+   other (33 forms) slot holds no such form (a non-form row of the sweep): Arrows_hero, BombTower_hero, Cannon_hero, Clone_hero, DarkMagic_hero, Earthquake_hero, Elixir Collector_hero, Fireball_hero, FirespiritHut_hero, Freeze_hero, GoblinBarrel_hero, GoblinCage_hero ...
+   other (1 forms) IllegalArgumentException: Mirror summons no character: Mirror
+cp3_mc_635.tsv: scenes 19430, forms 335, with a clone 5607, spawner copies 4, not OK 5626, Clone refusals 0
+   other (62 forms) NOT_FORM A not evolved: ArcherQueen_EV1, Arrows_EV1, Assassin_EV1, Balloon_EV1, BarbLog_EV1, BattleHealer_EV1, BombTower_EV1, Bowler_EV1, Clone_EV1, DarkPrince_EV1, DarkWitch_EV1, DartBarrell_EV1 ...
+   other (33 forms) slot holds no such form (a non-form row of the sweep): Arrows_hero, BombTower_hero, Cannon_hero, Clone_hero, DarkMagic_hero, Earthquake_hero, Elixir Collector_hero, Fireball_hero, FirespiritHut_hero, Freeze_hero, GoblinBarrel_hero, GoblinCage_hero ...
+   other (1 forms) UnsupportedOperationException: Giant_EV1 sets columns the battle does not model: [AttackSequenceList]: Giant_EV1
+   other (1 forms) IllegalArgumentException: Mirror summons no character: Mirror

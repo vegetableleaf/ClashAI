@@ -1,0 +1,22 @@
+core tests 2187 failures 0 errors 0 skipped 29
+[]
+[]
+BUILD SUCCESSFUL in 29m 26s
+rc=0
+core tests 2187 failures 0 errors 0 skipped 6
+[]
+[]
+BUILD SUCCESSFUL in 1m 5s
+rc=0
+built lib_fix3 d0123ab362d9cf14
+built lib_fix3snap e0aa99d84517cf31
+built
+sweep scene 16.402.22 26s
+sweep scene 16.635.3 26s
+sweep match 16.402.22 29s
+sweep match 16.635.3 28s
+sweep cm 16.402.22 31s
+sweep cm 16.635.3 30s
+sweep mc 16.402.22 26s
+sweep mc 16.635.3 25s
+done

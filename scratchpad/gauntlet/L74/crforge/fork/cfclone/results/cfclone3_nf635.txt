@@ -1,0 +1,109 @@
+played evolved 45
+   AngryBarbarians_EV1 in use census
+   Archer_EV1 in use census
+   AxeMan_EV1 in use census
+   BabyDragon_EV1 in use census
+   Barbarians_EV1 in use census
+   Bats_EV1 in use census
+   BattleRam_EV1 in use census
+   BlowdartGoblin_EV1 in use census
+   Bomber_EV1 in use census
+   Cannon_EV1 in use census
+   ElectroDragon_EV1 in use census
+   ElectroGiant_EV1 in use census
+   Firecracker_EV1 in use census
+   FirespiritHut_EV1 in use census
+   Ghost_EV1 in use census
+   Giant_EV1 NotInUse -
+   GoblinBarrel_EV1 in use census
+   GoblinCage_EV1 in use census
+   GoblinDrill_EV1 in use census
+   GoblinGiant_EV1 in use census
+   Hunter_EV1 in use census
+   IceSpirits_EV1 in use census
+   InfernoDragon_EV1 in use census
+   Knight_EV1 in use census
+   MegaKnight_EV1 in use census
+   MinionHorde_EV1 in use census
+   Mirror_EV1 NotInUse -
+   Mortar_EV1 in use census
+   Musketeer_EV1 in use census
+   Pekka_EV1 in use census
+   Princess_EV1 in use census
+   RageBarbarian_EV1 in use census
+   RoyalGiant_EV1 in use census
+   RoyalHogs_EV1 in use census
+   RoyalRecruits_EV1 in use census
+   SkeletonArmy_EV1 in use census
+   SkeletonBalloon_EV1 in use census
+   Skeletons_EV1 in use census
+   Snowball_EV1 in use census
+   Tesla_EV1 in use census
+   Valkyrie_EV1 in use census
+   Wallbreakers_EV1 in use census
+   Witch_EV1 in use census
+   Wizard_EV1 in use census
+   Zap_EV1 in use census
+not evolved 62
+   ArcherQueen_EV1 NotInUse -
+   Arrows_EV1 NotInUse -
+   Assassin_EV1 NotInUse -
+   Balloon_EV1 NotInUse -
+   BarbLog_EV1 NotInUse -
+   BattleHealer_EV1 NotInUse -
+   BombTower_EV1 NotInUse -
+   Bowler_EV1 NotInUse -
+   Clone_EV1 NotInUse -
+   DarkPrince_EV1 NotInUse -
+   DarkWitch_EV1 NotInUse -
+   DartBarrell_EV1 NotInUse -
+   Earthquake_EV1 NotInUse -
+   ElectroSpirit_EV1 NotInUse -
+   ElectroWizard_EV1 NotInUse -
+   EliteArcher_EV1 NotInUse -
+   Elixir Collector_EV1 NotInUse -
+   ElixirGolem_EV1 NotInUse -
+   FireSpirits_EV1 NotInUse -
+   Fireball_EV1 NotInUse -
+   Fisherman_EV1 NotInUse -
+   Freeze_EV1 NotInUse -
+   GiantSkeleton_EV1 NotInUse -
+   GoblinGang_EV1 NotInUse -
+   GoblinHut_EV1 NotInUse -
+   Goblins_EV1 NotInUse -
+   GoldenKnight_EV1 NotInUse -
+   Golem_EV1 NotInUse -
+   Graveyard_EV1 NotInUse -
+   Heal_EV1 NotInUse -
+   HogRider_EV1 NotInUse -
+   IceGolemite_EV1 NotInUse -
+   IceWizard_EV1 NotInUse -
+   InfernoTower_EV1 NotInUse -
+   LavaHound_EV1 NotInUse -
+   Lightning_EV1 NotInUse -
+   Log_EV1 NotInUse -
+   MegaMinion_EV1 NotInUse -
+   MightyMiner_EV1 NotInUse -
+   Miner_EV1 NotInUse -
+   MiniPekka_EV1 NotInUse -
+   MiniSparkys_EV1 NotInUse -
+   Minions_EV1 NotInUse -
+   Monk_EV1 NotInUse -
+   MovingCannon_EV1 NotInUse -
+   Phoenix_EV1 NotInUse -
+   Poison_EV1 NotInUse -
+   Prince_EV1 NotInUse -
+   Rage_EV1 NotInUse -
+   RamRider_EV1 NotInUse -
+   Rascals_EV1 NotInUse -
+   Rocket_EV1 NotInUse -
+   RoyalDelivery_EV1 NotInUse -
+   SkeletonDragons_EV1 NotInUse -
+   SkeletonKing_EV1 NotInUse -
+   SkeletonWarriors_EV1 NotInUse -
+   SpearGoblins_EV1 NotInUse -
+   Tombstone_EV1 NotInUse -
+   Tornado_EV1 NotInUse -
+   WitchMother_EV1 NotInUse -
+   Xbow_EV1 NotInUse -
+   ZapMachine_EV1 NotInUse -
