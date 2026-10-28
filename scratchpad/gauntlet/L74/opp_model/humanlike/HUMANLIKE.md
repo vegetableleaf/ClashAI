@@ -6,6 +6,7 @@
 | 2026-10-27 | THRESHOLDS.json v1 | `5b9cd2faa46149a69bdf7d091ba2d21ef111fc9cf4ce474ad3d791b1a8f8803c` | written and committed BEFORE any scoring; numbers copied from PLAN.md / REPORT_opponents.md section 4 |
 | 2026-10-27 | THRESHOLDS.json v2 | `0ba3aa32763dc3812d55fcaedd827f8fea482605945b2ca2a0cd364d6c5e2802` | before any model score. Two changes found by the human-vs-human control (see section Controls): B3 drops first_tick; A.ece_min_decisions = 200000 added. v1 is superseded |
 | 2026-10-27 | THRESHOLDS.json v3 | `0c42e9142d70842b1c59623b7fbe71ea4da890192e55bb3c2f677916712ec703` | before any new model score; human controls only. B3 point band becomes a CI-overlap rule (see changelog in the file); TOST unchanged. v2 superseded |
+| 2026-10-28 | THRESHOLDS.json v4 | `a5eb2c8fb232ccf94f3fee68617a297451dbcbd62287f3111e24fe9a5ad05695` | P2-SCORE, before any model score on the new items; human controls only: 25-stat closed-loop list, B-HF sufficiency 3,700 games per class, siege margins S (design-size 95% human pass), C built. B-live rule unchanged (decision owed). v3 superseded |
 
 `scorecard.py` refuses to run if THRESHOLDS.json does not hash to the LAST sha in this table.
 

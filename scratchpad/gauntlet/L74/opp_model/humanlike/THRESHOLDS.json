@@ -1,6 +1,6 @@
 {
-  "version": 3,
-  "changelog": "v3 (2026-10-27, before any new model score, human controls only): B3 point band replaced by a CI rule: pass unless the 90% CI of SD_model/SD_live (kurtosis-aware, SE of log SD = sqrt((kurt-1)/(4n))) lies wholly outside b3_spread_ratio_range; TOST unchanged. Human halves of the 12k set: 48/50 full-B passes (seeds 100-149) vs 15/20 under v2. v2 sha 0ba3aa32... ; v2 text: v2 (2026-10-27, before any model score): b3_stats drops first_tick (heavy-tailed: SD ratio between two random halves of 12k humans was 0.76-0.94, so humans failed the band); A.ece_min_decisions added (bin-ECE of a perfectly calibrated model is 1.9 pp at n=6000). Both found by the human-vs-human control, not by scoring a model. v1 sha 5b9cd2fa...",
+  "version": 4,
+  "changelog": "v4 (2026-10-28, P2-SCORE, before any model is scored on these items; human controls only, .foreman/scratch/p2score/): (1) B.stats_closed_loop = the 25 closed-loop stats card.py computes (CORE9 + POS4 + 5 play-gap/card-mix + 7 new; repeat_rate dropped: a card cannot be played twice in a row, HF SD 0); B-live rule UNCHANGED (TOST 0.20 every stat, RMS 0.10, B3 CI) although HF humans at the design size 856 vs 1,920 pass it 31/40 (decision owed by the coordinator). (2) B.b_hf_min_games_per_class 3700: HF human halves pass B-HF (23 stats, TOST 0.10) 0/20 at 1,000, 6/20 at 2,000, 18/20 at 3,700 matches per half, so the plan's 2,000 games per archetype cannot certify humans. (3) S = siege-fact equivalence margins (SIM - live, match-cluster bootstrap 90% CI inside +-margin), each the smallest margin a human sample of the design size passes 95% of the time ((1.645 + 1.96) x bootstrap SE_diff, live calibration 856 vs 1,920): lock 0.046, zero-lock 0.051, P(lock|prev failed) 0.064, cond gap 0.095 (rounded up below); per-archetype lock rate +-0.10 needs >= 600 live X-Bows (hog, other, weak_other today). v3 sha 0c42e914... ; v3 text: v3 (2026-10-27, before any new model score, human controls only): B3 point band replaced by a CI rule: pass unless the 90% CI of SD_model/SD_live (kurtosis-aware, SE of log SD = sqrt((kurt-1)/(4n))) lies wholly outside b3_spread_ratio_range; TOST unchanged. Human halves of the 12k set: 48/50 full-B passes (seeds 100-149) vs 15/20 under v2. v2 sha 0ba3aa32... ; v2 text: v2 (2026-10-27, before any model score): b3_stats drops first_tick (heavy-tailed: SD ratio between two random halves of 12k humans was 0.76-0.94, so humans failed the band); A.ece_min_decisions added (bin-ECE of a perfectly calibrated model is 1.9 pp at n=6000). Both found by the human-vs-human control, not by scoring a model. v1 sha 5b9cd2fa...",
   "registered": "2026-10-27",
   "source": "scratchpad/gauntlet/L74/plan1026/PLAN.md Pillar 2 + REPORT_opponents.md section 4; numbers copied, none tuned on baseline scores",
   "rule": "every pass is an equivalence test; a cell with too little data FAILS (never passes by default)",
@@ -20,44 +20,165 @@
     "memory_used": "late-match (t > 120 s) NLL with the real memory beats a memory from another match by more than the seed gap"
   },
   "B": {
-    "stats_features_sim_rows": ["ppm_1x","ppm_2x","first_tick","react_s","react_3s","react_lift","push_mean","push_max","spell_share"],
-    "stats_features_full": ["ppm_1x","ppm_2x","own_half","bridge","our_half","first_tick","react_s","react_3s","react_lift","push_mean","push_max","spell_share","opp_el"],
-    "extra_play_stats": ["gap_p10","gap_p50","gap_p90","card_entropy","top_card_share","repeat_rate"],
-    "b_hf_per_stat_abs_d_max": 0.10,
+    "stats_features_sim_rows": [
+      "ppm_1x",
+      "ppm_2x",
+      "first_tick",
+      "react_s",
+      "react_3s",
+      "react_lift",
+      "push_mean",
+      "push_max",
+      "spell_share"
+    ],
+    "stats_features_full": [
+      "ppm_1x",
+      "ppm_2x",
+      "own_half",
+      "bridge",
+      "our_half",
+      "first_tick",
+      "react_s",
+      "react_3s",
+      "react_lift",
+      "push_mean",
+      "push_max",
+      "spell_share",
+      "opp_el"
+    ],
+    "extra_play_stats": [
+      "gap_p10",
+      "gap_p50",
+      "gap_p90",
+      "card_entropy",
+      "top_card_share",
+      "repeat_rate"
+    ],
+    "b_hf_per_stat_abs_d_max": 0.1,
     "b_hf_min_games_per_archetype": 2000,
-    "b_live_per_stat_abs_d_max": 0.20,
-    "b_live_rms_d_max": 0.10,
+    "b_live_per_stat_abs_d_max": 0.2,
+    "b_live_rms_d_max": 0.1,
     "human_floor_rms_d_reference": 0.05,
-    "human_12k_vs_13k_rms_d_reference": 0.10,
-    "b3_spread_ratio_range": [0.9, 1.1],
+    "human_12k_vs_13k_rms_d_reference": 0.1,
+    "b3_spread_ratio_range": [
+      0.9,
+      1.1
+    ],
     "b3_rule": "ci_overlap",
     "b3_ci_z": 1.645,
-    "b3_stats": ["ppm_1x","ppm_2x","react_s","react_3s","push_mean","push_max"],
+    "b3_stats": [
+      "ppm_1x",
+      "ppm_2x",
+      "react_s",
+      "react_3s",
+      "push_mean",
+      "push_max"
+    ],
     "min_n_per_side_for_a_stat": 5,
-    "signature_stats_abs_d_max": 0.10,
-    "signature_archetypes": ["Siege","Bait","Beatdown","Hog_cycle","Bridge_spam","Control"]
+    "signature_stats_abs_d_max": 0.1,
+    "signature_archetypes": [
+      "Siege",
+      "Bait",
+      "Beatdown",
+      "Hog_cycle",
+      "Bridge_spam",
+      "Control"
+    ],
+    "stats_closed_loop": [
+      "ppm_1x",
+      "ppm_2x",
+      "first_tick",
+      "react_s",
+      "react_3s",
+      "react_lift",
+      "push_mean",
+      "push_max",
+      "spell_share",
+      "own_half",
+      "bridge",
+      "our_half",
+      "opp_el",
+      "gap_p10",
+      "gap_p50",
+      "gap_p90",
+      "card_entropy",
+      "top_card_share",
+      "ppm_ot",
+      "lane_left",
+      "split_rate",
+      "troop_depth",
+      "spell_depth",
+      "pocket_share",
+      "ans_spell_3s"
+    ],
+    "b_hf_min_games_per_class": 3700
   },
   "C": {
     "auc_upper_ci_max_overall": 0.55,
     "auc_upper_ci_max_per_archetype": 0.58,
     "auc_vs_human_12k13k_margin": 0.03,
     "n_per_class_min": 5000,
-    "status": "level C not built yet (later ticket); thresholds registered now"
+    "status": "built (humanlike/disc.py); HF human halves 5,000/5,000 AUC 0.512 [0.495, 0.529]"
   },
   "D": {
     "min_sealed_matches": 1500,
     "mean_pred_vs_live_pp_max": 4.0,
     "archetype_min_live_n": 150,
     "archetype_residual_pp_max": 8.0,
-    "recalibration_slope_range": [0.8, 1.25],
-    "tost_ci": 0.90
+    "recalibration_slope_range": [
+      0.8,
+      1.25
+    ],
+    "tost_ci": 0.9
   },
   "H": {
     "definition": "H = sum_c w_c * pass_c; c = head deck (>= 200 held-out HF sides and in the live census) else archetype, per band; w_c = cell share of that band's live opponents",
     "target": 0.999,
-    "bands_trophies": [[10000, 12000], [12000, 13000], [13000, 14000], [14000, 99999]],
-    "archetypes": ["Hog_cycle","Siege","Log_Bait","Heavy_beatdown","Light_beatdown","PEKKA_MK_bridge","Bridge_spam","Air","Control","Other"],
-    "report_separately": ["H_ABC", "H_D"]
+    "bands_trophies": [
+      [
+        10000,
+        12000
+      ],
+      [
+        12000,
+        13000
+      ],
+      [
+        13000,
+        14000
+      ],
+      [
+        14000,
+        99999
+      ]
+    ],
+    "archetypes": [
+      "Hog_cycle",
+      "Siege",
+      "Log_Bait",
+      "Heavy_beatdown",
+      "Light_beatdown",
+      "PEKKA_MK_bridge",
+      "Bridge_spam",
+      "Air",
+      "Control",
+      "Other"
+    ],
+    "report_separately": [
+      "H_ABC",
+      "H_D"
+    ]
   },
-  "attribution_rule": "if A-C pass and D fails, the gap is assigned to the engine or the bot's live execution, not the opponent"
+  "attribution_rule": "if A-C pass and D fails, the gap is assigned to the engine or the bot's live execution, not the opponent",
+  "S": {
+    "lock_rate_pp": 0.05,
+    "zero_lock_pp": 0.06,
+    "p_lock_after_fail_pp": 0.07,
+    "cond_gap_pp": 0.1,
+    "arch_lock_rate_pp": 0.1,
+    "arch_min_live_xbows": 600,
+    "ci": 0.9,
+    "unit": "match-cluster bootstrap",
+    "definitions": "reach X-Bow = ours within 13.5 tiles of an alive enemy princess; locked = that princess lost >= 5% of max HP within 600 ticks (succ48/xbow_count.py = match_memory); zero_lock over matches with >= 2 reach X-Bows; cond gap = P(lock|prev locked) - P(lock|prev failed) within a match; persistence (reported, not tested) = P(any X-Bow in (t+600, t+1200] | failed) / same | locked"
+  }
 }

@@ -466,6 +466,9 @@ def score(name, sim_root, th, sha, a_args, hf_sim=None, do_c=True, out_dir=None)
         Hs, meta = hf_records(th['_hf_ref'], split=2)
         bh = level_b(rows(Hs), rows(sim_records(hf_sim)), th, feats=[k for k in STATS if k not in ('opp_el', 'pocket_share')],
                      margin=th['B']['b_hf_per_stat_abs_d_max'])
+        need = th['B'].get('b_hf_min_games_per_class', 0)
+        bh['enough'] = min(bh['n_live'], bh['n_sim']) >= 2 * need          # records are sides: 2 per match
+        bh['passed'] = bool(bh['passed'] and bh['enough'])
         rep['B_HF'] = bh
         lines.append(print_b('## B-HF', bh))
     else:
@@ -621,6 +624,8 @@ def selftest(th, hf_path=None, nsp=50, out=None):
 
 def main():
     th, sha = SC.load_thresholds()
+    if sorted(th['B'].get('stats_closed_loop', STATS)) != sorted(STATS):
+        raise SystemExit('card.py STATS differ from THRESHOLDS B.stats_closed_loop: refusing')
     th['_hf_ref'] = str(HERE / 'data' / 'hf_ref_bec5811a.json.gz')
     ap = argparse.ArgumentParser()
     ap.add_argument('cmd', choices=('card', 'score', 'selftest', 'prep'))
