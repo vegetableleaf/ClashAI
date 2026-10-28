@@ -655,3 +655,29 @@ python -I project.py results/loop_n2048_c2_t24.json --extra-core-s 0.05   # lapt
 - **Arithmetic traps (a, code).** Python 3.12 (pods) `sum()` of floats is Neumaier-compensated (`_lost`, `_mean`, the
   Rocket sum): CfMem.pySum mirrors CPython; `math.hypot` = CPython vector_norm (pyHypot); the vectorised learner path
   uses plain cumsum, so rollout row == learner row is itself checked (`memory.stats.rebuild_*`).
+- **API for LOOP-INT (`CfMem`, default package beside CfCore).** Shared: `CfMem.Tables` (fill once per JVM from Python,
+  as `obs_id.JavaMem` does: `slugs` -> `cidSlug`, `fill_det` -> `detSlug`, `resolve` on `Tables.missing`, `unit`, the
+  v2 LUT / lock head / regen arrays). Per facade core: `CfMem.Log(core, tables)`; the loop calls
+  `log.play(side, actTick, cid, CfMem.Log.playForm(core, side, cid) /* read BEFORE giving the play */, x, y)` for every
+  ACCEPTED play (x, y = the act's engine millitiles) and `log.press(side, tick, button)` for every accepted press. Per seat
+  per match: `CfMem(core, tables, log, seat)` (`reset()` when the battle restarts in place); at each of the seat's
+  decisions, AFTER that seat's `CfOppElixir.update()`: `while (!mem.observe(opp)) fill tables`, then
+  `mem.features(deckCard /* the row's 8 gid ids */, buf, off)` writes the MEM_KEYS row at `off` (layout `CfMem.OFF_*`,
+  `BYTES` = 26,192, native order). At the match end: `mem.table()` = the event table (TABLE_KEYS dtypes; `obs_id.JavaMem.
+  java_table` converts) -> rl_royale's `result["memory"]`; each recorded row's `mem_t` = its decision tick.
+  Bodies are kept only while an open outcome window can read them (a play arriving later than its tick's previous
+  decision would throw: none in SIM, `late` counts them).
+- **Result (a), pod 32657 `/workspace/loopmem`, pipeline at 70193b9, facade = HEAD CfCore.java on the cfspeed lib, B0
+  both seats, sources pinned (`facade_src_sha256` in each JSON), 56 matches each (14 processes, `mem_par.sh`):**
+
+  | cfg | JSON | seat-rows | MEM_KEYS (6) | other 20 keys | tables (both seats) | learner rebuild | plays / presses |
+  |---|---|---:|---|---|---|---:|---|
+  | live | `results/mem_live.json` | 51,396 | **identical** | identical | **112 / 112 identical** (12,340 events) | 51,396 / 51,396 | 3,968 / 0 |
+  | live + `--hero-abilities` | `results/mem_press.json` | 53,782 | **identical** | identical | **112 / 112 identical** (11,861 events) | 53,782 / 53,782 | 3,531 / 479 |
+
+  0 tick mismatches, 0 own-log mismatches, 0 play-form mismatches (CfMem.Log.playForm vs public_plays), 0 late plays.
+  Coverage (`diag.memev_colNN` = tokens with column NN set, live): tower falls 1,298, X-Bow reach / done / locked
+  85,765 / 63,560 / 26,901, answers 93,506, Rocket aimed / done 1,545 / 2,018; ability rows 74,646 (press run).
+  **Never exercised (b): `rk_combo` (col 45 and summary 13: 0 in both runs; CLXIII made no Rocket within -24..+40 ticks
+  of its own Tornado here).** The cost columns of these runs are NOT the cost (28 processes on shared cores: the cue's
+  Java time read 494 us / row vs S3b-3f's 15.3); the clean cost run is separate (below).
