@@ -7,7 +7,7 @@
 | 2026-10-27 | THRESHOLDS.json v2 | `0ba3aa32763dc3812d55fcaedd827f8fea482605945b2ca2a0cd364d6c5e2802` | before any model score. Two changes found by the human-vs-human control (see section Controls): B3 drops first_tick; A.ece_min_decisions = 200000 added. v1 is superseded |
 | 2026-10-27 | THRESHOLDS.json v3 | `0c42e9142d70842b1c59623b7fbe71ea4da890192e55bb3c2f677916712ec703` | before any new model score; human controls only. B3 point band becomes a CI-overlap rule (see changelog in the file); TOST unchanged. v2 superseded |
 | 2026-10-28 | THRESHOLDS.json v4 | `a5eb2c8fb232ccf94f3fee68617a297451dbcbd62287f3111e24fe9a5ad05695` | P2-SCORE, before any model score on the new items; human controls only: 25-stat closed-loop list, B-HF sufficiency 3,700 games per class, siege margins S (design-size 95% human pass), C built. B-live rule unchanged (decision owed). v3 superseded |
-| 2026-10-28 | THRESHOLDS.json v5 | `c0c2feb4cdc7ad6b004e8fe1bf36b807ad5423e59bea5fef13b71b08d057f1a8` | P2-SCORE (account 2), owner decision 10-28 (HANDOFF_1028 9.9): B-live + C-live from ALL recorded live matches, recency-weighted; human controls only, registered BEFORE any model score (section 9). v4 superseded |
+| 2026-10-28 | THRESHOLDS.json v5 | `438a7692d85bfe58127c23eb30bffae5b1d585407535727e26e64ef327ff31b9` | P2-SCORE (account 2), owner decision 10-28 (HANDOFF_1028 9.9): B-live + C-live from ALL recorded live matches, recency-weighted; human controls only, registered BEFORE any model score (section 9). v4 superseded |
 
 `scorecard.py` refuses to run if THRESHOLDS.json does not hash to the LAST sha in this table.
 
@@ -167,6 +167,7 @@ Reports: `out/card_e4/report.txt|json`, `out/card_iu40/report.txt|json`. Both ba
 All (a) measured on human data only, before any model score; outputs `out/v5_shift.txt|json`, `out/v5_bnull.json`,
 `out/verify/v5_bnull.json`, `out/v5_cnull.json` (+ per-draw `out/v5_cnull/`), reference `data/allref_v5.json.gz` (local, sha256
 109b37ce...; rebuild = `allref.py scan` on the laptop, `parse` + `build` on a pod: section 9.5).
+(The sha is of the LF file, as scorecard.load_thresholds hashes it; commit 85d0269 logged c0c2feb4..., the hash of the same content with Windows CRLF line ends: corrected before any score. allref.register now writes LF.)
 ### 9.1 Reference
 - Population rule: every non-sealed, non-dry live_play log of the ICEBOW deck (all Marks, both accounts) with public frames and
   >= 3 detected opponent plays = **4,752 matches** (10-07 .. 10-28 09:06; logs before 10-07 have no public frames). Bait-deck

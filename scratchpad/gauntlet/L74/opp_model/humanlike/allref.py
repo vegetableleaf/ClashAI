@@ -349,7 +349,7 @@ def register(half_life, n_sim):
                        f"{cn['draws']} fresh discriminators on human halves (weighted human class, {n_sim} humans as the model), upper "
                        f"CI q95 {cn['upper_ci_q95']:.3f} -> limit {auc}; sufficiency = >= {n_sim} model games (C.n_per_class_min stays "
                        f"for C-HF). S (siege) unchanged on the CLXIII calibration block. v4 sha a5eb2c8f...; v4 text: {old}")
-    (HERE / 'THRESHOLDS.json').write_text(json.dumps(th, indent=2) + '\n')
+    (HERE / 'THRESHOLDS.json').write_bytes((json.dumps(th, indent=2) + '\n').encode())   # LF: the logged sha is of LF bytes
     print(hashlib.sha256((HERE / 'THRESHOLDS.json').read_bytes()).hexdigest())
 
 
