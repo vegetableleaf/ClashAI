@@ -7,9 +7,11 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
 - **Default for SME: yes.** **Default for facade / training / re-drive: NO, blocked** by the HF gate (below): F1FIX makes
   the Rune Giant enchant, and its enchant reaches unmodelled paths that refuse (a fault = a crashed match).
 - Gates of the m1 head: all done (table; summaries in `main/results/`). Libs on all four pods, sha-checked. `current` is NOT set on any pod (training blocked).
-- Next step (owner / foreman decision, not taken here): either model the Rune Giant enchant cases F1FIX now reaches
-  (a ticket "F1FIX-3": attack sequences that launch, the maker-left walk, Berserker step), or give training a lib without
-  F1FIX (= `clashbot-cfclone` 3ebb4115, whose own HF run `/workspace/d1c/f20k_cfclone3` is CF-CLONE-3's).
+- Decision (coordinator, 2026-10-28): **F1FIX-3**. Worker abce1b8e724455bae models the Rune Giant enchant cases on
+  branch `clashbot-f1fix3` off 624eeb45, with these gates (HF 20k <= 7 and explained). No training lib without F1FIX.
+  The hold stays until F1FIX-3 passes.
+- Next step: merge `clashbot-f1fix3` into clashbot-main, re-run all gates (`gates30408.sh`, `sme_gate.sh`,
+  `clone_sweep.sh`), `ship_main.sh` the new head, then switch facade / training / re-drive in one step.
 
 ## What is on the branch
 | commit | from | what |
