@@ -21,7 +21,21 @@ python cbt/.../opp/level_a.py --ckpt runs/NAME/opp_NAME_s0.pt --data hf_slot_NEW
 ```
 Live split: `live_split.json` (frozen 2026-10-28 09:06 EDT, never rewritten; sealed = every log from 20261028_090648).
 
-## STATUS (P2-OPP2, account 2; updated 2026-10-28 21:30 UTC; keep current)
+## STATUS (P2-OPP2, account 2; updated 2026-10-28 22:20 UTC; keep current)
+RUNNING on 33903 (22:20 UTC; ssh -p 33903 root@157.157.221.29):
+- v1 pretrain seed 0, PID 4608, /workspace/opp/v1/run_s0/ (restart command below). Measured 10k steps in ~38 min (~4.4 steps/s) ->
+  100k ~04:00 UTC 10-29. Held-out at 10k (own held-out set, NOT v0's: b-level comparison only): total 6.109 (v0 6.061), cell
+  3.319 (3.325), cell top-1 19.1% (18.6%), card top-1 52.3% (54.4%); the one-cycle peak is later (5k vs 2k steps).
+- seed 1 queued: /workspace/opp/v1/after_s0.sh (PID 5431) waits for PID 4608, then runs seed 1 -> /workspace/opp/v1/run_s1/
+  (log /workspace/opp/v1/run_s1.train.log), ETA ~10:30 UTC. Not in parallel: seed 0 holds 12.9 GB GPU, no mid-run resume.
+- level B of v0 WITH this commit's decode fixes (baseline for v1, same config v1 will get): run_closed.sh PID 5885, CLXIII vs
+  opp_m10_s0_sim.pt T 1, fe364ceb, G2 ON (f6c2ae0), 32 workers, seeds 741200 742000 742800 743600 (4 x 480 = 1,920 games),
+  rows /workspace/opp/score/rows/v0fix/, driver log /workspace/opp/score/v0fix.out, ETA ~07:30 UTC. Restart (resumable per block):
+  `cd /workspace/opp/score && (CB=/workspace/opp/cb LIB=/workspace/crforge_main/fe364ceb/plain OPP_CKPT=/workspace/opp/cbs/opp_ckpt/opp_m10_s0_sim.pt OPP_T=1.0 WORKERS=32 G2_ON=on setsid nohup bash /workspace/opp/cb/scratchpad/gauntlet/L74/opp_model/humanlike/run_closed.sh v0fix /workspace/opp/score/rows/v0fix 741200 742000 742800 743600 >> /workspace/opp/score/v0fix.out 2>&1 < /dev/null &)`
+  Score: fetch rows to opp_model/humanlike/rows/v0fix, `card.py score --name v0fix --sim .../rows/v0fix --no-d` under THRESHOLDS v6.
+NEXT (this seat): seed 0 done -> attach_sim.py (--data /workspace/opp/v1/hf_slot_v1) -> level_a.py on hf_slot_v1_test (+ its
+  _memory.npz, split 2) -> level B v1 (same run_closed command, OPP_CKPT = the v1 _sim.pt, NAME v1s0) -> card.py v6; seed 1 ->
+  level A + memory seed gap. Pilot bar (lead 10-28): v6 B-live RMS d <= 0.20, siege facts inside v6 margins, CLXIII SIM win 30-50%.
 Pod: 33903 (1x 4090, 125 GB cgroup, 120 GB /workspace) = ALL my GPU + closed-loop work (lead 10-28). 33308 GPU1 released
 (nothing of mine ran there after 20:00 UTC; its container restarted again ~20:53 UTC, not my load).
 Step 1 (CPU-side decode gaps; e1_eval timing hunks + tests; pod smoke = see below):
