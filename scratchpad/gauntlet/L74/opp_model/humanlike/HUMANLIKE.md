@@ -266,3 +266,20 @@ All (a) measured, human data only, registered (LF sha 26568167...) before any mo
   play ticks (SIM CLXIII vs live CLXIII: an instrument / engine difference can separate them, not only the opponent).
 - What v6 makes stricter / looser: per-stat checks are now "no detectable difference at this n" (z <= 3.2), so a stat with a large
   SE (pocket_share, ppm_ot) gets a wide margin and a well-measured stat a narrow one; RMS 0.10 is the substantive bound.
+### 11.1 Baselines under v6 (sha 26568167; `card.py score --no-d`, pod 32657; reports `out/card_{e4,iu40}_v6/`; rows a677e080)
+| item | E4 (1,913) | I u40 (1,913) | v6 limit |
+|---|---|---|---|
+| B-live RMS d (25 stats, half-life-2 reference) | 0.58; 18 stats fail z <= 3.2 | 0.68; 20 fail | 0.10 |
+| worst | react_lift +1.54, react_3s +1.21, opp_el -1.05, react_s -1.04 | own_half -1.66, opp_el -1.46, react_s -1.13, bridge +0.98 | |
+| C-live AUC vs the newest block (856 matches, n_eff 787) | 0.986 [0.980, 0.990] | 0.989 [0.983, 0.994] | upper <= 0.60 |
+Both FAIL, by the same margins as v4 / v5 (the result does not depend on the rule version). D not read.
+### 11.2 Running (STATUS)
+- B-HF / C-HF closed loop, E4 in both seats: pod 32657, `bash /workspace/score/pl/bhf_run.sh e4 <E4 path>` (pairs.py --mvm,
+  4,000 HF test-split pairs `mvm_jobs4000.jsonl` sha 1b0afd19..., crforge fe364ceb, CPUs 208-223, out /workspace/score/pl/bhf_e4,
+  log bhf_e4.out, parent PID 2251757; ~33 games/min). Resumable: rerun the same command (finished chunks are kept).
+  Then: fetch `/workspace/score/pl/bhf_e4/{run.json,pairs/D3/*/matches.jsonl}` to `rows/bhf_e4` and
+  `card.py score --name e4 --sim rows/e4 --hf-sim rows/bhf_e4 --no-d` (B-HF needs >= 3,700 matches per class: 4,000 games give
+  8,000 seat records). I u40 next: `bash bhf_run.sh iu40 icebow/data/pipeline/o2/w14opp_I.pt "--opp-decide-every 20 --opp-tau 0.2"`.
+- (c) persona fork test: handed to P3-FORK by the lead (10-28).
+- Codex p2score_3 (low): v6 null draws -> BLOCKED on a local PowerShell parse error after BNULL; the pod job ran on; finished and
+  collected by hand.
