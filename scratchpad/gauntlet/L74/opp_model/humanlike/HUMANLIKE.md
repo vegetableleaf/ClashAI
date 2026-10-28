@@ -210,3 +210,40 @@ All (a) measured on human data only, before any model score; outputs `out/v5_shi
 pod -> `allref.py parse` (8 shards) -> `build` -> `shift` -> `bnull --unregistered` -> `cnull --unregistered --seeds ...` -> `csum`
 -> `register --half-life 7 --n-sim 1900` (writes v5 from v4). Transfer script used: scratchpad copy of p2s_xfer.sh (tar with
 `--no-same-owner`; root tar exits 2 on Windows uids otherwise).
+
+## 10. P2-SCORE STATUS (re-dispatch, account 2; updated 2026-10-28 ~16:30 EDT)
+### 10.1 Baselines re-scored under v5 (sha 438a7692; `card.py score --name N --sim rows/N --no-d`, pod 32657; reports `out/card_{e4,iu40}_v5/`)
+| item | E4 (1,913, a677e080) | I u40 (1,913, a677e080) | v5 limit |
+|---|---|---|---|
+| B-live RMS d, 25 stats vs the weighted all-matches reference | 0.60 (19 stats fail TOST) | 0.68 (17 fail) | 0.10 |
+| worst stats | react_lift +1.55, react_3s +1.25, react_s -1.06, opp_el -0.99 | own_half -1.65, opp_el -1.38, react_s -1.15, bridge +0.98 | per-stat 0.22 |
+| C-live AUC (90% CI) | 0.985 [0.981, 0.988] | 0.986 [0.982, 0.990] | upper <= 0.56 |
+| siege (S unchanged, calibration block) | lock +0.100 [+0.081, +0.118], zero-lock -0.090 | as v4 | FAIL |
+Both FAIL by ~6x on B-live and by ~0.43 AUC on C-live, as under v4 (0.57 / 0.67; AUC .979 / .985). D not read (--no-d: the
+sealed block stays untouched; D1 belongs to predict_live.py).
+### 10.2 Split items
+- (e) G2 with the live stack: DONE, f6c2ae0 (e1_eval hunk + 3 tests; smoke on 2205952+hunk = pure 2205952 7ddefc77 / cfb86766,
+  SMOKE PASS; pytest 22 passed on the pod; pyflakes: 2 warnings that pre-exist on HEAD, none new). run_closed.sh G2_ON=on now works.
+- (d) predict_live.py: BUILT + smoke (24 games: 6 calibration battles x 4, CLXIII D3 + G2 vs E4; follow_ups fired with tap
+  losses in the same matches; P_hat + logged sha). Battle-log mapping: 578 / 590 calibration battles map (12 hold Minion Giant,
+  no engine card). The battle log starts 10-26 (poller), so D1 covers 10-26 onward. Not run on the sealed block (level D, last).
+  Open wording issue for the lead: "write + hash before the block is played" cannot hold per match (the deck is known only
+  after); implemented = predictions from deck-only fields, sha logged before `grade` may read outcomes.
+- (b) model-vs-model runner: BUILT + smoke (pairs.py --mvm, 24 HF test-split pairs, E4 in both seats, 24/24 games; card.sim_records
+  mvm gives 2 seat records per game; level_b vs HF humans runs). Owed: a full B-HF run (>= 3,700 games per class; jobs:
+  `hf_ref.py --jobs 4000` on 33308) and C-HF wiring in card.score (records exist, the call does not).
+- (c) persona fork test: NOT BUILT. Proposed: an eval-only driver over pipeline/cf_credit.py's xbow_after_fail trigger
+  (candidates X-Bow again / wait / Rocket, K CRN continuations) with the opponent seat = each persona; per persona mean A(again) -
+  A(wait). cf_credit is P3-FORK's code; needs that worker or the lead to decide the driver's home (outside humanlike/**).
+### 10.3 Running / restart
+- Nothing of mine is running. Pod 33308 restarted at ~18:40 UTC (uptime reset) while my 10 C-null processes (~1.4 GB each,
+  4 threads each) ran beside other workers; cause not established; the draws were finished on 32657.
+- Pod files: 33308 /workspace/score/v5 (code copy, 5,178 caches; the 661 copied raw logs were deleted after parsing,
+  6 GB freed); 32657 /workspace/score/cb (scoring copy; placeholder empty files for the 887
+  calibration log names in scratchpad/gauntlet/L68/live_reader so live_records finds the cached records), /workspace/score/pylib
+  (polars, private), /workspace/score/g2 (smoke trees), /workspace/score/pl (pairs smokes), /workspace/score/v5log.
+- Re-score: `ssh -p 32657 ... 'bash /workspace/score/v5log/rescore.sh'`. New closed-loop rows: crforge fe364ceb (run_closed.sh default).
+### 10.4 Codex dispatches
+- p2score_1 (medium): G2 smoke pair + pyflakes + pytest on 32657 -> DONE (numbers above, checked against the logs).
+- p2score_2 / 2b / 2c (medium): log copy + parse on 33308 -> BLOCKED three times (ssh array quoting; sealed caches in the cache dir,
+  correctly refused; ssh consuming the piped script). Done by hand instead (p2s_xfer.sh).

@@ -362,7 +362,7 @@ def ref_v5(th):
         for k, b in R.get('masks', {}).items():
             if r['ts'] < b:
                 x[k] = float('nan')
-        for k in STATS:
+        for k in set(STATS) | {k for k in x if not k.startswith('_')}:       # JSON null -> NaN (signature stats too)
             if x.get(k) is None:
                 x[k] = float('nan')
     return recs, rows_
@@ -581,7 +581,7 @@ def score(name, sim_root, th, sha, a_args, hf_sim=None, do_c=True, out_dir=None,
         rep['B_HF'] = bh
         lines.append(print_b('## B-HF', bh))
     else:
-        rep['B_HF'] = dict(passed=False, why='no model-vs-model HF-deck-pair rows (runner not built: NEEDS a learner-deck option)')
+        rep['B_HF'] = dict(passed=False, why='no --hf-sim rows (build: hf_ref.py --jobs N, then pairs.py run --mvm; see HUMANLIKE section 10)')
         lines.append('## B-HF: FAIL -- not scored: ' + rep['B_HF']['why'])
     # siege
     sgt = siege(L, S, th)
@@ -604,7 +604,7 @@ def score(name, sim_root, th, sha, a_args, hf_sim=None, do_c=True, out_dir=None,
         c = disc.level_c(LV, S, th, tag=name)
         rep['C_live'] = c
         lines.append('## C-live: ' + disc.fmt(c))
-        lines.append('   C-HF: FAIL -- not scored (needs the model-vs-model HF-deck-pair rows, as B-HF)')
+        lines.append('   C-HF: FAIL -- not scored (pairs.py --mvm rows exist as a smoke only; C-HF wiring owed)')
     else:
         rep['C_live'] = dict(passed=False, why='skipped (--no-c)')
         lines.append('## C: FAIL -- skipped (--no-c)')
