@@ -214,7 +214,17 @@ def install():
         row["x23"] = {"policy": POL, "frames": len(fr), "unmapped_bodies": dict(unk), "over": dict(over)}
         return row
 
-    S.forward, S.Runner.play, S.Runner.round = forward, play, round_
+    run0 = S._run_job
+
+    def run_job(job):                            # a crforge "not modelled" refusal (e.g. a Deflect off the king tower)
+        try:                                     # loses that match only, not its 12-seed chunk; counted by analyze.py
+            return run0(job)
+        except Exception as e:  # noqa: BLE001
+            if "not modelled" not in str(e):
+                raise
+            return {"arm": job[0], "opp": job[1], "seed": job[2], "skipped": "engine_gap: " + str(e)[-200:]}
+
+    S.forward, S.Runner.play, S.Runner.round, S._run_job = forward, play, round_, run_job
 
 
 def main():

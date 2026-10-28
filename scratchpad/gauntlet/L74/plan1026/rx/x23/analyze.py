@@ -40,6 +40,7 @@ CK = FIT.CK                                               # 60 / 120 / 180 s
 EXPLOITS = ("hold10", "nospell", "rocket_tower", "alldef", "xbow_spam", "rocket_tank")
 POLICIES = ("clxiii",) + EXPLOITS + ("imit",)
 SPLIT = FIT.SPLIT
+SKIPPED = {}                                              # engine-gap matches per run (load_sim)
 
 
 # ----------------------------------------------------------------------------------------------------- data
@@ -239,6 +240,9 @@ def load_sim(roots):
             rows = [json.loads(x) for x in open(f"{d}/matches.jsonl") if x.strip()]
             got = runs.setdefault((pol, mode), {})
             for r in rows:
+                if r.get("skipped"):                      # sim_worker: a crforge engine gap ended this match
+                    SKIPPED[f"{pol}_{mode}"] = SKIPPED.get(f"{pol}_{mode}", 0) + 1
+                    continue
                 key = (r["census"], r["seed"])
                 f = Path(d) / f"{census_of[key]:05d}" / "x23" / f"{r['seed']}.npz"
                 z = np.load(f)
@@ -370,6 +374,8 @@ def main():
     if sim_roots:
         runs = load_sim(sim_roots)
         res["sim_runs"] = {f"{p}_{m}": len(v) for (p, m), v in runs.items()}
+        res["sim_skipped_engine_gap"] = SKIPPED
+        print("SIM runs", res["sim_runs"], "engine-gap skips", SKIPPED, flush=True)
         res["sim_overrides"] = {f"{p}_{m}": dict(sum((collections.Counter(x["over"]) for x in v.values()), collections.Counter()))
                                 for (p, m), v in runs.items()}
         for key, mm in (("x2", mods), ("x2_sym", sym)):

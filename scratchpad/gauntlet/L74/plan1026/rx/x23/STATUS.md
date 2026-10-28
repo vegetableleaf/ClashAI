@@ -22,6 +22,12 @@
     nohup bash cb/scratchpad/gauntlet/L74/plan1026/rx/x23/run_x23.sh lane /workspace/rx23s/q33.txt 0-255 18 > laneN.out 2>&1 &
   imitation = "imit_<mode>_<seed> clxiii <mode> <seed> icebow/data/pipeline/gen_v32_s0/gen_s0.pt" (Mark LXXVII, 61011b6c).
 
+## Failures seen (handled by rerun)
+- crforge "not modelled": Deflect_3000018 deflecting a projectile off the king tower (hold10_e4_741200 chunk 26). sim_worker now
+  turns it into a skipped row (one match lost, counted in analyze.py sim_skipped_engine_gap) instead of a lost 12-seed chunk.
+- Intermittent SIGSEGV in libtorch oneDNN get_max_cpu_isa_mask inside the JPype JVM process (3 chunks in ~25 runs); the
+  job is requeued and rerun whole (run_x23.sh redoes any run without 480 rows).
+
 ## Next
 - Analysis: cd /workspace/rx23s; /workspace/venvf16/bin/python cb/scratchpad/gauntlet/L74/plan1026/rx/x23/analyze.py
   /workspace/rx23/hfE.npz liveE.npz x23_bl.jsonl an_final.json ev ev30 > an_final.out
