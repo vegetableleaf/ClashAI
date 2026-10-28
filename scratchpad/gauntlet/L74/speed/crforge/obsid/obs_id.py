@@ -716,6 +716,12 @@ class JavaMem:
                 self.stats["rebuild_rows"] += 1
                 self.stats["rebuild_equal"] += int(hi == h)
         self.stats["late"] += int(side._loopmem.late)
+        if rows and os.environ.get("LOOPMEM_BENCH"):        # steady-state features() cost at this match's last tick
+            ns = int(side._loopmem.benchFeatures(self.Int([int(c) for c in rows[-1][1]]), int(os.environ["LOOPMEM_BENCH"])))
+            self.stats["bench_ns_sum"] = self.stats.get("bench_ns_sum", 0) + ns
+            self.stats["bench_n"] = self.stats.get("bench_n", 0) + 1
+            self.stats["bench_ns_last"] = ns
+            self.stats["bench_events_last"] = int(side._loopmem.nv)
 
     def table_result(self) -> dict:
         return {k: dict(status="IDENTICAL" if r[1] == r[0] else "DIFF", tables=r[0], equal=r[1], first_diffs=r[2])

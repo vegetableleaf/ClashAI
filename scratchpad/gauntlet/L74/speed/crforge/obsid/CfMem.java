@@ -625,7 +625,7 @@ public final class CfMem {
     Arrays.fill(evRow, 0f);
     int nr = Math.min(nv, E_MAX);
     for (int r = 0; r < nr; r++) row(vis[nv - 1 - r], t, evRow, r * F);
-    for (int i = 0; i < E_MAX * F; i++) out.putFloat(off + OFF_EV + 4 * i, evRow[i]);
+    floats(out, off + OFF_EV, evRow);
     for (int r = 0; r < E_MAX; r++) {
       Ev e = r < nr ? vis[nv - 1 - r] : null;
       out.put(off + OFF_MASK + r, (byte) (e != null ? 1 : 0));
@@ -635,12 +635,30 @@ public final class CfMem {
     long ans = summary(t, deck);
     double[] f = s1c(t);
     for (int i = 0; i < N_S1C; i++) sum[S + i] = (float) f[i];
-    for (int i = 0; i < S_V2; i++) out.putFloat(off + OFF_SUM + 4 * i, sum[i]);
+    floats(out, off + OFF_SUM, sum);
     out.putLong(off + OFF_ANS, ans);
     rows++;
     events += nv;
     maxEvents = Math.max(maxEvents, nv);
     nanosFeatures += System.nanoTime() - t0;
+  }
+
+  /** A bulk float copy into {@code out} at byte {@code at} (in out's byte order). */
+  static void floats(ByteBuffer out, int at, float[] v) {
+    ByteBuffer d = out.duplicate().order(out.order());
+    d.position(at);
+    d.asFloatBuffer().put(v);
+  }
+
+  /** Cost probe (steady-state JIT): features() at the last tick {@code reps} times into a scratch buffer; ns per call.
+   *  Repeating it changes nothing a later row reads (every outcome it shows is cached already). */
+  public long benchFeatures(int[] deck, int reps) {
+    ByteBuffer b = ByteBuffer.allocateDirect(BYTES).order(java.nio.ByteOrder.nativeOrder());
+    long r0 = rows, e0 = events, n0 = nanosFeatures, t0 = System.nanoTime();
+    for (int i = 0; i < reps; i++) features(deck, b, 0);
+    long ns = (System.nanoTime() - t0) / Math.max(reps, 1);
+    rows = r0; events = e0; nanosFeatures = n0;
+    return ns;
   }
 
   /** match_memory.summary over vis -> sum[0 .. S) (float32), returns mem_answer. */
