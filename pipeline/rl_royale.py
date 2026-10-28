@@ -2694,10 +2694,13 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
     ctx_opt = None if vf is None else vf.get("ctx_opt")
     post_opt = None if posture is None else posture["opt"]
     ab_opt = None if ability is None else ability["opt"]
+    ks = cfg.get("kl_stop_prev")                              # LOOP-LRN early stop (None = off: the loop unchanged)
+    stop = None
 
     def summary(nonfinite: Optional[str]) -> dict:
         """Every key present even on the non-finite early exit (one_update logs them; None = not measured)."""
         return {"first": first, "nonfinite": nonfinite, "steps": len(ratios),
+                **({"kl_stop": stop} if ks is not None else {}),
                 **({"l_post": mean(last_ep, "l_post"), "ent_posture": mean(ep0, "ent_posture")}
                    if posture is not None else {}),
                 **({"l_ab": mean(last_ep, "l_ab"), "ent_ability": mean(ep0, "ent_ability")}
@@ -2711,6 +2714,7 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
 
     for ep in range(int(cfg["ppo_epochs"])):
         perm = torch.from_numpy(rng.permutation(N)).to(dev)
+        cur = []
         for s in range(0, N, mb):
             idx = perm[s:s + mb]
             loss, st = minibatch_loss(model, B, R, idx, tau=cfg["tau"], T=cfg["T"], clip=cfg["clip"], beta=beta,
@@ -2721,6 +2725,14 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
                 first = st
             if not torch.isfinite(loss):
                 return summary(f"loss {float(loss.detach())} at epoch {ep} minibatch {s // mb}")
+            if ks is not None and st["kl_gate"] + st["kl_card"] + st["kl_cell"] > float(ks):
+                # kl_stop_prev: this minibatch's KL to the anchor (the previous update's policy) is over the limit
+                # BEFORE its step -> no step, no further epoch; the epoch monitors = the steps that ran
+                stop = {"epoch": ep, "minibatch": s // mb, "kl": st["kl_gate"] + st["kl_card"] + st["kl_cell"],
+                        "steps": len(ratios)}
+                if not last_ep:
+                    last_ep.extend(cur or ep0)
+                return summary(None)
             opt.zero_grad(set_to_none=True)
             if ctx_opt is not None:
                 ctx_opt.zero_grad(set_to_none=True)
@@ -2751,6 +2763,7 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
             (ep0 if ep == 0 else []).append(st)
             if ep == int(cfg["ppo_epochs"]) - 1:
                 last_ep.append(st)
+            cur.append(st)
             ratios.append(st["ratio_mean"]); clips.append(st["clip_frac"]); gnorms.append(float(gn))
     return summary(None)
 
@@ -3327,7 +3340,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                               "heroiw_press", "ability_features", "kl_heads", "kl_ref_card", "league_deck_weights",
                               "ot_start_share", "xbow_start_share", "remote_actors", "kl_ref_refresh_every",
                               "tau_phase", "memory", "memory_aux", "memory_encoder_frozen",
-                              "memory_zero_empty", "learner_deterministic") + OPP_TEMPO_KEYS
+                              "memory_zero_empty", "learner_deterministic", "kl_stop_prev") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS and k not in CROWN_KEYS
                 and k not in HT.KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
@@ -3371,6 +3384,13 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
     rr = cfg.get("kl_ref_refresh_every")                     # W16 moving KL anchor: absent / null = the frozen init
     if rr is not None and not (type(rr) is int and rr >= 1):
         raise SystemExit(f"kl_ref_refresh_every must be null or an int >= 1, got {rr!r}")
+    ks = cfg.get("kl_stop_prev")                             # LOOP-LRN epoch early stop: absent / null = off
+    if ks is not None:
+        if isinstance(ks, bool) or not isinstance(ks, (int, float)) or not (math.isfinite(ks) and ks > 0):
+            raise SystemExit(f"kl_stop_prev must be null or a finite number > 0, got {ks!r}")
+        if rr != 1:                                           # the anchor must BE the previous update's policy
+            raise SystemExit(f"kl_stop_prev needs kl_ref_refresh_every: 1 (the KL anchor = the previous update's "
+                             f"policy), got {rr!r}")
     frac = cfg.get("learner_pipeline_frac", 0.0)
     if isinstance(frac, bool) or not isinstance(frac, (int, float)) or not 0 <= frac <= 1:
         raise SystemExit("learner_pipeline_frac must be a finite number in [0, 1]")
@@ -3417,6 +3437,8 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "league_deck_weights"}
     if cfg.get("kl_ref_refresh_every") is None:              # W16 moving anchor off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "kl_ref_refresh_every"}
+    if cfg.get("kl_stop_prev") is None:                      # LOOP-LRN early stop off (absent or null) = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "kl_stop_prev"}
     if cfg.get("memory") is None:                            # Plan A memory off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "memory"}
     elif cfg["memory"] == "v2":                              # S1c: the version AND the artifacts its features read
@@ -4469,6 +4491,8 @@ class Learner:
                "kl_gate": upd["kl_gate"], "kl_card": upd["kl_card"], "kl_cell": upd["kl_cell"], "beta_used": beta_used,
                "beta_next": self.beta, "kl_target": cfg["kl_target"], "leash": leash, "kl_leash": kl_leash,
                "kl_driver": kl_driver, "l_pg": upd["l_pg"],
+               **({"kl_stop_prev": cfg["kl_stop_prev"], "kl_stop": upd["kl_stop"], "steps": upd["steps"]}
+                  if "kl_stop" in upd else {}),                 # LOOP-LRN early stop (None = all epochs ran)
                "entropy": upd["ent"], "entropy_init": ent_init, "clip_frac": upd["clip_frac"],
                "ratio_mean": upd["ratio_mean"], "grad_norm_mean": upd["grad_norm_mean"],
                "first_minibatch": {k: first[k] for k in ("ratio_maxdev", "kl_gate", "kl_card", "kl_cell", "lp_maxdiff")},
@@ -4576,7 +4600,9 @@ class Learner:
                  f"pgate {f(mon['p_gate_mean'])} KL g/c/x {f(upd['kl_gate'], '{:.4f}')}/{f(upd['kl_card'], '{:.4f}')}/"
                  f"{f(upd['kl_cell'], '{:.4f}')} beta {beta_used:.3g}->{self.beta:.3g}"
                  + (f" (leash max: {kl_driver})" if leash == "max" else "") + f" clip {f(upd['clip_frac'])} "
-                 f"mixed {bst['mixed_groups']}/{bst['groups']} rows {bst['rows']} "
+                 + (f"kl_stop {'e%d mb%d KL %.4f' % (upd['kl_stop']['epoch'], upd['kl_stop']['minibatch'], upd['kl_stop']['kl']) if upd['kl_stop'] else 'no'} "
+                    f"steps {upd['steps']} " if "kl_stop" in upd else "")
+                 + f"mixed {bst['mixed_groups']}/{bst['groups']} rows {bst['rows']} "
                  f"wall roll {t_roll:.0f}s upd {t_upd:.0f}s"
                  + (f" | gae{' WARMUP (critic only)' if warm else ''} vloss {f(upd['l_v'], '{:.4f}')} ev "
                     f"{f(gst['explained_var'])} A {f(gst['adv_mean'], '{:+.4f}')}/{f(gst['adv_std'], '{:.4f}')} "

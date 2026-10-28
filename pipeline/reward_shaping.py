@@ -182,7 +182,7 @@ STATE_PHI_DEFAULTS = {"shaping_solv_w": 0.04, "shaping_solv_k": 1.0, "shaping_so
                       "shaping_tr_w": 0.03, "shaping_tr_cap": 8.0,      # trade: 0.03 x 8 = 0.24 (A3 "kept small")
                       "shaping_t2_w": 0.04, "shaping_t2_cap": 6.0}      # trade2: 0.04 x 6 log-odds = 0.24; 1 princess
 #                                         tower destroyed in 2x = 0.04 x (2.754 + 2.115) = 0.195; 2 in 2x hit the clip
-STATE_PHI_MODES = ("solvency", "tower_score", "trade", "trade2")
+STATE_PHI_MODES = ("solvency", "tower_score", "trade", "trade2", "tower_phat")
 # A3' coefficients (log-odds of winning per elixir of trade margin, per princess tower of hp margin, per princess tower
 # DESTROYED margin) by phase [1x < T_2X, 2x < 3600, OT]: scratchpad/gauntlet/L74/reward/CROWN_FIT_R1.txt = fit_crown.py
 # on pod_backup_weekend/pod1015_s5/ROWS_R1 (r1 vs gen_v1, 1000 SIM matches, 983 decisive, 398k rows; match-bootstrap CIs):
@@ -193,6 +193,19 @@ STATE_PHI_MODES = ("solvency", "tower_score", "trade", "trade2")
 #   (associational, not causal; the elixir margin is the weak predictor)
 TRADE2_B = ((0.066, 2.752, 0.738), (0.134, 2.754, 2.115), (0.145, 3.570, 0.0))
 TRADE2_PHASE_TICKS = (2400, 3600)
+# tower_phat (LOOP-LRN, plan1026 fast loop): Phi = P_hat(win | tower losses, elapsed time) - 0.5, |Phi| < 0.5, from
+# ``tower_phat_record`` rows; P_hat = sigmoid(sum_k hat_k(t) c_k . x), x = foe - own (princess hp lost, king hp lost, king
+# activated, crowns conceded), hat = continuous piecewise-linear in elapsed seconds on these knots (RX-X23's basis).
+TOWER_PHAT_KNOTS_S = (0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300)
+# c = [princess x 11 knots, king x 11, king_on x 11, crowns x 11]: pilot/lrn/fit_phi.py on RX-X23's hfE.npz (33308
+# /workspace/rx23, sha256 3ed632bfced9f5f4..., 14,845 decisive HF matches re-driven on crforge; train = SPLIT_HF dates 0-3,
+# 11,867 matches, 835k rows every 3 s; ridge 1e-2, no intercept). Held-out (2,978 matches, both views; pilot/lrn/phi_fit.json):
+# AUC .662 / .812 / .915, ECE .016 / .012 / .011 at 60 / 120 / 180 s. king_on < 0: activating the foe king costs us.
+TOWER_PHAT_C = (1.613108, 0.970422, 1.755037, 2.262009, 2.366333, 2.221121, 2.750722, 3.074324, 3.473824, 4.102967,
+                6.059022, 10.979707, 1.009929, 0.963392, 0.677698, 0.807111, 0.868943, 1.366414, 1.55039, 1.8114,
+                1.956755, 3.240376, -2.564953, -0.977802, -0.871203, -0.827373, -0.78292, -0.706881, -0.714791,
+                -0.648527, -0.674389, -0.664067, -0.794527, 7.036961, 0.853916, 1.00853, 1.381672, 1.649909, 1.91317,
+                4.375724, 24.118843, 8.304652, 8.95221, 10.466201)
 HALF_Y = 16000                  # own-frame y of the river centre (raw units, 1000 per tile; side 0 = Blue at low y)
 LANE_X = 9000                   # own-frame x < 9000 = left lane, else right
 CENTRE_BAND = 2500              # an own body within 2.5 tiles of the centre line can engage either lane
@@ -349,9 +362,45 @@ def phi_trade2(rows, p: dict) -> np.ndarray:
     return float(p["shaping_t2_w"]) * np.clip(b[:, 0] * dE + b[:, 1] * dT + b[:, 2] * dC, -cap, cap)
 
 
+def tower_phat_record(state: dict, side: int) -> list:
+    """tower_phat's row from ``side``'s view (9 floats): per side (own, then foe) its LOSSES as r_exchange.running_losses
+    counts them -- princess hp lost (sum of 1 - hp/max_hp over its 2 princess towers; destroyed or absent = 1), king hp
+    lost (1 - hp/max_hp), king activated (king damaged or a princess destroyed; 0/1), crowns conceded -- then the tick."""
+    ts = tower_score_record(state, side)                  # own king, own princess x2, foe king, foe princess x2, ..crowns
+    out = []
+    for king, prs, conceded in ((ts[0], ts[1:3], ts[9]), (ts[3], ts[4:6], ts[8])):
+        p_lost, k_lost = (1.0 - prs[0]) + (1.0 - prs[1]), 1.0 - king
+        out += [p_lost, k_lost, float(k_lost > 0 or min(prs) <= 0), float(conceded)]
+    return out + [ts[10]]
+
+
+def tower_phat_design(rows) -> np.ndarray:
+    """[n, 4 K] design of ``tower_phat_record`` rows: x = foe loss - own loss (princess, king, king_on, crowns; our gain
+    minus theirs), each times the K hat weights of the row's elapsed time (``TOWER_PHAT_KNOTS_S``, clipped to the last
+    knot). No intercept: z(-x) = -z(x), so P(win) of one side = 1 - the other's and Phi = 0 at any even state."""
+    r = np.atleast_2d(np.asarray(rows, dtype=np.float64))
+    x = r[:, 4:8] - r[:, 0:4]
+    kn = np.asarray(TOWER_PHAT_KNOTS_S, dtype=np.float64)
+    s = np.clip(r[:, 8] / 20.0, kn[0], kn[-1])            # 20 ticks per second
+    j = np.clip(np.searchsorted(kn, s, side="right") - 1, 0, len(kn) - 2)
+    w = (s - kn[j]) / (kn[j + 1] - kn[j])
+    H = np.zeros((len(s), len(kn)))
+    H[np.arange(len(s)), j] = 1.0 - w
+    H[np.arange(len(s)), j + 1] = w
+    return np.concatenate([H * x[:, [k]] for k in range(x.shape[1])], axis=1)
+
+
+def phi_tower_phat(rows, p: dict) -> np.ndarray:
+    """Phi per ``tower_phat_record`` row: P_hat(win) - 0.5 = sigmoid(design . TOWER_PHAT_C) - 0.5, in (-0.5, 0.5)."""
+    z = tower_phat_design(rows) @ np.asarray(TOWER_PHAT_C, dtype=np.float64)
+    return 1.0 / (1.0 + np.exp(-np.clip(z, -30.0, 30.0))) - 0.5
+
+
 def phi_bound(mode: str, p: dict) -> float:
     """max |Phi| over every reachable state: solvency w cap; tower_score max_c max(w_own[c], w_foe[c]) + w_tb (the
     own term is in [0, w_own], the foe term in [0, w_foe], the tiebreak term in [-w_tb, w_tb])."""
+    if mode == "tower_phat":
+        return 0.5
     if mode == "solvency":
         return float(p["shaping_solv_w"]) * float(p["shaping_solv_cap"])
     if mode == "trade":
@@ -366,7 +415,7 @@ def phi_bound(mode: str, p: dict) -> float:
 
 def state_phi(mode: str, rows, p: dict) -> np.ndarray:
     return {"solvency": phi_solvency, "tower_score": phi_tower_score, "trade": phi_trade,
-            "trade2": phi_trade2}[mode](rows, p)
+            "trade2": phi_trade2, "tower_phat": phi_tower_phat}[mode](rows, p)
 
 
 def state_record(mode: str, state: dict, side: int, env, mem: dict) -> list:
@@ -375,6 +424,8 @@ def state_record(mode: str, state: dict, side: int, env, mem: dict) -> list:
     ``mem["opp_est"]``, the public counter's estimate the actor put there for this decision)."""
     if mode == "tower_score":
         return tower_score_record(state, side)
+    if mode == "tower_phat":
+        return tower_phat_record(state, side)
     if mode in ("trade", "trade2"):
         if "cards" not in mem:
             mem["cards"] = card_table(env.core.cards())
