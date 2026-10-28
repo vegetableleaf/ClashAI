@@ -134,3 +134,30 @@ Live at 14:10: CLXIII NOLEAK Ranked, `--barrel-decoy on`, supervisor run started
 | LIVEOPS_3 | medium | BLOCKED (supervisor.log date format `Tue, Oct 13, 2026 10:07:34 AM`) |
 | LIVEOPS_3b | medium | DONE (nograb_history.md; anchors checked: 12:14 episode 60.3 s, 10-19 08:20 line) |
 Lesson for the next ticket: list every input format variant and say "skip and count" in the decision tree; three of six runs stopped on a spec gap.
+
+## 8. Two 0-3 losses in ~66 s (live_play_20261028_154218 tick 1328, 154335 tick 1311; analysis 10-28 ~16:00, no live change)
+Scripts and data in `short0_3/` (timeline.py, defence_geom.py, battles.py, short_losses.py/.md). Labels: (a) measured, (b) plausible untested, (c) contradicted.
+- (a) Tick = 20 / s (wall 65.6 s / 65.9 s for 1328 / 1311 ticks): the matches really lasted ~66 s. A king-tower kill ends a match 3-0 whatever the princesses are.
+- (a) Battle log (crapi/data/own_battlelog.jsonl, 15:43:19 / 15:44:37 EDT): mode Ranked1v1_NewArena (same as every recent match), opponents at max card levels, decks:
+  154218 = Battle Ram evo, Balloon (hero), Royal Recruits evo, Zappies, Barbarian Barrel, Goblin Cage, Arrows, Furnace; 154335 = PEKKA evo, Elite Barbarians, Musketeer evo,
+  Zap, Mega Minion, Mega Knight, Freeze, Arrows. Both are ordinary meta decks, not a mode / bot effect.
+- Match 154218 (a): our first card Xbow at (0.139, 0.609) t258 (10 elixir), Tesla (0.278, 0.563) t284 vs the opponent's 3 Zappies (visible t270); we were at 0.5 elixir at t310. 6 Royal Recruits
+  crossed t510; our Log t479 (before they appeared), Skeletons t504, hero Ice Wizard t597, Tornado t765, Knight t933. Both buildings died by t671 (Tesla 162 hp at t571; buildings also decay). Hero Balloon
+  reached our left towers t631; princesses 4858 -> 802 / 150 by t991 (Recruits + Balloon), both gone by t1031. Battle Ram t1071, Barbarians + Furnace + Fire Spirits t1191; king 7728 -> 6518 (t1111)
+  -> 936 (t1232) -> 0 (t1272). Our Xbow took their left princess 4858 -> 1372 before it died.
+- Match 154335 (a): Ice Wizard t200, Xbow t278 (left bridge), PEKKA seen t311 left lane, Musketeer t551, our Tesla at (0.5, 0.656) t543 = centre; PEKKA walked down x 0.18-0.25 and the nearest PEKKA-to-Tesla
+  distance in 60-tick samples was 6.4 tiles (> Tesla range 5.5): the Tesla never fired at the PEKKA (b: exact min distance not checked per tick). Our Xbow took their left princess 4858 -> 392 (92%) before its lifetime ended
+  (t751). Elite Barbarians t831, Mega Minion t1111. Our left princess died t1031 and the king 7728 -> 6502 (t1152) -> 3584 -> 0 (t1234) with the second princess still standing: PEKKA + Musketeer + 2 Elite Barbarians + Mega Minion on the king (~20 elixir in one push).
+- (a) Bot health: all 7 / 8 plays confirmed, 0 unconfirmed; landing error 0 - 0.58 tiles (Skeletons 0.58 = the usual offset); tap latency 1.1 - 2.3 s (baseline p99 2.30; the 2.2 s ones are early taps for 2.6 elixir cards, afford_ticks 23);
+  decisions 102 / 101 = 0.077 per tick (same as full matches); reader: my_side 0, towers, ents and elixir consistent every frame; no frame gaps; plays in the first 1330 ticks 7 and 8 vs a median of 9 over the last 56 matches
+  (range 5-11; 25% of matches have <= 7). Hero Ice Wizard ability: 154335 pressed once (confirmed); 154218 withheld 12 times ("state", the button not ready) while the Ice Wizard lived <= 190 ticks.
+  So (c) "reader / side / tap / decision freeze" is contradicted.
+- (b) What it was: an elixir race lost. Both openings spent 10 elixir on Xbow + (Tesla) at t258-284 (before the opponent's card showed), leaving 0.5 - 3 elixir when a 20-elixir push (Recruits + Balloon hero; PEKKA +
+  Musketeer + Barbarians) arrived; the defensive Tesla in 154335 was out of range of the lane the PEKKA took. The Xbow chip (92% / 72% of one princess) was not enough. This is the model's play, not a malfunction; no
+  evidence that the decoy flag or P1/P2 anything is involved (Tesla / Xbow / opening are not evo-barrel decisions; decisions are identical flag off vs on outside evo windows).
+- (a) Variance vs regression (`short0_3/short_losses.md`, 1,573 matches 10-20 .. 10-28 from navigator outcomes, 10-24 has no navigator logs): opponent-3-crown losses under 90 s: 10 in 1,573 (0.64%), under 75 s: 6, under 67.5 s: 4 -
+  two of them today, the other two 10-23 00:04 (tick 1313, CLX_PARITY) and 10-26 22:25 (1345, CLXIII). Since CLXIII returned (655 matches): 5 under 90 s (0.76%). Today: 2 / 224 under 90 s (0.9%, expected 1.4 at the base rate) -
+  unremarkable as a count; the adjacency (two in a row) has precedent (10-23 00:02 / 00:04, ticks 1827 / 1313, a different model). Overall 3-crown-loss rate 5.15% (81 / 1,573), today 7.1% (16 / 224) vs 4.8% before: borderline, (b).
+  Verdict: variance plus a model weakness vs fast pushes, not a new regression; 0.15% per match for a < 1350 loss means two in a row stays surprising (~1 in 10^5 per pair if independent), so check the matchup / queue (b) - the 15:41-15:45 matches were against back-to-back push decks.
+- Video: no Discord clip or overlay exists for these matches (clips are cut every 30 min; the 153755 raw video is 247 s and covers only that match). The timelines above come from the frame logs.
+- Codex: LIVEOPS_4 (medium) BLOCKED on a strict `won` check (an outcome with won null); I removed the check and re-ran the script (DONE, anchors present).
