@@ -8,7 +8,7 @@
 2. LOOP-REC: collate(results) vs collate(to_result(decode(file))) for every file: per-key batch shas, the collate stats,
    rollout_monitors and league_monitors must be byte-identical (json).
 3. LOOP-LRN: two FRESH learners from the same config (rl_royale.Learner with rollout() returning the captured results;
-   loop_learner.LoopLearner reading the spool), both with B0's ability head, run update 0 (critic warm-up) and then a
+   loop_learner.LoopLearner reading the spool), both with B0's ability head, run update 1 (critic warm-up; past the u0
    policy update (update counter set to critic_warmup_updates; records re-tagged to that version): model / ability head
    / Adam state shas and the update records (wall clocks dropped) must be equal. Deterministic CUDA (set here).
 Writes OUT/result.json; prints PASS / FAIL lines. RL_PROFILE=1 logs each update's profile (rl_royale W16).
@@ -75,6 +75,7 @@ def main():
 
     if not a.reuse:
         L0 = learner(R.Learner, "cap")
+        assert LL.adopt_init_ability_head(L0)                # the actors press with the head the learners start from
         L0.start_actors()
         t = time.perf_counter()
         results, _ = L0.rollout(0)
@@ -106,7 +107,7 @@ def main():
     assert len(files) == int(cfg["E"]) * int(cfg["G"]), f"{len(files)} records != E x G (skipped rollouts?)"
     warm =int(R.adv_cfg(cfg)["critic_warmup_updates"])
     res_out["updates"] = {}
-    for u in (0, warm):
+    for u in (1, warm):                                      # 1: warm-up past the u0 actor-vs-learner assert (lp numerics, separate)
         L1 = learner(R.Learner, f"rl{u}")
         L2 = learner(LL.LoopLearner, f"loop{u}", spool=spool, weights=a.out / "weights")
         for L in (L1, L2):

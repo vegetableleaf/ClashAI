@@ -30,6 +30,7 @@ def main():
     ap.add_argument("--config", required=True)
     ap.add_argument("--keep", type=Path, required=True)
     ap.add_argument("--steps", type=int, default=40)
+    ap.add_argument("--mbs", default="256,128,64,32,2048,4096,8192,16384")
     a = ap.parse_args()
     cfg = R.load_config(REPO / a.config, [], smoke=False)
     run = f"lrn_probe_{int(time.time())}"
@@ -51,8 +52,22 @@ def main():
     N = len(B["A"])
     rng = np.random.default_rng(0)
     out = {"rows": N, "collate_s": t_col, "params": sum(p.numel() for p in L.model.parameters()), "ms_per_step": {}}
-    for mb in (256, 128, 64, 32):
-        ts = []
+    from pipeline import e1_eval as E
+    for chunk in (512, 4096):                                # where ref_terms / value_rows time goes: CPU batch build vs forward
+        idx = torch.arange(0, chunk, device=L.dev)
+        tb = []
+        tf = []
+        for _ in range(5):
+            torch.cuda.synchronize(); t = time.perf_counter()
+            E.gen_batch(L.model, B, idx)
+            torch.cuda.synchronize(); tb.append(time.perf_counter() - t)
+            t = time.perf_counter()
+            with torch.no_grad():
+                R.policy_terms(L.model, B, idx, cfg["tau"], cfg["T"], T_gate=cfg.get("T_gate"))
+            torch.cuda.synchronize(); tf.append(time.perf_counter() - t)
+        out[f"chunk{chunk}"] = {"gen_batch_ms": 1000 * float(np.median(tb)), "policy_terms_nograd_ms": 1000 * float(np.median(tf))}
+        print(chunk, out[f"chunk{chunk}"], flush=True)
+    def run_steps(mb, ts):
         for i in range(a.steps + 3):
             idx = torch.from_numpy(rng.choice(N, mb, replace=False)).to(L.dev)
             torch.cuda.synchronize()
@@ -66,15 +81,27 @@ def main():
             torch.cuda.synchronize()
             if i >= 3:
                 ts.append(1000 * (time.perf_counter() - t))
-        out["ms_per_step"][mb] = {"p50": float(np.median(ts)), "p90": float(np.percentile(ts, 90))}
+
+    for mb in [int(x) for x in a.mbs.split(",")]:
+        ts = []
+        try:
+            run_steps(mb, ts)
+        except torch.OutOfMemoryError as exc:
+            out["ms_per_step"][mb] = {"oom": str(exc)[:200]}
+            print(mb, "OOM", flush=True)
+            torch.cuda.empty_cache()
+            continue
+        out["ms_per_step"][mb] = {"p50": float(np.median(ts)), "p90": float(np.percentile(ts, 90)),
+                                  "rows_per_s": mb / (float(np.median(ts)) / 1000),
+                                  "peak_mb": torch.cuda.max_memory_allocated() / 2 ** 20}
+        torch.cuda.reset_peak_memory_stats()
         print(mb, out["ms_per_step"][mb], flush=True)
     steps_512 = int(cfg["ppo_epochs"]) * -(-N // int(cfg["minibatch"]))
     out["steps_per_update"] = steps_512
     out["update_ppo_s_1gpu"] = steps_512 * out["ms_per_step"][256]["p50"] / 1000
-    for n in (2, 4, 8):
-        out[f"update_ppo_s_ddp{n}_compute_only"] = steps_512 * out["ms_per_step"][256 // n]["p50"] / 1000
     print(json.dumps(out, indent=1), flush=True)
     (a.keep.parent / "step_probe.json").write_text(json.dumps(out, indent=1))
+
 
 
 if __name__ == "__main__":

@@ -19,6 +19,15 @@ Labels: (a) measured, (b) untested, (c) contradicted. Spec: ../LOOP_SPEC.md.
   159,499 kept rows. collate of the originals vs collate of the decoded record files is byte-identical (batch sha
   814d631ce437a1b8, 56 keys), and so are the collate stats, rollout_monitors and league_monitors. Mean record size is
   4.95 MB. Records: /workspace/lrn/id1/keep; result: /workspace/lrn/id1/result_rec.json.
+- DONE (a) timing, update 0 (critic warm-up), 512 matches / 159,499 rows / 1,248 steps on the 4090, deterministic:
+  204 s = ref_terms 38.7 + gae/vf-share 37.4 + PPO 127.7 s (102 ms/step). A 512-match batch arrives every 6.1 s at
+  300k/h, so one GPU is ~33x too slow. Lead 10-28: sweep the minibatch (2048-16384, lr x sqrt(mb/256)), vectorise
+  ref_terms / gae, DDP up to 4 GPUs, more matches per update allowed; record any PPO-setting change in pilot.yaml's header.
+- DONE (a) on-policy gap: rl_royale's u0 assert fails on B0 with a CUDA learner (lp_cell 5.8e-4 > 1e-4). Cause:
+  cuDNN TF32 convolutions (torch default cudnn.allow_tf32 True). Max |recompute - stored|, 16 records (lp_numerics.py):
+  CPU cell 1.2e-5; CUDA default 1.46e-3; CUDA with cudnn + matmul allow_tf32 False 1.5e-5. The fix is one flag in the
+  learner AND the server (proposed to the lead).
+- Second capture with B0's ability head adopted in the actors (id1, 159,070 rows): LOOP-REC PASS again (1bea99d7).
 - RUNNING (33920 GPU): rec_identity.py --reuse (learner identity, update 0 + policy update 5, RL_PROFILE timings)
   -> /workspace/lrn/logs/id1.log, /workspace/lrn/id1/result.json. Restart: `bash /workspace/lrn/run_id.sh --reuse`.
 - NEXT: step_probe.py (step time vs minibatch size, for the DDP projection); a loop_learner process smoke (max_updates 2
