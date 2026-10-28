@@ -73,12 +73,27 @@ def records(rep: dict, acts: list, grade: dict) -> list:
     return out
 
 
+def job_row(rep: dict) -> dict:
+    """One pairs.py --mvm row: side 0 (team) in the learner seat, side 1 in the opponent seat, both HF decks (card keys with
+    forms, converted to engine names in the pairs worker) and levels; the engine seed from the tag."""
+    b = json.loads(rep["payload_json"])["battle"]
+    d, lv = {}, {}
+    for s, k in ((0, "team"), (1, "opponent")):
+        p = b[k]["players"][0]
+        d[s] = [c["card_key"] for c in p["deck"]]
+        lv[s] = dict(cards=[int(c.get("level") or 16) for c in p["deck"]], tower=int((p.get("tower_card") or {}).get("level") or 16))
+    return dict(key=rep["replay_tag"], seed=zlib.crc32(rep["replay_tag"].encode()) % 1_000_000_000, learner_side=0,
+                learner_slugs=d[0], opp_slugs=d[1], levels=dict(learner=lv[0], opp=lv[1]))
+
+
 def main():
     import pyarrow.parquet as pq
     ap = argparse.ArgumentParser()
     ap.add_argument("--redrive", type=Path, required=True)
     ap.add_argument("--data", type=Path, required=True)
     ap.add_argument("--out", type=Path, required=True)
+    ap.add_argument("--jobs", type=int, default=0, help="split item b: write N model-vs-model job rows (pairs.py --mvm) from the "
+                                                       "test-split tier-A deck pairs + levels instead of the reference records")
     a = ap.parse_args()
     A = tier_a(a.redrive)
     print("tier A replays", len(A), flush=True)
@@ -95,8 +110,18 @@ def main():
                                         "native_y"]).to_pylist():
             acts[x["replay_tag"]].append(x)
         for r in reps:
+            if a.jobs:
+                if split_of(r["replay_tag"]) == 2 and len(out) < a.jobs:
+                    out.append(job_row(r))
+                continue
             out += records(r, acts[r["replay_tag"]], A[r["replay_tag"]])
         print(rp.name, len(out), flush=True)
+        if a.jobs and len(out) >= a.jobs:
+            break
+    if a.jobs:
+        a.out.write_text("".join(json.dumps(x) + chr(10) for x in out))
+        print("wrote", a.out, len(out), "job rows")
+        return
     meta = dict(redrive=str(a.redrive), manifest=json.loads((a.redrive / "manifest.json").read_text()).get("crforge_build"), n=len(out))
     with gzip.open(a.out, "wt") as fh:
         json.dump(dict(meta=meta, records=out), fh)

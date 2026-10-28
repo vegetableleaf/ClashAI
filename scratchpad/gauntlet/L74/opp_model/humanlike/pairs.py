@@ -5,7 +5,7 @@ match code (no production edit). A worker patches search_s0.setup_job so that "s
     python -I .../humanlike/pairs.py run --jobs JOBS.jsonl --out DIR --opp-ckpt OPP [--opp-T .1] [--opp-extra "..."]
            [--ckpt CLXIII] [--extra "--record-board ..."] [--g2] [--mvm] [--workers 40] [--chunk 12] [--python PY]
     job row: {"key": str, "seed": int, "learner_side": 0|1, "learner_deck": [engine names] | null (= icebow),
-              "opp_deck": [engine names], "levels": {"learner": {"cards": [8], "tower": t}, "opp": {...}} | null,
+              "opp_deck": [engine names] (or "learner_slugs" / "opp_slugs": HF card keys, converted in the worker), "levels": {"learner": {"cards": [8], "tower": t}, "opp": {...}} | null,
               "opp_tower": "Cannoneer" | ... | null}
   default: the learner seat = --ckpt on gap.py's D3 live stack (the deployed decision options; --g2 adds the W18 tap
            handicap) vs the opponent model -> predict_live.py (D1 P_hat);
@@ -23,12 +23,36 @@ import sys
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-HERE = Path(__file__).resolve().parent
+HERE = Path(__file__).absolute().parent           # not resolve(): a code copy may symlink scratchpad/ (ROOT = the copy)
 ROOT = HERE.parents[4]
 GAP = ROOT / 'scratchpad/gauntlet/L74/gap'
 CLXIII = 'icebow/data/models/ICEBOW/ICEBOW_Mark_CLXIII_NOLEAK.pt'
 CENSUS = 'scratchpad/gauntlet/L74/mix/decks_live_eval.json'      # loaded by search_s0 (unused: setup_job is replaced)
 G2 = ['--tap-loss', '1x:0.0180,2x:0.0363,ot2x:0.0388,ot3x:0.0890', '--tap-slow', '0.151:17']   # o4_gate v2 G2 (W18), = run_closed.sh
+
+
+_MAP = None
+
+
+def engine_deck(slugs):
+    """HF / RoyaleAPI card keys in deck order ('mortar-ev1', 'goblins-hero', 'the-log') -> engine names ('Mortar@evolution', ...)
+    through newsim/census.aliases over mix/live_pool.engine_names() (live_pool.to_engine's mapping, order kept); None if a card
+    has no engine spelling."""
+    global _MAP
+    if _MAP is None:
+        sys.path[:0] = [str(ROOT / 'scratchpad/gauntlet/L74/mix'), str(ROOT)]
+        import live_pool as LP
+        from scratchpad.gauntlet.L74.newsim import census
+        _MAP = (census.aliases(LP.engine_names()), census.key, LP.split_slug)
+    mapping, key, split = _MAP
+    out = []
+    for c in slugs:
+        b, f = split(c)
+        nm = mapping.get(key(b))
+        if nm is None:
+            return None
+        out.append(nm + ('@hero' if f == 'hero' else '@evolution' if f else ''))
+    return out
 
 
 def worker():
@@ -56,8 +80,14 @@ def worker():
 
     def setup_job(run, census, opp_id, seed):
         i = int(seed)
-        r = rows[i]
+        r = dict(rows[i])
+        for k in ('learner', 'opp'):                 # HF jobs (hf_ref.py jobs) carry card keys: converted here, on the pod
+            if r.get(k + '_slugs'):
+                r[k + '_deck'] = engine_deck(r[k + '_slugs'])
+                if r[k + '_deck'] is None:
+                    return None
         ldeck = list(r.get('learner_deck') or E.ICEBOW_ENGINE_DECK)
+        LD[i] = ldeck
         opp, ocfg = run.opps[opp_id]
         for pol, deck in ((opp, r['opp_deck']), (run.learner, ldeck if mvm else ())):
             if any(card_key(n) not in pol.gid for n in deck):
@@ -77,6 +107,15 @@ def worker():
         except (UnsupportedDeck, KeyError):
             return None
     S.setup_job = setup_job
+    LD = {}
+    run_one = S._run_job
+
+    def run_job(job):                             # the row also names the learner seat's deck (card.sim_records mvm)
+        rec = run_one(job)
+        if not rec.get('skipped') and int(job[2]) in LD:
+            rec['learner_deck'] = LD[int(job[2])]
+        return rec
+    S._run_job = run_job
     return livecal.worker()
 
 

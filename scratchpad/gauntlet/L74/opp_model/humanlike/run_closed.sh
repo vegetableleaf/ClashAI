@@ -7,7 +7,7 @@
 # Writes OUTROOT/NAME_SEED/D3/matches.jsonl and OUTROOT/ENGINE.json (crforge build, facade sha, tables, code head, G2).
 set -euo pipefail
 NAME=$1; OUT=$2; shift 2
-CB=${CB:-/workspace/score/cb}; LIB=$(readlink -f "${LIB:-/workspace/crforge_main/a677e080/plain}")
+CB=${CB:-/workspace/score/cb}; LIB=$(readlink -f "${LIB:-/workspace/crforge_main/fe364ceb/plain}")   # lead 10-28: new rows on fe364ceb (crforge/fork/MAIN.md); E4 / I u40 v4 rows = a677e080
 PY=${PY:-/workspace/venvf16/bin/python}; W=${WORKERS:-40}; CPUS=${CPUS:-0-255}
 TABLES=${CRFORGE_TABLES:-/workspace/crforge_cache/tables/16.402.22}
 FAC=$OUT/facade

@@ -192,9 +192,11 @@ def _canon_sim(name):
     return k
 
 
-def sim_records(root, live_visible=True):
+def sim_records(root, live_visible=True, mvm=False):
     """run_closed.sh rows -> records (+ outcome for D).  live_visible: keep only plays the live detector can see (o3_score.visible:
-    bodiless spells never appear in the live public frames), so B-live / C-live compare like with like; False for B-HF."""
+    bodiless spells never appear in the live public frames), so B-live / C-live compare like with like; False for B-HF.
+    mvm (pairs.py --mvm rows, B-HF / C-HF): both seats are the model -> one record per SEAT, plays at the tick the command was
+    given (hf_ref.py's HF tick convention; no +20), own_fall None (pocket_share is not a B-HF stat)."""
     import o3_score as O3
     import xbow_count as XC
     from pipeline.opp_elixir_count import card_cost
@@ -206,6 +208,9 @@ def sim_records(root, live_visible=True):
         smp = h['samples']
         st = [s[0] for s in smp]
         import bisect
+        if mvm:
+            out += _mvm_records(r, h, fr, live_visible)
+            continue
         plays = []
         for q in h['opp']:
             if not q[3]:
@@ -230,6 +235,33 @@ def sim_records(root, live_visible=True):
                         mine=[int(q[0]) for q in own], seen=deck, own_fall=fall, xb=o[0], xbt=o[1], arch=arch2(deck),
                         win=int(r['outcome'] == 'win'), outcome=r['outcome']))
     return out
+
+
+def _mvm_records(r, h, fr, live_visible):
+    import o3_score as O3
+    from pipeline.opp_elixir_count import card_cost
+
+    def pl(seat, flip):
+        o = []
+        for q in h[seat]:
+            if not q[3]:
+                continue
+            k = _canon_sim(q[2])
+            if live_visible and not O3.visible(k):
+                continue
+            x, y = fr(q[8], q[9])
+            if flip:                                  # the learner seat's record: "our" frame = the opponent seat at low y
+                x, y = 18 - x, 32 - y
+            o.append([int(q[1] if q[1] is not None else q[0]), k, card_cost(k) or 0.0, round(x, 2), round(y, 2), 1, 0, None])
+        return o
+    rec = []
+    for seat, other, flip, dk in (('opp', 'own', False, 'opp_deck'), ('own', 'opp', True, 'learner_deck')):
+        deck = [_canon_sim(c) for c in (r.get(dk) or [])]
+        res = r['outcome'] if seat == 'own' else {'win': 'loss', 'loss': 'win'}.get(r['outcome'], r['outcome'])
+        rec.append(dict(src='sim', id=f"{r['seed']}:{r['tag']}:{seat}", t0=0, end=int(r['end_tick']), plays=pl(seat, flip),
+                        mine=[p[0] for p in pl(other, not flip)], seen=deck, own_fall=None, xb=None, xbt=None, arch=arch2(deck),
+                        win=int(res == 'win'), outcome=res))
+    return rec
 
 
 def xb_sim(h):
