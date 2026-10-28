@@ -2,7 +2,7 @@
 
 Labels: (a) measured, (b) untested, (c) contradicted.
 
-## STATUS (2026-10-28 ~23:10 EDT; keep current)
+## STATUS (2026-10-28 ~23:55 EDT; keep current)
 - DONE (a) FROZEN timing-head opponents play in the fast loop exactly as production (e1_eval HEAD ed890aa: timing_cfg,
   timing_decide_batch, th_costs Mirror, th_decided game over, th_ability learned presses). Commit d1988ef (+ this doc).
 - compare (a), 33308, `/workspace/opl` tree (HEAD pipeline + loop), engine fe364ceb + tables 16.635.3,
@@ -16,8 +16,14 @@ Labels: (a) measured, (b) untested, (c) contradicted.
     cell 2.8e-6, ab_lp 3.6e-7 (bar 1e-5).
   - smoke t2 (4 jobs all P2): 4/4, lp 0. The first smoke (t1) diverged at every th_tick re-decision: the producer did not
     keep SelfPlaySide.apply's `_th_slot` (fixed before d1988ef; t2 / mix32 are after it).
-- PENDING (Codex OPP-LEARN-A_1): raw16 (the UNMODIFIED source msg, opp_style on: no-P2 regression of the per-seat
-  extrap / universe edits), srv16 (all-P2, `--server eager`), the pod pytest. Results -> .foreman/scratch/a2/opplearn/results_1.md.
+- raw16 (a) = the UNMODIFIED source msg (opp_style on, no P2): 16/16 identical, styled rows 5,197, memory 16/16, MEM rows
+  5,245 / 5,245, ability 16/16 (1,850 head decisions / 24 presses = LOOP-INT2's numbers for this msg), lp max cell 1.4e-8:
+  the per-seat extrap / universe / mode-3 edits do not move a non-P2 match. base16 (opp_style off, 1 P2 + 15): 16/16.
+- srv16 (a) = all-P2, `--server eager` (learner + externals on serve.py, the P2 opponent in-process on the producer's CPU):
+  16/16 identical, P2 opponent decisions 7,678 / 7,678, memory 16/16, MEM rows 5,644 / 5,644, ability 16/16 (41 / 1,711),
+  v_old max 7.1e-7 on 5,644 rows, wver 0; lp max gate 1.44e-5, cell 1.05e-5, card 5.7e-6 (server bar 5e-5). serve.py now
+  skips timing checkpoints in --opp (it raised KeyError deck_gid: bench.start_servers passes every job's opponent).
+- Pod pytest (a, /workspace/opl/cb): test_loop_timing_seat.py + test_timing_head_decode.py 15 passed, 0 skipped.
 - Laptop tests (a): `pipeline/tests/test_loop_timing_seat.py` 3 passed + 1 skipped (game-over test needs royalegym = pod).
 
 ## What was built
@@ -40,9 +46,10 @@ Labels: (a) measured, (b) untested, (c) contradicted.
 
 ## Limits / owed
 - Opponent-as-LEARNER (part C) is NOT here: a timing learner seat raises NotImplementedError (records, PPO rows: OPP-LEARN-B).
-- Server mode (b, srv16 pending): a timing group never goes to serve.py; in server mode the producer's device is cpu, so the
-  P2 opponent forwards on the producer's CPU while production's actor forwards it on its device -> lp noise, possible rare
-  draw flips. Exact fix if srv16 shows it: serve the timing model (hazard / tick / ab heads + cells) on the server.
+- Server mode: a timing group never goes to serve.py; the P2 opponent forwards on the producer's CPU while production's
+  actor uses its device. srv16 measured no flip in 7,678 decisions (a); rare draw flips stay possible (b), and the CPU
+  forward of an 11 M-param opponent costs producer cores (b, not benched). Lever: serve timing models on the server
+  (hazard / tick / ab heads + cells; timing_decide_batch takes model_cell_logits on enc, so it needs a cell_fn seam).
 - A P2 opponent must not be styled: e1_eval.timing_cfg refuses `_opp_style` (production raises too) -> the pilot pool
   needs opp_style off for P2 entries (or style_config skipping them): a lead / OPP-LEARN-B decision. msg_p2 turns it off.
 - Pool spec for P2 entries (`type` not in LIVE_OPP_TYPES, no `cfg`, run opp_decide_every unset or 10): timing_cfg refuses a
@@ -55,4 +62,6 @@ Labels: (a) measured, (b) untested, (c) contradicted.
   summary: `python /workspace/opl/summ.py out/NAME.json 40` (laptop copy .foreman/scratch/a2/opplearn/summ.py).
 
 ## Codex dispatches
-- OPP-LEARN-A_1 (low; .foreman/scratch/a2/codex/OPP-LEARN-A_1.md): wait for chain1, run raw16 / srv16 / pod pytest, tabulate.
+- OPP-LEARN-A_1 (low; .foreman/scratch/a2/codex/OPP-LEARN-A_1.md): waited for chain1, ran raw16 (16/16, checked), srv16
+  (failed KeyError deck_gid = the serve.py gap above; re-run by me after the fix), pytest (test file not yet on the pod tree:
+  re-run by me). Its table (results_1.md) matches my own reads of mix32 / base16 / raw16.

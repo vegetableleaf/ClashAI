@@ -56,6 +56,8 @@ def main():
     models.append({"name": "learner", "policy": pol, "spec": spec_for(pol), "block_max": a.block_max, "watch": a.watch})
     for p in a.opp:
         pol, _ = E.load_policy(REPO / p, a.device)
+        if E.is_timing(pol):                             # P2 timing head: the producer forwards it in-process
+            continue
         models.append({"name": p, "policy": pol, "spec": spec_for(pol), "block_max": a.block_max})
     Path(a.listen).parent.mkdir(parents=True, exist_ok=True)
     Path(a.listen).unlink(missing_ok=True)
