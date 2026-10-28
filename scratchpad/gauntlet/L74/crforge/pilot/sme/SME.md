@@ -1777,3 +1777,135 @@ unbuffed body, and keeps a consistent point. The comparator is unchanged.
 - Results: `results/live/r9z{0..4}_{results.jsonl,cmp.txt}`, `a2c9z_zap_eval.txt`, `a2c9z_zap_changes.txt`,
   `a2c9z_inputs_v24_v25d.txt`.
 - Pod 33920: `/workspace/pilot/{sme9z,inputs_v25a..v25d}`, runs `sme_live/r9z*`, `run9z.sh`, `chain9z*.sh`.
+
+---
+
+# A2c-9T: own-play dating, area clock, and the route-kept singles (worker a2c9t, pod 32657)
+
+Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
+
+Matches: `171753`@1789, `101112`@5923, `222712`@4183, `172835`@2831. No crforge change: every case traced to the extractor,
+the reader, or the open route-kept class (below).
+
+**Base reproduced (a).**
+- `r90` (r87's command, run on 32657 from 33920's sme8 / lib_f635c / inputs_v24) is byte-identical to r87 (sha256 `b906fbbe`).
+- On the laptop, regen with v24's flag set reproduces v24 byte for byte (`1c0e0699`). With the 9Z flags it reproduces
+  v25d (`59517ff0`).
+- After 9Z landed, the chain is rebased on **r9z4 (99 / 109, 275,509 exact frames)**, copied to 32657 with sha256 `83267f51`.
+
+| run | change | layer | inputs | exact apart from torn (unflagged) | exact frames | regressions | gained |
+|---|---|---|---|---:|---:|---|---|
+| r9z4 | (9Z) | | v25d | 99 / 109 | 275,509 | | |
+| **r93** | SME_LATE9 + SME_MADE9 (one play each, in different matches) | extractor + comparator | v27 `157e183a` = v25d + 2 plays | **99 / 109** | **276,305** (+796: 171753 +704, 222712 +92) | 0 (136 matches byte-identical to r9z4) | 0 (both matches have a later onset) |
+
+`r93o` reran the 2 changed matches alone (a match's result depends only on its own inputs):
+- **171753:** 869 -> 1,573 exact; first div 1789 -> **3293**; 1770 is `torn_late`.
+- **222712:** 2,863 -> 2,955 exact; first div 4183 -> **4742**; frame 4183 is now `torn_snap`.
+
+## 9.1 171753@1789: the game ran our Knight at its birth stamp, and frame 1770 is read before the game heard it (a)
+- **Three signals for the play** (tap 1742; game object 5000047):
+  - **The game's own stamp:** phase-3 birth for 5000047 reads card tick 1768 and creation 1769.
+  - **The first move:** the game moves at 1789 (kind 14 -> 15, 42-unit step). crforge moves on R+21 (1789 for R = 1768,
+    1791 for R = 1770).
+  - **The read:** frame 1770 shows our elixir pre-cost (95,060 = 94,704 + 2 x 178) and no Knight. 1773 shows both.
+  - Round 7.3's `own_play_elixir` moved R to the drop (1770). That fixed the elixir and broke the walk.
+- **The census the round-8 worker owed** (`a2c9/own_census.py` on r87 plans + BP5's `deploy_census.py`;
+  `results/live/a2c9_own_census.txt`) covers every own `own_tap` play, 4,841 of them. 4,840 are dated by the birth stamp
+  (lo = hi); the other is this one.
+  - **Elixir drop vs R:**
+    - in the pair holding R+1: 4,720;
+    - on the pair ending at R (the round-2.1 in-step read, `torn_cmd`): 95;
+    - no drop found: 26;
+    - **a frame after R still pre-cost: 0 of 4,840.** Only 171753's Knight would be one, with R = 1768.
+  - **First move vs crforge (clean):** 1,687 agree. 2 are 1-tick frame pairs, game earlier (180652@4514, 220728@3389,
+    both our Knights, in matches that stay exact).
+  - **Input lag R - tap:** 21-27 for 4,334 plays; 40-44 for 330 (taps made short of elixir); 171753's is 26 with R = 1768.
+  - **So the birth stamp dates all 4,841 plays (a).** The elixir signal disagrees on exactly one frame, 1770.
+- **What frame 1770 is (a for the frame, b for the netcode):**
+  - It equals, on every object, crforge's line 1770 with the Knight run on 1770 instead: no body, cost untaken.
+  - So it is the game's history before it heard the play. The game then re-ran from 1768: 1773 is exact with R = 1768.
+  - This is crforge's own `checkDelay` model: a command heard late runs in a history replayed from before its run tick.
+- **Rule SME_LATE9:**
+  - **Extractor (`own_play_elixir`):** a birth-stamped play (lo = hi) keeps R. The frames in (R, last pre-cost frame]
+    become `late_reads`, here [1770]. Census: changes exactly 1 play of 4,841.
+  - **Comparator (`late_reclass`, after the fit as SNAP / CROSS):** a listed frame t that is div is `torn_late` when it
+    equals, by the full diff, crforge's line t with that play run at t. That is crforge's own state with no tolerance.
+- **Planted checks (`a2c9/late_test.py`, `results/live/a2c9_late_test.txt`):** the base frame passes. Every planted
+  change is caught (6 / 6):
+  - our elixir +1;
+  - our elixir with the cost taken;
+  - one of our bodies moved 1 unit;
+  - the Knight added at its point;
+  - an opponent body removed;
+  - a projectile added.
+
+  The same frame unlisted, and the next frame 1773 unlisted, stay div.
+- **Next onset 3293, open (b):** the opponent's hero IW and its cube are 1 unit off in y (20,999 vs 20,998), then 30 units
+  at 3303. Not traced. (2536, an opponent Fireball 1 tick off, is repaired by the fitter.)
+
+## 9.2 222712@4183: the Earthquake was dated from a mislabelled first frame (a); the deploy push is contradicted (c)
+- **The Earthquake area (gen 3000035):**
+  - It reads 2950 ms on the frame labelled 4183, then 2850 / 2750 / 2650 on 4186 / 4188 / 4190.
+  - By the later three, the area was made on 4184, so R = 4183. The first frame, which is a read of line 4184, gives 4182.
+  - The second area (hidden damage, gen 3000036) is first listed on 4186 at 2950 ms. That is crforge's
+    EarthquakeHiddenDamage for R = 4183 exactly.
+- **With R = 4183 (a):**
+  - Skeleton 5000103 is exact from 4186. Its -50% Earthquake slow starts a tick later. The "stronger deploy push" was this
+    tick of full speed: the game's 2-tick move (148, -78) is 2 x (74, -39).
+  - **So "a stronger deploy push in the game" (A2c-M) is (c).** No position on frame 4183 differs from crforge's line 4184.
+    A deploy-push census is therefore not owed for this match.
+  - Frame 4183 is crforge's line 4184 apart from 3 listings: no IW cube, the IW deploy area as A, and no Earthquake area
+    yet. SNAP finds it as an in-step state of step 4184 (`torn_snap` in r93o).
+- **Census (`a2c9/fx_clock.py`, `results/live/a2c9_fx_clock.txt`; every reader area gen in the 138 matches with 3+
+  sightings):**
+  - 3,079 gens: the first sighting is on the clock of the later ones.
+  - 3 gens are off: this Earthquake, and 2 areas of card 203000011 in 154319, which date no play.
+- **Rule SME_MADE9 (`sme_live.fx_made_clock`, called from `extract.match`):**
+  - It applies to an `fx_made` play whose area's first sighting disagrees with 2 of its next 3.
+  - R moves by the difference (dated `fx_made_clock`).
+  - Changes exactly 1 play (v25d -> v27 diff: 222712 Earthquake 4182 -> 4183, and 171753's Knight from 9.1).
+- **Next onset 4742, open (b):** our Skeleton 5000117's step at 4742 is (-17, -96) in the game and (-43, -83) in crforge.
+  It is a heading change, the same shape as the route-kept class. Not traced.
+
+## 9.3 101112@5923: not the Fireball (c); a route kept on a reference cell change (a for the event)
+- **The Fireball does not touch the onset (c):**
+  - It is played 5897 at (14500, 23500), and its projectile is still in flight at 5925 ((13189, 18633), 600 a tick), so it
+    lands about 5933, after the onset.
+  - Its point is 6,000+ units from the Knight.
+  - No ground troop near the Knight is displaced before 5923.
+  - A Fireball knockback census would test nothing here, so it is not run.
+- **The event:**
+  - Our Knight (slowed by the hero Ice Golem area) walks to the opponent Skeleton 5000154.
+  - At 5923 the Skeleton crosses into a new cell row (y 10,466 -> 10,555). crforge's goal flips 855 -> 891, a diagonal
+    step (29, -30).
+  - The game holds the route: its 2-tick move is crforge's next two steps.
+  - It is BP4's "kept held route" event (goal census: 25,804 follow crforge, 4 keep, this one among them). BP6 variant 7
+    (reference at end of t-1) keeps it, but 7,386 clean events contradict that variant.
+
+## 9.4 172835@2831: the same class (a for the event)
+- **crforge (AimRun5, `bp6/work/all`):** our Knight 5000057 re-plans at 2830, goal 1032 instead of its held 1031. It steps
+  toward (12750, 18250) and (13250, 17750), then re-plans back to 1031 at 2832.
+- **The trigger:** its reference, the WitchMother, takes 429 and starts moving at 2830 (reference point (11332, 12789) ->
+  (11170, 12636) between the two re-plans).
+- **The game** walks straight, (36, -35) a tick: no re-plan.
+- No body is within 4,500, and the VoodooProjectile 9 units off follows the Knight's x.
+
+## Mechanisms for D1 (per match)
+| match | first div r9z4 -> r93 | mechanism | status |
+|---|---|---|---|
+| 171753 | 1789 -> 3293 | own command heard late (birth-stamped R, rollback read) | fixed (LATE9); next: opponent hero IW 1 unit, untraced (b) |
+| 222712 | 4183 -> 4742 | area dated from a mislabelled first frame | fixed (MADE9); next: route / heading change (b) |
+| 101112 | 5923 | crforge goal flip on the reference's move; the game keeps its held route | open, the 9R route-kept class |
+| 172835 | 2831 | the same goal flip (reference starts moving) | open, the 9R route-kept class |
+
+## Files (A2c-9T)
+- **Code:** `sme_live.py` (`own_play_elixir` late branch, `late_reclass`, `fx_made_clock`, LATE9 / MADE9) and the
+  `extract.py` call.
+- **Tools (`a2c9/`):**
+  - censuses: `own_census.py`, `fx_clock.py`; planted checks: `late_test.py`;
+  - plan and comparison helpers: `simk.py`, `planmod.py`, `chk.py`, `cmp1.py`, `near9.py`, `indiff.py`;
+  - run and process control: `run9.sh`, `killtree.sh`.
+- **Results:** `results/live/a2c9_{own_census.txt,own_census.jsonl.gz,fx_clock.txt,late_test.txt,deploy_r87.log}`,
+  `r93_{results.jsonl,cmp.txt}` (results sha256 `eed5f304`).
+- **Pod 32657:** `/workspace/pilot/{sme9,inputs_v25,v26,v27,a2c9}`, runs `sme_live/r90`, `r93`, `r93o`. r91 / r92 / r9id
+  were stopped unfinished when the base moved to r9z4.

@@ -5,15 +5,15 @@ single-command shift for any onset). Owners follow the ticket.
 
 | match | first div | class | layer | owner | evidence |
 |---|---:|---|---|---|---|
-| `20261026_101112` | 5923 | body position | unknown (b: Fireball knockback?) | a2c8 | our Knight (-19, -10) 25 ticks after the opponent Fireball at 5898; frames before exact; no single shift helps |
+| `20261026_101112` | 5923 | body position | crforge goal flip vs the game's held route (route-kept class) | 9R | Fireball contradicted (lands ~5933, 6,000+ away); reference Skeleton enters a new cell row at 5923, crforge goal 855 -> 891, game keeps route (A2c-9T 9.3) |
 | `20261026_164443` | 3213 | body position | crforge | BP | Ram landing push (BP3 item 2) |
 | `20261026_170912` | 745 | body position | crforge | BP | near-node rebuild (BP3) |
-| `20261026_171753` | 1789 | body position | extractor or game deploy (b) | a2c8 | our Knight walks 2 ticks earlier than crforge with R = 1770; elixir says R >= 1770 (SME.md round 8) |
-| `20261026_172835` | 2831 | body position | unknown | A2c-M | crforge Knight swerves 2 ticks as WitchMother is hit (A2c-M) |
+| `20261026_171753` | 3293 (was 1789) | body position | unknown (b) | open | 1789 fixed by SME_LATE9 (birth-stamped R = 1768, frame 1770 torn_late; A2c-9T 9.1); next: opponent hero IW + cube 1 unit off in y, 30 at 3303 |
+| `20261026_172835` | 2831 | body position | crforge goal flip vs the game's held route (route-kept class) | 9R | crforge re-plans 2830 (goal 1031 -> 1032 -> 1031 at 2832) as its reference WitchMother starts moving; game walks straight (A2c-9T 9.4) |
 | `20261026_180336` | 2911 | body position | crforge | BP | Elite Archer hero stop (BP3) |
 | `20261026_204518` | 723 | hp only | extractor | Zap (open) | unextracted Zap: X-Bow ZapFreeze made 722, 306 damage (A2c-M) |
 | `20261026_211239` | 1532 | body position | crforge | BP | hero IW first move 1 tick early after target death (BP3) |
-| `20261026_222712` | 4183 | Earthquake / deploy push | crforge candidate | A2c-M | in-step read + stronger deploy push in the game (A2c-M) |
+| `20261026_222712` | 4742 (was 4183) | body position | unknown (b; heading change, route-kept shape) | open | 4183 fixed by SME_MADE9 (Earthquake R 4182 -> 4183 from the area clock; frame 4183 torn_snap; deploy push contradicted; A2c-9T 9.2); next: our Skeleton step (-17, -96) vs (-43, -83) |
 | `20261027_000233` | 4599 | body position | crforge | BP | skeleton 2 units off before a rebuild (BP3) |
 | `20261027_001702` | 2492 | body in the sim, none near in the reader | extractor | A2c-M | inferred Zap point ~1000 off (A2c-M) |
 | `20261027_010245` | 573 | hp only | extractor | Zap (open) | unextracted Zap: princess tower ZapFreeze, 77 damage (A2c-M) |
