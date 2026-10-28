@@ -1,0 +1,31 @@
+# Opponent scorecard: iu40
+THRESHOLDS.json sha256 a5eb2c8fb232ccf94f3fee68617a297451dbcbd62287f3111e24fe9a5ad05695
+engine build: {"engine": "crforge", "build": {"crforge_sha": "a677e080a9ca7a0d06b2d9d718f98fd9631aed7e", "ref": "a677e080a9ca7a0d06b2d9d718f98fd9631aed7e", "tickprobe": false, "jars": {"aircompressor-2.0.3.jar": "b86bb66f610079e0bf790d62e2ff68853eb0dc4748a6d68ae28bce92b68094aa", "core-1.0-SNAPSHOT.jar": "5c6b410fab8c9dea8a768b16ebc2b5f8edfca070b0a2347bb509727534acc343", "env-1.0-SNAPSHOT.jar": "fdb9fe83ee6edd18e225019cc96d0383b54151157cc0d9611c33b82558ca3b10", "jackson-annotations-2.22.jar": "21ddb598807d3a51a876704eb979d9296e1c6a6f47ab1826ff88c6d6a127a2d0", "jackson-core-2.22.2.jar": "ff167a6317be15895706c26668f45b898efe40ab8780970658210fe1393d52a6", "jackson-databind-2.22.2.jar": "d0da14c12b16b5d54719aa172d83b542ff4abeb8b0fb7db476fde8ceece760ca"}}, "lib": "/workspace/crforge_main/a677e080/plain", "tables": "/workspace/crforge_cache/tables/16.402.22", "facade_sha256": "e063889a5a147a052c6b24133771a110fab804cef675abc2ecff2d136d2a0975", "code_head": "b84b440aa4be7f7c1bd5b2a9b5cf5a997e877973", "learner_sha256": "8d328a43bf09fb7e389d41f01524fbb50955e15b64fdb72e28488a123eabad42", "opp_ckpt": "icebow/data/pipeline/o2/w14opp_I.pt", "opp_T": "0.1", "opp_extra": "--opp-decide-every 20 --opp-tau 0.2", "g2": ""}
+NOTE: closed-loop numbers before D2 can be engine-limited (the build above is the one that produced them).
+## A (per decision): FAIL -- not scored: no checkpoint given
+## B-live (vs live humans vs CLXIII, calibration block)
+B-live pooled: n model 1913 / human 856; RMS d over 25 stats 0.67 (pass False); TOST all False (21 fail); B3 False => FAIL; worst |d|: own_half -1.65, opp_el -1.47, react_s -1.12, bridge +0.98, react_3s +0.92
+  arch golem: n model 118 / human 31; RMS d over 25 stats 1.03 (pass False); TOST all False (25 fail); B3 False => FAIL; worst |d|: spell_depth +2.33, own_half -1.86, opp_el -1.86, ppm_2x +1.63, ppm_ot +1.62
+  arch hog: n model 327 / human 171; RMS d over 25 stats 0.74 (pass False); TOST all False (22 fail); B3 False => FAIL; worst |d|: own_half -1.68, opp_el -1.62, bridge +1.35, react_s -1.17, react_3s +0.95
+  arch hyperbait: n model 154 / human 70; RMS d over 25 stats 0.70 (pass False); TOST all False (25 fail); B3 False => FAIL; worst |d|: opp_el -1.42, own_half -1.22, ppm_2x +1.14, react_s -1.12, gap_p10 +1.03
+  arch lava_hound: n 51/7 too few => FAIL (sufficiency)
+  arch other: n model 726 / human 218; RMS d over 25 stats 0.72 (pass False); TOST all False (24 fail); B3 False => FAIL; worst |d|: own_half -1.84, opp_el -1.34, react_s -1.19, bridge +1.12, react_3s +0.98
+  arch pekka_bridge: n 47/20 too few => FAIL (sufficiency)
+  arch royal_giant: n 49/19 too few => FAIL (sufficiency)
+  arch royal_giant_monk: n 24/3 too few => FAIL (sufficiency)
+  arch weak_other: n model 417 / human 317; RMS d over 25 stats 0.67 (pass False); TOST all False (24 fail); B3 False => FAIL; worst |d|: own_half -1.65, opp_el -1.50, react_s -1.06, bridge +0.97, react_lift +0.91
+signature stats d (model - live): hog: sig_per_min 0.30 sig_first_s -0.11 (n 327/171); hyperbait: sig_per_min 0.50 sig_first_s 0.10 (n 154/70); golem: sig_per_min -0.58 sig_first_s -1.00 (n 118/31); lava_hound: sig_per_min 0.57 sig_first_s -1.86 (n 51/7); pekka_bridge: sig_per_min 0.87 sig_first_s -0.85 (n 47/20); royal_giant: sig_per_min -0.36 sig_first_s -0.00 (n 49/19)
+## B-HF: FAIL -- not scored: no model-vs-model HF-deck-pair rows (runner not built: NEEDS a learner-deck option)
+## Siege facts + adaptation-value audit => FAIL
+  lock_rate: live 0.47 model 0.61 diff +0.142 90% CI [+0.121, +0.161] margin +-0.05 => FAIL
+  zero_lock: live 0.12 model 0.04 diff -0.079 90% CI [-0.102, -0.058] margin +-0.06 => FAIL
+  p_lock_after_fail: live 0.36 model 0.51 diff +0.158 90% CI [+0.125, +0.186] margin +-0.07 => FAIL
+  cond_gap: live 0.16 model 0.12 diff -0.033 90% CI [-0.076, +0.010] margin +-0.1 => pass
+  live: matches 856 reach X-Bows 3108 | P(lock|prev failed) 0.36 (n 1267) vs P(lock|prev locked) 0.51 (n 1007) | zero-lock share 0.12 (n 754) | X-Bow again in 30 s after fail 0.65 / after lock 0.56 = persistence 1.16
+  model: matches 1913 reach X-Bows 7225 | P(lock|prev failed) 0.51 (n 2197) vs P(lock|prev locked) 0.64 (n 3134) | zero-lock share 0.04 (n 1724) | X-Bow again in 30 s after fail 0.55 / after lock 0.44 = persistence 1.25
+  lock rate by archetype: golem live - model - (n 66/311) ; hog live 0.48 model 0.58 (n 644/1287) FAIL; hyperbait live - model - (n 256/621) ; lava_hound live - model - (n 21/178) ; other live 0.50 model 0.62 (n 846/2935) FAIL; pekka_bridge live - model - (n 66/163) ; royal_giant live - model - (n 80/217) ; royal_giant_monk live - model - (n 19/123) ; weak_other live 0.41 model 0.58 (n 1110/1390) FAIL
+## C-live: AUC 0.985 90% CI [0.977, 0.991] (human 856, model 1913; need >= 5,000 per class: False) per arch (held-out n, AUC): golem 49 0.99, hog 157 0.99, hyperbait 63 1.00, other 270 0.98, weak_other 222 0.98 => FAIL
+   C-HF: FAIL -- not scored (needs the model-vs-model HF-deck-pair rows, as B-HF)
+## H: H_B 0.000 over 21 cells; H_ABC 0.000 (A, B-HF, C all needed)
+## D (sealed block, read last): n 0 (need >= 1500); no sealed matches => FAIL (sufficiency rule)
+## VERDICT iu40: FAIL (A False, B-live False, B-HF False, siege False, C False, D False)

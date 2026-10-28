@@ -135,3 +135,29 @@ Closest to passing is B u20 vs Ranked at 0.53, still 5.3x over; the human 12k-vs
   c. persona fork test (SIM forks on crforge at post-failed-X-Bow states, X-Bow again vs wait, per opponent persona);
   d. predict_live.py: per-sealed-match P_hat (64 games per match, battle-log deck); card.py's D uses per-archetype P_hat meanwhile;
   e. G2 handicap with the live stack (e1_eval: tap_loss / tap_slow undefined for follow_ups plays).
+
+## 8. P2-SCORE results (2026-10-28 ~16:00 EDT; THRESHOLDS v4 a5eb2c8f; crforge CF-MAIN a677e080 plain, tables 16.402.22, G2 OFF)
+Command: `card.py score --name NAME --sim humanlike/rows/NAME` (rows from `run_closed.sh` on pod 32657; `card.py card` = launch + fetch + score).
+Reports: `out/card_e4/report.txt|json`, `out/card_iu40/report.txt|json`. Both baselines FAIL, as before (a):
+
+| item | live (calibration, 856) | E4 (1,913) | I u40 (1,913) |
+|---|---|---|---|
+| B-live RMS d, 25 stats | human halves 47/50 <= 0.10 | 0.57 | 0.67 |
+| worst stats | | react_lift +1.52, react_3s +1.19, opp_el -1.07 | own_half -1.65, opp_el -1.47, react_s -1.12 |
+| lock rate (reach X-Bows) | 0.466 (3,108) | 0.57, diff +0.100 [+0.081, +0.118] | 0.61, +0.142 [+0.121, +0.161] |
+| zero-lock share | 0.118 | 0.03 | 0.04 |
+| P(lock / prev failed) vs P(lock / prev locked) | 0.356 vs 0.511 | 0.48 vs 0.59 | 0.51 vs 0.63 |
+| persistence (again in 30 s after fail / after lock) | 1.16 | 1.2 | 1.2 |
+| C-live AUC (n < 5,000: FAIL by sufficiency anyway) | halves 0.549 [0.490, 0.610] | 0.979 [0.971, 0.986] | 0.985 [0.977, 0.991] |
+| D (sealed block) | 0 graded CLXIII matches yet | FAIL (sufficiency) | FAIL (sufficiency) |
+
+- The SIM zero-lock share 3-4% vs live 11.8% reproduces the plan's "SIM today 3-7% vs live 9-16%" on crforge (a); the SIM
+  opponents also let a failed X-Bow lock again far more often (0.48-0.51 vs 0.36): an X-Bow failure predicts the next failure
+  much less in SIM than live (the adaptation-value audit fails for both).
+- Engine-limited (a): block 743000 lost 7 of 480 games per opponent to a crforge UnsupportedOperationException
+  ("giantbuffer_enchanting_buff on LittlePrince ... not modelled"); the scorer reads the surviving per-worker rows (473).
+  run_closed.sh treats a block with < 480 merged rows as unfinished and REDOES it on restart.
+- Instrument caveats (b, untested): live opponent plays are detector sightings (lag after the engine runs a play; positions =
+  first clean sighting), SIM plays = engine run tick (land + 20) at the deploy point; opp_el reads the SIM counter at the last 1-s
+  board sample (up to 20 ticks earlier than live's last decision). C-live therefore mixes opponent and instrument differences;
+  C-HF (both exact) is the clean form and needs split item b.
