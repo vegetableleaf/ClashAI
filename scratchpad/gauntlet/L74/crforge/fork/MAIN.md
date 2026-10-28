@@ -2,14 +2,23 @@
 Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
 
 ## STATUS (keep current)
-- **Branch `clashbot-main` = `624eeb45183e1fe981252dd18f99225877595d2b`** (pod 30408, fork `/workspace/f635/crforge_fork`,
-  worktree `/workspace/cfmain/crforge_fork`). No conflicts in the cherry-picks (the two lines touch disjoint files).
-- **Default for SME: yes.** **Default for facade / training / re-drive: NO, blocked** by the HF gate (below): F1FIX makes
-  the Rune Giant enchant, and its enchant reaches unmodelled paths that refuse (a fault = a crashed match).
-- Gates of the m1 head: all done (table; summaries in `main/results/`). Libs on all four pods, sha-checked. `current` is NOT set on any pod (training blocked).
-- Next step (owner / foreman decision, not taken here): either model the Rune Giant enchant cases F1FIX now reaches
-  (a ticket "F1FIX-3": attack sequences that launch, the maker-left walk, Berserker step), or give training a lib without
-  F1FIX (= `clashbot-cfclone` 3ebb4115, whose own HF run `/workspace/d1c/f20k_cfclone3` is CF-CLONE-3's).
+- **Branch `clashbot-main` = `fe364ceb2e988d84e726beaf7e45e9ecd147dfec`** (2026-10-28, fast-forward from 624eeb45 =
+  + F1FIX-3, one commit; pod 30408, fork `/workspace/f635/crforge_fork`, worktree `/workspace/cfmain/crforge_fork`).
+- **Default for SME AND for facade / training / re-drive: `fe364ceb`.** The HF gate now passes: 22 / 20,000 = 0.11%
+  (D1 bar 0.5%): 7 base + 11 Three Musketeers + 4 Monk-deflected enchant copies, both refused by design. All gates pass
+  (CRFORGE_S0.md "F1FIX-3 GATES"): core 2203 / 0 on 16.402.22 and 16.635.3, determinism hashes unchanged and identical
+  1 vs 4 threads, SME dev 109 / 109 and FRESH1 6 / 7 byte-identical to H2 / HF2, Clone sweep 0 refusals.
+- **Libs (`ship_main.sh fe364ceb`, sha-checked, `current` -> fe364ceb) on 30408, 32657, 33920, 33308, 33553:**
+  - plain (facade / training / re-drive / faults.sh): `/workspace/crforge_main/fe364ceb/plain/lib` (core `3440d441664b7caa`);
+  - tickprobe (SME: sme_live.py, runH.sh, SnapRun2 / BP_SNAP): `/workspace/crforge_main/fe364ceb/tickprobe/lib` (core `b1615a3f9449ce2b`);
+  - tables `/workspace/crforge_cache/tables/{16.402.22,16.635.3}` on every pod (30408: `/workspace/f635/crforge_cache/tables/`).
+- **Consumer-switch rule:** each pipeline switches to fe364ceb at its NEXT run start, never mid-run (a running job keeps
+  the lib it started with; nothing is re-pointed under it). Paired comparisons (A/B, gates, re-baselines) only within
+  one lib: never compare a 624eeb45-or-older run against an fe364ceb run. Prefer the explicit `fe364ceb/...` path over
+  `current` in run configs, so a later ship cannot move a run's lib.
+- Watch list for the F1FIX-3 paths without a live frame (hero Elite Archer / Bowler / Berserker, evo Musketeer / Princess /
+  Elite Barbarians, Goblin Giant / Ram Rider riders, maker-left): CRFORGE_S0.md "F1FIX-3 WATCH LIST" and
+  `fork/f1fix3/tools/watch_detect.py` (run it on every FRESH2 SME input).
 
 ## What is on the branch
 | commit | from | what |
@@ -20,6 +29,7 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
 | `ddc5534d` (= c99784e4) | clashbot-f1fix | F1FIX-1: Rune Giant friend filter, hit_timer |
 | `a677e080` (= 89b93932) | clashbot-f1fix | F1FIX-2: enchant on a damage-only attack sequence (Inferno Dragon) |
 | `624eeb45` (= 3ebb4115) | clashbot-cfclone | CF-CLONE-3: a pulled unit (Fisherman hook) cloned |
+| `fe364ceb` (fast-forward) | clashbot-f1fix3 | F1FIX-3: Rune Giant enchant on attack sequences, attached riders, maker-left, Berserker index (patch `fork/f1fix3/f1fix3_vs_624eeb45.patch`) |
 Not merged (instrumentation, applied at build time only): clashbot-bp TickProbe 0001 + 0002 (the `tickprobe` lib);
 0003-0005 MoveProbe / DmgProbe stay trace-only builds (`fork/bp/`).
 
