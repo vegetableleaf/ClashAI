@@ -302,7 +302,9 @@ def det_rocket_tornado(m, X):
 def det_king_redirect(m, X):
     """4. Tornado into our king while both princesses stand. START (invlib.bridge_rows): an opponent troop dropped at a lane
     bridge (x < 7 or > 11, y 11..18.5) with both own princesses up, Tornado in hand, >= 3 own elixir. PREFIX: own Tornado
-    within 5 s cast within 8 tiles of our king. well = no own princess HP lost in the 15 s after."""
+    within 5 s cast within 8 tiles of our king. well = no own princess HP lost in the 15 s after. Matching key xc = the
+    attacking unit + whether Tesla (the standard building answer) was also in hand (diagnosis round 1: without it the
+    pro lift was negative, -0.057 [-0.112, -0.003])."""
     if 'tornado' not in m['own_deck']:
         return []
     out = []
@@ -317,7 +319,8 @@ def det_king_redirect(m, X):
         if h is None or 'tornado' not in h[0] or (h[1] or 0) < 3:
             continue
         hit = [q for q in tn if t <= q['tick'] <= t + 100 and math.hypot(q['x'] - OWN_KING[0], q['y'] - OWN_KING[1]) <= 8]
-        out.append(ep(m, 'king_redirect', t, bool(hit), well=lost(m, 'own', t, t + 300, 'LR') < 0.02, xc=p['card']))
+        out.append(ep(m, 'king_redirect', t, bool(hit), well=lost(m, 'own', t, t + 300, 'LR') < 0.02,
+                      xc=p['card'] + ('|T' if 'tesla' in h[0] else '|-'), unit=p['card']))
     return out
 
 

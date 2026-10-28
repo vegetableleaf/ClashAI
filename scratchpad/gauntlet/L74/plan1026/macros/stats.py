@@ -136,12 +136,21 @@ def main(argv=None):
     out['data'] = {s: dict(sides=sum(x['src'] == s for x in sides),
                            xbow_sides=sum(x['src'] == s and 'x_bow' in x['deck8'] for x in sides),
                            icebow8_sides=sum(x['src'] == s and len(x['deck8']) == 8 for x in sides)) for s in srcs}
-    for sp in spec['macros']:
+    todo = []
+    for sp in spec['macros']:          # + refinements: the same macro on a narrower start condition (spec "refine")
+        todo.append((sp, eps.get(sp['id'], [])))
+        for rf in sp.get('refine', []):
+            def ok(r, w=rf['where']):
+                return all((r.get(k) if k in r else (r.get('x') or {}).get(k)) in (v if isinstance(v, list) else [v])
+                           for k, v in w.items())
+            todo.append((dict(sp, id=sp['id'] + '|' + rf['suffix'], refine_of=sp['id'], start_condition=rf['start']),
+                         [r for r in eps.get(sp['id'], []) if ok(r)]))
+    for sp, rows in todo:
         mid = sp['id']
-        if a.only and mid not in a.only.split(','):
+        if a.only and mid.split('|')[0] not in a.only.split(','):
             continue
-        rows = eps.get(mid, [])
         ent = dict(sp, sources={})
+        ent.pop('refine', None)
         for s in srcs:
             rs = [r for r in rows if r['src'] == s]
             if not rs or not any(r['tr'] for r in rs) or all(r['tr'] for r in rs):
@@ -157,9 +166,12 @@ def main(argv=None):
         ent['horizon_ticks'], ent['horizon_basis'] = horizon(prim, sp['default_horizon']) if prim.get('lift_win') else (
             sp['default_horizon'][0], 'default: ' + sp['default_horizon'][1])
         lw = prim.get('lift_win')
+        pos = lambda k: (prim.get(k) or {}).get('ci', [None])[0] is not None and prim[k]['ci'][0] > 0  # noqa: E731
         ent['status'] = ('thin' if not lw or prim.get('n_tr', 0) < MIN_T else
-                         'lift' if lw['ci'][0] is not None and lw['ci'][0] > 0 else
-                         'negative' if lw['ci'][1] is not None and lw['ci'][1] < 0 else 'no_lift')
+                         'win_lift' if pos('lift_win') else
+                         'win_negative' if lw['ci'][1] is not None and lw['ci'][1] < 0 else
+                         'margin_lift' if any(pos('lift_' + o) for o in HOR) else
+                         'success_lift' if pos('lift_success') else 'no_lift')
         out['macros'].append(ent)
     out['extras'] = extras(sides, a.B)
     body = json.dumps(out, indent=1, sort_keys=False)
