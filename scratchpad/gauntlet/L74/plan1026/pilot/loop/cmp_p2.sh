@@ -14,5 +14,6 @@ export PYTHONPATH=$CB:/workspace/d2/stage/pylib ROYALE_RUNTIME=fin16-linux ROYAL
   CRFORGE_BARREL_DECOY_SIM=1 ROYALE_HEROIW_PRESS=live CRFORGE_XMX=${XMX:-6g}
 PY=${PY:-/workspace/venvf16/bin/python}
 $PY -c "import sys; sys.path.insert(0, '$L'); import producer, pathlib, os; producer.compile_java(pathlib.Path(os.environ['CRFORGE_FACADE_BUILD']), pathlib.Path(os.environ['CRFORGE_LIB']))" || exit 1
-$PY $L/msg_p2.py "$SRC" "$OUT.msg.pkl" "${M[@]}" || exit 1
-exec timeout ${TMO:-5400} taskset -c ${CPUS:-140-147} $PY -u $L/compare.py "$OUT.msg.pkl" "$OUT" "$@" 2>&1 | grep -v "Warning\|self.encoder"
+MSG=$OUT.msg.pkl                                     # RAW=1: SRC as it is (the no-P2 regression, opp_style untouched)
+if [ "${RAW:-0}" = 1 ]; then MSG=$SRC; else $PY $L/msg_p2.py "$SRC" "$MSG" "${M[@]}" || exit 1; fi
+exec timeout ${TMO:-5400} taskset -c ${CPUS:-140-147} $PY -u $L/compare.py "$MSG" "$OUT" "$@" 2>&1 | grep -v "Warning\|self.encoder"
