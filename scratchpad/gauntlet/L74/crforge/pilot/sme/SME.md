@@ -2446,13 +2446,15 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
 - **Zap rule SME_TOWER_ZAP (16c8a8f):** built, planted 25/25, dev byte-identical, fires only on FRESH1 000420; 0 firings on
   FRESH2. Firings for the owner: `results/live/tower_zap_firings.tsv` (1: 000420).
 - **Fix 1 SME_ZAP_CHAIN1 (d4c7b44):** 130148 now 1,767/1,767 exact; the 109 unchanged. Open FRESH2 failures (5): 091720
-  (Knight evo count), 100341 (hero Tombstone repr), 101018 (Goblinstein), 110715 (our X-Bow 1 tile off), 123045 (Witch).
+  (Boss Bandit death vs hit order, b), 100341 (hero Tombstone repr), 101018 (Goblinstein), 110715 (our X-Bow 1 tile off), 123045 (Witch).
+- **FRESH3 (a):** 9/13 (CP 0.427), strict 9/13, on fe364ceb, no fixes; pooled FRESH2 + FRESH3 31/41 (section 6).
 - **Running:** pod 33308 Codex ENG-SME_3d (D2 tower troops; `tail -qn1 /workspace/d2tt/ev/*.out`; restart: ENG-SME_3d.md
-  procedure). Nothing else of mine is running.
-- **Next:** FRESH3 = live matches after 2026-10-28 13:14:56 EDT (FRESH2's battle-log end), freeze with
-  `fresh/freeze.py` (cut 20261028_1315) + `fresh/fresh_prep.sh` (now with SME_ZAP_CHAIN1=1), run on the fe364ceb tickprobe
-  lib; ~150 unflagged-equivalent matches are needed for a 0.98 lower bound (at ~28 unflagged per 76 listed, ~400 listed).
-  Fix loop on the 5 open FRESH2 failures. Sync: lead decision on JDK 21 + re-merge onto fe364ceb.
+  procedure; gate.sh skips seeds with 480 rows). Nothing else of mine is running.
+- **Next:** the fix loop (section 7): first the hero Tombstone pair (2 cases) and the 091720 death-vs-hit order
+  (engine: fork branch off fe364ceb, to the lead), then the own-play points (110715, 142926). FRESH4 about daily:
+  `fresh/freeze.py 20261028_1500 FRESH4.tsv` (after FRESH3's battle-log end 19:00:33Z = 15:00 EDT), `fresh_prep.sh`,
+  commit the freeze, run on fe364ceb with no fixes. A 0.98 lower bound needs ~150 unflagged matches.
+- **Sync:** not adopted (lead 10-28: JDK 21 breaks CfAbil's jdk.incubator.foreign; section 5).
 
 ## 1. SME_TOWER_ZAP (extractor; owner 10-28 "build it", reversible) -- commit 16c8a8f
 - **Rule** (`mech_rules.tower_zaps`, hook in `extract.match` after `fx_made_clock`, before the deal fit; comment block in
@@ -2574,6 +2576,28 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
   so a JDK 21 runtime breaks the pilot's exact hero-press observation. Order after the pilot: port CfAbil to
   java.lang.foreign and re-verify its exactness, then redo the upstream merge onto the current clashbot-main (fe364ceb)
   and run the full gate set.
+
+## 6. FRESH3 (lead 10-28: freeze now, fe364ceb, no fixes) -- list 362f7b3, freeze 9803be6, results 84fdcbf
+- 25 listed (logs from 13:15 EDT, battle log to 19:00:33Z), 0 skips, 17 RNG-free, 13 unflagged. Flags = FRESH2's +
+  SME_ZAP_CHAIN1 (fix 1). Tower-Zap firings 0. watch_detect: 1 flagged (134922, Rune Giant maker_left?), but it is
+  opp_no_fitting_deal (first div 252): no evidence for the path.
+- **Result F3_fe (a):** 9/13 exact apart from torn (95% CP lower 0.427), strictly exact 9/13 (0.427); unflagged exact frames
+  24,127 / 30,508; torn: 8 torn_late in 1 match; plants 4,153, 0 missed. `results/live/fresh3/F3_fe_{results.jsonl,summary.txt}`.
+- **Pooled strict-fresh (FRESH2 + FRESH3, each scored before any fix on it):** 31/41 exact apart from torn.
+- Failures: 141254@3044 body positions (Hog Rider / Firecracker / BarbLog 3-42 units); 142334@1693 our hero IW (reader-only
+  bodies) + our elixir 3.0 off (own press dating, b); 142926@254 Blowdart Goblin 258 off + our Knight 3,000 / 7,000 off (an
+  own-play point, b); 145600@1308 the hero Tombstone rows again (2nd case of 100341's class).
+
+## 7. Fix loop on the open failures (lead 10-28; in progress)
+| match | first div | mechanism so far | layer |
+|---|---:|---|---|
+| FRESH2 091720 | 3519 | our evo Knight (13000000) takes a 392 hit in crforge at step 3517-3518 that the game never lands: the opponent's Boss Bandit (26000103, 162 hp) hitting it dies in that gap (diagF on F2_H: 3471-3517 exact, 3519 hp 1684 vs 2076). Death-before-hit order on one tick (b) | engine (b) |
+| FRESH2 100341, FRESH3 145600 | 2930, 1308 | hero Tombstone: reader rows Tombstone (hp -1 placeholder at the play point) + a 6,748-hp row 106 / 106 units off; crforge rows TombstoneHero_Monster_Passive (502-703 hp) + TombstoneHero_visual_dummy (4,089,995 hp). No representation rule pairs them (b) | comparator REPR / engine (b) |
+| FRESH2 110715 | 4505 | our X-Bow: game x 1500, tap point 2500; 1 of 813 own single-body plays (a, census); why the game moved it is untraced | extractor or reader (b) |
+| FRESH2 101018, 123045; FRESH3 141254 | 5968, 1768, 3044 | body positions a few units off (Goblinstein / Witch skeletons / Hog Rider) | untraced |
+| FRESH3 142334, 142926 | 1693, 254 | own hero IW press + elixir; own Knight point 3,000 / 7,000 off | extractor (b) |
+Engine fixes go on a fork branch off fe364ceb and back to the lead before any merge (F1FIX-3 gate set). Each fix re-runs
+dev + FRESH1 + FRESH2 (+ FRESH3 once fixed on) for no regressions (Codex batch runs).
 
 ## Codex dispatches (ENG-SME)
 | ticket | effort | outcome |
