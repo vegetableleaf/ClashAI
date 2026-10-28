@@ -711,3 +711,19 @@ Monk-vs-RuneGiant match with reader frames). Stays refused; detector flags it (`
     /dev/shm; 33920 / only ~1.8 GB free). Gate = `cp_clone_refusals.txt` empty.
 - **NOT merged, no lib switched, `current` untouched.** After gates pass: report to the lead BEFORE any merge into
   clashbot-main / ship_main.sh / lib switch (the lead coordinates the switch window).
+
+### F1FIX-3 GATES (2026-10-28 ~20:00 EDT): ALL PASS on `fe364ceb` -- awaiting the lead's switch window
+| gate | result (a) |
+|---|---|
+| core 16.402.22 | 2203 / 0 failures (29 skipped); first run's 4 failures were transient "No space left on device" in /tmp, re-run clean |
+| core 16.635.3 | 2203 / 0 (6 skipped); 2203 = clashbot-main's 2188 + BattleRuneGiantEnchantTest |
+| determinism (Probe 1 vs 4 threads, plain + tickprobe) | IDENTICAL: 16.402.22 `a0bd88c41f98b46d`, 16.635.3 `575c99887ba28802` (unchanged) |
+| libs `/workspace/crforge_main/fe364ceb/` (30408; tickprobe also on 32657) | plain core `3440d441664b7caa` (= lib_w4 HF build), tickprobe `b1615a3f9449ce2b`; differ from clashbot-main by design |
+| SME dev (H2 command, sme11f, inputs_v30) | 109 / 109, 0 regressions, 250,797 exact, plants 65,874 / 0 missed; results.jsonl sha `15371187` == H2 |
+| FRESH1 (HF2 command) | 6 / 7, 0 regressions, 15,509 exact, plants 10,904 / 0 missed; sha `e0965a7d` == HF2 |
+| Clone sweep (scene, match, cm, mc x 2 versions, 33920) | 0 Clone refusal lines; 8 x rc=0 |
+| HF 20k faults | 22 / 20,000 = 0.11% (7 base + 11 Three Musketeers + 4 Monk-deflected copy, both refused by design) |
+Evidence: `.foreman/scratch/a2/f1fix3/gates/` (laptop). Codex: F1FIX3_GATES.md (high; core 16.635 / det / clone PASS,
+16.402 transient ENOSPC, SME not run: relative paths in my ticket), F1FIX3_GATES2.md (medium; 16.402 re-run + SME PASS).
+**Next (lead):** merge fe364ceb into clashbot-main (cherry-pick, no conflict expected: off 624eeb45), re-gate if the
+merge is not a fast-forward, ship_main.sh fe364ceb, switch facade / training / re-drive libs in the coordinated window.
