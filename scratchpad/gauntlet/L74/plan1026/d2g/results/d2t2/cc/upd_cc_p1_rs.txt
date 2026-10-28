@@ -1,0 +1,3 @@
+u0001: wall 410 s, actors 7097 core-s (17.3 cores), learner 42 core-s
+u0002: wall 390 s, actors 7495 core-s (19.2 cores), learner 31 core-s
+u0003: wall 228 s, actors 4293 core-s (18.8 cores), learner 29 core-s

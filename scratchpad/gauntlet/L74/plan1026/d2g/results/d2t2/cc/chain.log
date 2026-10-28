@@ -1,0 +1,16 @@
+1793185909 start cc_p1_cf cpus 0-25 cuda:0
+1793185909 start cc_p1_rs cpus 32-57 cuda:1
+1793185929 cc_p1_cf python pid 187561
+1793185929 cc_p1_rs python pid 187563
+1793188205 done cc_p1_cf 0 tracebacks; u0001: wall 285 s, actors 5468 core-s (19.2 cores), learner 51 core-s;u0002: wall 287 s, actors 5809 core-s (20.2 cores), learner 37 core-s;u0003: wall 361 s, actors 7037 core-s (19.5 cores), learner 45 core-s;
+1793188205 done cc_p1_rs 0 tracebacks; u0001: wall 410 s, actors 7097 core-s (17.3 cores), learner 42 core-s;u0002: wall 390 s, actors 7495 core-s (19.2 cores), learner 31 core-s;u0003: wall 228 s, actors 4293 core-s (18.8 cores), learner 29 core-s;
+1793188205 start cc_p2_cf cpus 32-57 cuda:1
+1793188205 start cc_p2_rs cpus 0-25 cuda:0
+1793188225 cc_p2_cf python pid 206497
+1793188225 cc_p2_rs python pid 206498
+1793190703 done cc_p2_cf 0 tracebacks; u0001: wall 377 s, actors 7800 core-s (20.7 cores), learner 45 core-s;u0002: wall 386 s, actors 7636 core-s (19.8 cores), learner 49 core-s;u0003: wall 427 s, actors 8410 core-s (19.7 cores), learner 52 core-s;
+1793190703 done cc_p2_rs 0 tracebacks; u0001: wall 403 s, actors 7734 core-s (19.2 cores), learner 35 core-s;u0002: wall 404 s, actors 7690 core-s (19.0 cores), learner 37 core-s;u0003: wall 440 s, actors 8421 core-s (19.1 cores), learner 39 core-s;
+1793190703 start cc_p3_cf cpus 0-25 cuda:0
+1793190703 start cc_p3_rs cpus 32-57 cuda:1
+1793190723 cc_p3_cf python pid 225698
+1793190723 cc_p3_rs python pid 225699

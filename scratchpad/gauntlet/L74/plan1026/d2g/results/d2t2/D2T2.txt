@@ -57,3 +57,34 @@ CF-CLONE (coordinator 10-28: e1e8deb, lib_fix on 30408 /workspace/cfclone) -- li
   NOT done (the coordinator's 'flag on vs off' check): there is no production module / flag yet (item 2a's module,
   item 3, 2b). ccdetC is the closest available evidence: the Java rows equal the rows PPO trained on in a run whose
   three batch shas equal the hook-free run's, over 2 deterministic updates on the D2-T seed.
+
+Item 4 on the CF-CLONE lib (HEAD + unit-type cache, NO Java obs), seed 101, 24 actors, default CUDA (cc/, a):
+  pairs.sh cc: crforge vs fin16 at once, CPU sets 0-25 / 32-57 + cuda:0 / cuda:1 swapped each pair; u0001-u0003
+  (interval = rollout end u(i-1) .. rollout end u(i); actors + learner core-s from cpusample.sh, 20 s, interpolated).
+    pair 1 (cf 0-25):  crforge 18,447 core-s, 933 s, 234,109 rows | fin16 18,987, 1,028 s, 227,044 -> CPU 0.972 wall 0.908 CPU/row 0.942
+    pair 2 (cf 32-57): crforge 23,992 core-s, 1,190 s, 242,117 rows | fin16 23,956, 1,247 s, 237,452 -> CPU 1.002 wall 0.954 CPU/row 0.982
+    (seed 102 pair 1, old lib: CPU 0.954 wall 0.870 CPU/row 0.962)
+  So at 24 actors crforge's update costs 0.95-1.00x fin16 CPU and 0.87-0.95x wall in all 3 pairs measured: inside the
+  1.15x gate WITHOUT the Java obs (a, n = 3 pairs over two libs / two seeds; pair 3 on the new lib still running at
+  the report). Caveats: the deterministic check runs (ccdetA/B/C, 18 actors each on CPUs 64-115) overlapped pairs
+  1-2 (both engines of a pair under the same extra load; pair 2's higher totals on both sides); D2-G's 1.24x was at
+  18 actors / 20 CPUs before the cache, so the change is cache + contention level + lib, not separated (b).
+  Finish pair 3: on 33308 `cd /workspace/d2t2 && /workspace/venvf16/bin/python pair_ratio.py cc cc 3` once
+  cc/chain.log says CHAIN DONE.
+
+Item 3 (IW press observation in Java) -- NOT started; scope read from code (a) for the next ticket:
+  prepare() calls env.ability_commands(side) for the deciding seat, then (learner, ability head) ability_options(side).
+  1. ability_commands, v2 + heroiw_press live: LiveIWPolicy.observe = a SECOND env.raw() + a second PublicObserver.update
+     per call (the profile's 3.9%); per ready button: IceWizard -> LiveIWPolicy.gate (public_frame, dedupe_hero_bodies,
+     geometry: 5.5 t range / 2.5 t freeze clump value from live_reader/unit_values.json, WINCONS, Tesla-in-hand;
+     then live_reader/ability_ice_wizard.should_press_pro: build_features from the observer's plays (make_play dead
+     reckoning, cards table) + a 29-feature logistic model json, P* 0.03); other hero cards -> _v2_q (L70
+     ability_policy.predict, 24 keys) and a CPython random.Random(f"ability:{seed}:{tag}:{side}:{uid}:{tick}") draw
+     (string seed = sha512 init_by_array: must be reproduced bit-exact in Java, or the draw passed in from Python).
+  2. ability_options: _scan readiness (button pending, cost vs elixir_milli, check_deploy, controller body) + per
+     option _ability_head_features (14 _ability_features / _V2_SCALE, radius bodies, card one-hot) + 11 freeze
+     features (ability_features freeze); q (label mode, warm start) = v2 q or the rule's press.
+  For the learner in head mode, ability_commands' result is discarded ([] after the call) but its observe/gate still
+  run every decision (pure cost; side effect only _ability_check / _v2_dt). Opponent seats use the rule.
+  Proposed split: 3a ability_options features in Java (learner rows; identity per option row through actor_obscheck);
+  3b the IW live rule (observe state + geometry + hazard model); 3c the v2 rule for the 24 other heroes + the seeded draw.

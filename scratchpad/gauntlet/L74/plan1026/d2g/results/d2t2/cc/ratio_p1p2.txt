@@ -1,0 +1,5 @@
+pair 1: cf {'cpu': 18447.0, 'wall': 933.0, 'rows': 234109, 'n': 3} | rs {'cpu': 18987.0, 'wall': 1028.0, 'rows': 227044, 'n': 3} | crforge/fin16 cpu 0.972 wall 0.908 cpu/row 0.942
+pair 2: cf {'cpu': 23992.0, 'wall': 1190.0, 'rows': 242117, 'n': 3} | rs {'cpu': 23956.0, 'wall': 1247.0, 'rows': 237452, 'n': 3} | crforge/fin16 cpu 1.002 wall 0.954 cpu/row 0.982
+cpu: mean 0.987 min 0.972 max 1.002 (n=2)
+wall: mean 0.931 min 0.908 max 0.954 (n=2)
+cpu_per_row: mean 0.962 min 0.942 max 0.982 (n=2)
