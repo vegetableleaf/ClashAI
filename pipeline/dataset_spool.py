@@ -33,8 +33,8 @@ def load_mapped(path, cache):
                 shutil.copyfileobj(src, dst, length=1048576)
             arrays[name[:-4]] = np.load(cache/name, mmap_mode='c', allow_pickle=False)
     meta = json.loads(str(arrays.pop('meta')))
-    if meta.get('feature_version') != 4:
-        raise ValueError('Memory-mapped training is scoped to version4')
+    if meta.get('feature_version') not in (4, 5):    # P4-10M: v5 (fv6 models' data) too, same array layout
+        raise ValueError('Memory-mapped training is scoped to versions 4 and 5')
     return arrays, meta
 
 

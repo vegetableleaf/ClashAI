@@ -58,7 +58,8 @@ def col(t, name, shape):
 
 def load_shard(job):
     import pyarrow.parquet as pq
-    path, vocab = job
+    path, vocab = job[:2]
+    spool = Path(job[2]) if len(job) > 2 and job[2] else None
     gid = {k: i for i, k in enumerate(vocab)}
     t = pq.read_table(path)
     meta = json.loads(t.schema.metadata[b"meta"])
@@ -96,6 +97,12 @@ def load_shard(job):
                                                 "projectile_cols", "effect_cols", "public_timing_contract",
                                                 "own_ability_cols", "opp_cycle_cols", "body_identity_contract",
                                                 "public_observation", "opponent_elixir", "wait_stride", "play_window")}
+    if spool is not None:                 # arrays to disk (np.load mmap later): the caller holds no shard in RAM
+        spool.mkdir(parents=True, exist_ok=True)
+        for k, v in list(d.items()):
+            if isinstance(v, np.ndarray):
+                np.save(spool / f"{k}.npy", v, allow_pickle=False)
+                d[k] = str(spool / f"{k}.npy")
     return d
 
 
@@ -114,6 +121,7 @@ def main(argv=None) -> int:
     ap.add_argument("--chunk", type=int, default=250)
     ap.add_argument("--out", type=Path, required=True)
     ap.add_argument("--workers", type=int, default=16)
+    ap.add_argument("--spool", type=Path, default=None, help="per-shard arrays to this dir (low RAM; delete after)")
     a = ap.parse_args(argv)
     t0 = time.time()
     z = np.load(a.v32, allow_pickle=False)
@@ -126,10 +134,12 @@ def main(argv=None) -> int:
         raise SystemExit(f"{len(gone)} shards missing in {a.rd}: {gone[:5]}")
     with Pool(a.workers) as pool:
         parts = []
-        for i, d in enumerate(pool.imap(load_shard, [(str(f), vocab) for f in files])):
+        jobs = [(str(f), vocab, str(a.spool / f"{i:04d}") if a.spool else "") for i, f in enumerate(files)]
+        for i, d in enumerate(pool.imap(load_shard, jobs)):
             if "missing_cards" in d:
                 raise SystemExit(f"cards outside v32's vocab in {d['path']}: {d['missing_cards']}")
-            parts.append(d)
+            parts.append({k: np.load(v, mmap_mode="r") if isinstance(v, str) and v.endswith(".npy") else v
+                          for k, v in d.items()})
             if (i + 1) % 20 == 0:
                 print(f"[build_mix] {i + 1}/{len(files)} shards {time.time() - t0:.0f}s", flush=True)
     c0 = parts[0]["_contract"]
@@ -172,7 +182,23 @@ def main(argv=None) -> int:
                 hp = [p[k] for p in parts]
                 if hp[0].shape[1:] != v.shape[1:]:
                     raise SystemExit(f"{k}: v32 shape {v.shape} vs HF {hp[0].shape}")
-                out = np.concatenate([v] + hp)
+                # streamed: one .npy header for the full shape, then v32's rows and each shard's in order (no full
+                # concatenated copy: pods cap a container at 125 GB, and the projectile array alone is ~30 GB)
+                for c in hp:
+                    if not np.array_equal(c.astype(v.dtype), c):
+                        raise SystemExit(f"{k}: values change when cast to v32's dtype {v.dtype}")
+                shape = (len(v) + sum(len(c) for c in hp),) + v.shape[1:]
+                with zf.open(k + ".npy", "w", force_zip64=True) as f:
+                    np.lib.format.write_array_header_2_0(f, {"descr": np.lib.format.dtype_to_descr(v.dtype),
+                                                             "fortran_order": False, "shape": shape})
+                    for c in [v] + hp:
+                        for i in range(0, len(c), 500000):
+                            f.write(np.ascontiguousarray(c[i:i + 500000], dtype=v.dtype).tobytes())
+                for p in parts:
+                    p.pop(k, None)
+                print(f"[build_mix] wrote {k} {shape} {v.dtype} (streamed) {time.time() - t0:.0f}s", flush=True)
+                del hp, v
+                continue
             cast = out if k == "tags" else out.astype(v.dtype)          # tags: keep the widest string dtype
             if not np.array_equal(cast, out):
                 raise SystemExit(f"{k}: values change when cast to v32's dtype {v.dtype}")
