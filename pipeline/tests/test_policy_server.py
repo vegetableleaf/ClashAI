@@ -29,12 +29,19 @@ def _reference(pol, arr, allowed, stalled, seeds):
     from pipeline.decision_options import DecisionOptions, decide, model_cell_logits, sample_rules
     rows = [{k: v[i] for k, v in arr.items()} for i in range(len(allowed))]
     enc, heads, p, _ = pol.forward_batch(rows, "cpu")
-    return decide(heads, np.asarray(p), allowed, stalled, tau=CFG["tau"], options=sample_rules(DecisionOptions()),
+    out = decide(heads, np.asarray(p), allowed, stalled, tau=CFG["tau"], options=sample_rules(DecisionOptions()),
                   rngs=[None] * len(allowed), decode="sample",
                   sampler={"tau_r": None, "T": CFG["T"], "T_gate": CFG["T_gate"],
                            "heads": frozenset(("gate", "card", "cell")),
                            "rngs": [np.random.default_rng(s) for s in seeds]},
                   cell_logits=model_cell_logits(pol, enc, "cpu"))
+    import torch
+    from pipeline.rl_royale import value_scalar
+    with torch.no_grad():
+        v = value_scalar(pol.model.value_head(enc["g"])).numpy()
+    for d, x in zip(out, v):
+        d["v_old"] = float(x)
+    return out
 
 
 @pytest.mark.skipif(not (CK.is_file() and BATCH.is_file()), reason="CLXIII checkpoint / live batch fixture absent")
@@ -169,7 +176,7 @@ def _v1(pol):
 
 
 def _tup(d):
-    return (d["play"], d["slot"], d["cell"], d["why"], d["lp_gate"], d["lp_card"], d["lp_cell"], d["wver"])
+    return (d["play"], d["slot"], d["cell"], d["why"], d["lp_gate"], d["lp_card"], d["lp_cell"], d["wver"], d["v_old"])
 
 
 def _mm_producer(client, rounds, q, go):
@@ -192,6 +199,7 @@ def _check(want, got):
     for x, y in zip(want, got):
         assert (x["play"], x["slot"], x["cell"], x["why"]) == y[:4]
         assert all(abs(a - b) < 1e-5 for a, b in zip((x["lp_gate"], x["lp_card"], x["lp_cell"]), y[4:7])), (x, y)
+        assert abs(x["v_old"] - y[8]) < 1e-5, (x["v_old"], y[8])       # the server's value = the CPU critic
     return sum(x["play"] for x in want)
 
 

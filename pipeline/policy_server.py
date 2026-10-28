@@ -458,7 +458,9 @@ class Client:
 
     def decide_fwd(self, f: Fwd, allowed, stalled, rngs, tau_r=None) -> list:
         """S4b's P1 decide (decision_options.decide, decode 'sample', the model's cfg) on forward ``f``'s heads, its
-        cell logits from the same batch; every dict tagged ``wver`` = f.ver. The caller sends ``done``."""
+        cell logits from the same batch; every dict tagged ``wver`` = f.ver and, for a model with a value head,
+        ``v_old`` = rl_royale.value_scalar(heads["value"]) (float64, the plain critic of the same version). The caller
+        sends ``done``."""
         from pipeline.decision_options import DecisionOptions, decide, sample_rules
         n = len(allowed)
         c = self.table[f.mi][3]
@@ -468,8 +470,14 @@ class Client:
                      decode="sample", sampler={"tau_r": tau_r, "T": T, "T_gate": float(c.get("T_gate") or T),
                                                "heads": frozenset(("gate", "card", "cell")), "rngs": list(rngs)},
                      cell_logits=lambda ids, slots: torch.from_numpy(self.cells(f, ids, slots)))
-        for d in out:
+        v = None
+        if "value" in f.heads:                   # the plain critic (no CtxHead), float64 as rl_royale's policy terms
+            from pipeline.rl_royale import value_scalar
+            v = value_scalar(torch.from_numpy(f.heads["value"])).numpy()
+        for i, d in enumerate(out):
             d["wver"] = f.ver
+            if v is not None:
+                d["v_old"] = float(v[i])
         return out
 
     def close(self):
@@ -833,6 +841,10 @@ class PolicyServer:
             raise
         if c.fwd.last_graph:                     # static graph outputs: the next replay overwrites them
             enc = {k: v[:n].clone() if torch.is_tensor(v) else v for k, v in enc.items()}
+        vh = getattr(c.pol.model, "value_head", None)
+        if vh is not None:                       # the critic's 7 logits from this batch's g and weight version
+            with torch.no_grad():
+                heads = {**heads, "value": vh(enc["g"][:n])}
         host = {k: torch.empty((n, *x.shape[1:]), dtype=torch.float32, pin_memory=self._cuda) for k, x in heads.items()}
         for k, x in heads.items():
             host[k].copy_(x[:n].float(), non_blocking=True)

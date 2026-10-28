@@ -30,6 +30,10 @@ Labels: (a) measured, (b) untested / projected, (c) contradicted.
   - `cl.cells(f, ids, slots)` and `cl.ability(f, ids, feat)` are answered from the SAME batch (its encodings and its weight copy).
   - `cl.done(fs)` releases the batches.
   - `cl.decide_fwd(f, allowed, stalled, rngs)` = the S4b P1 sample decide, with every dict tagged `wver`.
+  - **Value (lead-approved 10-28)**: `f.heads["value"]` = the 7 critic logits, value_head(g) of the same batch and version. `decide_fwd` stores `v_old` = `rl_royale.value_scalar(...)` (float64) per row, next to `lp_*`, under the same `wver`; a producer with its own decide does the same.
+    - Parity vs the CPU fp32 critic, 4,096 B0 rows: max abs 4.9e-7 (a, results/lp_check.json). The tests check `v_old` < 1e-5 before and after a push.
+    - Throughput cost not measured: both 4090s were busy with other agents' jobs. Arithmetic (b): about 1.8 kFLOP per row vs 0.425 GFLOP for the forward, plus one small kernel per batch.
+    - **CtxHead caveat**: the pilot has no `critic_ctx`, so the stored V is the plain critic. A `critic_ctx` recipe (V = value_scalar(value_head(g) + CtxHead(ctx, g))) would need the CtxHead tensors in the push message (as `__ability__.` is) and `ctx` as a row input.
 - **Weight versions** (contract with LOOP-LRN), DIR = /dev/shm/loop/weights:
   - the learner writes `DIR/learner.v{V:08d}.pt` = `{"version": V, "state_dict": actor_bytes dict}`, then `DIR/learner.latest`, each by a .tmp file plus os.replace;
   - a `watch=DIR` model serves nothing until V=0 arrives;
