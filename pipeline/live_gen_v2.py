@@ -91,9 +91,9 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
         if not (self.gate_sample >= 0 and np.isfinite(self.gate_sample)):
             raise ValueError('gate_sample must be finite and >= 0 (0 = off)')
         self.gate_seed, self.rng_gate, self.last_gate_draw = None, None, None
+        self.decision_options = decision_options or DecisionOptions()
         if self.gate_sample > 0 and not self.decision_options.active:
             raise ValueError('gate_sample needs decision options active (the unified decide; tau_phase as the trainer)')
-        self.decision_options = decision_options or DecisionOptions()
         if self.decision_options.rocket_tornado == 'rocket_only':
             raise ValueError('rocket_tornado rocket_only is a SIM measurement ablation, not a live mode')
         if self.decision_options.rocket_tornado != 'off' and not hasattr(self, 'plan_follow_up'):
