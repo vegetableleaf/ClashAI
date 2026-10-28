@@ -54,22 +54,61 @@ python -I summarize.py /workspace/redrive/full_NEW                              
 - 162,297 rows (162 / replay), 23.5 MB parquet; 0 shard errors; wall 195 s; 6.7 s drive + 0.7 s rows per replay-worker.
 - **Largest loss is not the engine:** 241 / 1,000 (24%) are cut when an evolved Elite Barbarians appears. The pro2
   recorder maps bodies to native ids from `research/ext/cr-native-sandbox/.../live_card_catalog.json`, whose
-  AngryBarbarians row has `evolution_form_id: null` (a). Adding it is a production catalogue / vocabulary change (not
-  done; needs an owner/foreman call; the id pattern suggests 13000043, (b) unverified).
+  AngryBarbarians row had `evolution_form_id: null` **on the pod's code copy** (a).
+  - **Cause: a stale untracked file, not a missing id (a).** `research/ext` is not in git; the pod copy (rsync'd from
+    `/workspace/d2/cb`, 152 cards, sha256 7b01d9ac...) predates the W9 10-20 extension. The laptop catalogue (153 cards,
+    936cd3c4...) already has AngryBarbarians `evolution_form_id` 13000043, asserted by
+    `pipeline/tests/test_vocab_extension.py::test_catalog_names_round_trip`. No catalogue edit was needed or made.
+  - The id is confirmed three ways (a): crforge tables 16.402.22 and 16.635.3 both have `spells_evolved` (table id 13)
+    row `AngryBarbarians_EV1` at index 43 -> 13,000,043 (the same rule gives Barbarians 13000008 and RageBarbarian
+    13000035, the catalogue's values); the live reader census (`L74/identity/census.json`) saw card_id 13000043,
+    max_hp 2143, 166 states in 3 live matches; and the laptop catalogue above.
+  - Fix: the laptop catalogue was copied to the pod code copy (old one kept as `live_card_catalog.pod_stale_7b01d9ac.json`).
+    Every shard of the first full run was affected (40 / 40 shards, 2,367 / 10,000 replays), so that run was stopped and
+    restarted from scratch (below) rather than re-driven shard by shard.
 - The pilot's rows were written before the unit_form column fix and were deleted; its grades / manifest stay.
 
 ## Full run (in progress at commit)
-Pod 33308, `/workspace/redrive/full_bec5811a` (main PID 1576976, log `/workspace/redrive/full_bec5811a.log`),
-1,010 shards x 250, 50 workers. Outputs: `rows/<part>_<lo>.parquet`, `grades/<sid>.jsonl` (per replay tier, reason,
+- Run 1 (stale catalogue, 50 workers) stopped by exact PID after ~45 shards; kept as
+  `/workspace/redrive/full_bec5811a_stalecat_aborted` (do not use its rows). It also loaded the pod: each JPype JVM
+  started ~66 threads (default GC / JIT pools sized to 108 cores); pod load average reached 461 with the other
+  crforge workers (a). run.sh now sets `JAVA_TOOL_OPTIONS=-XX:+UseSerialGC -XX:ActiveProcessorCount=1`.
+- Run 2: pod 33308, `/workspace/redrive/full_bec5811a` (log `/workspace/redrive/full_bec5811a.log`), synced
+  catalogue, 1,010 shards x 250, 45 workers.
+
+Run 1's first wave, kept for reference: Outputs: `rows/<part>_<lo>.parquet`, `grades/<sid>.jsonl` (per replay tier, reason,
 cut), `shards/<sid>.json`, `manifest.json` (crforge build sha, tables, facade sha, code head, totals, per file sha256).
 First 38 shards (9,500 replays, (a)): A 2,046 (21.5%) / B 6,195 / unusable 1,259; 64.5% of driven plays accepted;
 0 shard errors; ~700 s wall per 250-replay shard at 50 workers (38 shards in ~12 min, ~13 replays/s), so the
 1,010 shards take about 5 h (b, extrapolated). ~40-46k rows per shard -> ~42 M rows. Disk 93 GB free after the first
 wave; parquet ~6 GB projected (b).
 
+## Tower troops (13% unusable): the facade lacks them, crforge has them
+- crforge (a, by code at bec5811a): `Standard1v1Battle.Towers(spawnGroup, kingLevel, level)` takes a spawn group, and
+  `battle/replay/ReplayScenario.java` builds all four selections: `King_PrincessTowers`, `King_CannonTowers`,
+  `King_KnifeTowers` (Dagger Duchess), `King_ChefTowers` (Royal Chef); the 16.402.22 tables carry their rows
+  (characters, buildings, projectiles, support_cards, ...). How faithful their behaviour is: unmeasured (b).
+- The facade (a): `CfCore.reset` hard-codes `PRINCESS_TOWERS` for both sides; `CrforgeCore.set_tower_troops` raises
+  NotImplementedError; `card_table_stamp` / body_map have no tower-troop bodies.
+- Work estimate (b): facade + `CrforgeCore.reset` pass a spawn group per side (HF `tower_card` -> group) ~0.5 day;
+  body_map / spell_objects / native-catalogue identities for the troop bodies and their shots (Duchess daggers, Chef
+  pancakes, Cannoneer shells), so the public observation and row builder encode them, plus tests ~1 day; a fidelity
+  check (SME on live matches with those towers) is separate and needs such matches.
+
 ## Not done
-- **Self-check (builder on our seat vs live decision inputs, >= 99% fields): not run.** Live `decision` events carry
-  `public` = own_hand, own_elixir_raw, opponent_elixir_estimate, raw_bodies, and the model's BoardState at model_tick =
-  raw + 24 (look-ahead extrapolation). Open choice: (1) the builder on a crforge re-drive of the live match (A2b inputs)
-  compares engine + builder; (2) the builder on the live reader frames compares the builder alone, but only on the
-  un-extrapolated fields (hand, raw elixir, raw bodies/towers), since the builder does not extrapolate.
+- **Self-check, decided 10-28: (2) now (builder on the live reader frames, non-extrapolated fields), (1) after D1
+  (crforge re-drive of the live matches). Neither has run yet.**
+  - Live `decision.public` (pipeline/public_decision_audit.py) holds own_hand, own_elixir_raw, model_own_elixir,
+    opponent_elixir_estimate, raw_bodies, model_bodies, model_towers, model_projectiles / effects at model_tick =
+    raw_tick + 24. Reader `frame` events hold ents (side, x, y, native card id, hp, max_hp, kind, address), proj, fx,
+    elixir, for every reader frame (~every 2 ticks).
+  - Fields the extrapolation leaves alone (pipeline/extrapolate.py docstring, (a) by code) = what (2) compares:
+    tower hp / alive, every body's identity (class, form, side) and HP, new or deploying bodies' positions, the
+    opponent elixir estimate (the caller's public counter), own hand / next.
+  - Excluded as extrapolated: moving bodies' positions (+ v x 24), the clock / phase (t_sec + 24), my elixir (+ regen),
+    projectile / effect timers (v4 view), own_effects pushes, pending own plays and predicted Skeleton Barrel drops
+    (decisions with non-zero `public_lookahead_counts` or a pending tap are left out).
+  - Own hand has no source independent of the live hand reader (frame events do not log the hand), so (2) cannot
+    test it; it is tested by (1).
+  - Missing piece: no live-log -> builder recording adapter exists in the repo (searched L72 / L74 / pipeline). It must map
+    frame `ents` to the recording's native entity rows and feed `recording_observers` / `from_engine` per decision tick.
