@@ -13,7 +13,7 @@
 #    owner 10-28 option A: 0.02 stays).
 #  - learner (LOOP-LRN, owner / lead 10-28; pilot/lrn/LRN.md): stored_values (the producers' lp_old + v_old, the KL anchor
 #    only on minibatch rows); lazy_refine (cell / tower refine features on the played rows only; identity gates run it OFF;
-#    reversal criterion R1/R2 in LRN.md); ent_pair_every 1 (gate 10-28: k 4 / 2 miss the 1% bar; the entropy floor's init baseline on EVERY epoch-0
+#    reversal criterion R1/R2 in LRN.md); ent_pair_every 4 (gate 10-28: paired ratio within 0.48% of all-minibatch; init baseline on every 4th epoch-0
 #    minibatch, paired with the policy's on the same rows; replaces ent_init_rows / the full pass).
 #  - opponents: frozen pool from LOOP-OPP's pilot/opp/POOL.json (PENDING; the league_* / league_exploiters / league_external
 #    blocks below are x_s101's and get replaced from POOL.json); learner snapshot share 0 (league_mix latest / older 0,
@@ -97,7 +97,7 @@ kl_stop_prev: 0.02
 kl_ref_refresh_every: 1
 stored_values: true
 lazy_refine: true
-ent_pair_every: 1
+ent_pair_every: 4
 leash: max
 seed: 1028
 max_updates: 1000

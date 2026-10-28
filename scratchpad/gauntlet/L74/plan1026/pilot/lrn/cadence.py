@@ -24,14 +24,18 @@ def main():
     ap.add_argument("--keep", type=Path, required=True)
     ap.add_argument("--keep2", type=Path, required=True)
     ap.add_argument("--out", type=Path, required=True)
+    ap.add_argument("--T-gate", type=float, default=None, help="the T_gate the kept records were SAMPLED at (id1 / id0: "
+                    "0.3; tgate_probe.py) -- a learner at another T_gate is off-policy on the gate")
     ap.add_argument("--sizes", default="512,1024,2048")
     a = ap.parse_args()
     a.out.mkdir(parents=True, exist_ok=True)
     cfg = R.load_config(SG.REPO / a.config, [], smoke=False)
+    if a.T_gate is not None:
+        cfg["T_gate"] = a.T_gate
     r1 = [LR.to_result(LR.decode(p.read_bytes())) for p in sorted(a.keep.glob("*.rec"))]
     r2 = [LR.to_result(LR.decode(p.read_bytes())) for p in sorted(a.keep2.glob("*.rec"))]
     sets = {512: r1, 1024: r1 + r2, 2048: r1 + r2 + r1 + r2}
-    out = {"config": {k: cfg.get(k) for k in ("stored_values", "lazy_refine", "ent_pair_every", "kl_stop_prev",
+    out = {"config": {k: cfg.get(k) for k in ("T_gate", "stored_values", "lazy_refine", "ent_pair_every", "kl_stop_prev",
                                               "minibatch", "ppo_epochs")}}
     for m in (int(x) for x in a.sizes.split(",")):
         L = SG.learner(cfg, f"cad{m}")
@@ -39,6 +43,8 @@ def main():
         res = SG.with_v(L, cfg, sets[m])
         prep = time.perf_counter() - t
         rec = SG.run_update(L, 5, res, {})
+        if rec["first_minibatch"]["ratio_maxdev"] >= R.ASSERT_RATIO:              # B0 on B0's records
+            raise SystemExit(f"OFF-POLICY records: first ratio_maxdev {rec['first_minibatch']} -- T_gate?")
         out[m] = {"matches": len(res), "rows": rec["rows"], "steps": rec.get("steps"), "kl_stop": rec.get("kl_stop"),
                   "wall_update_s": rec["wall_update_s"], "matches_per_h": 3600 * len(res) / rec["wall_update_s"],
                   "v_old_prep_s (gate only)": prep, "ent_pair_rows": rec.get("ent_pair_rows"),

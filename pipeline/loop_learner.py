@@ -136,6 +136,8 @@ def main(argv=None) -> int:
         os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
         torch.use_deterministic_algorithms(True)
         torch.backends.cudnn.benchmark = False
+        torch.backends.cudnn.allow_tf32 = False               # as rl_royale.main: TF32 moved lp_cell 1.2e-3 vs the actors
+        torch.backends.cuda.matmul.allow_tf32 = False         # (the u0 on-policy assert is 1e-4; loop smoke 10-28)
     run_dir, ck_dir = R.RUN_ROOT / a.run, R.CKPT_ROOT / a.run
     if a.resume and not (ck_dir / f"{a.run}_latest.pt").exists():
         raise SystemExit(f"--resume needs {ck_dir / (a.run + '_latest.pt')}")

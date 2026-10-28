@@ -2,6 +2,78 @@
 
 Labels: (a) measured, (b) untested, (c) contradicted. Spec: ../LOOP_SPEC.md.
 
+## STATUS - account 2 re-dispatch (10-28; CURRENT; the sections below are account 1's history)
+Owner 10-28: lazy_refine ON with (1) identity gates lazy OFF and (2) a test that fails if refine features are read outside
+played rows; reverse it if it measurably hurts the model. KL cap option A (kl_stop_prev 0.02, beta 0). Entropy guard
+(lead): PAIRED rows.
+- DONE (a) be7ad93: rl_royale keys `lazy_refine` (set on model before the ref copies -> model, ref, ref_init; GenModel
+  only; logs `[rl] lazy_refine: ...`), `ent_pair_every` k (minibatch_loss `ent_ref` -> st ent0_*; ppo_update returns
+  ent_pair / ent_pair_init / ent_pair_rows; one_update skips the ref_init pass and hands the guard the PAIRED pair; record
+  keys entropy_pair, ent_pair_rows, entropy_init = the paired init), `matches_per_update` override whitelisted.
+  model_gen.GenModel.lazy_refine (refine features built in cell_logits_gen). Off = byte-identical:
+  hash_check.py: 166 repo configs, same config_sha HEAD vs new (laptop); smoke 33920 crforge succ48_x_s101 (S1):
+  config b5e2a2bbafef, u0000 batch e816a6a4 / weights 3e07cff4, u0001 batch f060b678 / weights 5c61ac04 = the reference
+  lrn_smoke_crforge.log, SMOKE PASS. S2 (lazy_refine=true ent_pair_every=4): SMOKE PASS, the lazy line logged, same shas
+  (the CPU smoke's u0001 weights equal S1's). pyflakes clean (pod). Pod tests: 44 passed, 2 skipped
+  (test_lazy_refine, test_ent_pair, test_kl_stop_prev, test_rl_gen, test_cell_refine, test_tower_refine, test_fast_obs,
+  test_shaping_tower_phat).
+- Fix (1) (a): rec_identity.lazy_off() forces lazy_refine False in rec_identity.py, stored_gate.py, share_gate.py (prints
+  `[gate] lazy_refine forced OFF`); lazy_gate.py sets the key per arm. RULE (also in ops/README.md): every identity /
+  recompute / stored gate runs lazy OFF; any other learner A/B from pilot.yaml (fastloop / loop/run.sh learner arms,
+  loop_learner) passes `lazy_refine=false`. LOOP-INT's compare.py compares actor paths only (actors load weights from
+  bytes, never carry the attribute): unaffected.
+- Fix (2) (a): pipeline/tests/test_lazy_refine.py (tiny GenModel with BOTH refine modules, non-zero outputs, real sampler
+  rows): lazy == eager within 1e-5 (outputs, loss, every gradient, SGD steps); lazy builds features for exactly the played
+  rows; NaN in the non-played rows' refine inputs (u, unit xy, tower sc) -> outputs / loss / grads bit-identical; EAGER
+  model with the non-played rows' features set to NaN after they are built -> bit-identical (fails if anything reads them).
+- TRAP FOUND (a, tgate_probe.py): the kept records id1 / id0 were SAMPLED at T_gate 0.3 (the pod's pilot.yaml before
+  c78d7a9): stored lp_gate is reproduced by T_gate 0.3 to 7e-7 / 9e-7, by 0.1 off by 11.6 / 12.3. A T_gate-0.1 learner on
+  them is off-policy on the gate: first-minibatch ratio_maxdev 0.996 (lp_gate diff 5.5), kl_stop at step 3; at T_gate 0.3:
+  ratio_maxdev 8.9e-6, stop at step 150 (= account 1's 145-150). My gates start at u5 and skip rl_royale's u0 on-policy
+  assert, so they did not catch it. final_gate.py / cadence.py now take `--T-gate` and REFUSE off-policy records (first
+  update's ratio_maxdev >= ASSERT_RATIO). The first final_gate / cadence run (T_gate 0.1, 3-7 steps, 1-4 s updates) is
+  INVALID as a measurement of the pilot regime (kept: .foreman/scratch/a2/lrn/final_gate_1793210599.json).
+  Account 1's numbers (145 steps etc.) were T_gate 0.3; the pilot runs T_gate 0.1 with T_gate-0.1 producers, so its stop
+  step is NOT measured yet (needs records sampled at 0.1).
+- R1 / R2 lazy reversal criterion (pre-registered 10-28, before the valid run):
+  R0 every commit: test_lazy_refine passes.
+  R1 records A/B (final_gate.py, stored mode, lazy off vs on, 3 consecutive updates on 3 disjoint ~341-match batches, same
+     start): every monitor (kl_gate, kl_card, kl_cell, clip_frac, entropy x 3, l_v) within 1% relative and the stop step
+     within +-2 minibatches. Rationale: a float-only change moves these by ~1e-5; a semantic bug moves them by >> 1%;
+     the monitors vary by > 10% between batches. FAIL -> lazy_refine false in pilot.yaml, then diagnose.
+  R2 pilot: the pilot trains lazy ON; if it fails its SIM bar or a guard fires, the first diagnostic re-runs the failing
+     segment from the last good checkpoint with lazy_refine=false (same seed / config otherwise); lazy-off passing where
+     lazy-on failed (SIM delta outside the eval CI) -> reverse lazy_refine (owner rule).
+- RESULTS (valid: records and learner both T_gate 0.3; final_gate_result.json, cadence_result.json; 33920 4090):
+  R1 lazy (a) PASS: worst relative monitor diff 1.09e-3 (clip_frac u7; every KL / entropy / l_v <= 2.7e-4), stop steps
+  150 / 61 / 67 identical, weights max |diff| 1.0e-5 / 3.4e-5 / 4.0e-5 after updates 5 / 6 / 7. Lazy update seconds
+  48.0 -> 40.1, 19.8 -> 16.8, 22.0 -> 18.7 (-15 to -16%). KEEP lazy_refine.
+  Paired entropy guard (a): weights bit-identical for k = 1 / 2 / 4 (the paired forwards take no step). Worst
+  |r_k / r_1 - 1| over 3 updates x 3 heads: k 4 = 0.48% (PASS 1%), k 2 = 0.32%. Cost k 4: 3.3 / 1.4 / 1.7 s per update
+  (k 1: ~10 / 4 / 7 s; the old full pass 25-27 s). -> ent_pair_every 4 in pilot.yaml. Caveat (b): the accuracy depends on
+  the number of paired minibatches (16-38 here); if the pilot's stop step at T_gate 0.1 is much lower, re-run the gate on
+  T_gate-0.1 records.
+  Cadence, final config (stored + lazy + pair 4 + kl_stop 0.02), one update (u5) from B0 (a): 512 matches 42.9 s
+  (145 steps, 43k matches/h), 1,024: 49.2 s (172 steps, 75k/h), 2,048 (the 1,024 twice): 60.0 s (166 steps, 123k/h,
+  GPU peak 12.9 GB). PPO steps are 278-346 ms each and ~95% of the update.
+  (The invalid T_gate-0.1 run said "k 4 / 2 fail" and a 3-7-step stop: both artefacts of the off-policy records.)
+- DONE (a) loop_learner process smoke (`python -m pipeline.loop_learner`, pilot.yaml, max_updates 2, critic_warmup 1,
+  T_gate=0.3; spool = 2 x the 512 id1 records with v_old = B0's V, loop_spool_prep.py): exit 0, u0000 / u0001 took 512
+  records each, pushed learner.v00000001 / v00000002, learner.latest 2, DONE. u1: 133 steps, stop KL 0.0213, update 37.1 s,
+  paired rows 8,704. BUG FIXED on the way (a): loop_learner.main set deterministic mode but NOT TF32 off (rl_royale.main
+  does): the first run died at the u0 on-policy assert, lp_cell 1.17e-3 > 1e-4; with both allow_tf32 False: passes.
+- matches_per_update (to agree with LOOP-INT): the learner is ~43k/h at 512, ~75k/h at 1,024, ~120k/h at 2,048 on a 4090;
+  INT's 4090 producer bench is 48.9k/h. So one learner GPU keeps up with ONE producer GPU at 512-1,024; the 8x box (~160k/h
+  per inference GPU, b) needs 2,048+ per update or a multi-GPU learner. Proposal: start the pilot at 1,024 and measure.
+- Pod 33920 disk: 684 MB free of 60 GB (99%). My gate run dirs (icebow/data/bench/rl_royale/lrn_*, ~33 MB each) are
+  deletable on the lead's OK.
+- NEXT: (1) lead: matches_per_update with LOOP-INT; run loop_learner with INT's producers when INT is ready (restart:
+  the loop smoke command above, without T_gate / critic_warmup overrides, spool = INT's); (2) re-run final_gate's pair
+  part on T_gate-0.1 records once producers write them; (3) DDP only if producers outrun the learner (b: <= 2.2x at 4-way).
+- Codex dispatches: LOOP-LRN_1 (medium): BLOCKED at the tar extract (chown as root; fixed with --no-same-owner).
+  LOOP-LRN_2 (medium): sync + sha check, pyflakes, pod tests, smokes S1/S2, final_gate (T_gate 0.1 run), table
+  .foreman/scratch/a2/lrn/final_gate_table.md; it exited during cadence without running step 6 (I ran the rest).
+
 ## STATUS (keep current)
 - DONE (a): `kl_stop_prev` in pipeline/rl_royale.py (opt-in, lead-approved 10-28). Unit test pipeline/tests/test_kl_stop_prev.py
   3/3: the stop fires at the first minibatch over the limit and never otherwise; off and never-firing give byte-identical

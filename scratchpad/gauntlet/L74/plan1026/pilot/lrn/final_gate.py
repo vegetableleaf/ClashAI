@@ -48,9 +48,13 @@ def main():
     ap.add_argument("--keep", type=Path, required=True)
     ap.add_argument("--keep2", type=Path, required=True)
     ap.add_argument("--out", type=Path, required=True)
+    ap.add_argument("--T-gate", type=float, default=None, help="the T_gate the kept records were SAMPLED at (id1 / id0: "
+                    "0.3; tgate_probe.py) -- a learner at another T_gate is off-policy on the gate")
     a = ap.parse_args()
     a.out.mkdir(parents=True, exist_ok=True)
     base = R.load_config(SG.REPO / a.config, [], smoke=False)
+    if a.T_gate is not None:
+        base["T_gate"] = a.T_gate
     allr = [LR.to_result(LR.decode(p.read_bytes())) for p in sorted(a.keep.glob("*.rec"))] + \
         [LR.to_result(LR.decode(p.read_bytes())) for p in sorted(a.keep2.glob("*.rec"))]
     batches = [allr[i::3] for i in range(3)]
@@ -73,6 +77,8 @@ def main():
             for i, b in enumerate(batches):
                 ppo_s.clear()
                 rec = SG.run_update(L, 5 + i, SG.with_v(L, cfg, b), {})
+                if i == 0 and rec["first_minibatch"]["ratio_maxdev"] >= R.ASSERT_RATIO:   # B0 on B0's records
+                    raise SystemExit(f"OFF-POLICY records: first ratio_maxdev {rec['first_minibatch']} -- T_gate?")
                 row = {"u": 5 + i, **mons(rec), "ppo_s": ppo_s[0], "wall_update_s": rec["wall_update_s"],
                        "ent_pair": rec.get("entropy_pair"), "ent_pair_init": rec.get("entropy_init"),
                        "ent_pair_rows": rec.get("ent_pair_rows")}
