@@ -33,6 +33,9 @@ RUNNING on 33903 (22:20 UTC; ssh -p 33903 root@157.157.221.29):
   rows /workspace/opp/score/rows/v0fix/, driver log /workspace/opp/score/v0fix.out, ETA ~07:30 UTC. Restart (resumable per block):
   `cd /workspace/opp/score && (CB=/workspace/opp/cb LIB=/workspace/crforge_main/fe364ceb/plain OPP_CKPT=/workspace/opp/cbs/opp_ckpt/opp_m10_s0_sim.pt OPP_T=1.0 WORKERS=32 G2_ON=on setsid nohup bash /workspace/opp/cb/scratchpad/gauntlet/L74/opp_model/humanlike/run_closed.sh v0fix /workspace/opp/score/rows/v0fix 741200 742000 742800 743600 >> /workspace/opp/score/v0fix.out 2>&1 < /dev/null &)`
   Score: fetch rows to opp_model/humanlike/rows/v0fix, `card.py score --name v0fix --sim .../rows/v0fix --no-d` under THRESHOLDS v6.
+Codex P2OPP2_3 (medium, dispatched 22:30 UTC; ticket .foreman/scratch/a2/codex/P2OPP2_3.md, log P2OPP2_3.log, events
+  P2OPP2_3.jsonl): babysits all of the above, scores v0fix under v6, and on seed 0's end runs attach_sim + level A + a v1 smoke +
+  level B v1s0 (same 4 seeds, G2 on) + card.py v6; seed 1 level A. Its numbers are CLAIMS until checked here.
 NEXT (this seat): seed 0 done -> attach_sim.py (--data /workspace/opp/v1/hf_slot_v1) -> level_a.py on hf_slot_v1_test (+ its
   _memory.npz, split 2) -> level B v1 (same run_closed command, OPP_CKPT = the v1 _sim.pt, NAME v1s0) -> card.py v6; seed 1 ->
   level A + memory seed gap. Pilot bar (lead 10-28): v6 B-live RMS d <= 0.20, siege facts inside v6 margins, CLXIII SIM win 30-50%.
