@@ -30,8 +30,8 @@ public final class CfTrain implements AutoCloseable {
   // row meta ints: valid, match, seat, tick, viewTick, stage, jobSerial, decisionsOfSeat
   public static final int META = 8;
   // per-row action ints Python writes: play (0/1), our deck slot, cell, crforge x, crforge y, engine x, engine y (the
-  // pool units royale_env._Core.act receives: CfMem.Log's play point)
-  public static final int ACT = 7;
+  // pool units royale_env._Core.act receives: CfMem.Log's play point), extra delay (opp_style's _style_delay)
+  public static final int ACT = 8;
   // per-match result ints: finished, endTick, over, winner (-1 none / 0 / 1 / 2), crowns0, crowns1, jobSerial, crashed
   public static final int RES = 8;
   // per-match per-seat tallies: attempted, accepted, unlanded, refusedNotInHand, refusedEngine, decisions
@@ -51,6 +51,12 @@ public final class CfTrain implements AutoCloseable {
   // LOOP-MEM memory v2 (null = no memory model plays here): shared tables, one action Log per core, one CfMem per
   // memory seat per match (production: one MatchMemory per Match), rows at r * CfMem.BYTES in memB
   public CfMem.Tables memT;
+  // record_phi tower_phat (reward_shaping.tower_phat_record): per row the crown towers raw() lists (state()'s alive
+  // TowerEntity bodies): [count, then per tower side, king (0/1), hp, max_hp] at r * TWR ints; off unless towers
+  public static final int TWR = 1 + 6 * 4;
+  public boolean towers;
+  public final ByteBuffer twrB;
+  final IntBuffer twr;
   public ByteBuffer memB;
   CfMem.Log[] mlog;
   CfMem[][] mem;
@@ -96,11 +102,11 @@ public final class CfTrain implements AutoCloseable {
     oppPastB = direct(r2 * PAST * 4); idsB = direct(r2 * IDS * 8); pastB = direct(r2 * PAST * 4);
     projB = direct(r2 * PROJ * 4); effB = direct(r2 * EFF * 4); abilB = direct(r2 * ABIL * 4); cycB = direct(r2 * CYC * 4);
     cueB = direct(r2 * CUE * 4); metaB = direct(r2 * META * 4); actB = direct(r2 * ACT * 4); elB = direct(r2 * 8);
-    resB = direct((long) n * RES * 4); talB = direct(r2 * TAL * 4);
+    resB = direct((long) n * RES * 4); talB = direct(r2 * TAL * 4); twrB = direct(r2 * TWR * 4);
     tok = tokB.asFloatBuffer(); sc = scB.asFloatBuffer(); oppPast = oppPastB.asFloatBuffer(); past = pastB.asFloatBuffer();
     proj = projB.asFloatBuffer(); eff = effB.asFloatBuffer(); abil = abilB.asFloatBuffer(); cyc = cycB.asFloatBuffer();
     cueF = cueB.asFloatBuffer(); idsL = idsB.asLongBuffer(); meta = metaB.asIntBuffer(); act = actB.asIntBuffer();
-    res = resB.asIntBuffer(); tal = talB.asIntBuffer(); el = elB.asDoubleBuffer();
+    res = resB.asIntBuffer(); tal = talB.asIntBuffer(); el = elB.asDoubleBuffer(); twr = twrB.asIntBuffer();
     for (int i = 0; i < n; i++) {
       CfCore c = core[i] = new CfCore(tables);
       c.cardNames = template.cardNames;                    // the facade's identity tables (read-only), as CfLoop copies them
@@ -228,7 +234,7 @@ public final class CfTrain implements AutoCloseable {
 
   /** SelfPlaySide.apply's schedule for the decision Python wrote at row r (delay > 0: the play waits in pending). */
   void apply(int i, int s, int r) {
-    int t = meta.get(r * META + 3), de = jDe[i][s], delay = jDelay[i][s];
+    int t = meta.get(r * META + 3), de = jDe[i][s], delay = jDelay[i][s] + act.get(r * ACT + 7);
     if (act.get(r * ACT) != 0) {
       pendLand[i][s] = t + delay;
       pendSlot[i][s] = act.get(r * ACT + 1); pendCell[i][s] = act.get(r * ACT + 2);
@@ -307,6 +313,7 @@ public final class CfTrain implements AutoCloseable {
       x.obs(seat, names, tok, r * MAX_U * F, maskB, r * MAX_U, sc, r * S, formB, r * MAX_U);
       if (x.missed) { x.rewind(seat); meta.put(b + 5, 1); misses.incrementAndGet(); return; }
       el.put(r, e);                                       // view.my_elixir (pre(): el_int = int of it)
+      if (towers) towerRow(c, r);                         // Match.state at the prepare tick (un-extrapolated)
       meta.put(b + 4, c.tick() + h);                      // the view tick (t_sec = view tick * 0.05)
       st = 2;
     }
@@ -338,6 +345,20 @@ public final class CfTrain implements AutoCloseable {
     }
     meta.put(b + 5, DONE);
     rowsBuilt.incrementAndGet();
+  }
+
+  /** CfCore.state()'s crown towers in its entity order: alive WorldEntity TowerEntity, hp / max from HitPoints. */
+  void towerRow(CfCore c, int r) {
+    int at = r * TWR, k = 0;
+    for (org.crforge.core.battle.BattleEntity e : c.s.std.getBattle().getHolder().entities()) {
+      if (!(e instanceof TowerEntity t) || !t.getView().isAlive()) continue;
+      if (k == 6) throw new IllegalStateException("more than 6 crown towers");
+      HitPoints h = t.getHitPoints();
+      int b = at + 1 + 4 * k++;
+      twr.put(b, t.side()); twr.put(b + 1, t.getData().king() ? 1 : 0);
+      twr.put(b + 2, h == null ? 0 : h.getHitPoints()); twr.put(b + 3, h == null ? 0 : h.getMaximum());
+    }
+    twr.put(at, k);
   }
 
   /** After Python filled the tables: every valid row not DONE resumes where it stopped. -> rows still missing. */

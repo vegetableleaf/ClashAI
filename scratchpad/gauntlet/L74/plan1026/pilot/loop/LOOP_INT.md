@@ -56,6 +56,39 @@ Labels: (a) measured, (b) untested, (c) contradicted.
      crforge_core.spell_objects + CfCore map GoblinBarrelSpell_EV1 -> the Goblin Barrel card and
      GoblinBarrelSpell_EV1_Decoy -> barrel_decoy.DECOY_KEY (dropped by B0's / CLXIII's vocab = live's flag-on view),
      behind an opt-in key (absent = today's bytes), then the obs identity harness + smokes re-run.
+  2b. DONE (a) record_phi tower_phat (CfTrain.towerRow: state()'s alive crown towers per row -> production's
+     reward_shaping.state_record on a state holding exactly what tower_phat reads) and 2c. opp_style (styled opponents
+     through pipeline.loop_opp.decide = production's styled_decisions on stand-in sides; style spell delay = ACT int 7;
+     run_selfplay_batch's group key; result["opp_style"]). Check config `ref_pilot_noiw.yaml` = pilot.yaml minus the
+     hero-ability keys; msg lint_pn2 u0000 (32 matches: opponents 4 externals + B0; the w14opp_I exploiter and E4 were
+     NOT drawn in this sample), ON THE PILOT LIB (fe364ceb + 16.635.3, lead 10-28):
+     - server mode: 32/32 identical (every non-lp traj key incl. phi_state, mem_t; opponent plays 32/32 equal, 1,376),
+       tables 32/32, MEM rows 10,209/10,209, v_old max 7.9e-7, wver 0; lp max gate **1.33e-5**, card 5.7e-6, cell
+       **1.48e-5** (`cmp_pn_srv.json`). lp_gate is the gate logit's fp32 noise x 1/T_gate (T_gate 0.1 = x10).
+     - in-process (cuda, 8 in flight; styled heads moved to CPU for loop_opp): 32/32 identical, tables 32/32, MEM rows
+       10,209/10,209, lp max gate 4.8e-7 / card 1.4e-6 / cell 4.4e-6 () -> the server-mode lp excess is
+       the server's batch composition (fp32), not the wiring. Msg: /workspace/loop/cb/scratchpad/gauntlet/L68/rl/lint_pn2/fast_msg_u0000.pkl.
+  2d. NOT DONE: CfAbil / hero presses / the B6 ability head (pilot.yaml: hero_abilities, ability_head, heroiw_press,
+     ability_features) -> NotImplementedError. Also needed then: rl_royale's 128-match rule warm start goes through
+     ActorPool.run('selfplay') = FastPool (route it to production actors or support label mode).
+     CfCtx: NOT needed for production exactness: rl_royale's sampled decode has no decide rules at the pilot cfg (fast_ok
+     holds; sample_rules == DecisionOptions()). pilot.yaml's `fastloop.decode: live` has no rl_royale counterpart; the
+     fast loop does not implement it (lead decision if wanted: add it to rl_royale first, opt-in).
+  4. fastloop --server (serve.py per device, weights pushed per update, producers on CPU) + the pilot.yaml `fastloop:`
+     block stripped: lint_ms1 (ref_mem + stored_values + kl_stop_prev 0.02, beta 0; 33308): 3 updates, u0001 kl_stop at
+     e1 mb24 (KL 0.0289), learner 13-23 s / update (32 matches). pilot.yaml itself: blocked by 2d.
+  5. Bench with the learner (33553, Codex): LOOP-INT_1 (K 6 x M 256, 24 actors) and LOOP-INT_2 (K 4 x M 256, 8
+     actors, XMX 5g) both hit 33553's 62 GB CONTAINER cap (memory.limit_in_bytes; free -g shows the host). Measured on
+     LOOP-INT_2's u0000 rollout (B0 + memory both seats, fe364ceb): 1,024 matches in 169.8 s = 21.7k/h, 686 rows/match,
+     9.6 cores busy = 1.59 core-s/match all-in, GPU 33%, producers 7-9.8 GB RSS, container peak 61.98 GB before the
+     learner finished u0000. Report: .foreman/scratch/a2/int/bench_grid2.md. updates/h NOT measured.
+  6. PROJECTION.md (draft, (b) overall numbers): synchronous loop ~130-200k matches/h at N 4,096-8,192 on the box;
+     300k/h needs overlap or a multi-GPU learner; RAM >= 400 GB; AVX512 boot-gate env proposal.
+  LIB SWITCH (lead 10-28): run.sh / bench.sh / 33308 cmp.sh default to /workspace/crforge_main/fe364ceb/plain/lib
+  (core 3440d441664b7caa) + tables 16.635.3, facade build loop/jbuild_fe364ceb. Results before it (1, 2a, lint_ms1)
+  are on lib_cfclone + 16.402.22; 2b/2c and the 33553 numbers are on fe364ceb.
+  Codex dispatches: LOOP-INT_1 (medium): stopped by me (OOM design error, my ticket; its Codex process tree killed by PID
+  incl. a Codex-spawned StudioMCP child); LOOP-INT_2 (medium): BLOCKED on the 62 GB cap (correct per its decision tree).
 - Restart: (all 33308 unless noted) compare: `[FASTLOOP_MEMHASH=1] CPUS=140-151 [GPU=1] bash /workspace/loop/cmp.sh MSG.pkl
   OUT.json [--server eager] --in-flight 8 --matches 8 --threads 4`; msgs: ref_v0 =
   /workspace/loop/cb/scratchpad/gauntlet/L68/rl/lint_d1/fast_msg_u0000.pkl, ref_mem = .../lint_m1/fast_msg_u0000.pkl

@@ -31,8 +31,8 @@ SPEED = REPO / "scratchpad/gauntlet/L74/speed/crforge"
 CFCORE = REPO / "scratchpad/gauntlet/L74/crforge/facade/CfCore.java"
 JAVA_SRC = [CFCORE, SPEED / "CfSpeed.java"] + [OBSID / f for f in ("CfObsBind.java", "CfOppElixir.java", "CfIdent.java",
                                                                   "CfCue.java", "CfPubObj.java", "CfMem.java")] + [HERE / "CfTrain.java"]
-UNSUPPORTED_CFG = ("posture", "ability", "spell_track", "crown_track", "habit_track", "record_phi", "record_ctx",
-                   "record_elixir", "pipeline_decisions", "tap_loss", "tap_slow", "follow_ups", "_opp_style",
+UNSUPPORTED_CFG = ("posture", "ability", "spell_track", "crown_track", "habit_track", "record_ctx",
+                   "record_elixir", "pipeline_decisions", "tap_loss", "tap_slow", "follow_ups",
                    "own_effects", "predict_drops", "afford_ticks")
 UNSUPPORTED_SPEC = ("opp_tower", "start")
 
@@ -57,8 +57,8 @@ class Rows:
             ("ids", "idsB", np.int64, (48,)), ("past", "pastB", np.float32, (3, 5)),
             ("projectiles", "projB", np.float32, (64, 8)), ("effects", "effB", np.float32, (32, 6)),
             ("own_ability", "abilB", np.float32, (8, 7)), ("opp_cycle", "cycB", np.float32, (8, 4)),
-            ("cue", "cueB", np.float32, (64, 22)), ("meta", "metaB", np.int32, (8,)), ("act", "actB", np.int32, (7,)),
-            ("el", "elB", np.float64, ()), ("tal", "talB", np.int32, (6,)))
+            ("cue", "cueB", np.float32, (64, 22)), ("meta", "metaB", np.int32, (8,)), ("act", "actB", np.int32, (8,)),
+            ("el", "elB", np.float64, ()), ("tal", "talB", np.int32, (6,)), ("twr", "twrB", np.int32, (25,)))
 
     def __init__(self, L, n: int):
         for k, attr, dt, shape in self.KEYS:
@@ -308,6 +308,10 @@ class Producer:
         ls.other, os_.other = os_, ls
         sides = sorted((ls, os_), key=lambda s: s.side)
         for s in sides:
+            if s.cfg.get("record_phi") not in (None, False, "tower_phat"):
+                raise NotImplementedError(f"record_phi {s.cfg['record_phi']!r}: the fast loop records tower_phat only")
+            if s.cfg.get("record_phi"):
+                self.L.towers = True                          # CfTrain fills the crown-tower rows from now on
             bad = [x for x in UNSUPPORTED_CFG if s.cfg.get(x)]
             if bad:
                 raise NotImplementedError(f"cfg {bad} is not in CfTrain yet")
@@ -393,6 +397,8 @@ class Producer:
                 else {}),
              "fastloop": {"crashed": bool(res[7]), "approx": ["card_mix_accepted", "plays", "opp_counter",
                                                               "refuse_reasons names", "ghost_distinct_delivered"]}}
+        if "_opp_style" in os_.cfg:                          # SelfPlayMatch.result
+            r["opp_style"] = dict(os_.cfg["_opp_style"])
         r["league"] = dict(m["spec"])
         r["opp_side"] = {"side": os_.side, "policy": os_.cfg["policy"], "plays_attempted": os_.n_att,
                          "plays_accepted": os_.n_acc, "plays_per_min": round(os_.n_att / minutes, 3) if minutes else None,
@@ -406,6 +412,7 @@ class Producer:
         """actor_main's ('selfplay', update, sd, jobs) -> (results, skipped, stats)."""
         R, base = self.R, self.base
         t0 = time.perf_counter()
+        c0 = (int(self.L.engineNs.get()), int(self.L.obsNs.get()), int(self.L.rowsBuilt.get()))   # JVM counters: per run
         self.want_ver = int(update) if self.cl is not None else None   # the server's learner = this update's weights
         msd, psd = R.split_actor_sd(sd, self.dev)
         if R.pop_prefix(msd, R.ABILITY_SD) or psd:
@@ -472,16 +479,15 @@ class Producer:
         results.sort(key=R.row_key)
         stats = {"wall_s": time.perf_counter() - t0, "matches": len(results), "rounds": st["rounds"],
                  "crashed": len(skipped), "fills": self.stats["fills"], "time": dict(tm),
-                 "java_engine_core_s": int(L.engineNs.get()) / 1e9, "java_obs_core_s": int(L.obsNs.get()) / 1e9,
-                 "rows": int(L.rowsBuilt.get()), "first_crash": None if L.firstCrash is None else str(L.firstCrash)}
+                 "java_engine_core_s": (int(L.engineNs.get()) - c0[0]) / 1e9, "java_obs_core_s": (int(L.obsNs.get()) - c0[1]) / 1e9,
+                 "rows": int(L.rowsBuilt.get()) - c0[2], "first_crash": None if L.firstCrash is None else str(L.firstCrash)}
         return results, skipped, stats
 
     def _decide(self, live: dict) -> None:
         """The round's forward (one per policy) + decide + record + actions, as run_selfplay_batch's round."""
         E, torch, v = self.E, self.torch, self.v
-        from pipeline import engine_play as ep
         from pipeline.dataset_gen import SC_SLOT_COLS
-        from pipeline.royale_env import SCALE
+        from pipeline.decision_options import model_cell_logits
         rows = np.flatnonzero(v.meta[:, 0])
         if not len(rows):
             return
@@ -492,8 +498,8 @@ class Producer:
             if int(v.meta[r, 6]) != m["serial"]:
                 raise RuntimeError(f"row {r}: job serial {v.meta[r, 6]} != {m['serial']}")
             s = m["sides"][seat]
-            groups.setdefault(id(s.model), []).append((int(r), s))
-        K = 18                                               # crforge_core.K
+            key = (id(s.model), "opponent_style") if "_opp_style" in s.cfg else id(s.model)   # run_selfplay_batch's
+            groups.setdefault(key, []).append((int(r), s))
         g0 = time.perf_counter()
         work = []
         for members in groups.values():
@@ -548,7 +554,12 @@ class Producer:
                 if "value" in heads and name == "learner":
                     vold = self.R.value_scalar(heads["value"]).numpy()
                 if not (FAST_DECIDE and fast_ok(c)):
-                    raise NotImplementedError("a server-forwarded group needs the fast decide's cfg (fast_ok)")
+                    if "_opp_style" not in c:
+                        raise NotImplementedError("a server-forwarded group needs the fast decide's cfg (fast_ok)")
+                    d0 = time.perf_counter()
+                    self._prod_group(model, c, sides, idx, batch, keys, None, heads, p, hand, cell_fn)
+                    self.tm["decide_py"] += time.perf_counter() - d0
+                    continue
                 d0 = time.perf_counter()
                 self._fast_group(model, c, sides, idx, batch, keys, heads, p, hand, cell_fn, vold, f.ver)
                 self.tm["decide_py"] += time.perf_counter() - d0
@@ -566,11 +577,28 @@ class Producer:
             self.tm["fwd_calls"] += 1
             d0 = time.perf_counter()
             if FAST_DECIDE and fast_ok(c):
-                from pipeline.decision_options import model_cell_logits
                 self._fast_group(model, c, sides, idx, batch, keys, heads, p, hand,
                                  model_cell_logits(model, enc, heads["card"].device))
                 self.tm["decide_py"] += time.perf_counter() - d0
                 continue
+            self._prod_group(model, c, sides, idx, batch, keys, enc, heads, p, hand,
+                             model_cell_logits(model, enc, heads["card"].device))
+            self.tm["decide_py"] += time.perf_counter() - d0
+        if fs:
+            self.cl.done(list(fs.values()))
+
+    def _prod_group(self, model, c, sides, idx, batch, keys, enc, heads, p, hand, cell_fn) -> None:
+        """PRODUCTION's decide for one policy group (run_selfplay_batch's round): Match.prepare's state, SelfPlaySide.pre,
+        then adaptive_opponents.styled_decisions for a styled opponent (through pipeline.loop_opp.decide: production's
+        own function on stand-in sides, cell logits from ``cell_fn``; bank inputs = the Java view's float64 elixir and
+        the enemy-on-my-half flag from the unit tokens) else e1_eval.sample_decide_batch (in-process forward only);
+        SelfPlaySide._record; the actions (incl. the style's spell delay) back to Java."""
+        E, v = self.E, self.v
+        from pipeline import engine_play as ep
+        from pipeline import loop_opp
+        from pipeline.royale_env import SCALE
+        K = 18
+        if True:
             for j, s in enumerate(sides):                    # Match.prepare's state the decide / record read
                 r = idx[j]
                 tick, vt = int(v.meta[r, 3]), int(v.meta[r, 4])
@@ -578,6 +606,8 @@ class Producer:
                     s.last_play_tick = tick
                 s._cur = (tick, SimpleNamespace(t_sec=vt * 0.05), SimpleNamespace(my_elixir=float(v.el[r])))
                 s._view_tick = vt
+                if s.cfg.get("record") and s.cfg.get("record_phi"):   # (opponents carry the key, record False)
+                    raise NotImplementedError("record_phi in production's decide path: the fast decide only")
                 if has_mem(model) and getattr(s, "mem", None) is None:
                     s.mem = "cfmem"                           # _record's mem_t switch (the table is CfMem's)
                 s._gen_row = {k: batch[k][j] for k in keys}
@@ -585,22 +615,30 @@ class Producer:
             pre = [s.pre(hand[j]) for j, s in enumerate(sides)]
             allowed = np.stack([x[1] for x in pre])
             stalled = np.array([x[2] for x in pre], dtype=bool)
-            decisions = E.sample_decide_batch(model, enc, heads, p, allowed, stalled, sides, c)
+            if "_opp_style" in c:
+                half = [loop_opp.bank_inputs(s._gen_row)[1] for s in sides]
+                decisions = loop_opp.decide([s.cfg for s in sides], [s.rng_behave for s in sides],
+                                            [s.deck.card_ids for s in sides], [float(v.el[r]) for r in idx], half,
+                                            {k: x.cpu() for k, x in heads.items()}, p, allowed, stalled,   # loop_opp: CPU rows
+                                            lambda rows, slots: cell_fn(list(map(int, rows)), list(map(int, slots))))
+                self.stats["styled_rows"] += len(sides)
+            elif enc is not None:
+                decisions = E.sample_decide_batch(model, enc, heads, p, allowed, stalled, sides, c)
+            else:
+                raise NotImplementedError("production's sample decide needs the in-process forward")
             for j, (s, d) in enumerate(zip(sides, decisions)):
                 r = idx[j]
                 s._record(p[j], d)
                 a = v.act[r]
                 if d["play"]:
                     X, Y = ep.cell_to_engine(d["cell"], s.mirror, s.cfg["grid"])
-                    a[:] = (1, int(d["slot"]), int(d["cell"]), int(X) * SCALE // K, int(Y) * SCALE // K, int(X), int(Y))
+                    a[:] = (1, int(d["slot"]), int(d["cell"]), int(X) * SCALE // K, int(Y) * SCALE // K, int(X), int(Y),
+                            int(d.get("_style_delay", 0)) if "_opp_style" in s.cfg else 0)
                     s.fl[s.deck.cards[d["slot"]]] += 1        # card_mix_attempted / play_elixir / stall (Match._land)
                     s.fl_el.append(float(int(s._cur[2].my_elixir)))
                     s.n_stall += int(d["why"] == "stall")
                 else:
-                    a[:] = (0, -1, -1, 0, 0, 0, 0)
-            self.tm["decide_py"] += time.perf_counter() - d0
-        if fs:
-            self.cl.done(list(fs.values()))
+                    a[:] = (0, -1, -1, 0, 0, 0, 0, 0)
 
     # ------------------------------------------------------------------------------------------------ fast decide
     def _fast_group(self, model, c, sides, idx, batch, keys, heads, p, hand, cell_fn, v_old=None, wver=None) -> None:
@@ -669,6 +707,8 @@ class Producer:
                 for k in keys:
                     if not k.startswith("mem_"):              # MEM_KEYS ride in result["memory"] (production)
                         rows.setdefault(k, []).append(batch[k][j])
+                if s.cfg.get("record_phi"):                   # reward_shaping.state_record on Match.state's towers
+                    rows.setdefault("phi_state", []).append(self._phi(s, int(r), int(tick[j])))
                 if has_mem(model):
                     rows.setdefault("mem_t", []).append(int(tick[j]))
                     if MEMHASH:                               # compare.py: the forward's MEM row vs the learner rebuild
@@ -686,11 +726,21 @@ class Producer:
             a = v.act[r]
             if playing[j]:
                 X, Y = ep.cell_to_engine(int(cells[j]), s.mirror, s.cfg["grid"])
-                a[:] = (1, int(slots[j]), int(cells[j]), int(X) * SCALE // K, int(Y) * SCALE // K, int(X), int(Y))
+                a[:] = (1, int(slots[j]), int(cells[j]), int(X) * SCALE // K, int(Y) * SCALE // K, int(X), int(Y), 0)
                 s.fl[s.deck.cards[int(slots[j])]] += 1
                 s.fl_el.append(float(el_int[j]))
             else:
-                a[:] = (0, -1, -1, 0, 0, 0, 0)
+                a[:] = (0, -1, -1, 0, 0, 0, 0, 0)
+
+    def _phi(self, s, r: int, tick: int) -> list:
+        """SelfPlaySide._record's phi_state for record_phi tower_phat: production's state_record on a state holding what
+        it reads (raw()'s episode crown_towers from CfTrain.towerRow, the tick; no crowns key: derived from the towers)."""
+        from pipeline import reward_shaping as RS
+        t = self.v.twr[r]
+        tw = [{"side": int(t[1 + 4 * k]), "type": "king" if t[2 + 4 * k] else "princess", "hp": int(t[3 + 4 * k]),
+               "max_hp": int(t[4 + 4 * k]), "destroyed": int(t[3 + 4 * k]) <= 0} for k in range(int(t[0]))]
+        return RS.state_record(s.cfg["record_phi"], {"tick": tick, "episode": {"crown_towers": tw}}, s.side, None,
+                               s.__dict__.setdefault("_phi_mem", {}))
 
     @staticmethod
     def _choice(P, rngs):
@@ -728,6 +778,8 @@ class Producer:
             out["tick"] = sc("tick", np.int64)
         if "gate_tau" in rows:
             out["gate_tau"] = sc("gate_tau", np.float64)
+        if "phi_state" in rows:                              # cfg["record_phi"]: reward_shaping state rows
+            out["phi_state"] = np.stack([np.asarray(x) for x in rows["phi_state"]]).astype(np.float64)
         if "mem_t" in rows:                                  # Plan A memory model: each row's memory tick
             out["mem_t"] = sc("mem_t", np.int64)
         if "mem_h" in rows:

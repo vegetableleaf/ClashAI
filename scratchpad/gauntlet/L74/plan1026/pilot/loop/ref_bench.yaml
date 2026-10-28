@@ -1,0 +1,117 @@
+# LOOP-INT bench config: ref_mem.yaml (B0 + memory v2) + the pilot's PPO keys (stored_values, kl_stop_prev 0.02 vs the
+# previous update, beta 0) + opponents = init B0 only (memory on both seats: heavier than the pilot's 1/8 B0 share) and no
+# snapshots / screens / proagree after init. critic_warmup_updates 1: u0001-u0002 are policy updates (kl_stop binds).
+# E x G = matches per update: set E on the command line (E = K x M / 4 for one full wave of K producers x M matches).
+init: icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt
+pool: icebow/data/ghost_pool/pool_env_v1.jsonl
+proagree_data: icebow/data/pipeline/s1_dataset.npz
+proagree_rows: 0
+proagree_data_gen: icebow/data/pipeline/gen_dataset_v32_fv5.npz
+noise_off: all
+opp_elixir: counter
+action_delay_ticks: 26
+extrapolate_ticks: 26
+hero_abilities: false
+forms_mode: deck
+league: true
+league_decks: icebow/data/rltest/decks_rl.json
+league_specialist: icebow/data/pipeline/s1_icebow_v6aug_s1.pt
+league_opp_policy: sample
+league_mix:
+  latest: 0.0
+  older: 0.0
+  init: 1.0
+  s1: 0.0
+league_snapshot_every: 100000
+league_snapshot_keep: 12
+league_icebow_share: 0.0
+league_deck_alpha: 1.0
+league_deck_floor: 0.0
+E: 64
+G: 4
+adv_clip: 2.0
+advantage: gae
+gae_gamma: 0.999
+gae_gamma_unit: tick
+gae_gamma_tick: 0.99994
+gae_terminal_gap: false
+gae_lambda: 0.95
+vf_coef: 0.5
+vf_clip: 0.2
+critic_warmup_updates: 1
+vf_trunk_grad: true
+n_actors: 8
+in_flight: 8
+actor_device: cpu
+actor_threads: 1
+actor_timeout_s: 3600
+T: 0.5
+tau: 0.35
+T_gate: 0.3
+afford_mask: true
+stall_elixir: null
+stall_seconds: 12
+obs: live
+decide_every: 10
+learner_device: cuda
+learner_deterministic: true
+lr: 1.0e-05
+grad_clip: 0.5
+ppo_epochs: 2
+minibatch: 256
+clip: 0.2
+beta0: 0.0
+beta_min: 0.0
+beta_max: 0.0
+kl_target: 0.3
+leash: max
+seed: 101
+max_updates: 3
+save_every: 100
+proagree_every: 100000
+screen_every: 100000
+screen_entries: 0
+screen_seeds:
+- 0
+stop_consecutive: 2
+plays_lo: 0.6
+plays_hi: 1.6
+kl_cell_stop: 0.5
+kl_gate_stop: 0.1
+tripwire_cell_pp: 5.0
+hard_cell_pp: 8.0
+hard_card_pp: 8.0
+hard_gate_bal: 0.05
+screen_stop_pp: -10.0
+entropy_floor_frac: 0.5
+outlived_pp: 15.0
+low_delivered_pp: 10.0
+ghost_refusal_x: 2.0
+league_pfsp: hard
+league_pfsp_gamma: 2.0
+league_pfsp_floor: 0.05
+league_learner_icebow_share: 1.0
+ability_policy: generic
+branch_gate: false
+learner_pipeline_frac: 0.0
+cue_inputs: true
+live_levels: all16
+kl_heads:
+- card
+kl_ref_refresh_every: 1
+league_deck_weights:
+  GoblinBarrel: 2.5
+  SkeletonBalloon: 2.5
+  BlowdartGoblin: 2.5
+  Princess: 2.5
+  GoblinGang: 2.5
+tau_phase:
+- 0.35
+- 0.45
+- 0.55
+memory: v2
+memory_aux: v1
+memory_encoder_frozen: true
+memory_zero_empty: true
+stored_values: true
+kl_stop_prev: 0.02
