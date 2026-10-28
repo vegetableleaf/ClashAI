@@ -681,3 +681,20 @@ python -I project.py results/loop_n2048_c2_t24.json --extra-core-s 0.05   # lapt
   **Never exercised (b): `rk_combo` (col 45 and summary 13: 0 in both runs; CLXIII made no Rocket within -24..+40 ticks
   of its own Tornado here).** The cost columns of these runs are NOT the cost (28 processes on shared cores: the cue's
   Java time read 494 us / row vs S3b-3f's 15.3); the clean cost run is separate (below).
+- **Cost per seat-row (a unless marked; pod 32657 shared with other agents' jobs, load 60-140, so the cue's Java time is
+  the yardstick: 15.3 us clean in S3b-3f).** Single process, 4 matches, 3,986 rows, bulk-copy build 37c6030
+  (`results/mem_cost.json`, identity still all-equal there):
+
+  | path | us / seat-row | cue Java in the same run |
+  |---|---:|---:|
+  | production `Match._memory` (Python) | 4,727 (6,258 / 7,521 / 11,667 in earlier single runs) | |
+  | `CfMem.observe` in the JVM (4 matches, partly cold JIT) | 47.6 | 62.5 |
+  | `CfMem.features` in the JVM (same) | 135.6 | |
+  | `features` steady state (`benchFeatures`, 3,000 reps at each match's LAST tick = the most events) | **mean 66, warmest 26.9** | |
+
+  (b) In a long-lived loop JVM (C2-compiled, unloaded cores) observe + features should be about 40-80 us per seat-row
+  (the run's 4x cue inflation applied to observe; features' steady state measured above): about 0.03-0.06 core-s per match
+  at ~700 rows. Measuring it in CfLoop is LOOP-INT's (not done here). The per-element ByteBuffer writes cost 268 -> 143
+  us / row in-harness before the bulk copy (same load).
+- **STATUS: DONE** (identity at >= 38,400 rows twice; tables; learner rebuild; cost). Not done: `rk_combo` never fired
+  (b); a clean-core cost number inside CfLoop.
