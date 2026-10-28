@@ -12,8 +12,9 @@ Built from opp_model/o1_records.py (its helpers are imported unchanged); what di
   * opponent act tick = first public sighting - LAG (20: crforge's command delay; our seat's decision -> sighting is measured in
     selfcheck.py), minus 1 more when that lands ON a grid tick (a play row on a grid tick would hide its slot row: the
     HF rows never have one, rows_to_npz's grid = wait rows).
-  * opponent own elixir (frames' elixir[opp]) = the live public counter (opp_elixir_est) minus the cost of every opponent play
-    already acted but not yet sighted (act < t < sighting): the counter charges a play at its sighting, the player paid at act.
+  * opponent own elixir (frames' elixir[opp]) = the dataset's public counter (PublicObserver, today's code; NOT the frames' live
+    opp_elixir_est, whose 10-17-era build ignored bodiless spells), charged at the sighting like crforge charges a command
+    when it executes (act + 20); our seat: the reader's own elixir drops at the sighting too (selfcheck corrected_counter).
   * opponent hand: the public cycle rule (o1_records.infer_hands) from the 5th detected play on; plays 1-4 get the FITTED deal
     H0 = {p1..p4} (consistent with every later hand; Q = the other 4 in deck order) and `hand_known_from` = act(5) so their rows
     are hand_inferred (no card label, slot labels kept), as the HF rows' fitted deal.
@@ -139,7 +140,6 @@ def build(job):
     import live_table as LT
     import o1_records as R
     from pipeline.native_recording import tag_native_recording
-    from pipeline.opp_elixir_count import card_cost
     from pipeline.public_observation import recording_observers
     path, m, bl_deck = job
     st = Counter()
@@ -201,6 +201,13 @@ def build(job):
     obs = recording_observers(tag_native_recording(prov, {}))
     oplays = sorted(obs[me].plays, key=lambda e: e['tick'])          # the opponent's plays, as OUR seat saw them
     our_seen = sorted(obs[opp].plays, key=lambda e: e['tick'])       # OUR plays, as the opponent's seat saw them
+    # the opponent's own elixir = the dataset's public counter (today's code, = the HF rows' sc[:, 5] path), not the frames'
+    # historical live counter: the 10-17 era's live counter did not charge bodiless spells (self-check: whole matches 3-6
+    # elixir high, 20261017_055812 / _183905), so its value depends on the live build of the day
+    for f in nfr:
+        el = list(f['elixir'])
+        el[opp] = float(obs[me].estimate_at(int(f['tick'])))
+        f['elixir'] = el
     seen_forms = {}
     for e in oplays:
         k = R.key_of(e['card'])
@@ -274,17 +281,9 @@ def build(job):
                 a -= 1
                 st['opp_act_off_grid_shift'] += 1
             e['tick'] = a
-        # opponent own elixir: the counter minus plays acted but not yet sighted
-        cost = [card_cost(e['key']) or 0.0 for e in seq]
-        acts, sights = [e['tick'] for e in seq], [e['sight'] for e in seq]
-        for f in nfr:
-            t = f['tick']
-            lo = bisect.bisect_left(sights, t + 1) - 8          # only plays sighted after t can be pending
-            pend = sum(cost[k] for k in range(max(0, lo), len(seq)) if acts[k] < t < sights[k])
-            if pend:
-                f['elixir'] = list(f['elixir'])
-                f['elixir'][opp] = max(0.0, f['elixir'][opp] - pend)
-                st['opp_frames_pending_deducted'] += 1
+        # opponent own elixir = the counter as is (charged at the sighting): NO deduction of acted-unsighted plays. Measured on
+        # our seat (wave 2, 454 matches): the reader's own elixir drops at the sighting, not at the decision (counter within 0.5
+        # of the truth 74.8% as is vs 62.9% with the deduction), and crforge charges a command when it executes (act + 20)
         hands = R.infer_hands(seq, deck)
         fit = fitted_hands(seq, deck)
         if fit is not None and len(seq) > 4 and hands[4] is not None:
@@ -398,7 +397,7 @@ def main():
     idx_path = root / 'index.jsonl'
     done = set()
     if idx_path.exists():
-        done = {json.loads(x)['stem'] for x in open(idx_path)}
+        done = {j['stem'] for j in map(json.loads, open(idx_path)) if 'error' not in j}   # an errored log (e.g. still being copied) is retried
     todo = [(p, m, bl.get(m['stem'])) for p, m in jobs if m['stem'] not in done]
     print(f'{a.block}: {len(jobs)} logs on disk of {len(sel)} selected; {len(done)} done; {len(todo)} to build; '
           f'battle-log decks mapped {len(bl)}', flush=True)

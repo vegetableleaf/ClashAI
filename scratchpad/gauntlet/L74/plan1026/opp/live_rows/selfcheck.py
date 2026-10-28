@@ -77,6 +77,10 @@ def check_npz(npz, logs: Path) -> dict:
         me, dec, est, own = log_view(p)
         mir = me == 1
         rows = np.where(rep == r)[0]
+        rec = json.loads((Path(npz).parent / 'corpus' / f'replay_{tag}.json').read_text())
+        lv = rec['live']
+        from pipeline.opp_elixir_count import card_cost
+        pend = [((s - LAG - 1) if (s - LAG) % 10 == 0 else (s - LAG), s, card_cost(k) or 0.0) for s, k in lv['our_sightings']]
         for i in rows:
             t = int(tick[i])
             if int(side[i]) != me:                              # opponent-seat row: the public counter's error on OUR elixir
@@ -86,6 +90,11 @@ def check_npz(npz, logs: Path) -> dict:
                     c['cnt_le05'] += d <= 0.5
                     c['cnt_le10'] += d <= 1.0
                     c['cnt_absdiff_x1000'] += round(1000 * d)
+                    # as the OPPONENT seat's own-elixir input is built: the counter minus acted-but-unsighted costs
+                    d2 = abs(max(0.0, float(sc[i, 5]) * 10 - sum(cst for a_, s_, cst in pend if a_ < t < s_)) - own[t])
+                    c['cnt2_le05'] += d2 <= 0.5
+                    c['cnt2_le10'] += d2 <= 1.0
+                    c['cnt2_absdiff_x1000'] += round(1000 * d2)
                 continue
             d = dec.get(t)
             if d is None:
@@ -98,8 +107,13 @@ def check_npz(npz, logs: Path) -> dict:
                 c['el_ok'] += abs(float(sc[i, 3]) * 10 - d['own_el']) <= 0.1
             if t in est:
                 c['opp_n'] += 1
+                c[f'opp_n_day:{tag[10:18]}'] += 1
                 dd = abs(float(sc[i, 5]) * 10 - est[t])
                 c['opp_ok'] += dd <= 0.5
+                if dd > 0.5:
+                    c[f'opp_miss_day:{tag[10:18]}'] += 1
+                    if len(ex) < 12:
+                        ex.append(dict(kind='counter', tag=tag, tick=t, rows=round(float(sc[i, 5]) * 10, 3), live=est[t]))
                 c['opp_absdiff_x1000'] += round(1000 * dd)
             tk = tok[off[i]:off[i + 1]]
             ours = sorted((round(float(x), 2), round(float(y), 2)) for x, y in tk[:, 4:6])
@@ -124,8 +138,6 @@ def check_npz(npz, logs: Path) -> dict:
             if (not same or not tok_ok) and len(ex) < 6:
                 ex.append(dict(tag=tag, tick=t, units=[len(ours), len(ref)], ours=ours[:12], ref=ref[:12], got_t=got_t, ref_t=ref_t))
         # (B) act dating + cycle-rule hand on our seat, from the record (the chunk corpus next to the npz)
-        rec = json.loads((Path(npz).parent / 'corpus' / f'replay_{tag}.json').read_text())
-        lv = rec['live']
         taps = lv['our_taps']                                   # (decision tick, confirm tick, key)
         tt = [x[0] for x in taps]
         dticks = sorted(dec)
@@ -174,7 +186,9 @@ def summarize(srcs):
             cycle_hand_determined_pct=round(100 * c['hand_inferred'] / max(1, c['hand_inferred'] + c['hand_undetermined']), 2),
             cycle_hand_exact_pct=pct('hand_inferred_exact', 'hand_inferred'),
             counter_as_elixir_le0p5=pct('cnt_le05', 'cnt_n'), counter_as_elixir_le1p0=pct('cnt_le10', 'cnt_n'),
-            counter_as_elixir_mean_absdiff=round(c['cnt_absdiff_x1000'] / 1000 / max(1, c['cnt_n']), 3), counter_n=c['cnt_n'])}
+            counter_as_elixir_mean_absdiff=round(c['cnt_absdiff_x1000'] / 1000 / max(1, c['cnt_n']), 3), counter_n=c['cnt_n'],
+            corrected_counter_as_elixir_le0p5=pct('cnt2_le05', 'cnt_n'), corrected_counter_as_elixir_le1p0=pct('cnt2_le10', 'cnt_n'),
+            corrected_counter_as_elixir_mean_absdiff=round(c['cnt2_absdiff_x1000'] / 1000 / max(1, c['cnt_n']), 3))}
     dating = {}
     for cls in ('troop', 'building', 'spell'):
         xs = sorted(int(k.split(':')[1]) for k, v in lag.items() if k.startswith(cls + ':') for _ in range(v))
