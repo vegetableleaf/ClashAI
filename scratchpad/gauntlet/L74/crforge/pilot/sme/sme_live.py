@@ -93,6 +93,7 @@ def fx_spells():
 
 
 FX_SHIFT = int(os.environ.get('SME_FX_SHIFT', '0'))  # round 1: +1 run tick on fx-dated spell plays
+GK8 = int(os.environ.get('SME_GK8', '0'))  # round 8.6: a mislabelled one-tick pair is no dash burst
 GK_DASH = int(os.environ.get('SME_GK', '0'))          # round 2.2: Golden Knight ability casts from its dashes
 GK_ID, GK_STEP, GK_LAG = 26000074, 100, 2               # card id; dash = > 100 units a tick; crforge: run R moves at R+2
 GK_ACCEL = 63                                           # round 5.4: 1.5x the Golden Knight's ~42-unit walk
@@ -144,6 +145,15 @@ def gk_dashes(frames):
                 q = min(pa, key=lambda f: abs(f[1] - e[1]) + abs(f[2] - e[2]))
                 v = (abs(q[1] - e[1]) + abs(q[2] - e[2])) / dt
                 fast = v > GK_STEP
+                if fast and GK8 and dt == 1:
+                    # round 8.6: a one-tick pair whose speed does not hold over two ticks is a mislabelled frame
+                    # (bp_rules.not_a_dash's test). Taken as a burst it also set lastcast and hid the real dash 8 ticks
+                    # later (001141@5389 fake, 5399 real; bp_rules then dropped the fake, leaving no cast).
+                    c = min((t for t in ts if t >= a + 2), default=None)
+                    pc = [f for f in frames[c]['E'] if f[0] == side and f[3] == GK_ID] if c is not None else []
+                    if pc:
+                        q2 = min(pc, key=lambda f: abs(f[1] - q[1]) + abs(f[2] - q[2]))
+                        fast = (abs(q2[1] - q[1]) + abs(q2[2] - q[2])) / (c - a) > GK_STEP
                 # round 5.4: the dash starts below GK_STEP (84 a tick on its first frame, 164443@746): it begins at the
                 # first frame of the run of frames faster than GK_ACCEL (1.5x the ~42 walk) that leads to the burst
                 if v > GK_ACCEL:
@@ -260,6 +270,7 @@ def iw_area_cast(p, fx, my):
 
 
 HERO7 = int(os.environ.get('SME_HERO7', '0'))  # round 7.1
+MECH_HB = int(os.environ.get('SME_MECH_HB', '0'))  # round 8.1: the hero Balloon throw is dated by mech_rules alone
 BALLOON_HERO_ID = 203000006
 
 
@@ -352,6 +363,8 @@ def hero7_cast(p, frames, rises, my):
     if not HERO7 or p['kind'] != 'ability' or p.get('source') != 'cast_seen' or p['side'] == my:
         return p
     R = p['tick']
+    if p['card'] == 'Balloon' and MECH_HB:
+        return p   # round 8.1: one Balloon rule, mech_rules.hb_throw (crforge's throw line R+3, 9 / 9 casts)
     if p['card'] == 'Balloon':
         ts = sorted(frames)
         has = lambda t: any(q[0] == p['side'] and q[3] == BALLOON_HERO_ID for q in frames[t]['P'])  # noqa: E731
@@ -405,6 +418,8 @@ def plan_from(rec, opp_deal, frames=None):
         elif (s, d) in last:
             cmds.append({"kind": "ability", "given": p['tick'] - 20, "run": p['tick'], "side": s,
                          "unit": "cmd%d_%d" % (last[(s, d)], p.get('unit_index', 0))})
+            if BANNER and p['card'] == 'Goblins':  # round 8.5: SmeRun names the live banner by id (queueBanners)
+                cmds[-1]['banner'] = 1
         else:
             continue
         cmds[-1]['_src'] = {'lo': p['run_ticks'][0], 'hi': p['run_ticks'][1], 'tick': p['tick'],
@@ -558,6 +573,28 @@ def cmd_pass_read(d, by, t, me):
     return (s - r) % 10000 == 0 and 10000 <= s - r <= 100000 and (nxt - r) in regen
 
 
+HIDDEN = int(os.environ.get('SME_HIDDEN', '0'))  # round 8.4
+BANNER = int(os.environ.get('SME_BANNER', '0'))  # round 8.5: hero Goblins ability by its banner's object id
+
+
+def hidden_ok(f, o, me):
+    """Round 8.4 (SME_HIDDEN=1): the frame lists a hidden body f['H'] = [[side, crforge name, [x, y] or None]] (the
+    reader dropped it while projectiles still target it; extract.reader_hidden). True when, after taking out of the sim
+    exactly one row of that side and name per hidden body -- at the projectiles' target point when the frame has one --
+    the frame is exact. The hidden body's hp is not read by the reader, so it is not checked (a torn class, not exact)."""
+    es = list(repr_rows(o))
+    for side, name, pt in f['H']:
+        hit = [i for i, e in enumerate(es) if e[1] == 'C' and e[2] == name and e[3] == side]
+        if len(hit) != 1 or (pt is not None and [es[hit[0]][4], es[hit[0]][5]] != list(pt)):
+            return False
+        es.pop(hit[0])
+    r, s = canon_live(f, me), canon_sim(dict(o, E=es))
+    s.pop('S%d' % (1 - me))
+    if HP_PH:
+        r = fill_placeholder(r, s)
+    return not diff(r, s)
+
+
 def analyse(obs, frames, me, lo=0, hi=10 ** 9):
     by = {o['t']: o for o in obs}
     ts = [t for t in sorted(frames) if lo <= t <= hi and t in by]
@@ -576,6 +613,8 @@ def analyse(obs, frames, me, lo=0, hi=10 ** 9):
             cls[t] = 'torn_cmd'
         elif TORN_STEP and t + 1 in by and step_read(frames[t], by[t], by[t + 1], me):
             cls[t] = 'torn_step'
+        elif frames[t].get('H') and hidden_ok(frames[t], by[t], me):
+            cls[t] = 'torn_hidden'
         else:
             cls[t] = 'div'
     for i, t in enumerate(ts):  # isolated frames whose every object is held by sim t or t+1
@@ -762,6 +801,11 @@ def do_match(args):
     os.makedirs(mo, exist_ok=True)
     try:
         frames = load_frames(frames_path)
+        if HIDDEN:   # round 8.4: bodies the reader stopped listing while projectiles still target them (extract.reader_hidden)
+            for h in rec.get('reader_hidden') or ():
+                for t in frames:
+                    if h['last'] < t <= h['end']:
+                        frames[t].setdefault('H', []).append([h['side'], h['name'], (h['track'] or {}).get(str(t))])
         me, end = rec['my_side'], max(frames)
         info, plan, final = fit_match(rec, frames, mo)
         if final is None:
@@ -771,6 +815,9 @@ def do_match(args):
             if SNAP:  # A2c-BP: isolated div frames that are crforge's own in-step states (bp_snap.py)
                 import bp_snap
                 an = bp_snap.reclass(runnable(plan), frames, me, an, o, os.path.join(mo, 'work'))
+            if int(os.environ.get('SME_MECH_CROSS', '0')):  # A2c-M: a body crossed between t and t+1 (mech_torn.py)
+                import mech_torn
+                an = mech_torn.reclass(an, o, frames, me)
             by = {x['t']: x for x in o}
             plays = [p for x in o for p in x['plays']]
             moved = [(c.get('card', 'ability'), c['run'] - c['_src']['tick']) for c in plan['cmds'] if c['run'] != c['_src']['tick']]

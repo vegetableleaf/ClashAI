@@ -1,0 +1,15 @@
+# hidden_test.py on r8r0 plans, inputs_v22, run8.sh env + SME_HIDDEN=1 (pod 33920, lib_f635c). base = unplanted frame passes; others = planted change caught
+live_play_20261026_181217 a recorded body x+1            28 / 28
+live_play_20261026_181217 base                           28 / 28
+live_play_20261026_181217 other name                     28 / 28
+live_play_20261026_181217 other side                     28 / 28
+live_play_20261026_181217 our elixir +1                  28 / 28
+live_play_20261026_181217 second sim row same name       28 / 28
+live_play_20261026_181217 sim hidden row x+1 (tracked)   22 / 22
+live_play_20261026_213436 a recorded body x+1            18 / 18
+live_play_20261026_213436 base                           0 / 18   (flagged match, diverged from 205; frames differ elsewhere)
+live_play_20261026_213436 other name                     18 / 18
+live_play_20261026_213436 other side                     18 / 18
+live_play_20261026_213436 our elixir +1                  18 / 18
+live_play_20261026_213436 second sim row same name       18 / 18
+live_play_20261026_213436 sim hidden row x+1 (tracked)   9 / 9

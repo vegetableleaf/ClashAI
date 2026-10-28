@@ -291,6 +291,82 @@ def crforge_casts(path, plays, sides, my=None, fx=None):
     return out
 
 
+def reader_hidden(path, cat):
+    """A2c round 8 (SME_HIDDEN=1): bodies that leave the reader's ents list while a reader projectile still targets their
+    address, i.e. the game object lives on unlisted. Census on the 138 matches (round 8): exactly 2, both a hero Mini
+    PEKKA 2 ticks into its ability cast (181217@3041, 213436@778); crforge's body equals every projectile target point
+    and dies on the same frame as the game's. -> [{side, name (crforge character), last (last ents tick), end (last tick a
+    projectile targets it), track {tick: [x, y]}}]. The track point is the target point of a projectile already seen in
+    the frame before (a projectile fired this frame can carry its fire-time point); a frame with only new projectiles
+    takes their point if they agree."""
+    last, prev, out_t = {}, set(), {}
+    seen = set()
+    for line in open(path, 'rb'):
+        if b'"frame"' not in line[:40]:
+            continue
+        d = json.loads(line)
+        t = d['tick']
+        if t is None or t < 0 or t in seen:
+            continue
+        seen.add(t)
+        here = set()
+        for e in d['ents']:
+            last[e[7]] = (t, e)
+            here.add(e[7])
+        cur = set()
+        for pr in d['proj']:
+            a = pr[9] if len(pr) > 9 else None
+            if a and a in last and a not in here:
+                out_t.setdefault(a, {}).setdefault(t, []).append((pr[6] in prev, pr[4], pr[5]))
+            cur.add(pr[6])
+        prev = cur
+    res = []
+    for a, by_t in out_t.items():
+        lt, e = last[a]
+        ticks = sorted(t for t in by_t if t > lt)
+        if not ticks:
+            continue
+        c = cat.get(e[3]) or {}
+        name = c.get('hero_character') if e[3] == c.get('hero_form_id') else c.get('summon_character')
+        track = {}
+        for t in ticks:
+            pts = {(x, y) for o, x, y in by_t[t] if o} or {(x, y) for o, x, y in by_t[t]}
+            if len(pts) == 1:
+                track[str(t)] = list(pts.pop())
+        res.append(dict(side=e[0], name=name, last=lt, end=ticks[-1], track=track))
+    return res
+
+
+def own_charge_presses(path, plays, my, sides):
+    """A2c round 8.7 (SME_CHARGE8=1): our own hero ability presses seen only as a charge drop. The reader's phase-2 unit
+    row of our hero carries ability.own_action.charges_raw (our own side only). Census over the 138 matches: 122 drops,
+    121 have an extracted own press within [drop - 30, drop + 2]; the other one is 225213@3588 (our hero Ice Wizard: no
+    cast_seen, no tap; our elixir drops 2.0 on the same frame pair). Such a drop becomes a press with R in the frame pair
+    [prev, drop - 1] (the cost is taken in step R, visible on line R + 1)."""
+    presses = [q['tick'] for q in plays if q['kind'] == 'ability' and q['side'] == my]
+    deck = sides[my]['deck']
+    last, seen, add = {}, set(), []
+    for line in open(path, 'rb'):
+        if b'"frame"' not in line[:40]:
+            continue
+        d = json.loads(line)
+        t = d['tick']
+        if t is None or t < 0 or t in seen:
+            continue
+        seen.add(t)
+        for u in (d.get('phase2') or {}).get('units', []):
+            oa = (u.get('ability') or {}).get('own_action')
+            if u.get('side') != my or not oa or oa.get('charges_raw') is None:
+                continue
+            k, c = u.get('generation'), oa['charges_raw']
+            card = str(u.get('name', ''))[:-4] if str(u.get('name', '')).endswith('Hero') else None
+            if k in last and c < last[k][0] and card in deck and                     not any(-30 <= x - t <= 2 for x in presses):
+                add.append(dict(side=my, kind='ability', card=card, deck_index=deck.index(card), name=card, form=0,
+                                run_ticks=[last[k][1], t - 1], tick=t - 1, source='charge_drop'))
+            last[k] = (c, t)
+    return plays + add
+
+
 def match(path, bl=None, names=None, cat=None, shims=None, tt=None, uhp=None, by_name=None, api=True):
     """-> (record, None) or (None, skip reason). api=False (A2b-1b): no battle-log entry; sides from derive_sides.
     With an entry, the record also carries 'derived' (derive_sides on the same log) to validate A2b-1b against."""
@@ -397,6 +473,12 @@ def match(path, bl=None, names=None, cat=None, shims=None, tt=None, uhp=None, by
     if bp_rules.VALK or bp_rules.GK or bp_rules.GIANT or bp_rules.RASCALS or bp_rules.PRESS:
         import live_frames
         plays = bp_rules.apply(path, plays, sides, {f['t']: f for f in live_frames.convert(path)})
+    import mech_rules  # A2c-M (sme/mech_rules.py, SME_MECH_* flags, all off by default; merged round 8)
+    if mech_rules.GB or mech_rules.DRILL or mech_rules.HB or mech_rules.ZAP:
+        import live_frames
+        plays = mech_rules.apply(str(path), plays, sides, {f['t']: f for f in live_frames.convert(path)})
+    if os.environ.get('SME_CHARGE8') == '1':   # round 8.7
+        plays = own_charge_presses(path, plays, my, sides)
     build = next(((json.loads(r).get('phase2') or {}).get('build') for r in open(path, 'rb') if b'"phase2"' in r), None)
     # RNG-free: no deck card is a drawer. Without the API only seen cards are known; an unseen slot was never played (it
     # is unseen because no play of it was extracted), and G0's drawers draw only when played (crforge: Arrows / Princess
@@ -420,7 +502,8 @@ def match(path, bl=None, names=None, cat=None, shims=None, tt=None, uhp=None, by
                 sides={str(s): sides[s] for s in (0, 1)},
                 deal={str(my): order, str(1 - my): None}, opp_deal='unknown_live' , rng_free=not drawers,
                 drawers=drawers, crowns_api=api, plays=plays, unplaced=unplaced, flags=flags,
-                own_taps=[dict(tick=p['tick'], name=p['name'], x=p['x'], y=p['y']) for p in m['plays']]), None
+                own_taps=[dict(tick=p['tick'], name=p['name'], x=p['x'], y=p['y']) for p in m['plays']],
+                **(dict(reader_hidden=reader_hidden(path, cat)) if os.environ.get('SME_HIDDEN') == '1' else {})), None
 
 
 def validate(live, rec):

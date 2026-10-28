@@ -82,6 +82,8 @@ public class SmeRun {
         for (int k = 0; k < 8; k++) order[k] = d.get(k).asInt();
         b.getMatch().side(s).getHand().rearrange(new int[] {0, 1, 2, 3, 4, 5, 6, 7}, order);
       }
+    List<JsonNode> banners = new ArrayList<>();
+    List<String> bannerNames = new ArrayList<>();
     int i = 0;
     for (JsonNode c : plan.get("cmds")) {
       String name = "cmd" + i++;
@@ -92,6 +94,7 @@ public class SmeRun {
         b.play(g, r, b.getWorld().getRecords().card(c.get("card").asText()), c.get("level").asInt(), s,
             c.get("x").asInt(), c.get("y").asInt(), name);
       else if (c.get("kind").asText().equals("skip")) continue;  // a dropped command keeps its index (cmd names)
+      else if (c.has("banner")) { banners.add(c); bannerNames.add(name); }  // round 8.5: queued in the tick loop
       else b.useAbility(r, s, c.get("unit").asText(), name);  // ponytail: by unit name, given = run - 20 (the only delay crforge accepts)
     }
     try (PrintWriter w = new PrintWriter(new BufferedWriter(new FileWriter(out)))) {
@@ -99,9 +102,30 @@ public class SmeRun {
       if (from <= 0) write(w, b, seen);
       for (int t = 0; t < ticks; t++) {
         if (b.getBattle().getMode().isOver()) break;
+        queueBanners(b, banners, bannerNames);
         b.getBattle().step();
         if (b.getBattle().getTick() >= from) write(w, b, seen);
       }
+    }
+  }
+
+  // Round 8.5 (A2c): a hero Goblins ability pressed while its banner stands names the banner by object id, as the game's
+  // command does (crforge BattleGoblinHeroTest.theBannersAbilitySendsTheSecondWave); by-name it would name the play's
+  // dead goblins and be refused. Queued once the side's banner is live and before the run tick; with no banner by run - 1,
+  // the by-name command as before.
+  static void queueBanners(Standard1v1Battle b, List<JsonNode> cs, List<String> names) {
+    int now = b.getBattle().getTick();
+    for (int k = 0; k < cs.size(); k++) {
+      JsonNode c = cs.get(k);
+      if (c == null) continue;
+      int g = c.get("given").asInt(), r = c.get("run").asInt(), s = c.get("side").asInt();
+      if (now >= r) { cs.set(k, null); continue; }
+      int id = -1;
+      for (BattleEntity e : b.getBattle().getHolder().entities())
+        if (e instanceof WorldEntity we && !(we instanceof TowerEntity) && we.side() == s
+            && we.getData().name().equals("GoblinHero_Flag_Building")) id = e.getId();
+      if (id >= 0) { b.useAbility(g, r, s, id, names.get(k)); cs.set(k, null); }
+      else if (now == r - 1) { b.useAbility(r, s, c.get("unit").asText(), names.get(k)); cs.set(k, null); }
     }
   }
 

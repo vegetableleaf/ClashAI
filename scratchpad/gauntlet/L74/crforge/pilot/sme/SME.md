@@ -1553,3 +1553,148 @@ outcome: `var_targets.jsonl`; all rows on the pod, `var_bp4R0.jsonl.gz`, 18.7 MB
 - `bp6/`: mk_aimrun10.py (AimRun10 from bp5 AimRun5), var_census.py, evd.py (event dossier), lagphase.py, swap_test.py.
 - `results/live/bp6/`: var.log, var_targets.jsonl, lagphase.log, swap.log.
 - Pod 32657 `/workspace/pilot/bp6/`: AimRun10.java, build_aim10, var_bp4R0.jsonl(.gz), work/all (AimRun5 traces of 136 matches).
+
+---
+
+# Fix loop round 8 (worker a2c8)
+
+Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
+
+**Base reproduced (a).** On pod 33920:
+- r8r0 (r78's chain on `lib_bp2`) is byte-identical to r78 (`results.jsonl` sha256 `145731fe9d9d446c`).
+- **r8f0 on the new crforge base F635c** is byte-identical to r78 too. That base is `clashbot-up-e5462c82` @ bec5811a +
+  TickProbe 0001 + 0002, copied from pod 30408's `lib_up2snap` (core jar sha256 `3db370f4fa878c03`) to
+  `/workspace/pilot/lib_f635c` on 33920 and 33308. Every run below uses it.
+- inputs_v19 regenerated on the laptop with the round-7 flag set (UNIT_HP IW_DEPLOY IW_AREA HERO7 OWNPLAY7 RASCAL7 GOLEM7
+  OWN_CAST BP_VALK BP_GK BP_GIANT BP_RASCALS BP_PRESS) is byte-identical to the pod's v19 (sha256 `863006cdb1fceeab`).
+
+**Code.** Runs use `/workspace/pilot/sme8` (this tree's sme with the round-8 code) and `sme_live/run8.sh`, with r78's
+comparator flags plus the extras in each row.
+- **Identity check r80 (a):** sme8 code (A2c-M hooks, HIDDEN, BANNER and GK8 code in, all flags off) on v19 with
+  F635c is byte-identical to r78.
+- With every new flag off, `extract.py` regenerates v19 byte for byte.
+
+| sub-round | class | layer | change | exact apart from torn (unflagged) | exact frames | gained |
+|---|---|---|---|---:|---:|---|
+| start (r78 = r8r0 = r8f0 = r80) | | | | 88 / 109 | 261,135 | |
+| **8.1 (r81)** | A2c-M input rules: evolved Goblin Barrel point, Goblin Drill dig start, hero Balloon throw | extractor | `mech_rules` hook in `extract.match` (SME_MECH_GB/DRILL/HB; inputs_v20 `7af4cb38`); one Balloon rule (below) | **91 / 109** | **264,455** | `165839`, `235355`, `041602` (225213 now runs) |
+| 8.2 (r82) | Zap dated from ZapFreeze | extractor | SME_MECH_ZAP (inputs_v21 `a938a168`, 15 matches change) | 91 / 109 | 264,455 | 0 |
+| **8.3 (r83)** | a body crossed between t and t+1 | comparator | `mech_torn` hook in `sme_live.do_match` (SME_MECH_CROSS) | **92 / 109** | 264,455 | `192935` |
+| **8.4 (r84)** | hero Mini PEKKA unlisted by the reader during its cast | comparator (+ extractor data) | `extract.reader_hidden` + `sme_live.hidden_ok`, class `torn_hidden` (SME_HIDDEN; inputs_v22 `2a6ef262`) | **93 / 109** | 264,455 | `181217` |
+| **8.5 (r85)** | hero Goblins banner press | SME driver (SmeRun / SnapRun2) | the press names the live banner by object id (SME_BANNER) | **94 / 109** | **264,491** | `224856` |
+| **8.6 (r86)** | Golden Knight dash hidden by a mislabelled frame | extractor | `gk_dashes` guard (SME_GK8; inputs_v23 `ef845038`, 1 cast) | **95 / 109** | **264,912** | `001141` |
+| **8.7 (r87)** | own hero press seen only as a charge drop | extractor | `own_charge_presses` (SME_CHARGE8; inputs_v24 `1c0e0699`, 1 press) | **96 / 109** | **264,960** | `225213` |
+
+**0 regressions in every row** against the row before. r87 against r80: 8 gained, 0 lost.
+
+## 8.1: one hero Balloon rule (a)
+- The round-7.1 rule (`hero7_cast`: R = first new projectile - 4, window [prev - 3, first - 4]) and A2c-M's HB
+  (`mech_rules.hb_throw`: a moving throw, window [prev + 1 - 3, first - 3]) both dated the throw.
+- **HB is the one measured against crforge:** crforge shows the throw on line R+3 on 9 / 9 casts. It also tells a throw
+  from a death bomb by movement.
+- So `hero7_cast` now leaves Balloon to HB when SME_MECH_HB=1. 5 casts differ from v19:
+  - `230512` 2555-2556 -> 2556-2557, and 3785 -> 3785-3786;
+  - `235355` 2687 -> 2677-2678 (this one heals the match);
+  - `235355` 4910-4911 -> 4911-4912;
+  - `235915` 3045-3046 -> 3046-3047.
+- Each of the 3 cases round 7 had moved keeps an overlapping tick, and `235915` stays exact.
+
+## 8.4: 181217, the hero Mini PEKKA the reader stops listing (a)
+- **What the game does with the body: it keeps it.** The body leaves the reader's ents and phase-2 unit lists at 3041,
+  2 ticks after its cast starts (cast_timer 2, kind 15 -> 14 on 3039). Yet our princess towers' projectiles keep
+  targeting its address (`0x76ac94313eb0`) through 3095.
+- **The projectiles' target points are crforge's body, exactly.** Of the 28 frames 3041-3095, 22 carry a target point,
+  and on those 22 the point equals crforge's MiniPekkaHero row. The track includes the Tornado pull, (6902, 22652) ->
+  (9265, 26367). On the 6 frames with no point the body is not read.
+- crforge's body dies on 3097, the first frame with no projectile in the game too.
+- So crforge is right and the reader drops a live object. That makes this a reader-representation gap.
+- **Census (`a2c8/hidden_census.py`, all 138 matches):** a body that leaves ents while a projectile still targets it
+  occurs exactly twice, and both are a hero Mini PEKKA 2 ticks into its cast: `181217`@3041 and `213436`@778 (flagged).
+- **Every hero Mini PEKKA cast (`a2c8/mp_census.py`): 10 casts.**
+  - 8 stay listed (kind 14 for 18 ticks, then back to 15).
+  - The 2 above vanish.
+  - Why the reader drops those 2 is not traced. The ability's ActionSetCharacterLevel (+1 / +2 / +3 / +5 levels by
+    stack) is a candidate (b).
+- **Rule:**
+  - `extract.reader_hidden` writes `reader_hidden` = [{side, crforge name, last, end, track}] into the record. The
+    track's point comes from a projectile already seen in the frame before, because a projectile fired this frame
+    carries its fire-time point (3057: 9060 / 8864).
+  - `sme_live.hidden_ok` then takes exactly one sim row of that side and name out of the comparison, at the track
+    point when the frame has one. The frame must otherwise be exact.
+  - It is a torn class (`torn_hidden`), not exact, because the reader shows no hp.
+- **Planted checks (`a2c8/hidden_test.py`, `results/live/a2c8_hidden_test.txt`).** On 181217 the base frame passes
+  28 / 28, and each planted change is caught:
+
+  | planted change | caught |
+  |---|---:|
+  | the sim row moved 1 unit (tracked frames) | 22 / 22 |
+  | a second sim row with the same name | 28 / 28 |
+  | another name | 28 / 28 |
+  | another side | 28 / 28 |
+  | a recorded body moved 1 unit | 28 / 28 |
+  | our elixir +1 | 28 / 28 |
+
+  On 213436, which is flagged and already diverged, every planted change is caught as well.
+- **Limit (b):** on the 6 untracked frames the hidden body's position is not checked.
+
+## 8.5: 224856, the hero Goblins second wave (a)
+- **Game:** the last goblin falls at about 431, and the banner (card 203000002, kind 13, 4082 hp) stands at its point
+  from 437. The opponent's press (cast_seen 481, window 481-482) sends the second wave: goblins at x ± 1000, y + 500,
+  read from 493 / 499. The banner is gone at 505.
+- **crforge (r78 plan):** the ability command names the play's unit `cmd3_0`, a dead goblin. Nothing runs: the side's
+  elixir rises by regen alone over 470-500 and no ability use is recorded. The banner decays until 563.
+- **crforge does model the banner's ability, but only when the command names the banner by object id**
+  (`BattleGoblinHeroTest.theBannersAbilitySendsTheSecondWave`). The game's command names an object, so the gap is in
+  our SME driver.
+- **Census (`a2c8/gob_census.py`):** the 138 matches hold 1 hero Goblins ability, and it is this banner press (the reader
+  shows the banner and 0 goblins at its tick).
+- **Fix (SmeRun.java and bp/SnapRun2.java, `queueBanners`):**
+  - a plan ability command marked `banner` (plan_from marks it under SME_BANNER=1) is queued in the tick loop;
+  - once the side's GoblinHero_Flag_Building is live, before the run tick, it goes in by object id with its given tick;
+  - with no banner by run - 1, it goes in by name as before.
+  - Result: 224856 is exact on every frame (1,766 / 1,766).
+- **Limit (b):** the deferred command is queued after any same-tick command queued up front.
+
+## 8.6: 001141, a Golden Knight dash hidden by a mislabelled frame (a)
+- The frames labelled 5390 / 5391 show a fresh knight move 116 units "in one tick". `gk_dashes` took that as a dash
+  burst and set its one-cast-per-chain gate (100 ticks).
+- The real dash, 5399 -> 5401 (464, 646), was therefore never cast.
+- `bp_rules.not_a_dash` then dropped the fake burst as a mislabelled pair. The match ended with no cast, which is A2c-M's
+  "missed GK dash".
+- **Rule SME_GK8:** inside `gk_dashes`, the same two-tick test before the gate. A one-tick pair whose speed does not hold
+  to the next frame two or more ticks on is no burst.
+- **Census over the 138 matches:** it changes exactly 1 cast, adding 001141 5399 [5398, 5399]. No other cast moves.
+
+## 8.7: 225213@3588, our hero Ice Wizard press with no cast seen (a)
+- **What the reader shows:** at 3588 our elixir drops 2.0 (59,888 + 714 regen - 20,000 = 41,316 over 3586 -> 3588). The
+  hero IW's `own_action.charges_raw` goes 1 -> 0 on the same frame (state 2 -> 7). No cast area follows, and there is no
+  tap.
+- **Census (`a2c8/charge_census.py`, our side only, `results/live/a2c8_charge_census.txt`):** 122 own charge drops; 121
+  have an extracted own press in [drop - 30, drop + 2]. 225213@3588 is the only one without.
+- **Rule `extract.own_charge_presses` (SME_CHARGE8):** a drop with no press becomes a press with R in [prev, drop - 1].
+  It adds exactly that 1 press. 225213 is exact apart from torn.
+
+## Not fixed this round (evidence for the next step)
+- **`171753`@1789, our Knight 2 ticks late (a for the disagreement; b for the cause).** The frame-1770 elixir is pre-cost
+  (95,060 = 94,704 + 2 × 178), so R >= 1770. The game's Knight, though, starts walking at 1789 = crforge's start for
+  R = 1768: crforge with R = 1770 moves it at 1791, the same path 2 ticks behind.
+  - The two signals disagree by 2 ticks, on the only play of 4,837 whose tap precedes its drop pair (round 7).
+  - A census of the tap -> drop -> first-move gap per own troop is owed. The first try (`a2c8/knight_census.py`) mis-reads
+    the reader's deploy-snap point, so it is not used.
+- **`101112`@5923 (new: 660 was fixed by 7.2):** our Knight is 21 units off, (-19, -10), 25 ticks after an opponent
+  Fireball (5898). The frames before are exact, and no single-command shift helps (sweep). Possibly the Fireball
+  knockback (b, untraced).
+- **`204518`, `010245`:** unextracted Zaps (A2c-M). A general Zap rule still needs a discriminator. Most of the
+  ZapFreeze groups come from Electro units, not Zap. Not started.
+- **Others' items, untouched:** body-position singles (BP: 164443, 170912, 180336, 211239, 000233, 014928), `172835`,
+  `222712`, `001702` (A2c-M leads in their sections). The full table is in `results/SME.md`.
+
+## Files (round 8)
+- `extract.py`: the A2c-M hook, `reader_hidden` (SME_HIDDEN), `own_charge_presses` (SME_CHARGE8).
+- `sme_live.py`: the CROSS hook (SME_MECH_CROSS), `hidden_ok` / `torn_hidden` (SME_HIDDEN), banner marking
+  (SME_BANNER), `gk_dashes` guard (SME_GK8), and Balloon left to HB (SME_MECH_HB).
+- `SmeRun.java` and `bp/SnapRun2.java`: `queueBanners`.
+- `a2c8/`: censuses, planted test, trace tools, `run8.sh`, `chain8c.sh`, and the patch scripts.
+- Results: `results/live/r8{0..7}_{results.jsonl,cmp.txt}`, `a2c8_{diag_r78.jsonl,cls_r78.tsv,on_first.txt}`, the
+  census outputs, and `a2c8_hidden_test.txt`.
+- Pod 33920: `/workspace/pilot/{sme8,lib_f635c,inputs_v20..v24,a2c8}`, runs `sme_live/r8*`.

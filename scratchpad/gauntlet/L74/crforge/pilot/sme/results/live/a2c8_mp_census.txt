@@ -1,0 +1,31 @@
+live_play_20261026_145118 0x76ac9422b830 first 1245 last 1545 hp_last 663 kinds [(1245, 14), (1265, 15)] timer [] tgt_after 0 None
+live_play_20261026_181217 0x76ac941c2700 first 453 last 545 hp_last 16 kinds [(453, 14), (471, 15)] timer [] tgt_after 0 None
+live_play_20261026_181217 0x76ac94276ab0 first 1934 last 2138 hp_last 100 kinds [(1934, 14), (1952, 15)] timer [] tgt_after 0 None
+live_play_20261026_181217 0x76ac94313eb0 first 2741 last 3039 hp_last 510 kinds [(2741, 14), (2759, 15), (3039, 14)] timer [(3039, 2)] tgt_after 36 (3041, 3095)
+live_play_20261026_181217 0x76ac9423e280 first 3982 last 4122 hp_last 203 kinds [(3982, 14), (4002, 15)] timer [] tgt_after 0 None
+live_play_20261026_181217 0x76ac942e7fb0 first 4953 last 5131 hp_last 35 kinds [(4953, 14), (4973, 15)] timer [] tgt_after 0 None
+live_play_20261026_183750 0x76ac942f0130 first 683 last 833 hp_last 37 kinds [(683, 14), (701, 15)] timer [] tgt_after 0 None
+live_play_20261026_183750 0x76ac942dbfc0 first 2593 last 2725 hp_last 63 kinds [(2593, 14), (2611, 15), (2699, 14), (2717, 15)] timer [(2699, 3), (2701, 1), (2703, -1)] tgt_after 3 (3160, 3164)
+live_play_20261026_183750 0x76ac94374520 first 4129 last 4287 hp_last 59 kinds [(4129, 14), (4147, 15)] timer [] tgt_after 5 (4392, 4400)
+live_play_20261026_190255 0x76ac943473a0 first 938 last 1251 hp_last 126 kinds [(938, 14), (958, 15)] timer [] tgt_after 0 None
+live_play_20261026_190255 0x76ac941b97a0 first 2069 last 2224 hp_last 72 kinds [(2069, 14), (2088, 15)] timer [] tgt_after 24 (3283, 3949)
+live_play_20261026_190255 0x76ac941d7400 first 2990 last 3124 hp_last 78 kinds [(2990, 14), (3010, 15), (3062, 14), (3080, 15)] timer [(3062, 3), (3064, 1), (3066, -1)] tgt_after 0 None
+live_play_20261026_190255 0x76ac9437c6a0 first 5094 last 5254 hp_last 40 kinds [(5094, 14), (5112, 15), (5128, 14), (5146, 15)] timer [(5128, 3), (5130, 1), (5132, -1)] tgt_after 0 None
+live_play_20261026_190255 0x76ac94485570 first 5889 last 6001 hp_last 1789 kinds [(5889, 14), (5909, 15), (5923, 14), (5941, 15)] timer [(5923, 2), (5927, -2), (5929, -4)] tgt_after 0 None
+live_play_20261026_200616 0x76ac942ec760 first 902 last 1128 hp_last 227 kinds [(902, 14), (922, 15)] timer [] tgt_after 0 None
+live_play_20261026_200616 0x76ac942beef0 first 2393 last 2611 hp_last 159 kinds [(2393, 14), (2411, 15)] timer [] tgt_after 0 None
+live_play_20261026_200616 0x76ac94487cc0 first 2808 last 2892 hp_last 325 kinds [(2808, 14), (2827, 15)] timer [] tgt_after 0 None
+live_play_20261026_200616 0x76ac942ed0a0 first 3410 last 3803 hp_last 121 kinds [(3410, 14), (3428, 15), (3612, 14), (3630, 15)] timer [(3612, 3), (3614, 1), (3616, -1)] tgt_after 0 None
+live_play_20261026_213436 0x76ac94193080 first 387 last 776 hp_last 77 kinds [(387, 14), (407, 15), (776, 14)] timer [(776, 2)] tgt_after 9 (782, 811)
+live_play_20261026_213436 0x76ac942ca5a0 first 2937 last 3046 hp_last 8 kinds [(2937, 14), (2956, 15)] timer [] tgt_after 0 None
+live_play_20261026_213436 0x76ac944512a0 first 3793 last 4001 hp_last 92 kinds [(3793, 14), (3811, 15)] timer [] tgt_after 0 None
+live_play_20261026_213436 0x76ac943d03e0 first 5130 last 5268 hp_last 170 kinds [(5130, 14), (5148, 15), (5244, 14)] timer [] tgt_after 0 None
+live_play_20261026_213436 0x76ac943465c0 first 5939 last 6001 hp_last 1004 kinds [(5939, 14), (5957, 15)] timer [] tgt_after 0 None
+live_play_20261026_221926 0x76ac9434e990 first 1419 last 1561 hp_last 71 kinds [(1419, 14), (1439, 15)] timer [] tgt_after 0 None
+live_play_20261026_221926 0x76ac94359700 first 2690 last 2921 hp_last 96 kinds [(2690, 14), (2708, 15)] timer [] tgt_after 4 (3319, 3325)
+live_play_20261026_221926 0x76ac94258760 first 3243 last 3371 hp_last 40 kinds [(3243, 14), (3261, 15)] timer [] tgt_after 0 None
+live_play_20261026_232957 0x76ac9437b8c0 first 3104 last 3199 hp_last 25 kinds [(3104, 14), (3122, 15), (3156, 14), (3166, 15)] timer [] tgt_after 0 None
+live_play_20261026_232957 0x76ac942d8150 first 3763 last 4046 hp_last 41 kinds [(3763, 14), (3781, 15)] timer [] tgt_after 0 None
+live_play_20261026_232957 0x76ac944271b0 first 4244 last 4321 hp_last 209 kinds [(4244, 14), (4262, 15)] timer [] tgt_after 0 None
+live_play_20261026_232957 0x76ac94476be0 first 4763 last 5006 hp_last 156 kinds [(4763, 14), (4781, 15), (4922, 14)] timer [] tgt_after 0 None
+live_play_20261026_232957 0x76ac94340de0 first 5164 last 5301 hp_last 2220 kinds [(5164, 14), (5182, 15)] timer [] tgt_after 0 None
