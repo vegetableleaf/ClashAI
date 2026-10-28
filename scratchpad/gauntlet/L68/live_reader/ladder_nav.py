@@ -68,6 +68,7 @@ TARGETS = {                                     # rectangle the tap point must l
     "single_ok": (340, 1350, 560, 1460),        # 10-20 results screen with ONE OK (classic challenge / some Ranked results)
     "skip_strikes": (340, 1420, 560, 1530),     # 10-20 lightning-chest strikes screen: "Skip Strikes" (free; replaces nothing)
     "reload": (100, 700, 400, 1100),           # "Connection lost" dialog, NOT the another-device kind        # neutral point: top-centre art on every popup seen so far
+    "claim_all": (330, 1415, 570, 1510),        # 10-28: "Rewards" / "Supercell Support" screens: the one orange Claim All button
 }
 # com.mumu.store is stopped as start_live.sh does (its advert overlay). Stopping com.android.vending (Play Store) is
 # NEW here, not in start_live.sh: it closes a store overlay / pending store job over the game; force-stop never installs.
@@ -215,6 +216,8 @@ class Classifier:
         if "conn_lost" in hit:                          # a system dialog over everything: check it first
             return {"screen": "conn_lost", "other_device": "another_device" in hit, "reload": hit.get("reload"),
                     "scores": sc}
+        if "claim_all" in hit:                          # 10-19 "Rewards" (Magic Lucky Chest) / 10-28 "Supercell Support": any
+            return {"screen": "claim_all", "claim": hit["claim_all"], "scores": sc}   # title, one orange Claim All button
         if "play_again" in hit and "results_ok" in hit:
             w = hit.get("winner")
             won = None if w is None else w[1] > 600            # loss: banner at y ~174 above the opponent's name
@@ -265,12 +268,14 @@ class LadderNav:
     MAIN_MAX = 10
     TR_SWIPES = 8                                 # Trophy Road scan: at most this many drags down the tree
     CHOOSE_MAX, FLOW_UNKNOWN_S, CARD_WAIT_S = 3, 10.0, 8.0   # reward choice: Choose taps; unknown / stuck limits
+    CLAIM_MAX = 6                                 # Claim All taps per transition before giving up (a tap that never lands)
 
     def __init__(self, t0: float, state: dict, rng: random.Random | None = None):
         self.t0, self.st = t0, state
         self.rng = rng or random.Random()
         self.choose_flow = False                  # Choose tapped / choice screen seen, no known screen since
         self.chooses = 0                          # Choose taps this transition
+        self.claims = 0                           # Claim All taps this transition
         self.pick: int | None = None              # 0 = left card, 1 = right card (drawn once per choice screen)
         self.picked_at: float | None = None       # when the card was tapped
         self.committed = False                    # Play Again / Battle tapped: the next unknown/loading = handoff
@@ -336,6 +341,10 @@ class LadderNav:
             if scr["other_device"]:
                 return ("stop", "ANOTHER_DEVICE: the account was opened on another device (Connection lost)")
             return ("act", "reload", scr["reload"]) if scr["reload"] else ("wait", "connection lost: no RELOAD seen")
+        if s == "claim_all":
+            if self.claims >= self.CLAIM_MAX:
+                return ("stop", f"claim_all tapped {self.CLAIM_MAX} times and the screen is still shown")
+            return ("act", "claim_all", scr["claim"])
         if s == "chest_reveal":
             return ("act", "chest_open", (450, 840))
         if s == "results1":                       # 10-20: only an OK -- tap it; the next screen (home -> Battle) queues the match
@@ -409,6 +418,8 @@ class LadderNav:
         elif target == "choose":
             self.chooses += 1
             self.choose_flow = True
+        elif target == "claim_all":
+            self.claims += 1
         elif target == "reward_card":
             self.picked_at = now
         elif target in ("restart", "relaunch"):  # the app restarts: any queue is gone; no 2nd recovery this episode
@@ -466,7 +477,7 @@ class LadderNavRunner:
     """Device side, same interface as friend_nav.FriendNav: probe() before match 1, run() between matches."""
     POLL_S, COOLDOWN_S, RELAUNCH_WAIT_S = 0.5, 1.5, 15.0
     NAV_SCREENS = {"results", "results1", "chest_reveal", "main", "popup_x", "strikes", "modes", "trophy_road", "choose_reward", "conn_lost",
-                   "content_update"}
+                   "content_update", "claim_all"}
 
     def __init__(self, adb: list[str], dry_run: bool = False, log_dir: Path = HERE, state_path: Path = STATE,
                  wins_today: int | None = None, trophy_log: bool = True, seed: int | None = None, alert=discord_alert):
@@ -486,6 +497,22 @@ class LadderNavRunner:
         if wins_today is not None:
             self.st["wins_today"] = wins_today
         self.last_outcome: bool | None = None
+
+    NOGRAB_DIAG_N, NOGRAB_DIAG_EVERY_S = 4, 10.0   # failed grabs before the first diagnosis; then at most one per 10 s
+
+    def adb_diag(self) -> dict:
+        """Why grabs fail, plus the one safe repair: `adb connect` (idempotent: 'already connected' when fine, replaces a
+        dropped TCP transport otherwise; live_play does the same at its start). Never an input. Never raises."""
+        d: dict = {}
+        try:
+            d["devices"] = subprocess.run([self.adb[0], "devices", "-l"], capture_output=True, text=True, timeout=5).stdout.strip()
+            d["connect"] = subprocess.run([self.adb[0], "connect", self.adb[2]], capture_output=True, text=True,
+                                          timeout=10).stdout.strip()
+            r = subprocess.run(self.adb + ["exec-out", "screencap"], capture_output=True, timeout=8)
+            d["screencap"] = {"rc": r.returncode, "bytes": len(r.stdout), "stderr": r.stderr[:160].decode("utf-8", "replace")}
+        except Exception as exc:                 # noqa: BLE001 -- a diagnosis failure must not stop the nav
+            d["error"] = repr(exc)[:200]
+        return d
 
     def save(self) -> None:
         if not self.dry_run:                     # atomic: a crash mid-write must not reset the day's count
@@ -566,6 +593,7 @@ class LadderNavRunner:
             log.write(json.dumps({"t": round(time.time(), 2), **k}, default=str) + "\n")
             log.flush()
         nav, prev, last = LadderNav(time.time(), self.st, self.rng), None, None
+        ng, ng_diag_t = 0, 0.0                    # consecutive failed grabs; when adb was last diagnosed / reconnected
         res, total_tries, total_done = None, 0, False   # res = this nav's results screen; passive trophy reads
         W(event="nav_start", dry_run=self.dry_run, state={k: v for k, v in self.st.items()})
 
@@ -576,6 +604,15 @@ class LadderNavRunner:
             while True:
                 img = grab(self.adb)
                 scr = self.clf.classify(img)
+                if scr["screen"] == "nograb":    # 10-28 12:14: the adb transport dropped at match end; only `adb connect` revived it
+                    ng += 1
+                    if ng >= self.NOGRAB_DIAG_N and time.time() - ng_diag_t >= self.NOGRAB_DIAG_EVERY_S:
+                        ng_diag_t = time.time()
+                        d = self.adb_diag()
+                        W(event="nograb_diag", n=ng, **d)
+                        print(f"[ladder] nograb diag (n={ng}): {d}", flush=True)
+                else:
+                    ng = 0
                 p = nav.plan(scr, time.time())
                 if scr["screen"] == "results" and nav.counted and res is None:
                     mag, ms = self.read_trophy("delta", img)
