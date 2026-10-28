@@ -1,0 +1,115 @@
+cp_base_402.tsv scenes 19430 forms 335 with a clone 5788 spawner copies 0 clone children 3096
+6 forms | UnsupportedOperationException: # is cloned with a deploy countdown and carries riders, not modelled | GoblinGiant,GoblinGiant_EV1,GoblinGiant_hero,IceWizard_hero,RamRider,RamRider_hero
+3 forms | UnsupportedOperationException: # is cloned with a deploy countdown and its clone's row spawns an area object or a push as it deploys, not modelled | MegaKnight,MegaKnight_EV1,MegaKnight_hero
+2 forms | UnsupportedOperationException: # collects elixir outside a match, where no king holds any | Elixir Collector,Elixir Collector_hero
+2 forms | UnsupportedOperationException: # moves apart from its clone without its movement component, not modelled | GoblinDemolisher,GoblinDemolisher_hero
+1 forms | UnsupportedOperationException: Arrows_hero casts several projectiles of a random spread, which is not modelled | Arrows_hero
+1 forms | UnsupportedOperationException: BarbLogHero_override_ability_button_when_rolling outside a match, which has no champion slots | BarbLog_hero
+1 forms | UnsupportedOperationException: GoblinHero_Reset_Ability_Charges outside a match, which has no champion slots | Goblins_hero
+1 forms | UnsupportedOperationException: the area effect Graveyard spawns characters and was not made by an ability, or hits, chains or runs an action too, which is not modelled | Graveyard_hero
+1 forms | UnsupportedOperationException: MegaMinion_hero_hide_ability_button outside a match, which has no champion slots | MegaMinion_hero
+1 forms | IllegalArgumentException: Mirror summons no character | Mirror
+1 forms | IllegalArgumentException: Mirror_hero summons no character | Mirror_hero
+1 forms | UnsupportedOperationException: # is cloned carrying SkeletonDuplication_EV1, whose spawner's copy is not modelled | Skeletons_EV1
+
+cp_fix_402.tsv scenes 19430 forms 335 with a clone 5788 spawner copies 4 clone children 3097
+6 forms | UnsupportedOperationException: # is cloned with a deploy countdown and carries riders, not modelled | GoblinGiant,GoblinGiant_EV1,GoblinGiant_hero,IceWizard_hero,RamRider,RamRider_hero
+3 forms | UnsupportedOperationException: # is cloned with a deploy countdown and its clone's row spawns an area object or a push as it deploys, not modelled | MegaKnight,MegaKnight_EV1,MegaKnight_hero
+2 forms | UnsupportedOperationException: # collects elixir outside a match, where no king holds any | Elixir Collector,Elixir Collector_hero
+2 forms | UnsupportedOperationException: # moves apart from its clone without its movement component, not modelled | GoblinDemolisher,GoblinDemolisher_hero
+1 forms | UnsupportedOperationException: Arrows_hero casts several projectiles of a random spread, which is not modelled | Arrows_hero
+1 forms | UnsupportedOperationException: BarbLogHero_override_ability_button_when_rolling outside a match, which has no champion slots | BarbLog_hero
+1 forms | UnsupportedOperationException: GoblinHero_Reset_Ability_Charges outside a match, which has no champion slots | Goblins_hero
+1 forms | UnsupportedOperationException: the area effect Graveyard spawns characters and was not made by an ability, or hits, chains or runs an action too, which is not modelled | Graveyard_hero
+1 forms | UnsupportedOperationException: MegaMinion_hero_hide_ability_button outside a match, which has no champion slots | MegaMinion_hero
+1 forms | IllegalArgumentException: Mirror summons no character | Mirror
+1 forms | IllegalArgumentException: Mirror_hero summons no character | Mirror_hero
+
+cp_base_635.tsv scenes 19430 forms 335 with a clone 5752 spawner copies 0 clone children 3102
+6 forms | UnsupportedOperationException: # is cloned with a deploy countdown and carries riders, not modelled | GoblinGiant,GoblinGiant_EV1,GoblinGiant_hero,IceWizard_hero,RamRider,RamRider_hero
+3 forms | UnsupportedOperationException: # is cloned with a deploy countdown and its clone's row spawns an area object or a push as it deploys, not modelled | MegaKnight,MegaKnight_EV1,MegaKnight_hero
+2 forms | UnsupportedOperationException: # collects elixir outside a match, where no king holds any | Elixir Collector,Elixir Collector_hero
+2 forms | UnsupportedOperationException: # moves apart from its clone without its movement component, not modelled | GoblinDemolisher,GoblinDemolisher_hero
+1 forms | UnsupportedOperationException: Arrows_hero casts several projectiles of a random spread, which is not modelled | Arrows_hero
+1 forms | UnsupportedOperationException: BarbLogHero_override_ability_button_when_rolling outside a match, which has no champion slots | BarbLog_hero
+1 forms | UnsupportedOperationException: Giant_EV1 sets columns the battle does not model: [AttackSequenceList] | Giant_EV1
+1 forms | UnsupportedOperationException: GoblinHero_Reset_Ability_Charges outside a match, which has no champion slots | Goblins_hero
+1 forms | UnsupportedOperationException: the area effect Graveyard spawns characters and was not made by an ability, or hits, chains or runs an action too, which is not modelled | Graveyard_hero
+1 forms | UnsupportedOperationException: MegaMinion_hero_hide_ability_button outside a match, which has no champion slots | MegaMinion_hero
+1 forms | IllegalArgumentException: Mirror summons no character | Mirror
+1 forms | IllegalArgumentException: Mirror_EV1 summons no character | Mirror_EV1
+1 forms | IllegalArgumentException: Mirror_hero summons no character | Mirror_hero
+1 forms | UnsupportedOperationException: # is cloned carrying SkeletonDuplication_EV1, whose spawner's copy is not modelled | Skeletons_EV1
+
+cp_fix_635.tsv scenes 19430 forms 335 with a clone 5752 spawner copies 4 clone children 3102
+6 forms | UnsupportedOperationException: # is cloned with a deploy countdown and carries riders, not modelled | GoblinGiant,GoblinGiant_EV1,GoblinGiant_hero,IceWizard_hero,RamRider,RamRider_hero
+3 forms | UnsupportedOperationException: # is cloned with a deploy countdown and its clone's row spawns an area object or a push as it deploys, not modelled | MegaKnight,MegaKnight_EV1,MegaKnight_hero
+2 forms | UnsupportedOperationException: # collects elixir outside a match, where no king holds any | Elixir Collector,Elixir Collector_hero
+2 forms | UnsupportedOperationException: # moves apart from its clone without its movement component, not modelled | GoblinDemolisher,GoblinDemolisher_hero
+1 forms | UnsupportedOperationException: Arrows_hero casts several projectiles of a random spread, which is not modelled | Arrows_hero
+1 forms | UnsupportedOperationException: BarbLogHero_override_ability_button_when_rolling outside a match, which has no champion slots | BarbLog_hero
+1 forms | UnsupportedOperationException: Giant_EV1 sets columns the battle does not model: [AttackSequenceList] | Giant_EV1
+1 forms | UnsupportedOperationException: GoblinHero_Reset_Ability_Charges outside a match, which has no champion slots | Goblins_hero
+1 forms | UnsupportedOperationException: the area effect Graveyard spawns characters and was not made by an ability, or hits, chains or runs an action too, which is not modelled | Graveyard_hero
+1 forms | UnsupportedOperationException: MegaMinion_hero_hide_ability_button outside a match, which has no champion slots | MegaMinion_hero
+1 forms | IllegalArgumentException: Mirror summons no character | Mirror
+1 forms | IllegalArgumentException: Mirror_EV1 summons no character | Mirror_EV1
+1 forms | IllegalArgumentException: Mirror_hero summons no character | Mirror_hero
+
+== diff base fix 402
+16822c16822
+< Skeletons_EV1	110	UnsupportedOperationException: A_1 is cloned carrying SkeletonDuplication_EV1, whose spawner's copy is not modelled	110	1	0	0
+---
+> Skeletons_EV1	110	OK	509	2	1	0
+16863c16863
+< Skeletons_EV1	50	UnsupportedOperationException: A_0 is cloned carrying SkeletonDuplication_EV1, whose spawner's copy is not modelled	80	4	0	0
+---
+> Skeletons_EV1	50	OK	449	7	1	0
+16874c16874
+< Skeletons_EV1	60	UnsupportedOperationException: A_0_0 is cloned carrying SkeletonDuplication_EV1, whose spawner's copy is not modelled	90	6	0	0
+---
+> Skeletons_EV1	60	OK	459	6	1	1
+16877c16877
+< Skeletons_EV1	80	UnsupportedOperationException: A_1 is cloned carrying SkeletonDuplication_EV1, whose spawner's copy is not modelled	110	4	0	0
+---
+> Skeletons_EV1	80	OK	479	5	1	0
+== diff base fix 635
+16822c16822
+< Skeletons_EV1	110	UnsupportedOperationException: A_1 is cloned carrying SkeletonDuplication_EV1, whose spawner's copy is not modelled	110	1	0	0
+---
+> Skeletons_EV1	110	OK	509	2	1	0
+16863c16863
+< Skeletons_EV1	50	UnsupportedOperationException: A_0 is cloned carrying SkeletonDuplication_EV1, whose spawner's copy is not modelled	80	4	0	0
+---
+> Skeletons_EV1	50	OK	449	7	1	0
+16874c16874
+< Skeletons_EV1	60	UnsupportedOperationException: A_0_0 is cloned carrying SkeletonDuplication_EV1, whose spawner's copy is not modelled	90	6	0	0
+---
+> Skeletons_EV1	60	OK	459	6	1	0
+16877c16877
+< Skeletons_EV1	80	UnsupportedOperationException: A_1 is cloned carrying SkeletonDuplication_EV1, whose spawner's copy is not modelled	110	4	0	0
+---
+> Skeletons_EV1	80	OK	479	5	1	0
+
+core tests 2184 failures 0 errors 0 skipped 29
+[]
+[]
+BUILD SUCCESSFUL in 58s
+rc=0
+core tests 2184 failures 0 errors 0 skipped 6
+[]
+[]
+BUILD SUCCESSFUL in 58s
+rc=0
+done
+
+== red_16.402.22
+core tests 6 failures 2 errors 0 skipped 0
+[2] UnsupportedOperationException | java.lang.UnsupportedOperationException: skeleton is cloned carrying SkeletonDuplication_EV1, whose spawner's copy is not modelled | 
+== red_16.635.3
+core tests 6 failures 2 errors 0 skipped 0
+[2] UnsupportedOperationException | java.lang.UnsupportedOperationException: skeleton is cloned carrying SkeletonDuplication_EV1, whose spawner's copy is not modelled | 
+== green2_16.402.22
+core tests 6 failures 0 errors 0 skipped 0
+== green2_16.635.3
+core tests 6 failures 0 errors 0 skipped 0

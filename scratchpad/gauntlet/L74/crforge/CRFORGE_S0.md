@@ -431,3 +431,71 @@ Pod 30408, `/workspace/f635/crforge_fork`; the pin and the other branches untouc
   - It is the client's exact promise-expiry tick, not traced, not a press bug.
 - clashbot-635 got 7a/7b too (`5cc4067d`, `ea9a9bf4`, cherry-picks of #743/#741; SME for 7a: old 67/109 and new 17/33
   identical), and is superseded by `clashbot-up-e5462c82`.
+
+## CF-CLONE (2026-10-28): Clone on an evolved Skeleton carrying its duplication; Clone sweep of every census form
+Labels as above. Files: `crforge/fork/cfclone/` (`patches/0001`, `CloneProbe.java`, `sweep_sum.py`, `grades_cmp.py`,
+`rowgrep.py`, `pod/`, `results/`). Pod 30408, worktree `/workspace/cfclone/crforge_fork`, **branch `clashbot-cfclone` =
+`62558795`** (= `clashbot-up-e5462c82` bec5811a + 1 commit). The `/workspace/f635/crforge_fork` checkout
+(clashbot-f1fix) was not touched.
+
+- **The crash (a):** d2t1 actor 11, "c65_1_0 is cloned carrying SkeletonDuplication_EV1, whose spawner's copy is not
+  modelled" (`BuffComponent.copyFrom`, upstream #228 c8472e81). Upstream main (7cec0492) still refuses it.
+- **Tables (a, `rowgrep.py`):**
+  - `SkeletonDuplication_EV1`: SpawnObject Skeleton_EV1, SpawnInterval 50, SpawnLimit 1, SpawnNumber 1,
+    SpawnerAliveRequired. 16.635.3 adds `NotCloned: true`; 16.402.22 has none. It is the only buff row whose NotCloned
+    changed between the two versions.
+  - `Skeleton_EV1`: BuffAfterHits SkeletonDuplication_EV1 for 500 ms, `ClonedVersion: Skeleton` (its clone is a plain
+    Skeleton, with no duplication of its own).
+  - Clone: area 3000 radius, 1000 ms, OnHitAction CloneAction -> SpawnCloneBufAction (the Clone buff for 500 ms,
+    SpawnSpeedMultiplier -100). Both versions are the same.
+  - Spawner buffs in both versions: DropBomb, MysteryBuff_Spawn_Skeleton, MysteryBuff_Spawn_Hog,
+    SkeletonDuplication_EV1. No census form carries the first three (sweep below).
+- **Game evidence: none direct.**
+  - Live (a): 0 of the 3,281 matches in `loss_review/matches.jsonl` have an opponent with both Clone and Skeletons; 0
+    of the 138 SME frame files contain a Clone.
+  - HF (a): IL_Replay holds plays only, no unit frames, so it cannot show a clone's children.
+  - The x86_64 libg.so in `research/ext/cr-native-sandbox` has no section headers, an entry point in an extra LOAD
+    segment, and no plain column-name strings, so its code was not read. No decompiler is configured for REA.
+- **Model (b, not traced from the client):** a clone's copy takes the instance's spawner as it stands: the timer, the
+  firings of its wave and the firings left (`BuffInstance.copy`). The refusal is removed.
+  - Why: the copy already carries every other counter of the instance (hitCounter included).
+  - Effect: the duplication fires on the buff visit after the hit, so the copy is spent and the clone makes nothing.
+    An instance listed and not yet visited fires on the clone too, and its child is a clone.
+  - On 16.635 data the row is NotCloned, so the copy is removed in `copyFrom` before any visit (a, by code + test). The
+    choice between this and a fresh spawner matters on 16.402 data only.
+  - The other reading is a fresh spawner from the row. With it, every clone made within 500 ms of a hit would make one
+    1-hp evolved Skeleton clone, even under the Clone buff, because a timer of 0 fires at a spawn rate of 0. That
+    reading is just as untested (b). Supercell making only this row NotCloned in 16.635 fits either reading.
+- **Red/green (a):** two new BattleSkeletonsEvoTest cases: a spent copy listed with no child, and the NotCloned copy
+  removed. Before the fix, 2/6 failed on both versions with the refusal. After, 6/6 pass on both.
+- **Core tests (a):** 16.402.22 2184/0 (29 skipped); 16.635.3 2184/0 (6 skipped). The base was 2182 on each.
+- **SME dev set (a):** h11b's command (sme11, inputs_v29, a10G1 flags, WORKERS 48) on pod 32657 with `lib_cfclone`
+  (bec5811a + CF-CLONE + TickProbe 0001/0002), run `cf1`, scored against h11b:
+  - **109/109 -> 109/109, 0 regressions**; exact frames 250,797 / 278,872, the same as h11b;
+  - plant suite 65,874 plants, 0 missed;
+  - `results.jsonl` byte-identical to h11b (sha256 `1e7e893fd09858ef`).
+  - The control build of the same worktree without the commit gives core jar `3db370f4fa878c03`, which is
+    `lib_f635c`'s. So the libs differ only by this change.
+- **HF re-drive fault sample (a):** D1-C `faults.sh --limit 20000` with `CRFORGE_LIB=lib_fix`, compared to f20k on 30408:
+  - summary identical (8 / 19,995 faults; 5 Mirror, 3 engine);
+  - 20,000 / 20,000 replays identical on the keys both runs write. The pod's faults.py now also writes crowns,
+    hf_crowns and tower_hp.
+  - So the HF sample never reached this refusal.
+- **Clone sweep (a, `CloneProbe`, both table versions):**
+  - Set-up: 335 forms (every census card plus its _EV1 / _hero row where the tables hold one) x a Clone at
+    T = 30..600 step 10, plus a second Clone 30 ticks later. That is 19,430 scenes per version. No ability presses:
+    outside a match each press is refused, which ended 25 forms' scenes before the Clone in the first run.
+  - "cloned carrying ... / spawner's copy" refusals: **Skeletons_EV1 only, 4 scenes per version; 0 after the fix.**
+    In 1 of those 4 scenes (T=60) a clone made a child on 16.402. The same scene on 16.635, where the copy is
+    removed, has 0, so the child came from a copy not yet fired.
+  - Other Clone refusals in census forms are other mechanisms. None is a spawner-buff copy, and none is modelled here:
+    - "cloned with a deploy countdown and carries riders": GoblinGiant (+EV1, hero), RamRider (+hero), IceWizard_hero;
+      only at T=30, a Clone landing during the deploy;
+    - "cloned with a deploy countdown and its clone's row spawns an area object or a push as it deploys": MegaKnight
+      (+EV1, hero); T=30 only;
+    - "moves apart from its clone without its movement component": GoblinDemolisher (+hero), T=120-170. The HF fault
+      `6f7a74b7` ("c82_0_clone0 moves apart ...") is probably this one (b, the card was not checked).
+  - The Witch, Night Witch, Tombstone, Goblin Hut, Furnace and Graveyard scenes ran with no Clone refusal. Their
+    clones' children were made: 3,097 clone children in total on 16.402.
+- **Not done:** the d2t deterministic-CUDA u0001 rollout was not re-run on the new lib (b: the refusal it hit no
+  longer exists in the code).
