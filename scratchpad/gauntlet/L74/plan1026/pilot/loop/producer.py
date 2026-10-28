@@ -76,6 +76,9 @@ class Producer:
         import torch
         self.base, self.n, self.dev, self.aid = base, int(n), device, int(aid)
         torch.set_num_threads(int(base.get("actor_threads", 1)))
+        # lead ruling 10-28 (LOOP-LRN): no TF32 in any forward that produces / recomputes log-probs
+        torch.backends.cudnn.allow_tf32 = False
+        torch.backends.cuda.matmul.allow_tf32 = False
         from pipeline import crforge_core as cc
         compile_java(build, cc.LIB)
         if not jpype.isJVMStarted():
@@ -144,8 +147,30 @@ class Producer:
 
     # ------------------------------------------------------------------------------------------------ tables
     def _fill(self) -> int:
-        shim = SimpleNamespace(L=self.L, main=self.main, pub=self.pub, jc=self.jc, names=self.card_names)
-        return self.fill_fn(shim)
+        """cf_loop_obs.Cohort.fill with ONE fix (a, compare.py lint_d1 u0000 job 0: an evolved body's opp_past form 0
+        vs production 1): a detector key "card|body row|form" carries CfOppElixir's form, which leaves out
+        STATUS_EVOLVED; production resolves the REAL raw() entity, whose status_flags carry CfCore.evolvedBit (an _EV
+        body row). So the entity built for the key gets bit 8 from the body row name, as state() sets it."""
+        from pipeline import royale_heroiw as heroiw, vocab
+        from pipeline.obs_contract import catalog_card_form
+        from pipeline.opp_elixir_count import _catalog_names
+        from pipeline.public_observation import public_frame
+        L, k = self.L, 0
+        for miss in L.keys.takeMissing():
+            key, _ = str(miss).rsplit("#", 1)
+            card, body, form = key.split("|")
+            flags = {2: 16, 1: 8}.get(int(form), 0) | (8 if "_EV" in body.upper() else 0)
+            ent = dict(side=1, x=0.0, y=0.0, hp=1, max_hp=1, entity_id=0, name=self.card_names.get(int(card), card),
+                       card_id=int(card), status_flags=flags)
+            if heroiw.ENABLED and heroiw.public_identity(body) is not None:
+                ent.update(name="IceWizard", public_card_id=heroiw.public_identity(body), public_form=2)
+            f = public_frame({"tick": 0, "entities": [ent]}, source="sim")["entities"]
+            name = _catalog_names().get(f[0]["card_id"]) if f else None
+            L.keys.putBody(key, self.main.key_index(vocab.engine_key(name) if name else None),
+                           int(catalog_card_form(f[0]["card_id"])[1]) if f else 0)
+            k += 1
+        shim = SimpleNamespace(L=L, main=self.main, pub=self.pub, jc=self.jc, names=self.card_names)
+        return k + self.fill_fn(shim)                      # the rest (names, pub, cue, cyc) as Cohort.fill does
 
     def _resolve_rows(self) -> None:
         """Rows that met a table key Python had not filled: fill, resume them; until none is left."""

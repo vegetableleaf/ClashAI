@@ -50,7 +50,7 @@ class FastPool:
     """K producer processes; ``run`` = ActorPool.run's contract for kind 'selfplay' (results sorted by row_key)."""
 
     def __init__(self, base: dict, a, log):
-        self.log, self.a = log, a
+        self.log, self.a, self.base = log, a, base
         ctx = mp.get_context("spawn")
         devs = a.devices.split(",")
         self.out_q = ctx.Queue()
@@ -73,6 +73,9 @@ class FastPool:
     def run(self, update: int, sd: bytes, jobs: list):
         from pipeline.rl_royale import row_key
         t0 = time.perf_counter()
+        if os.environ.get("FASTLOOP_DUMP"):                   # compare.py's input: the exact actor message
+            import pickle
+            Path(self.a.rl_dir, f"fast_msg_u{update:04d}.pkl").write_bytes(pickle.dumps((self.base, update, sd, jobs)))
         shares = {k: jobs[k::len(self.in_qs)] for k in range(len(self.in_qs)) if jobs[k::len(self.in_qs)]}
         for k, js in shares.items():
             self.in_qs[k].put((update, sd, js))
@@ -129,8 +132,8 @@ def main() -> int:
     a = ap.parse_args(argv[:cut])
     rl_argv = argv[cut + 1:]
     from pipeline import rl_royale as R
-    run = rl_argv[rl_argv.index("--run") + 1]
-    a.rl_dir = str(R.RUN_ROOT / run)
+    run_name = rl_argv[rl_argv.index("--run") + 1]
+    a.rl_dir = str(R.RUN_ROOT / run_name)
     state = {}
     orig_init, orig_run = R.ActorPool.__init__, R.ActorPool.run
 
@@ -153,7 +156,7 @@ def main() -> int:
         if "fast" in state:
             state["fast"].close()
     if a.out:
-        ck = sorted((R.CKPT_ROOT / run).glob(f"{run}_u*.pt"))
+        ck = sorted((R.CKPT_ROOT / run_name).glob(f"{run_name}_u*.pt"))
         Path(a.out, "FINAL").write_text((str(ck[-1]) if ck else "none") + "\n")
     return rc
 
