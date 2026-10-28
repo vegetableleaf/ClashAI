@@ -579,12 +579,37 @@ def det_opening(m, X):
         xb = [q for q in m['own'] if q['card'] == 'x_bow' and q['tick'] < lim]
         ts = [q for q in m['own'] if q['card'] == 'tesla' and q['tick'] < lim]
         out.append(ep(m, 'opening_restraint_xb', 0, not xb, well=None, xb_tesla=bool(xb and ts), first_tank=ft))
+        out.append(ep(m, 'opening_no_xb_tesla', 0, not (xb and ts), well=None, first_tank=ft))
     return out
 
 
 DETECTORS = (det_sneaky_lock, det_rocket_cycle, det_rocket_tornado, det_king_redirect, det_def_xbow, det_opp_lane,
              det_counterpush, det_out_of_cycle, det_weakest, det_lead, det_bank, det_pull, det_log_barrel, det_siege,
              det_iw_press, det_opening)
+
+
+def det_seq(m, X):
+    """Mined extras, per play: each own icebow8 play A (decks holding >= 3 icebow8 cards, hand known) -> its next own play
+    within 5 s as 'A>B:RZ' (R lane relation S same / O other, Z B's zone o off / d def) or None, and the icebow8 cards in
+    hand at A. stats.py compares, for each pair, A-plays followed by B against A-plays where B was in hand but NOT played
+    next, in matched cells (the match-level 'used at least once' comparison is confounded by how often a card is played)."""
+    if len(m['own_deck'] & I8) < 3:
+        return []
+    own = [q for q in sorted(m['own'], key=lambda q: q['tick']) if q['y'] is not None]
+    out = []
+    for i, a in enumerate(own):
+        if a['card'] not in I8:
+            continue
+        h = hand(m, a['tick'] - 1)
+        if h is None:
+            continue
+        b = own[i + 1] if i + 1 < len(own) and own[i + 1]['tick'] - a['tick'] <= 100 else None
+        nxt = None if b is None or b['card'] not in I8 or b['card'] == a['card'] else '%s>%s:%s%s' % (
+            a['card'], b['card'], 'S' if lane(a['x']) == lane(b['x']) else 'O', 'o' if zone(b) == 'off' else 'd')
+        r = ep(m, '_seq', a['tick'], False)
+        r.update(a=a['card'], nxt=nxt, inh=sorted((h[0] & I8) - {a['card']}))
+        out.append(r)
+    return out
 
 
 def side_summary(m):
@@ -609,7 +634,7 @@ def mine_match(m):
     m['opp_arch'] = RS.archetype(m['opp_deck'])
     X = xbow_lock_map(m) if 'x_bow' in m['own_deck'] else {}
     out = []
-    for d in DETECTORS:
+    for d in DETECTORS + (det_seq,):
         out.extend(d(m, X))
     out.append(side_summary(m))
     return out

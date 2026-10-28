@@ -574,6 +574,31 @@
     1200,
     "the first full cycle (~60 s)"
    ]
+  },
+  {
+   "id": "opening_no_xb_tesla",
+   "no": 16,
+   "owner_named": false,
+   "name": "Avoid the 10-elixir X-Bow + Tesla opening vs heavy-push decks (the live 10-28 loss pattern)",
+   "decks": [
+    "x_bow",
+    "tesla"
+   ],
+   "primary": "human",
+   "start_condition": "match start vs a BEATDOWN deck, X-Bow deck",
+   "prefix": [
+    {
+     "card": "none",
+     "place": "do NOT play both X-Bow and Tesla before the opponent's first tank play (or 0:40)",
+     "after_ticks": "0..800"
+    }
+   ],
+   "window_ticks": 800,
+   "well": null,
+   "default_horizon": [
+    1200,
+    "the first full cycle (~60 s)"
+   ]
   }
  ]
 }

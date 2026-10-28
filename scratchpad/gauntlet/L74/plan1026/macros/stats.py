@@ -43,6 +43,8 @@ def load(ep_dir):
     for p, src in files:
         for line in gzip.open(p, 'rt', encoding='utf-8'):
             e = json.loads(line)
+            if e['macro'] == '_seq':          # memory: keep only what seq_extras reads
+                e = {k: e[k] for k in CELL + ('macro', 'src', 'cid', 'win', 'n600', 'a', 'nxt', 'inh')}
             (sides.append(e) if e['macro'] == '_side' else eps[e['macro']].append(e))
     return eps, sides
 
@@ -143,11 +145,11 @@ def main(argv=None):
             def ok(r, w=rf['where']):
                 return all((r.get(k) if k in r else (r.get('x') or {}).get(k)) in (v if isinstance(v, list) else [v])
                            for k, v in w.items())
-            todo.append((dict(sp, id=sp['id'] + '|' + rf['suffix'], refine_of=sp['id'], start_condition=rf['start']),
+            todo.append((dict(sp, id=sp['id'] + '.' + rf['suffix'], refine_of=sp['id'], start_condition=rf['start']),
                          [r for r in eps.get(sp['id'], []) if ok(r)]))
     for sp, rows in todo:
         mid = sp['id']
-        if a.only and mid.split('|')[0] not in a.only.split(','):
+        if a.only and mid.split('.')[0] not in a.only.split(','):
             continue
         ent = dict(sp, sources={})
         ent.pop('refine', None)
@@ -173,7 +175,8 @@ def main(argv=None):
                          'margin_lift' if any(pos('lift_' + o) for o in HOR) else
                          'success_lift' if pos('lift_success') else 'no_lift')
         out['macros'].append(ent)
-    out['extras'] = extras(sides, a.B)
+    out['extras_match_level'] = extras(sides, a.B)
+    out['extras'] = seq_extras(eps.get('_seq', []), a.B)
     body = json.dumps(out, indent=1, sort_keys=False)
     p = Path(a.out_dir) / 'LIBRARY.json'
     p.write_text(body, encoding='utf-8')
@@ -207,13 +210,42 @@ def extras(sides, B, min_n=200):
     return dict(tested=len(cand), z_bonferroni=round(z, 3), pairs=res)
 
 
-def estimate_win(rows, B, seed=1):
-    keys = ('oa', 'wa', 'src')
+def seq_extras(rows, B, min_n=200):
+    """Per-play mined pairs (mine.det_seq): for pair A>B:RZ, units = own A plays with B in hand; treated = the next own play
+    within 5 s is B with that lane relation / zone; cell = CELL + source; outcomes win and n600. Kept when the win CI low > 0
+    and it survives Bonferroni over the pairs tested."""
+    from statistics import NormalDist
+    cnt = defaultdict(int)
+    for r in rows:
+        if r['nxt']:
+            cnt[r['nxt']] += 1
+    cand = sorted(k for k, v in cnt.items() if v >= min_n)
+    z = NormalDist().inv_cdf(1 - 0.025 / max(len(cand), 1))
+    by_a = defaultdict(list)
+    for r in rows:
+        by_a[r['a']].append(r)
+    res = []
+    for k in cand:
+        a_, b_ = k.split(':')[0].split('>')
+        rs = [dict(r, tr=int(r['nxt'] == k)) for r in by_a[a_] if b_ in r['inh']]
+        nt = sum(r['tr'] for r in rs)
+        if nt < min_n or len(rs) - nt < min_n:
+            continue
+        e = estimate_win(rs, B, keys=CELL + ('src',))
+        e2 = estimate_win(rs, B, keys=CELL + ('src',), y='n600')
+        e.update(pair=k, n=len(rs), n_tr=nt, lift_n600=dict(est=e2['est'], ci=e2['ci']))
+        e['bonferroni'] = bool(e['se'] and abs(e['est']) / e['se'] > z)
+        res.append(e)
+    res.sort(key=lambda e: -(e['ci'][0] if e['ci'][0] is not None else -9))
+    return dict(kind='per_play', tested=len(cand), z_bonferroni=round(z, 3), pairs=res)
+
+
+def estimate_win(rows, B, seed=1, keys=('oa', 'wa', 'src'), y='win'):
     cmap, cid = {}, {}
     cell = np.array([cmap.setdefault(tuple(r[k] for k in keys), len(cmap)) for r in rows])
     cl = np.array([cid.setdefault(r['cid'], len(cid)) for r in rows])
     tr = np.array([r['tr'] for r in rows], float)
-    y = np.array([r['win'] for r in rows], float)
+    y = np.array([r[y] for r in rows], float)
     pt, cov = att(cell, tr, y, np.ones(len(rows)))
     W = np.random.default_rng(seed).poisson(1.0, size=(min(B, 400), len(cid))).astype(float)
     bs = np.sort([x for x in (att(cell, tr, y, W[b][cl])[0] for b in range(len(W))) if not math.isnan(x)])
