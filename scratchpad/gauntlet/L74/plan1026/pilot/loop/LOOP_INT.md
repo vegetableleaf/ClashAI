@@ -102,6 +102,20 @@ Labels: (a) measured, (b) untested, (c) contradicted.
   compare: `bash /workspace/loop/cmp.sh MSG.pkl OUT.json [--in-flight 8 --matches 8 --threads 4]` (33308).
 - Nothing left running by me (33308 lint_* runs DONE; 33553 bench exited). 33553 is KEEP (clean throughput pod).
 
+## Lead rulings 10-28 (after the re-dispatch report)
+- lp bar: in-process forwards 1e-5; SERVER mode 5e-5 WITH actions / outcomes / event tables / memory rows identical
+  (measured server 1.33e-5 gate, 1.48e-5 cell, pilot-noiw msg; in-process 4.4e-6). rl_royale's update-0 assert unchanged.
+- Known limitation: training rollouts use rl_royale's sampled decode and do NOT apply live's decide rules (finishers,
+  barrel_lane, Rocket rules ...) while live does; CLXIII was trained the same way, so pilot-vs-CLXIII live is a fair
+  comparison; the real successor must close it. pilot.yaml's fastloop.decode / live_options keys are dropped.
+- The loop stays ALTERNATING (production's schedule) for the pilot; start at 4,096 matches / update on the 8x box and
+  report the rows-used fraction per update (kl_stop_prev 0.02 binds).
+- AVX512: untested (no pod / laptop has it); the boot gate stays strict (failure = BOOT FAILED, fixed on the box first).
+- GB-DECOY SIM fix: BUILD it (opt-in, production facade + fast loop, absent key = byte-identical), on in pilot.yaml.
+- NEXT TICKET order: (a) CfAbil + ability head + the 128-match ability warm start through the fast loop; (b) GB-DECOY;
+  (c) learner-alongside bench within 33553's 62 GB (3 x 256, 2 actors); (d) pilot.yaml on fastloop >= 3 updates on 33308,
+  records kept for LOOP-LRN.
+
 ## Design (as built)
 - `CfTrain.java`: N facade matches per producer on T threads. Per match: e1_eval.SelfPlayMatch.due / SelfPlaySide.apply /
   Match._land ported (delayed plays, crforge's 20-tick engine delay, landing before deciding, tail cap, warm-up), every

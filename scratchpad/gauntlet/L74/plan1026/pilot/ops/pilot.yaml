@@ -18,8 +18,8 @@
 #  - opponents: frozen pool from LOOP-OPP's pilot/opp/POOL.json (PENDING; the league_* / league_exploiters / league_external
 #    blocks below are x_s101's and get replaced from POOL.json); learner snapshot share 0 (league_mix latest / older 0,
 #    league_snapshot_every above max_updates); screen_every above max_updates (no held-out actor pool in the loop).
-#  - training decode = the live decision config (fastloop.decode below -> decision_options.decide with L70/live/LIVE_OPTIONS);
-#    the rl_royale decode keys (T, tau, tau_phase, decide_every) stay x_s101's; T_gate 0.3 -> 0.1 (lead 10-28: the pilot trains the
+#  - training decode = rl_royale's sampled decode (lead 10-28: fastloop.decode live DROPPED, rl_royale has no live decode;
+#    training rollouts do not apply live's decide rules, as for CLXIII); the rl_royale decode keys (T, tau, tau_phase, decide_every) stay x_s101's; T_gate 0.3 -> 0.1 (lead 10-28: the pilot trains the
 #    SAMPLED gate at T .1; live must decode the same way before trial30 -- no live option for that exists yet).
 #  - E4 (rdef_e4 u20 grafted, 430faaee) = a 7th pool checkpoint (lead 10-28: equal share, not more; E4 is also an eval set);
 #    league_pfsp_gamma 1e-9 = uniform over init + the 6 externals to 1e-8 (adaptive_opponents refuses gamma <= 0; at gamma 2 PFSP
@@ -164,8 +164,6 @@ memory_aux: v1
 memory_encoder_frozen: true
 memory_zero_empty: true
 fastloop:
-  decode: live
-  live_options: scratchpad/gauntlet/L70/live/LIVE_OPTIONS
   producers: 48
   matches_per_producer: 32
   threads: 4

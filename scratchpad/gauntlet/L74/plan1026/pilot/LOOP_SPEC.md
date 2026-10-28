@@ -6,7 +6,10 @@ LOOP-INT); don't change it silently. Labels: (a) measured, (b) untested, (c) con
 ## Goal
 PPO training of B0 (CLXIII + the S3-aux memory encoder, sha 3d75a25d, coupling zero, so identical to CLXIII at u0) on
 crforge at >= 300k matches/h on a rented 8x RTX PRO 6000 pod (about 27 vCPU per GPU, 96 GB each), with:
-- rollouts: actions and outcomes identical to rl_royale's crforge path; log-probs within 1e-5;
+- rollouts: actions and outcomes identical to rl_royale's crforge path; log-probs within 1e-5 (in-process forwards).
+  LEAD 10-28: in SERVER mode (LOOP-SRV forwards) log-probs within 5e-5, WITH actions / outcomes / event tables / memory
+  rows identical (GPU batch composition changes fp32 rounding; measured 1.33e-5 gate / 1.48e-5 cell at T_gate 0.1,
+  loop/LOOP_INT.md 2b); rl_royale's own update-0 on-policy assert is unchanged;
 - the learner: rl_royale's PPO math (GAE gamma_tick 0.99994, lambda 0.95, lr 1e-5, clip 0.2, critic warm-up 5, batch
   512 matches) plus the NEW opt-in kl_stop_prev 0.02 (rl_royale had no KL early stop; LOOP-LRN adds it: minibatch KL to
   the previous update's policy via kl_ref_refresh_every 1), with the KL penalty off (beta0 = beta_min = beta_max = 0;
@@ -31,7 +34,8 @@ crforge at >= 300k matches/h on a rented 8x RTX PRO 6000 pod (about 27 vCPU per 
 1. Env processes: K JVMs (start at 12 JVMs x 4 threads per 54 cores, as S3 measured best), each thread running M
    matches in lockstep (CfLoop), building the Java obs for every seat that decides this tick.
 2. Producer processes (Python, one per JVM): read obs blocks from shared memory, call the GPU server for forwards,
-   run decide() (the unified decision_options.decide with the live decision config; training decode = deploy decode),
+   run decide() (LEAD 10-28: rl_royale's own sampled decode, NOT the live decision rules: rl_royale has no live decode;
+   known limitation, see loop/LOOP_INT.md),
    write actions back to the JVM, and append each finished match's trajectory to the record queue.
 3. GPU policy server(s): one per inference GPU; serves the learner policy AND the frozen opponent pool (several
    models; the S4 Merged vmap only covers same-architecture models, so serve others separately); weight versions are
