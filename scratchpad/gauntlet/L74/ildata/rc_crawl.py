@@ -8,15 +8,24 @@ jitter, one in flight. On a challenge page / 429 / 403 / login loss it PAUSES, a
   python rc_crawl.py crawl --dry-run          # state machine against a fake fetcher, no browser, no network
   python rc_crawl.py probe                    # (needs OWNER_GO) <= 5 requests, saves raw pages for a selector check
   python rc_crawl.py crawl [--max-replays N]  # (needs OWNER_GO)
+  python rc_crawl.py crawl --cdp URL1 --cdp URL2 ...   # D2c: one lane per Chrome (= per exit IP), see CRAWL.md
+  python rc_crawl.py lanes [--start-tunnels] | ips --cdp URL ...   # setup helpers (no royaleapi.com request)
   python rc_crawl.py status | stop | resume
 
 Control files live in --out (default icebow/data/crawl, untracked): OWNER_GO (must exist for any real request),
 STOP (finish cleanly; remove it before restarting), RESUME (owner touches it after fixing Chrome), PAUSED.json (why).
+
+D2c limits (RoyaleAPI's written conditions, accepted by the owner): every request of every lane takes a slot from ONE
+limiter persisted in state.db (GLOBAL_GAP between starts, <= 1.6/s; DAILY_CAP per UTC day); each lane also keeps its
+own --min-gap. A 429 cools only that lane (--auto-resume-rate). A challenge / login loss / first 403 on a lane
+writes PAUSED_<port>.json: only that lane waits for RESUME_<port> (10-28); still blocked right after RESUME = ban = STOP all.
+Repeated 5xx halts all (PAUSED.json). Only one real instance runs at a time (LOCK).
 """
 from __future__ import annotations
 
 import argparse
 import csv
+import functools
 import gzip
 import json
 import random
@@ -25,11 +34,12 @@ import shutil
 import sqlite3
 import subprocess
 import sys
+import threading
 import time
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlparse
 
 import pyarrow.parquet as pq
 
@@ -40,8 +50,17 @@ REPO = Path(__file__).resolve().parents[4]
 OUT_DEFAULT = REPO / "icebow" / "data" / "crawl"
 POST = REPO / "scratchpad" / "gauntlet" / "L69" / "discord" / "post.py"
 BASE = "https://royaleapi.com"   # test_rc.py points this at a local server; nothing else changes it
-MIN_INTERVAL = 1.0          # seconds between request starts; jitter is ADDED, so the rate never exceeds 1/s
+MIN_INTERVAL = 8.0          # per-lane (= per-IP) seconds between request starts; jitter is ADDED (--min-gap)
 JITTER = 0.5
+# Global limiter, all lanes + restarts (RoyaleAPI: 2/s and 150k/day combined; ours below both). A lane fires within
+# LATE of its slot or takes a new one, so starts are >= GLOBAL_GAP - LATE = 0.53 s apart, any 3 starts span >= 1.16 s
+# (<= 2 per 1 s window) and any 60 s window holds <= ceil(60.1 / 0.63) = 96 starts (= 1.6/s).
+GLOBAL_GAP = 0.63
+LATE = 0.1
+DAILY_CAP = 140_000         # requests per UTC day (1.6/s for 24 h is 138,240, so this is a backstop)
+LOCK = REPO / "icebow" / "data" / "crawl_instance.lock"    # one real crawler process on this laptop at a time
+IPECHO = "https://api.ipify.org"                           # exit-IP check page (not royaleapi.com)
+LANES_JSON = Path(__file__).resolve().parent / "lanes.json"
 LOW_WATER = 50              # fetch a history page when fewer than this many replays are queued
 FLUSH_ROWS, FLUSH_SECS = 500, 300
 POLL = 5.0                  # seconds between STOP/RESUME checks while paused
@@ -64,6 +83,7 @@ class Resp:
     text: str = ""
     retry_after: float | None = None
     cf: str = ""
+    redirected: bool = False    # fetch followed a redirect: one more request reached the site
 
 
 def is_challenge(r: Resp) -> bool:
@@ -79,7 +99,7 @@ _FETCH_JS = """async ([url, manual, timeout]) => {
                                     redirect: manual ? 'manual' : 'follow'});
         return {status: r.type === 'opaqueredirect' ? 302 : r.status,
                 cf: r.headers.get('cf-mitigated') || '', ra: r.headers.get('retry-after') || '',
-                text: manual ? '' : await r.text()};
+                rd: r.redirected, text: manual ? '' : await r.text()};
     } finally { clearTimeout(timer); }
 }"""
 
@@ -115,7 +135,24 @@ class CdpFetcher:
         except PwError as e:
             raise FetchError(e.__class__.__name__) from e
         ra = float(r["ra"]) if re.fullmatch(r"\d+(\.\d+)?", r.get("ra") or "") else None
-        return Resp(r["status"], r["text"], ra, r["cf"])
+        return Resp(r["status"], r["text"], ra, r["cf"], bool(r.get("rd")))
+
+    def exit_ip(self) -> str:
+        """This Chrome's exit IP: a NEW tab loads IPECHO and is closed again (the royaleapi.com tab is not touched;
+        a proxied Chrome sends it through its SOCKS tunnel, unlike a request made by Playwright itself)."""
+        from playwright.sync_api import Error as PwError
+        try:
+            pg = self._browser.contexts[0].new_page()
+            try:
+                pg.goto(IPECHO, timeout=30_000)
+                ip = pg.inner_text("body").strip()
+            finally:
+                pg.close()
+        except PwError as e:
+            raise FetchError(f"exit-IP check failed: {e.__class__.__name__}") from e
+        if not re.fullmatch(r"[0-9A-Fa-f:.]{3,45}", ip):
+            raise FetchError(f"exit-IP check page did not return an IP: {ip[:80]!r}")
+        return ip
 
     def close(self) -> None:
         self._pw.stop()         # drops the CDP connection; Chrome and its tabs stay open
@@ -180,6 +217,10 @@ class FakeFetcher:
             return Resp(403, "<html><title>Just a moment...</title></html>", cf="challenge")
         if fault == "429":
             return Resp(429, "", retry_after=30.0)
+        if fault == "500":
+            return Resp(500, "<html>Server error</html>")
+        if fault == "403":
+            return Resp(403, "<html>Forbidden</html>")
         self.pending_login |= fault == "login"
         path = url.removeprefix(BASE)
         if self.pending_login and path.startswith("/data/replay"):
@@ -200,11 +241,21 @@ class FakeFetcher:
 
 
 # ------------------------------------------------------------------------------------------ state
+def _locked(fn):
+    @functools.wraps(fn)
+    def w(self, *a, **k):
+        with self.lock:
+            return fn(self, *a, **k)
+    return w
+
+
 class Store:
-    """sqlite: players frontier, battles queue (dedupe by replay tag and by battle pair), counters."""
+    """sqlite: players frontier, battles queue (dedupe by replay tag and by battle pair), counters, and the global
+    request limiter (next slot + per-UTC-day count). One connection shared by the lane threads under one lock."""
 
     def __init__(self, path: Path):
-        self.db = sqlite3.connect(path)
+        self.lock = threading.RLock()
+        self.db = sqlite3.connect(path, check_same_thread=False)
         self.db.execute("PRAGMA journal_mode=WAL")
         self.db.executescript("""
             CREATE TABLE IF NOT EXISTS meta(k TEXT PRIMARY KEY, v TEXT);
@@ -214,16 +265,63 @@ class Store:
             CREATE TABLE IF NOT EXISTS battles(replay_tag TEXT PRIMARY KEY, pair_key TEXT UNIQUE, status TEXT, ts INT,
                 player_tag TEXT, tries INT DEFAULT 0, row_json TEXT, row_html BLOB);
             CREATE INDEX IF NOT EXISTS battles_q ON battles(status, ts);
+            CREATE TABLE IF NOT EXISTS daily(day TEXT PRIMARY KEY, n INT);
         """)
 
+    @_locked
+    def reserve(self, now: float, gap: float, cap: int) -> float | None:
+        """Take the next global request slot: >= now and >= gap after the previous slot of ANY lane (also across a
+        restart: the schedule is persisted). Counts it in today's UTC total; None once the total has reached cap."""
+        day = time.strftime("%Y-%m-%d", time.gmtime(now))
+        n = self.today(day)
+        if n >= cap:
+            return None
+        nxt = self.meta("next_slot", 0.0)
+        slot = now if nxt > now + 60 else max(now, nxt)     # a clock stepped back must not stall the crawl
+        self.db.execute("INSERT OR REPLACE INTO daily VALUES(?,?)", (day, n + 1))
+        self.db.execute("INSERT OR REPLACE INTO meta VALUES('next_slot',?)", (json.dumps(slot + gap),))
+        self.db.commit()
+        return slot
+
+    @_locked
+    def today(self, day: str) -> int:
+        r = self.db.execute("SELECT n FROM daily WHERE day=?", (day,)).fetchone()
+        return r[0] if r else 0
+
+    @_locked
+    def recover(self) -> None:
+        """Crash recovery: replays fetched but not flushed, and players whose page was in flight, go back to the queue."""
+        self.db.execute("UPDATE battles SET status='todo' WHERE status='buf'")
+        self.db.execute("UPDATE players SET status=CASE WHEN next_path IS NULL THEN 'todo' ELSE 'active' END "
+                        "WHERE status='busy'")
+        self.db.commit()
+
+    @_locked
+    def claim_player(self):
+        r = self.next_player()
+        if r:
+            self.db.execute("UPDATE players SET status='busy' WHERE tag=?", (r[0],))
+            self.db.commit()
+        return r
+
+    @_locked
+    def claim_battle(self):
+        r = self.next_battle()
+        if r:
+            self.set_battle(r[0], "buf")                    # no other lane picks it; reset to todo on a restart
+        return r
+
+    @_locked
     def meta(self, k, default=None):
         r = self.db.execute("SELECT v FROM meta WHERE k=?", (k,)).fetchone()
         return json.loads(r[0]) if r else default
 
+    @_locked
     def set_meta(self, k, v):
         self.db.execute("INSERT OR REPLACE INTO meta VALUES(?,?)", (k, json.dumps(v)))
         self.db.commit()
 
+    @_locked
     def add_players(self, tags, source: str, prio: int, cap: int = 500_000) -> int:
         if self.db.execute("SELECT COUNT(*) FROM players WHERE status IN ('todo','active')").fetchone()[0] >= cap:
             return 0
@@ -234,14 +332,17 @@ class Store:
         self.db.commit()
         return self.db.total_changes - n
 
+    @_locked
     def next_player(self):
         return self.db.execute("SELECT tag,next_path,pages FROM players WHERE status IN ('todo','active') "
                                "ORDER BY (status='active') DESC, prio, added LIMIT 1").fetchone()
 
+    @_locked
     def update_player(self, tag, status, next_path=None, pages=0):
         self.db.execute("UPDATE players SET status=?, next_path=?, pages=? WHERE tag=?", (status, next_path, pages, tag))
         self.db.commit()
 
+    @_locked
     def add_battles(self, rows, player_tag, pair_dedupe=True) -> int:
         n = self.db.total_changes
         for r in rows:
@@ -253,29 +354,36 @@ class Store:
         self.db.commit()
         return self.db.total_changes - n
 
+    @_locked
     def next_battle(self):
         return self.db.execute("SELECT replay_tag,player_tag,row_json,tries FROM battles WHERE status='todo' "
                                "ORDER BY ts DESC LIMIT 1").fetchone()
 
+    @_locked
     def set_battle(self, tag, status, tries=None):
         self.db.execute("UPDATE battles SET status=?, tries=COALESCE(?, tries) WHERE replay_tag=?", (status, tries, tag))
         self.db.commit()
 
+    @_locked
     def done(self, tags):
         self.db.executemany("UPDATE battles SET status='done' WHERE replay_tag=?", [(t,) for t in tags])
         self.db.commit()
 
+    @_locked
     def counts(self) -> dict:
         c = {f"battles_{s}": n for s, n in self.db.execute("SELECT status, COUNT(*) FROM battles GROUP BY status")}
         c.update({f"players_{s}": n for s, n in self.db.execute("SELECT status, COUNT(*) FROM players GROUP BY status")})
         return c
 
+    @_locked
     def n(self, table, status) -> int:
         return self.db.execute(f"SELECT COUNT(*) FROM {table} WHERE status=?", (status,)).fetchone()[0]
 
+    @_locked
     def close(self) -> None:
         self.db.close()
 
+    @_locked
     def has_player_work(self) -> bool:
         return self.next_player() is not None
 
@@ -292,11 +400,13 @@ class Writer:
 
     def __init__(self, out: Path, store: Store, keep_raw: bool = True):
         self.out, self.store, self.keep_raw = out, store, keep_raw
+        self.lock = store.lock
         for d in ("replays", "actions", "raw"):
             (out / d).mkdir(parents=True, exist_ok=True)
         self.r, self.a, self.raw, self.tags = [], [], [], []
         self.last = time.monotonic()
 
+    @_locked
     def add(self, tag, rrow, arows, html):
         self.r.append(rrow)
         self.a.extend(arows)
@@ -304,9 +414,11 @@ class Writer:
         if self.keep_raw:
             self.raw.append({"tag": tag, "html": html})
 
+    @_locked
     def due(self) -> bool:
         return len(self.tags) >= FLUSH_ROWS or (self.tags and time.monotonic() - self.last >= FLUSH_SECS)
 
+    @_locked
     def flush(self) -> int:
         if not self.tags:
             return 0
@@ -327,23 +439,50 @@ class Writer:
 
 
 # ------------------------------------------------------------------------------------------ crawler
-class Crawler:
-    def __init__(self, out: Path, fetcher, args, clock=time.monotonic, sleep=time.sleep, rng=None, alert=None):
-        self.out, self.f, self.a = out, fetcher, args
-        self.clock, self.sleep, self.rng = clock, sleep, rng or random.Random()
-        self.alert_fn = alert or (lambda msg: None)
+class Shared:
+    """What the lanes of one process share: the sqlite store and the parquet writer (both under store.lock), the first
+    stop reason (every lane stops on it), and the cool-all / reminder clocks."""
+
+    def __init__(self, out: Path, args):
         self.store = Store(out / "state.db")
         self.writer = Writer(out, self.store, keep_raw=not args.no_raw)
-        self.last = float("-inf")
+        self.lock = self.store.lock
+        self.stop = None
+        self.seeded = False
+        self.busy = 0                       # lanes with a claimed player / battle in flight
+        self.replays = 0
+        self.cool_all = self.last_alert = float("-inf")
+
+
+class Crawler:
+    """One lane = one fetcher = one Chrome = one exit IP. Several lanes share one Shared and run under run_lanes()."""
+
+    def __init__(self, out: Path, fetcher, args, clock=time.time, sleep=time.sleep, rng=None, alert=None,
+                 shared: Shared | None = None, name: str = "lane0", rid: str | None = None, ip: str | None = None):
+        self.out, self.f, self.a, self.name = out, fetcher, args, name
+        # per-IP pause (10-28 RoyaleAPI reply): PAUSED_<rid>.json holds only this lane until the owner creates
+        # RESUME_<rid> (rid = the Chrome's debug port); a sole lane also accepts the plain RESUME
+        self.rid, self.ip = rid or name, ip
+        self.pfile, self.rfile = out / f"PAUSED_{self.rid}.json", out / f"RESUME_{self.rid}"
+        self.sole = True                            # run_lanes sets it
+        self.after_resume = False                   # the next response is the first after an owner RESUME
+        self.lane_alert = float("-inf")
+        self.clock, self.sleep, self.rng = clock, sleep, rng or random.Random()
+        self.alert_fn = alert or (lambda msg: None)
+        self.sh = shared or Shared(out, args)
+        self.store, self.writer = self.sh.store, self.sh.writer
+        self.last = self.cool_until = float("-inf")
         self.consec = 0
         self.cnt = {k: 0 for k in ("req", "ok", "rate", "challenge", "blocked", "server", "neterr", "login", "pauses",
-                                   "replays", "refused", "history_pages", "paired_dupes")}
+                                   "replays", "refused", "history_pages", "paired_dupes", "late")}
         self.floor = int(datetime.fromisoformat(args.floor).replace(tzinfo=timezone.utc).timestamp())
         self.types = set(args.types.split(","))
         self.t0 = self.clock()
 
-    # ---- control files
+    # ---- control
     def _stop(self) -> None:
+        if self.sh.stop:
+            raise Stop(self.sh.stop)
         if (self.out / "STOP").exists():
             raise Stop("STOP file")
 
@@ -353,41 +492,145 @@ class Crawler:
         except Exception:
             pass                                    # never let an alert failure kill the crawl
 
+    def _nap(self, s: float) -> None:
+        """Sleep s seconds in POLL chunks so STOP is seen promptly."""
+        end = self.clock() + s
+        while (left := end - self.clock()) > 1e-6:
+            self._stop()
+            self.sleep(min(left, POLL))
+
     def _gate(self) -> None:
-        wait = self.last + getattr(self.a, "min_gap", MIN_INTERVAL) + self.rng.uniform(0, JITTER) - self.clock()
-        if wait > 0:
-            self.sleep(wait)
+        """This lane's own gap (per IP), then a slot from the global limiter shared by every lane."""
+        self._nap(self.last + getattr(self.a, "min_gap", MIN_INTERVAL) + self.rng.uniform(0, JITTER) - self.clock())
+        while True:
+            slot = self.store.reserve(self.clock(), GLOBAL_GAP, DAILY_CAP)
+            if slot is None:
+                raise Stop("daily cap")
+            self._nap(slot - self.clock())
+            if self.clock() - slot <= LATE:
+                break
+            self.cnt["late"] += 1                   # woke too late: firing now could crowd the next lane's slot
         self.last = self.clock()
 
-    def _pause(self, kind: str, why: str, retry_after: float | None = None) -> None:
+    def _halted(self) -> bool:
+        return ((self.out / "PAUSED.json").exists() or self.pfile.exists()
+                or self.clock() < max(self.cool_until, self.sh.cool_all))
+
+    def _who(self) -> str:
+        return f"{self.name} (port {self.rid}, exit IP {self.ip or 'not checked'})"
+
+    def _hold(self) -> None:
+        """Before every request: STOP; this lane's (or all lanes') 429 cooldown; a global halt (PAUSED.json: repeated
+        5xx = service disruption, or a file left by an older run) until RESUME; then this lane's own pause
+        (PAUSED_<rid>.json: challenge / login loss / first 403 / network) until RESUME_<rid>. Never before not_before."""
+        p, res = self.out / "PAUSED.json", self.out / "RESUME"
+        while True:
+            self._stop()
+            cool = max(self.cool_until, self.sh.cool_all) - self.clock()
+            if cool > 0:
+                self._nap(cool)
+                continue
+            with self.sh.lock:
+                if p.exists():
+                    f, rf, scope = p, res, "ALL lanes wait"
+                elif self.pfile.exists():
+                    rf = self.rfile if self.rfile.exists() or not self.sole else res
+                    f, scope = self.pfile, f"only {self._who()} waits; other lanes go on"
+                else:
+                    return
+                try:
+                    info = json.loads(f.read_text())
+                except (OSError, ValueError):
+                    info = {}
+                if rf.exists() and self.clock() >= info.get("not_before", 0):
+                    rf.unlink(missing_ok=True)
+                    f.unlink(missing_ok=True)
+                    if f is self.pfile:
+                        self.after_resume = True    # a 403 on the next response = permanent ban
+                    continue
+                last = self.sh.last_alert if f is p else self.lane_alert
+                remind = self.clock() - last >= REMIND
+                if remind:
+                    if f is p:
+                        self.sh.last_alert = self.clock()
+                    else:
+                        self.lane_alert = self.clock()
+            if remind:
+                self._alert(f"RoyaleAPI crawl still PAUSED ({info.get('kind', '?')}, {info.get('lane', '?')}): "
+                            f"{info.get('why', '')} {scope}. Fix that Chrome window by hand, then create {rf}.")
+            self.sleep(POLL)
+
+    def _record(self, kind: str, trigger: dict | None) -> None:
+        if trigger:
+            with self.sh.lock:
+                self.store.set_meta("blocks", (self.store.meta("blocks", []) or [])[-199:] + [
+                    {"t": datetime.now(timezone.utc).isoformat(timespec="seconds"), "lane": self.name, "port": self.rid,
+                     "ip": self.ip, "kind": kind, **trigger}])
+
+    def _pause(self, kind: str, why: str, retry_after: float | None = None, trigger: dict | None = None) -> None:
+        """trigger: the request that caused it (URL path without the query, HTTP status, cf-mitigated header,
+        page title) -> PAUSED*.json and state.db meta 'blocks', so the owner can tell RoyaleAPI which endpoint
+        answered what. No cookie, no other header, no body is recorded."""
         self.consec += 1
         self.cnt["pauses"] += 1
         cool = max(retry_after or 0, min(3600, RATE_COOLDOWN * 2 ** (self.consec - 1))) if kind == "rate" else 0
+        # owner 10-27: --auto-resume-rate continues after a 429 cooldown by itself, on this lane only (or on all lanes
+        # with --rate-scope all)
+        if kind == "rate" and getattr(self.a, "auto_resume_rate", False):
+            until = self.clock() + cool
+            scope = getattr(self.a, "rate_scope", "ip")
+            if scope == "all":
+                with self.sh.lock:
+                    self.sh.cool_all = max(self.sh.cool_all, until)
+            else:
+                self.cool_until = until
+            print(f"[crawl] {self.name} 429: cooling {'ALL lanes' if scope == 'all' else 'this lane'} {int(cool)}s, "
+                  f"then continuing (consecutive {self.consec})", flush=True)
+            return
         self.writer.flush()
-        info = {"kind": kind, "why": why, "since": datetime.now(timezone.utc).isoformat(), "cooldown_s": cool,
-                "consecutive": self.consec, "to_resume": f"create {self.out / 'RESUME'} after fixing Chrome"}
-        (self.out / "PAUSED.json").write_text(json.dumps(info, indent=1))
-        msg = (f"RoyaleAPI crawl PAUSED ({kind}): {why.rstrip('.')}. Nothing is retried until you fix the Chrome window "
-               f"(clear the check / log in / wait) and create the RESUME file. Cooldown {int(cool)}s. "
-               f"Done so far: {self.cnt['replays']} replays this run.")
-        # owner 10-27 overnight: --auto-resume-rate continues after a 429 cooldown by itself; challenge / login /
-        # block / network pauses still wait for the owner's RESUME
-        auto = kind == "rate" and getattr(self.a, "auto_resume_rate", False)
-        if auto:
-            print(f"[crawl] 429: cooling down {int(cool)}s, then continuing (consecutive {self.consec})", flush=True)
-        else:
+        self._record(kind, trigger)
+        where = f" [{trigger['path']} -> HTTP {trigger['status']}]" if trigger else ""
+        everyone = kind == "server"                 # repeated 5xx = service disruption: every lane pauses
+        p = self.out / "PAUSED.json" if everyone else self.pfile
+        rf = self.out / "RESUME" if everyone else self.rfile
+        msg = (f"RoyaleAPI crawl PAUSED ({kind}) on {self._who()}{where}: {why.rstrip('.')}. "
+               + ("ALL lanes stopped. " if everyone else "Only this IP is paused; other lanes keep collecting. ")
+               + f"Nothing is retried on it until you fix that Chrome window by hand (clear the check / log in / wait) "
+                 f"and create {rf.name} (`rc_crawl.py resume" + ("" if everyone else f" --lane {self.rid}") + "`). "
+               f"Cooldown {int(cool)}s. Done so far: {self.sh.replays} replays this run.")
+        with self.sh.lock:
+            first = not p.exists()                  # already halted: one alert is enough
+            if first:
+                info = {"kind": kind, "why": why, "lane": self.name, "port": self.rid, "ip": self.ip,
+                        "since": datetime.now(timezone.utc).isoformat(), "cooldown_s": cool,
+                        "not_before": self.clock() + cool, "consecutive": self.consec,
+                        "to_resume": f"create {rf} after fixing Chrome", "trigger": trigger}
+                p.write_text(json.dumps(info, indent=1))
+                if everyone:
+                    self.sh.last_alert = self.clock()
+                else:
+                    self.lane_alert = self.clock()
+        if first:
             self._alert(msg)
-        t0 = last_alert = self.clock()
-        while True:
-            self._stop()
-            if (auto or (self.out / "RESUME").exists()) and self.clock() - t0 >= cool:
-                (self.out / "RESUME").unlink(missing_ok=True)
-                (self.out / "PAUSED.json").unlink(missing_ok=True)
-                return
-            if not auto and self.clock() - last_alert >= REMIND:
-                last_alert = self.clock()
-                self._alert("Still paused: " + msg)
-            self.sleep(POLL)
+        self._hold()
+
+    def _ban(self, trigger: dict) -> None:
+        """Still blocked (HTTP 401/403, not a challenge) on the first request after the owner's RESUME for this IP =
+        treated as a permanent ban: STOP every lane and every later start (STOP file), BANNED.json, one alert."""
+        self.cnt["blocked"] += 1
+        self._record("ban", trigger)
+        why = (f"RoyaleAPI crawl STOPPED ALL: {self._who()} is still blocked (HTTP {trigger['status']} on "
+               f"{trigger['path']}) on the first request after RESUME = treated as a permanent ban. Every lane stopped; "
+               f"STOP file written. Do not restart without the owner.")
+        with self.sh.lock:
+            (self.out / "BANNED.json").write_text(json.dumps({"lane": self.name, "port": self.rid, "ip": self.ip,
+                                                              "t": datetime.now(timezone.utc).isoformat(),
+                                                              "trigger": trigger}, indent=1))
+            (self.out / "STOP").write_text("permanent ban, see BANNED.json")
+            self.sh.stop = self.sh.stop or f"BANNED: {self.name}"
+        self.writer.flush()
+        self._alert(why)
+        raise Stop(f"BANNED: {self.name}")
 
     # ---- one request, with every stop condition
     def request(self, path: str, params: dict | None = None, manual: bool = False) -> Resp:
@@ -396,8 +639,11 @@ class Crawler:
             url += "?" + urlencode(params)
         net = 0
         while True:
-            self._stop()
+            self._hold()
             self._gate()
+            self._stop()
+            if self._halted():
+                continue                            # this lane paused, or another lane halted / cooled all, meanwhile
             self.cnt["req"] += 1
             try:
                 r = self.f.get(url, manual)
@@ -406,19 +652,29 @@ class Crawler:
                 net += 1
                 if net > 3:
                     net = 0
-                    self._pause("network", f"{e} (3 automatic retries failed). Is Chrome open on a royaleapi.com tab?")
+                    self._pause("network", f"{e} (3 automatic retries failed). Is Chrome open on a royaleapi.com tab? "
+                                           f"Is its tunnel up?")
                 else:
-                    self.sleep(30 * 2 ** (net - 1))
+                    self._nap(30 * 2 ** (net - 1))
                 continue
+            if r.redirected:                        # the followed hop was one more request: count it and its slot
+                self.store.reserve(self.clock(), GLOBAL_GAP, DAILY_CAP)
+            trig = {"path": path.split("?")[0].removeprefix(BASE), "status": r.status, "cf_mitigated": r.cf,
+                    "title": (re.search(r"<title>([^<]{0,80})", r.text[:4000]) or [None, ""])[1], "manual": manual}
+            first_after, self.after_resume = self.after_resume, False
             if is_challenge(r):
                 self.cnt["challenge"] += 1
-                self._pause("challenge", "Cloudflare check page. Clear it in the Chrome window yourself.")
+                self._pause("challenge", "Cloudflare check page. Clear it in that Chrome window yourself.", trigger=trig)
             elif r.status == 429:
                 self.cnt["rate"] += 1
-                self._pause("rate", "HTTP 429 too many requests", r.retry_after)
-            elif r.status == 403:
+                self._pause("rate", "HTTP 429 too many requests", r.retry_after, trigger=trig)
+            elif r.status in (401, 403) and first_after:
+                self._ban(trig)
+            elif r.status in (401, 403):
                 self.cnt["blocked"] += 1
-                self._pause("blocked", f"HTTP 403 on {path}. Look at the Chrome window (check or login?).")
+                self._pause("blocked", f"HTTP {r.status} on {path}. Look at that Chrome window (check or login?). "
+                                       f"If it is still blocked on the first request after RESUME, ALL lanes stop.",
+                            trigger=trig)
             elif r.status >= 500:
                 self.cnt["server"] += 1
                 net += 1
@@ -426,7 +682,7 @@ class Crawler:
                     net = 0
                     self._pause("server", f"HTTP {r.status} on {path} (3 automatic retries failed)")
                 else:
-                    self.sleep(30 * 2 ** (net - 1))
+                    self._nap(30 * 2 ** (net - 1))
             else:
                 self.consec = 0
                 self.cnt["ok"] += 1
@@ -458,8 +714,8 @@ class Crawler:
         self.store.set_meta("seeded", {"players": n})
         print(f"[seed] {n} players queued", flush=True)
 
-    def history_step(self) -> None:
-        tag, nxt, pages = self.store.next_player()
+    def history_step(self, claimed) -> None:
+        tag, nxt, pages = claimed
         r = self.request(nxt or f"/player/{tag}/battles/history")
         self.cnt["history_pages"] += 1
         if r.status != 200:
@@ -476,10 +732,9 @@ class Crawler:
         end = n_rows == 0 or not nxt or pages >= self.a.max_pages or (stamps and min(stamps) < self.floor)
         self.store.update_player(tag, "done" if end else "active", None if end else nxt, pages)
 
-    def replay_step(self) -> None:
-        tag, ptag, row_json, tries = self.store.next_battle()
+    def replay_step(self, claimed) -> None:
+        tag, ptag, row_json, tries = claimed                        # claim_battle set it to 'buf'
         row = json.loads(row_json)
-        self.store.set_battle(tag, "buf")                           # not picked again; reset to todo on a restart
         params = {"tag": tag, "team_tags": row["team_tags"], "opponent_tags": row["opponent_tags"],
                   "team_crowns": row["team_crowns"], "opponent_crowns": row["opponent_crowns"],
                   "referrer_path": f"{BASE}/player/{row['team_tags'].split(',')[0]}/battles"}
@@ -508,54 +763,119 @@ class Crawler:
             return
         self.writer.add(tag, rrow, arows, data["html"])
         self.cnt["replays"] += 1
+        with self.sh.lock:
+            self.sh.replays += 1
+            total = self.sh.replays
         if self.cnt["replays"] % 50 == 0:
             self.progress()
-        if self.a.max_replays and self.cnt["replays"] >= self.a.max_replays:
+        if self.a.max_replays and total >= self.a.max_replays:
             raise Stop("max-replays")
 
     def progress(self) -> None:
-        line = {"t": datetime.now(timezone.utc).isoformat(timespec="seconds"), "elapsed_s": round(self.clock() - self.t0),
-                **self.cnt, **self.store.counts()}
-        with (self.out / "progress.jsonl").open("a") as f:
-            f.write(json.dumps(line) + "\n")
+        with self.sh.lock:
+            line = {"t": datetime.now(timezone.utc).isoformat(timespec="seconds"), "lane": self.name,
+                    "elapsed_s": round(self.clock() - self.t0), **self.cnt, **self.store.counts()}
+            with (self.out / "progress.jsonl").open("a") as f:
+                f.write(json.dumps(line) + "\n")
 
-    def run(self) -> None:
-        self.store.db.execute("UPDATE battles SET status='todo' WHERE status='buf'")     # crash recovery
-        self.store.db.commit()
-        reason = "frontier empty"
-        self.progress()
-        try:
-            self.seed()
-            while True:
-                self._stop()
-                todo = self.store.n("battles", "todo")
-                if self.store.has_player_work() and (todo < LOW_WATER or not todo):
-                    self.history_step()
-                elif todo:
-                    self.replay_step()
-                else:
-                    break
+    def loop(self) -> None:
+        sh = self.sh
+        while True:
+            self._stop()
+            with sh.lock:                                           # claim atomically: no two lanes take one job
+                p = self.store.claim_player() if self.store.n("battles", "todo") < LOW_WATER else None
+                b = None if p else self.store.claim_battle()
+                if not (p or b) and not sh.busy:
+                    return                                          # frontier empty and no lane is fetching
+                sh.busy += bool(p or b)
+            if not (p or b):
+                self.sleep(POLL)                                    # another lane's page may add work
+                continue
+            try:
+                self.history_step(p) if p else self.replay_step(b)
+            finally:
+                with sh.lock:
+                    sh.busy -= 1
+            with sh.lock:
                 if self.writer.due():
                     self.writer.flush()
                     if shutil.disk_usage(self.out).free < self.a.min_free_gb * 2**30:
                         raise Stop("disk low")
+
+    def lane_main(self, first: bool) -> None:
+        own = not hasattr(self.f, "get")            # a factory: build the fetcher in this thread (Playwright is per thread)
+        try:
+            if own:
+                self.f = self.f()
+            if first:
+                self.seed()
+                self.sh.seeded = True
+            while not self.sh.seeded:
+                self._stop()
+                self.sleep(POLL)
+            self.loop()
         except Stop as e:
-            reason = str(e)
+            self.sh.stop = self.sh.stop or str(e)
+        except BaseException as e:
+            self.sh.stop = self.sh.stop or f"{self.name} crashed ({e.__class__.__name__}: {e})"
+            raise
         finally:
-            self.writer.flush()
-            self.progress()
-            self.store.set_meta("last_run", {"end": reason, **self.cnt})
-        print(f"[crawl] stopped: {reason}; {self.cnt}", flush=True)
-        if reason in ("disk low",):
-            self._alert(f"RoyaleAPI crawl stopped: {reason}.")
+            if own and hasattr(self.f, "close"):
+                self.f.close()
+                self.f = None                       # closed in its own thread; main must not close it again
+
+    def run(self) -> str:
+        return run_lanes([self])
+
+
+def run_lanes(lanes: list[Crawler]) -> str:
+    """Run the lanes until the frontier is empty or any lane stops (STOP, max-replays, daily cap, disk, crash): one
+    lane in the calling thread, several in threads. Returns the stop reason."""
+    sh = lanes[0].sh
+    sh.store.recover()
+    for c in lanes:
+        c.sole = len(lanes) == 1
+        c.progress()
+    try:
+        if len(lanes) == 1:
+            lanes[0].lane_main(True)
+        else:
+            ts = [threading.Thread(target=c.lane_main, args=(i == 0,), name=c.name, daemon=True)
+                  for i, c in enumerate(lanes)]
+            for t in ts:
+                t.start()
+            try:
+                while any(t.is_alive() for t in ts):
+                    ts[0].join(0.2)
+                    for t in ts:
+                        t.join(0.01)
+            except KeyboardInterrupt:
+                sh.stop = sh.stop or "Ctrl+C"
+                for t in ts:
+                    t.join()
+    finally:
+        sh.writer.flush()
+        for c in lanes:
+            c.progress()
+        reason = sh.stop or "frontier empty"
+        sh.store.set_meta("last_run", {"end": reason, "lanes": {c.name: c.cnt for c in lanes}})
+    print(f"[crawl] stopped: {reason}; " + "; ".join(f"{c.name} {c.cnt}" for c in lanes), flush=True)
+    if reason in ("disk low", "daily cap") or "crashed" in reason:            # a ban alerted already
+        lanes[0]._alert(f"RoyaleAPI crawl stopped: {reason}.")
+    return reason
 
 
 # ------------------------------------------------------------------------------------------ cli
+CHROME_EXE = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+_ALERT_LOCK = threading.Lock()
+
+
 def discord_alert(out: Path):
     def send(msg: str) -> None:
-        f = out / "alert.txt"
-        f.write_text(msg, encoding="utf-8")
-        subprocess.run([sys.executable, str(POST), str(f)], timeout=30, capture_output=True)   # output may hold the URL
+        with _ALERT_LOCK:                           # lanes share alert.txt
+            f = out / "alert.txt"
+            f.write_text(msg, encoding="utf-8")
+            subprocess.run([sys.executable, str(POST), str(f)], timeout=30, capture_output=True)   # output may hold the URL
     return send
 
 
@@ -567,21 +887,104 @@ def lower_priority() -> None:
         pass
 
 
+def instance_lock(path: Path):
+    """Exclusive sqlite lock held for the life of the process (the OS drops it on any exit): a second real crawler on
+    this laptop refuses to start, so two processes can never split the global limits. None = held by another."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    db = sqlite3.connect(path, timeout=0, isolation_level=None, check_same_thread=False)
+    try:
+        db.execute("BEGIN EXCLUSIVE")
+    except sqlite3.OperationalError:
+        db.close()
+        return None
+    return db
+
+
+def check_ips(cdps: list[str]) -> tuple[list[str], str | None]:
+    """Exit IP of each Chrome. problem is set when a check failed or two lanes share an IP (two lanes on one IP would
+    double that IP's request rate)."""
+    ips = []
+    for u in cdps:
+        try:
+            f = CdpFetcher(u)
+            try:
+                ips.append(f.exit_ip())
+            finally:
+                f.close()
+        except FetchError as e:
+            ips.append(f"ERROR {e}")
+    if any(i.startswith("ERROR") for i in ips):
+        return ips, "exit-IP check failed"
+    # compare networks, not addresses: RunPod pods leave through a NAT pool (measured 10-27: 185.226.156.3 and .5 per
+    # connection, shared by pods 32657 / 33308), so one exit can show different addresses of one /24
+    nets = [".".join(i.split(".")[:3]) if "." in i else ":".join(i.split(":")[:4]) for i in ips]
+    return ips, ("two lanes share an exit IP network (/24 or /64)" if len(set(nets)) < len(nets) else None)
+
+
+def lane_commands(cfg: dict) -> list[dict]:
+    """lanes.json -> per lane: the ssh -D tunnel argv (pod lanes), the owner's Chrome line (PowerShell), the CDP URL."""
+    key = Path(cfg["ssh_key"]).expanduser()
+    out = []
+    for ln in cfg["lanes"]:
+        chrome = (f'& "{CHROME_EXE}" --remote-debugging-port={ln["cdp_port"]} '
+                  f'--user-data-dir="{Path.home() / ln["profile"]}"')
+        tunnel = None
+        if ln.get("socks_port"):
+            chrome += f' --proxy-server="socks5://127.0.0.1:{ln["socks_port"]}"'
+            tunnel = ["ssh", "-i", str(key), "-N", "-D", f"127.0.0.1:{ln['socks_port']}", "-p", str(ln["ssh_port"]),
+                      "-o", "ExitOnForwardFailure=yes", "-o", "ServerAliveInterval=30", "-o", "ServerAliveCountMax=3",
+                      "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=accept-new", ln["ssh_host"]]
+        out.append({**ln, "chrome": chrome, "tunnel": tunnel, "cdp": f"http://127.0.0.1:{ln['cdp_port']}"})
+    return out
+
+
+def lanes_mode(start_tunnels: bool) -> int:
+    ls = lane_commands(json.loads(LANES_JSON.read_text()))
+    me = f"python -I {Path(__file__).resolve()}"
+    for ln in ls:
+        print(f"\n[{ln['name']}] {ln.get('note', '')}")
+        if ln["tunnel"]:
+            print("  tunnel (keep it running; stop it by its PID):", subprocess.list2cmdline(ln["tunnel"]))
+            if start_tunnels:
+                p = subprocess.Popen(ln["tunnel"], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
+                                     stderr=subprocess.DEVNULL, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+                time.sleep(4)
+                print(f"  started: PID {p.pid}, " + ("running" if p.poll() is None else f"EXITED with {p.returncode}"))
+        print("  Chrome (PowerShell; then clear the check and log in to RoyaleAPI by hand, leave a royaleapi.com tab open):")
+        print("   ", ln["chrome"])
+    cdps = " ".join(f"--cdp {ln['cdp']}" for ln in ls)
+    print(f"\nverify the exit IPs (they must all differ; opens and closes one tab per Chrome on {IPECHO}):\n  {me} ips {cdps}")
+    print(f"crawl (only after the lead's go):\n  {me} crawl --min-gap 8 --auto-resume-rate {cdps}")
+    return 0
+
+
 def status(out: Path) -> None:
     if not (out / "state.db").exists():
         print("no state yet")
         return
     s = Store(out / "state.db")
     print(json.dumps(s.counts()), "\nlast_run:", s.meta("last_run"))
-    if (out / "PAUSED.json").exists():
-        print("PAUSED:", (out / "PAUSED.json").read_text())
+    day = time.strftime("%Y-%m-%d", time.gmtime())
+    n = s.today(day)
+    print(f"requests today (UTC {day}): {n:,} of {DAILY_CAP:,}; remaining {DAILY_CAP - n:,}; "
+          f"global cap {1 / GLOBAL_GAP:.3f}/s over all lanes")
+    for ln in s.meta("lanes", None) or []:
+        print(f"lane {ln['lane']}: {ln['cdp']} exit IP {ln['ip']}")
+    for f in sorted(out.glob("PAUSED*.json")) + sorted(out.glob("BANNED.json")):
+        print(f"{f.name}:", f.read_text())
     prog = [json.loads(x) for x in (out / "progress.jsonl").read_text().splitlines()] if (out / "progress.jsonl").exists() else []
     if len(prog) >= 2:
         a, b = prog[0], prog[-1]
         h = (datetime.fromisoformat(b["t"]) - datetime.fromisoformat(a["t"])).total_seconds() / 3600
         d = b.get("battles_done", 0) - a.get("battles_done", 0)
-        print(f"progress.jsonl: {d} replays in {h:.2f} h wall = {d / h if h else 0:.0f}/h (includes pauses); last run: req {b['req']}, 429 {b['rate']}, "
-              f"challenge {b['challenge']}, 403 {b['blocked']}, pauses {b['pauses']}")
+        print(f"progress.jsonl: {d} replays in {h:.2f} h wall = {d / h if h else 0:.0f}/h (includes pauses)")
+    last = {}
+    for r in prog:
+        last[r.get("lane", "lane0")] = r
+    for name, r in sorted(last.items()):
+        el = r.get("elapsed_s") or 0
+        print(f"{name} (row {r['t']}): req {r['req']} in {el} s = {r['req'] / el if el else 0:.3f}/s, 429 {r['rate']}, "
+              f"challenge {r['challenge']}, 403 {r['blocked']}, pauses {r['pauses']}, late {r.get('late', 0)}")
     size = sum(p.stat().st_size for p in out.rglob("*") if p.is_file())
     print(f"disk: {size / 2**20:.1f} MiB under {out}")
 
@@ -616,10 +1019,15 @@ def probe(out: Path, c: Crawler) -> None:
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("mode", choices=["crawl", "probe", "status", "stop", "resume"])
+    ap.add_argument("mode", choices=["crawl", "probe", "status", "stop", "resume", "lanes", "ips"])
     ap.add_argument("--out", default=str(OUT_DEFAULT))
     ap.add_argument("--dry-run", action="store_true", help="fake fetcher + fake clock: no browser, no network")
-    ap.add_argument("--cdp", default="http://127.0.0.1:9222")
+    ap.add_argument("--cdp", action="append", default=None,
+                    help="Chrome debug URL, repeatable: one lane (= one exit IP) each; default http://127.0.0.1:9222")
+    ap.add_argument("--rate-scope", choices=["ip", "all"], default="ip",
+                    help="with --auto-resume-rate: a 429 cools only its lane (ip) or every lane (all)")
+    ap.add_argument("--start-tunnels", action="store_true", help="lanes: also start the ssh -D tunnels")
+    ap.add_argument("--lane", default=None, help="resume: the paused lane's Chrome debug port (writes RESUME_<port>)")
     ap.add_argument("--floor", default="2026-10-19", help="oldest battle kept, UTC date (balance patch 10-19)")
     ap.add_argument("--types", default="pathOfLegend,PvP")
     ap.add_argument("--max-pages", type=int, default=3, help="history pages (10 battles each) per player")
@@ -637,6 +1045,15 @@ def main(argv=None) -> int:
                     help="after a 429 cooldown (doubling per consecutive 429, max 1 h) continue without RESUME")
     a = ap.parse_args(argv)
     a.seed_url = a.seed_url if a.seed_url is not None else ["/players"]
+    a.cdp = a.cdp or ["http://127.0.0.1:9222"]
+    if a.mode == "lanes":
+        return lanes_mode(a.start_tunnels)
+    if a.mode == "ips":
+        ips, problem = check_ips(a.cdp)
+        for u, ip in zip(a.cdp, ips):
+            print(f"{u}  {ip}")
+        print(f"PROBLEM: {problem}" if problem else f"OK: {len(ips)} lanes, {len(ips)} distinct exit IPs")
+        return 2 if problem else 0
     out = Path(a.out)
     if a.dry_run and not argv_has(argv, "--out"):
         out = out.parent / "crawl_dryrun"
@@ -644,8 +1061,9 @@ def main(argv=None) -> int:
     if a.mode == "status":
         return status(out) or 0
     if a.mode in ("stop", "resume"):
-        (out / a.mode.upper()).write_text(datetime.now(timezone.utc).isoformat())
-        print(f"created {out / a.mode.upper()}")
+        f = out / (f"RESUME_{a.lane}" if a.mode == "resume" and a.lane else a.mode.upper())
+        f.write_text(datetime.now(timezone.utc).isoformat())
+        print(f"created {f}")
         return 0
     if a.dry_run:
         a.no_local_seed = True
@@ -656,7 +1074,7 @@ def main(argv=None) -> int:
             print("[ALERT dry-run]", msg, flush=True)
             fetcher.logged_out = False
             (out / "RESUME").write_text("auto")
-        c = Crawler(out, fetcher, a, clock=lambda: fake_t[0], sleep=sleep, rng=random.Random(1), alert=alert)
+        lanes = [Crawler(out, fetcher, a, clock=lambda: fake_t[0], sleep=sleep, rng=random.Random(1), alert=alert)]
     else:
         if not (out / "OWNER_GO").exists():
             print(f"REFUSED: no real request is allowed until the owner says go. Create {out / 'OWNER_GO'} then.")
@@ -664,17 +1082,36 @@ def main(argv=None) -> int:
         if (out / "STOP").exists():
             print(f"REFUSED: {out / 'STOP'} exists; remove it to restart.")
             return 2
+        lock = instance_lock(LOCK)          # held until this process exits
+        if lock is None:
+            print(f"REFUSED: another crawler process holds {LOCK}; only one instance may run (shared limits).")
+            return 2
+        cdps = a.cdp if a.mode == "crawl" else a.cdp[:1]
+        ips = [None] * len(cdps)
+        if len(cdps) > 1:
+            ips, problem = check_ips(cdps)
+            if problem:
+                print(f"REFUSED: {problem}: " + ", ".join(f"{u} {ip}" for u, ip in zip(cdps, ips)))
+                return 2
         lower_priority()
-        c = Crawler(out, CdpFetcher(a.cdp), a, alert=discord_alert(out))
+        sh = Shared(out, a)
+        alert = discord_alert(out)
+        # one lane runs in this thread (fetcher built here); several run in threads that build their own fetcher
+        fs = [CdpFetcher(cdps[0])] if len(cdps) == 1 else [functools.partial(CdpFetcher, u) for u in cdps]
+        lanes = [Crawler(out, f, a, alert=alert, shared=sh, name=f"lane{i}", rid=str(urlparse(u).port), ip=ip)
+                 for i, (f, u, ip) in enumerate(zip(fs, cdps, ips))]
+        sh.store.set_meta("lanes", [{"lane": c.name, "cdp": u, "ip": ip} for c, u, ip in zip(lanes, cdps, ips)])
+    sh = lanes[0].sh
     try:
-        probe(out, c) if a.mode == "probe" else c.run()
+        probe(out, lanes[0]) if a.mode == "probe" else run_lanes(lanes)
     except Stop as e:
         print(f"stopped: {e}")
     finally:
-        c.writer.flush()
-        c.store.close()
-        if hasattr(c.f, "close"):
-            c.f.close()
+        sh.writer.flush()
+        sh.store.close()
+        for c in lanes:
+            if hasattr(c.f, "get") and hasattr(c.f, "close"):
+                c.f.close()
     return 0
 
 

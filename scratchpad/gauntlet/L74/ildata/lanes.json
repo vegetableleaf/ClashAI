@@ -1,0 +1,9 @@
+{
+  "_note": "D2c lanes for `rc_crawl.py lanes`. One lane = one Chrome = one exit IP. Measured 2026-10-27 (ssh + curl api.ipify.org): pods 32657, 33920 and 33308 (all ssh root@157.157.221.29) share ONE exit, a NAT pool that picks 185.226.156.3 or .5 per connection (16 samples); the laptop exits as 96.237.100.236. So only one pod lane is useful until pods on other hosts exist; the crawler refuses two lanes on one exit IP.",
+  "ssh_key": "~/.ssh/runpod_clashbot",
+  "lanes": [
+    {"name": "laptop", "cdp_port": 9222, "profile": "chrome-royaleapi", "note": "the owner's existing RoyaleAPI Chrome, no proxy"},
+    {"name": "pod33308", "cdp_port": 9223, "profile": "chrome-royaleapi-pod33308", "socks_port": 1081,
+     "ssh_host": "root@157.157.221.29", "ssh_port": 33308, "note": "exit pool 185.226.156.3 / .5 (shared by 32657 / 33920 / 33308)"}
+  ]
+}
