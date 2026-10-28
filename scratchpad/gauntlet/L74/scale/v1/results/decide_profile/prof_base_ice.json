@@ -1,0 +1,99 @@
+{
+ "ckpt": "/workspace/p4/runs/base_ice/opp_base_ice_s0.pt",
+ "device": "cuda",
+ "gpu": "NVIDIA GeForce RTX 4090",
+ "logs": [
+  "live_play_20261026_161448.jsonl",
+  "live_play_20261026_000924.jsonl",
+  "live_play_20261026_182408.jsonl",
+  "live_play_20261027_033228.jsonl"
+ ],
+ "torch_threads": 128,
+ "plain": {
+  "decide": {
+   "n": 245,
+   "mean": 17.27,
+   "p50": 12.59,
+   "p90": 13.35,
+   "p99": 40.64
+  },
+  "plays": 10
+ },
+ "staged": {
+  "decide": {
+   "n": 245,
+   "mean": 12.85,
+   "p50": 12.71,
+   "p90": 13.46,
+   "p99": 15.07
+  },
+  "plays": 10,
+  "row": {
+   "n": 245,
+   "mean": 2.59,
+   "p50": 2.45,
+   "p90": 3.14,
+   "p99": 3.96
+  },
+  "enc": {
+   "n": 245,
+   "mean": 8.59,
+   "p50": 8.55,
+   "p90": 8.71,
+   "p99": 9.06
+  },
+  "heads": {
+   "n": 245,
+   "mean": 0.47,
+   "p50": 0.46,
+   "p90": 0.48,
+   "p99": 0.55
+  },
+  "cell": {
+   "n": 245,
+   "mean": 0.31,
+   "p50": 0.36,
+   "p90": 0.37,
+   "p99": 0.41
+  },
+  "rest": {
+   "n": 245,
+   "mean": 0.89,
+   "p50": 0.87,
+   "p90": 1.17,
+   "p99": 2.72
+  },
+  "cell_calls_per_decision": {
+   "n": 245,
+   "mean": 0.86,
+   "p50": 1.0,
+   "p90": 1.0,
+   "p99": 1.0
+  },
+  "n_batch_shape_signatures": 1,
+  "batch_keys": [
+   "deck_card",
+   "deck_form",
+   "effects",
+   "hand_card",
+   "hand_form",
+   "mask",
+   "mem_answer",
+   "mem_card",
+   "mem_ev",
+   "mem_form",
+   "mem_mask",
+   "mem_summary",
+   "next_card",
+   "next_form",
+   "opp_cycle",
+   "opp_past",
+   "own_ability",
+   "past",
+   "projectiles",
+   "sc",
+   "tok",
+   "unit_form"
+  ]
+ }
+}
