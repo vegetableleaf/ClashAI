@@ -116,7 +116,7 @@ be an execution strategy of the live callable pair (heads, cell), not a change o
 3. **New T-shape**: over those logs the signature set has size 1 for the 10 M model (a: 1 over 245 decisions; extend to all 4 logs in full).
 4. **New T-fallback**: force a new signature mid-match and a failing capture; the decisions equal eager and the counters/start event say so.
 5. **New T-successor**: T-graph with the 10 M checkpoint (memory features from the pilot) against eager HEAD (no BASE exists for memory models).
-6. **Laptop run (owed, needs live paused ~5 min)**: `live_profile_v2.py` (it works on the laptop: repo root as cwd, `icebow/.venv` python) for CLXIII
+6. **Laptop run (OWED; lead 10-28: live is the fixed data stream, do NOT pause it for this; wait for a natural live stop)**: `live_profile_v2.py` (it works on the laptop: repo root as cwd, `icebow/.venv` python) for CLXIII
    plus T-graph on the RTX 5050 (Windows torch, sm_120): capture must succeed and match eager. Without this every laptop number below is (b).
 
 ## 6. Expected latency on the RTX 5050 laptop (b; no 5050 measurement exists for the successor)
@@ -136,6 +136,6 @@ remains is CPU (`row` + `rest` + the 30-40 ms `row` spikes S1 saw), so the next 
 ## 7. Recommendation and what is owed
 1. Do not shrink the model for latency; do not build a "one-forward" change (it exists). Build A (about 80 lines + tests 2-5) only when the
    successor is close to CLXIII in closed loop (today -30.6 pp); until then the gate is not the bottleneck.
-2. Owed (cheap): the laptop run of `live_profile_v2.py` with live paused (section 5.6) to replace every (b) in section 6 by (a).
+2. OWED (lead 10-28: not now, only at a natural live stop): the laptop run of `live_profile_v2.py` (section 5.6) to replace every (b) in section 6 by (a). Nobody pauses live for it.
 3. Owed: T-graph on the recorded logs (needs a worker with the pod tree `/workspace/p4/prof_tree`; the script harness is `decide_identity_cuda.py`).
-4. Needs a lead / owner decision: adding `--policy-graph` is a live-path option (LIVE_OPTIONS-deployable like the others); not started.
+4. `--policy-graph` is DESIGN ONLY (lead 10-28): no build until the 10 M successor phase. **Blocker to carry into that phase: CLXIII itself cannot be graph-captured** (a CPU->GPU constant tensor created inside its cell_refine / tower_refine modules: "Cannot copy between CPU and CUDA tensors during CUDA graph capture", measured on the 4090); the refine-free successor captures. If a refine model is ever to be graphed, register that constant as a buffer first.

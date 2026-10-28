@@ -9,6 +9,7 @@
 STAGE=$1; OUT=$2; STEPS=$3; INIT=${4:-}
 W=/workspace/p4; PY=${PY:-/workspace/venvf16/bin/python}
 if [ "$STAGE" = ice ]; then DATA=$W/data/ice_v1.npz; LR=1e-4; X="--init $INIT"; MM=""
+elif [ "$STAGE" = v32 ]; then DATA=$W/data/v32_v1.npz; LR=3e-4; X=""; MM=1   # CONTROL (lead 10-28): base recipe on v32 train rows only
 else DATA=$W/data/mix_v1.npz; LR=3e-4; X=""; MM=1; fi   # MM set = memory-map the npz (62 GB container cap)
 mkdir -p $OUT
 export CUDA_VISIBLE_DEVICES=${GPU:-0} OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 PYTHONDONTWRITEBYTECODE=1

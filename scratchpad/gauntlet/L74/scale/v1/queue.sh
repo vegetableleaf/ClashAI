@@ -40,4 +40,11 @@ ev data/v0_gen_m10_s0.pt runs/v0_m10_eval.json runs/v0_m10_eval.out --mode nolat
 #    (The legacy-trainer recipe of curve v0 is refused on the mix: run_curve.sh header.)
 for R in "m2 160 4 0" "m5 224 6 0" "m20 384 10 0" "m10 320 7 1"; do set -- $R
   [ -f runs/cv1_${1}_s$4/eval.json ] || { step curve $R; bash $V/run_curve.sh $1 $2 $3 $4 || { echo "$(date -u +%FT%TZ) CURVE FAILED $R"; exit 1; }; }; done
+# 8. CONTROL (lead 10-28): the base recipe at m10 on v32 train rows only (steps 51,000 = ~4 epochs of 3.17 M, as curve v0's 49.5k), queued
+#    AFTER the curve points. v0 m10 vs control m10 = the data effect; control m10 vs v1 m10 (base_pre) = the recipe/family effect.
+[ -f data/v32_v1_memory.npz ] || { step v32subset; rm -rf data/cache_sub data/v32_v1.npz
+  PYTHONPATH=$W/code $PY $V/make_subset.py --mix data/mix_v1.npz --memory data/mix_v1_memory.npz --out data/v32_v1.npz \
+    --v32-train-only --mmap-cache-dir data/cache_sub > data/v32_v1.log 2>&1; rm -rf data/cache_sub
+  [ -f data/v32_v1_memory.npz ] || { echo "$(date -u +%FT%TZ) SUBSET FAILED (data/v32_v1.log)"; exit 1; }; }
+[ -f runs/ctl_m10_s0/eval.json ] || { step control m10; bash $V/run_curve.sh m10 320 7 0 v32 || { echo "$(date -u +%FT%TZ) CONTROL FAILED"; exit 1; }; }
 step DONE
