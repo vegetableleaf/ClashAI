@@ -83,6 +83,18 @@ SPAWN_SLOW = os.environ.get('PARITY_SPAWN_SLOW', '1') == '1'   # H-SPAWN-SLOW (W
 FORM_ORACLE = set(filter(None, os.environ.get('PARITY_FORM_ORACLE', '').split(',')))   # W19 DIAGNOSTIC oracle (cards), never a default
 FORM_SYM = set(filter(None, os.environ.get('PARITY_FORM_SYM', '').split(',')))         # W19 round-2 probe (cards), opt-in
 FORM_SYM_FROM = os.environ.get('PARITY_FORM_SYM_FROM', '20261019_0600')               # matches from this stamp on
+# ENG-FIX (SME_OWN_SPAWN=1, off by default): a confirmed own play of a one-body card whose confirmation saw the body
+# >= OWN_SPAWN_ERR tiles from the tap (err_tiles) takes the body's point (the confirmation's 'spawn', the reader's first
+# body) as its point. FRESH3 142926@254: the Knight tapped at 211 went unconfirmed at 245, the bot re-tapped at 248
+# elsewhere, the game ran the first tap (body at (5499, 24499), err_tiles 7.6); the play kept the second tap's point,
+# 3,000 / 7,000 off. Census on dev 138 + FRESH1 9 + FRESH2 + FRESH3 (engfix/spawn_census.txt): one-body plays have
+# err_tiles 0 .. 0.5 (0.5 = the Knight back-row half-tile clamp, 71) or >= 1.0 (4: 104806 Knight 1.0, 110715 X-Bow 1.0,
+# 141254 Knight 3.16, 142926 Knight 7.61). Skeletons (a 3-body spread whose 'spawn' is one centroid) read up to 1.16 and
+# are left alone. ponytail: the icebow deck's one-body cards by name; another own deck adds its cards.
+OWN_SPAWN = os.environ.get('SME_OWN_SPAWN', '0') == '1'
+OWN_NEARDEAD = os.environ.get('SME_OWN_NEARDEAD', '0') == '1'   # ENG-FIX, deployments' H-NEARPARENT (comment there)
+OWN_SPAWN_ERR = 0.75
+OWN_SPAWN_CARDS = {'Knight', 'Xbow', 'Tesla', 'IceWizard'}
 DIGGERS = {'Miner', 'GoblinDrill'}  # tunnel in: seen active on their way, deploying where they surface (Knight etc. can show
                                    # 13/15 -> 12/14 too: 31 of 531 Knights, so the rule is by card)
 TOWER_RADIUS = 1400                # millitiles, king (princess 1000): attribution slack, not a law
@@ -152,7 +164,7 @@ def read_match(path):
             elif b'"play"' in head:
                 j = json.loads(raw); plays.append(dict(tick=j['tick'], name=j['name'], xy=j['xy'], elixir=j.get('elixir')))
             elif b'"confirmed"' in head or b'"unconfirmed"' in head:
-                j = json.loads(raw); outcome.append((j['event'], j['name'], j.get('intended')))
+                j = json.loads(raw); outcome.append((j['event'], j['name'], j.get('intended'), j.get('spawn'), j.get('err_tiles')))
             elif b'"ability"' in head:
                 j = json.loads(raw); abilities.append(dict(tick=j['tick'], confirmed=False, elixir=j.get('elixir')))
             elif b'"ability_confirmed"' in head:
@@ -171,7 +183,10 @@ def read_match(path):
             and not (extra and hands and os.environ.get('PARITY_ANY_DECK') == '1'):
         return None, 'not_main_account'
     # confirmed own plays: each play is followed by exactly one confirmed/unconfirmed event, in order
-    plays = [dict(p, xy=o[2] or p['xy']) for p, o in zip(plays, outcome) if o[0] == 'confirmed' and o[1] == p['name']]
+    plays = [dict(p, xy=o[2] or p['xy']) if not (OWN_SPAWN and p['name'] in OWN_SPAWN_CARDS and o[3] and len(o[3]) == 1
+                                                 and (o[4] or 0) >= OWN_SPAWN_ERR)
+             else dict(p, xy=list(o[3][0]), spawn_moved=round(o[4], 2))
+             for p, o in zip(plays, outcome) if o[0] == 'confirmed' and o[1] == p['name']]
     for p in plays:      # xy: the confirmation's unrounded 'intended' (the play event rounds to 4 decimals, which moves
                          # a tap sitting on a tile edge, e.g. 0.65625*32 = 21.0, into the tile below)
         prior = [h for t, h in hands if t <= p['tick']]
@@ -691,6 +706,13 @@ def deployments(m, catalog, life=None, own_unit=None, stats=None):
             and own_unit(c['display_name'], r['max_hp']) \
             and not any(e['side'] == r['side'] and e['name'] in ('Mirror', 'Clone') and r['first'] - 60 <= e['tick'] <= r['first'] for e in seen) \
             and (any(p['name'] == c['display_name'] and 0 <= r['first'] - p['tick'] <= 80 for p in m['plays']) if r['side'] == m['side'] else r['active'] is None or r['active'] > r['first'])
+        # ENG-FIX (SME_OWN_NEARDEAD=1, off by default): an OWN body of the card's own unit, deploying when first seen, with a
+        # confirmed tap of its card 0..80 ticks before, next to same-size bodies of its card that all died within 2 ticks of
+        # its birth, is that tap's play, not a child born at the parent's death (no icebow card spawns its own card on
+        # death). FRESH3 142334@1693: our hero Ice Wizard tapped at 1669 (confirmed, elixir drop 2.57) was born at 1693,
+        # 2,954 units from our earlier hero Ice Wizard that died at 1692; the play was dropped, crforge kept 3 elixir more.
+        if OWN_NEARDEAD and near and not replay and r['side'] == m['side'] and own_unit is not None and c.get('type') != 'spell'                 and f != 1 and not c.get('active_ability') and (r['active'] is None or r['active'] > r['first'])                 and all(q['last'] <= r['first'] + 2 and .95 <= q['max_hp']/max(1, r['max_hp']) <= 1.05 for q in near)                 and own_unit(c['display_name'], r['max_hp'])                 and any(p['name'] == c['display_name'] and 0 <= r['first'] - p['tick'] <= 80 for p in m['plays']):
+            replay = True
         near_parent = bool(near) and not replay
         # A hero's ability object can share the card id and dwarf its units (Hero Goblins: a 3720 / 4090 hp object over
         # 293 / 323 hp goblins), so the max_hp rule dropped every Hero Goblins play as a role-child (diag_night/knight).
