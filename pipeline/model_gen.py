@@ -120,7 +120,7 @@ class MemoryEncoder(nn.Module):
     -> ONE linear into the global feature vector, weight AND bias ZERO-initialised: a fresh encoder changes no output."""
 
     def __init__(self, d_c: int, out_dim: int, n_feat: int, n_sum: int, d: int = 64, layers: int = 2, heads: int = 4,
-                 zero_empty: bool = False):
+                 zero_empty: bool = False, zero_init: bool = True):
         super().__init__()
         self.ev_in = nn.Linear(n_feat, d)
         self.card_in = nn.Linear(d_c, d, bias=False)
@@ -130,8 +130,9 @@ class MemoryEncoder(nn.Module):
         self.query = nn.Parameter(torch.randn(d) * 0.02)
         self.summary = nn.Sequential(nn.Linear(n_sum + d_c, d), nn.GELU(), nn.Linear(d, d))
         self.out = nn.Linear(2 * d, out_dim)
-        nn.init.zeros_(self.out.weight)
-        nn.init.zeros_(self.out.bias)
+        if zero_init:       # False (P2-OPP1 joint memory): the coupling starts at the default init, trained with the trunk
+            nn.init.zeros_(self.out.weight)
+            nn.init.zeros_(self.out.bias)
         # saved shape: load builds the module FROM it (n_feat, n_sum, d, layers, heads, out_dim)
         self.register_buffer("cfg", torch.tensor([n_feat, n_sum, d, layers, heads, out_dim]))
         if zero_empty:      # saved as mem.zero_empty: a checkpoint holding it rebuilds it (GenModel.load_state_dict)
@@ -193,9 +194,57 @@ class MemoryAux(nn.Module):
                 **{k: g[:, self.n_cards + i] for i, k in enumerate(AUX_GLOB)}}
 
 
+# ---------------------------------------------------------------------------------------- P2-OPP1 opponent options
+# plan1026 Pillar 2 (REPORT_opponents.md section 2). All default OFF: a GenModel built without them has the exact same
+# parameters, RNG draws and outputs as before (pipeline/tests/test_opp_model.py checks the 8010d5a fingerprint).
+SLOT_TICKS = 10                       # one decision slot = 10 engine ticks
+CTX_TOKENS = ("band", "mode", "era")  # b["ctx_<name>"] LongTensor [B]; id 0 = unknown
+
+
+def slot_nll(hazard_logit: torch.Tensor, tick_logits: torch.Tensor, event: torch.Tensor,
+             tick: torch.Tensor) -> torch.Tensor:
+    """Per-slot negative log-likelihood of the discrete-time survival model: slot s has P(play) = h_s = sigmoid(logit);
+    given a play, the tick inside the slot ~ softmax(tick_logits). A no-play slot costs -log(1 - h_s), a play slot
+    -log h_s - log p(tick). Summed over every slot of a match this IS the exact log-likelihood of the play times (the
+    product of the slot terms); with no-play slots kept at rate 1/k, weight k keeps the sum unbiased. [B] -> [B]."""
+    ev = event.to(hazard_logit.dtype)
+    nll = Fn.binary_cross_entropy_with_logits(hazard_logit, ev, reduction="none")
+    lt = Fn.cross_entropy(tick_logits, tick.long().clamp(0, tick_logits.shape[-1] - 1), reduction="none")
+    return nll + ev * lt
+
+
+class DeckEncoder(nn.Module):
+    """A 2-layer set transformer over the 8 deck cards (card + form embedding; no position, so it is invariant to deck
+    order) with a learned BOS token (an empty deck stays finite), masked mean + BOS pooled, plus a deck-id embedding
+    (id 0 = unknown). In training each id is replaced by 0 with probability ``id_dropout`` so unseen decks fall back
+    to the card-set embedding. Card levels are not in the rows (b, HF is 88% level 16): not an input yet."""
+
+    def __init__(self, d_c: int, n_decks: int, layers: int = 2, heads: int = 4, id_dropout: float = 0.2):
+        super().__init__()
+        self.bos = nn.Parameter(torch.randn(1, 1, d_c) * 0.02)
+        layer = nn.TransformerEncoderLayer(d_c, heads, 2 * d_c, dropout=0.0, batch_first=True, norm_first=True)
+        self.encoder = nn.TransformerEncoder(layer, layers, enable_nested_tensor=False)
+        self.deck_id = nn.Embedding(n_decks + 1, d_c)
+        self.out = nn.Linear(2 * d_c, d_c)
+        self.id_dropout = float(id_dropout)
+
+    def forward(self, cards: torch.Tensor, mask: torch.Tensor, deck_id: Optional[torch.Tensor]) -> torch.Tensor:
+        B = cards.shape[0]
+        x = torch.cat([self.bos.expand(B, -1, -1).to(cards.dtype), cards], 1)
+        valid = torch.cat([mask.new_ones(B, 1), mask], 1)
+        h = self.encoder(x, src_key_padding_mask=~valid)
+        mf = mask.unsqueeze(-1).to(h.dtype)
+        pooled = torch.cat([h[:, 0], (h[:, 1:] * mf).sum(1) / mf.sum(1).clamp(min=1)], -1)
+        did = (deck_id if deck_id is not None else mask.new_zeros(B, dtype=torch.long)).long()
+        if self.training and self.id_dropout > 0:
+            did = did * (torch.rand(did.shape, device=did.device) >= self.id_dropout)
+        return self.out(pooled) + self.deck_id(did.clamp(0, self.deck_id.num_embeddings - 1))
+
+
 class GenModel(S1Model):
     def __init__(self, d: int = 128, layers: int = 4, heads: int = 4, n_fourier: int = 8, dropout: float = 0.1,
-                 d_c: int = 64, n_cards: int = N_CARDS, feature_version: int = 1):
+                 d_c: int = 64, n_cards: int = N_CARDS, feature_version: int = 1, timing: bool = False,
+                 ability: bool = False, deck_enc: bool = False, n_decks: int = 0, ctx_tokens: Optional[dict] = None):
         super().__init__(d=d, layers=layers, heads=heads, n_fourier=n_fourier, dropout=dropout)
         del self.card_head, self.wait_head, self.card_emb       # the deck-slot heads; pointers replace them
         self.d_c, self.n_cards = d_c, n_cards
@@ -211,6 +260,12 @@ class GenModel(S1Model):
             g_in += CYCLE_K * (d_c + 2)
             g_in += 4 * d_c  # masked mean/max of projectile and effect tokens
             g_in += 2 * d_c  # own visible ability controllers; readiness unknown
+        self.opp = dict(timing=bool(timing), ability=bool(ability), deck_enc=bool(deck_enc), n_decks=int(n_decks),
+                        ctx_tokens={k: int(v) for k, v in (ctx_tokens or {}).items()})
+        if set(self.opp["ctx_tokens"]) - set(CTX_TOKENS):
+            raise ValueError(f"ctx_tokens: unknown {set(self.opp['ctx_tokens']) - set(CTX_TOKENS)} (known {CTX_TOKENS})")
+        if deck_enc or ctx_tokens:
+            g_in += d_c      # one context vector: deck encoder + band / mode / era token embeddings
         self.global_in = nn.Sequential(nn.Linear(g_in, d), nn.GELU(), nn.Linear(d, d))
         self.card_q = nn.Linear(d, d_c)
         self.card_b = nn.Embedding(n_cards, 1)
@@ -227,6 +282,16 @@ class GenModel(S1Model):
             self.projectile_target_in = nn.Sequential(nn.Linear(d_c+7, d), nn.GELU(), nn.Linear(d, d))
             self.projectile_target_spread = nn.Conv2d(d, d, 3, padding=1, groups=d, bias=False)
             nn.init.zeros_(self.projectile_target_spread.weight)
+        # P2-OPP1 modules are created AFTER every legacy module, so the legacy RNG draws (and init) are unchanged
+        if deck_enc:
+            self.deck_enc = DeckEncoder(d_c, int(n_decks))
+        for k, n in self.opp["ctx_tokens"].items():
+            setattr(self, f"ctx_{k}", nn.Embedding(n + 1, d_c))
+        if timing:           # replaces the gate: no gate output, so a stride-gate decoder fails loudly on this model
+            del self.gate_head
+            self.timing_head = nn.Linear(d, 1 + SLOT_TICKS)
+        if ability:
+            self.ability_head = nn.Linear(d, 1 + SLOT_TICKS)
 
     def target_patches(self, b: dict) -> torch.Tensor:
         """Learned generic target/nearby-patch features; no card-specific rule.
@@ -275,6 +340,8 @@ class GenModel(S1Model):
             obj = b['own_ability']
             embedding = self.card_id(obj[..., 0].long())
             parts.append(_pool(self.ability_in(torch.cat([embedding, obj[..., 1:]], -1)), obj[..., 0] > 0))
+        if self.opp["deck_enc"] or self.opp["ctx_tokens"]:
+            parts.append(self.context(b, deck))
         g = torch.cat(parts, -1)
         mem = getattr(self, "mem", None)
         if mem is not None:             # Plan A memory v1: + a zero-initialised projection (b must carry MEM_KEYS)
@@ -282,6 +349,20 @@ class GenModel(S1Model):
                         b["mem_summary"].to(g.dtype), self.card_id(b["mem_answer"].long()).to(g.dtype),
                         self.card_id(b["mem_answer"].new_zeros(1).long()).to(g.dtype))
         return g
+
+    def context(self, b: dict, deck: torch.Tensor) -> torch.Tensor:
+        """P2-OPP1 context vector [B, d_c]: deck encoder (b["deck_card"] / ["deck_form"], b["deck_gid"] = the global
+        deck id, absent or 0 = unknown) + one embedding per context token (b["ctx_band"] ...; absent = 0 = unknown)."""
+        B = deck.shape[0]
+        c = deck.new_zeros(B, self.d_c)
+        if self.opp["deck_enc"]:
+            c = c + self.deck_enc(deck, b["deck_card"] > 0, b.get("deck_gid"))
+        for k in self.opp["ctx_tokens"]:
+            ids = b.get(f"ctx_{k}")
+            emb = getattr(self, f"ctx_{k}")
+            c = c + emb(ids.long().clamp(0, emb.num_embeddings - 1) if ids is not None
+                        else deck.new_zeros(B, dtype=torch.long))
+        return c
 
     def encode_gen(self, b: dict) -> dict:
         # ponytail: S1Model.encode builds g_in = cat[sc, past-channel]; passing our full global vector as `sc` and a
@@ -321,14 +402,15 @@ class GenModel(S1Model):
         return self.cell_refine
 
     def add_memory(self, d: int = 64, layers: int = 2, heads: int = 4, version: str = "v1",
-                   zero_empty: bool = False) -> MemoryEncoder:
+                   zero_empty: bool = False, zero_init: bool = True) -> MemoryEncoder:
         """Attach a fresh (zero-output) ``MemoryEncoder`` (``memory: v1`` / ``v2``: the summary width match_memory.N_SUM
         gives the version, so the saved ``mem.cfg`` rebuilds it); checkpoints holding ``mem.*`` weights get it on load. The
         model then takes the match_memory MEM_KEYS (that version's) in every batch. ``zero_empty``: MemoryEncoder.forward's
-        no-offset form (an empty memory adds exactly 0)."""
+        no-offset form (an empty memory adds exactly 0). ``zero_init`` False (P2-OPP1): memory trained jointly from the
+        start, not a zero-output adapter (keep ``zero_empty`` with it)."""
         from .match_memory import F, N_SUM
         self.mem = MemoryEncoder(self.d_c, self.global_in[0].in_features, F, N_SUM[memory_flag(version)], d, layers,
-                                 heads, zero_empty).to(self.cell_emb.device)
+                                 heads, zero_empty, zero_init).to(self.cell_emb.device)
         self.mem.version = version
         return self.mem
 
@@ -410,9 +492,18 @@ class GenModel(S1Model):
         tr = getattr(self, "tower_refine", None)
         if tr is not None and tr.use_card:
             card = card + tr.card_residual(g, b["sc"], hand)
-        return {"gate": self.gate_head(g).squeeze(-1), "value": self.value_head(g),
-                "card": card.masked_fill(b["hand_card"] == CARD_PAD, float("-inf")),
-                "wait": wait.masked_fill(b["deck_card"] == CARD_PAD, float("-inf"))}
+        # the gate is computed FIRST, as before: autograd sums g's gradient in op order, so another order changes the
+        # legacy gradients in the last bits (the 8010d5a fingerprint caught it)
+        out = {} if self.opp["timing"] else {"gate": self.gate_head(g).squeeze(-1)}
+        out.update({"value": self.value_head(g), "card": card.masked_fill(b["hand_card"] == CARD_PAD, float("-inf")),
+                    "wait": wait.masked_fill(b["deck_card"] == CARD_PAD, float("-inf"))})
+        if self.opp["timing"]:          # P2-OPP1: per-slot play hazard logit + the tick inside the slot
+            t = self.timing_head(g)
+            out["hazard"], out["tick"] = t[:, 0], t[:, 1:]
+        if self.opp["ability"]:
+            a = self.ability_head(g)
+            out["ab_hazard"], out["ab_tick"] = a[:, 0], a[:, 1:]
+        return out
 
     def cell_logits_gen(self, enc: dict, card: torch.Tensor, form: torch.Tensor) -> torch.Tensor:
         """[B, N_CELLS] logits for placing card identity ``card`` (+ ``form``), LongTensors [B]."""
@@ -512,7 +603,8 @@ def load_model(ckpt, device, memory=None):
     if st.get("architecture"):
         raise ValueError(f"Unsupported checkpoint architecture: {st['architecture']}")
     model = GenModel(d=int(a["d"]), layers=int(a["layers"]), d_c=int(st["d_c"]),
-                     n_cards=len(st["card_vocab"]), feature_version=int(a.get("feature_version", 1))).to(device)
+                     n_cards=len(st["card_vocab"]), feature_version=int(a.get("feature_version", 1)),
+                     **(st.get("opp") or {})).to(device)      # P2-OPP1 options (absent = the legacy model)
     if memory is not None:
         if int(a.get("feature_version", 1)) < 4:
             raise ValueError(f"memory {memory} needs a feature_version >= 4 model (the public observation it is built from)")
