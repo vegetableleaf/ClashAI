@@ -3327,7 +3327,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                               "heroiw_press", "ability_features", "kl_heads", "kl_ref_card", "league_deck_weights",
                               "ot_start_share", "xbow_start_share", "remote_actors", "kl_ref_refresh_every",
                               "tau_phase", "memory", "memory_aux", "memory_encoder_frozen",
-                              "memory_zero_empty") + OPP_TEMPO_KEYS
+                              "memory_zero_empty", "learner_deterministic") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS and k not in CROWN_KEYS
                 and k not in HT.KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
@@ -3343,6 +3343,8 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
         cfg["kl_heads"] = [h for h in ("gate", "card", "cell") if h in hs]    # canonical order: one hash
     if cfg.get("kl_ref_card") is not None and not (isinstance(cfg["kl_ref_card"], str) and cfg["kl_ref_card"]):
         raise SystemExit(f"kl_ref_card must be null or a checkpoint path, got {cfg['kl_ref_card']!r}")
+    if cfg.get("learner_deterministic") not in (None, False, True):   # D2-T: absent / null / false = off
+        raise SystemExit(f"learner_deterministic must be a bool or null, got {cfg['learner_deterministic']!r}")
     if cfg.get("cue_inputs") not in (None, False, True):     # step c (yaml "on" = true): absent / null / false = off
         raise SystemExit(f"cue_inputs must be on / off (a bool) or null, got {cfg['cue_inputs']!r}")
     if smoke and cfg.get("ability_head") not in (None, False) and cfg.get("ability_bc_matches") is None:
@@ -4882,9 +4884,15 @@ def main(argv=None) -> int:
         f"{'SMOKE ' if a.smoke else ''}config sha {config_sha(cfg)[:12]} argv {sys.argv[1:] if argv is None else argv}")
     L = None
     try:
-        if os.environ.get("RL_DETERMINISTIC"):              # W16 identity runs only (needs CUBLAS_WORKSPACE_CONFIG)
+        if cfg.get("learner_deterministic") or os.environ.get("RL_DETERMINISTIC"):
+            # D2-T (opt-in, default off): deterministic learner kernels, so a CUDA learner gives byte-identical rows run to
+            # run (D2-G item 2: default CUDA does not). Set before the first CUDA call; costs learner time (D2-G: update
+            # 36-49 s). Actor processes run on actor_device (CPU) and are unaffected.
+            os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
             torch.use_deterministic_algorithms(True)
-            log("[rl] RL_DETERMINISTIC: torch.use_deterministic_algorithms(True)")
+            torch.backends.cudnn.benchmark = False
+            log(f"[rl] deterministic learner: torch.use_deterministic_algorithms(True), cudnn.benchmark False, "
+                f"CUBLAS_WORKSPACE_CONFIG={os.environ['CUBLAS_WORKSPACE_CONFIG']}")
         L = Learner(cfg, a.run, run_dir, ck_dir, log, a.resume)
         if a.resume:
             log(f"[rl] resumed at update {L.update}, beta {L.beta}")

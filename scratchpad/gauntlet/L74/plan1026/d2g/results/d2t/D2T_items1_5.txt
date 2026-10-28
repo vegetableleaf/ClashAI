@@ -1,0 +1,46 @@
+D2-T items 1 + 5 (pod 33308, 2026-10-28). Items 2-4 not done (see the end).
+
+Item 1: unit-type cache (pipeline/crforge_core.py; no Java change)
+  CfCore.unitType is one static append-only LinkedHashMap per JVM (ids = insertion order, never removed), so the same
+  size means the same names. unit_types() still calls unitTypesNow() (the alive-body walk that gives new bodies their id)
+  and converts the String[] to Python only when its length changed; unit_types_json / unit_types_digest return the
+  cached json / sha256. Callers get a copy of the list.
+  (a) test_crforge_core: 7/7 at the b24e6b1 facade (tree B), 8/8 at the HEAD facade (tree H, CfCore.java c003fc74 compiled
+      to /workspace/d2t/buildH); new test_unit_types_cache_matches_the_jvm_table (cache == a fresh read, every 200 ticks).
+  (a) Microbench per decision (raw()'s unit_types + sim_unit_state's digest; ../../ut_bench.py, ut_bench2.py, 2,400 calls,
+      equality asserted on every call):  table 23 names 93 -> 10-16 us;  323 names 839 -> 23 us;  1,023 names 2,552 -> 48 us.
+      The old cost grows linearly with the table, which grows with every new body row an actor process sees (999 census
+      decks in training).
+  (a) Rows: u0000 batch_sha f18ce1e84acf05dc identical in all four 18-actor runs below (w16_batch / w16_matches json cmp
+      equal); smokes (CPU learner) equal the pre-change D2-G smokes byte for byte:
+        crforge  u0000 e816a6a499f7c706  u0001 f060b678c497bfe6  SMOKE PASS  (= d2smoke_cfA)
+        fin16    u0000 d4ef5467f45f2f06  u0001 6cd7292f29717638  SMOKE PASS  (= d2smoke_rs)
+  Actor CPU over the u0000 rollout window (18 actors, 20 logical CPUs each, run3t.sh, cpusample.sh at 20 s, interpolated;
+  window = u0000 matches-file mtime minus the logged 'wall roll'):
+      pair 1 (A = baseline on CPUs 0-19 WITH D2_DET_CUDA sitecustomize in every process; B = cache on 20-39, learner_deterministic)
+        A 6,141 core-s (357 s)   B 5,479 core-s (322 s)   B/A 0.892   -- confounded: A's actors also ran deterministic algorithms
+      pair 2 (clean: both RL_DETERMINISTIC=1 learner-only; CPU sets swapped: A on 20-39, B on 0-19)
+        A 5,489 core-s (324 s)   B 4,952 core-s (287 s)   B/A 0.902
+  (b) So the cache took about 10% off a crforge u0000 rollout in both pairs (wall 10-11% shorter in both), more than the
+      profile's 3.5% share; plausible given the linear growth above, but n = 2 pairs and the 20 s sampler gives a few-%
+      window error. Not shown: the effect at u0001+ or vs fin16 at this density (item 4 not run).
+  (c) Whole-run CPU through u0000 (warm start included) does NOT agree: pair 1 B/A 0.80, pair 2 B/A 1.11 (19,783 vs 21,981).
+      The warm start (128 rule rollouts) ran slower on CPUs 0-19 in both pairs; the CPU set moves totals by 10-20% here,
+      so whole-run totals on this pod are not an instrument for a few-% change.
+
+Item 5: deterministic learner as a config option (pipeline/rl_royale.py)
+  learner_deterministic: true (optional key, absent / null / false = off; config sha of existing configs unchanged; a
+  non-bool is refused). On (or with the old RL_DETERMINISTIC env): CUBLAS_WORKSPACE_CONFIG defaults to :4096:8,
+  torch.use_deterministic_algorithms(True), cudnn.benchmark False, before the Learner is built; logged.
+  (a) d2t1_cfB (option on, learner only) u0000 = d2t1_cfA (sitecustomize: every process) = f18ce1e84acf05dc; d2t2_cfB
+      (option) = d2t2_cfA (RL_DETERMINISTIC + CUBLAS env) = same sha.
+  (b) Untested: identity at u0001+, because of the crash below.
+
+Concern found (a): under deterministic CUDA the u0001 rollout of succ48_x_s101 at 18 actors hits a crforge engine gap
+  every time (d2t1_cfA and d2t1_cfB, actor 11, the same job): UnsupportedOperationException "c65_1_0 is cloned carrying
+  SkeletonDuplication_EV1, whose spawner's copy is not modelled" (Clone on evolved Skeletons); the actor restarts, crashes
+  again, the run stops. D2-G's default-CUDA d2time_cf did not hit it (its weights differ after u0000). Item 2's acceptance
+  ("rows byte-identical on >= 2 full updates, deterministic CUDA") cannot be met on this config / seed until crforge models
+  that copy (or the facade skips the play); it is an engine gap, not the observation.
+
+Items 2-4 not done: see the D2-T worker report (proposed split).

@@ -168,3 +168,20 @@ def test_tower_troops_place_each_sides_spawn_group():
     core.reset(5, _setup(core))
     names = core.unit_types()
     assert {names[e.unit_type] for e in core.state().entities if e.kind == 3} == {"PrincessTower"}
+
+
+def test_unit_types_cache_matches_the_jvm_table():
+    """D2-T: unit_types / _json / _digest are cached by the JVM table's size (append-only); each equals a fresh read."""
+    import hashlib
+    import json
+    core = C.CrforgeCore()
+    core.reset(7, _setup(core))
+    rng = random.Random(9)
+    for _ in range(6):
+        _play(core, rng, 200)
+        names = core.unit_types()
+        assert names == [str(s) for s in core._cf.unitTypesNow()]
+        js = core._battle.unit_types_json()
+        assert js == json.dumps(names) and core._battle.unit_types_digest() == hashlib.sha256(js.encode()).hexdigest()
+        names.append("x")                                  # a caller's copy: the cache is not touched
+        assert core.unit_types()[-1] != "x"

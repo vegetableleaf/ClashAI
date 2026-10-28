@@ -83,6 +83,7 @@ _STATUS = dict(zip(REFUSAL, (DeployStatus.OK, DeployStatus.GAME_OVER, DeployStat
 TOWER_GROUPS = {None: "King_PrincessTowers", "DaggerDuchess": "King_KnifeTowers", "Cannoneer": "King_CannonTowers",
                 "ChefTower": "King_ChefTowers"}
 _J = {}            # the JVM's classes and shared tables, once per process
+_UT = {"names": [], "json": "[]", "digest": hashlib.sha256(b"[]").hexdigest()}   # CrforgeCore.unit_types cache
 
 
 def _jvm():
@@ -147,10 +148,12 @@ class _Battle:
         return _jvm()["rs"]._battle.catalogue_json()
 
     def unit_types_json(self) -> str:
-        return json.dumps(self.core.unit_types())
+        self.core.unit_types()
+        return _UT["json"]
 
     def unit_types_digest(self) -> str:
-        return hashlib.sha256(self.unit_types_json().encode()).hexdigest()
+        self.core.unit_types()
+        return _UT["digest"]
 
     def debug_units(self) -> list:
         """(uid, unit name) per troop, the two columns royale_env reads of RoyaleSim's debug_units (the hero range
@@ -221,7 +224,12 @@ class CrforgeCore:
     def unit_types(self) -> list[str]:
         """crforge body row names, indexed by ``EntityState.unit_type`` (grows as new bodies appear; every body on the
         board has its id once this returns: sim_unit_state.extract reads the names before state_json)."""
-        return [str(s) for s in self._cf.unitTypesNow()]
+        arr = self._cf.unitTypesNow()
+        if len(arr) != len(_UT["names"]):    # CfCore.unitType is one static append-only map per JVM: same size = same
+            names = [str(s) for s in arr]    # names (D2-T: rebuilt per call, 3.5% of a crforge actor's main thread)
+            js = json.dumps(names)
+            _UT.update(names=names, json=js, digest=hashlib.sha256(js.encode()).hexdigest())
+        return list(_UT["names"])
 
     def card_table_stamp(self) -> dict:
         return {"engine": "crforge", "crforge": CRFORGE_PIN, "tables": str(_jvm()["tables"].version()),
