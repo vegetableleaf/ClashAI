@@ -35,9 +35,28 @@
   barrel_decoy true, from_file on, merged_sf; normal stops; 0 tracebacks / decoy warnings in overnight.out since the start.
   Entry live_play.py (HAND_READER_ENABLED 0). Watch: `python .foreman/scratch/gb_decoy/newlogs.py 20261028_1144`.
 
+## Post-deploy watch (LIVE-OPS, 10-28 13:50 EDT; 33 finished logs since 11:45, all started with barrel_decoy true)
+- (a) measured: `postdeploy.py` (re-runnable, any day: `icebow/.venv/Scripts/python.exe scratchpad/gauntlet/L74/gb_decoy/postdeploy.py [STAMP]`)
+  -> `post/results/{casts_post.jsonl,measure_post.txt,newlogs_post.txt}`. 33 finished logs, 15 opponent barrel casts: 14 plain, 1 evo.
+  - evo (n = 1): live_play_20261028_130522 tick 3237, real lane L (landing labels BarrelGoblin x2 / GoblinDummy x3); the model's
+    `model_projectiles` in all 3 in-flight decisions list ONE opponent card-42 barrel aimed at x = 0.194 (the real lane); the mirrored
+    decoy (x = 0.806) is gone from the model input (pre-deploy: two card-42 tokens in 80/80 in-flight decisions). First answer
+    Skeletons at tick 3237 (centre-left, in flight), then Log L (3261) and Knight L (3287): all in the real lane. 1 / 1 vs 30/50
+    before; n = 1 proves nothing about the rate, it only shows the filter is live and the lane was right.
+  - plain (n = 14): first answer in the real lane 13 / 13 answered (pre-deploy 446 / 467 = 95.5%); all answers 25 / 27 real lane.
+    No change visible; the replay already showed 1,572 / 1,572 plain decisions identical off vs on.
+  - base rate: evo casts are rare (50 in the 893 pre-deploy logs = 1 per 18 matches; 1 in the first 33 post-deploy). To tell
+    30/50 (60%) from 43/50 (86%) needs ~30 evo casts = ~540 matches = ~2.5 days at 13 matches / hour; n = 10 (~20 h) only
+    shows direction. Re-run the script daily; judge at n >= 30 evo casts.
+  - errors: 0 tracebacks, 0 decoy warnings, 0 `err*` / `exc*` events in 33 logs (overnight.out since the 11:45 start: 0 "Traceback",
+    1 "decoy" = the LIVE_OPTIONS applied line); the 12:15 nav stop is an adb transport failure, not the decoy (see
+    liveops/STATUS.md); the run after it (12:16 restart) also logs barrel_decoy true.
+  - win rate since the deploy 8 / 27 (29.6%, Wilson 95% [15.9, 48.5]) vs 32.7% [29.1, 36.5] over 629 matches since CLXIII returned: no drift
+    (liveops/results/health_table.md).
+
 ## Next
-- Watch evo-barrel casts live: re-run `scan.py 'live_play_20261028_1[2-9]*.jsonl' ...` + `measure.py` on post-deploy logs;
-  compare the play metrics with the 30 matches before 11:43.
+- Watch evo-barrel casts live: `postdeploy.py` daily (it replaces the scan.py + measure.py + newlogs.py chain; note the old pattern
+  `1[2-9]*` misses the 11:45-11:59 logs); judge at n >= 30 evo casts; compare plain first answers (446/467) and the play metrics.
 - Rollback: `cp scratchpad/gauntlet/L70/live/LIVE_OPTIONS.pre_gbdecoy_20261028 scratchpad/gauntlet/L70/live/LIVE_OPTIONS`;
   `bash scratchpad/gauntlet/L70/live/stop_live.sh`; wait for '[sup] done' in supervisor.log;
   `bash scratchpad/gauntlet/L70/live/start_live.sh icebow --no-fast-plays --ranked`.

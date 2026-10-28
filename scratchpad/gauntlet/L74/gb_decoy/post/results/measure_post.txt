@@ -1,0 +1,14 @@
+{'plain': 14, 'evo': 1}
+
+plain: casts 14, with an answer on my half within land+40: 13; first answer in the REAL lane 13, other lane 0
+   in flight (before land): 11, real lane 11
+   after land: 2, real lane 2
+   by card (card, real lane): [(('Knight', True), 6), (('Log', True), 3), (('Skeletons', True), 3), (('Tornado', True), 1)]
+   all answers in window: 27, real lane 25
+
+evo: casts 1, with an answer on my half within land+40: 1; first answer in the REAL lane 1, other lane 0
+   in flight (before land): 1, real lane 1
+   after land: 0, real lane 0
+   by card (card, real lane): [(('Skeletons', True), 1)]
+   all answers in window: 3, real lane 3
+live_play_20261028_130522.jsonl 3237 land 56 real L bl on first ('Skeletons', 'L', 0, -56, None) ans [('Skeletons', 'L', 0, -56), ('Log', 'L', 24, -32), ('Knight', 'L', 50, -6)]

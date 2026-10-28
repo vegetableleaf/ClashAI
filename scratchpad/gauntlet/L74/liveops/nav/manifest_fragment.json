@@ -1,0 +1,19 @@
+{
+ "claim_all": {
+  "file": "claim_all.png",
+  "source": "source_support_claim.png",
+  "box": [
+   322,
+   1408,
+   578,
+   1514
+  ],
+  "region": [
+   150,
+   1300,
+   750,
+   1600
+  ],
+  "threshold": 0.85
+ }
+}
