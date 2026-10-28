@@ -1,5 +1,5 @@
 {
- "note": "P6-MACRO library spec: the fixed part of every entry (definition, start condition, scripted prefix, window, default horizon). stats.py adds the measured part (n, lifts + CIs per source, horizon, status). Coordinates are OUR frame tiles (own king (9, 29), own princesses (3.5|14.5, 25.5), river y 16, enemy princesses (3.5|14.5, 6.5), enemy king (9, 3)); P3-FORK maps them to engine cells with the side's mirror. Every owner-named / doctrine macro stays in the library whatever its measured lift (NO-DISCARD); a macro without a measured lift keeps its doctrinal horizon and is listed for diagnosis + refinement.",
+ "note": "P6-MACRO library spec: the fixed part of every entry (definition, start condition, scripted prefix, window, default horizon). stats.py adds the measured part (n, lifts + CIs per source, horizon, status). Coordinates are OUR frame tiles (own king (9, 29), own princesses (3.5|14.5, 25.5), river y 16, enemy princesses (3.5|14.5, 6.5), enemy king (9, 3)); P3-FORK maps them to engine cells with the side's mirror. Every owner-named / doctrine macro stays in the library whatever its measured lift (NO-DISCARD); a macro without a measured lift keeps its doctrinal horizon and is listed for diagnosis + refinement. primary = the source that sets status and horizon: \"human\" = pro + HF pooled with the source inside the matching cell (HF holds 4,097 X-Bow player-sides, pro 1,629); the per-source rows are always reported.",
  "macros": [
   {
    "id": "sneaky_lock",
@@ -10,7 +10,7 @@
     "x_bow",
     "tornado"
    ],
-   "primary": "pro",
+   "primary": "human",
    "start_condition": "own bridge X-Bow placement (y 16..20.5) or X-Bow in hand + >= 6 elixir with an enemy defender (troop / building) inside X-Bow range of the target princess (refined start: defender within 7 tiles of the X-Bow site)",
    "prefix": [
     {
@@ -49,7 +49,7 @@
     "x_bow",
     "rocket"
    ],
-   "primary": "pro",
+   "primary": "human",
    "start_condition": "a failed bridge X-Bow (no lock) whose life ends at >= 2:00 (tick 2400), Rocket in the deck",
    "prefix": [
     {
@@ -146,7 +146,7 @@
    "decks": [
     "tornado"
    ],
-   "primary": "pro",
+   "primary": "human",
    "start_condition": "an opponent troop dropped at a lane bridge (x < 7 or > 11, y 11..18.5) while both our princesses stand, Tornado in hand, >= 3 elixir",
    "prefix": [
     {
@@ -211,7 +211,7 @@
    "decks": [
     "x_bow"
    ],
-   "primary": "pro",
+   "primary": "human",
    "start_condition": "an X-Bow placement in a hostile cluster (EQ / HOG / BEATDOWN matchup, their X-Bow answer ready or short: rocket_slices.HOSTILE)",
    "prefix": [
     {
@@ -294,7 +294,7 @@
    "decks": [
     "x_bow"
    ],
-   "primary": "pro",
+   "primary": "human",
    "start_condition": "X-Bow in hand, an X-Bow answer card (rocket_slices.K) revealed, the answer cycled (seen, not back in hand)",
    "prefix": [
     {
@@ -559,7 +559,7 @@
    "decks": [
     "x_bow"
    ],
-   "primary": "pro",
+   "primary": "human",
    "start_condition": "match start vs a BEATDOWN deck, X-Bow deck",
    "prefix": [
     {

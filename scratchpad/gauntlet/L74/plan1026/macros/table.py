@@ -29,8 +29,9 @@ for m in d['macros']:
             f(v.get('lift_nend')), f(v.get('lift_success')), m['status'] if first else '', m['horizon_ticks'] if first else ''))
         first = False
 ex = d.get('extras') or {}
-print('\nMined extras: %s icebow8 pairs tested (Bonferroni z %s); kept = CI low > 0:\n' % (ex.get('tested'), ex.get('z_bonferroni')))
-print('| pair (A>B:lane rel + B zone) | n sides | treated | win lift [95% CI] | Bonferroni |')
+print('\nMined per-play extras: %s icebow8 pairs tested (Bonferroni z %s); listed = raw CI low > 0 (candidates; a library '
+      'entry needs Bonferroni = yes):\n' % (ex.get('tested'), ex.get('z_bonferroni')))
+print('| pair (A>B:lane rel + B zone) | n A-plays (B in hand) | treated (B next) | win lift [95% CI] | Bonferroni |')
 print('|---|---|---|---|---|')
 for e in ex.get('pairs', []):
     if e['ci'][0] is not None and e['ci'][0] > 0:
