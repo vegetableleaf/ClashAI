@@ -80,3 +80,6 @@ b8ae70953932839f7f220c90e1dbc346b3d0edf4a659b34da5ba8346b54e9758	crforge/tables/
 0212c731e822dfbb0012a15a069742f9e96dcdbabea1a399e7574acbd2b90499	crforge/tables/16.635.3/support_rarities.json	32657:/workspace/crforge_cache/tables/16.635.3/support_rarities.json
 9239e48edbbf942bbbdb64d36b552b56fb916beed0e79d67ba7277a43cb28b45	crforge/tables/16.635.3/target_resolvers.json	32657:/workspace/crforge_cache/tables/16.635.3/target_resolvers.json
 6013b6adc5301dac242b9b2d17952d4f4d964da25c77817d5a8fb46259c45953	crforge/tables/16.635.3/variables.json	32657:/workspace/crforge_cache/tables/16.635.3/variables.json
+4d102e4cc6cc3553430e3b0aa1277c4838d1cfad4366984c0b7ca1603f8289e9	cb/research/	store (tar of 33308:/workspace/d2/cb/research)
+babaa3d129e370c5838f12001683e2a5579dbaec581fd94968e689aacfc3fb60	cb/icebow/data/cue_table/cards-160402017-20261006.json	33308:/workspace/d2/cb/research/ext/Royale/RoyaleSim/data/derived/cards-160402017-20261006.json
+3eda9d23db3f8476c5be42e902be9c32ab4ff59a9e9a6d13d3ca608255c23cd4	cb/icebow/data/bench/rl_royale/rlarm_succ48_o_s91/rlarm_succ48_o_s91_u0075.pt	33308:/workspace/d2/cb/icebow/data/bench/rl_royale/rlarm_succ48_o_s91/rlarm_succ48_o_s91_u0075.pt
