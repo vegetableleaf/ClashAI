@@ -57,7 +57,7 @@ Live split: `live_split.json` (frozen 2026-10-28 09:06 EDT, never rewritten; sea
    Score (laptop, after fetching the rows to humanlike/rows/v0m10): `card.py score --name v0m10 --sim .../rows/v0m10 --no-d`.
    rl_royale --smoke before / after this change RUNNING (33308): trees /workspace/opp/cbs_base (6b13c25^) and /workspace/opp/cbs
    (6b13c25), logs /workspace/opp/logs/p2opp_smoke_{before,after}.log (`bash /workspace/opp/pod_rl_smoke.sh TREE RUN`); the W16
-   batch / weight shas must be identical. NOTE: pushed BEFORE this smoke finished (COMMON asks for it before the push).
+   batch / weight shas must be identical. NOTE: pushed BEFORE this smoke finished (COMMON asks for it before the push). RESULT (a): on a677e080 BOTH trees fail the same way (ActorCrash: crforge giantbuffer_enchanting_buff on LittlePrince, logs *_a677.log); on fe364ceb (lead 10-28: the new default lib; facade c003fc74 compiled into /workspace/opp/score/facade_fe364ceb; `LIB=... FAC=... pod_rl_smoke.sh`) BOTH SMOKE PASS, config sha b5e2a2bbafef, W16 u0000 batch 8377367c / weights 3e07cff4, u0001 batch 30c3c03f / weights 542bd835 identical, w16_batch / w16_matches u0000-u0001 files byte-identical (logs p2opp_fe_{before,after}.log). Level B v0m10 stays on a677e080 (started there; pairs with the E4 / iu40 rows); new closed-loop runs go on fe364ceb.
    Codex: `.foreman/scratch/a2/codex/P2OPP_1.md` (low): babysit both, fetch + score, tabulate.
 3. NOT STARTED: live opponent-seat slot rows. Spec for the build (reuses opp_model/o1_records.py + slot_redrive.sidecar + rows_to_npz):
    blocks from live_split.json by log NAME before any read (the sealed block is never opened; live_table.main reads every graded log,

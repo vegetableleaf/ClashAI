@@ -1,7 +1,7 @@
 #!/bin/bash
 # pod_rl_smoke.sh TREE RUN -- P2-OPP: a real rl_royale --smoke (succ48_x_s101, crforge a677e080, batch shas logged) in the code
 # copy TREE on 33308; two trees (before / after a pipeline change) must log the same batch shas. Log /workspace/opp/logs/RUN.log.
-T=$1; RUN=$2; L=/workspace/crforge_main/a677e080/plain/lib; B=/workspace/opp/score/facade
+T=$1; RUN=$2; L=${LIB:-/workspace/crforge_main/a677e080/plain/lib}; B=${FAC:-/workspace/opp/score/facade}
 mkdir -p /workspace/opp/logs
 cd $T || exit 1
 export PYTHONPATH=$T ROYALE_RUNTIME=fin16-linux ROYALE_HEROIW_FORM=hero OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 \
