@@ -643,8 +643,7 @@ class TestForks(unittest.TestCase):
 # ------------------------------------------------------------------------------------------------------
 # opt-in triggers: rocket_tornado (combo vs lone Rocket) and tornado_redirect (Tornado into our king)
 # ------------------------------------------------------------------------------------------------------
-OLD_P = {"rocket_played": 0.5, "rocket": 0.01, "wincon": 0.1, "siege": 0.25, "xbow_after_fail": 0.5, "xbow": 0.25,
-         "idle_full": 0.05, "log_bait": 0.5, "random": 0.0003}          # the pre-combo P_DEFAULT (cf-on hash unchanged)
+OLD_P = {k: v for k, v in CF.P_DEFAULT.items() if k not in CF.OPT_IN}   # the opt-in zeros are not in the hash
 
 
 class TestNewTriggerConfig(unittest.TestCase):
@@ -683,10 +682,15 @@ class TestPerTriggerNoiseControls(unittest.TestCase):
     def test_config_and_hash(self):
         c = CF.cf_cfg({**ON, "cf_k_by": {"rocket": 4}, "cf_horizon_by": {"siege": 400}})
         self.assertEqual((CF.trigger_k(c, "rocket"), CF.trigger_k(c, "xbow")), (4, 2))
-        self.assertEqual((CF.trigger_horizon(c, "siege"), CF.trigger_horizon(c, "xbow")), (400, 600))
+        self.assertEqual((CF.trigger_horizon(c, "siege"), CF.trigger_horizon(c, "xbow"), CF.trigger_horizon(c, "wincon")),
+                         (400, 600, 300))
         c0 = CF.cf_cfg(ON)
-        self.assertEqual((c0["cf_k_by"], c0["cf_horizon_by"]), ({}, {}))
+        self.assertEqual((c0["cf_k_by"], c0["cf_horizon_by"]), ({}, CF.HORIZON_DEFAULT))
         self.assertEqual(CF.canonical({**ON, "cf_k_by": {}, "cf_horizon_by": None}), CF.canonical(ON))   # off = the old hash
+        self.assertEqual(CF.canonical({**ON, "cf_horizon_by": dict(CF.HORIZON_DEFAULT)}), CF.canonical(ON))   # explicit = implicit
+        self.assertNotEqual(CF.canonical({**ON, "cf_horizon_by": {"idle_full": 600}}), CF.canonical(ON))
+        self.assertEqual(CF.cf_cfg({**ON, "cf_horizon_by": {"idle_full": 600}})["cf_horizon_by"]["idle_full"], 600)
+        self.assertEqual(CF.trigger_horizon(c0, "wincon"), 300)
         self.assertNotEqual(CF.canonical({**ON, "cf_k_by": {"rocket": 4}}), CF.canonical(ON))
         self.assertEqual(CF.cf_cfg({**ON, "cf_horizon_sweep": [300, 150]})["cf_horizon_sweep"], [150, 300])
         self.assertEqual(CF.canonical({**ON, "cf_horizon_sweep": []}), CF.canonical(ON))
@@ -847,6 +851,9 @@ class TestNewTriggerForks(unittest.TestCase):
         self.assertEqual((len(fu), fu[0]["slot"], fu[0]["cell"], fu[0]["after_ticks"]), (1, got["tk"], got["cell"], 11 + 2))
         for a, r in zip(got["cands"], got["out"]["cands"]):
             self.assertTrue(all(np.isfinite(q) for q in r["q"]), a["kind"])
+        cb = got["out"]["cands"][kinds.index("combo")]
+        self.assertEqual(cb["follow"][0].get("fired"), 1, cb["follow"])               # the scripted Tornado fired in continuation 0
+        self.assertNotIn("follow", got["out"]["cands"][0])                            # the chosen candidate has none
         plays = [eval(x) for x in got["forks"]["combo"]]                     # (landing tick, card slug) of the fork's learner
         first = [t for t, n in plays if n == "rocket"]
         second = [t for t, n in plays if n == "tornado"]

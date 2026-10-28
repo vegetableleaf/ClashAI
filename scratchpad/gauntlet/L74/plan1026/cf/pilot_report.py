@@ -88,6 +88,9 @@ def main(argv=None) -> int:
     ap.add_argument("--budget", type=float, default=1.0, help="fork ticks per match tick to plan for (target <= 1)")
     ap.add_argument("--matches-per-update", type=int, default=128)
     ap.add_argument("--gap", type=int, default=CF.DEFAULTS["cf_gap_ticks"])
+    ap.add_argument("--cost-scale", default="", help="trigger=factor,... : fork-tick cost per sample x factor in the budget model "
+                    "(a trigger that will run K = 4 instead of 2: 2; a horizon 300 instead of 600: 0.5)")
+    ap.add_argument("--weights", default="", help="trigger=weight,... : budget share weights (default 1, random 0.5)")
     a = ap.parse_args(argv)
     rows = [json.loads(x) for x in Path(a.dump).read_text().splitlines() if x.strip()]
     rows = [r for r in rows if r["update"] >= a.from_update]
@@ -104,7 +107,12 @@ def main(argv=None) -> int:
             for c, ai in zip(s["cands"], A):
                 kinds[c["kind"]].append(float(ai))
         snr = rel.get("snr")
-        out["triggers"][t] = {
+        ks = sorted({len(c["q"]) for s in ss for c in s["cands"]})
+        by_k = {}
+        if ks and ks[-1] > 2:            # K > 2 samples: the first-j-continuation SNR (continuations are exchangeable)
+            for j in range(2, ks[-1] + 1):
+                by_k[str(j)] = CF.reliability([CF.sample_adv(s["cands"])[:, :j] for s in ss if len(s["cands"][0]["q"]) >= j])
+        out["triggers"][t] = {"snr_by_k": by_k or None,
             "samples": len(ss), "per_match": len(ss) / max(1, len(rows)), **rel,
             "snr_ci90": boot(ss, lambda x: CF.reliability([CF.sample_adv(s["cands"]) for s in x])["snr"]),
             "k_for_snr_0.5": (None if not snr else max(2, int(np.ceil(0.5 / snr ** 2)))),
@@ -114,6 +122,14 @@ def main(argv=None) -> int:
             "terminal_share": float(np.mean([c["terminal"][k] for s in ss for c in s["cands"] for k in range(len(c["q"]))])),
             "kinds": {k: {"n": len(v), "a_mean": float(np.mean(v)), "se": float(np.std(v) / np.sqrt(len(v)))}
                       for k, v in sorted(kinds.items())}}
+    fol = defaultdict(lambda: defaultdict(int))   # scripted second plays (combo): continuations by outcome
+    for s in smp:
+        for c in s["cands"]:
+            for f in c.get("follow") or []:
+                fol[s["trigger"] + "/" + c["kind"]]["n"] += 1
+                for key, v in (f or {}).items():
+                    fol[s["trigger"] + "/" + c["kind"]][key] += int(v)
+    out["follow_ups"] = {k: dict(v) for k, v in fol.items()}
     out["reliability_pooled"] = CF.reliability([CF.sample_adv(s["cands"]) for s in smp])
     aud = [s for s in smp if s.get("audit")]
     out["slope_audit"] = {**CF.slope_audit(aud),
@@ -155,9 +171,15 @@ def main(argv=None) -> int:
         # triggers never sampled in the pilot have no cost estimate: use the pooled mean (one K x C x horizon sample)
         pooled = float(np.mean([s["fork_ticks"] for s in smp])) if smp else 0.0
         cost = {t: cost.get(t, pooled) for t in CF.TRIGGERS}
+        for kv in filter(None, a.cost_scale.split(",")):
+            k, v = kv.split("=")
+            cost[k] = cost[k] * float(v)
         cap = {t: expected_samples(ticks[t], a.gap, 1.0, reps=1) for t in CF.TRIGGERS}
         budget = a.budget * mt / len(rows)
         share = {t: (RANDOM_SHARE if t == "random" else 1.0) for t in CF.TRIGGERS}
+        for kv in filter(None, a.weights.split(",")):
+            k, v = kv.split("=")
+            share[k] = float(v)
         spend = budget_split(cost, cap, budget, share)
         rec, pred = {}, {}
         for t in CF.TRIGGERS:

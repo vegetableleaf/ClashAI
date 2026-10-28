@@ -70,10 +70,18 @@ import numpy as np
 
 TRIGGERS = ("rocket_tornado", "tornado_redirect", "rocket_played", "rocket", "wincon", "siege", "xbow_after_fail", "xbow",
             "idle_full", "log_bait", "random")
-P_DEFAULT = {"rocket_played": 0.5, "rocket": 0.01, "wincon": 0.1, "siege": 0.25, "xbow_after_fail": 0.5, "xbow": 0.25,
-             "idle_full": 0.05, "log_bait": 0.5, "rocket_tornado": 0.0, "tornado_redirect": 0.0,
-             "random": 0.0003}   # ~1-2 samples / match: L1 pilot tunes to <= 1x rollouts
-OPT_IN = ("rocket_tornado", "tornado_redirect")   # probability 0 unless cf_p sets it: no condition read, no RNG draw, hash unchanged
+# L1 pilots (plan1026/cf/data: pilot2 = 512 matches / 2,907 samples after the critic warm-up, pilot3 = the noise study): the
+# pilot's probabilities cost 5.9x the match ticks; these are pilot_report.py's water-filling split of 1.0x match ticks (equal
+# fork ticks per trigger, random half) -> 0.08-0.3 samples per match per trigger (cost to be re-measured at these values).
+P_DEFAULT = {"rocket_played": 0.5, "rocket": 0.0009, "wincon": 0.008, "siege": 0.028, "xbow_after_fail": 0.0064, "xbow": 0.0175,
+             "idle_full": 1.0, "log_bait": 0.07, "rocket_tornado": 0.0, "tornado_redirect": 0.0, "random": 0.0005}
+# opt-in triggers: probability 0 unless cf_p sets it (no condition read, no RNG draw); their measured p (pilot2: rocket_tornado
+# 0.055, tornado_redirect 0.0011) is NOT the default until the lead enables them with the owner's list of macros
+OPT_IN = ("rocket_tornado", "tornado_redirect")
+# per-trigger fork horizons (ticks) where the 600-tick Q is too noisy (pilot3, K = 2 at 600 vs 300: idle_full SNR 0.29 -> 0.77,
+# log_bait 0.52 -> 0.78, wincon 0.83 -> 1.31, siege 0.68 -> 1.15, random 0.80 -> 1.23; the critic slope of the within-sample
+# differences at 300 is 0.84 +- 0.33, inside [0.7, 1.3]) -- half the cost per sample as well
+HORIZON_DEFAULT = {"idle_full": 300, "log_bait": 300, "wincon": 300, "siege": 300, "random": 300}
 DEFAULTS = {"cf_horizon_ticks": 600, "cf_k": 2, "cf_w": 1.0, "cf_clip": 3.0, "cf_max_alts": 3, "cf_gap_ticks": 100,
             "cf_cap_ticks": 8000, "cf_audit_p": 0.1, "cf_end_ticks": 1200, "cf_shrink": True, "cf_shrink_min": 30,
             "cf_p": None, "cf_random_alts": 2, "cf_rocket_min_value": 2.0, "cf_siege_radius_tiles": 2.0,
@@ -168,7 +176,7 @@ def cf_cfg(cfg: dict) -> Optional[dict]:
                else float(v)) for k, v in c.items()}
     out["cf_horizon_sweep"] = sorted({int(x) for x in (c["cf_horizon_sweep"] or ())})
     out["cf_p"] = {**P_DEFAULT, **{k: float(v) for k, v in p.items()}}
-    out["cf_k_by"], out["cf_horizon_by"] = dict(c["cf_k_by"] or {}), dict(c["cf_horizon_by"] or {})
+    out["cf_k_by"], out["cf_horizon_by"] = dict(c["cf_k_by"] or {}), {**HORIZON_DEFAULT, **(c["cf_horizon_by"] or {})}
     return out
 
 
@@ -182,6 +190,10 @@ def canonical(cfg: dict) -> dict:
     c["cf_p"] = {k: v for k, v in p.items() if not (k in OPT_IN and v == 0.0)}   # opt-in triggers left off: the older hash
     keep = ("cf_shrink", "cf_p", "cf_k_by", "cf_horizon_by", "cf_horizon_sweep")
     out = {**cfg, "cf_credit": True, **{k: (int(v) if k in INTS else v if k in keep else float(v)) for k, v in c.items()}}
+    if out.get("cf_horizon_by") is not None:                  # the effective map; the default map is "absent"
+        out["cf_horizon_by"] = {**HORIZON_DEFAULT, **out["cf_horizon_by"]}
+        if out["cf_horizon_by"] == HORIZON_DEFAULT:
+            out["cf_horizon_by"] = {}
     for k in NEW_KEYS:
         v = out.get(k)
         if v is None or (isinstance(v, (dict, list, tuple)) and not v) or (
@@ -920,6 +932,10 @@ class Runner:
             if due:
                 for s, p, d in E.selfplay_decide(due):
                     s.apply(p, d)
+        for fi, f in enumerate(forks):                        # a scripted second play: did it fire? (follow_n: fired / cancelled_<why>)
+            i, k = meta[fi]
+            if cands[i].get("follow_ups"):
+                out[i].setdefault("follow", [None] * K)[k] = dict(getattr(f.learner, "follow_n", None) or {})
         self.last_forks = forks
         return {"cands": out, "fork_ticks": int(sum(int(f.env.tick) - root for f in forks))}
 
