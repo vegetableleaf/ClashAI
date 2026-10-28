@@ -71,7 +71,7 @@ ID_SPLIT = (("hand_slot", 0, 4), ("hand_card", 4, 8), ("hand_form", 8, 12), ("ne
 
 
 class Producer:
-    def __init__(self, base: dict, n: int, threads: int, device: str, build: Path, aid: int = 0):
+    def __init__(self, base: dict, n: int, threads: int, device: str, build: Path, aid: int = 0, server=None):
         import jpype
         import torch
         self.base, self.n, self.dev, self.aid = base, int(n), device, int(aid)
@@ -146,6 +146,10 @@ class Producer:
         self.stats = Counter()
         self.tm = Counter()                                  # seconds per stage (java / fill / start / decide / forward ...)
         self.progress = None                                 # bench.py: called after every round with the totals
+        self.cl, self.opp_name, self.want_ver = None, {}, None
+        if server:                                           # LOOP-SRV PolicyServer (serve.py) at this address
+            from pipeline.policy_server import connect
+            self.cl = connect(server)
 
     # ------------------------------------------------------------------------------------------------ tables
     def _fill(self) -> int:
@@ -193,6 +197,7 @@ class Producer:
             if getattr(pol.model, "mem", None) is not None:
                 raise NotImplementedError(f"opponent {path}: inputs the learner's builders do not make")
             self.opp_cache[path] = (pol, str(mi.get("grid", "floor")))
+            self.opp_name[id(pol)] = path                    # the server's model name for it (serve.py --opp PATH)
         return self.opp_cache[path]
 
     def _start(self, i: int, job, cfg: dict, opps: dict) -> dict:
@@ -319,6 +324,7 @@ class Producer:
         """actor_main's ('selfplay', update, sd, jobs) -> (results, skipped, stats)."""
         R, base = self.R, self.base
         t0 = time.perf_counter()
+        self.want_ver = int(update) if self.cl is not None else None   # the server's learner = this update's weights
         msd, psd = R.split_actor_sd(sd, self.dev)
         if R.pop_prefix(msd, R.ABILITY_SD) or psd:
             raise NotImplementedError("posture / ability heads are not in the fast loop yet")
@@ -398,10 +404,14 @@ class Producer:
             s = m["sides"][seat]
             groups.setdefault(id(s.model), []).append((int(r), s))
         K = 18                                               # crforge_core.K
+        g0 = time.perf_counter()
+        work = []
         for members in groups.values():
             idx = np.array([r for r, _ in members])
             sides = [s for _, s in members]
             model, c = sides[0].model, sides[0].cfg
+            if c["policy"] != "sample":
+                raise NotImplementedError(f"policy {c['policy']!r}: the fast loop samples (learner and league)")
             batch = {"tok": v.tok[idx], "mask": v.mask[idx].astype(bool), "sc": v.sc[idx], "past": v.past[idx],
                      "unit_form": v.unit_form[idx], "opp_past": v.opp_past[idx], "projectiles": v.projectiles[idx],
                      "effects": v.effects[idx], "own_ability": v.own_ability[idx], "opp_cycle": v.opp_cycle[idx]}
@@ -409,9 +419,46 @@ class Producer:
                 batch["cue"] = v.cue[idx]
             ids = v.ids[idx]
             for k, a, b in ID_SPLIT:
-                batch[k] = ids[:, a:b] if b is not None else ids[:, a]
+                batch[k] = np.ascontiguousarray(ids[:, a:b] if b is not None else ids[:, a])
             batch["sc"][:, SC_SLOT_COLS] = 0.0                # GenPolicy.row's zeroing (batch["sc"] is a copy)
-            keys = E.gen_row_keys(model.model)
+            name = "learner" if model is self.model else self.opp_name.get(id(model))
+            srv = self.cl is not None and name in self.cl.models
+            work.append((idx, sides, model, c, batch, E.gen_row_keys(model.model), name, srv))
+        self.tm["gather"] += time.perf_counter() - g0
+        fs = {}
+        if any(w[7] for w in work):                          # LOOP-SRV: every server model's block in ONE call
+            f0 = time.perf_counter()
+            blocks = [(w[6], w[4], len(w[0])) for w in work if w[7]]
+            while True:                                      # the learner's weights of THIS update (watch dir push)
+                fs = dict(zip([b[0] for b in blocks], self.cl.forward(blocks)))
+                if "learner" not in fs or self.want_ver is None or fs["learner"].ver >= self.want_ver:
+                    break
+                self.cl.done(list(fs.values()))
+                time.sleep(0.05)
+            self.tm["forward_wait"] += time.perf_counter() - f0
+            self.tm["fwd_rows"] += sum(b[2] for b in blocks)
+            self.tm["fwd_calls"] += 1
+        for idx, sides, model, c, batch, keys, name, srv in work:
+            if srv:
+                f = fs[name]
+                if name == "learner" and self.want_ver is not None and f.ver != self.want_ver:
+                    raise RuntimeError(f"server learner weights v{f.ver}, this update needs v{self.want_ver}")
+                heads = {k: torch.from_numpy(x) for k, x in f.heads.items()}
+                p = torch.sigmoid(heads["gate"]).tolist()
+                hand = np.zeros((len(idx), 9), dtype=bool)
+                hand[np.arange(len(idx))[:, None], batch["hand_slot"]] = True
+                hand = hand[:, :8]
+                cl = self.cl
+                cell_fn = (lambda f_: lambda ids_, slots_: torch.from_numpy(cl.cells(f_, ids_, slots_)))(f)
+                vold = None
+                if "value" in heads and name == "learner":
+                    vold = self.R.value_scalar(heads["value"]).numpy()
+                if not (FAST_DECIDE and fast_ok(c)):
+                    raise NotImplementedError("a server-forwarded group needs the fast decide's cfg (fast_ok)")
+                d0 = time.perf_counter()
+                self._fast_group(model, c, sides, idx, batch, keys, heads, p, hand, cell_fn, vold, f.ver)
+                self.tm["decide_py"] += time.perf_counter() - d0
+                continue
             f0 = time.perf_counter()
             with torch.no_grad():
                 tb = {k: torch.from_numpy(np.ascontiguousarray(batch[k])).to(c["device"]) for k in keys}
@@ -423,11 +470,11 @@ class Producer:
             self.tm["forward"] += time.perf_counter() - f0      # incl. H2D / D2H (the .cpu() syncs)
             self.tm["fwd_rows"] += len(idx)
             self.tm["fwd_calls"] += 1
-            if c["policy"] != "sample":
-                raise NotImplementedError(f"policy {c['policy']!r}: the fast loop samples (learner and league)")
             d0 = time.perf_counter()
             if FAST_DECIDE and fast_ok(c):
-                self._fast_group(model, c, sides, idx, batch, keys, enc, heads, p, hand)
+                from pipeline.decision_options import model_cell_logits
+                self._fast_group(model, c, sides, idx, batch, keys, heads, p, hand,
+                                 model_cell_logits(model, enc, heads["card"].device))
                 self.tm["decide_py"] += time.perf_counter() - d0
                 continue
             for j, s in enumerate(sides):                    # Match.prepare's state the decide / record read
@@ -456,9 +503,11 @@ class Producer:
                 else:
                     a[:] = (0, -1, -1, 0, 0)
             self.tm["decide_py"] += time.perf_counter() - d0
+        if fs:
+            self.cl.done(list(fs.values()))
 
     # ------------------------------------------------------------------------------------------------ fast decide
-    def _fast_group(self, model, c, sides, idx, batch, keys, enc, heads, p, hand) -> None:
+    def _fast_group(self, model, c, sides, idx, batch, keys, heads, p, hand, cell_fn, v_old=None, wver=None) -> None:
         """Match.pre + e1_eval.sample_decide_batch + decision_options.decide (decode 'sample', no rules) + _record for one
         policy group, vectorised where the arithmetic allows it and EXACT: the same torch ops on the same batch, every
         draw from the row's own rng in production's order (gate, card, cell), numpy Generator.choice reproduced as its
@@ -466,7 +515,7 @@ class Producer:
         import math
         import torch
         from pipeline import engine_play as ep
-        from pipeline.decision_options import model_cell_logits, phase_index
+        from pipeline.decision_options import phase_index
         from pipeline.royale_env import SCALE
         v, n = self.v, len(sides)
         tick = v.meta[idx, 3].astype(np.int64)
@@ -504,8 +553,7 @@ class Producer:
             for r in play_idx:
                 lp_card[r] = math.log(card_probs[r, slots[r]])
             with torch.no_grad():
-                cel = model_cell_logits(model, enc, heads["card"].device)(list(map(int, play_idx)),
-                                                                         [int(slots[r]) for r in play_idx])
+                cel = cell_fn(list(map(int, play_idx)), [int(slots[r]) for r in play_idx])
                 cell_probs = torch.softmax(cel.double() / T, dim=-1).cpu().numpy()
             cells[play_idx] = self._choice(cell_probs, [rngs[r] for r in play_idx])
             for j, r in enumerate(play_idx):
@@ -528,7 +576,8 @@ class Producer:
                              ("gate_sampled", bool(gate_sampled[j])), ("played", bool(playing[j])),
                              ("slot", int(slots[j])), ("cell", int(cells[j])), ("lp_gate", float(lp_gate[j])),
                              ("lp_card", float(lp_card[j])), ("lp_cell", float(lp_cell[j])), ("p_gate", float(pj)),
-                             ("T", T)) + ((("gate_tau", float(tau_r[j])),) if tau_r is not None else ()):
+                             ("T", T)) + ((("gate_tau", float(tau_r[j])),) if tau_r is not None else ()) + (
+                                 (("v_old", float(v_old[j])), ("wver", int(wver))) if v_old is not None else ()):
                     rows.setdefault(k, []).append(x)
             a = v.act[r]
             if playing[j]:
@@ -575,6 +624,9 @@ class Producer:
             out["tick"] = sc("tick", np.int64)
         if "gate_tau" in rows:
             out["gate_tau"] = sc("gate_tau", np.float64)
+        if "v_old" in rows:                                  # LOOP-SRV: the critic of the same batch / version
+            out["v_old"] = sc("v_old", np.float64)
+            out["wver"] = sc("wver", np.int64)
         return out
 
 

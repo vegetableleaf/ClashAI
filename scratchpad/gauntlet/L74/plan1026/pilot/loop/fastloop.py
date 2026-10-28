@@ -26,15 +26,28 @@ REPO = HERE.parents[5]
 sys.path.insert(0, str(REPO))
 
 
-def producer_main(aid: int, base: dict, n: int, threads: int, device: str, build: str, in_q, out_q) -> None:
+def producer_main(aid, base: dict, n: int, threads: int, device: str, build: str, in_q, out_q) -> None:
+    """aid = (producer index, generation). FASTLOOP_CRASH_TEST=p (recovery test only): each run, with probability p,
+    the process kills itself with SIGSEGV after its first round (the libtorch-in-JVM failure RX-X23 saw)."""
     try:
         sys.path.insert(0, str(HERE))
         from producer import Producer
-        P = Producer(base, n, threads, device, Path(build), aid)
+        P = Producer(base, n, threads, device, Path(build), aid[0])
         out_q.put(("ready", aid, os.getpid()))
     except Exception:
         out_q.put(("error", aid, traceback.format_exc()))
         return
+    p_crash = float(os.environ.get("FASTLOOP_CRASH_TEST", 0) or 0)
+    if p_crash:
+        import random
+        import signal
+        rnd = random.Random(os.getpid())
+
+        def maybe_die(matches, rows, state={"n": 0}):
+            state["n"] += 1
+            if state["n"] == 50 and rnd.random() < p_crash:
+                os.kill(os.getpid(), signal.SIGSEGV)
+        P.progress = maybe_die
     while True:
         msg = in_q.get()
         if msg is None:
@@ -49,26 +62,60 @@ def producer_main(aid: int, base: dict, n: int, threads: int, device: str, build
 class FastPool:
     """K producer processes; ``run`` = ActorPool.run's contract for kind 'selfplay' (results sorted by row_key)."""
 
+    MAX_RESTARTS = 3                                          # per share and update; then the update fails loudly
+
     def __init__(self, base: dict, a, log):
         self.log, self.a, self.base = log, a, base
-        ctx = mp.get_context("spawn")
-        devs = a.devices.split(",")
-        self.out_q = ctx.Queue()
-        self.in_qs, self.procs = [], []
+        self.ctx = mp.get_context("spawn")
+        self.devs = a.devices.split(",")
+        self.out_q = self.ctx.Queue()
+        self.in_qs, self.procs, self.gen = [None] * a.producers, [None] * a.producers, [0] * a.producers
+        self.restarts = 0
         for k in range(a.producers):
-            q = ctx.Queue()
-            p = ctx.Process(target=producer_main, args=(k, base, a.matches, a.threads, devs[k % len(devs)], a.build, q,
-                                                         self.out_q), daemon=True)
-            p.start()
-            self.in_qs.append(q)
-            self.procs.append(p)
-        ready = 0
-        while ready < a.producers:
-            msg = self.out_q.get(timeout=900)
+            self._spawn(k)
+        self._wait_ready(set(range(a.producers)))
+        log(f"[fastloop] {a.producers} producers x {a.matches} matches x {a.threads} threads on {self.devs}")
+
+    def _spawn(self, k: int) -> None:
+        """(Re)start producer k with a fresh queue and generation: messages of a dead generation are ignored."""
+        self.gen[k] += 1
+        q = self.ctx.Queue()
+        p = self.ctx.Process(target=producer_main, args=((k, self.gen[k]), self.base, self.a.matches, self.a.threads,
+                                                         self.devs[k % len(self.devs)], self.a.build, q, self.out_q),
+                             daemon=True)
+        p.start()
+        self.in_qs[k], self.procs[k] = q, p
+
+    def _wait_ready(self, ks: set) -> None:
+        t0 = time.time()
+        while ks:
+            if time.time() - t0 > 900:
+                raise RuntimeError(f"producers {sorted(ks)} not ready after 900 s")
+            try:
+                msg = self.out_q.get(timeout=10)
+            except queue.Empty:
+                continue
+            (k, g) = msg[1]
+            if g != self.gen[k]:
+                continue
             if msg[0] == "error":
-                raise RuntimeError(f"producer {msg[1]} failed to start:\n{msg[2]}")
-            ready += 1
-        log(f"[fastloop] {a.producers} producers x {a.matches} matches x {a.threads} threads on {devs}")
+                raise RuntimeError(f"producer {k} failed to start:\n{msg[2]}")
+            if msg[0] == "ready":
+                ks.discard(k)
+
+    def _restart(self, k: int, why: str, share, update: int, sd: bytes, tries: dict) -> None:
+        """A dead / failed producer: its partial matches are gone with it (a producer returns only whole matches, at the
+        end of its share); restart it and replay the whole share (per-match deterministic: the same results)."""
+        tries[k] = tries.get(k, 0) + 1
+        self.restarts += 1
+        self.log(f"[fastloop] producer {k} restart {tries[k]} ({why[-400:]})")
+        if tries[k] > self.MAX_RESTARTS:
+            raise RuntimeError(f"producer {k} failed {tries[k]} times this update: {why}")
+        if self.procs[k].is_alive():
+            self.procs[k].kill()
+        self._spawn(k)
+        self._wait_ready({k})
+        self.in_qs[k].put((update, sd, share))
 
     def run(self, update: int, sd: bytes, jobs: list):
         from pipeline.rl_royale import row_key
@@ -79,25 +126,31 @@ class FastPool:
         shares = {k: jobs[k::len(self.in_qs)] for k in range(len(self.in_qs)) if jobs[k::len(self.in_qs)]}
         for k, js in shares.items():
             self.in_qs[k].put((update, sd, js))
-        results, skipped, stats = [], [], {}
+        results, skipped, stats, tries = [], [], {}, {}
         while len(stats) < len(shares):
             try:
-                msg = self.out_q.get(timeout=30)
+                msg = self.out_q.get(timeout=10)
             except queue.Empty:
-                dead = [k for k in shares if not self.procs[k].is_alive()]
-                if dead:
-                    raise RuntimeError(f"producers {dead} died")
+                for k in [k for k in shares if k not in stats and not self.procs[k].is_alive()]:
+                    self._restart(k, f"process exited {self.procs[k].exitcode}", shares[k], update, sd, tries)
                 continue
+            (k, g) = msg[1]
+            if g != self.gen[k] or k in stats:
+                continue                                          # a replaced producer's message
             if msg[0] == "error":
-                raise RuntimeError(f"producer {msg[1]}:\n{msg[2]}")
+                self._restart(k, msg[2], shares[k], update, sd, tries)
+                continue
+            if msg[0] != "done":
+                continue
             r, s, st = msg[2]
             results += r
             skipped += s
-            stats[msg[1]] = st
+            stats[k] = st
         results.sort(key=row_key)
         wall = time.perf_counter() - t0
         rows = sum(st["rows"] for st in stats.values())
         line = {"update": int(update), "t": time.time(), "matches": len(results), "skipped": len(skipped), "wall_s": wall,
+                "producer_restarts_total": self.restarts,
                 "matches_per_h": len(results) / wall * 3600 if wall else None, "rows": rows,
                 "rows_per_s": rows / wall if wall else None,
                 "per_stage_s": {k: sum(st["time"].get(k, 0.0) for st in stats.values()) for k in ("java", "fill", "decide")},

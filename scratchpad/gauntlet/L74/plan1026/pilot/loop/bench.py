@@ -24,6 +24,12 @@ HERE = Path(__file__).resolve().parent
 sys.path[:0] = [str(HERE.parents[5]), str(HERE)]
 
 
+def proc_cpu(pid: int) -> float:
+    """utime + stime (s) of a process, all its threads (/proc/PID/stat)."""
+    f = Path(f"/proc/{pid}/stat").read_text().rsplit(")", 1)[1].split()
+    return (int(f[11]) + int(f[12])) / os.sysconf("SC_CLK_TCK")
+
+
 def clone_jobs(jobs, n, k):
     """n jobs from the message's own: tag / seed shifted per copy (producer k's own range)."""
     out = []
@@ -44,7 +50,9 @@ def worker(k, a, base, update, sd, jobs, q):
 
 def _worker(k, a, base, update, sd, jobs, q):
     from producer import Producer
-    P = Producer(base, a.matches, a.threads, a.devices.split(",")[k % len(a.devices.split(","))], Path(a.build), k)
+    dev = "cpu" if a.server else a.devices.split(",")[k % len(a.devices.split(","))]
+    srv = f"/dev/shm/loop/srv{k % len(a.devices.split(','))}.sock" if a.server else None
+    P = Producer({**base, "actor_device": dev}, a.matches, a.threads, dev, Path(a.build), k, server=srv)
     last = [0.0]
 
     def progress(matches, rows):
@@ -73,9 +81,32 @@ def main():
     ap.add_argument("--seconds", type=float, default=180.0)
     ap.add_argument("--jobs", type=int, default=100000, help="jobs per producer (more than the window needs)")
     ap.add_argument("--build", default=os.environ.get("CRFORGE_FACADE_BUILD", str(HERE / "jbuild")))
+    ap.add_argument("--server", default=None, help="eager | graphs: forwards on serve.py (LOOP-SRV), one per device")
     a = ap.parse_args()
     base, update, sd, jobs = pickle.loads(Path(a.msg).read_bytes())
     base = {**base, "actor_device": a.devices.split(",")[0]}
+    servers = []
+    if a.server:                                             # one serve.py per device + this update's learner weights
+        import torch
+        from pipeline import rl_royale as R
+        wd = Path("/dev/shm/loop/weights")
+        wd.mkdir(parents=True, exist_ok=True)
+        msd, _ = R.split_actor_sd(sd, "cpu")
+        R.pop_prefix(msd, R.ABILITY_SD)
+        torch.save({"version": int(update), "state_dict": msd}, wd / f"learner.v{int(update):08d}.pt")
+        (wd / "learner.latest").write_text(str(int(update)))
+        opps = sorted({j[1]["opp"]["path"] for j in jobs})
+        for g, dv in enumerate(a.devices.split(",")):
+            addr = f"/dev/shm/loop/srv{g}.sock"
+            Path(addr + ".ready").unlink(missing_ok=True)
+            servers.append(subprocess.Popen([sys.executable, str(HERE / "serve.py"), "--listen", addr, "--device", dv,
+                                             "--watch", str(wd), "--learner", base["init_path"] if "init_path" in base
+                                             else opps[0], "--block-max", str(a.matches), "--mode", a.server,
+                                             "--opp", *opps]))
+            while not Path(addr + ".ready").exists():
+                if servers[-1].poll() is not None:
+                    raise SystemExit("serve.py exited")
+                time.sleep(1)
     ctx = mp.get_context("spawn")
     q = ctx.Queue()
     ps = [ctx.Process(target=worker, args=(k, a, base, update, sd, jobs, q), daemon=True) for k in range(a.producers)]
@@ -100,6 +131,7 @@ def main():
             stop.wait(2.0)
     threading.Thread(target=sample, daemon=True).start()
     t0, last, first = time.time(), {}, {}
+    srv_cpu0 = None
     while time.time() - t0 < a.warm + a.seconds:
         try:
             m = q.get(timeout=5)
@@ -109,14 +141,17 @@ def main():
             last[m[1]] = m[2]
             if time.time() - t0 >= a.warm and m[1] not in first:
                 first[m[1]] = m[2]
+                if srv_cpu0 is None:
+                    srv_cpu0, srv_t0 = sum(proc_cpu(s.pid) for s in servers), time.time()
         elif m[0] in ("done", "error"):
-            raise SystemExit(f"producer {m[1]} ran out of jobs: {m[2]}")
+            raise SystemExit(f"producer {m[1]} ran out of jobs / failed: {m[2]}")
     stop.set()
+    srv_cpu = (sum(proc_cpu(s.pid) for s in servers) - srv_cpu0) / (time.time() - srv_t0) if servers else 0.0
     ks = [k for k in first if k in last and last[k]["t"] > first[k]["t"]]
     d = lambda f: sum(f(last[k]) - f(first[k]) for k in ks)          # noqa: E731
     wall = max(last[k]["t"] for k in ks) - min(first[k]["t"] for k in ks)
     matches, rows, cpu = d(lambda x: x["matches"]), d(lambda x: x["rows"]), d(lambda x: x["cpu"])
-    stages = {s: d(lambda x, s=s: x["tm"].get(s, 0.0)) for s in ("java", "fill", "start", "decide", "forward", "fwd_rows", "fwd_calls")}
+    stages = {s: d(lambda x, s=s: x["tm"].get(s, 0.0)) for s in ("java", "fill", "start", "decide", "gather", "forward", "forward_wait", "decide_py", "fwd_rows", "fwd_calls")}
     win = [g for t, g in gpu if first and min(first[k]["t"] for k in ks) <= t]
     util = {int(r[0]): sum(gg[i][1] for gg in win) / len(win) for i, r in enumerate(win[0])} if win else {}
     out = dict(producers=a.producers, matches_per_producer=a.matches, threads=a.threads, devices=a.devices,
@@ -126,11 +161,15 @@ def main():
                java_engine_core_s_per_match=d(lambda x: x["jeng"]) / max(matches, 1),
                java_obs_core_s_per_match=d(lambda x: x["jobs"]) / max(matches, 1),
                fwd_rows_per_call=stages["fwd_rows"] / max(stages["fwd_calls"], 1), gpu_util_mean=util,
-               rss_mb_max=max(last[k]["rss_mb"] for k in ks), host=os.uname().nodename, nproc=os.cpu_count())
+               rss_mb_max=max(last[k]["rss_mb"] for k in ks), host=os.uname().nodename, nproc=os.cpu_count(),
+               server=a.server, server_cores_busy=srv_cpu,
+               all_in_core_s_per_match=(cpu + srv_cpu * wall) / max(matches, 1))
     Path(a.out).write_text(json.dumps(out, indent=1))
     print(json.dumps(out))
     for p in ps:
         p.kill()
+    for s in servers:
+        s.kill()
 
 
 if __name__ == "__main__":
