@@ -1,0 +1,30 @@
+D2-G item 3: how far the Java observation (speed/crforge/obsid, CfLoop) would close crforge's CPU gap per update  (b: estimate)
+
+Measured inputs (a)
+  update CPU, 18 actors / 20 logical CPUs, default JIT : crforge 15,466 vs fin16 12,471 actor core-s (1.24x)   time/cpu_per_update_18actors.txt
+  update CPU, same layout, crforge C1-only JIT        : 15,602 vs 12,451 (1.25x)                              time/c1_summary_18actors.txt
+  per-thread CPU, crforge actor (4 actors, ~2,290 s)   : default python 92.6%, C2 compiler 6.8%, GC/other 0.6%;
+                                                         C1-only python 96.0%, JPype reference thread 3.6%    thr_d2jfr2_{def,c1}.txt
+  actor main-thread time, same work (128 warm-start + 256 rollout matches, 4 actors each, uncontended):
+                                                         crforge 9,830 s vs fin16 9,960 s (0.99x)             samp_actor_4actors.txt
+  crforge actor_main split (share of actor_main samples): policy forward_batch 74.2%, crforge_core.state 9.7%,
+    royale_env.ability_commands 8.6% (IW press observe), e1_eval.prepare 10.2%, sim_cue_rows 5.4%, extract 4.9%,
+    crforge_core.unit_types(_json/_digest) 3.5% (recomputed per call), crforge_core.step 3.5%, apply 2.5%, decide 2.5%,
+    queue wait 2.1% (inclusive shares overlap; listed for reading only)
+  Java side (JFR, 600 s of one actor; low sample count: 387 C1 / 1,032 default): CfCore facade 37-55% of Java samples
+    (state() string building, HashMap, StringBuilder), PlayerCommands.findPlay(String) 5-14%, the rest engine pathing.  jfr_top.txt
+  Java observation cost (S3b-4, CfLoop, all 20 GenModel keys): 0.049 core-s per match
+
+Estimate
+  kept on the Python thread with the Java obs: policy forward + crforge step + apply + decide + queue wait
+    = 67.2 of 79.1 sample-% -> removable = 15.0% of actor_main (upper) ; 6.4% if the IW press observe
+    (ability_commands, 8.6%) has to stay in Python (lower).
+  crforge update CPU = 15,466 x 0.926 (python thread) x (1 - removed) + 15,466 x 0.074 (JVM threads) + 0.049 x 256
+    upper removal: 13,345 core-s -> 1.07x fin16 ; lower removal: 14,568 -> 1.17x fin16   (gate 1.15x)
+  So the Java obs alone brings the update to about 1.07-1.17x: inside the gate only if the IW press observe moves to the
+  Java side too. Two facade costs are independent of it: unit_types_json/digest recomputed on every call (3.5% of
+  actor_main; caching it is a one-line class of fix) and the C2 compiler thread (6.8% of actor CPU; C1-only removes it
+  but slows the engine code by as much, measured 1.25x).
+  Caveat: the 1.24x is at 18 actors on 20 logical CPUs; at 4 uncontended actors the main thread is 0.99x and the JVM
+  threads add ~7%, so the gap grows with contention (shared-core / cache effects, b). The saturated test (24 actors on
+  16 CPUs) died in the pod-33308 crash and was not re-run.
