@@ -1,0 +1,77 @@
+{
+ "out": "/workspace/d1c/f20k_cfclone3",
+ "replays": 20000,
+ "outcomes": {
+  "ran": 19988,
+  "fault": 7,
+  "out_of_scope": 5
+ },
+ "in_scope": 19995,
+ "faults": 7,
+ "fault_rate_in_scope": 0.00035,
+ "fault_rate_ci95": [
+  0.00017,
+  0.00072
+ ],
+ "fault_rate_all": 0.00035,
+ "first_fault_kind": {
+  "error": 2,
+  "unsupported": 5
+ },
+ "first_fault_detail": {
+  "unsupported:mirror": 5,
+  "error:java.lang.UnsupportedOperationException:java.lang.UnsupportedOperationException:": 2
+ },
+ "skips_not_faults": {
+  "after_crforge_end": 11866,
+  "not_in_hand": 11726,
+  "not_enough_elixir": 4555,
+  "ability_identity_unavailable": 2564,
+  "no_hero": 2123,
+  "ability_not_ready": 29,
+  "ability_spent": 16
+ },
+ "princess_only": {
+  "n": 17406,
+  "fault": 6,
+  "fault_rate": 0.00034,
+  "ran_every_input": 8060,
+  "crowns_match": 5907,
+  "towers_match": 442
+ },
+ "any_troop": {
+  "n": 2589,
+  "fault": 1,
+  "fault_rate": 0.00039,
+  "ran_every_input": 1329,
+  "crowns_match": 891,
+  "towers_match": 102
+ },
+ "by_troop": {
+  "dagger-duchess": {
+   "n": 1060,
+   "fault": 0,
+   "fault_rate": 0.0,
+   "ran_every_input": 493,
+   "crowns_match": 336,
+   "towers_match": 36
+  },
+  "cannoneer": {
+   "n": 355,
+   "fault": 0,
+   "fault_rate": 0.0,
+   "ran_every_input": 179,
+   "crowns_match": 121,
+   "towers_match": 11
+  },
+  "royal-chef": {
+   "n": 1230,
+   "fault": 1,
+   "fault_rate": 0.00081,
+   "ran_every_input": 688,
+   "crowns_match": 450,
+   "towers_match": 57
+  }
+ }
+}
+replays identical on common keys 20000 differing 0

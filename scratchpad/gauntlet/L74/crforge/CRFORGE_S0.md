@@ -581,13 +581,20 @@ rewritten; it is meant to be merged (CF-MAIN cherry-picks everything past bac756
     - in cm, a Clone card refused with match code 4 (OVER, the match already decided) for Balloon / InfernoDragon_EV1
       at late T.
 
+- **SME (a):** run `cf3` (h11b's command, `lib_cfclone3`) gives 109/109, 0 regressions, exact frames
+  250,797 / 278,872, plants 65,874 with 0 missed. `results.jsonl` is byte-identical to h11b (`1e7e893fd09858ef`).
+- **HF fault sample (a, `lib_fix3`):** 7 faults, the same as CF-CLONE-2; 20,000 / 20,000 replays identical to
+  f20k_cfclone2 on common keys.
+  - The first attempt hung at shard 36/80 under a pod load of 160: workers idle on futexes. It was stopped by its exact
+    PIDs and resumed, and finished the other 44 shards (log `f20k_cfclone3.part1.log`).
+
 #### STATUS (CF-CLONE-3)
-- Done: fork commit 3ebb4115; core tests; the sweeps.
-- Running:
+- **DONE.** All gates pass. Fork head `3ebb4115` on clashbot-cfclone (pod 30408), to be merged.
+- Done: fork commit 3ebb4115; core tests; the sweeps; SME cf3; HF faults.
+- Ran (finished):
   - SME `cf3` on pod 32657 (`/workspace/pilot/harden/cf3.sh`, lib `/workspace/pilot/lib_cfclone3`; result
     `sme_live/cf3.cmp.txt`; restart = `bash harden/cf3.sh`).
   - HF faults on pod 30408 (`/workspace/d1c/f20k_cfclone3`, log `f20k_cfclone3.log`; resumable: rerun
     `CRFORGE_LIB=/workspace/cfclone/lib_fix3 bash /workspace/d1c/cb/scratchpad/gauntlet/L74/plan1026/d1c/faults.sh
     /workspace/d1c/f20k_cfclone3 --limit 20000 --workers 48`).
-- Next: compare cf3 with h11b (expect `results.jsonl` sha `1e7e893fd09858ef`), and f20k_cfclone3 with f20k_cfclone2 (7
-  faults), using `grades_cmp.py`.
+- Next: none for CF-CLONE. Not done: the d2t deterministic-CUDA rollout re-run.
