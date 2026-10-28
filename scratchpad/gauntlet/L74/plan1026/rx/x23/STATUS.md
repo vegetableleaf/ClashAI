@@ -1,4 +1,4 @@
-# RX-X23 STATUS (X2 farm audit + X3 SIM calibration, 3 R_exchange variants), updated 2026-10-28 ~13:55 UTC
+# RX-X23 STATUS (X2 farm audit + X3 SIM calibration, 3 R_exchange variants), updated 2026-10-28 ~15:45 UTC
 
 ## Done (a)
 - Code: rx/x23/{sim_worker.py, run_x23.py, run_x23.sh, analyze.py}; rx/hf_traces.py + rx/build.py now save E_i (elixir). Commit a46092f.
@@ -9,7 +9,7 @@
 - X1 (HF held-out '4', live): 33308:/workspace/rx23s/an_hf.out / an_p1.out. Variant iii: HF AUC .663/.810/.913, ECE
   .012/.020/.014; live ECE .18/.10/.09 (HF observer wins 66% -> prior); the symmetric fit (both views) gives live ECE .04/.02/.03.
 
-## Running (pods)
+## SIM runs: ALL DONE (32 x 480 = 15,360 games; 1 engine-gap skip in hold10_e4_741200)
 - SIM runs: 33308:/workspace/rx23s/ev/<policy>_<mode>_<seed>/ (4 lanes, queue /workspace/rx23s/q33.txt, logs lane33_*.out).
   Plus 30408:/workspace/rx23/ev/clxiii_{e4,iu40}_741200 (done; copied to 33308:/workspace/rx23s/ev30/). 30408 lanes stopped
   (CF-CLONE neighbour load 270 on a 54-core quota).
@@ -26,9 +26,9 @@
 - crforge "not modelled": Deflect_3000018 deflecting a projectile off the king tower (hold10_e4_741200 chunk 26). sim_worker now
   turns it into a skipped row (one match lost, counted in analyze.py sim_skipped_engine_gap) instead of a lost 12-seed chunk.
 - Intermittent SIGSEGV in libtorch oneDNN get_max_cpu_isa_mask inside the JPype JVM process (3 chunks in ~25 runs); the
-  job is requeued and rerun whole (run_x23.sh redoes any run without 480 rows).
+  chunk is now retried up to 3x inside run_x23.py (commit 2d46cec, swept into a P2-OPP1 commit via the shared index).
 
 ## Next
-- Analysis: cd /workspace/rx23s; /workspace/venvf16/bin/python cb/scratchpad/gauntlet/L74/plan1026/rx/x23/analyze.py
+- Analysis RUNNING (started ~15:44 UTC on 33308): cd /workspace/rx23s; /workspace/venvf16/bin/python cb/scratchpad/gauntlet/L74/plan1026/rx/x23/analyze.py
   /workspace/rx23/hfE.npz liveE.npz x23_bl.jsonl an_final.json ev ev30 > an_final.out
 - Copy an_final.{json,out} to rx/out/x23_*, commit + push, report the per-variant gate table.
