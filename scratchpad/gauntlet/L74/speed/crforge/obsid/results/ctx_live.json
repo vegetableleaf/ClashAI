@@ -1,0 +1,187 @@
+{
+ "ticket": "LOOP-CTX",
+ "seat_rows": 45211,
+ "matches": 56,
+ "skipped": [],
+ "wall_s": 686.2,
+ "hero_abilities": false,
+ "cfg_overrides": {},
+ "live_decision_options": {
+  "xbow_class": "class_sample",
+  "xbow_class_floor": 0.3,
+  "tau_phase": [
+   0.35,
+   0.45,
+   0.55
+  ],
+  "spell_aim": "rocket_area",
+  "log_aim": "log_barrel",
+  "barrel_lane": "on",
+  "lethal_rocket": "ot_behind",
+  "xbow_dead_lane": "block",
+  "rocket_dead_target": "block",
+  "lethal_log": "on",
+  "lethal_quiet": 1.0,
+  "tau_threatened": 0.2,
+  "card_levels": [
+   "Rocket=16",
+   "Log=16"
+  ],
+  "log_air": "block",
+  "rocket_value": 9.0,
+  "rocket_value_mode": "damage",
+  "rocket_value_hitbox": "edge",
+  "rocket_tornado": "only",
+  "tornado_river": "full",
+  "rocket_tornado_window": "measured",
+  "rocket_tornado_order": "either",
+  "rocket_tornado_lone": "combo"
+ },
+ "options": "DecisionOptions(card_choice='argmax', card_ratio=0.7, card_T=1.0, spell_aim='rocket_area', tau_phase=(0.35, 0.45, 0.55), xbow_class='class_sample', xbow_class_floor=0.3, log_aim='log_barrel', log_air='block', gate_decode='threshold', gate_hazard_min_elixir=0.0, gate_hazard_quiet=False, gate_hazard_threatened=0.0, gate_hazard_threat_radius=0.0, lethal_rocket='ot_behind', lethal_log='on', barrel_lane='on', lethal_quiet=1.0, xbow_dead_lane='block', rocket_dead_target='block', tau_threatened=0.2, rocket_value=9.0, rocket_value_mode='damage', rocket_value_min_y=16.0, rocket_value_max_left=99.0, rocket_value_threat='off', rocket_tornado='only', tornado_river='full', rocket_tornado_window='measured', rocket_tornado_order='either', rocket_tornado_lone='combo', rocket_value_towers='off', rocket_tornado_lead='off', rocket_value_hitbox='edge', rocket_value_lead='off', rocket_value_idle='off', rocket_value_min_elixir=0.0, card_levels=None)",
+ "stress_options": "DecisionOptions(card_choice='argmax', card_ratio=0.7, card_T=1.0, spell_aim='rocket_area', tau_phase=(0.35, 0.45, 0.55), xbow_class='class_sample', xbow_class_floor=0.3, log_aim='log_barrel', log_air='retarget', gate_decode='threshold', gate_hazard_min_elixir=0.0, gate_hazard_quiet=False, gate_hazard_threatened=0.0, gate_hazard_threat_radius=0.0, lethal_rocket='ot_behind', lethal_log='on', barrel_lane='on', lethal_quiet=1.0, xbow_dead_lane='block', rocket_dead_target='block', tau_threatened=0.2, rocket_value=2.0, rocket_value_mode='damage', rocket_value_min_y=16.0, rocket_value_max_left=99.0, rocket_value_threat='off', rocket_tornado='on', tornado_river='full', rocket_tornado_window='measured', rocket_tornado_order='either', rocket_tornado_lone='best', rocket_value_towers='on', rocket_tornado_lead='off', rocket_value_hitbox='edge', rocket_value_lead='off', rocket_value_idle='off', rocket_value_min_elixir=0.0, card_levels=None)",
+ "acceptance": {
+  "min_rows": 38400,
+  "rows_ok": true,
+  "fields_identical": true,
+  "decisions_identical": true,
+  "rng_identical": true,
+  "stress_identical": true
+ },
+ "fields": {
+  "decision_options": {
+   "equal": 45211,
+   "diff": 0
+  },
+  "card_names": {
+   "equal": 45211,
+   "diff": 0
+  },
+  "tau_threat": {
+   "equal": 45211,
+   "diff": 0
+  },
+  "t_sec": {
+   "equal": 45211,
+   "diff": 0
+  },
+  "grid": {
+   "equal": 45211,
+   "diff": 0
+  },
+  "enemy_alive": {
+   "equal": 45211,
+   "diff": 0
+  },
+  "rocket_boards": {
+   "equal": 45211,
+   "diff": 0
+  },
+  "lethal": {
+   "equal": 45211,
+   "diff": 0
+  },
+  "log_air_boards": {
+   "equal": 45211,
+   "diff": 0
+  },
+  "barrel_goblins": {
+   "equal": 45211,
+   "diff": 0
+  },
+  "rocket_value": {
+   "equal": 45211,
+   "diff": 0
+  },
+  "projectiles": {
+   "equal": 45211,
+   "diff": 0
+  },
+  "rng_before": {
+   "equal": 45211,
+   "diff": 0
+  }
+ },
+ "counters": {
+  "table_fills": 1,
+  "units": 209849,
+  "rows_tau_threat": 1657,
+  "rows_kills_king": 0,
+  "rows_glitch_filter": 241,
+  "rows_enemy_tower_down": 1861,
+  "rows_skip": 3391,
+  "rows_own": 43760,
+  "own_with_before": 309958,
+  "rows_goblins": 338,
+  "rows_air": 2191,
+  "rows_lookahead": 45099,
+  "rows_pending": 0,
+  "rows_ot": 12840,
+  "rows_hp_unknown": 0,
+  "stress_equal": 45211,
+  "stress_why_wait": 33770,
+  "decision_equal": 45211,
+  "rng_after_equal": 45211,
+  "why_wait": 35761,
+  "stress_why_gate": 5081,
+  "why_gate": 5757,
+  "stress_why_rocket_value": 2457,
+  "stress_why_no_affordable": 3427,
+  "why_no_affordable": 3427,
+  "stress_why_rocket_tornado": 258,
+  "stress_why_tau_threat": 196,
+  "why_tau_threat": 233,
+  "why_rocket_tornado": 11,
+  "follow_ups": 11,
+  "stress_why_lethal_rocket": 18,
+  "why_lethal_rocket": 18,
+  "stress_why_log_air": 2,
+  "why_log_air": 2,
+  "stress_why_lethal_log": 2,
+  "why_lethal_log": 2
+ },
+ "first_diffs": {},
+ "cost_us_per_seat_row": {
+  "prod_match_kwargs": 135.66,
+  "adapter_decode": 31.59,
+  "adapter_kwargs": 47.23,
+  "jpype_build": 29.57,
+  "decide_java": 454.8,
+  "decide_prod": 450.01,
+  "java_build": 21.69
+ },
+ "tables": {
+  "dmg_keys": 1,
+  "child_cards": 1
+ },
+ "src_sha256": {
+  "CfCore.java": "c003fc7407fcd33ba94b4fb6eb00c41a8e3de174847d74721293499690982df0",
+  "pipeline/crforge_core.py": "5e971204993dea4cf3636d82faf86070c0be81843d2a50c518a195bf294ef893",
+  "pipeline/royale_env.py": "73108df22a02ced0522f8773e2c4f90279c032c374b4ab7b5b8745a6089fa9dc",
+  "pipeline/e1_eval.py": "40c5290b29189212d2384a790ff88ed1aad9e09d5910cfbd9c377d25937e1b40",
+  "pipeline/obs_contract.py": "250caac3b21ce1019b76b4dc2c01c99e8a0aae0caf62e1fe6599eda8bc0a599a",
+  "pipeline/body_identity.py": "d30931ec6f450a9bb5500927b0f7026d690248485ae28670bdf397283e66fe62",
+  "pipeline/public_observation.py": "ff52cb10e1ffa7980e93a78f58c0e16817ef8e6815c3b3a5faff7a594e613bbe",
+  "pipeline/opp_elixir_count.py": "6866bbedda13a154be72c48f1ee81b0d54f817724bacd0dc33be524be20fa855",
+  "pipeline/vocab.py": "0c77d80563674b0dc4d47ca14e9ae8fcbc4ed87839e0076dd7caba39c202e631",
+  "builder/CfSpeed.java": "befd32bfe1397704ee548074f78d54a6507d6d0a897437a6a90b15725d09030d",
+  "builder/CfObsBind.java": "a6e7cd7cedafa2324c51247de2c61232aca6ab450eb4cceef7e9fcb5e3fb7ebe",
+  "builder/CfOppElixir.java": "48e743764ad8b446f47b3bfff188d0aa4879fcc0755ce0c832b08d8de2e338d6",
+  "builder/CfPubObj.java": "64c030d424143dc3a9e5d255f6c09080a0dd853a5f21d6bf1b9ada8591dad1ea",
+  "builder/obs_id.py": "cc36a9a1dfa2f0efeb54d8d298dd7488be7aac3b13f1ae6e332d688c8463cab6",
+  "pipeline/sim_unit_state.py": "2d89ab30436f4914c174cdebc40a6eab5819f31552c370eee3804e409f497e47",
+  "pipeline/fast_obs.py": "cf973f512a53f43936bbaa25ba293d750cdb5286727f660c3081af153d3ba135",
+  "pipeline/model_gen.py": "ba859b5fea5d8bbbedfd6fac0dbc0c66e02d4ae8046959da46cf49284938d14b",
+  "builder/CfCue.java": "d8291e17f568eaa3dede241c8d0505b32b484554442e66d645b91c1bdb4e4ca9",
+  "pipeline/match_memory.py": "1b1e3c762d768348dccd8a386568f140bea8a8fa2953f02f4692a991e1579a1a",
+  "pipeline/habit_terms.py": "8df3099b7254cd032e237a0ff051f99b917772e62350849584007ca82ceafaa9",
+  "builder/CfMem.java": "6d067169e7663a25d378ac31049088a44efd8362f06bd56c3c47a004c1a822b4",
+  "builder/CfIdent.java": "f6652a5243b5c289a110d5777706324f0b5826ded0843ce2b8195a65056dc061",
+  "model": "8d328a43bf09fb7e389d41f01524fbb50955e15b64fdb72e28488a123eabad42",
+  "ctx/CfCtx.java": "da07f2d486b63427184396bd03cc52d2c59f3ceb1c31f75316779486068074b7",
+  "ctx/cf_ctx.py": "4906cd1c4f8fc49206745faa8f68cfda8d2607932b672f27ef321c5c0f481401",
+  "ctx/ctx_id.py": "02080468d757cefd1677d1a364e62595a6a82c4848444f9cc5bdafc992f9ff4d",
+  "ctx/LIVE_OPTIONS": "5b2a5cf6f25a72efebd05b64dd994fba39bea6c7c05637543301040b94e35039",
+  "ctx/decision_options.py": "8239fe59085547f96fb044be5187b6197ef0e0b63c29d5bd668e5bd7fdefb33b"
+ },
+ "note": "prod = decision_options.match_kwargs on the SelfPlaySide; java = CfCtx.build + cf_ctx.kwargs on the same facade battle and tick. Fields compared by canon() (type-tagged, floats as hex, sets sorted, BoardState / CtxBoard as board_proj: t_sec, phase flags, my_elixir, my_hand, the 6 Towers, every Unit). rocket_value's holder (prod: the match; java: None) is not compared: unread unless rocket_value_lead / _threat are on (cf_ctx refuses those). Decisions: repr of decide's dicts; RNG: bit_generator.state of each side's own decision stream. jpype_build includes the JPype call; the JVM-side time alone is in java_build."
+}

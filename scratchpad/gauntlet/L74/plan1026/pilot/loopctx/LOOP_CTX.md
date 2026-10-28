@@ -7,12 +7,12 @@ live decision config (`scratchpad/gauntlet/L70/live/LIVE_OPTIONS`). Labels: (a) 
 - DONE: trace (below); `obsid/CfCtx.java` (Java builder), `obsid/cf_ctx.py` (doubles -> decide kwargs), `obsid/ctx_id.py`
   + `obsid/run_ctx.sh` (identity harness). Smoke (a): 2 matches, 1,693 seat-rows, every field + decisions + RNG states
   + the stress pair identical (`/workspace/ctx/out/smoke.json`, pod 30408).
-- RUNNING: acceptance runs on pod **30408** (32657 was at load 219 on 54 vCPU; nothing progressed there):
+- DONE (a): acceptance on pod **30408** (32657 was at load 219 on 54 vCPU; nothing progressed there):
   `/workspace/ctx/out/live.json` (56 matches) and `/workspace/ctx/out/live_hero.json` (56, `--hero-abilities`).
   Restart: `ssh -p 30408 root@157.157.221.29 'nohup bash /workspace/ctx/run_all.sh &'`.
   Tree: `/workspace/ctx/rl` = s3b3d/rl data links + HEAD b84b440 pipeline + HEAD blobs of LIVE_OPTIONS, facade
   CfCore.java, body_map.json; harness at `/workspace/ctx/crforge/obsid`.
-- NEXT: copy results back to `obsid/results/ctx_*.json`, fill the result section, message LOOP-INT (a9ec050f10f6a04be).
+- DONE: results copied to `obsid/results/ctx_live.json`, `ctx_live_hero.json`; LOOP-INT messaged. NEXT (optional): lazy lethal rows.
 
 ## Trace: what decide reads (decision_options.match_kwargs on an e1_eval SelfPlaySide, live cfg)
 `m._cur[1]` = bs = `from_engine(sim_compact(extrapolate(m.state, prev, 26)))`: the 26-tick look-ahead board (bodies
@@ -42,5 +42,22 @@ seat's obs for the decision (it reads the obs's look-ahead snapshot `back[seat]`
 changed): `cf_ctx.fill_missing(T)`, build again. Then `cf_ctx.decode(view[:n].tolist())` per row and
 `cf_ctx.kwargs(rows, ...)` -> `decide(..., **kw)`. Layout: CfCtx.java header comment.
 
-## Results
-(pending: the 56-match runs)
+## Results (a), pod 30408, pipeline HEAD b84b440, `obsid/results/ctx_live.json` / `ctx_live_hero.json`
+| run | seat-rows | 12 context fields + rng_before | decisions (repr) | RNG after | stress pair |
+|---|---|---|---|---|---|
+| live cfg, 56 matches | 45,211 | 45,211 / 45,211 each | 45,211 / 45,211 | 45,211 / 45,211 | 45,211 / 45,211 |
+| + `--hero-abilities` | 44,982 | 44,982 / 44,982 each | 44,982 / 44,982 | 44,982 / 44,982 | 44,982 / 44,982 |
+
+Rules that fired (live run, real decisions): lethal_rocket 18, lethal_log 2, log_air 2, rocket_tornado 11 (follow_ups 11),
+tau_threat 233; stress (rocket_value 2, combo on, lone best, tower bonus, log_air retarget): rocket_value 2,457, rocket_tornado
+258. Context coverage: tau_threat rows 1,657, glitch-filtered princess 241, enemy tower down 1,861, lethal_quiet skip 3,391,
+own plays 43,760 rows (309,958 with an hp_after snapshot), goblins 338, air 2,191, OT 12,840; kills_king 0 (1 in the hero run).
+
+Cost per seat-row (us, live run): production match_kwargs 135.7 | CfCtx.build in the JVM 21.7 (JPype call 29.6) + adapter
+decode 31.6 + kwargs 47.2 = 100.4 through JPype, ~79 of it Python. decide itself 450 (same on both contexts).
+
+Untested (b): `pending` True at a decision (0 rows: SelfPlaySide lands a play before its next decision at this cfg);
+hp_frac None bodies (0 rows); a Phoenix-egg ground-child claim (table has 1 card, no claim counted); decide after
+63b0693 (gate_sample, default off; match_kwargs untouched). Ceiling: Math.hypot vs Python's math.hypot may differ by
+1 ulp at an exact 8-tile / 0.75-tile boundary (none seen). Upgrade path for the Python share: build lethal's crown dicts
+/ own list only for rows with a Log / Rocket affordable (lazy), as rocket_boards / log_air_boards already are.
