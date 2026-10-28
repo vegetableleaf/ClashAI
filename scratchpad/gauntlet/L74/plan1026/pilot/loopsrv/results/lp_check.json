@@ -9,7 +9,8 @@
    "max_abs_diff": {
     "lp_gate": 6.32e-06,
     "lp_card": 9.53e-09,
-    "lp_cell": 2.53
+    "lp_cell": 2.53,
+    "v": 4.9e-07
    },
    "action_diffs": 1,
    "rows_lp_over_1e5": 1297,
@@ -21,7 +22,8 @@
    "max_abs_diff": {
     "lp_gate": 6.32e-06,
     "lp_card": 9.53e-09,
-    "lp_cell": 7.55e-06
+    "lp_cell": 7.55e-06,
+    "v": 4.9e-07
    },
    "action_diffs": 0,
    "rows_lp_over_1e5": 0,
@@ -33,7 +35,8 @@
    "max_abs_diff": {
     "lp_gate": 6.32e-06,
     "lp_card": 9.53e-09,
-    "lp_cell": 7.55e-06
+    "lp_cell": 7.55e-06,
+    "v": 4.9e-07
    },
    "action_diffs": 0,
    "rows_lp_over_1e5": 0,

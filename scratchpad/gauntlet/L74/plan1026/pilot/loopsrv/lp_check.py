@@ -43,11 +43,15 @@ def main():
     ck = POOL[0][1]
     cpu = E.load_policy(ck, "cpu")[0]
     rows = rows_for(cpu.model, a.n, seed=3)
-    ref = []
+    from pipeline.rl_royale import value_scalar
+    ref, vref = [], []
     for o in range(0, a.n, a.block):
         rr = [{k: v[i] for k, v in rows.items()} for i in range(o, o + a.block)]
         enc, heads, p, _ = cpu.forward_batch(rr, "cpu")
+        with torch.no_grad():
+            vref.append(value_scalar(cpu.model.value_head(enc["g"])).numpy())   # the critic without CtxHead
         ref += run_decide(heads, np.asarray(p), model_cell_logits(cpu, enc, "cpu"), a.block, o)
+    vref = np.concatenate(vref)
     res = {"ckpt": ck, "n": a.n, "block": a.block, "rows": []}
     for prec, mode in (("default", "eager"), ("fp32", "eager"), ("fp32", "graphs")):
         if prec == "fp32":
@@ -56,18 +60,21 @@ def main():
             torch.backends.cuda.matmul.allow_tf32, torch.backends.cudnn.allow_tf32 = False, True   # torch defaults
         pol = BR.LazyRefine(E.load_policy(ck, "cuda")[0]).split()
         fw = Forward(pol, "cuda", mode, buckets=BUCKETS_FINE, pad=True, graph_max=512)
-        got = []
+        got, vgot = [], []
         for o in range(0, a.n, a.block):
             arr = {k: torch.from_numpy(np.ascontiguousarray(v[o:o + a.block])).pin_memory().numpy() for k, v in rows.items()}
             enc, heads, p, _ = fw(arr, a.block)
             if fw.last_graph:
                 enc = {k: v[:a.block].clone() if torch.is_tensor(v) else v for k, v in enc.items()}
             h = {k: torch.from_numpy(v[:a.block].float().cpu().numpy()) for k, v in heads.items()}
+            with torch.no_grad():                    # the value the server could return: value_head(g) of this forward
+                vgot.append(value_scalar(pol.model.value_head(enc["g"][:a.block]).float().cpu()).numpy())
             cl = fw.cell_logits(enc, a.block)
             got += run_decide(h, p.cpu().numpy(), lambda ids, slots: cl(ids, slots).float().cpu(), a.block, o)
         d = {k: max(abs(x[k] - y[k]) for x, y in zip(ref, got)) for k in ("lp_gate", "lp_card", "lp_cell")}
         act = sum((x["play"], x["slot"], x["cell"]) != (y["play"], y["slot"], y["cell"]) for x, y in zip(ref, got))
         over = sum(any(abs(x[k] - y[k]) >= 1e-5 for k in ("lp_gate", "lp_card", "lp_cell")) for x, y in zip(ref, got))
+        d["v"] = float(np.abs(np.concatenate(vgot) - vref).max())
         r = dict(precision=prec, mode=mode, max_abs_diff={k: float(f"{v:.3g}") for k, v in d.items()}, action_diffs=act,
                  rows_lp_over_1e5=over, plays=sum(x["play"] for x in ref))
         print(json.dumps(r), flush=True)
