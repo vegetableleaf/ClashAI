@@ -74,9 +74,12 @@ TRIGGERS = ("rocket_tornado", "tornado_redirect", "rocket_played", "rocket", "wi
 # pilot's probabilities cost 5.9x the match ticks; these are pilot_report.py's water-filling split of 1.0x match ticks (equal
 # fork ticks per trigger, random half) -> 0.08-0.3 samples per match per trigger (cost to be re-measured at these values).
 P_DEFAULT = {"rocket_played": 0.5, "rocket": 0.0009, "wincon": 0.008, "siege": 0.028, "xbow_after_fail": 0.0064, "xbow": 0.0175,
-             "idle_full": 1.0, "log_bait": 0.07, "rocket_tornado": 0.0, "tornado_redirect": 0.0, "random": 0.0005}
-# opt-in triggers: probability 0 unless cf_p sets it (no condition read, no RNG draw); their measured p (pilot2: rocket_tornado
-# 0.055, tornado_redirect 0.0011) is NOT the default until the lead enables them with the owner's list of macros
+             "idle_full": 1.0, "log_bait": 0.07, "rocket_tornado": 0.055, "tornado_redirect": 0.0011, "random": 0.0005}
+# rocket_tornado / tornado_redirect (P3-FORK2, lead 10-28: Rocket use and the Tornado king redirect are REQUIRED behaviours, so
+# the SIM credits them by default) sit at their measured 1x-budget p (pilot2 / pilot4). OPT_IN = the triggers whose condition is
+# read only while their probability is > 0 (probability 0 = no condition read, no RNG draw, as before). The combo needs the
+# follow_ups play (action_delay_ticks > 0, no pipeline_decisions / tap_loss / tap_slow): a config without it gets rocket_tornado
+# 0.0 unless cf_p sets it (then cf_cfg refuses, naming the keys).
 OPT_IN = ("rocket_tornado", "tornado_redirect")
 # per-trigger fork horizons (ticks) where the 600-tick Q is too noisy (pilot3, K = 2 at 600 vs 300: idle_full SNR 0.29 -> 0.77,
 # log_bait 0.52 -> 0.78, wincon 0.83 -> 1.31, siege 0.68 -> 1.15, random 0.80 -> 1.23; the critic slope of the within-sample
@@ -87,11 +90,17 @@ DEFAULTS = {"cf_horizon_ticks": 600, "cf_k": 2, "cf_w": 1.0, "cf_clip": 3.0, "cf
             "cf_p": None, "cf_random_alts": 2, "cf_rocket_min_value": 2.0, "cf_siege_radius_tiles": 2.0,
             "cf_front_min_tiles": 5.0, "cf_front_max_tiles": 8.0, "cf_xbow_fail_window_ticks": 600, "cf_full_elixir": 9.9,
             "cf_combo_value": 6.0, "cf_redirect_dist_tiles": 12.0, "cf_k_by": None, "cf_horizon_by": None,
-            "cf_horizon_sweep": None}
-NEW_KEYS = ("cf_combo_value", "cf_redirect_dist_tiles", "cf_k_by", "cf_horizon_by", "cf_horizon_sweep")   # dropped from the config hash at their
+            "cf_horizon_sweep": None, "cf_adv_scale": 1.0, "cf_diag": False}
+NEW_KEYS = ("cf_combo_value", "cf_redirect_dist_tiles", "cf_k_by", "cf_horizon_by", "cf_horizon_sweep", "cf_adv_scale", "cf_diag")   # dropped from the config hash at their
 # defaults (older cf-on hashes stay); cf_k_by / cf_horizon_by = {trigger: K / horizon ticks}, the per-trigger noise controls;
 # cf_horizon_sweep = [ticks, ...] (< the horizon): the SAME forks also record Q read at those earlier stops ("qh"), so one pilot
-# gives the SNR / critic-slope of every candidate horizon (diagnostic, the learner ignores it)
+# gives the SNR / critic-slope of every candidate horizon (diagnostic, the learner ignores it);
+# cf_adv_scale = the slope calibration: every training advantage x this factor (the pilots' within-sample critic slope of the
+# terminal return on the horizon return is ~0.72 +- 0.07: the horizon Q exaggerates the difference between two candidates ~1.4x;
+# 1.0 = not applied; cf_w scales the same rows afterwards, the calibration differs from it only through cf_clip);
+# cf_diag = the P4 audit record (diagnostic, the learner ignores it): per sample the root context ("ctx": elixir, hand, tower
+# snapshot, enemy bodies on our half), per fork the state at each stop ("dg": Phi / critic parts of Q + the tower / elixir
+# snapshot), per match the opponent ("opp": league spec + style), per candidate a "meta" (clump value ...)
 KEYS = ("cf_credit",) + tuple(DEFAULTS)
 INTS = ("cf_horizon_ticks", "cf_k", "cf_max_alts", "cf_gap_ticks", "cf_cap_ticks", "cf_end_ticks", "cf_shrink_min",
         "cf_random_alts", "cf_xbow_fail_window_ticks")
@@ -109,6 +118,24 @@ TILE = 18000.0                        # RoyaleSim units per tile
 
 def _num(v) -> bool:
     return isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v)
+
+
+KEEP = ("cf_shrink", "cf_p", "cf_k_by", "cf_horizon_by", "cf_horizon_sweep", "cf_diag")   # values kept as they are (not float())
+
+
+def combo_ok(cfg: dict) -> bool:
+    """The config can play the combo's Tornado as a follow_ups play (e1_eval.SelfPlaySide.apply)."""
+    return bool(cfg.get("action_delay_ticks")) and not (cfg.get("pipeline_decisions") or cfg.get("tap_loss") or cfg.get("tap_slow"))
+
+
+def effective_p(cfg: dict) -> dict:
+    """P_DEFAULT merged with the config's cf_p; rocket_tornado is 0.0 when cf_p does not set it and the config cannot play
+    the combo (the default must not make an older config unrunnable)."""
+    user = cfg.get("cf_p") or {}
+    p = {**P_DEFAULT, **{k: float(v) for k, v in user.items()}}
+    if "rocket_tornado" not in user and not combo_ok(cfg):
+        p["rocket_tornado"] = 0.0
+    return p
 
 
 def cf_cfg(cfg: dict) -> Optional[dict]:
@@ -134,6 +161,10 @@ def cf_cfg(cfg: dict) -> Optional[dict]:
     for k in ("cf_clip", "cf_siege_radius_tiles", "cf_front_max_tiles", "cf_redirect_dist_tiles"):
         if not (_num(c[k]) and c[k] > 0):
             bad.append(f"{k} must be a finite number > 0, got {c[k]!r}")
+    if not (_num(c["cf_adv_scale"]) and 0 < c["cf_adv_scale"] <= 2):
+        bad.append(f"cf_adv_scale must be a finite number in (0, 2], got {c['cf_adv_scale']!r}")
+    if type(c["cf_diag"]) is not bool:
+        bad.append(f"cf_diag must be a bool, got {c['cf_diag']!r}")
     if not (_num(c["cf_audit_p"]) and 0 <= c["cf_audit_p"] <= 1):
         bad.append(f"cf_audit_p must be in [0, 1], got {c['cf_audit_p']!r}")
     if type(c["cf_shrink"]) is not bool:
@@ -153,8 +184,7 @@ def cf_cfg(cfg: dict) -> Optional[dict]:
     if not isinstance(p, dict) or any(k not in TRIGGERS for k in p) or not all(_num(v) and 0 <= v <= 1 for v in p.values()):
         bad.append(f"cf_p must map trigger names {TRIGGERS} to probabilities in [0, 1], got {p!r}")
         p = {}
-    if p.get("rocket_tornado", 0.0) > 0 and (not cfg.get("action_delay_ticks") or cfg.get("pipeline_decisions")
-                                              or cfg.get("tap_loss") or cfg.get("tap_slow")):
+    if p.get("rocket_tornado", 0.0) > 0 and not combo_ok(cfg):
         bad.append("cf_p rocket_tornado > 0 needs action_delay_ticks > 0 and no pipeline_decisions / tap_loss / tap_slow "
                    "(its Tornado is a follow_ups play: e1_eval.SelfPlaySide.apply)")
     if cfg.get("advantage", "match_loo") != "gae" or cfg.get("gae_gamma_unit", "row") != "tick":
@@ -172,10 +202,9 @@ def cf_cfg(cfg: dict) -> Optional[dict]:
         bad.append("cf_credit with crown terms is not supported (their rewards are not in the fork return)")
     if bad:
         raise SystemExit("bad cf_credit config: " + "; ".join(bad))
-    out = {k: (int(v) if k in INTS else v if k in ("cf_shrink", "cf_p", "cf_k_by", "cf_horizon_by", "cf_horizon_sweep")
-               else float(v)) for k, v in c.items()}
+    out = {k: (int(v) if k in INTS else v if k in KEEP else float(v)) for k, v in c.items()}
     out["cf_horizon_sweep"] = sorted({int(x) for x in (c["cf_horizon_sweep"] or ())})
-    out["cf_p"] = {**P_DEFAULT, **{k: float(v) for k, v in p.items()}}
+    out["cf_p"] = effective_p(cfg)
     out["cf_k_by"], out["cf_horizon_by"] = dict(c["cf_k_by"] or {}), {**HORIZON_DEFAULT, **(c["cf_horizon_by"] or {})}
     return out
 
@@ -186,10 +215,8 @@ def canonical(cfg: dict) -> dict:
     if cfg.get("cf_credit") is None or cfg.get("cf_credit") is False:
         return {k: v for k, v in cfg.items() if k not in KEYS}
     c = {k: (v if cfg.get(k) is None else cfg[k]) for k, v in DEFAULTS.items()}
-    p = {**P_DEFAULT, **{k: float(v) for k, v in (cfg.get("cf_p") or {}).items()}}
-    c["cf_p"] = {k: v for k, v in p.items() if not (k in OPT_IN and v == 0.0)}   # opt-in triggers left off: the older hash
-    keep = ("cf_shrink", "cf_p", "cf_k_by", "cf_horizon_by", "cf_horizon_sweep")
-    out = {**cfg, "cf_credit": True, **{k: (int(v) if k in INTS else v if k in keep else float(v)) for k, v in c.items()}}
+    c["cf_p"] = {k: v for k, v in effective_p(cfg).items() if not (k in OPT_IN and v == 0.0)}   # opt-in triggers off: the older hash
+    out = {**cfg, "cf_credit": True, **{k: (int(v) if k in INTS else v if k in KEEP else float(v)) for k, v in c.items()}}
     if out.get("cf_horizon_by") is not None:                  # the effective map; the default map is "absent"
         out["cf_horizon_by"] = {**HORIZON_DEFAULT, **out["cf_horizon_by"]}
         if out["cf_horizon_by"] == HORIZON_DEFAULT:
@@ -197,7 +224,7 @@ def canonical(cfg: dict) -> dict:
     for k in NEW_KEYS:
         v = out.get(k)
         if v is None or (isinstance(v, (dict, list, tuple)) and not v) or (
-                not isinstance(v, (dict, list, tuple)) and float(v) == DEFAULTS[k]):
+                not isinstance(v, (dict, list, tuple)) and v == DEFAULTS[k]):
             out.pop(k, None)
     return out
 
@@ -338,6 +365,38 @@ def xbow_reach_cells(s, grid: str) -> np.ndarray:
 
 def own_elixir(s) -> float:
     return float(next(pl for pl in s.state["players"] if int(pl["side"]) == s.side)["elixir_exact"])
+
+
+def snap(x) -> list:
+    """cf_diag: a prepared side's tower / elixir snapshot (10 floats): own then foe [princess hp lost (sum of 1 - hp/max over the
+    2 princesses), king hp lost, king activated, crowns conceded] (reward_shaping.tower_phat_record), then own and foe elixir."""
+    from pipeline import reward_shaping as RS
+    el = {int(pl["side"]): float(pl["elixir_exact"]) for pl in x.state["players"]}
+    own = el.get(x.side, 0.0)
+    foe = next((v for k, v in el.items() if k != x.side), 0.0)
+    return [round(float(v), 4) for v in RS.tower_phat_record(x.state, x.side)[:8]] + [round(own, 2), round(foe, 2)]
+
+
+def root_ctx(s) -> dict:
+    """cf_diag: the root decision's context -- tick, snapshot (``snap``), the hand's card names (the 4 in hand), the enemy bodies on our half
+    ([name, board x, board y]; my frame, forward = decreasing y)."""
+    foe = []
+    for e in s.state["entities"]:
+        if int(e["side"]) != s.side:
+            bx, by = raw_tiles(e, s.mirror)
+            if by >= 16.0:
+                foe.append([_norm(e.get("name", "")), round(bx, 1), round(by, 1)])
+    hand = [_norm(h["name"]) for pl in s.state["players"] if int(pl["side"]) == s.side for h in pl["hand"]]
+    return {"tick": int(s._cur[0]), "snap": snap(s), "hand": hand, "foe_half": foe}
+
+
+def opp_meta(m) -> dict:
+    """cf_diag: the match's opponent -- the league spec (opponent id / category / type, decks) and the drawn style."""
+    spec = getattr(m, "spec", None) or {}
+    o = spec.get("opp") or {}
+    return {"opp": {k: o.get(k) for k in ("id", "cat", "type")}, "opp_deck": spec.get("opp_deck_name"),
+            "learner_deck": spec.get("learner_deck_name"), "style": dict(m.opp.cfg.get("_opp_style") or {}),
+            "opp_T": m.opp.cfg.get("T"), "opp_tau": m.opp.cfg.get("tau")}
 
 
 def bait_seen(m) -> bool:
@@ -563,6 +622,7 @@ def candidates(m, s, d: dict, trig: str, c: dict) -> list[dict]:
     if d.get("follow_ups"):                               # a rule-decided combo of the real decision (cfg rocket_tornado)
         chosen["follow_ups"] = [dict(f) for f in d["follow_ups"]]
     pol = _Pol(s, d)
+    meta = (lambda **kw: {"meta": kw}) if c.get("cf_diag") else (lambda **kw: {})   # cf_diag: per-candidate facts for the P4 audit
     seen = {(chosen["slot"], chosen["cell"], bool(chosen.get("follow_ups")))}
     if trig == "random":
         return [chosen] + sampled_alts(pol, c["cf_random_alts"], m.cf_state["rng"], seen)
@@ -575,12 +635,13 @@ def candidates(m, s, d: dict, trig: str, c: dict) -> list[dict]:
         hit = m.cf_state["combo_hit"]
         first, second = (hit[0], hit[1]) if hit[5] == "rocket" else (hit[1], hit[0])
         after, within = DO.rocket_tornado_timing(hit[3])
-        want.append(("combo", first, hit[2], {"follow_ups": [E.follow_up_spec(second, hit[2], after, within)]}))
+        want.append(("combo", first, hit[2], {"follow_ups": [E.follow_up_spec(second, hit[2], after, within)],
+                                              **meta(value=float(hit[4]), plan=str(hit[3]))}))
         if rk is not None:
             value, elig = DO.best_rocket_clump(DO.rocket_bodies(s._cur[1], "cost"), grid, "edge", None, 0.0,
                                                towers=DO.enemy_princesses_alive(s._cur[1]))
             if elig is not None and value >= c["cf_rocket_min_value"]:
-                want.append(("rocket_clump", rk, ("clump", elig)))
+                want.append(("rocket_clump", rk, ("clump", elig), meta(value=float(value))))
     if trig == "tornado_redirect":                        # a Tornado that drags the unit into our king vs elsewhere
         tg, tk = m.cf_state["redirect_target"], _slot_of(names, allowed, "tornado")
         reach = DO.tornado_radius_tiles() - 0.75
@@ -596,10 +657,11 @@ def candidates(m, s, d: dict, trig: str, c: dict) -> list[dict]:
             value, elig = DO.best_rocket_clump(DO.rocket_bodies(bs, "cost"), grid, "edge", None, 0.0,
                                                towers=DO.enemy_princesses_alive(bs))
             if elig is not None and value >= c["cf_rocket_min_value"]:
-                want.append(("rocket_clump", rk, ("clump", elig)))
+                want.append(("rocket_clump", rk, ("clump", elig), meta(value=float(value))))
         hps = DO.enemy_princess_hps(s.state["episode"]["crown_towers"], s.side)
         if hps:
-            want.append(("rocket_princess", rk, DO.lethal_rocket_cell(min(hps, key=lambda k: (hps[k], k)), grid)))
+            weak = min(hps, key=lambda k: (hps[k], k))
+            want.append(("rocket_princess", rk, DO.lethal_rocket_cell(weak, grid), meta(hp=float(hps[weak]))))
     if trig in ("wincon", "siege"):
         tg = m.cf_state["target"]
         bx, by = tg["bx"], tg["by"]
@@ -666,6 +728,8 @@ def match_record(st: dict) -> dict:
            "fork_ticks": st["fork_ticks"], "xbow_failed": st["xb_failed"], "k": st["k"], "cond": dict(st["cond"])}
     if st.get("cond_ticks") is not None:
         out["cond_ticks"] = st["cond_ticks"]
+    if st.get("opp") is not None:
+        out["opp"] = st["opp"]
     return out
 
 
@@ -774,6 +838,8 @@ class Runner:
             t0 = time.perf_counter()
             if getattr(m, "cf_state", None) is None:
                 m.cf_state = new_state(s)
+                if c.get("cf_diag"):
+                    m.cf_state["opp"] = opp_meta(m)
             st = m.cf_state
             st["decisions"] += 1
             cands, trig = None, None
@@ -797,6 +863,7 @@ class Runner:
                 continue
             st["n"][trig] += 1
             st["last"][trig] = tick
+            ctx = root_ctx(s) if c.get("cf_diag") else None
             audit = bool(st["rng"].random() < c["cf_audit_p"]) and not to_end
             entries = [(x, px, dx) for x, px, dx in todo if x is m.learner or x is m.opp]
             seed = zlib.crc32(f"{st['seed']}:{len(st['samples'])}".encode())
@@ -806,10 +873,15 @@ class Runner:
             st["fork_ticks"] += res["fork_ticks"]
             wall = time.perf_counter() - t0
             st["wall_s"] += wall
-            st["samples"].append({"row": len(s.traj), "tick": tick, "trigger": trig, "audit": audit,
-                                  "to_end": to_end, "cands": cands, "fork_ticks": res["fork_ticks"],
-                                  "wall_s": round(wall, 3),
-                                  "target": dict(st["target"]) if trig in ("wincon", "siege") else None})
+            smp = {"row": len(s.traj), "tick": tick, "trigger": trig, "audit": audit,
+                   "to_end": to_end, "cands": cands, "fork_ticks": res["fork_ticks"],
+                   "wall_s": round(wall, 3),
+                   "target": dict(st["target"]) if trig in ("wincon", "siege") else None}
+            if c.get("cf_diag"):
+                smp["ctx"] = ctx
+                if trig == "tornado_redirect":
+                    smp["target"] = dict(st["redirect_target"])
+            st["samples"].append(smp)
 
     def phi_of(self, x) -> float:
         """Phi(s) of a stopped learner side: ``self.phi`` (tests) or the config's state potential (cf["phi_mode"]), else 0."""
@@ -824,6 +896,10 @@ class Runner:
 
     def _q(self, sides, ticks, root) -> list[float]:
         """gamma^(t - root) (Phi + v_scale v_net) at each stopped learner side (prepared, at its decision tick)."""
+        return [q for q, _, _ in self._qparts(sides, ticks, root)]
+
+    def _qparts(self, sides, ticks, root) -> list[tuple]:
+        """(Q, Phi, v_scale v_net) per stopped side: Q as ``_q`` (the stored Phi / v are the UNDISCOUNTED parts)."""
         import torch
         from pipeline import e1_eval as E
         from pipeline.rl_royale import value_scalar
@@ -837,8 +913,11 @@ class Runner:
         with torch.no_grad():
             v = value_scalar(net.value_head(enc["g"])).cpu().numpy()
         g, sc = float(self.c.get("gamma_tick", 1.0)), float(self.c.get("v_scale", 1.0))
-        return [g ** (t - root) * (self.phi_of(x) + sc * float(vi))
-                for x, t, vi in zip(sides, ticks, v)]
+        out = []
+        for x, t, vi in zip(sides, ticks, v):
+            ph = self.phi_of(x)
+            out.append((g ** (t - root) * (ph + sc * float(vi)), ph, sc * float(vi)))
+        return out
 
     def rollouts(self, m, entries, cands, seed: int, audit: bool = False, k: Optional[int] = None,
                  horizon: Optional[int] = None) -> dict:
@@ -877,6 +956,15 @@ class Runner:
                 forks.append(f)
                 meta.append((i, k))
         out = [{"q": [None] * K, "end": [None] * K, "terminal": [None] * K, "q_end": None} for _ in cands]
+        diag = bool(c.get("cf_diag"))
+
+        n0 = (len(m.learner.accepted), len(m.opp.accepted))
+
+        def put_dg(i, k, key, part, f):                       # cf_diag: Phi / critic parts + snapshot + plays since the root
+            slot = out[i].setdefault("dg", {}).setdefault(key, {"phi": [None] * K, "v": [None] * K, "snap": [None] * K,
+                                                                 "np": [None] * K})
+            slot["phi"][k], slot["v"][k], slot["snap"][k] = float(part[1]), float(part[2]), snap(f.learner)
+            slot["np"][k] = [len(f.learner.accepted) - n0[0], len(f.opp.accepted) - n0[1]]   # own, foe plays landed since the root
         sweep = [] if stop >= 10 ** 9 else sorted(h for h in (c.get("cf_horizon_sweep") or ()) if 0 < int(h) < stop - root)
         if sweep:                                             # Q also read at these earlier learner decisions ("qh")
             for o in out:
@@ -919,16 +1007,20 @@ class Runner:
                     done_h.add(fi)
                 due += got
             if stopping:
-                qs = self._q([forks[fi].learner for fi in stopping], [int(forks[fi].env.tick) for fi in stopping], root)
-                for fi, q in zip(stopping, qs):
+                qs = self._qparts([forks[fi].learner for fi in stopping], [int(forks[fi].env.tick) for fi in stopping], root)
+                for fi, part in zip(stopping, qs):
                     i, k = meta[fi]
-                    out[i]["q"][k], out[i]["end"][k], out[i]["terminal"][k] = float(q), int(forks[fi].env.tick), False
+                    out[i]["q"][k], out[i]["end"][k], out[i]["terminal"][k] = float(part[0]), int(forks[fi].env.tick), False
+                    if diag:
+                        put_dg(i, k, "stop", part, forks[fi])
             if sweeping:
-                qs = self._q([forks[fi].learner for fi, _ in sweeping], [int(forks[fi].env.tick) for fi, _ in sweeping], root)
-                for (fi, hs), q in zip(sweeping, qs):
+                qs = self._qparts([forks[fi].learner for fi, _ in sweeping], [int(forks[fi].env.tick) for fi, _ in sweeping], root)
+                for (fi, hs), part in zip(sweeping, qs):
                     i, k = meta[fi]
                     for h in hs:
-                        out[i]["qh"][str(h)][k] = float(q)
+                        out[i]["qh"][str(h)][k] = float(part[0])
+                        if diag:
+                            put_dg(i, k, str(h), part, forks[fi])
             if due:
                 for s, p, d in E.selfplay_decide(due):
                     s.apply(p, d)
@@ -994,7 +1086,7 @@ def batch_advantages(samples: list[dict], c: dict) -> tuple[list[np.ndarray], di
                 f = r["factor"]
             elif pooled["n"] >= c["cf_shrink_min"] and pooled["factor"] is not None:
                 f = pooled["factor"]
-        out.append(f * a.mean(axis=1))
+        out.append(f * float(c.get("cf_adv_scale", 1.0)) * a.mean(axis=1))
     return out, {**rel, "_pooled": pooled}
 
 

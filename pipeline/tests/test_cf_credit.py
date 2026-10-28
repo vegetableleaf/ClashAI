@@ -16,6 +16,7 @@ samples whose log-probs the learner recomputes."""
 from __future__ import annotations
 
 import copy
+import json
 import subprocess
 import sys
 import types
@@ -43,6 +44,7 @@ PRE = "27988a7"             # the last commit before cf_credit: the absent-key r
 YAML = REPO / "pipeline" / "rl_royale.yaml"
 L16 = REPO / "scratchpad/gauntlet/L74/stepd/cfg/stepd_l16_s74.yaml"
 ON = {"cf_credit": True, "advantage": "gae", "gae_gamma_unit": "tick", "league": True}
+ONC = {**ON, "action_delay_ticks": 26}                  # + what the combo's follow_ups play needs (e1_eval.SelfPlaySide.apply)
 GAE = dict(advantage="gae", critic_warmup_updates=1, seed=0, gae_gamma_unit="tick", gae_gamma_tick=0.99994)
 
 
@@ -101,15 +103,18 @@ class TestConfig(unittest.TestCase):
             CF.cf_cfg({"cf_w": 2.0})                                       # a stray key without the switch
         c = CF.cf_cfg(ON)
         self.assertEqual(set(c), set(CF.DEFAULTS))
-        self.assertEqual(c["cf_p"], CF.P_DEFAULT)
-        self.assertEqual(CF.cf_cfg({**ON, "cf_p": {"rocket": 1.0}})["cf_p"], {**CF.P_DEFAULT, "rocket": 1.0})
+        self.assertEqual(c["cf_p"], {**CF.P_DEFAULT, "rocket_tornado": 0.0})     # no action delay: no combo play (see below)
+        self.assertEqual(CF.cf_cfg(ONC)["cf_p"], CF.P_DEFAULT)                    # the owner-required triggers are on by default
+        self.assertEqual(CF.cf_cfg({**ONC, "cf_p": {"rocket": 1.0}})["cf_p"], {**CF.P_DEFAULT, "rocket": 1.0})
+        self.assertEqual((c["cf_adv_scale"], c["cf_diag"]), (1.0, False))
         self.assertIsNotNone(CF.cf_cfg({**ON, "shaping": "tower_phat"}))        # the fast loop's Phi: the forks value it
         for bad in ({"advantage": "match_loo"}, {"gae_gamma_unit": "row"}, {"league": False}, {"branch_gate": True},
                     {"posture_head": True}, {"critic_ctx": "arch"}, {"kl_ref_gate_max_elixir": 3},
                     {"shaping": "tower_crown"}, {"princess_redirect": "potential"}, {"lead_protect": True},
                     {"habit_reward": True}, {"spell_value": True}, {"stored_values": True}, {"cf_credit": "yes"}, {"cf_horizon_ticks": 0},
                     {"cf_k": 0}, {"cf_p": {"rocket": 1.5}}, {"cf_p": {"nope": 0.1}}, {"cf_clip": 0},
-                    {"cf_front_min_tiles": 9.0}, {"cf_audit_p": 2}, {"cf_shrink": 1}):
+                    {"cf_front_min_tiles": 9.0}, {"cf_audit_p": 2}, {"cf_shrink": 1}, {"cf_adv_scale": 0},
+                    {"cf_adv_scale": 2.5}, {"cf_diag": 1}, {"cf_diag": "yes"}):
             with self.assertRaises(SystemExit, msg=bad):
                 CF.cf_cfg({**ON, **bad})
 
@@ -178,6 +183,18 @@ class TestAdvantageToy(unittest.TestCase):
         np.testing.assert_allclose(adv3[1], rel3["_pooled"]["factor"] * adv[1], atol=1e-12)
         adv4, _ = CF.batch_advantages(smp, {**c, "cf_shrink_min": 1000})   # nothing has enough: unshrunk
         np.testing.assert_allclose(adv4[1], adv[1], atol=1e-12)
+
+    def test_adv_scale_multiplies_the_training_advantage_only(self):
+        rng = np.random.default_rng(3)
+        samples = [{"trigger": "rocket", "cands": [{"q": rng.normal(0, .3, 2).tolist()} for _ in range(3)]} for _ in range(40)]
+        c = {"cf_shrink": True, "cf_shrink_min": 30}
+        base, rel = CF.batch_advantages(samples, c)
+        sc, rel2 = CF.batch_advantages(samples, {**c, "cf_adv_scale": 0.72})
+        same, _ = CF.batch_advantages(samples, {**c, "cf_adv_scale": 1.0})
+        for a, b, e in zip(base, sc, same):
+            np.testing.assert_allclose(b, 0.72 * a, rtol=0, atol=1e-12)
+            np.testing.assert_array_equal(a, e)
+        self.assertEqual(rel, rel2)                                               # the reliability is computed before the scale
 
     def test_slope_audit(self):
         rng = np.random.default_rng(2)
@@ -643,28 +660,48 @@ class TestForks(unittest.TestCase):
 # ------------------------------------------------------------------------------------------------------
 # opt-in triggers: rocket_tornado (combo vs lone Rocket) and tornado_redirect (Tornado into our king)
 # ------------------------------------------------------------------------------------------------------
-OLD_P = {k: v for k, v in CF.P_DEFAULT.items() if k not in CF.OPT_IN}   # the opt-in zeros are not in the hash
+OLD_P = {k: v for k, v in CF.P_DEFAULT.items() if k != "rocket_tornado"}   # ON has no action delay: rocket_tornado falls back to 0
 
 
 class TestNewTriggerConfig(unittest.TestCase):
-    def test_opt_in_defaults_keep_the_historical_cf_on_hash(self):
+    def test_owner_required_triggers_are_on_by_default(self):
+        """P3-FORK2 (lead 10-28): rocket_tornado 0.055 / tornado_redirect 0.0011 by default; the combo only where the config can
+        play its follow_ups Tornado (else 0.0, silently, unless cf_p sets it -> test_validation); 0.0 explicit = the trigger off."""
+        self.assertEqual((CF.P_DEFAULT["rocket_tornado"], CF.P_DEFAULT["tornado_redirect"]), (0.055, 0.0011))
         c = CF.cf_cfg(ON)
-        self.assertEqual((c["cf_p"]["rocket_tornado"], c["cf_p"]["tornado_redirect"]), (0.0, 0.0))
+        self.assertEqual((c["cf_p"]["rocket_tornado"], c["cf_p"]["tornado_redirect"]), (0.0, 0.0011))
+        c = CF.cf_cfg(ONC)
+        self.assertEqual((c["cf_p"]["rocket_tornado"], c["cf_p"]["tornado_redirect"]), (0.055, 0.0011))
+        for bad in ({"pipeline_decisions": True}, {"tap_loss": "0.1"}, {"tap_slow": 0.1}):
+            self.assertEqual(CF.cf_cfg({**ONC, **bad})["cf_p"]["rocket_tornado"], 0.0, bad)
+        self.assertEqual(CF.cf_cfg({**ONC, "cf_p": {"rocket_tornado": 0.0}})["cf_p"]["rocket_tornado"], 0.0)
         for name in CF.OPT_IN:
             self.assertIn(name, CF.TRIGGERS)
+
+    def test_hash(self):
         can = CF.canonical({**ON})
-        self.assertEqual(can["cf_p"], OLD_P)                                     # the opt-in zeros are not in the hash
+        self.assertEqual(can["cf_p"], OLD_P)                                     # the fallback zero is not in the hash
+        self.assertEqual(CF.canonical({**ON, "cf_p": {"rocket_tornado": 0.0}}), can)       # explicit 0.0 = the fallback
         self.assertFalse(set(CF.NEW_KEYS) & set(can))
-        self.assertEqual(CF.canonical({**ON, "cf_combo_value": 6.0, "cf_p": {"tornado_redirect": 0.0}}), can)
+        self.assertEqual(CF.canonical({**ON, "cf_combo_value": 6.0, "cf_adv_scale": 1.0, "cf_diag": False,
+                                       "cf_p": {"tornado_redirect": CF.P_DEFAULT["tornado_redirect"]}}), can)
+        canc = CF.canonical(ONC)
+        self.assertEqual(canc["cf_p"], CF.P_DEFAULT)
+        self.assertEqual(CF.canonical({**ONC, "cf_p": {"rocket_tornado": 0.055}}), canc)    # explicit = implicit
+        self.assertNotEqual(canc, CF.canonical({**ONC, "cf_p": {"rocket_tornado": 0.0}}))
         on = CF.canonical({**ON, "cf_p": {"rocket_tornado": 0.5}})
         self.assertEqual(on["cf_p"]["rocket_tornado"], 0.5)
         self.assertNotEqual(on, can)
         self.assertEqual(CF.canonical({**ON, "cf_redirect_dist_tiles": 9.0})["cf_redirect_dist_tiles"], 9.0)
+        self.assertEqual(CF.canonical({**ON, "cf_adv_scale": 0.72})["cf_adv_scale"], 0.72)
+        self.assertIs(CF.canonical({**ON, "cf_diag": True})["cf_diag"], True)
+        self.assertNotEqual(CF.canonical({**ON, "cf_diag": True}), can)
         base = RL.load_config(L16, [], False)
         self.assertEqual(RL.config_sha({**base, "cf_credit": True}),
-                         RL.config_sha({**base, "cf_credit": True, "cf_p": {"rocket_tornado": 0.0}}))
+                         RL.config_sha({**base, "cf_credit": True, "cf_p": {"tornado_redirect": CF.P_DEFAULT["tornado_redirect"]}}))
         self.assertNotEqual(RL.config_sha({**base, "cf_credit": True}),
                             RL.config_sha({**base, "cf_credit": True, "cf_p": {"tornado_redirect": 0.2}}))
+        self.assertNotEqual(RL.config_sha({**base, "cf_credit": True}), RL.config_sha({**base, "cf_credit": True, "cf_adv_scale": 0.72}))
 
     def test_validation(self):
         delay = {"action_delay_ticks": 26}
@@ -676,6 +713,8 @@ class TestNewTriggerConfig(unittest.TestCase):
             with self.assertRaises(SystemExit, msg=bad):
                 CF.cf_cfg({**ON, **bad})
         CF.cf_cfg({**ON, "cf_p": {"tornado_redirect": 0.3}})                  # the redirect needs no follow-up
+        with self.assertRaises(SystemExit):
+            CF.cf_cfg({**ON, "cf_p": {"rocket_tornado": 0.055}})              # explicit > 0 without the follow_ups play: refused
 
 
 class TestPerTriggerNoiseControls(unittest.TestCase):
@@ -871,6 +910,53 @@ class TestNewTriggerForks(unittest.TestCase):
         kc, uc = cells["tornado_king"], cells["tornado_on"]
         self.assertLess(np.hypot(x[kc] - 9.0, y[kc] - 29.5), np.hypot(x[uc] - 9.0, y[uc] - 29.5))
         self.assertTrue(all(a["slot"] == tk for a in red if a["kind"].startswith("tornado")))
+
+
+@unittest.skipIf(RoyaleSelfPlayEnv is None, "royalegym not importable (run in research/ext/Royale/.venv)")
+class TestDiag(unittest.TestCase):
+    def test_diag_records_context_parts_and_changes_no_value(self):
+        """cf_diag on: the same triggered forks give the SAME q / end ticks as with it off; every sample carries ctx (tick, 10-float
+        snapshot, hand, enemy bodies), every horizon-stopped candidate a dg record whose Phi + critic parts rebuild q, the match
+        record the opponent; off: none of those keys."""
+        calls = {"n": 0}
+
+        def trig(m, s, d, c):
+            al = np.asarray(d["allowed"], bool)
+            if int(s._cur[0]) < 300 or calls["n"] >= 3 or not al.any() or not d["gate_sampled"]:
+                return []
+            calls["n"] += 1
+            return ["random"]
+
+        res = {}
+        for diag in (False, True):
+            calls["n"] = 0
+            with patch.object(CF, "triggers", trig):
+                _, res[diag] = _run(CF.Runner, cf_diag=diag, cf_horizon_sweep=[60])
+        off, on = res[False]["cf"], res[True]["cf"]
+        self.assertEqual(len(on["samples"]), 3)
+        for k in ("ctx",):
+            self.assertTrue(all(k not in s for s in off["samples"]))
+        self.assertNotIn("opp", off)
+        self.assertEqual(set(on["opp"]), {"opp", "opp_deck", "learner_deck", "style", "opp_T", "opp_tau"})
+        for a, b in zip(off["samples"], on["samples"]):
+            self.assertEqual((a["tick"], a["trigger"]), (b["tick"], b["trigger"]))
+            self.assertEqual(b["ctx"]["tick"], b["tick"])
+            self.assertEqual(len(b["ctx"]["snap"]), 10)
+            self.assertEqual(len(b["ctx"]["hand"]), 4)
+            self.assertTrue(all(len(f) == 3 for f in b["ctx"]["foe_half"]))
+            for ca, cb in zip(a["cands"], b["cands"]):
+                self.assertEqual((ca["q"], ca["end"], ca["terminal"], ca["qh"]), (cb["q"], cb["end"], cb["terminal"], cb["qh"]))
+                self.assertNotIn("dg", ca)
+                self.assertTrue(all(cb["terminal"]) or {"stop", "60"} <= set(cb["dg"]), cb["dg"].keys())
+                for k in range(len(cb["q"])):
+                    if cb["terminal"][k]:
+                        continue
+                    ph, v = cb["dg"]["stop"]["phi"][k], cb["dg"]["stop"]["v"][k]
+                    g = 0.99994 ** (cb["end"][k] - a["tick"])
+                    self.assertAlmostEqual(cb["q"][k], g * (ph + v), places=12)
+                    self.assertEqual(len(cb["dg"]["stop"]["snap"][k]), 10)
+                    self.assertTrue(all(x >= 0 for x in cb["dg"]["stop"]["np"][k]) and len(cb["dg"]["stop"]["np"][k]) == 2)
+        json.dumps(on)                                                            # JSON-able (the pilot dump)
 
 
 if __name__ == "__main__":
