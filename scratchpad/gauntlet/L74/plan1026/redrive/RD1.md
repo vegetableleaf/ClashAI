@@ -2,6 +2,21 @@
 
 Labels: (a) measured here, (b) plausible, untested, (c) contradicted.
 
+## STATUS (keep current)
+- Done: pass-1 code (redrive.py, run.sh, build_lib.sh); 1k pilot; full run 1,010 shards on pod 33308
+  `/workspace/redrive/full_bec5811a` (lib `/workspace/redrive/rd_lib_bec5811a`, code copy `/workspace/redrive/cb`).
+- In progress: re-drive of 12 shards whose files the 10-28 02:22 host reboot left empty (log
+  `/workspace/redrive/full_bec5811a.log`); then `verify_out.py` (must print `"bad": {}`) and the manifest.
+- Next: tower-troop re-drive into the same output (needs the D1-C facade, c1853e0 / 387f006):
+  1. sync `pipeline/crforge_core.py`, `scratchpad/gauntlet/L74/crforge/facade/CfCore.java` and `redrive/` from HEAD into
+     `/workspace/redrive/cb` (git archive HEAD ... | ssh ... tar -x --no-same-owner);
+  2. `mkdir rd_lib_bec5811a_tt && cp -r rd_lib_bec5811a/lib rd_lib_bec5811a/BUILD.json rd_lib_bec5811a_tt/` (no facade/:
+     run.sh compiles the new CfCore.java there);
+  3. `setsid -f bash -c "bash cb/scratchpad/gauntlet/L74/plan1026/redrive/run.sh rd_lib_bec5811a_tt full_bec5811a
+     --workers 40 --redo unusable:tower_troop: > full_bec5811a_tt.log 2>&1"` (resumable: shards_redo/ markers);
+  4. `python verify_out.py full_bec5811a`, then record the new tiers / manifest (facade_sha256_by_file) here.
+- Self-check (2) and (1): not started (see Not done).
+
 ## Re-run on a new crforge build (passes 2 and 3)
 ```bash
 # on the fork's pod (F635c: 30408)
