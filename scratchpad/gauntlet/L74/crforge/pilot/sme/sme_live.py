@@ -326,6 +326,56 @@ def own_play_elixir(p, frames, my, own_plays):
     return dict(p, tick=a, run_ticks=[a, b - 1], dated='own_play_elixir')
 
 
+IWPEND9 = int(os.environ.get('SME_IWPEND9', '0'))  # A2c-9N: opponent hero IW press held pending (window to the cast)
+IW_TARGET_BUFFS = ('IceWizardHeroCold', 'IceWizardHeroSlow')
+
+
+def iw_valid_ticks(path):
+    """A2c-9N: reader tick -> {side s: s's hero Ice Wizard ability has a valid target}. IceWizardHero_target_resolver
+    (Global shape, filter IceWizardHero_resolver_filter) takes an enemy character only while it carries the hero's
+    IceWizardHeroCold / IceWizardHeroSlow buff (FilterIfNotBuffedByChecker); the buff row names its source side."""
+    out = {}
+    for line in open(path, 'rb'):
+        if b'"frame"' not in line[:40]:
+            continue
+        d = json.loads(line)
+        t = d.get('tick')
+        if t is None or t < 0 or t in out:
+            continue
+        v = {0: False, 1: False}
+        for u in (d.get('phase2') or {}).get('units', []):
+            for b in u.get('buffs') or []:
+                if isinstance(b, dict) and b.get('name') in IW_TARGET_BUFFS and b.get('source_side_cached') in (0, 1) \
+                        and b['source_side_cached'] != u.get('side'):
+                    v[b['source_side_cached']] = True
+        out[t] = v
+    return out
+
+
+def iw_pending(p, vt, plays, my):
+    """A2c-9N (SME_IWPEND9=1, extractor): an opponent hero Ice Wizard press, dated at its cast, whose frame before the
+    cast shows no valid target was pressed at an unknown tick in [max(hero play + 1, last valid frame), cast]. The
+    game's ability (IceWizardHero_ability_activation_actions) waits on IceWizardHero_wait_to_activate_ability, checked
+    every 50 ms, so a press with no valid target casts on the first valid tick; crforge holds the press the same way, and
+    the press re-searches the hero's route (171753: press 3291, cast 3333, the game's turn at 3292). The opponent's
+    elixir is not read, so the run window widens and the dated tick stays the cast: the fitter (FITNEXT) varies it at
+    an onset. Census (a2c9n/iwpress.py): every such opponent cast sits on the first valid frame (10 / 10 on v24)."""
+    if not IWPEND9 or p['kind'] != 'ability' or p['card'] != 'IceWizard' or p['side'] == my or \
+            p.get('source') != 'cast_seen' or not vt:
+        return p
+    R, s = p['tick'], p['side']
+    hero = max((q['tick'] for q in plays if q['kind'] == 'play' and q['card'] == 'IceWizard' and q['side'] == s
+                and q['tick'] < R), default=None)
+    if hero is None:
+        return p
+    before = [t for t in sorted(vt) if hero < t < R]
+    if not before or vt[before[-1]][s]:
+        return p
+    lastv = max((t for t in before if vt[t][s]), default=hero + 1)
+    lo = max(hero + 1, lastv)
+    return p if lo >= p['run_ticks'][0] else dict(p, run_ticks=[lo, p['run_ticks'][1]], dated='iw_pending')
+
+
 LATE9 = int(os.environ.get('SME_LATE9', '0'))  # round 9: own play run at its birth stamp, read late (171753@1770)
 MADE9 = int(os.environ.get('SME_MADE9', '0'))  # round 9: an area's made tick from the clock of its later sightings
 

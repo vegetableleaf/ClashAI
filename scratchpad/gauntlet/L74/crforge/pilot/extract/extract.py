@@ -284,6 +284,9 @@ def crforge_casts(path, plays, sides, my=None, fx=None):
         fx, my), frames, rises, my) for p in plays
            if not sme_live.golem_death_cast(p, frames) and not sme_live.iw_deploy_cast(p, frames, plays)
            and not sme_live.golem_death_fx(p, fx)]
+    if sme_live.IWPEND9:   # A2c-9N: an opponent hero Ice Wizard press held pending, window back to its last valid target
+        vt = sme_live.iw_valid_ticks(path)
+        out = [sme_live.iw_pending(p, vt, plays, my) for p in out]
     for g in sme_live.gk_dashes(frames) + sme_live.buff_casts(frames):
         deck = sides[g['side']]['deck']
         if g['card'] in deck:
@@ -499,7 +502,7 @@ def match(path, bl=None, names=None, cat=None, shims=None, tt=None, uhp=None, by
     if not n_opp:
         flags.append(f'{1 - my}:opp_no_fitting_deal:0')
     extra = dict(derived={str(s): derived[s] for s in (0, 1)}) if b else dict(source='live_only')
-    return dict(extra, own_cycle_fail=own_fail, opp_fitting_deals=n_opp, opp_deal_fit=opp_fit, match=path.stem,
+    rec = dict(extra, own_cycle_fail=own_fail, opp_fitting_deals=n_opp, opp_deal_fit=opp_fit, match=path.stem,
                 battle_time=b['battleTime'] if b else None, gap_s=gap, my_side=my, game_build=build,
                 era='post_1019' if path.stem[10:23] >= fights.TABLE_1019_FROM else 'pre_1019', tables=TABLES.name,
                 ext=m['ext'], phase3_births=bool(m['births']), first_frame_tick=m['frames'][1][0], own_delay=delay,
@@ -507,7 +510,13 @@ def match(path, bl=None, names=None, cat=None, shims=None, tt=None, uhp=None, by
                 deal={str(my): order, str(1 - my): None}, opp_deal='unknown_live' , rng_free=not drawers,
                 drawers=drawers, crowns_api=api, plays=plays, unplaced=unplaced, flags=flags,
                 own_taps=[dict(tick=p['tick'], name=p['name'], x=p['x'], y=p['y']) for p in m['plays']],
-                **(dict(reader_hidden=reader_hidden(path, cat)) if os.environ.get('SME_HIDDEN') == '1' else {})), None
+                **(dict(reader_hidden=reader_hidden(path, cat)) if os.environ.get('SME_HIDDEN') == '1' else {}))
+    if os.environ.get('SME_SAMETICK_ORDER') == '1':   # A2c-9R: same-tick plays of both sides in the reader's creation order
+        sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'sme' / 'bp9'))
+        import live_frames
+        import order_inputs
+        rec = order_inputs.reorder(rec, [], fr=[(f['t'], f) for f in live_frames.convert(path)])
+    return rec, None
 
 
 def validate(live, rec):

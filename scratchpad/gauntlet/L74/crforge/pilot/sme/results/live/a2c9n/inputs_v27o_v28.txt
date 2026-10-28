@@ -1,0 +1,28 @@
+only a [] only b []
+live_play_20261026_155552 ['plays']
+  - {"side": 1, "kind": "ability", "card": "IceWizard", "deck_index": 2, "name": "IceWizard", "form": 0, "run_ticks": [2611, 2611], "tick": 2611, "source": "cast_seen"}
+  - {"side": 1, "kind": "ability", "card": "IceWizard", "deck_index": 2, "name": "IceWizard", "form": 0, "run_ticks": [3527, 3527], "tick": 3527, "source": "cast_seen"}
+  + {"side": 1, "kind": "ability", "card": "IceWizard", "deck_index": 2, "name": "IceWizard", "form": 0, "run_ticks": [2477, 2611], "tick": 2611, "source": "cast_seen", "dated": "iw_pending"}
+  + {"side": 1, "kind": "ability", "card": "IceWizard", "deck_index": 2, "name": "IceWizard", "form": 0, "run_ticks": [3470, 3527], "tick": 3527, "source": "cast_seen", "dated": "iw_pending"}
+live_play_20261026_171753 ['plays']
+  - {"side": 1, "kind": "ability", "card": "IceWizard", "deck_index": 1, "name": "IceWizard", "form": 0, "run_ticks": [3333, 3333], "tick": 3333, "source": "cast_seen"}
+  + {"side": 1, "kind": "ability", "card": "IceWizard", "deck_index": 1, "name": "IceWizard", "form": 0, "run_ticks": [3237, 3333], "tick": 3333, "source": "cast_seen", "dated": "iw_pending"}
+live_play_20261026_174147 ['plays']
+  - {"side": 1, "kind": "ability", "card": "IceWizard", "deck_index": 1, "name": "IceWizard", "form": 0, "run_ticks": [5359, 5359], "tick": 5359, "source": "cast_seen"}
+  + {"side": 1, "kind": "ability", "card": "IceWizard", "deck_index": 1, "name": "IceWizard", "form": 0, "run_ticks": [5353, 5359], "tick": 5359, "source": "cast_seen", "dated": "iw_pending"}
+live_play_20261026_204202 ['plays']
+  - {"side": 1, "kind": "ability", "card": "IceWizard", "deck_index": 1, "name": "IceWizard", "form": 0, "run_ticks": [1615, 1615], "tick": 1615, "source": "cast_seen"}
+  + {"side": 1, "kind": "ability", "card": "IceWizard", "deck_index": 1, "name": "IceWizard", "form": 0, "run_ticks": [1558, 1615], "tick": 1615, "source": "cast_seen", "dated": "iw_pending"}
+live_play_20261026_211239 ['plays']
+  - {"side": 1, "kind": "ability", "card": "IceWizard", "deck_index": 1, "name": "IceWizard", "form": 0, "run_ticks": [1571, 1571], "tick": 1571, "source": "cast_seen"}
+  - {"side": 1, "kind": "ability", "card": "IceWizard", "deck_index": 1, "name": "IceWizard", "form": 0, "run_ticks": [3490, 3490], "tick": 3490, "source": "cast_seen"}
+  - {"side": 1, "kind": "ability", "card": "IceWizard", "deck_index": 1, "name": "IceWizard", "form": 0, "run_ticks": [5262, 5262], "tick": 5262, "source": "cast_seen"}
+  + {"side": 1, "kind": "ability", "card": "IceWizard", "deck_index": 1, "name": "IceWizard", "form": 0, "run_ticks": [1526, 1571], "tick": 1571, "source": "cast_seen", "dated": "iw_pending"}
+  + {"side": 1, "kind": "ability", "card": "IceWizard", "deck_index": 1, "name": "IceWizard", "form": 0, "run_ticks": [3373, 3490], "tick": 3490, "source": "cast_seen", "dated": "iw_pending"}
+  + {"side": 1, "kind": "ability", "card": "IceWizard", "deck_index": 1, "name": "IceWizard", "form": 0, "run_ticks": [5102, 5262], "tick": 5262, "source": "cast_seen", "dated": "iw_pending"}
+live_play_20261027_014151 ['plays']
+  - {"side": 1, "kind": "ability", "card": "IceWizard", "deck_index": 1, "name": "IceWizard", "form": 0, "run_ticks": [1264, 1264], "tick": 1264, "source": "cast_seen", "dated": "iw_area"}
+  + {"side": 1, "kind": "ability", "card": "IceWizard", "deck_index": 1, "name": "IceWizard", "form": 0, "run_ticks": [862, 1264], "tick": 1264, "source": "cast_seen", "dated": "iw_pending"}
+live_play_20261027_014928 ['plays']
+  - {"side": 1, "kind": "ability", "card": "IceWizard", "deck_index": 1, "name": "IceWizard", "form": 0, "run_ticks": [5215, 5215], "tick": 5215, "source": "cast_seen"}
+  + {"side": 1, "kind": "ability", "card": "IceWizard", "deck_index": 1, "name": "IceWizard", "form": 0, "run_ticks": [5139, 5215], "tick": 5215, "source": "cast_seen", "dated": "iw_pending"}

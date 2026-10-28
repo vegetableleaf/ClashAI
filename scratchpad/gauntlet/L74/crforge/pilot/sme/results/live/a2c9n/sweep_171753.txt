@@ -1,0 +1,98 @@
+{"R": "base", "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3237, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3238, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3239, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3240, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3241, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3242, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3243, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3244, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3245, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3246, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3247, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3248, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3249, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3250, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3251, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3252, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3253, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3254, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3255, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3256, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3257, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3258, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3259, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3260, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3261, "first": 1770, "exact": 1572, "div": 1467, "worse": 1, "worse_first": [3263], "better": 0}
+{"R": 3262, "first": 1770, "exact": 1572, "div": 1467, "worse": 1, "worse_first": [3263], "better": 0}
+{"R": 3263, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3264, "first": 1770, "exact": 1555, "div": 1484, "worse": 18, "worse_first": [3265, 3267, 3269], "better": 0}
+{"R": 3265, "first": 1770, "exact": 1556, "div": 1483, "worse": 17, "worse_first": [3267, 3269, 3271], "better": 0}
+{"R": 3266, "first": 1770, "exact": 1556, "div": 1483, "worse": 17, "worse_first": [3267, 3269, 3271], "better": 0}
+{"R": 3267, "first": 1770, "exact": 1562, "div": 1477, "worse": 12, "worse_first": [3269, 3271, 3273], "better": 1}
+{"R": 3268, "first": 1770, "exact": 1557, "div": 1482, "worse": 16, "worse_first": [3269, 3271, 3273], "better": 0}
+{"R": 3269, "first": 1770, "exact": 1634, "div": 1405, "worse": 15, "worse_first": [3271, 3273, 3275], "better": 76}
+{"R": 3270, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3271, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3272, "first": 1770, "exact": 1559, "div": 1480, "worse": 14, "worse_first": [3273, 3275, 3277], "better": 0}
+{"R": 3273, "first": 1770, "exact": 1560, "div": 1479, "worse": 13, "worse_first": [3275, 3277, 3279], "better": 0}
+{"R": 3274, "first": 1770, "exact": 1560, "div": 1479, "worse": 13, "worse_first": [3275, 3277, 3279], "better": 0}
+{"R": 3275, "first": 1770, "exact": 1561, "div": 1478, "worse": 12, "worse_first": [3277, 3279, 3281], "better": 0}
+{"R": 3276, "first": 1770, "exact": 1561, "div": 1478, "worse": 12, "worse_first": [3277, 3279, 3281], "better": 0}
+{"R": 3277, "first": 1770, "exact": 1562, "div": 1477, "worse": 11, "worse_first": [3279, 3281, 3283], "better": 0}
+{"R": 3278, "first": 1770, "exact": 1562, "div": 1477, "worse": 11, "worse_first": [3279, 3281, 3283], "better": 0}
+{"R": 3279, "first": 1770, "exact": 1563, "div": 1476, "worse": 10, "worse_first": [3281, 3283, 3285], "better": 0}
+{"R": 3280, "first": 1770, "exact": 1563, "div": 1476, "worse": 10, "worse_first": [3281, 3283, 3285], "better": 0}
+{"R": 3281, "first": 1770, "exact": 1564, "div": 1475, "worse": 9, "worse_first": [3283, 3285, 3287], "better": 0}
+{"R": 3282, "first": 1770, "exact": 1887, "div": 1152, "worse": 0, "worse_first": [], "better": 314}
+{"R": 3283, "first": 1770, "exact": 1884, "div": 1155, "worse": 4, "worse_first": [3285, 3287, 3289], "better": 315}
+{"R": 3284, "first": 1770, "exact": 1884, "div": 1155, "worse": 4, "worse_first": [3285, 3287, 3289], "better": 315}
+{"R": 3285, "first": 1770, "exact": 1885, "div": 1154, "worse": 3, "worse_first": [3287, 3289, 3291], "better": 315}
+{"R": 3286, "first": 1770, "exact": 1885, "div": 1154, "worse": 3, "worse_first": [3287, 3289, 3291], "better": 315}
+{"R": 3287, "first": 1770, "exact": 1886, "div": 1153, "worse": 2, "worse_first": [3289, 3291], "better": 315}
+{"R": 3288, "first": 1770, "exact": 1886, "div": 1153, "worse": 2, "worse_first": [3289, 3291], "better": 315}
+{"R": 3289, "first": 1770, "exact": 1887, "div": 1152, "worse": 1, "worse_first": [3291], "better": 315}
+{"R": 3290, "first": 1770, "exact": 1887, "div": 1152, "worse": 1, "worse_first": [3291], "better": 315}
+{"R": 3291, "first": 1770, "exact": 1888, "div": 1151, "worse": 0, "worse_first": [], "better": 315}
+{"R": 3292, "first": 1770, "exact": 1886, "div": 1153, "worse": 1, "worse_first": [3295], "better": 314}
+{"R": 3293, "first": 1770, "exact": 1700, "div": 1339, "worse": 4, "worse_first": [3295, 3297, 3299], "better": 131}
+{"R": 3294, "first": 1770, "exact": 1887, "div": 1152, "worse": 0, "worse_first": [], "better": 314}
+{"R": 3295, "first": 1770, "exact": 1570, "div": 1469, "worse": 3, "worse_first": [3297, 3299, 3301], "better": 0}
+{"R": 3296, "first": 1770, "exact": 1570, "div": 1469, "worse": 3, "worse_first": [3297, 3299, 3301], "better": 0}
+{"R": 3297, "first": 1770, "exact": 1571, "div": 1468, "worse": 2, "worse_first": [3299, 3301], "better": 0}
+{"R": 3298, "first": 1770, "exact": 1571, "div": 1468, "worse": 2, "worse_first": [3299, 3301], "better": 0}
+{"R": 3299, "first": 1770, "exact": 1572, "div": 1467, "worse": 1, "worse_first": [3301], "better": 0}
+{"R": 3300, "first": 1770, "exact": 1572, "div": 1467, "worse": 1, "worse_first": [3301], "better": 0}
+{"R": 3301, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3302, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3303, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3304, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3305, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3306, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3307, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3308, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3309, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3310, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3311, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3312, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3313, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3314, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3315, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3316, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3317, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3318, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3319, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3320, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3321, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3322, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3323, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3324, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3325, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3326, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3327, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3328, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3329, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3330, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3331, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3332, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}
+{"R": 3333, "first": 1770, "exact": 1573, "div": 1466, "worse": 0, "worse_first": [], "better": 0}

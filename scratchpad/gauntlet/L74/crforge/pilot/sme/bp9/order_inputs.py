@@ -23,9 +23,9 @@ def first_rows(frames, ts, p, run):
     return None
 
 
-def reorder(rec, log):
+def reorder(rec, log, fr=None):
+    """fr: the match's frames as [(t, frame)] (extract.py passes live_frames.convert's); None reads FR/<match>.jsonl."""
     plays = rec['plays']
-    fr = None
     out = list(plays)
     by = {}
     for i, p in enumerate(plays):

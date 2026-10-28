@@ -1,0 +1,6 @@
+r27 raw 157e183a94829f37 lf e90e31ef9350b7df
+r27o raw 003f8066c727e911 lf ab3c71140bf93506
+r28 raw 1e45a8206c1091ea lf 65b5e131fef28afc
+
+[exited with code 0]
+v27o (pod, LF) ab3c71140bf93506; v28 = r28 with CR stripped 65b5e131fef28afc
