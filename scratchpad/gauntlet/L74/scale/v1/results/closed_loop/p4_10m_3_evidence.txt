@@ -1,0 +1,31 @@
+Ticket P4-10M_3
+Checkpoint SHA256 verified on both pods:
+e054faea21ca958b5137e3139ab7521c93741a613264aa7af385d691abf80b78
+30408: /workspace/p4/runs/base_ice/opp_base_ice_s0.pt
+33308: /workspace/p4/ckpt/base_ice.pt
+Gate PID: 121684
+CPUS=32-63 W=32 seed=741200 TAG=p4base_cf_e4 engine=crforge mode=e4
+Preflight load: 4.24, 3.10, 2.80
+CPU block sums: 32-63=0; 64-95=0; 96-127=128; 128-159=50; 160-191=1.1; 192-223=0; 224-255=0
+Selected first minimum within allowed 32..247: 32-63.
+Start: 2026-10-28T17:39:37Z
+End: 2026-10-28T18:16:35Z
+Remote output: /workspace/d2/ev/p4base_cf_e4.out
+Remote candidate: /workspace/d2/ev/p4base_cf_e4/p4base_cf_e4_741200/
+Remote baseline: /workspace/d2/ev/clxiii_cf_e4/clxiii_cf_e4_741200/
+Matches are under D3/; SUMMARY.txt is in each seed root.
+UTC check | D3 entries | 1-minute load
+17:44:48 | 65 | 47.15
+17:49:54 | 65 | 44.72
+17:54:55 | 65 | 111.26
+17:59:59 | 65 | 109.19
+18:05:03 | 81 | 104.90
+18:10:05 | 81 | 95.17
+18:15:06 | 81 | 85.66
+18:20:09 | 81 | 32.03 | GATE DONE confirmed, rows 480
+Three consecutive loads above 100: 111.26, 109.19, 104.90. Gate was not stopped or restarted.
+Post-run scan for Traceback, Error, Exception, killed in candidate chunk logs, seed log and gate output: no matches.
+Candidate matches.jsonl: 1347548 bytes; baseline: 1294713 bytes. Neither required gzip.
+Scorer exit code: 0; paired rows: 480.
+Wall samples: 480 per side; raw lines saved under each side's wall_lines.txt.
+No live play or pod lifecycle actions. No git commit, push, stash or reset.

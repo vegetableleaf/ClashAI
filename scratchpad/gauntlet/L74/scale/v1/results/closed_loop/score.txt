@@ -1,0 +1,26 @@
+Label mapping: crforge = candidate (base_ice); fin16 = CLXIII baseline.
+Paired delta = candidate (base_ice) minus CLXIII baseline.
+
+rows: crforge 480, fin16 480, paired 480 (seeds [741200])
+crforge  win 187/480 = 38.96% [34.70, 43.39]
+fin16    win 334/480 = 69.58% [65.33, 73.53]
+paired crforge - fin16: -30.63 pp [-36.02, -25.23]; discordant 36 cf-only wins / 183 fin16-only wins
+per archetype (opponent deck, push_cal rule): n | crforge win% [CI] | fin16 win% [CI] | paired delta pp
+  beatdown   173 | 42.8 [35.6, 50.2] | 70.5 [63.3, 76.8] | -27.7
+  bridge     145 | 31.0 [24.1, 39.0] | 64.1 [56.1, 71.5] | -33.1
+  bait        54 | 42.6 [30.3, 55.8] | 81.5 [69.2, 89.6] | -38.9
+  control     44 | 36.4 [23.8, 51.1] | 56.8 [42.2, 70.3] | -20.5
+  hog         44 | 45.5 [31.7, 59.9] | 81.8 [68.0, 90.5] | -36.4
+  other       20 | 45.0 [25.8, 65.8] | 70.0 [48.1, 85.5] | -25.0
+
+base_ice: mean wall seconds per match = 110.180833 (n=480)
+base_ice SUMMARY.txt:
+GAP: one checkpoint, four decision setups; 480 paired games each (CAL c, E4 T .1; Hero IW + live press).
+Draws count as non-wins. Paired deltas, 10,000 bootstrap draws within census/side.
+D3: win 38.96% (187/480); plays/game 38.0; tower HP diff/game -2081
+
+clxiii: mean wall seconds per match = 62.536458 (n=480)
+clxiii SUMMARY.txt:
+GAP: one checkpoint, four decision setups; 480 paired games each (CAL c, E4 T .1; Hero IW + live press).
+Draws count as non-wins. Paired deltas, 10,000 bootstrap draws within census/side.
+D3: win 69.58% (334/480); plays/game 37.6; tower HP diff/game +1212
