@@ -192,6 +192,16 @@ class FastPool:
             skipped += s
             stats[k] = st
         results.sort(key=row_key)
+        label = any(bool(r["traj"]["ab_cand"].any()) for r in results if "ab_cand" in (r.get("traj") or {}))
+        if os.environ.get("FASTLOOP_RECORDS") and not label:   # LOOP-LRN: this update's rollout (traj: lp_*, v_old, wver);
+            import pickle                                     # not the B6 warm start's label rollouts (no PPO rows)
+            rd = Path(os.environ["FASTLOOP_RECORDS"])
+            rd.mkdir(parents=True, exist_ok=True)
+            out = rd / f"records_u{update:04d}.pkl"
+            if out.exists():                                  # the B6 warm start's call, then u0000's
+                out = out.with_name(f"records_u{update:04d}_{time.time_ns()}.pkl")
+            out.write_bytes(pickle.dumps({"update": int(update), "results": results, "skipped": skipped},
+                                         protocol=pickle.HIGHEST_PROTOCOL))
         wall = time.perf_counter() - t0
         rows = sum(st["rows"] for st in stats.values())
         line = {"update": int(update), "t": time.time(), "matches": len(results), "skipped": len(skipped), "wall_s": wall,

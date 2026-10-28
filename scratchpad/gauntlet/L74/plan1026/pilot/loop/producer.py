@@ -277,19 +277,29 @@ class Producer:
             for i in sorted({int(r) // 2 for r in rows}):
                 env.core._cf = self.L.core(i)
                 st = self._raw(env)
-                ents.append((st["tick"], {int(e["entity_id"]): e for e in st["entities"]}))
+                ents.append((i, st["tick"], {int(e["entity_id"]): e for e in st["entities"]}))
         finally:
             env.core._cf = cf0
         for m in miss:
             k, eid = m.rsplit("#", 1)
-            hit = [(t, e[int(eid)]) for t, e in ents if int(eid) in e]
+            # entity ids restart in every battle: several stopped matches can hold this id (thread timing decides which
+            # stop together; LOOP-INT2 measured 3 / 16 wrong outcome values once with the first hit taken). The body is
+            # in a match whose entity gives the SAME CfMem key (CfTrain.memBodyKey); every such candidate must resolve
+            # to one unit, else refuse.
+            hit = [(t, e[int(eid)]) for i, t, e in ents if int(eid) in e and str(self.L.memBodyKey(i, int(eid))) == k]
+            self.stats["mem_eid_in_other_matches"] += sum(int(eid) in e for _, _, e in ents) - len(hit)
             if not hit:
                 raise RuntimeError(f"CfMem missing body {m}: entity in no stopped match")
             self.stats["mem_eid_shared"] += int(len(hit) > 1)
-            f = public_frame({"tick": hit[0][0], "entities": [hit[0][1]]}, source="sim")["entities"]
-            name = catalog_card_form(int(f[0]["card_id"]))[0] if f else None
-            key = vocab.engine_key(name) if name else None
-            self.lmem.T.putBody(k, self.lmem.unit(key) if key else -1)
+            units = set()
+            for t, e in hit:
+                f = public_frame({"tick": t, "entities": [e]}, source="sim")["entities"]
+                name = catalog_card_form(int(f[0]["card_id"]))[0] if f else None
+                key = vocab.engine_key(name) if name else None
+                units.add(self.lmem.unit(key) if key else -1)
+            if len(units) != 1:
+                raise RuntimeError(f"CfMem body {m}: candidates in several matches resolve to units {sorted(units)}")
+            self.lmem.T.putBody(k, units.pop())
         return len(miss)
 
     def _resolve_rows(self) -> None:
@@ -559,7 +569,7 @@ class Producer:
                 self.progress(len(results), int(L.rowsBuilt.get()))
         results.sort(key=R.row_key)
         stats = {"wall_s": time.perf_counter() - t0, "matches": len(results), "rounds": st["rounds"],
-                 "crashed": len(skipped), "fills": self.stats["fills"], "time": dict(tm),
+                 "crashed": len(skipped), "fills": self.stats["fills"], "time": dict(tm), "counts": dict(self.stats),
                  "java_engine_core_s": (int(L.engineNs.get()) - c0[0]) / 1e9, "java_obs_core_s": (int(L.obsNs.get()) - c0[1]) / 1e9,
                  "rows": int(L.rowsBuilt.get()) - c0[2], "first_crash": None if L.firstCrash is None else str(L.firstCrash)}
         return results, skipped, stats

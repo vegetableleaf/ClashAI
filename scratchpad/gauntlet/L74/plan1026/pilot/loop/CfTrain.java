@@ -203,6 +203,25 @@ public final class CfTrain implements AutoCloseable {
   /** A memory seat's CfMem of match i (its table() at the end = rl_royale's result["memory"], obs_id.JavaMem.java_table). */
   public CfMem memOf(int i, int s) { return mem[i][s]; }
 
+  /** CfMem.frame's body key "card|body row|form" of live entity {@code eid} in match i, or null (no such entity / no
+   *  key). producer._mem_bodies: entity ids restart in every battle, so a missing key's "#eid" can sit in several
+   *  stopped matches; only a match whose entity gives the same key holds the body (same lines as CfMem.frame). */
+  public String memBodyKey(int i, int eid) {
+    CfCore c = core[i];
+    for (org.crforge.core.battle.BattleEntity e : c.s.std.getBattle().getHolder().entities()) {
+      if (!(e instanceof WorldEntity w) || w.getId() != eid || !w.getView().isAlive() || CfCore.bombAsSpell(w)
+          || w instanceof TowerEntity) continue;
+      String body = w.getData().name(), root = c.rootCard(w.name());
+      Integer p = c.byRoot.get(body + "|" + root);
+      if (p == null) p = c.unique.get(body);
+      if (p == null) return null;
+      int flags = (p & 0xff) | CfObsBind.evolved(w) | (w instanceof CharacterEntity ch && c.heroBody(ch) ? 16 : 0);
+      int form = (flags & 16) != 0 ? 2 : (flags & 8) != 0 ? 1 : 0;
+      return (p >> 8) + "|" + body + "|" + form;
+    }
+    return null;
+  }
+
   /** Match i's facade (Python's table fills read its state: production's raw() of the same battle). */
   public CfCore core(int i) { return core[i]; }
 
