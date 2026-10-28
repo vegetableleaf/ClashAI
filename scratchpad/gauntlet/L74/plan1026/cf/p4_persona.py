@@ -62,15 +62,16 @@ def personas(s, decks, classify):
 
 
 def load_decks(paths):
+    """deck name -> engine card list: census decks are named r<rank> (decks_rl.json 'decks'), live-train decks by their 'name'."""
     d = {}
     for p in paths:
         x = json.load(open(p, encoding="utf-8"))
-        rows = x if isinstance(x, list) else x.get("decks", list(x.values()))
-        for r in rows:
-            if isinstance(r, dict) and "name" in r:
-                cards = r.get("engine") or r.get("cards") or r.get("sides")
-                if cards:
-                    d[r["name"]] = cards if isinstance(cards[0], str) else cards[0]
+        for r in x.get("decks", []):
+            if r.get("engine"):
+                d[r.get("name") or f"r{r['rank']}"] = r["engine"]
+        for r in x.get("extra", []):
+            if r.get("engine"):
+                d[r["name"]] = r["engine"]
     return d
 
 

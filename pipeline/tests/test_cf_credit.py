@@ -767,6 +767,25 @@ class TestNewTriggerGeometry(unittest.TestCase):
         self.assertEqual(CF.pull_centre(0.0, 31.9, 0.0, 40.0, 4.75), (0.5, 31.5))           # kept on the board
         self.assertEqual(CF.pull_centre(5.0, 5.0, 5.0, 5.0, 4.75), (5.0, 5.0))
 
+    def test_drifted_moves_the_aim_toward_my_side_by_speed_times_flight(self):
+        from pipeline import decision_options as DO
+        bodies = np.array([[1.0, 5.0, 10.0, 4.0, 0.5, 0.0, 0.05], [2.0, 12.0, 14.0, 3.0, 0.5, 0.0, 0.0]])
+        x, y = CF.drifted(bodies, 5.0, 10.0)
+        self.assertEqual(x, 5.0)
+        self.assertGreater(y, 10.0 + 0.05 * DO.rocket_lands_in(5.0, 10.0) - 1e-6 - 0.5)       # about speed x flight
+        self.assertLess(y, 10.0 + 0.05 * (DO.rocket_lands_in(5.0, 10.0) + 6))
+        self.assertEqual(CF.drifted(bodies, 12.0, 14.0), (12.0, 14.0))                      # a standing body: no lead
+        self.assertEqual(CF.drifted(bodies, 1.0, 1.0), (1.0, 1.0))                          # no body near the target
+        self.assertEqual(CF.drifted(bodies[:0], 5.0, 10.0), (5.0, 10.0))
+
+    def test_rocket_lead_config_and_hash(self):
+        self.assertEqual(CF.cf_cfg(ON)["cf_rocket_lead"], "off")
+        self.assertEqual(CF.cf_cfg({**ON, "cf_rocket_lead": "drift"})["cf_rocket_lead"], "drift")
+        with self.assertRaises(SystemExit):
+            CF.cf_cfg({**ON, "cf_rocket_lead": "on"})
+        self.assertEqual(CF.canonical({**ON, "cf_rocket_lead": "off"}), CF.canonical(ON))
+        self.assertEqual(CF.canonical({**ON, "cf_rocket_lead": "drift"})["cf_rocket_lead"], "drift")
+
     def test_cell_at_is_nearest_centre(self):
         from pipeline import decision_options as DO
         x, y = DO.cell_centres_tiles("lattice")

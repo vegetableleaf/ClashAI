@@ -90,14 +90,17 @@ DEFAULTS = {"cf_horizon_ticks": 600, "cf_k": 2, "cf_w": 1.0, "cf_clip": 3.0, "cf
             "cf_p": None, "cf_random_alts": 2, "cf_rocket_min_value": 2.0, "cf_siege_radius_tiles": 2.0,
             "cf_front_min_tiles": 5.0, "cf_front_max_tiles": 8.0, "cf_xbow_fail_window_ticks": 600, "cf_full_elixir": 9.9,
             "cf_combo_value": 6.0, "cf_redirect_dist_tiles": 12.0, "cf_k_by": None, "cf_horizon_by": None,
-            "cf_horizon_sweep": None, "cf_adv_scale": 1.0, "cf_diag": False}
-NEW_KEYS = ("cf_combo_value", "cf_redirect_dist_tiles", "cf_k_by", "cf_horizon_by", "cf_horizon_sweep", "cf_adv_scale", "cf_diag")   # dropped from the config hash at their
+            "cf_horizon_sweep": None, "cf_adv_scale": 1.0, "cf_diag": False, "cf_rocket_lead": "off"}
+NEW_KEYS = ("cf_combo_value", "cf_redirect_dist_tiles", "cf_k_by", "cf_horizon_by", "cf_horizon_sweep", "cf_adv_scale", "cf_diag", "cf_rocket_lead")   # dropped from the config hash at their
 # defaults (older cf-on hashes stay); cf_k_by / cf_horizon_by = {trigger: K / horizon ticks}, the per-trigger noise controls;
 # cf_horizon_sweep = [ticks, ...] (< the horizon): the SAME forks also record Q read at those earlier stops ("qh"), so one pilot
 # gives the SNR / critic-slope of every candidate horizon (diagnostic, the learner ignores it);
 # cf_adv_scale = the slope calibration: every training advantage x this factor (the pilots' within-sample critic slope of the
 # terminal return on the horizon return is ~0.72 +- 0.07: the horizon Q exaggerates the difference between two candidates ~1.4x;
 # 1.0 = not applied; cf_w scales the same rows afterwards, the calibration differs from it only through cf_clip);
+# cf_rocket_lead = "drift": the Rocket alternatives (rocket_clump, rocket_on) aim where the bodies will have walked to when the Rocket
+# lands (decision_options.best_rocket_clump lead drift; the static aim covers ~38% of a blast's value vs 46% drifted, oracle 79%);
+# "off" = the static aim (cfaud3: a Rocket aimed at a wincon's present position is -0.20 vs the policy's action);
 # cf_diag = the P4 audit record (diagnostic, the learner ignores it): per sample the root context ("ctx": elixir, hand, tower
 # snapshot, enemy bodies on our half), per fork the state at each stop ("dg": Phi / critic parts of Q + the tower / elixir
 # snapshot), per match the opponent ("opp": league spec + style), per candidate a "meta" (clump value ...)
@@ -120,7 +123,7 @@ def _num(v) -> bool:
     return isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v)
 
 
-KEEP = ("cf_shrink", "cf_p", "cf_k_by", "cf_horizon_by", "cf_horizon_sweep", "cf_diag")   # values kept as they are (not float())
+KEEP = ("cf_shrink", "cf_p", "cf_k_by", "cf_horizon_by", "cf_horizon_sweep", "cf_diag", "cf_rocket_lead")   # values kept as they are (not float())
 
 
 def combo_ok(cfg: dict) -> bool:
@@ -163,6 +166,8 @@ def cf_cfg(cfg: dict) -> Optional[dict]:
             bad.append(f"{k} must be a finite number > 0, got {c[k]!r}")
     if not (_num(c["cf_adv_scale"]) and 0 < c["cf_adv_scale"] <= 2):
         bad.append(f"cf_adv_scale must be a finite number in (0, 2], got {c['cf_adv_scale']!r}")
+    if c["cf_rocket_lead"] not in ("off", "drift"):
+        bad.append(f"cf_rocket_lead must be off or drift, got {c['cf_rocket_lead']!r}")
     if type(c["cf_diag"]) is not bool:
         bad.append(f"cf_diag must be a bool, got {c['cf_diag']!r}")
     if not (_num(c["cf_audit_p"]) and 0 <= c["cf_audit_p"] <= 1):
@@ -432,6 +437,21 @@ def combo_hit(s, allowed, c: dict):
     return hit if hit is not None and hit[5] in ("rocket", "tornado") and hit[2] is not None else None
 
 
+def drifted(bodies, bx: float, by: float) -> tuple[float, float]:
+    """Board tile (bx, by) of a body walked toward my side (+y) at its catalog speed until a Rocket aimed there lands (two
+    refinements, decision_options.rocket_lands_in): the speed of the nearest ``rocket_bodies`` row, unchanged when none is near."""
+    from pipeline import decision_options as DO
+    if not len(bodies):
+        return bx, by
+    j = int(np.argmin(np.hypot(bodies[:, 1] - bx, bodies[:, 2] - by)))
+    if math.hypot(bodies[j, 1] - bx, bodies[j, 2] - by) > 1.5:
+        return bx, by
+    cy = by
+    for _ in range(2):
+        cy = min(by + float(bodies[j, 6]) * DO.rocket_lands_in(bx, cy), 31.5)
+    return bx, cy
+
+
 def cell_at(grid: str, bx: float, by: float) -> int:
     """The grid cell whose centre is nearest to board tile (bx, by)."""
     from pipeline import decision_options as DO
@@ -623,6 +643,7 @@ def candidates(m, s, d: dict, trig: str, c: dict) -> list[dict]:
         chosen["follow_ups"] = [dict(f) for f in d["follow_ups"]]
     pol = _Pol(s, d)
     meta = (lambda **kw: {"meta": kw}) if c.get("cf_diag") else (lambda **kw: {})   # cf_diag: per-candidate facts for the P4 audit
+    lead = (int(s._cur[0]), [], "drift") if c.get("cf_rocket_lead") == "drift" else None   # best_rocket_clump's lead argument
     seen = {(chosen["slot"], chosen["cell"], bool(chosen.get("follow_ups")))}
     if trig == "random":
         return [chosen] + sampled_alts(pol, c["cf_random_alts"], m.cf_state["rng"], seen)
@@ -638,7 +659,7 @@ def candidates(m, s, d: dict, trig: str, c: dict) -> list[dict]:
         want.append(("combo", first, hit[2], {"follow_ups": [E.follow_up_spec(second, hit[2], after, within)],
                                               **meta(value=float(hit[4]), plan=str(hit[3]))}))
         if rk is not None:
-            value, elig = DO.best_rocket_clump(DO.rocket_bodies(s._cur[1], "cost"), grid, "edge", None, 0.0,
+            value, elig = DO.best_rocket_clump(DO.rocket_bodies(s._cur[1], "cost"), grid, "edge", lead, 0.0,
                                                towers=DO.enemy_princesses_alive(s._cur[1]))
             if elig is not None and value >= c["cf_rocket_min_value"]:
                 want.append(("rocket_clump", rk, ("clump", elig), meta(value=float(value))))
@@ -654,7 +675,7 @@ def candidates(m, s, d: dict, trig: str, c: dict) -> list[dict]:
     if trig in ("rocket", "xbow_after_fail") and rk is not None:
         bs = s._cur[1]
         if trig == "rocket":
-            value, elig = DO.best_rocket_clump(DO.rocket_bodies(bs, "cost"), grid, "edge", None, 0.0,
+            value, elig = DO.best_rocket_clump(DO.rocket_bodies(bs, "cost"), grid, "edge", lead, 0.0,
                                                towers=DO.enemy_princesses_alive(bs))
             if elig is not None and value >= c["cf_rocket_min_value"]:
                 want.append(("rocket_clump", rk, ("clump", elig), meta(value=float(value))))
@@ -666,7 +687,8 @@ def candidates(m, s, d: dict, trig: str, c: dict) -> list[dict]:
         tg = m.cf_state["target"]
         bx, by = tg["bx"], tg["by"]
         if rk is not None:
-            want.append(("rocket_on", rk, siege_cells(bx, by, grid, "SPELL", "rocket", c["cf_siege_radius_tiles"])))
+            rx, ry = drifted(DO.rocket_bodies(s._cur[1], "cost"), bx, by) if lead is not None else (bx, by)
+            want.append(("rocket_on", rk, siege_cells(rx, ry, grid, "SPELL", "rocket", c["cf_siege_radius_tiles"])))
         ok = troop & np.array([n not in NO_BUILDING_DAMAGE for n in names])
         tk = pol.best_card(ok)
         if trig == "siege" and tg.get("princess") is not None and tk is not None:

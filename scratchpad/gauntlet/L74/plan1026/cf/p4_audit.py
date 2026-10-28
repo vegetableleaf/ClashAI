@@ -31,6 +31,9 @@ SNAP = ("own_p_lost", "own_k_lost", "own_k_on", "own_crowns_lost", "foe_p_lost",
         "own_elixir", "foe_elixir")
 
 
+DECKS: dict = {}                       # deck name -> engine cards (p4_persona.load_decks); empty = no archetype splits
+
+
 def load(files, from_update=0, min_tick=0):
     out, mid = [], 0
     for fn in files:
@@ -64,9 +67,9 @@ def paired_k(a, b, getter):
     return float(np.mean(d)) if d else None
 
 
-def metric(s, alt, which):
-    """The within-sample difference alt - chosen for ``which`` (see module doc), or None."""
-    ch = s["cands"][0]
+def metric(s, alt, which, base=None):
+    """The within-sample difference alt - base (default: the chosen candidate) for ``which`` (see module doc), or None."""
+    ch = s["cands"][0] if base is None else base
     if which == "q":
         return paired_k(alt, ch, lambda c: c["q"])
     if which.startswith("qh"):
@@ -130,11 +133,23 @@ def splits(s):
             out.append(("close_ot", "close OT (even crowns, |hp margin| <= .25)"))
         hand = set(s["ctx"]["hand"])
         out.append(("tesla", "tesla in hand" if "tesla" in hand else "tesla not in hand"))
+        out.append(("xbow_hand", "xbow in hand" if "xbow" in hand else "no xbow in hand"))
+        nfoe = len(s["ctx"]["foe_half"])
+        out.append(("threat", "no foe body on our half" if nfoe == 0 else "foe on our half"))
+        out.append(("policy", "policy played" if s["cands"][0]["play"] else "policy waited"))
+        if nfoe == 0 and not s["cands"][0]["play"]:
+            out.append(("safe_idle", "safe & idle (no foe on our half, policy waited)"))
         el = s["ctx"]["snap"][8]
         out.append(("elixir", "elixir >= 8" if el >= 8 else "elixir < 8"))
     o = s.get("opp")
     if o:
         out.append(("opp", (o["opp"].get("type") or "?")))
+        cards = DECKS.get(o.get("opp_deck"))
+        if cards:
+            from pipeline import archetypes as AR
+            arch = AR.classify(cards)
+            out.append(("arch", arch))
+            out.append(("denier", "unfavourable archetype (X-Bow denier)" if AR.unfavorable(arch) else "favourable / neutral"))
         b = (o.get("style") or {}).get("bank")
         if b is not None:
             out.append(("opp_bank", "bank>=2" if b >= 2.0 else "bank<2"))
@@ -245,7 +260,31 @@ def decomposition(samples, min_n):
     return out
 
 
-def md_decomp(rows):
+def pairs(samples, min_n):
+    """alt_a - alt_b contrasts between two NON-chosen candidates of the same sample (pairs of kinds that co-occur), the same
+    columns as ``decomposition``."""
+    by = defaultdict(list)
+    for s in samples:
+        ks = {c["kind"]: c for c in s["cands"][1:]}
+        for a in ks:
+            for b in ks:
+                if a < b:
+                    by[(s["trigger"], a + " - " + b)].append((s, ks[a], ks[b]))
+    names = ["q", "dg_stop:phi", "dg_stop:v"] + ["dg_stop:" + f for f in SNAP] + ["dg_stop:np0", "dg_stop:np1"]
+    out = []
+    for (t, k), lst in sorted(by.items()):
+        row = {"trigger": t, "kind": k, "cols": {}}
+        for w in names:
+            v = [(metric(s, a, w, base=b), s["mid"]) for s, a, b in lst]
+            v = [x for x in v if x[0] is not None]
+            if len(v) >= min_n:
+                row["cols"][w] = (len(v), float(np.mean([x[0] for x in v])), boot_ci([x[0] for x in v], [x[1] for x in v]))
+        if len(row["cols"]) > 1:
+            out.append(row)
+    return out
+
+
+def md_decomp(rows, title="Where dQ comes from (main stop, alt - chosen): Phi (towers) vs critic vs snapshot and play-count differences"):
     short = {"q": "dQ", "dg_stop:phi": "dPhi", "dg_stop:v": "dCritic", "dg_stop:own_p_lost": "d own princess lost",
              "dg_stop:own_k_lost": "d own king lost", "dg_stop:foe_p_lost": "d FOE princess lost",
              "dg_stop:foe_k_lost": "d foe king lost", "dg_stop:own_crowns_lost": "d own crowns lost",
@@ -253,7 +292,7 @@ def md_decomp(rows):
              "dg_stop:foe_elixir": "d foe elixir", "dg_stop:np0": "d own plays", "dg_stop:np1": "d FOE plays",
              "dg_stop:own_k_on": "d own king on", "dg_stop:foe_k_on": "d foe king on"}
     keys = [k for k in short if any(k in r["cols"] for r in rows)]
-    lines = ["### Where dQ comes from (main stop, alt - chosen): Phi (towers) vs critic vs snapshot and play-count differences", "",
+    lines = [f"### {title}", "",
              "| trigger | alternative | " + " | ".join(short[k] for k in keys) + " |", "|---|---|" + "---|" * len(keys)]
     for r in rows:
         cells = []
@@ -292,8 +331,12 @@ def main():
     ap.add_argument("--min-n", type=int, default=15)
     ap.add_argument("--min-tick", type=int, default=0)
     ap.add_argument("--json", default=None)
-    ap.add_argument("--sections", default="main,profile,decomp,slope")
+    ap.add_argument("--decks", nargs="*", default=[])
+    ap.add_argument("--sections", default="main,profile,decomp,pairs,slope")
     a = ap.parse_args()
+    if a.decks:
+        import p4_persona
+        DECKS.update(p4_persona.load_decks(a.decks))
     S = load(a.files, a.from_update, a.min_tick)
     sec = set(a.sections.split(","))
     cnt = defaultdict(int)
@@ -315,6 +358,10 @@ def main():
         dc = decomposition(S, a.min_n)
         res["decomp"] = dc
         print(md_decomp(dc))
+    if "pairs" in sec:
+        pp = pairs(S, a.min_n)
+        res["pairs"] = pp
+        print(md_decomp(pp, "Contrasts between two alternatives (a - b), same columns"))
     if "slope" in sec:
         print(slope_by_trigger(S))
     if a.json:
