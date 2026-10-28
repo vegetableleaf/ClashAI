@@ -82,7 +82,8 @@ if [ -f scratchpad/gauntlet/L74/plan1026/pilot/loop/producer.py ]; then   # = lo
   $V/bin/python -c "import sys, os, pathlib; sys.path.insert(0, 'scratchpad/gauntlet/L74/plan1026/pilot/loop'); import producer; producer.compile_java(pathlib.Path(os.environ['CRFORGE_FACADE_BUILD']), pathlib.Path(os.environ['CRFORGE_LIB']))" || die "javac (producer.compile_java)"
 fi
 # fastloop.py argv (LOOP-INT 10-28): [its options] --out RUN_DIR -- [rl_royale args]
-setsid nohup $V/bin/python -u $ENTRY $ENTRY_ARGS --out $R -- --run $RUN --config $R/pilot.yaml > $R/loop.log 2>&1 < /dev/null &
+setsid nohup sh -c '"$0" "$@"; echo $? > '$R/loop.rc $V/bin/python -u $ENTRY $ENTRY_ARGS --out $R -- --run $RUN --config $R/pilot.yaml \
+  > $R/loop.log 2>&1 < /dev/null &                                         # loop.rc = the loop's exit code
 echo $! > $R/loop.pid
 log "loop started pid $(cat $R/loop.pid): $ENTRY $ENTRY_ARGS --out $R -- --run $RUN --config $R/pilot.yaml"
 trap - ERR
@@ -109,8 +110,9 @@ while :; do
     "[$gpu]" "$(free -g | awk '/Mem:/{print $3}')" "$(wc -l < $W/copied.txt)" "$(tail -1 $R/throughput.jsonl 2> /dev/null)" \
     >> $W/ops_throughput.log
   if ! kill -0 $(cat $R/loop.pid) 2> /dev/null; then
-    if [ ! -s $R/FINAL ]; then
-      log "LOOP EXITED WITHOUT FINAL (crash?): see $R/loop.log; $(wc -l < $W/copied.txt) checkpoints are off the pod"
+    if [ ! -s $R/FINAL ] || [ "$(head -1 $R/FINAL)" = none ] || [ "$(cat $R/loop.rc 2> /dev/null)" != 0 ]; then
+      log "loop exit code $(cat $R/loop.rc 2> /dev/null || echo unknown), FINAL: $(head -1 $R/FINAL 2> /dev/null || echo none)"
+      log "LOOP EXITED WITHOUT A CLEAN FINAL (crash?): see $R/loop.log; $(wc -l < $W/copied.txt) checkpoints are off the pod"
       [ -f $CK/${RUN}_latest.pt ] && copy_off $CK/${RUN}_latest.pt
       log "NOT DONE: the run did not finish cleanly; keep the pod until the lead has looked"; exit 2
     fi

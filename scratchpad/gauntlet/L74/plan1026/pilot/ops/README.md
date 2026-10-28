@@ -2,19 +2,30 @@
 
 Labels: (a) measured, (b) untested, (c) contradicted.
 
-## STATUS (keep current)
-- DONE: B0 built + identity PASS (a); pilot.yaml (pending keys below); launcher (loop_pod.sh + pod_boot.sh) dry-run on 33308
-  with the fake loop: boot, sha pulls, streaming, STOP, laptop mirror + ack, DONE line (a; see "Dry run").
-- PENDING from other tickets: LOOP-INT fastloop.py (the real ENTRY; launcher defaults to it), LOOP-LRN `shaping: tower_phat`
-  (rl_royale refuses it until that commit), CF-MAIN clashbot-main jars + tables 16.635.3 (MAIN.md; artifacts.tsv carries the
-  interim lib_cfclone; tables 16.402.22 + 16.635.3 staged), LOOP-OPP POOL.json regenerated for pilot.yaml (then its files added to artifacts.tsv).
-- Store: 33308:/workspace/loop_stage/store/<sha256> (80 rows staged). Dry-run dirs on 33308: /workspace/loop_dry,
-  /workspace/loop_ckpt/loopops_dry (safe to delete). Laptop mirror: C:/Users/benpe/pod_backup_weekend/loop/<run>/.
-- NEXT: when INT's fastloop.py lands: `bash loop_pod.sh add` its sha list + POOL.json files, `stage`, re-run the dry run
-  with the real ENTRY on 33308 (W=/workspace/loop_dry2, ENTRY_ARGS small), then `up` on the rented pod.
+## STATUS (keep current; 10-28 ~10:50 EDT)
+- DONE (a): B0 LF rebuild 76d78619, identity PASS on the laptop (RTX 5050) and pod 33308 (4090), CPU + CUDA; pilot.yaml with the
+  lead's decisions (tables 16.635.3, 8 opponents x 12.5%, T_gate 0.1); launcher dry run 1 (fake loop) end to end incl. DONE;
+  dry run 2 with the REAL fastloop.py + loop/ref_v0.yaml: boot -> 83 artifacts -> loop start OK, then the loop crashed (missing
+  ghost_pool/pool_env_v1_split.json -- now an artifact -- and a fastloop.py FINAL bug, `R.CKPT_ROOT / run` with run a function,
+  reported to LOOP-INT); the launcher's crash path worked ("LOOP EXITED WITHOUT ... FINAL", "NOT DONE").
+- PENDING: LOOP-INT's FINAL fix -> re-run dry run 2 (restart command below); LOOP-MEM (memory in CfTrain), LOOP-IW (hero presses)
+  and LOOP-OPP (opp_style / exploiter decode) before pilot.yaml itself runs in fastloop (NotImplementedError until then, per INT);
+  LOOP-LRN tower_phat; CF-MAIN jars (interim lib_cfclone staged); a live sampled-gate option (deploy side) before trial30.
+- Store: 33308:/workspace/loop_stage/store/<sha256> (84 rows). Dry-run dirs on 33308 (safe to delete): /workspace/loop_dry,
+  /workspace/loop_dry2, /workspace/loop_ckpt/loopops_dry*. Laptop mirror: C:/Users/benpe/pod_backup_weekend/loop/<run>/.
+- Restart dry run 2 (resumable: re-uses the pod's venv / code / store):
+  `RUN=loopops_dry2 W=/workspace/loop_dry2 POD_STORE=root@localhost:22 CFG=scratchpad/gauntlet/L74/plan1026/pilot/loop/ref_v0.yaml TABLES=16.402.22 ENTRY_ARGS="--producers 2 --matches 64 --threads 4 --devices cuda:1" bash scratchpad/gauntlet/L74/plan1026/pilot/ops/loop_pod.sh up 33308`
+  (then `watch 33308` in the background).
+- The rented pod: `RUN=<run> ENTRY_ARGS="--producers 48 --matches <M> --threads 4 --devices cuda:0,...,cuda:7" bash .../loop_pod.sh up <PORT> root@<HOST>`
+  + `watch <PORT> root@<HOST>`; ENTRY_ARGS = LOOP-INT's numbers.
 
 ## 1. B0 (lead 10-28: train the GRAFTED B0; not a Mark; the trained pilot checkpoint becomes ICEBOW Mark CLXV)
-- File: icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt sha256 984bf5729ecc85bda6ad48a2e4e0198cfa97e1a1218b537930635764466c73a4
+- File: icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt sha256 76d786192f7e9c27ec1d71aa47d421b8ee09a4dee6f400471288d6cb396639a2
+  (LF rebuild, lead 10-28 A+). The first build 984bf572 (kept as .crlf.bak) recorded memory_v2 meta = the laptop's CRLF s1c
+  JSONs (4312a8ad / 15065623, inherited from mem_best_ze) and was refused by model_gen.check_memory_meta on every LF pod tree
+  (LOOP-OPP's find). Now .gitattributes keeps scratchpad/gauntlet/L74/memory/s1c/*.json LF everywhere and B0 records
+  178955c2 / ca144009. Consequence (accepted by the lead: live runs CLXIII, no memory): CLXIV MEMORY, the 10-25 memory arms
+  and mem_best_ze.pt (CRLF meta) no longer load on the laptop.
   = CLXIII NOLEAK's 141 tensors unchanged + the 50 mem.* / mem_aux.* tensors of mem_best_ze.pt (3d75a25d), mem.out exactly 0,
   zero_empty; top level = CLXIII's (rl incl. the ability head, grafted_heads_from) + memory v2 / memory_aux v1 / memory_v2 / s3.
   Build: `python -B build_b0.py` (refuses on any sha / trunk / coupling mismatch; same output name -> same sha, (a)).
@@ -22,13 +33,15 @@ Labels: (a) measured, (b) untested, (c) contradicted.
   rlarm_gae_u0250 (cell_refine / tower_refine / projectile_target_*). The 99 trunk tensors are bit-identical; the 5
   projectile_target tensors differ; 37 head tensors exist only in CLXIII. So the encoder's features were learned next to the raw
   trunk; with the coupling at 0 this changes nothing at u0.
-- Identity (a), `icebow/.venv/Scripts/python.exe -B b0_identity.py all B0 OUTDIR cpu cuda` (laptop, RTX 5050 = Blackwell
-  sm_120): test_decide_identity's 4 recorded CLXIII live matches (1,718 decisions, 229 plays, 1,505 cell-head calls) through
+- Identity (a) of the LF B0 on the laptop (RTX 5050 = Blackwell sm_120; `icebow/.venv/Scripts/python.exe -B b0_identity.py all
+  B0 OUTDIR cpu cuda`) AND on pod 33308 (RTX 4090; /workspace/loop_dry venv + opencv-python-headless 5.0.0.93 --no-deps for the
+  live imports, research/ + cue table artifacts, the 4 logs copied in and deleted after): test_decide_identity's 4 recorded CLXIII live matches (1,718 decisions, 229 plays, 1,505 cell-head calls) through
   this tree's live path. CLXIII vs B0, on CPU and on CUDA: decision dicts / taps / decision-RNG states 1718/1718; max |log-prob
   diff| 0.0 for gate, card, cell, value, wait, g. Only difference: B0's dicts carry the log-only `xb_lock_p` (live_gen_v2 adds
   it for a memory v2 model; live_play only logs it). Informational: CLXIII cpu vs CLXIII cuda differ (3/1718 taps; cell log-prob
   up to 6.0e-3, card 1.7e-5) -- device numerics, relevant to the spec's 1e-5 log-prob bar if rollouts and the reference run on
-  different devices.
+  different devices. The pod gives the same picture (CLXIII cpu vs cuda: 2/1718 taps, cell 6.0e-3). Rule (lead): correctness
+  comparisons are SAME-DEVICE only.
 
 ## 2. Pilot config: pilot.yaml (header lists every change vs stepd/cfg/succ48_x_s101.yaml)
 init B0; memory v2 + aux v1 + encoder frozen + zero_empty; R_win + `shaping: tower_phat`, shaping_critic_scale 1.5 (habit /
@@ -36,7 +49,11 @@ tower_crown terms removed); E 128 x G 4 = 512 matches; gae, gamma_tick 0.99994, 
 5, ppo_epochs 2, minibatch 256, grad_clip .5, vf .5 / .2; learner_deterministic; kl_stop_prev 0.02 + kl_ref_refresh_every 1,
 beta 0 (no leash; the beta-clamp KL guard is then always armed, it fires only above kl_cell_stop .5 / kl_gate_stop .1 per
 update); league_mix latest / older 0 + league_snapshot_every 100000 (snapshot share 0); screen_every 100000; proagree_every 250;
-seed 1028; max_updates 1000; save_every 25 (= the streaming interval); fastloop: {decode: live, live_options L70/live/LIVE_OPTIONS,
+T_gate 0.1 (lead 10-28: the pilot trains the SAMPLED gate at T .1; live has no sampled-gate option yet -- a deploy-side change
+is owed before trial30, per LOOP-INT); w14opp_I in its own exploiter slot at share 0.125 with its calibrated decode, init + 5
+externals + E4 uniform over the other 7/8 (league_pfsp_gamma 1e-9) = 8 opponents x 12.5%; pre-run check (a)
+`python pool_shares.py pilot.yaml 51200`: all 8 within 0.125 +- 0.003; 512 draws: within the joint 95% band (+- 0.040). After
+the first update: `python pool_shares.py --log <the update's match records>`; seed 1028; max_updates 1000; save_every 25 (= the streaming interval); fastloop: {decode: live, live_options L70/live/LIVE_OPTIONS,
 producers 48, ...} (LOOP-INT strips it; its values are INT's call). Opponent blocks are x_s101's until POOL.json is regenerated:
 `python scratchpad/gauntlet/L74/plan1026/pilot/opp/pool_manifest.py --config pilot.yaml --out POOL.json` (pod tree).
 Lead 10-28: tables 16.635.3 (the live client; launcher default TABLES=16.635.3, staged from 32657); E4 (rdef_e4 u20 grafted,
