@@ -1,0 +1,10 @@
+# tower_vanish.py on dev v29 (138) + FRESH1 (17): princess-tower removals before tick 5900 with nothing visible
+tower removals 1127 | with nothing visible 350
+20261026_090406 gone at 4494 tower [1, 3500, 25500, -1, 45] enemy proj aimed near 0 enemy bodies near [] <- nothing visible
+20261026_142345 gone at 5586 tower [0, 3500, 6500, -1, 69] enemy proj aimed near 0 enemy bodies near [] <- nothing visible
+20261026_145247 gone at 3683 tower [0, 3500, 6500, -1, 164] enemy proj aimed near 0 enemy bodies near [] <- nothing visible
+20261026_170600 gone at 3519 tower [0, 3500, 6500, -1, 4802] enemy proj aimed near 0 enemy bodies near [] <- nothing visible
+20261026_180015 gone at 3632 tower [0, 14500, 6500, -1, 42] enemy proj aimed near 0 enemy bodies near [] <- nothing visible
+20261026_204518 gone at 1823 tower [0, 14500, 6500, -1, 33] enemy proj aimed near 0 enemy bodies near [] <- nothing visible
+20261027_022149 gone at 3712 tower [1, 14500, 25500, -1, 4858] enemy proj aimed near 0 enemy bodies near [] <- nothing visible
+20261028_000420 gone at 3519 tower [1, 14500, 25500, -1, 7] enemy proj aimed near 0 enemy bodies near [] <- nothing visible

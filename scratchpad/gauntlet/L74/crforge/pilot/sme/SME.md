@@ -2358,3 +2358,81 @@ A plant must come out **div**. The only exception is an independent witness that
 - **Run command (for any future run):** `SME_DIR=/workspace/pilot/sme11 BASE=<base run> bash bp9/run9.sh RUN
   /workspace/pilot/lib_f635c INPUTS SME_LATE9=1 SME_MADE9=1`. These are the a10G1 flags; there is no new flag, and the
   plant suite is on by default.
+
+# SME-F1FIX: the two FRESH1 failures (000420 hidden hero Mini PEKKA, 010824 Rune Giant); pods 32657 / 33920 / 30408
+Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted. FRESH1's 7 matches are dev data from here;
+no match after FRESH1's freeze is scored.
+
+## Result (hardened comparator, sme11 + tables by env = `f1fix/sme11f`, `f1fix/runH.sh`)
+| run | change | inputs | FRESH1 unflagged exact apart from torn | FRESH1 unflagged exact frames | dev 109 | dev regressions |
+|---|---|---|---|---|---|---|
+| HF0 | none (F1 base) | fresh1 `e663e2e0` | 5 / 7 | 13,620 / 15,719 | - | - |
+| HF1 | SME_HIDDEN_GEN | `f1_gen_rf` | 5 / 7 (000420 1095 -> 1215) | 13,620 | - | - |
+| H1 | lib_f1fix (F1FIX-1) | v29 | - | - | 109 / 109, byte-identical to h11b (`1e7e893f`) | 0 |
+| **HF2** | **SME_HIDDEN_GEN (final) + lib_f1fix2** | `f1_gen2_rf` `d365b39c` | **6 / 7** | **15,509 / 15,719** | - | - |
+| **H2** | **same** | **v30 `c5b197f5`** | - | - | **109 / 109, 250,797 exact (138: 278,872)** | **0** |
+- H2 vs h11b: counts, first div, frames and first detail identical on 138 / 138; torn classes identical; plants 65,874,
+  0 missed. HF2: plants 10,904, 0 missed. a10G1 comparator (pod 33920): D0 (control) and D1 (lib_f1fix) on v29 are
+  byte-identical to a10G1 (sorted `015f496e`); X4 (lib_f1fix2, old track rule) gives 010824 exact apart from 1 torn_step.
+- What fails on FRESH1 now: 000420@3519 (below) and the 2 flagged opp_no_fitting_deal matches.
+
+## 1. 000420: the hidden hero Mini PEKKA (extractor, SME_HIDDEN_GEN=1)
+- **Cause (a).** The body's address `0x76ac94417a40` is listed by a 26000012 body later (to 3298); reader_hidden keyed
+  on the raw address took that later body's last tick, so no projectile tick was after it.
+- **Rule.** Key = generation: a new one starts when an address is listed after a frame without it, or with another side /
+  card id; a projectile is charged to the generation current when it flies; a window ends at the first target point its
+  body could not reach (1,000 units per tick + 1,000: the hero Mini PEKKA leap is 457 per tick, 181217@3047; 150 cut a
+  real window). A frame with only new projectiles gets no track point: the hardened comparator rejected 000420@1215,
+  where the new shot's fire-time point (14960, 22666) lagged crforge's body (14949, 22727) (HF1).
+- **Census (a), every hero Mini PEKKA cast in dev 138 + FRESH1 17** (`f1fix/hidden_census.py`,
+  `results/live/fresh1/f1fix_hidden_census.txt`): 8 casts, 3 with the body unlisted while targeted; v29 key covers 2,
+  generation key 3 (000420 added). No other window appears or moves on dev.
+- **Cost (b).** Dev inputs change (v29 -> v30): 181217 and 213436 lose 3 track points each (new-only frames), so
+  point-checked torn_hidden frames on dev go 31 -> 25 of 46; no class moves. 000420's window: 110 torn_hidden, 21 point
+  checked (1095-1181 has no projectile at all).
+- Flag off reproduces FRESH1 inputs `8104bf2c` and v29 `88ca12a2` byte for byte; v30 = `SME_HIDDEN_GEN=1
+  fresh/regen_fresh.sh` (16.402.22), CRLF -> LF.
+- **The second episode, 000420@3519 (traced; not fixed).** Our right princess tower sits at 7 hp from 3032; at 3519 the
+  game removes it (the opponent's one crown, battle log 0-1) with no visible body, projectile or fx near it; no Zap of
+  theirs is extracted all match, and no ZapFreeze group exists (a dying tower holds no buff), so ZAP_ADD cannot see it.
+  One side-0 Zap at the tower at R = 3517 or 3518 makes 3519-3681 exact (82 div -> 0; earlier R kill it too early),
+  `results/live/fresh1/f1fix_zap_sweep_000420.txt` (a for the probe; b that the game's event was a Zap). A rule (a
+  crown tower <= the Zap tower damage leaves with nothing visible, Zap in the deck, no spell play near) would fire only on
+  000420 in dev + FRESH1 (`f1fix/tower_vanish.py`, `f1fix_tower_vanish.txt`; the other low-hp removals have a Zap /
+  Lightning play near or no Zap in the deck): proposed, not built (one case; FRESH2 would test it).
+
+## 2. 010824: the Rune Giant (crforge fork, branch `clashbot-f1fix` from bec5811a, pod 30408)
+- **F1FIX-1 `c99784e4`: the friend filter.** The shipped collector names TargetFilter `friendly_troops_for_rune_giant`,
+  which no table holds (16.402.22, 16.635.3; the 10-28 device update's Rune Giant file equals 16.635.3). crforge read it
+  as no filter, so its Rune Giant never found a friend. (c) for that reading: 14 live logs with projectile rows, 136 / 136
+  enchant launches at an own body, none at an enemy or a tower; towers nearer than a target were skipped 28 times
+  (`f1fix/rg_census.py`, `rg_filter.py`). The name now reads as `friendly_troops_for_chef_giant_buffer`, the one filter
+  of the NO_GIANTBUFFER_CHEF_ENCHANTMENT tag ("units that can't be enchanted by GiantBuffer or Chef"); that this is the
+  game's exact filter is (b).
+- **F1FIX-1: hit_timer.** Once friends are found, `giantbuffer_no_move_on_buff` (ExecuteIfTrue hit_timer != 0) asks
+  hit_timer, which crforge refused. It answers the context's attack timer (0 while walking), untraced (b): 90 of 93 live
+  launches made walking step on through the 600 ms (`f1fix/rg_move.py`); 2 pause about 600 ms (205234@5603,
+  112113@2888), which no answer of 0 or more makes.
+- **F1FIX-2 `89b93932`: the Inferno Dragon.** The first enchant of 010824 lands on an Inferno Dragon, whose damage ramp is
+  an attack sequence; GiantBufferBuff refused every replacing sequence. The refusal now holds only for an entry that
+  launches (Projectile / CustomFirstProjectile) or acts (DoAttackAction / CustomOnAttackAction). (a) for the Inferno
+  Dragon: 010824 is exact apart from 1 torn_step (2,091 exact; was 202, first div 419) through 6 enchant launches, 3 on an
+  Inferno Dragon (first measured with a scratch build that skipped the refusal by row name, X3 on 33920).
+- **Tests.** F1FIX-1: `aCollectorWithAMissingFilterBuffsAsTheGiantBufferRow` replaces
+  `aCollectorWithAMissingFilterFindsNoFriend` (red on both data versions before, green after; the first green attempt
+  failed on hit_timer). F1FIX-2: `anEnchantedInfernoDragonStarts` (red / green on both); the musketeer refusal still holds.
+  Core: 16.635.3 2183 / 0 (6 skipped), 16.402.22 2183 / 0 (29 skipped). `crforge/fork/f1fix/coretest_f1fix.txt`.
+- **Libraries.** `lib_f1fix` (F1FIX-1, dir hash `67151a7f`), `lib_f1fix2` (F1FIX-2, `4e47ff5d`, core jar `4eecb9c5`):
+  buildsnap.sh (TickProbe 0001 + 0002 for the build only), on 30408 `/workspace/f635/` and on 32657 / 33920
+  `/workspace/pilot/`.
+- Other Rune Giant matches in our logs: 22 logs list one (10-03 .. 10-28); none is in the dev 138.
+
+## Files (SME-F1FIX)
+- `extract/extract.py`: `reader_hidden` SME_HIDDEN_GEN, `GEN_STEP` / `GEN_SLACK`.
+- `sme/f1fix/`: `hidden_census.py`, `rg_census.py`, `rg_filter.py`, `rg_move.py`, `rg_move_sum.py`, `tower_vanish.py`,
+  `zapsweep.py` (pod), `runH.sh` (pod), `same_res.py`, `hidden_pts.py`.
+- `crforge/fork/f1fix/`: the two patches, `coretest_f1fix.txt`.
+- `results/live/fresh1/f1fix_*`: censuses, the Zap sweep, HF0 / HF1 / HF2 / H2 / X4 results, H2's cmp, the summary.
+- Pods: 32657 `/workspace/pilot/f1fix/{sme11f, runs, inputs_v30.jsonl, f1_gen*_rf.jsonl}`; 33920
+  `/workspace/pilot/fresh/runs/{D0_ctl, D1_rg, X1_hgen, X2_both, X3_idscratch, X4_f1fix2}`; 30408 fork branch
+  `clashbot-f1fix` (clashbot-up-e5462c82 untouched).

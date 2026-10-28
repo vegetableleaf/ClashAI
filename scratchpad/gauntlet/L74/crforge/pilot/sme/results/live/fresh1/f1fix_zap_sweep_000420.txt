@@ -1,0 +1,24 @@
+# f1fix/zapsweep.py on pod 33920 (envF.sh env, sme10f, lib_f635c, 16.635.3): 000420's fitted plan from run X1_hgen
+# (inputs f1_gen_rf, SME_HIDDEN_GEN=1) with one side-0 Zap (level 16) added at our 7-hp tower (14500, 25500), run R.
+# sme_live.analyse counts (no hidden marking, so the 1095-1314 hidden window shows as div here); div at >= 3519 is the
+# tower episode.
+R None first 1095 counts {'exact': 1570, 'torn_t1': 1, 'torn_mixed': 1, 'div': 192, 'torn_step': 1} div at >= 3519: 82
+R 3500 first 1095 counts {'exact': 1643, 'torn_t1': 1, 'torn_mixed': 1, 'div': 119, 'torn_step': 1} div at >= 3519: 0
+R 3501 first 1095 counts {'exact': 1644, 'torn_t1': 1, 'torn_mixed': 1, 'div': 118, 'torn_step': 1} div at >= 3519: 0
+R 3502 first 1095 counts {'exact': 1644, 'torn_t1': 1, 'torn_mixed': 1, 'div': 118, 'torn_step': 1} div at >= 3519: 0
+R 3503 first 1095 counts {'exact': 1645, 'torn_t1': 1, 'torn_mixed': 1, 'div': 117, 'torn_step': 1} div at >= 3519: 0
+R 3504 first 1095 counts {'exact': 1645, 'torn_t1': 1, 'torn_mixed': 1, 'div': 117, 'torn_step': 1} div at >= 3519: 0
+R 3505 first 1095 counts {'exact': 1646, 'torn_t1': 1, 'torn_mixed': 1, 'div': 116, 'torn_step': 1} div at >= 3519: 0
+R 3506 first 1095 counts {'exact': 1646, 'torn_t1': 1, 'torn_mixed': 1, 'div': 116, 'torn_step': 1} div at >= 3519: 0
+R 3507 first 1095 counts {'exact': 1647, 'torn_t1': 1, 'torn_mixed': 1, 'div': 115, 'torn_step': 1} div at >= 3519: 0
+R 3508 first 1095 counts {'exact': 1647, 'torn_t1': 1, 'torn_mixed': 1, 'div': 115, 'torn_step': 1} div at >= 3519: 0
+R 3509 first 1095 counts {'exact': 1648, 'torn_t1': 1, 'torn_mixed': 1, 'div': 114, 'torn_step': 1} div at >= 3519: 0
+R 3510 first 1095 counts {'exact': 1648, 'torn_t1': 1, 'torn_mixed': 1, 'div': 114, 'torn_step': 1} div at >= 3519: 0
+R 3511 first 1095 counts {'exact': 1649, 'torn_t1': 1, 'torn_mixed': 1, 'div': 113, 'torn_step': 1} div at >= 3519: 0
+R 3512 first 1095 counts {'exact': 1649, 'torn_t1': 1, 'torn_mixed': 1, 'div': 113, 'torn_step': 1} div at >= 3519: 0
+R 3513 first 1095 counts {'exact': 1650, 'torn_t1': 1, 'torn_mixed': 1, 'div': 112, 'torn_step': 1} div at >= 3519: 0
+R 3514 first 1095 counts {'exact': 1650, 'torn_t1': 1, 'torn_mixed': 1, 'div': 112, 'torn_step': 1} div at >= 3519: 0
+R 3515 first 1095 counts {'exact': 1651, 'torn_t1': 1, 'torn_mixed': 1, 'div': 111, 'torn_step': 1} div at >= 3519: 0
+R 3516 first 1095 counts {'exact': 1651, 'torn_t1': 1, 'torn_mixed': 1, 'div': 111, 'torn_step': 1} div at >= 3519: 0
+R 3517 first 1095 counts {'exact': 1652, 'torn_t1': 1, 'torn_mixed': 1, 'div': 110, 'torn_step': 1} div at >= 3519: 0
+R 3518 first 1095 counts {'exact': 1652, 'torn_t1': 1, 'torn_mixed': 1, 'div': 110, 'torn_step': 1} div at >= 3519: 0

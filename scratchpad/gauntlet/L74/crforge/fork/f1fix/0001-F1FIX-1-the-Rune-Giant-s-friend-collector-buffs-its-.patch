@@ -1,0 +1,169 @@
+From c99784e49561dc7f27ba2a15d04c1c89dd73114a Mon Sep 17 00:00:00 2001
+From: vegetableleaf <benzhu2029@u.northwestern.edu>
+Date: Wed, 28 Oct 2026 07:49:21 +0000
+Subject: [PATCH 1/2] F1FIX-1: the Rune Giant's friend collector buffs its own
+ troops: a filter name the tables do not hold reads as the Giant Buffer /
+ Royal Chef row; hit_timer answered
+
+The shipped giantbuffer_collect_friend_troops names TargetFilter friendly_troops_for_rune_giant, a row no table holds
+(16.402.22 and 16.635.3). crforge read it as no filter, so its Rune Giant never found a friend, never fired
+GiantBuffProjectile and never enchanted (no AddedDamage 86 every 3rd hit).
+(c) for that reading: in 14 live matches (data 16.402 and 16.635) 136 of 136 enchant projectiles of the Rune Giant
+went to an own troop, none to an enemy or a tower (SME-F1FIX rg_census.py / rg_filter.py; towers nearer than a
+target were skipped 28 times). The name now reads as friendly_troops_for_chef_giant_buffer, the one filter of the
+NO_GIANTBUFFER_CHEF_ENCHANTMENT tag ("units that can't be enchanted by GiantBuffer or Chef"); which exact filter the
+game uses is (b).
+Once friends are found, giantbuffer_no_move_on_buff asks hit_timer, which the battle refused. It now answers the
+context's attack timer (0 while walking), untraced (b): 90 of 93 live launches made walking step on through the
+600 ms; 2 pause about 600 ms, which no answer of 0 or more makes.
+Test: aCollectorWithAMissingFilterBuffsAsTheGiantBufferRow replaces aCollectorWithAMissingFilterFindsNoFriend
+(red on both data versions before; green after). Core: 16.635.3 2182/0 (6 skipped); 16.402.22 2182/0 (29 skipped).
+---
+ .../crforge/core/battle/data/ActionRows.java  | 13 ++++--
+ .../unit/BattleExpressionEnvironment.java     | 11 +++++
+ .../core/battle/unit/BattleAbilityTest.java   | 42 ++++++++-----------
+ 3 files changed, 39 insertions(+), 27 deletions(-)
+
+diff --git a/core/src/main/java/org/crforge/core/battle/data/ActionRows.java b/core/src/main/java/org/crforge/core/battle/data/ActionRows.java
+index 1e9b92f8..af4940a2 100644
+--- a/core/src/main/java/org/crforge/core/battle/data/ActionRows.java
++++ b/core/src/main/java/org/crforge/core/battle/data/ActionRows.java
+@@ -2165,14 +2165,21 @@ public final class ActionRows {
+         throw new UnsupportedOperationException(
+             name + " unbuffs a friend beyond a distance, which is not modelled");
+       }
++      // The shipped row names a filter row the tables do not ship (friendly_troops_for_rune_giant).
++      // The live game buffs the Rune Giant's own troops all the same (SME-F1FIX: 136 of 136 enchant
++      // projectiles in 14 live matches, data 16.402 and 16.635, went to an own troop, none to a
++      // tower), so a name the tables do not hold reads as the row they hold for the Giant Buffer
++      // and the Royal Chef, the one filter of the NO_GIANTBUFFER_CHEF_ENCHANTMENT tag.
++      GameObjectFilter filter = records.filterIfHeld(f.get("TargetFilter").asText());
++      if (filter == null) {
++        filter = records.filterIfHeld("friendly_troops_for_chef_giant_buffer");
++      }
+       return new CollectFriends(
+           shared,
+           CollectFriends.Columns.builder()
+               .cooldownMs(integer(f, "Cooldown"))
+               .maxFriendlyTroops(integer(f, "MaxFriendlyTroops"))
+-              // The shipped row names a filter row the tables do not ship; the loader reads it as
+-              // no filter.
+-              .targetFilter(records.filterIfHeld(f.get("TargetFilter").asText()))
++              .targetFilter(filter)
+               .distanceToGetTargets(integer(f, "DistanceToGetTargets"))
+               .distanceToBuff(integer(f, "DistanceToBuff"))
+               .distanceToUnbuff(integer(f, "DistanceToUnbuff"))
+diff --git a/core/src/main/java/org/crforge/core/battle/unit/BattleExpressionEnvironment.java b/core/src/main/java/org/crforge/core/battle/unit/BattleExpressionEnvironment.java
+index 024c9ede..e68b90cf 100644
+--- a/core/src/main/java/org/crforge/core/battle/unit/BattleExpressionEnvironment.java
++++ b/core/src/main/java/org/crforge/core/battle/unit/BattleExpressionEnvironment.java
+@@ -51,6 +51,8 @@ import org.crforge.core.pathfinding.target.TargetView;
+             + " reference its force tags first, FORCE_IS_GROUND ground, FORCE_IS_AIR not, both"
+             + " its live height 0, held by grounded evolved Royal Hogs inside the musketeers'"
+             + " reach;"
++            + " hit_timer as the context's attack timer, untraced, held only by the live Rune"
++            + " Giant walking on through its buffs (SME-F1FIX);"
+             + " attack_count as"
+             + " the context's attack time over its row's hit speed toward zero, 0 for a hit speed"
+             + " below 1, whether its targeting runs or not, held by ability_little_prince and"
+@@ -119,6 +121,7 @@ final class BattleExpressionEnvironment implements ExpressionEnvironment {
+   private static final int TARGET_IN_RANGE = BattleFunctions.id("target_in_range");
+   private static final int TARGET_IS_GROUND = BattleFunctions.id("target_is_ground");
+   private static final int ATTACK_COUNT = BattleFunctions.id("attack_count");
++  private static final int HIT_TIMER = BattleFunctions.id("hit_timer");
+   private static final int IS_CLONE = BattleFunctions.id("is_clone");
+   private static final int IS_MOVING = BattleFunctions.id("is_moving");
+   private static final int IS_KAMIKAZING = BattleFunctions.id("is_kamikazing");
+@@ -359,6 +362,14 @@ final class BattleExpressionEnvironment implements ExpressionEnvironment {
+     if (id == ATTACK_COUNT) {
+       return attackCount();
+     }
++    if (id == HIT_TIMER) {
++      // SME-F1FIX, not traced from the build: the context's targeting attack timer, the one
++      // attack_count divides, 0 while it walks. Its one reader is the Rune Giant's
++      // giantbuffer_no_move_on_buff (ExecuteIfTrue hit_timer != 0, ForceStopIfTrue > 0): in 90 of
++      // 93 live launches made walking the Rune Giant steps on through the 600 ms, which the 0
++      // holds; 2 pause about 600 ms, which no answer of 0 or more makes.
++      return context.getTargeting().getAttackTimerMs();
++    }
+     if (id == RAND) {
+       // One draw from the battle's source, taken as the expression is evaluated.
+       return world.getRandom().next(arguments[0]);
+diff --git a/core/src/test/java/org/crforge/core/battle/unit/BattleAbilityTest.java b/core/src/test/java/org/crforge/core/battle/unit/BattleAbilityTest.java
+index bfe91c22..f28eb9b7 100644
+--- a/core/src/test/java/org/crforge/core/battle/unit/BattleAbilityTest.java
++++ b/core/src/test/java/org/crforge/core/battle/unit/BattleAbilityTest.java
+@@ -98,10 +98,11 @@ class BattleAbilityTest {
+   @DisplayName(
+       "a collector's lock is granted after the phase-3 pass and dropped once its friend has died")
+   void aLockGoesWithItsFriend(@TempDir Path folder) throws IOException {
+-    // The shipped collector names a filter row the tables do not hold, and finds no friend (see
+-    // aCollectorWithAMissingFilterFindsNoFriend); here it names the filter row the tables hold for
+-    // the Giant Buffer and the Royal Chef. Its first look waits 1000 ms from the unit's start, and
+-    // it searches 7000 around it, as the test writes them.
++    // The shipped collector names a filter row the tables do not hold, which reads as the filter
++    // row the tables hold for the Giant Buffer and the Royal Chef (see
++    // aCollectorWithAMissingFilterBuffsAsTheGiantBufferRow); here it names that row outright. Its
++    // first look waits 1000 ms from the unit's start, and it searches 7000 around it, as the test
++    // writes them.
+     GameTables tables =
+         GameData.altered(
+             folder,
+@@ -138,11 +139,14 @@ class BattleAbilityTest {
+ 
+   @Test
+   @DisplayName(
+-      "a collector whose filter names a row the tables do not hold finds no friend and fires at"
+-          + " none")
+-  void aCollectorWithAMissingFilterFindsNoFriend() {
++      "the shipped collector, whose filter names a row the tables do not hold, buffs its friend as"
++          + " the filter row the tables hold for the Giant Buffer does")
++  void aCollectorWithAMissingFilterBuffsAsTheGiantBufferRow() {
+     // The shipped collector's filter, friendly_troops_for_rune_giant, is a row no filter table
+-    // holds; the game's loader reads the name as no filter and the battle runs on.
++    // holds. The live game buffs the Rune Giant's own troops all the same (SME-F1FIX: 136 of 136
++    // enchant projectiles in 14 live matches went to an own troop, none to a tower), so the name
++    // reads as friendly_troops_for_chef_giant_buffer, the row the tables hold for the Giant Buffer
++    // and the Royal Chef (aLockGoesWithItsFriend names it outright).
+     GameTables tables = GameData.tables();
+     BattleRecords records = GameData.records();
+     Standard1v1Battle match = new Standard1v1Battle(tables, Standard1v1Battle.DEFAULT_LEVEL, false);
+@@ -151,29 +155,19 @@ class BattleAbilityTest {
+     CharacterEntity buffer =
+         match.deploy(
+             0, records.unit("GiantBuffer"), Standard1v1Battle.DEFAULT_LEVEL, 0, 3500, 9500);
+-    List<String> abilities = new ArrayList<>();
+-    match
+-        .getWorld()
+-        .addObserver(
+-            new WorldObserver() {
+-              @Override
+-              public void abilityRequested(int t, CharacterEntity unit, boolean now) {
+-                abilities.add(t + " requested");
+-              }
+-            });
++    // The collector first looks on the twenty-first step, and the locks grant in its post-pass.
++    for (int step = 0; step < 21; step++) {
++      match.getBattle().step();
++    }
+     BattleWorld world = match.getWorld();
+-    // With a filter the tables hold the Knight is asked for on the twenty-first step and buffed by
+-    // a projectile soon after (see aLockGoesWithItsFriend); here the query lists nothing on every
+-    // step.
++    assertThat(world.locks().claim(buffer.getId(), knight.getId(), 1)).isTrue();
+     int launched = 0;
+     for (int step = 0; step < 200; step++) {
+       match.getBattle().step();
+       launched += world.projectiles().size();
+     }
+ 
+-    assertThat(world.locks().claim(buffer.getId(), knight.getId(), 1)).isFalse();
+-    assertThat(launched).as("projectile visits").isZero();
+-    assertThat(abilities).isEmpty();
++    assertThat(launched).as("projectile visits").isPositive();
+   }
+ 
+   @Test
+-- 
+2.43.0
+

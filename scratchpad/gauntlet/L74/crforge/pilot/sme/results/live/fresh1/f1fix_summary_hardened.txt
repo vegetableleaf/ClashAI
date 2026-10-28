@@ -1,0 +1,32 @@
+#### HF0_base
+matches 17 | RNG-free 9 | not RNG-free 8 {'Princess': 2, 'Arrows': 6}
+flags (all): {'opp_no_fitting_deal': 5} | flags (RNG-free): {'opp_no_fitting_deal': 2}
+unflagged 7 | exact apart from torn 5 | strictly exact (no torn frame) 2
+exact frames (all RNG-free) 13709 | frames 19655 | unflagged exact frames 13620 of 15719
+torn frames (unflagged): {'torn_t1': 6, 'torn_mixed': 1, 'torn_step': 3, 'torn_snap': 2, 'torn_cmd': 5} | matches with each: {'torn_t1': 3, 'torn_mixed': 1, 'torn_step': 3, 'torn_snap': 1, 'torn_cmd': 3}
+fitter moves kept (unflagged): 37 | of them FITNEXT (run after the onset): 1 | ghost presses enabled: 0
+#### HF1_hgen
+matches 17 | RNG-free 9 | not RNG-free 8 {'Princess': 2, 'Arrows': 6}
+flags (all): {'opp_no_fitting_deal': 5} | flags (RNG-free): {'opp_no_fitting_deal': 2}
+unflagged 7 | exact apart from torn 5 | strictly exact (no torn frame) 2
+exact frames (all RNG-free) 13709 | frames 19655 | unflagged exact frames 13620 of 15719
+torn frames (unflagged): {'torn_t1': 6, 'torn_mixed': 1, 'torn_hidden': 108, 'torn_step': 3, 'torn_snap': 2, 'torn_cmd': 5} | matches with each: {'torn_t1': 3, 'torn_mixed': 1, 'torn_hidden': 1, 'torn_step': 3, 'torn_snap': 1, 'torn_cmd': 3}
+fitter moves kept (unflagged): 37 | of them FITNEXT (run after the onset): 1 | ghost presses enabled: 0
+#### HF2_both
+matches 17 | RNG-free 9 | not RNG-free 8 {'Princess': 2, 'Arrows': 6}
+flags (all): {'opp_no_fitting_deal': 5} | flags (RNG-free): {'opp_no_fitting_deal': 2}
+unflagged 7 | exact apart from torn 6 | strictly exact (no torn frame) 2
+exact frames (all RNG-free) 15598 | frames 19655 | unflagged exact frames 15509 of 15719
+torn frames (unflagged): {'torn_t1': 6, 'torn_mixed': 1, 'torn_hidden': 110, 'torn_step': 4, 'torn_snap': 2, 'torn_cmd': 5} | matches with each: {'torn_t1': 3, 'torn_mixed': 1, 'torn_hidden': 1, 'torn_step': 4, 'torn_snap': 1, 'torn_cmd': 3}
+fitter moves kept (unflagged): 42 | of them FITNEXT (run after the onset): 1 | ghost presses enabled: 0
+overlay          60G   49G   12G  82% /
+unflagged (7): exact apart from torn 5/7 -> 6/7 | regressions 0 | gained 1
+unflagged (7): exact frames 13620 -> 15509
+all (9): exact frames 13709 -> 15598
+torn before, unflagged: {'torn_cmd': 5, 'torn_mixed': 1, 'torn_snap': 2, 'torn_step': 3, 'torn_t1': 6}
+torn after,  unflagged: {'torn_cmd': 5, 'torn_hidden': 110, 'torn_mixed': 1, 'torn_snap': 2, 'torn_step': 4, 'torn_t1': 6}
+torn before, all: {'torn_cmd': 5, 'torn_mixed': 1, 'torn_snap': 2, 'torn_step': 3, 'torn_t1': 6}
+torn after,  all: {'torn_cmd': 5, 'torn_hidden': 110, 'torn_mixed': 1, 'torn_snap': 2, 'torn_step': 4, 'torn_t1': 6}
+plant suite (9 matches): {'plants': 10904, 'caught': 10894, 'missed': 0, 'window_mismatch': 0} | legal {'legal_absent': 7, 'legal_state': 1, 'legal_t': 1, 'legal_version': 1} | targets {'torn_t1': 6, 'torn_mixed': 1, 'torn_hidden': 110, 'torn_step': 4, 'placeholder': 3, 'exact': 27, 'torn_snap': 2, 'torn_cmd': 5, 'REPR': 3}
+rc=0
+../runs/HF2_both/results.jsonl torn_hidden frames 110 point checked 21

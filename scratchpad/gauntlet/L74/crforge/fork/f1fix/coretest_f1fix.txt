@@ -1,0 +1,43 @@
+# red (test before the fix; tree = bec5811a + the new test), BattleAbilityTest only
+## 16.635.3
+> Task :core:test FAILED
+BattleAbilityTest > the shipped collector, whose filter names a row the tables do not hold, buffs its friend as the filter row the tables hold for the Giant Buffer does FAILED
+4 tests completed, 1 failed
+BUILD FAILED in 10s
+## 16.402.22
+> Task :core:test FAILED
+BattleAbilityTest > the shipped collector, whose filter names a row the tables do not hold, buffs its friend as the filter row the tables hold for the Giant Buffer does FAILED
+4 tests completed, 1 failed
+BUILD FAILED in 8s
+# green (fix applied), BattleAbilityTest only
+## 16.635.3
+BUILD SUCCESSFUL in 25s
+## 16.402.22
+BUILD SUCCESSFUL in 8s
+# core tests of c99784e4 (ctup.sh f1fix2: 16.635.3 then 16.402.22)
+core tests 2182 failures 0 errors 0 skipped 6
+core tests 2182 failures 0 errors 0 skipped 29
+done
+# lib_f1fix = buildsnap.sh f1fix (c99784e4 + TickProbe 0001+0002 for the build only); core jar sha256 0af19e69abd5b18c; lib dir hash 67151a7f813d1ac3
+# F1FIX-2 red (tree = c99784e4 + the new test), BattleAbilityTest only
+## 16.635.3
+> Task :core:test FAILED
+BattleAbilityTest > an enchanting buff on an Inferno Dragon, whose sequence is a ramp of damage, starts FAILED
+5 tests completed, 1 failed
+BUILD FAILED in 12s
+## 16.402.22
+> Task :core:test FAILED
+BattleAbilityTest > an enchanting buff on an Inferno Dragon, whose sequence is a ramp of damage, starts FAILED
+5 tests completed, 1 failed
+BUILD FAILED in 9s
+# F1FIX-2 green, BattleAbilityTest + BattleThreeMusketeersTest
+## 16.635.3
+BUILD SUCCESSFUL in 32s
+## 16.402.22
+BUILD SUCCESSFUL in 9s
+# core tests of the F1FIX-2 tree (ctup.sh f1fix3: 16.635.3 then 16.402.22; the commit then only rewrapped one DisplayName line, BattleAbilityTest rerun green on 16.635.3)
+core tests 2183 failures 0 errors 0 skipped 6
+core tests 2183 failures 0 errors 0 skipped 29
+done
+# lib_f1fix2 = buildsnap.sh f1fix2 (89b93932 + TickProbe 0001+0002 for the build only); core jar sha256 4eecb9c5e85e2537; lib dir hash 4e47ff5d6ec14fea
+# scratch (not committed): lib_f1fix_idscratch = c99784e4 with the attack-sequence refusal skipped for the InfernoDragon row by name, built to measure 010824 first

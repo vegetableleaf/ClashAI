@@ -1,0 +1,141 @@
+From 89b93932c94c31863a34606bd30cc15b1a08e413 Mon Sep 17 00:00:00 2001
+From: vegetableleaf <benzhu2029@u.northwestern.edu>
+Date: Wed, 28 Oct 2026 08:17:32 +0000
+Subject: [PATCH 2/2] F1FIX-2: an enchanting buff on a unit whose attack
+ sequence is a ramp of damage entries alone (the Inferno Dragon) runs; only
+ entries that launch or act are refused
+
+With F1FIX-1 the Rune Giant of live 010824 finds its friends, and its first enchant lands on an Inferno Dragon, which
+GiantBufferBuff refused ("whose attack sequence replaces its attack"). The refusal now holds only for a sequence with
+an entry that launches a projectile (Projectile / CustomFirstProjectile) or runs an action (DoAttackAction /
+CustomOnAttackAction); the Inferno Dragon's three damage entries keep the row's hit hooks.
+(a) for the Inferno Dragon: 010824 (FRESH1, 16.635.3, a10G1 comparator) runs exact apart from 1 torn_step frame
+(2,091 exact, first div none; was 202 exact, first div 419) through 6 live enchant launches, 3 of them on an Inferno
+Dragon. (b) for any other damage-only ramp (Inferno Tower cannot be enchanted: the filter leaves buildings out).
+The musketeer refusal (BattleThreeMusketeersTest.anEnchantedMusketeerIsRefused) still holds.
+Test: anEnchantedInfernoDragonStarts (red on both data versions with F1FIX-1 only; green after).
+Core: 16.635.3 2183/0 (6 skipped); 16.402.22 2183/0 (29 skipped).
+---
+ .../core/battle/action/ActionOwner.java       |  3 ++-
+ .../core/battle/action/GiantBufferBuff.java   | 11 +++++----
+ .../crforge/core/battle/unit/WorldEntity.java | 12 +++++++++-
+ .../core/battle/unit/BattleAbilityTest.java   | 23 +++++++++++++++++++
+ 4 files changed, 43 insertions(+), 6 deletions(-)
+
+diff --git a/core/src/main/java/org/crforge/core/battle/action/ActionOwner.java b/core/src/main/java/org/crforge/core/battle/action/ActionOwner.java
+index 6717c702..2a11e94a 100644
+--- a/core/src/main/java/org/crforge/core/battle/action/ActionOwner.java
++++ b/core/src/main/java/org/crforge/core/battle/action/ActionOwner.java
+@@ -584,7 +584,8 @@ public interface ActionOwner {
+   }
+ 
+   /**
+-   * True for an owner whose attack sequence replaces its row's attack: two or more in its order.
++   * True for an owner whose attack sequence replaces its row's attack - two or more in its order -
++   * with an entry that launches a projectile or runs an action in place of a hit.
+    */
+   default boolean actionAttackSequence() {
+     return false;
+diff --git a/core/src/main/java/org/crforge/core/battle/action/GiantBufferBuff.java b/core/src/main/java/org/crforge/core/battle/action/GiantBufferBuff.java
+index acf9ab2c..a84eb349 100644
+--- a/core/src/main/java/org/crforge/core/battle/action/GiantBufferBuff.java
++++ b/core/src/main/java/org/crforge/core/battle/action/GiantBufferBuff.java
+@@ -52,8 +52,9 @@ import org.crforge.core.pathfinding.math.FixedMath;
+             + " Knight's hits for the hook and the count and an Archer's for a projectile's copy."
+             + " Not modelled: the enemy-target visual it hands a landed hit to, which is"
+             + " presentation. Refused: a unit with attached children, which would get copies, a"
+-            + " unit whose attack sequence replaces its attack, and the Berserker's attack"
+-            + " sequence step.")
++            + " unit whose attack sequence replaces its attack with an entry that launches or"
++            + " acts, and the Berserker's attack sequence step. A ramp of damage entries alone"
++            + " (the Inferno Dragon) is held by SME-F1FIX's live 010824.")
+ public final class GiantBufferBuff extends RowAction {
+ 
+   /**
+@@ -126,8 +127,10 @@ public final class GiantBufferBuff extends RowAction {
+               + " which is not modelled");
+     }
+     if (owner.actionAttackSequence()) {
+-      // The hits of a unit whose attack sequence replaces its attack - an entry's projectile, or
+-      // an entry's action in place of a hit - are not established under an enchanting run.
++      // The hits of a unit whose attack sequence replaces its attack with an entry's projectile, or
++      // an entry's action in place of a hit, are not established under an enchanting run. A ramp of
++      // damage entries alone is: the enchanted live Inferno Dragon of SME-F1FIX's 010824 is exact
++      // through its buffs with the row's hit hooks.
+       throw new UnsupportedOperationException(
+           name()
+               + " on "
+diff --git a/core/src/main/java/org/crforge/core/battle/unit/WorldEntity.java b/core/src/main/java/org/crforge/core/battle/unit/WorldEntity.java
+index f34399d2..5759180b 100644
+--- a/core/src/main/java/org/crforge/core/battle/unit/WorldEntity.java
++++ b/core/src/main/java/org/crforge/core/battle/unit/WorldEntity.java
+@@ -2370,7 +2370,17 @@ public abstract class WorldEntity extends BattleEntity implements ActionOwner, S
+ 
+   @Override
+   public boolean actionAttackSequence() {
+-    return data.attackSequence().replacesAttack();
++    // SME-F1FIX: a sequence of damage entries alone (the Inferno Dragon's ramp) hits as the row's
++    // attack does, so only one whose entries launch or act counts.
++    AttackSequence sequence = data.attackSequence();
++    return sequence.replacesAttack()
++        && sequence.entries().stream()
++            .anyMatch(
++                e ->
++                    e.projectile() != null
++                        || e.customFirstProjectile() != null
++                        || e.doAttackAction() != null
++                        || e.customOnAttackAction() != null);
+   }
+ 
+   @Override
+diff --git a/core/src/test/java/org/crforge/core/battle/unit/BattleAbilityTest.java b/core/src/test/java/org/crforge/core/battle/unit/BattleAbilityTest.java
+index f28eb9b7..506df8a6 100644
+--- a/core/src/test/java/org/crforge/core/battle/unit/BattleAbilityTest.java
++++ b/core/src/test/java/org/crforge/core/battle/unit/BattleAbilityTest.java
+@@ -7,6 +7,7 @@
+ package org.crforge.core.battle.unit;
+ 
+ import static org.assertj.core.api.Assertions.assertThat;
++import static org.assertj.core.api.Assertions.assertThatCode;
+ import static org.assertj.core.api.Assertions.assertThatThrownBy;
+ 
+ import com.fasterxml.jackson.databind.node.ObjectNode;
+@@ -16,6 +17,7 @@ import java.util.ArrayList;
+ import java.util.List;
+ import org.crforge.core.battle.GameData;
+ import org.crforge.core.battle.Shipped;
++import org.crforge.core.battle.action.BattleAction;
+ import org.crforge.core.battle.data.BattleRecords;
+ import org.crforge.core.battle.data.GameTables;
+ import org.crforge.core.pathfinding.GridEntityState;
+@@ -170,6 +172,27 @@ class BattleAbilityTest {
+     assertThat(launched).as("projectile visits").isPositive();
+   }
+ 
++  @Test
++  @DisplayName(
++      "an enchanting buff on an Inferno Dragon, whose sequence is a ramp of damage, starts")
++  void anEnchantedInfernoDragonStarts() {
++    // SME-F1FIX: the live Rune Giant enchants Inferno Dragons, and 010824 is exact through it with
++    // the row's hit hooks; a sequence whose entries launch or act stays refused.
++    GameTables tables = GameData.tables();
++    BattleRecords records = GameData.records();
++    Standard1v1Battle match = new Standard1v1Battle(tables, Standard1v1Battle.DEFAULT_LEVEL, false);
++    CharacterEntity giver =
++        match.deploy(0, records.unit("Knight"), Standard1v1Battle.DEFAULT_LEVEL, 0, 3500, 9500);
++    CharacterEntity dragon =
++        match.deploy(
++            0, records.unit("InfernoDragon"), Standard1v1Battle.DEFAULT_LEVEL, 0, 3500, 12500);
++    BattleWorld world = match.getWorld();
++    BattleAction buff =
++        world.getActions().build("giantbuffer_enchanting_buff", world.binding(dragon));
++    assertThatCode(() -> dragon.actionHolder().start(buff, giver.actionHolder()))
++        .doesNotThrowAnyException();
++  }
++
+   @Test
+   @DisplayName("a request for an ability with an effect the battle does not model is refused")
+   void aRichAbilityIsRefused(@TempDir Path folder) throws IOException {
+-- 
+2.43.0
+

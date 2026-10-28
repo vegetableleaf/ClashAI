@@ -1,0 +1,20 @@
+== live_play_20261026_181217 DIFFERENT
+  v29 side 0 MiniPekkaHero    last  3039 end  3095 track 22 pts [3041]..[3095]
+  gen side 0 MiniPekkaHero    last  3039 end  3095 track 19 pts [3041]..[3095]
+  cast side 0 tick  3037 body listed (2741, 3039) unlisted-but-targeted (3041, 3095, 22) covered v29 True gen True
+== live_play_20261026_183750 v29 key == gen key
+  cast side 0 tick  2697 body listed (2593, 2725) unlisted-but-targeted None covered v29 False gen False
+== live_play_20261026_190255 v29 key == gen key
+  cast side 1 tick  3060 body listed (2990, 3124) unlisted-but-targeted None covered v29 False gen False
+  cast side 1 tick  5126 body listed (5094, 5254) unlisted-but-targeted None covered v29 False gen False
+  cast side 1 tick  5921 body listed (5889, 6001) unlisted-but-targeted None covered v29 False gen False
+== live_play_20261026_200616 v29 key == gen key
+  cast side 0 tick  3610 body listed (3410, 3803) unlisted-but-targeted None covered v29 False gen False
+== live_play_20261026_213436 DIFFERENT
+  v29 side 0 MiniPekkaHero    last   776 end   811 track 9 pts [782]..[811]
+  gen side 0 MiniPekkaHero    last   776 end   811 track 6 pts [784]..[811]
+  cast side 0 tick   774 body listed (387, 776) unlisted-but-targeted (782, 811, 9) covered v29 True gen True
+== live_play_20261028_000420 DIFFERENT
+  gen side 0 MiniPekkaHero    last  1093 end  1314 track 21 pts [1185]..[1314]
+  cast side 0 tick  1091 body listed (893, 1093) unlisted-but-targeted (1183, 1314, 33) covered v29 False gen True
+hero Mini PEKKA casts 8 | hidden windows covered: v29 2 gen 3

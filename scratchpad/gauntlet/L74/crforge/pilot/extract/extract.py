@@ -301,9 +301,16 @@ def reader_hidden(path, cat):
     and dies on the same frame as the game's. -> [{side, name (crforge character), last (last ents tick), end (last tick a
     projectile targets it), track {tick: [x, y]}}]. The track point is the target point of a projectile already seen in
     the frame before (a projectile fired this frame can carry its fire-time point); a frame with only new projectiles
-    takes their point if they agree."""
+    takes their point if they agree.
+    SME-F1FIX (SME_HIDDEN_GEN=1): the key is the body's generation, not the raw address. A generation starts when an
+    address is listed after a frame without it, or with another side / card id (the game reuses freed addresses:
+    F1 000420's hero Mini PEKKA address is listed later by a 26000012 body, which hid its window). A projectile is charged
+    to the generation current when it flies, and a generation's window ends at the first target point its body could
+    not have reached from the previous one (GEN_STEP per tick + GEN_SLACK). A frame with only new projectiles gets no
+    track point (the hardened comparator rejected 000420@1215, where the new shot's fire-time point lagged the body)."""
+    gen = os.environ.get('SME_HIDDEN_GEN') == '1'
     last, prev, out_t = {}, set(), {}
-    seen = set()
+    seen, cur_gen, listed = set(), {}, set()
     for line in open(path, 'rb'):
         if b'"frame"' not in line[:40]:
             continue
@@ -314,13 +321,21 @@ def reader_hidden(path, cat):
         seen.add(t)
         here = set()
         for e in d['ents']:
-            last[e[7]] = (t, e)
+            k = e[7]
+            if gen:
+                g = cur_gen.get(k)
+                if g is None or k not in listed or last[g][1][0] != e[0] or last[g][1][3] != e[3]:
+                    cur_gen[k] = g = (k, t)
+                k = g
+            last[k] = (t, e)
             here.add(e[7])
+        listed = here
         cur = set()
         for pr in d['proj']:
             a = pr[9] if len(pr) > 9 else None
-            if a and a in last and a not in here:
-                out_t.setdefault(a, {}).setdefault(t, []).append((pr[6] in prev, pr[4], pr[5]))
+            k = cur_gen.get(a) if gen else a
+            if a and k in last and a not in here:
+                out_t.setdefault(k, {}).setdefault(t, []).append((pr[6] in prev, pr[4], pr[5]))
             cur.add(pr[6])
         prev = cur
     res = []
@@ -331,13 +346,26 @@ def reader_hidden(path, cat):
             continue
         c = cat.get(e[3]) or {}
         name = c.get('hero_character') if e[3] == c.get('hero_form_id') else c.get('summon_character')
-        track = {}
+        track, kept, pt0 = {}, [], (lt, e[1], e[2])
         for t in ticks:
             pts = {(x, y) for o, x, y in by_t[t] if o} or {(x, y) for o, x, y in by_t[t]}
+            if gen and pt0[1] is not None and all(abs(x - pt0[1]) + abs(y - pt0[2]) > GEN_STEP * (t - pt0[0]) + GEN_SLACK
+                                                  for x, y in pts):
+                break
+            kept.append(t)
+            if gen and not any(o for o, x, y in by_t[t]):
+                continue   # only new projectiles: their fire-time point lags the body (000420@1215: 61 units off)
             if len(pts) == 1:
                 track[str(t)] = list(pts.pop())
-        res.append(dict(side=e[0], name=name, last=lt, end=ticks[-1], track=track))
+                pt0 = (t, *track[str(t)])
+        if kept:
+            res.append(dict(side=e[0], name=name, last=lt, end=kept[-1], track=track))
     return res
+
+
+# ponytail: one speed bound for every body (Manhattan units per tick). The hero Mini PEKKA leap moves 457 per tick (181217
+# 3047-3049), so 150 cut a real window; 1000 is about 2x the fastest seen. Per-character speeds if a real body trips it
+GEN_STEP, GEN_SLACK = 1000, 1000
 
 
 def own_charge_presses(path, plays, my, sides):

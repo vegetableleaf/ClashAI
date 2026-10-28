@@ -1,0 +1,23 @@
+launch groups 110
+  skipped nearer than a target: enemy card 203000023  x30
+  skipped nearer than a target: enemy card 26000000   x23
+  skipped nearer than a target: enemy card 26000010   x23
+  skipped nearer than a target: enemy card -1         x16
+  skipped nearer than a target: enemy card 13000000   x13
+  skipped nearer than a target: enemy card 13000102   x9
+  skipped nearer than a target: enemy card 27000006   x9
+  skipped nearer than a target: enemy card 27000008   x6
+  skipped nearer than a target: enemy card 26000107   x2
+  skipped nearer than a target: enemy card 26000093   x1
+  skipped nearer than a target: enemy card 13000108   x1
+  skipped nearer than a target: own   card -1         x28
+  skipped nearer than a target: own   card 203000088  x3
+  skipped nearer than a target: own   card 26000015   x2
+  skipped nearer than a target: own   card 26000032   x1
+  skipped nearer than a target: own   card 26000056   x1
+  skipped nearer than a target: own   card 13000011   x1
+  skipped nearer than a target: own   card 26000093   x1
+  skipped nearer than a target: own   card 13000015   x1
+  skipped nearer than a target: own   card 26000010   x1
+  skipped nearer than a target: own   card 27000000   x1
+  skipped nearer than a target: own   card 26000037   x1
