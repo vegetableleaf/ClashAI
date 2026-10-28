@@ -89,7 +89,7 @@ up() {   # PORT [HOST]
            $D/pod_boot.sh:pod_boot.sh; do
     tr -d '\r' < "${f%%:*}" | $P "cat > $W/in/${f##*:}" || die "push ${f##*:} failed"   # CRLF checkouts
   done
-  $P "cd $W && W=$W setsid nohup bash $W/in/pod_boot.sh > $W/boot.log 2>&1 < /dev/null & sleep 2; tail -3 $W/ops.log"
+  $P "cd $W || exit 1; W=$W setsid nohup bash $W/in/pod_boot.sh > $W/boot.log 2>&1 < /dev/null & sleep 2; tail -3 $W/ops.log"   # no && before &: that subshell would hold the ssh open
   echo "started $RUN on $host:$port (code ${sha:0:12}); follow: RUN=$RUN bash $D/loop_pod.sh status $port $host;"
   echo "mirror + DONE: RUN=$RUN bash $D/loop_pod.sh watch $port $host   (run it in the background now)"
 }
