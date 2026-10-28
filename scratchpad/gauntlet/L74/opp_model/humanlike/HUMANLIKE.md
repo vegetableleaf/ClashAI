@@ -98,3 +98,13 @@ Closest to passing is B u20 vs Ranked at 0.53, still 5.3x over; the human 12k-vs
   (I u40: `OPP_CKPT=icebow/data/pipeline/o2/w14opp_I.pt OPP_EXTRA="--opp-decide-every 20 --opp-tau 0.2" ... run_closed.sh iu40 /workspace/score/rows/iu40 ...`).
 - Next: card.py (one command: refs live by time block / HF tier A, ~28 stats, B-live, B3, signatures, siege facts, C via disc.py, D sealed last),
   hf_ref.py (pod 33308), human controls, THRESHOLDS v4 from controls, then score E4 / I u40.
+- 14:20 update. HF reference built (a): `hf_ref.py` on pod 33308 over `/workspace/redrive/full_bec5811a` tier A = 75,229 replays ->
+  150,458 side records, `/workspace/score/hf_ref_bec5811a.json.gz` (copy at humanlike/data/, not committed, sha256 e981d634...;
+  rebuild: `PYTHONPATH=/workspace/redrive/pylib python -s hf_ref.py --redrive /workspace/redrive/full_bec5811a --data /workspace/hf_il_replay/data --out X`).
+- B-HF human control (a, `.foreman/scratch/p2score/hf_ctl.py`, 23 stats, TOST |d| < 0.10, 20 random match-level halves):
+  1,000 matches/half 0/20 pass; 2,000/half (test split) 6/20; 3,700/half (splits 1+2) 18/20. So the plan's ">= 2,000 games per
+  archetype" cannot certify humans (c); pooled B-HF needs ~3,700+ matches per class, per-archetype B-HF needs the same per cell.
+  `repeat_rate` is undefined for humans in HF (a card can never be played twice in a row: zero variance) -> dropped in v4.
+- Pod code copy needed (a): icebow/ tree minus data (clashrl), all tracked scratchpad .py/.json/.yaml/.txt (L68 live_reader),
+  the L74 tree, fin16 manifest; jpype linked into the copy root (gap.py resets PYTHONPATH to the copy root). Push script used:
+  git archive of HEAD in 150-path chunks (Windows argument limit).
