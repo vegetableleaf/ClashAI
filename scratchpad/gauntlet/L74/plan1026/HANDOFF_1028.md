@@ -356,3 +356,26 @@ carry over. Re-dispatch from the docs listed here.
   copy jobs remain, live runs committed code. Still running on pods by design (no agent attached): P4-10M queue on 30408,
   P2-OPP1 pretrain run 2 + level A on 33308, P3-FORK cfpilot1 + trigger audit on 32657, LOOP-LRN lazy gate on 33920.
   F1FIX-3's laptop tar copy to 33920 /dev/shm/d1c is gone (re-run it from its STATUS).
+
+## 10. New account (10-28 ~12:40 EDT): state check + owner decisions
+### 10.1 Checked on arrival (read-only)
+- Live CLXIII Ranked playing; the supervisor auto-restarted at 12:16 after "screenshots failing for 60 s" (restart 1/10).
+  Poller alive. P4 base_pre step 30k / 51k (30408). P2-OPP1 run 2 step 22.5k / 40k (33308, PID 96607); level A on run 1
+  written (v0/m10_run1/level_a_hf_test.json). LOOP-LRN lazy gate DONE (33920): stored mode also NOT bit-identical (weights
+  max 6.39e-6, A / returns 0.0, stop step 145, KL / clip / entropy equal to ~1e-8); step 292 -> 244 ms, update 49 -> 41 s.
+- **Correction to 9.9: P3-FORK `cfpilot1` (32657) is NOT running and produced nothing.** /workspace/cf3/logs/cfpilot1.log
+  ends after the init pro-agreement line (15:30 UTC), before any update; pilot1.jsonl does not exist. trigger_audit2.json
+  did finish (15:29 UTC). Re-run cfpilot1 from cf/STATUS.md and find why it died.
+- The RoyaleAPI crawler driver is not running (only its Chrome profile chrome-royaleapi is open).
+### 10.2 Owner decisions
+- D1 parsed-stats line: count the 2 battle-inert hero Berserker fields as 100% for now -> parsed stats PASS.
+- Crawler: STOPPED for good for now; rely on HF IL_Replay + our live data (RoyaleAPI is too slow and offers no bulk export).
+  The multi-IP crawler (4d9d70e) stays off.
+- Supercell permission: the owner emailed Supercell; reply pending.
+- Entropy-guard baseline (delegated to the lead): PAIRED rows. ref_init's entropy is computed on exactly the rows of every
+  4th epoch-0 minibatch, and the guard compares it with the policy's entropy on those same rows (0.5x floor and
+  stop_consecutive unchanged). Bar: the paired ratio within 1% of the all-minibatch paired ratio on 3 updates, else every
+  2nd, else every minibatch. Replaces both the 20k-row sample (1.3-3.2% error) and the full pass.
+- Pending owner answers (explained 10-28): the 000420 Zap rule; lazy_refine; the KL cap (the owner asked to loosen it so
+  each match teaches as much as possible; the lead explained the learner-time trade-off first). Re-dispatch waits for the
+  owner's go.
