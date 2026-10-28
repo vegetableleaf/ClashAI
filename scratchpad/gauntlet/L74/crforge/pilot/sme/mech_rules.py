@@ -324,3 +324,97 @@ def zap_buffs(path, plays, sides, stats, log=None):
                               mech='zap_add'))
             added = True
     return sorted(plays, key=lambda p: p["tick"]) if added else plays
+
+
+# SME_TOWER_ZAP=1 (ENG-SME, owner 10-28: build it, reversible, confirm as more cases appear): an unseen opponent Zap on a
+#   crown tower. The reader shows no Zap at all (fights.unseen_zaps), and a tower the Zap kills holds no ZapFreeze buff, so
+#   neither unseen_zaps (>= 2 hit bodies) nor ZAP_ADD (buff groups) sees a lone dying tower. FRESH1 000420: our princess
+#   tower at 7 hp from 3032 leaves the list at 3519 (last listed 3517) with nothing near; one side-0 Zap at the tower, run
+#   at 3517 or 3518, makes 3519-3681 exact (82 div -> 0; f1fix_zap_sweep_000420.txt). Rule: a princess tower of side v
+#   last listed at tp with 0 < hp <= the opponent's Zap crown-tower damage (ZAP_DMG) is absent at the next frame t and the
+#   next TZ_GONE frames (and was never missing before: a reader flicker), the opponent's deck holds Zap, and none of these
+#   holds (each a reason in `blocked`): the king or
+#   another tower of v leaves at t (a cascade) or no frame follows t; an opponent body (not a tower) within TZ_BODY, an
+#   opponent projectile within TZ_PROJ (its point or its target) or an opponent area within TZ_FX of the tower on a frame
+#   of [t - TZ_LOOK, t]; an opponent play within TZ_PLAY of it, any opponent Zap, or any opponent ability, run in
+#   [t - TZ_PLAY_LOOK, t]; an opponent hidden-body window (extract.reader_hidden) over that span; a body of v within TZ_OWN
+#   of the tower on frame tp or t (a Zap at the tower's centre would hit it). -> one opponent Zap at the tower's centre,
+#   tick t - 1 (crforge hits on line R + 1, as SME_MECH_ZAP's R = c - 1; at 000420 R 3517 and 3518 tie, the latest is
+#   taken), run window [max(tp, t - 2), t - 1] (the fitter may take the other tick). Kings are left out: a king's death
+#   ends the match; so is anything after TZ_TIEBREAK (the overtime-end tie-break). Every firing goes to the record's `tower_zap` (f1fix/tower_zap_firings.py lists them for the owner).
+TOWER_ZAP = int(os.environ.get('SME_TOWER_ZAP', '0'))
+TZ_BODY, TZ_PROJ, TZ_FX, TZ_PLAY = 12000, 3000, 8000, 8000   # 'near' (Euclid units): X-Bow / Mortar reach 11.5 tiles + radii
+TZ_LOOK, TZ_PLAY_LOOK, TZ_GONE, TZ_OWN = 20, 60, 3, ZAP_R + 1000
+TOWER_PTS = set(KINGS) | {(x, y) for x in (3500, 14500) for y in (6500, 25500)}   # reader card -1 elsewhere = an unmapped body
+TZ_TIEBREAK = 6000   # after 5:00 of game time: the overtime-end tie-break removes the lowest tower with nothing near
+#   (FRESH1 001302@6167 and 003008@6152, both 1 hp, no Zap in the deck; regulation ends at tick 3681 on this build, so
+#   overtime ends ~6081). ponytail: a fixed tick, not the match clock; a 3-minute overtime mode would need its end tick
+
+
+def raw_frames(path):
+    """[(tick, ents, proj, fx)] of a raw live log, the first sample of each tick >= 0 (tower_vanish.py's reading)."""
+    import json
+    out, seen = [], set()
+    for line in open(path, 'rb'):
+        if b'"frame"' not in line[:40]:
+            continue
+        d = json.loads(line)
+        t = d['tick']
+        if t is None or t < 0 or t in seen:
+            continue
+        seen.add(t)
+        out.append((t, d.get('ents') or [], d.get('proj') or [], d.get('fx') or []))
+    return out
+
+
+def tower_zaps(fr, plays, sides, hidden=()):
+    """SME_TOWER_ZAP (above). fr: raw_frames; sides: {side: side_info}; hidden: extract.reader_hidden rows.
+    -> (plays, fired, blocked): fired / blocked = evidence dicts (blocked: low-hp removals with the reason)."""
+    import math
+    tw = lambda f: {(e[0], e[1], e[2]): e for e in f[1] if e[3] == -1 and (e[1], e[2]) in TOWER_PTS}   # noqa: E731
+    dist = lambda x, y, a, b: math.hypot(a - x, b - y) if a is not None and b is not None else math.inf   # noqa: E731
+    fired, blocked, add = [], [], []
+    for i in range(len(fr) - 1):
+        tp, t = fr[i][0], fr[i + 1][0]
+        A, B = tw(fr[i]), tw(fr[i + 1])
+        for key, e in A.items():
+            v, x, y, h = e[0], e[1], e[2], e[4]
+            if key in B or x == KINGS[0][0]:
+                continue
+            o = 1 - v
+            deck = (sides.get(o) or {}).get('deck') or []
+            lv = sides[o]['levels'][deck.index('Zap')] if 'Zap' in deck else 16
+            zc = ZAP_DMG.get(lv, (None, None))[1]
+            if zc is None or h is None or not 0 < h <= zc:
+                continue
+            ev = dict(tower=[v, x, y], hp=h, tp=tp, t=t, zap_level=lv)
+            span = [f for f in fr if t - TZ_LOOK <= f[0] <= t]
+            near = lambda rows, r: [q for f in span for q in f[rows] if q[0] == o and dist(x, y, q[1], q[2]) <= r]   # noqa: E731
+            bodies = [q for q in near(1, TZ_BODY) if q[3] != -1]
+            proj = [q for f in span for q in f[2] if q[0] == o and min(dist(x, y, q[1], q[2]),
+                                                                          dist(x, y, *(q[4:6] if len(q) > 5 else (None, None)))) <= TZ_PROJ]
+            ops = [p for p in plays if p['side'] == o and t - TZ_PLAY_LOOK <= p['tick'] <= t and (
+                p['kind'] == 'ability' or p.get('card') == 'Zap'
+                or (p['kind'] == 'play' and dist(x, y, p.get('x'), p.get('y')) <= TZ_PLAY))]
+            own = [q for f in fr[i:i + 2] for q in f[1] if q[0] == v and q[3] != -1 and dist(x, y, q[1], q[2]) <= TZ_OWN]
+            why = ('no_zap_in_deck' if 'Zap' not in deck else
+                   'relisted' if any(key in tw(f) for f in fr[i + 2:i + 2 + TZ_GONE]) else
+                   'flicker' if any(key not in tw(f) for f in fr[:i]) else
+                   'cascade' if (v, *KINGS[v]) not in B or any(k[0] == v and k not in B for k in A if k != key) else
+                   'match_end' if i + 2 >= len(fr) else
+                   'tiebreak_window' if t > TZ_TIEBREAK else
+                   'enemy_body' if bodies else
+                   'enemy_projectile' if proj else
+                   'enemy_area' if near(3, TZ_FX) else
+                   'opp_play' if ops else
+                   'hidden_body' if any(hb['side'] == o and hb['last'] <= t and hb['end'] >= t - TZ_PLAY_LOOK for hb in hidden) else
+                   'own_body_in_reach' if own else None)
+            if why:
+                blocked.append(dict(ev, why=why, plays=[(p['card'] or p['name'], p['tick']) for p in ops][:4]))
+                continue
+            R = t - 1
+            fired.append(dict(ev, R=R, run_ticks=[max(tp, t - 2), R]))
+            add.append(dict(side=o, kind='play', card='Zap', deck_index=deck.index('Zap'), name='Zap', form=0,
+                            run_ticks=[max(tp, t - 2), R], tick=R, source='spell_seen', x=x, y=y, tile=[x // 1000, y // 1000],
+                            n=0, inferred=True, mech='tower_zap'))
+    return (sorted(list(plays) + add, key=lambda p: p['tick']) if add else plays), fired, blocked

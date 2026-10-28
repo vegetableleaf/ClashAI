@@ -514,6 +514,9 @@ def match(path, bl=None, names=None, cat=None, shims=None, tt=None, uhp=None, by
         plays = own_charge_presses(path, plays, my, sides)
     import sme_live  # round 9 (A2c-9T): an area's made tick from its later sightings (sme_live.fx_made_clock, SME_MADE9)
     plays = sme_live.fx_made_clock(path, plays)
+    tz = []   # ENG-SME (SME_TOWER_ZAP): an unseen opponent Zap on a princess tower that vanishes at <= Zap damage
+    if mech_rules.TOWER_ZAP:
+        plays, tz, _ = mech_rules.tower_zaps(mech_rules.raw_frames(path), plays, sides, reader_hidden(path, cat))
     build = next(((json.loads(r).get('phase2') or {}).get('build') for r in open(path, 'rb') if b'"phase2"' in r), None)
     # RNG-free: no deck card is a drawer. Without the API only seen cards are known; an unseen slot was never played (it
     # is unseen because no play of it was extracted), and G0's drawers draw only when played (crforge: Arrows / Princess
@@ -538,7 +541,8 @@ def match(path, bl=None, names=None, cat=None, shims=None, tt=None, uhp=None, by
                 deal={str(my): order, str(1 - my): None}, opp_deal='unknown_live' , rng_free=not drawers,
                 drawers=drawers, crowns_api=api, plays=plays, unplaced=unplaced, flags=flags,
                 own_taps=[dict(tick=p['tick'], name=p['name'], x=p['x'], y=p['y']) for p in m['plays']],
-                **(dict(reader_hidden=reader_hidden(path, cat)) if os.environ.get('SME_HIDDEN') == '1' else {}))
+                **(dict(reader_hidden=reader_hidden(path, cat)) if os.environ.get('SME_HIDDEN') == '1' else {}),
+                **(dict(tower_zap=tz) if tz else {}))
     if os.environ.get('SME_SAMETICK_ORDER') == '1':   # A2c-9R: same-tick plays of both sides in the reader's creation order
         sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'sme' / 'bp9'))
         import live_frames

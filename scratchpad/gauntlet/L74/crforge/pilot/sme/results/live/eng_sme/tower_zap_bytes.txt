@@ -1,0 +1,5 @@
+# ENG-SME SME_TOWER_ZAP byte checks (laptop regen, regen_fresh.sh + SME_HIDDEN_GEN=1, LF):
+dev 138 16.402.22  flag off c5b197f5e407a73d (= v30 c5b197f5)  flag on c5b197f5e407a73d (identical: fires on none)
+FRESH1 rf 9 16.635.3 flag off d365b39c3d1f3fd7 (= f1_gen2_rf d365b39c)  flag on 7b0c50bcc7f3259d
+records 9 9 same order True
+differs live_play_20261028_000420 ['plays', 'tower_zap'] plays 53 -> 54 opp_deal_fit same True flags [] -> []

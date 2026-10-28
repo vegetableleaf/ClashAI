@@ -1,0 +1,101 @@
+20261026_080408 blocked no_zap_in_deck {'tower': [1, 14500, 25500], 'hp': 1, 'tp': 6117, 't': 6119} [] as if Zap: tiebreak_window
+20261026_082025 blocked no_zap_in_deck {'tower': [0, 3500, 6500], 'hp': 2, 'tp': 6141, 't': 6143} [] as if Zap: tiebreak_window
+20261026_083722 blocked no_zap_in_deck {'tower': [1, 3500, 25500], 'hp': 43, 'tp': 4190, 't': 4192} [] as if Zap: enemy_body
+20261026_084110 blocked no_zap_in_deck {'tower': [0, 14500, 6500], 'hp': 69, 'tp': 3797, 't': 3799} [] as if Zap: enemy_body
+20261026_084438 blocked tiebreak_window {'tower': [1, 14500, 25500], 'hp': 1, 'tp': 6124, 't': 6126} [] 
+20261026_090406 blocked enemy_body {'tower': [1, 3500, 25500], 'hp': 45, 'tp': 4492, 't': 4494} [('Zap', 4493)] 
+20261026_094126 blocked no_zap_in_deck {'tower': [1, 14500, 25500], 'hp': 62, 'tp': 5146, 't': 5148} [] as if Zap: enemy_body
+20261026_095457 blocked no_zap_in_deck {'tower': [1, 3500, 25500], 'hp': 2, 'tp': 6123, 't': 6125} [] as if Zap: tiebreak_window
+20261026_100354 blocked no_zap_in_deck {'tower': [1, 3500, 25500], 'hp': 67, 'tp': 4623, 't': 4625} [] as if Zap: enemy_projectile
+20261026_101749 blocked no_zap_in_deck {'tower': [1, 14500, 25500], 'hp': 49, 'tp': 2549, 't': 2551} [] as if Zap: enemy_body
+20261026_141505 blocked no_zap_in_deck {'tower': [0, 14500, 6500], 'hp': 1, 'tp': 6109, 't': 6111} [] as if Zap: tiebreak_window
+20261026_142345 blocked no_zap_in_deck {'tower': [0, 3500, 6500], 'hp': 69, 'tp': 5584, 't': 5586} [('Earthquake', 5545)] as if Zap: enemy_area
+20261026_144057 blocked no_zap_in_deck {'tower': [0, 14500, 6500], 'hp': 56, 'tp': 1480, 't': 1482} [] as if Zap: enemy_projectile
+20261026_144057 blocked no_zap_in_deck {'tower': [1, 14500, 25500], 'hp': 40, 'tp': 3463, 't': 3465} [] as if Zap: enemy_body
+20261026_144057 blocked no_zap_in_deck {'tower': [1, 3500, 25500], 'hp': 2, 'tp': 6136, 't': 6138} [] as if Zap: tiebreak_window
+20261026_145939 blocked no_zap_in_deck {'tower': [0, 3500, 6500], 'hp': 2, 'tp': 6135, 't': 6137} [] as if Zap: tiebreak_window
+20261026_152601 blocked no_zap_in_deck {'tower': [0, 3500, 6500], 'hp': 2, 'tp': 6142, 't': 6144} [] as if Zap: tiebreak_window
+20261026_154319 blocked no_zap_in_deck {'tower': [0, 3500, 6500], 'hp': 1, 'tp': 6154, 't': 6156} [] as if Zap: tiebreak_window
+20261026_160930 blocked no_zap_in_deck {'tower': [1, 3500, 25500], 'hp': 2, 'tp': 6118, 't': 6120} [] as if Zap: tiebreak_window
+20261026_161448 blocked enemy_projectile {'tower': [0, 14500, 6500], 'hp': 20, 'tp': 3465, 't': 3467} [('Fireball', 3431)] 
+20261026_161448 blocked tiebreak_window {'tower': [0, 3500, 6500], 'hp': 1, 'tp': 6161, 't': 6163} [] 
+20261026_162012 blocked enemy_body {'tower': [0, 3500, 6500], 'hp': 5, 'tp': 2038, 't': 2040} [] 
+20261026_164443 blocked no_zap_in_deck {'tower': [0, 14500, 6500], 'hp': 49, 'tp': 2973, 't': 2975} [] as if Zap: enemy_body
+20261026_165839 blocked no_zap_in_deck {'tower': [0, 3500, 6500], 'hp': 18, 'tp': 4003, 't': 4005} [] as if Zap: enemy_body
+20261026_171232 blocked no_zap_in_deck {'tower': [1, 14500, 25500], 'hp': 2, 'tp': 6143, 't': 6145} [] as if Zap: tiebreak_window
+20261026_171753 blocked no_zap_in_deck {'tower': [0, 14500, 6500], 'hp': 2, 'tp': 6150, 't': 6152} [] as if Zap: tiebreak_window
+20261026_172314 blocked no_zap_in_deck {'tower': [0, 14500, 6500], 'hp': 2, 'tp': 6158, 't': 6160} [] as if Zap: tiebreak_window
+20261026_174147 blocked no_zap_in_deck {'tower': [0, 14500, 6500], 'hp': 2, 'tp': 6114, 't': 6116} [] as if Zap: tiebreak_window
+20261026_175027 blocked no_zap_in_deck {'tower': [0, 14500, 6500], 'hp': 56, 'tp': 5015, 't': 5017} [] as if Zap: enemy_body
+20261026_175456 blocked no_zap_in_deck {'tower': [1, 14500, 25500], 'hp': 2, 'tp': 6134, 't': 6136} [] as if Zap: tiebreak_window
+20261026_180015 blocked no_zap_in_deck {'tower': [0, 14500, 6500], 'hp': 42, 'tp': 3630, 't': 3632} [] as if Zap: enemy_area
+20261026_180652 blocked tiebreak_window {'tower': [1, 3500, 25500], 'hp': 1, 'tp': 6142, 't': 6144} [] 
+20261026_181217 blocked no_zap_in_deck {'tower': [0, 3500, 6500], 'hp': 1, 'tp': 6116, 't': 6118} [] as if Zap: tiebreak_window
+20261026_182050 blocked no_zap_in_deck {'tower': [1, 14500, 25500], 'hp': 11, 'tp': 873, 't': 875} [] as if Zap: enemy_body
+20261026_182050 blocked no_zap_in_deck {'tower': [1, 3500, 25500], 'hp': 69, 'tp': 2276, 't': 2278} [] as if Zap: enemy_projectile
+20261026_183750 blocked no_zap_in_deck {'tower': [0, 14500, 6500], 'hp': 41, 'tp': 4594, 't': 4596} [] as if Zap: enemy_body
+20261026_185736 blocked no_zap_in_deck {'tower': [1, 14500, 25500], 'hp': 2, 'tp': 6124, 't': 6126} [] as if Zap: tiebreak_window
+20261026_190255 blocked no_zap_in_deck {'tower': [1, 3500, 25500], 'hp': 2, 'tp': 6137, 't': 6139} [] as if Zap: tiebreak_window
+20261026_192935 blocked no_zap_in_deck {'tower': [1, 3500, 25500], 'hp': 1, 'tp': 6117, 't': 6119} [] as if Zap: tiebreak_window
+20261026_194213 blocked no_zap_in_deck {'tower': [1, 14500, 25500], 'hp': 32, 'tp': 3598, 't': 3600} [] as if Zap: enemy_body
+20261026_200941 blocked no_zap_in_deck {'tower': [0, 14500, 6500], 'hp': 67, 'tp': 2210, 't': 2212} [] as if Zap: enemy_body
+20261026_203234 blocked no_zap_in_deck {'tower': [0, 14500, 6500], 'hp': 2, 'tp': 6121, 't': 6123} [] as if Zap: tiebreak_window
+20261026_203752 blocked no_zap_in_deck {'tower': [1, 14500, 25500], 'hp': 42, 'tp': 4727, 't': 4729} [] as if Zap: enemy_projectile
+20261026_204202 blocked no_zap_in_deck {'tower': [1, 3500, 25500], 'hp': 11, 'tp': 3580, 't': 3582} [] as if Zap: enemy_body
+20261026_204518 blocked opp_play {'tower': [0, 14500, 6500], 'hp': 33, 'tp': 1821, 't': 1823} [('Zap', 1821)] 
+20261026_204837 blocked no_zap_in_deck {'tower': [0, 3500, 6500], 'hp': 2, 'tp': 6136, 't': 6138} [] as if Zap: tiebreak_window
+20261026_210249 blocked no_zap_in_deck {'tower': [1, 14500, 25500], 'hp': 62, 'tp': 5060, 't': 5062} [('Fireball', 5043)] as if Zap: enemy_body
+20261026_210720 blocked no_zap_in_deck {'tower': [1, 14500, 25500], 'hp': 1, 'tp': 6107, 't': 6109} [] as if Zap: tiebreak_window
+20261026_211239 blocked no_zap_in_deck {'tower': [1, 14500, 25500], 'hp': 2, 'tp': 6113, 't': 6115} [] as if Zap: tiebreak_window
+20261026_212917 blocked no_zap_in_deck {'tower': [1, 14500, 25500], 'hp': 1, 'tp': 6136, 't': 6138} [] as if Zap: tiebreak_window
+20261026_213436 blocked no_zap_in_deck {'tower': [0, 14500, 6500], 'hp': 16, 'tp': 2083, 't': 2085} [] as if Zap: enemy_projectile
+20261026_213436 blocked tiebreak_window {'tower': [1, 14500, 25500], 'hp': 1, 'tp': 6179, 't': 6181} [] 
+20261026_215757 blocked no_zap_in_deck {'tower': [1, 14500, 25500], 'hp': 2, 'tp': 6117, 't': 6119} [] as if Zap: tiebreak_window
+20261026_220317 blocked no_zap_in_deck {'tower': [0, 14500, 6500], 'hp': 69, 'tp': 4422, 't': 4424} [] as if Zap: enemy_body
+20261026_221406 blocked no_zap_in_deck {'tower': [0, 14500, 6500], 'hp': 2, 'tp': 6161, 't': 6163} [] as if Zap: tiebreak_window
+20261026_221926 blocked no_zap_in_deck {'tower': [1, 14500, 25500], 'hp': 49, 'tp': 2944, 't': 2946} [('Earthquake', 2925)] as if Zap: enemy_body
+20261026_222240 blocked no_zap_in_deck {'tower': [0, 14500, 6500], 'hp': 53, 'tp': 3411, 't': 3412} [] as if Zap: enemy_projectile
+20261026_222712 blocked no_zap_in_deck {'tower': [1, 3500, 25500], 'hp': 1, 'tp': 6119, 't': 6121} [] as if Zap: tiebreak_window
+20261026_224041 blocked enemy_body {'tower': [1, 14500, 25500], 'hp': 14, 'tp': 1599, 't': 1601} [] 
+20261026_224856 blocked no_zap_in_deck {'tower': [1, 3500, 25500], 'hp': 65, 'tp': 1342, 't': 1344} [] as if Zap: enemy_body
+20261026_230512 blocked no_zap_in_deck {'tower': [0, 14500, 6500], 'hp': 1, 'tp': 6146, 't': 6148} [] as if Zap: tiebreak_window
+20261026_232438 blocked no_zap_in_deck {'tower': [0, 14500, 6500], 'hp': 1, 'tp': 6124, 't': 6126} [] as if Zap: tiebreak_window
+20261026_232957 blocked no_zap_in_deck {'tower': [1, 3500, 25500], 'hp': 32, 'tp': 5220, 't': 5222} [('MiniPekka', 5162)] as if Zap: enemy_body
+20261026_233436 blocked no_zap_in_deck {'tower': [1, 14500, 25500], 'hp': 1, 'tp': 6164, 't': 6166} [] as if Zap: tiebreak_window
+20261026_233957 blocked no_zap_in_deck {'tower': [1, 14500, 25500], 'hp': 2, 'tp': 6144, 't': 6146} [] as if Zap: tiebreak_window
+20261026_234517 blocked no_zap_in_deck {'tower': [1, 3500, 25500], 'hp': 60, 'tp': 3115, 't': 3117} [] as if Zap: enemy_body
+20261026_234837 blocked no_zap_in_deck {'tower': [0, 3500, 6500], 'hp': 2, 'tp': 6140, 't': 6142} [] as if Zap: tiebreak_window
+20261026_235355 blocked no_zap_in_deck {'tower': [1, 3500, 25500], 'hp': 1, 'tp': 6132, 't': 6134} [] as if Zap: tiebreak_window
+20261027_000233 blocked no_zap_in_deck {'tower': [0, 3500, 6500], 'hp': 1, 'tp': 6156, 't': 6158} [] as if Zap: tiebreak_window
+20261027_001141 blocked no_zap_in_deck {'tower': [1, 3500, 25500], 'hp': 2, 'tp': 6156, 't': 6158} [] as if Zap: tiebreak_window
+20261027_002429 blocked no_zap_in_deck {'tower': [0, 14500, 6500], 'hp': 1, 'tp': 6151, 't': 6153} [] as if Zap: tiebreak_window
+20261027_002948 blocked no_zap_in_deck {'tower': [0, 14500, 6500], 'hp': 1, 'tp': 6134, 't': 6136} [] as if Zap: tiebreak_window
+20261027_003506 blocked no_zap_in_deck {'tower': [0, 3500, 6500], 'hp': 1, 'tp': 6143, 't': 6145} [] as if Zap: tiebreak_window
+20261027_004031 blocked no_zap_in_deck {'tower': [1, 14500, 25500], 'hp': 1, 'tp': 6139, 't': 6141} [] as if Zap: tiebreak_window
+20261027_004550 blocked no_zap_in_deck {'tower': [0, 14500, 6500], 'hp': 56, 'tp': 2784, 't': 2786} [] as if Zap: enemy_body
+20261027_004550 blocked no_zap_in_deck {'tower': [0, 3500, 6500], 'hp': 66, 'tp': 3273, 't': 3275} [] as if Zap: enemy_body
+20261027_004901 blocked no_zap_in_deck {'tower': [0, 3500, 6500], 'hp': 69, 'tp': 5818, 't': 5820} [('Fireball', 5780)] as if Zap: enemy_body
+20261027_005727 blocked no_zap_in_deck {'tower': [1, 14500, 25500], 'hp': 2, 'tp': 6140, 't': 6142} [] as if Zap: tiebreak_window
+20261027_014151 blocked no_zap_in_deck {'tower': [1, 14500, 25500], 'hp': 58, 'tp': 4361, 't': 4363} [] as if Zap: enemy_body
+20261027_014928 blocked no_zap_in_deck {'tower': [0, 3500, 6500], 'hp': 1, 'tp': 6134, 't': 6136} [] as if Zap: tiebreak_window
+20261027_015759 blocked no_zap_in_deck {'tower': [1, 3500, 25500], 'hp': 27, 'tp': 785, 't': 787} [] as if Zap: enemy_projectile
+20261027_020550 blocked enemy_body {'tower': [1, 14500, 25500], 'hp': 32, 'tp': 2544, 't': 2546} [] 
+20261027_022149 blocked no_zap_in_deck {'tower': [0, 14500, 6500], 'hp': 56, 'tp': 792, 't': 794} [] as if Zap: enemy_body
+20261027_022821 blocked no_zap_in_deck {'tower': [0, 3500, 6500], 'hp': 16, 'tp': 3378, 't': 3380} [] as if Zap: enemy_body
+20261027_024155 blocked no_zap_in_deck {'tower': [1, 14500, 25500], 'hp': 59, 'tp': 2970, 't': 2972} [] as if Zap: enemy_body
+20261027_025339 blocked no_zap_in_deck {'tower': [0, 3500, 6500], 'hp': 28, 'tp': 3482, 't': 3484} [] as if Zap: enemy_body
+20261027_025651 blocked no_zap_in_deck {'tower': [0, 3500, 6500], 'hp': 66, 'tp': 2313, 't': 2315} [] as if Zap: enemy_body
+20261027_031722 blocked no_zap_in_deck {'tower': [1, 3500, 25500], 'hp': 42, 'tp': 3352, 't': 3354} [] as if Zap: enemy_body
+20261027_032352 blocked no_zap_in_deck {'tower': [1, 14500, 25500], 'hp': 1, 'tp': 6145, 't': 6147} [] as if Zap: tiebreak_window
+20261027_033729 blocked no_zap_in_deck {'tower': [0, 14500, 6500], 'hp': 53, 'tp': 4828, 't': 4830} [] as if Zap: enemy_body
+20261027_034147 blocked no_zap_in_deck {'tower': [0, 3500, 6500], 'hp': 28, 'tp': 3881, 't': 3883} [] as if Zap: enemy_projectile
+20261027_040302 blocked no_zap_in_deck {'tower': [0, 3500, 6500], 'hp': 1, 'tp': 6130, 't': 6132} [] as if Zap: tiebreak_window
+20261027_041602 blocked no_zap_in_deck {'tower': [0, 14500, 6500], 'hp': 8, 'tp': 4196, 't': 4198} [('Rocket', 4194)] as if Zap: enemy_body
+20261028_000420 FIRED {'tower': [1, 14500, 25500], 'hp': 7, 'tp': 3517, 't': 3519, 'zap_level': 16, 'R': 3518, 'run_ticks': [3517, 3518]}
+20261028_001302 blocked no_zap_in_deck {'tower': [0, 14500, 6500], 'hp': 1, 'tp': 6165, 't': 6167} [] as if Zap: tiebreak_window
+20261028_003008 blocked no_zap_in_deck {'tower': [1, 14500, 25500], 'hp': 1, 'tp': 6150, 't': 6152} [] as if Zap: tiebreak_window
+20261028_004256 blocked no_zap_in_deck {'tower': [1, 3500, 25500], 'hp': 38, 'tp': 3687, 't': 3689} [] as if Zap: enemy_body
+20261028_005912 blocked no_zap_in_deck {'tower': [0, 14500, 6500], 'hp': 77, 'tp': 4511, 't': 4513} [] as if Zap: enemy_body
+20261028_010318 blocked no_zap_in_deck {'tower': [1, 3500, 25500], 'hp': 27, 'tp': 5731, 't': 5733} [] as if Zap: enemy_body
+20261028_011215 blocked no_zap_in_deck {'tower': [1, 14500, 25500], 'hp': 20, 'tp': 2558, 't': 2560} [] as if Zap: enemy_body
+candidates (0 < hp <= Zap crown damage, princess tower gone): {'no_zap_in_deck': 89, 'no_zap/tiebreak_window': 44, 'no_zap/enemy_body': 35, 'tiebreak_window': 4, 'enemy_body': 4, 'no_zap/enemy_projectile': 8, 'no_zap/enemy_area': 2, 'enemy_projectile': 1, 'opp_play': 1, 'FIRED': 1}
