@@ -41,8 +41,9 @@ class TestBudget(unittest.TestCase):
 def _sample(rng, trig, tick, signal):
     # two candidates, K = 2 continuations: q = signal * [1, -1] + noise
     qs = [[float(signal * s + 0.05 * rng.standard_normal()) for _ in range(2)] for s in (0.5, -0.5)]
-    cands = [{"kind": "chosen", "q": qs[0], "end": [600, 600], "terminal": [False, False], "q_end": None},
-             {"kind": "wait", "q": qs[1], "end": [600, 600], "terminal": [False, False], "q_end": None}]
+    qh = [{"150": [x * 0.5 + 0.1 * float(rng.standard_normal()) for x in q], "300": [x * 0.8 for x in q]} for q in qs]
+    cands = [{"kind": "chosen", "q": qs[0], "qh": qh[0], "end": [600, 600], "terminal": [False, False], "q_end": None},
+             {"kind": "wait", "q": qs[1], "qh": qh[1], "end": [600, 600], "terminal": [False, False], "q_end": None}]
     return {"row": 1, "tick": tick, "trigger": trig, "audit": False, "to_end": False, "cands": cands, "fork_ticks": 2400,
             "wall_s": 1.0}
 
@@ -69,6 +70,9 @@ class TestReport(unittest.TestCase):
         t = out["triggers"]["rocket"]
         self.assertGreater(t["snr"], 1.0)                                             # a strong planted signal
         self.assertEqual(t["fork_ticks_per_sample"], 2400.0)
+        sw = out["horizon_sweep"]
+        self.assertEqual(sw["horizons"], ["150", "300"])
+        self.assertGreater(sw["snr"]["rocket"]["300"]["snr"], sw["snr"]["rocket"]["150"]["snr"])   # the planted 150 is noisier
         b = out["budget"]
         self.assertTrue(all(0.0 <= p <= 1.0 for p in b["recommended_cf_p"].values()))
         self.assertGreater(b["recommended_cf_p"]["rocket"], 0.0)

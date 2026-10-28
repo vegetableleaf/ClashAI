@@ -120,6 +120,24 @@ def main(argv=None) -> int:
                           "levels_ci90": boot(aud, lambda x: CF.slope_audit(x)["levels"]["slope"]),
                           "diffs_ci90": boot(aud, lambda x: CF.slope_audit(x)["diffs"]["slope"]),
                           "band": [0.7, 1.3]}
+    hs = sorted({h for s in smp for c in s["cands"] for h in c.get("qh", {})}, key=int)
+    if hs:                                  # cf_horizon_sweep pilots: SNR and critic slope as if the horizon were each h
+        def at(sample, h):
+            return {**sample, "cands": [{**c, "q": c["qh"][h]} for c in sample["cands"]]}
+        sw = {"horizons": hs, "snr": {}, "slope": {}}
+        for t, ss in sorted(by.items()):
+            row = {}
+            for h in hs:
+                ok = [at(s, h) for s in ss if all("qh" in c for c in s["cands"])]
+                rel = CF.reliability([CF.sample_adv(s["cands"]) for s in ok])
+                row[h] = {"n": rel["n"], "snr": rel["snr"], "factor": rel["factor"],
+                          "snr_ci90": boot(ok, lambda x: CF.reliability([CF.sample_adv(s["cands"]) for s in x])["snr"], n=200)}
+            sw["snr"][t] = row
+        for h in hs:
+            ah = [at(s, h) for s in aud if all("qh" in c for c in s["cands"])]
+            sw["slope"][h] = {**CF.slope_audit(ah), "levels_ci90": boot(ah, lambda x: CF.slope_audit(x)["levels"]["slope"], n=200),
+                              "diffs_ci90": boot(ah, lambda x: CF.slope_audit(x)["diffs"]["slope"], n=200)}
+        out["horizon_sweep"] = sw
     mt = sum(int(r.get("end_tick") or 0) for r in rows)
     ft = sum(int(r["cf"].get("fork_ticks", 0)) for r in rows)
     out["cost"] = {"fork_ticks_per_match_tick": ft / mt if mt else None,

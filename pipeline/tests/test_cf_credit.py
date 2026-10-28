@@ -679,6 +679,41 @@ class TestNewTriggerConfig(unittest.TestCase):
         CF.cf_cfg({**ON, "cf_p": {"tornado_redirect": 0.3}})                  # the redirect needs no follow-up
 
 
+class TestPerTriggerNoiseControls(unittest.TestCase):
+    def test_config_and_hash(self):
+        c = CF.cf_cfg({**ON, "cf_k_by": {"rocket": 4}, "cf_horizon_by": {"siege": 400}})
+        self.assertEqual((CF.trigger_k(c, "rocket"), CF.trigger_k(c, "xbow")), (4, 2))
+        self.assertEqual((CF.trigger_horizon(c, "siege"), CF.trigger_horizon(c, "xbow")), (400, 600))
+        c0 = CF.cf_cfg(ON)
+        self.assertEqual((c0["cf_k_by"], c0["cf_horizon_by"]), ({}, {}))
+        self.assertEqual(CF.canonical({**ON, "cf_k_by": {}, "cf_horizon_by": None}), CF.canonical(ON))   # off = the old hash
+        self.assertNotEqual(CF.canonical({**ON, "cf_k_by": {"rocket": 4}}), CF.canonical(ON))
+        self.assertEqual(CF.cf_cfg({**ON, "cf_horizon_sweep": [300, 150]})["cf_horizon_sweep"], [150, 300])
+        self.assertEqual(CF.canonical({**ON, "cf_horizon_sweep": []}), CF.canonical(ON))
+        self.assertNotEqual(CF.canonical({**ON, "cf_horizon_sweep": [150]}), CF.canonical(ON))
+        for bad in ({"cf_k_by": {"nope": 3}}, {"cf_k_by": {"rocket": 1}}, {"cf_k_by": {"rocket": 2.5}},
+                    {"cf_horizon_by": {"rocket": 0}}, {"cf_horizon_by": [600]}, {"cf_horizon_sweep": [0]},
+                    {"cf_horizon_sweep": 300}):
+            with self.assertRaises(SystemExit, msg=bad):
+                CF.cf_cfg({**ON, **bad})
+
+    def test_reliability_pools_triggers_with_different_k(self):
+        rng = np.random.default_rng(1)
+        sig = rng.standard_normal((200, 1))
+
+        def adv(K):
+            q = sig + 0.5 * rng.standard_normal((200, K))
+            q = np.stack([q, -q])                                          # two candidates: [2, 200, K]
+            return [(q[:, i, :] - q[:, i, :].mean(axis=0, keepdims=True)) for i in range(200)]
+        a2, a4 = adv(2), adv(4)
+        pooled = CF.reliability(a2 + a4)                                   # K = 2 and K = 4 samples together: first 2 columns
+        self.assertEqual(pooled["n"], 800)
+        self.assertGreater(pooled["factor"], 0.5)
+        r4 = CF.reliability(a4)
+        r2 = CF.reliability(a2)
+        self.assertGreater(r4["snr"], r2["snr"])                           # more continuations -> a cleaner K-mean
+
+
 class TestNewTriggerGeometry(unittest.TestCase):
     def test_pull_centre(self):
         cx, cy = CF.pull_centre(3.5, 16.0, 9.0, 29.5, 4.75)
@@ -763,6 +798,11 @@ class TestNewTriggerForks(unittest.TestCase):
                     cands = CF.candidates(m, s, d, "rocket_tornado", c)
                     entries = [x for x in todo if x[0] is m.learner or x[0] is m.opp]
                     out = self.rollouts(m, entries, cands, seed=3)
+                    got["k3"] = (int(m.env.tick), self.rollouts(m, entries, cands[:2], seed=3, k=3, horizon=300))
+                    c0 = self.c
+                    self.c = {**c0, "cf_horizon_sweep": [60, 120]}
+                    got["sweep"] = self.rollouts(m, entries, cands, seed=3)                  # the SAME forks, Q also at 60 / 120
+                    self.c = c0
                     forks = {}
                     for fi, f in enumerate(self.last_forks):
                         if fi < len(cands):                                   # continuation 0 of each candidate
@@ -787,6 +827,17 @@ class TestNewTriggerForks(unittest.TestCase):
         both = [x for x in got.get("seen", []) if x[1] and x[2]]
         self.assertIn("done", got, f"no decision with Rocket + Tornado affordable at >= 9 elixir; decisions {len(got.get('seen', []))}, "
                                    f"both-affordable {both[:12]}")
+        root, o3 = got["k3"]                                                       # per-sample K and horizon (cf_k_by / cf_horizon_by)
+        self.assertTrue(all(len(a["q"]) == 3 and len(a["end"]) == 3 for a in o3["cands"]))
+        self.assertTrue(all(root + 300 <= e < root + 300 + 120 for a in o3["cands"] for e in a["end"]), o3["cands"])
+        for a, b in zip(got["out"]["cands"], got["sweep"]["cands"]):                  # the sweep changes nothing it measures
+            self.assertEqual((a["q"], a["end"], a["terminal"]), (b["q"], b["end"], b["terminal"]))
+            self.assertNotIn("qh", a)
+            self.assertEqual(sorted(b["qh"]), ["120", "60"])
+            for h in ("60", "120"):
+                self.assertTrue(len(b["qh"][h]) == 2 and all(np.isfinite(v) for v in b["qh"][h]), b["qh"])
+            self.assertNotEqual(b["qh"]["60"], b["qh"]["120"])
+        self.assertEqual(got["sweep"]["fork_ticks"], got["out"]["fork_ticks"])
         kinds = [a["kind"] for a in got["cands"]]
         self.assertEqual(kinds[0], "chosen")
         self.assertIn("combo", kinds)

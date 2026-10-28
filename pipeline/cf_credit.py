@@ -78,8 +78,12 @@ DEFAULTS = {"cf_horizon_ticks": 600, "cf_k": 2, "cf_w": 1.0, "cf_clip": 3.0, "cf
             "cf_cap_ticks": 8000, "cf_audit_p": 0.1, "cf_end_ticks": 1200, "cf_shrink": True, "cf_shrink_min": 30,
             "cf_p": None, "cf_random_alts": 2, "cf_rocket_min_value": 2.0, "cf_siege_radius_tiles": 2.0,
             "cf_front_min_tiles": 5.0, "cf_front_max_tiles": 8.0, "cf_xbow_fail_window_ticks": 600, "cf_full_elixir": 9.9,
-            "cf_combo_value": 6.0, "cf_redirect_dist_tiles": 12.0}
-NEW_KEYS = ("cf_combo_value", "cf_redirect_dist_tiles")   # dropped from the config hash at their defaults (older cf-on hashes stay)
+            "cf_combo_value": 6.0, "cf_redirect_dist_tiles": 12.0, "cf_k_by": None, "cf_horizon_by": None,
+            "cf_horizon_sweep": None}
+NEW_KEYS = ("cf_combo_value", "cf_redirect_dist_tiles", "cf_k_by", "cf_horizon_by", "cf_horizon_sweep")   # dropped from the config hash at their
+# defaults (older cf-on hashes stay); cf_k_by / cf_horizon_by = {trigger: K / horizon ticks}, the per-trigger noise controls;
+# cf_horizon_sweep = [ticks, ...] (< the horizon): the SAME forks also record Q read at those earlier stops ("qh"), so one pilot
+# gives the SNR / critic-slope of every candidate horizon (diagnostic, the learner ignores it)
 KEYS = ("cf_credit",) + tuple(DEFAULTS)
 INTS = ("cf_horizon_ticks", "cf_k", "cf_max_alts", "cf_gap_ticks", "cf_cap_ticks", "cf_end_ticks", "cf_shrink_min",
         "cf_random_alts", "cf_xbow_fail_window_ticks")
@@ -128,6 +132,15 @@ def cf_cfg(cfg: dict) -> Optional[dict]:
         bad.append(f"cf_shrink must be a bool, got {c['cf_shrink']!r}")
     if _num(c["cf_front_min_tiles"]) and _num(c["cf_front_max_tiles"]) and c["cf_front_min_tiles"] > c["cf_front_max_tiles"]:
         bad.append(f"cf_front_min_tiles {c['cf_front_min_tiles']} > cf_front_max_tiles {c['cf_front_max_tiles']}")
+    for key, lo, what in (("cf_k_by", 2, "K >= 2 (the reliability needs two continuations)"),
+                          ("cf_horizon_by", 1, "ticks >= 1")):
+        v = c[key] if c[key] is not None else {}
+        if not isinstance(v, dict) or any(k not in TRIGGERS for k in v) or not all(
+                isinstance(x, int) and not isinstance(x, bool) and x >= lo for x in v.values()):
+            bad.append(f"{key} must map trigger names {TRIGGERS} to integers with {what}, got {v!r}")
+    sw = c["cf_horizon_sweep"] if c["cf_horizon_sweep"] is not None else []
+    if not isinstance(sw, (list, tuple)) or not all(isinstance(x, int) and not isinstance(x, bool) and x >= 1 for x in sw):
+        bad.append(f"cf_horizon_sweep must be a list of integers >= 1 (ticks), got {sw!r}")
     p = c["cf_p"] if c["cf_p"] is not None else {}
     if not isinstance(p, dict) or any(k not in TRIGGERS for k in p) or not all(_num(v) and 0 <= v <= 1 for v in p.values()):
         bad.append(f"cf_p must map trigger names {TRIGGERS} to probabilities in [0, 1], got {p!r}")
@@ -151,8 +164,11 @@ def cf_cfg(cfg: dict) -> Optional[dict]:
         bad.append("cf_credit with crown terms is not supported (their rewards are not in the fork return)")
     if bad:
         raise SystemExit("bad cf_credit config: " + "; ".join(bad))
-    out = {k: (int(v) if k in INTS else v if k in ("cf_shrink", "cf_p") else float(v)) for k, v in c.items()}
+    out = {k: (int(v) if k in INTS else v if k in ("cf_shrink", "cf_p", "cf_k_by", "cf_horizon_by", "cf_horizon_sweep")
+               else float(v)) for k, v in c.items()}
+    out["cf_horizon_sweep"] = sorted({int(x) for x in (c["cf_horizon_sweep"] or ())})
     out["cf_p"] = {**P_DEFAULT, **{k: float(v) for k, v in p.items()}}
+    out["cf_k_by"], out["cf_horizon_by"] = dict(c["cf_k_by"] or {}), dict(c["cf_horizon_by"] or {})
     return out
 
 
@@ -164,10 +180,12 @@ def canonical(cfg: dict) -> dict:
     c = {k: (v if cfg.get(k) is None else cfg[k]) for k, v in DEFAULTS.items()}
     p = {**P_DEFAULT, **{k: float(v) for k, v in (cfg.get("cf_p") or {}).items()}}
     c["cf_p"] = {k: v for k, v in p.items() if not (k in OPT_IN and v == 0.0)}   # opt-in triggers left off: the older hash
-    out = {**cfg, "cf_credit": True, **{k: (int(v) if k in INTS else v if k in ("cf_shrink", "cf_p") else float(v))
-                                        for k, v in c.items()}}
+    keep = ("cf_shrink", "cf_p", "cf_k_by", "cf_horizon_by", "cf_horizon_sweep")
+    out = {**cfg, "cf_credit": True, **{k: (int(v) if k in INTS else v if k in keep else float(v)) for k, v in c.items()}}
     for k in NEW_KEYS:
-        if out.get(k) is None or float(out[k]) == DEFAULTS[k]:
+        v = out.get(k)
+        if v is None or (isinstance(v, (dict, list, tuple)) and not v) or (
+                not isinstance(v, (dict, list, tuple)) and float(v) == DEFAULTS[k]):
             out.pop(k, None)
     return out
 
@@ -699,6 +717,16 @@ def triggers(m, s, d: dict, c: dict) -> list[str]:
     return out
 
 
+def trigger_k(c: dict, trig: str) -> int:
+    """Continuations K of a sample of trigger ``trig``: cf_k_by[trig] else cf_k."""
+    return int((c.get("cf_k_by") or {}).get(trig, c["cf_k"]))
+
+
+def trigger_horizon(c: dict, trig: str) -> int:
+    """Fork horizon (ticks) of a sample of trigger ``trig``: cf_horizon_by[trig] else cf_horizon_ticks."""
+    return int((c.get("cf_horizon_by") or {}).get(trig, c["cf_horizon_ticks"]))
+
+
 def reward(word: str) -> float:
     return {"win": 1.0, "loss": -1.0}.get(word, 0.0)
 
@@ -747,7 +775,8 @@ class Runner:
             tick = int(s._cur[0])
             to_end = tick >= END_TICK - c["cf_end_ticks"]
             if trig is not None:
-                est = c["cf_k"] * len(cands) * (max(END_TICK - tick, 1) if to_end else c["cf_horizon_ticks"])
+                kk, hh = trigger_k(c, trig), trigger_horizon(c, trig)
+                est = kk * len(cands) * (max(END_TICK - tick, 1) if to_end else hh)
                 if st["fork_ticks"] + est > c["cf_cap_ticks"]:
                     st["capped"][trig] += 1
                     trig = None
@@ -759,7 +788,7 @@ class Runner:
             audit = bool(st["rng"].random() < c["cf_audit_p"]) and not to_end
             entries = [(x, px, dx) for x, px, dx in todo if x is m.learner or x is m.opp]
             seed = zlib.crc32(f"{st['seed']}:{len(st['samples'])}".encode())
-            res = self.rollouts(m, entries, cands, seed, audit)
+            res = self.rollouts(m, entries, cands, seed, audit, k=kk, horizon=hh)
             for a, r in zip(cands, res["cands"]):
                 a.update(r)
             st["fork_ticks"] += res["fork_ticks"]
@@ -799,7 +828,8 @@ class Runner:
         return [g ** (t - root) * (self.phi_of(x) + sc * float(vi))
                 for x, t, vi in zip(sides, ticks, v)]
 
-    def rollouts(self, m, entries, cands, seed: int, audit: bool = False) -> dict:
+    def rollouts(self, m, entries, cands, seed: int, audit: bool = False, k: Optional[int] = None,
+                 horizon: Optional[int] = None) -> dict:
         """Fork ``m`` (its due sides prepared and decided as ``entries`` [(side, p, decision)], nothing applied) into K x C
         copies (continuation-major; k >= 1 reseeded by ``reseed``), apply the root (the learner's decision replaced by each
         candidate's action), then lockstep rounds (``e1_eval.selfplay_decide`` over every copy's due sides) until each
@@ -809,12 +839,12 @@ class Runner:
         from pipeline import e1_eval as E
         from pipeline.search_s0 import fork_into
         c, env, L = self.c, m.env, m.learner
-        K, C = c["cf_k"], len(cands)
+        K, C = int(k or c["cf_k"]), len(cands)
         while len(self.pool) < K * C:
             self.pool.append(self.make_env())
         blob = env.core.save_state()
         root = int(env.tick)
-        stop = 10 ** 9 if root >= END_TICK - c["cf_end_ticks"] else root + c["cf_horizon_ticks"]
+        stop = 10 ** 9 if root >= END_TICK - c["cf_end_ticks"] else root + int(horizon or c["cf_horizon_ticks"])
         g = float(c.get("gamma_tick", 1.0))
         forks, meta = [], []
         for k in range(K):
@@ -835,10 +865,15 @@ class Runner:
                 forks.append(f)
                 meta.append((i, k))
         out = [{"q": [None] * K, "end": [None] * K, "terminal": [None] * K, "q_end": None} for _ in cands]
+        sweep = [] if stop >= 10 ** 9 else sorted(h for h in (c.get("cf_horizon_sweep") or ()) if 0 < int(h) < stop - root)
+        if sweep:                                             # Q also read at these earlier learner decisions ("qh")
+            for o in out:
+                o["qh"] = {str(h): [None] * K for h in sweep}
+        seen = [set() for _ in forks]
         extend = {fi for fi, (i, k) in enumerate(meta) if audit and k == 0}
         active, done_h = list(range(len(forks))), set()
         while active:
-            due, stopping = [], []
+            due, stopping, sweeping = [], [], []
             for fi in list(active):
                 f = forks[fi]
                 i, k = meta[fi]
@@ -846,6 +881,9 @@ class Runner:
                 if not got:                                   # over: the terminal reward
                     T = int(f.env.tick)
                     q = g ** (T - root) * reward(f.learner._outcome()[0])
+                    for h in sweep:                           # ended before that stop: the terminal value, as for q
+                        if h not in seen[fi]:
+                            out[i]["qh"][str(h)][k] = q
                     if fi in done_h:
                         out[i]["q_end"] = q
                     else:
@@ -856,6 +894,11 @@ class Runner:
                     continue
                 for s in got:
                     s.prepare()
+                if sweep and f.learner in got:
+                    hs = [h for h in sweep if h not in seen[fi] and int(f.env.tick) >= root + h]
+                    if hs:
+                        sweeping.append((fi, hs))
+                        seen[fi].update(hs)
                 if f.learner in got and int(f.env.tick) >= stop and fi not in done_h:
                     stopping.append(fi)
                     if fi not in extend:
@@ -868,6 +911,12 @@ class Runner:
                 for fi, q in zip(stopping, qs):
                     i, k = meta[fi]
                     out[i]["q"][k], out[i]["end"][k], out[i]["terminal"][k] = float(q), int(forks[fi].env.tick), False
+            if sweeping:
+                qs = self._q([forks[fi].learner for fi, _ in sweeping], [int(forks[fi].env.tick) for fi, _ in sweeping], root)
+                for (fi, hs), q in zip(sweeping, qs):
+                    i, k = meta[fi]
+                    for h in hs:
+                        out[i]["qh"][str(h)][k] = float(q)
             if due:
                 for s, p, d in E.selfplay_decide(due):
                     s.apply(p, d)
@@ -892,7 +941,8 @@ def reliability(advs: list[np.ndarray]) -> dict:
     K-mean (noise = total - signal), r_split (K = 2: the correlation of the two continuations' advantages)}."""
     if not advs:
         return {"n": 0, "factor": None, "snr": None, "r_split": None}
-    A = np.concatenate(advs, axis=0)
+    kmin = min(a.shape[1] for a in advs)            # triggers may run different K (cf_k_by): the pooled stat uses the first kmin
+    A = np.concatenate([a[:, :kmin] for a in advs], axis=0)
     n, K = A.shape
     out = {"n": int(n), "factor": None, "snr": None, "r_split": None}
     if K < 2 or n < 3:
