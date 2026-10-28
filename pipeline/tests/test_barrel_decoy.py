@@ -58,3 +58,21 @@ def test_rules_answer_the_real_lane_once_the_decoy_is_told_apart():
     lane = DecisionOptions(barrel_lane='on')
     assert int(choose_cells(logits, ['Knight'], lane, grid='lattice', barrels=[both])[0]) == cell(29)   # abstains
     assert int(choose_cells(logits, ['Knight'], lane, grid='lattice', barrels=[fixed])[0]) == cell(7)
+
+
+def test_flag_off_is_todays_observation_and_on_renames_the_decoy():
+    from pipeline.public_observation import PublicObserver
+    frame = dict(game_tick=300, entities=[], projectiles=[REAL, DECOY], effects=[])
+    off, on = PublicObserver(ME), PublicObserver(ME)
+    on.barrel_decoy = True
+    off.update(frame, source='reader')
+    on.update(frame, source='reader')
+    assert sorted(r[0] for r in off.object_rows[-1]['projectiles']) == ['goblin-barrel', 'goblin-barrel']
+    assert sorted(r[0] for r in on.object_rows[-1]['projectiles']) == ['goblin-barrel', 'goblin-barrel-decoy']
+    assert len(tokens_from_objects(on.object_rows[-1], ME, GID)['projectiles'][:, 0].nonzero()[0]) == 1
+
+
+def test_live_options_file_accepts_the_flag(tmp_path):
+    from pipeline.live_options import _decision_parser
+    assert _decision_parser('t').parse_args(['--barrel-decoy', 'on']).barrel_decoy == 'on'
+    assert _decision_parser('t').parse_args([]).barrel_decoy == 'off'

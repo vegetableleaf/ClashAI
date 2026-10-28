@@ -8,7 +8,11 @@ from .projectile_observation import objects, tokens_from_objects
 def snapshot(frame, batch, info, pilot):
     side=my_side_of(frame)
     me=next(p for p in frame['players'] if int(p['side'])==side)
-    decoded=objects(frame,source='reader')
+    if getattr(pilot,'barrel_decoy',False):   # GB-DECOY: the objects the model saw
+        from .barrel_decoy import objects as decoy_objects
+        decoded=decoy_objects(frame,source='reader')
+    else:
+        decoded=objects(frame,source='reader')
     normalized=tokens_from_objects(decoded,side,pilot.gid)
     def active(values):
         return values[values[:,0]>0].tolist()

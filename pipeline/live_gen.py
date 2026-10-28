@@ -147,6 +147,8 @@ class GenPilot:
     # OPT-IN (live_play.py --identity-ext on, L74): body_identity.extension() around the board's from_engine (new card
     # ids + ability / evo spawn bodies -> learned classes). False = off = unchanged.
     identity_ext = False
+    # OPT-IN (live_play.py --barrel-decoy on, GB-DECOY): PublicObserver.barrel_decoy. False = off = unchanged.
+    barrel_decoy = False
     # OPT-IN (live_play.py --cue-inputs on, step c): a pipeline.live_unit_state.LiveCues feeding b["cue"] to a checkpoint
     # with a cue layer (model_gen cue_in). None = off; a model without the layer never reads it (no-op).
     cues = None
@@ -236,6 +238,7 @@ class GenPilot:
             if (getattr(self, 'public', None) is None or self.public.side != side or
                     (battle is not None and self.public_battle is not None and battle != self.public_battle)):
                 self.public = PublicObserver(side)
+                self.public.barrel_decoy = bool(getattr(self, 'barrel_decoy', False))
             if battle is not None:
                 self.public_battle = battle
             self.opp_est = self.public.update(frame, source='reader')

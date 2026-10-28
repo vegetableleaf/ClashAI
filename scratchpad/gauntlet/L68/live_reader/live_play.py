@@ -631,6 +631,10 @@ def main() -> int:
                     help="L74 identity extension (pipeline.body_identity.extension): new card ids and ability / evo "
                          "spawn bodies reach the model as learned classes. off (default) = unchanged. Deployable from "
                          "LIVE_OPTIONS")
+    ap.add_argument("--barrel-decoy", choices=("off", "on"), default="off",
+                    help="GB-DECOY (pipeline.barrel_decoy): of an evolved Goblin Barrel's two mirrored barrels the later-created "
+                         "one (the decoy) is renamed, so the model and log_barrel / barrel_lane see the real one only. off "
+                         "(default) = unchanged. Deployable from LIVE_OPTIONS")
     ap.add_argument("--cue-inputs", choices=("off", "on"), default="off",
                     help="step c (STEP_C_SPEC.md section 6): feed a checkpoint WITH a cue layer its 22 public cue floats per "
                          "unit token from the merged reader's blocks (pipeline/live_unit_state.py). off (default) = "
@@ -910,6 +914,8 @@ def load_pilot(a, decision_cfg, ckpt=None):
     pilot.legal_guard = not getattr(a, 'no_legal_guard', False)
     if getattr(a, "identity_ext", "off") == "on":   # default: the class's False = off, the model input unchanged
         pilot.identity_ext = True
+    if getattr(a, "barrel_decoy", "off") == "on":   # GB-DECOY; default: the class's False = off, unchanged
+        pilot.barrel_decoy = True
     if getattr(a, "afford_ticks", None) is not None:   # default: the class's None = the look-ahead elixir, unchanged
         pilot.afford_ticks = int(a.afford_ticks)
     if getattr(a, "pipeline_decisions", False):  # default: the class's 0.0 / no pending plays = unchanged
@@ -1029,6 +1035,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
       ui_guard=not getattr(a, "no_ui_guard", False), deploy_end=DEPLOY_END,
       afford_ticks=getattr(pilot, "afford_ticks", None), early_release_margin=getattr(a, "early_release_margin", None),
       identity_ext=bool(getattr(pilot, "identity_ext", False)),
+      **({"barrel_decoy": True} if getattr(pilot, "barrel_decoy", False) else {}),
       **({"cue_inputs": cue_log(pilot, a.reader)} if getattr(a, "cue_inputs", "off") == "on" else {}),
       **({"follow_up_taps": True} if getattr(a, "follow_up_taps", False) else {}),
       **emote_log(a),

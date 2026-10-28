@@ -27,6 +27,7 @@ EXTRA_LIVE_FLAGS = (('--own-effects', dict(action='store_true')),
                     ('--early-release-margin', dict(type=int)),
                     ('--extrapolate', dict(type=int)),
                     ('--identity-ext', dict(choices=('off', 'on'), default='off')),   # L74 identity extension
+                    ('--barrel-decoy', dict(choices=('off', 'on'), default='off')),   # GB-DECOY: evo Goblin Barrel decoy renamed
                     ('--emote-spam', dict(choices=('off', 'on'), default='off')),   # L74 emote spam during WAIT (owner 2026-10-10)
                     ('--emote-interval-s', dict(type=float)),
                     ('--emote-gap-ms', dict(type=int)),

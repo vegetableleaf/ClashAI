@@ -96,6 +96,10 @@ def public_frame(frame, *, source):
 
 
 class PublicObserver:
+    # OPT-IN (live_play.py --barrel-decoy on, GB-DECOY): reader frames' evolved Goblin Barrel decoys renamed
+    # (pipeline.barrel_decoy.objects). False = off = projectile_observation.objects, unchanged.
+    barrel_decoy = False
+
     def __init__(self, side, *, schedule=None):
         self.side = int(side)
         if self.side not in (0, 1):
@@ -135,7 +139,10 @@ class PublicObserver:
         elif not self.ability_rows or own != self.ability_rows[-1]:
             self.ability_ticks.append(tick)
             self.ability_rows.append(own)
-        from .projectile_observation import objects
+        if self.barrel_decoy:
+            from .barrel_decoy import objects
+        else:
+            from .projectile_observation import objects
         observed = self.motion.update(objects(frame, source=source), tick)
         # Store only normalized public objects, never the player/private blocks.
         # Compress unchanged snapshots; past queries must not see future objects.
