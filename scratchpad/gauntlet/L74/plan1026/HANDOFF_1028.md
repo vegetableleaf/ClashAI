@@ -175,3 +175,32 @@ untested, (c) contradicted. Everything below is committed on origin/main unless 
 - A fixed match becomes dev data: every gate number must come from a NEW frozen fresh set.
 - The update-time ratio swings 10-20% with which CPU set a run gets: always run paired, with the sets swapped.
 - Reading torn frames: the merged_sf reader removes them at the source; the comparator's torn classes stay for old logs.
+
+## 8. Addendum (10-28 ~10:15 EDT, weekly usage 84%)
+- **GB-DECOY (evo Goblin Barrel):**
+  - live answers go to the real side only 30/50 vs 95.5% for the plain barrel; the model sees two identical mirrored
+    barrel tokens; the real barrel is always created FIRST (50/50);
+  - the fix pipeline/barrel_decoy.py relabels the later-created barrel as the decoy; recorded-play replay 30/50 -> 49/50
+    (scratchpad/gauntlet/L74/gb_decoy/STATUS.md);
+  - **the owner said GO and accepts creation order as the stand-in for the colour cue.** Steps in progress: a model
+    replay on a pod, then a flag commit (--barrel-decoy on in LIVE_OPTIONS), then a blind verifier (the lead dispatches
+    it), then deploy at a match boundary with the exact start command; rollback = flag off + restart;
+  - the successor's Java obs needs the same rename (a LOOP interface note).
+- **Pilot decisions:**
+  - tables 16.635.3;
+  - the opponent pool = init + 5 old externals + E4 + w14opp_I = 8 at 1/8 each; w14opp_I keeps its own exploiter slot
+    (its calibrated decode) at share 0.125; league_pfsp_gamma 1e-9 (rl_royale refuses 0);
+  - **gate decode = SAMPLED gate T 0.1 in training AND in the pilot's deploy** (PLAN Pillar 3; the threshold gate is not
+    PPO-trainable);
+  - KL: kl_stop_prev 0.02 (new; rl_royale had none), penalty beta 0;
+  - B0 line-ending fix "A+": .gitattributes s1c/*.json eol=lf, B0 rebuilt with the LF hashes (a NEW sha; the old one
+    is kept as *.crlf.bak); CLXIV and the 10-25 memory arms no longer load on the laptop (accepted).
+- **LOOP-OPS:** the launcher is ready (pilot/ops/README.md; `loop_pod.sh up PORT`; a dry run passed on 33308 with a
+  stand-in loop; boot 3m47s; 51 + 29 artifacts sha-checked).
+- **LOOP-INT milestone 1 (a):** the skeleton runs end to end on 33308 (pilot/loop/{CfTrain.java, producer.py,
+  fastloop.py, run.sh, ref_v0.yaml}). Unported parts raise rather than run wrong. Next: the same-device correctness A/B vs
+  rl_royale, then throughput on 33553.
+- **D2 update time PASSES** (0.95-1.00x fin16 at 24 actors; D2-T2). The Java obs is identical on 564,737 actor rows.
+- **LOOP-IW** (a new worker) has the IW press obs port; D2-T2 is done.
+- **Shared-checkout hazard (repeated today):** plain `git commit` sweeps in other agents' staged files (9f1c142, 6638a73,
+  b2a1e7c). Always `git add <paths> && git commit -- <paths>`.
