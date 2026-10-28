@@ -481,6 +481,8 @@ def match(path, bl=None, names=None, cat=None, shims=None, tt=None, uhp=None, by
         plays = mech_rules.zap_buffs(str(path), plays, sides, stats)
     if os.environ.get('SME_CHARGE8') == '1':   # round 8.7
         plays = own_charge_presses(path, plays, my, sides)
+    import sme_live  # round 9 (A2c-9T): an area's made tick from its later sightings (sme_live.fx_made_clock, SME_MADE9)
+    plays = sme_live.fx_made_clock(path, plays)
     build = next(((json.loads(r).get('phase2') or {}).get('build') for r in open(path, 'rb') if b'"phase2"' in r), None)
     # RNG-free: no deck card is a drawer. Without the API only seen cards are known; an unseen slot was never played (it
     # is unseen because no play of it was extracted), and G0's drawers draw only when played (crforge: Arrows / Princess

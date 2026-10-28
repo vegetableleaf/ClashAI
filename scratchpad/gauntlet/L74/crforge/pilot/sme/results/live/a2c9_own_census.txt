@@ -1,0 +1,156 @@
+own_tap plays 4841
+ drop=in move=no_move clean=None 2363
+ drop=in move=agree clean=True 1658
+ drop=in move=agree clean=False 346
+ drop=in move=no_row clean=None 310
+ drop=R_after move=no_move clean=None 62
+ drop=in move=game_later clean=False 31
+ drop=R_after move=agree clean=True 21
+ drop=in move=game_earlier clean=False 10
+ drop=none move=no_move clean=None 10
+ drop=none move=agree clean=True 8
+ drop=none move=no_row clean=None 6
+ drop=R_after move=no_row clean=None 6
+ drop=R_after move=agree clean=False 5
+ drop=none move=agree clean=False 2
+ drop=in move=game_earlier clean=True 2
+ drop=R_after move=game_later clean=False 1
+lag [(20, 3), (21, 156), (22, 1021), (23, 1701), (24, 955), (25, 313), (26, 125), (27, 33), (28, 21), (29, 12), (30, 16), (31, 14), (32, 21), (33, 18), (34, 15), (35, 16), (36, 19), (37, 11), (38, 15), (39, 17), (40, 25), (41, 60), (42, 114), (43, 99), (44, 32), (45, 5), (46, 2), (47, 2)]
+{'m': '20261026_080929', 'card': 'IceWizard', 'R': 1602, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [1601, 1602], 'move': 'no_move'}
+{'m': '20261026_082025', 'card': 'IceWizard', 'R': 962, 'dated': None, 'lag': 21, 'drop': 'R_after', 'drop_pair': [961, 962], 'move': 'no_move'}
+{'m': '20261026_082025', 'card': 'Skeletons', 'R': 1524, 'dated': None, 'lag': 23, 'drop': 'in', 'drop_pair': [1523, 1525], 'move': 'game_earlier', 'move_clean': False, 'move_pairs': [[1545, 1533, 1535], [1545, 1543, 1545], [1545, 1543, 1545]]}
+{'m': '20261026_082025', 'card': 'Skeletons', 'R': 3156, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [3155, 3156], 'move': 'agree', 'move_clean': False, 'move_pairs': [[3177, 3175, 3177], [3177, 3175, 3177], [3177, 3175, 3177]]}
+{'m': '20261026_084110', 'card': 'IceWizard', 'R': 1425, 'dated': None, 'lag': 42, 'drop': 'in', 'drop_pair': [1424, 1426], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[1447, 1594, 1596], [1427, 1426, 1428]]}
+{'m': '20261026_084110', 'card': 'Skeletons', 'R': 2136, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [2135, 2136], 'move': 'agree', 'move_clean': False, 'move_pairs': [[2157, 2155, 2157], [2157, 2155, 2157], [2157, 2155, 2157]]}
+{'m': '20261026_084110', 'card': 'Skeletons', 'R': 2613, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [2612, 2613], 'move': 'no_move'}
+{'m': '20261026_084438', 'card': 'IceWizard', 'R': 1432, 'dated': None, 'lag': 23, 'drop': 'in', 'drop_pair': [1431, 1433], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[1454, 1574, 1576], [1434, 1433, 1435]]}
+{'m': '20261026_084438', 'card': 'IceWizard', 'R': 2729, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [2728, 2729], 'move': 'no_move'}
+{'m': '20261026_090406', 'card': 'IceWizard', 'R': 2601, 'dated': None, 'lag': 25, 'drop': 'in', 'drop_pair': [2600, 2602], 'move': 'game_earlier', 'move_clean': False, 'move_pairs': [[2630, 2622, 2624], [2603, 2602, 2604]]}
+{'m': '20261026_090406', 'card': 'Knight', 'R': 3493, 'dated': None, 'lag': 38, 'drop': 'in', 'drop_pair': [3493, 3495], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[3514, 3601, 3603]]}
+{'m': '20261026_094126', 'card': 'IceWizard', 'R': 2533, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [2531, 2533], 'move': 'no_move'}
+{'m': '20261026_095134', 'card': 'Skeletons', 'R': 411, 'dated': None, 'lag': 26, 'drop': 'R_after', 'drop_pair': [410, 411], 'move': 'no_move'}
+{'m': '20261026_095134', 'card': 'Knight', 'R': 526, 'dated': None, 'lag': 43, 'drop': 'R_after', 'drop_pair': [525, 526], 'move': 'agree', 'move_clean': True, 'move_pairs': [[586, 585, 586]]}
+{'m': '20261026_095134', 'card': 'Skeletons', 'R': 3001, 'dated': None, 'lag': 26, 'drop': 'R_after', 'drop_pair': [3000, 3001], 'move': 'no_move'}
+{'m': '20261026_095457', 'card': 'Skeletons', 'R': 1971, 'dated': None, 'lag': 25, 'drop': 'R_after', 'drop_pair': [1970, 1971], 'move': 'no_move'}
+{'m': '20261026_100018', 'card': 'Tesla', 'R': 318, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [317, 318], 'move': 'no_move'}
+{'m': '20261026_100354', 'card': 'Skeletons', 'R': 3885, 'dated': None, 'lag': 26, 'drop': 'R_after', 'drop_pair': [3884, 3885], 'move': 'no_move'}
+{'m': '20261026_101112', 'card': 'Skeletons', 'R': 2541, 'dated': None, 'lag': 25, 'drop': 'R_after', 'drop_pair': [2540, 2541], 'move': 'no_move'}
+{'m': '20261026_101112', 'card': 'IceWizard', 'R': 3352, 'dated': None, 'lag': 40, 'drop': 'R_after', 'drop_pair': [3351, 3352], 'move': 'no_move'}
+{'m': '20261026_101112', 'card': 'Skeletons', 'R': 5576, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [5575, 5576], 'move': 'no_move'}
+{'m': '20261026_101749', 'card': 'IceWizard', 'R': 2294, 'dated': None, 'lag': 24, 'drop': 'R_after', 'drop_pair': [2293, 2294], 'move': 'no_move'}
+{'m': '20261026_141505', 'card': 'IceWizard', 'R': 4922, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [4921, 4922], 'move': 'no_move'}
+{'m': '20261026_141505', 'card': 'Xbow', 'R': 5331, 'dated': None, 'lag': 24, 'drop': 'R_after', 'drop_pair': [5330, 5331], 'move': 'no_move'}
+{'m': '20261026_142345', 'card': 'IceWizard', 'R': 4354, 'dated': None, 'lag': 22, 'drop': 'R_after', 'drop_pair': [4353, 4354], 'move': 'no_move'}
+{'m': '20261026_144057', 'card': 'Knight', 'R': 5521, 'dated': None, 'lag': 24, 'drop': 'R_after', 'drop_pair': [5520, 5521], 'move': 'agree', 'move_clean': True, 'move_pairs': [[5542, 5541, 5543]]}
+{'m': '20261026_144615', 'card': 'Skeletons', 'R': 2461, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [2460, 2461], 'move': 'no_move'}
+{'m': '20261026_145247', 'card': 'IceWizard', 'R': 3038, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [3037, 3038], 'move': 'no_move'}
+{'m': '20261026_152601', 'card': 'Skeletons', 'R': 2961, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [2960, 2961], 'move': 'no_move'}
+{'m': '20261026_153442', 'card': 'IceWizard', 'R': 2672, 'dated': None, 'lag': 25, 'drop': 'R_after', 'drop_pair': [2671, 2672], 'move': 'no_move'}
+{'m': '20261026_154319', 'card': 'Skeletons', 'R': 225, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [224, 225], 'move': 'no_move'}
+{'m': '20261026_154319', 'card': 'Knight', 'R': 5366, 'dated': None, 'lag': 21, 'drop': 'R_after', 'drop_pair': [5365, 5366], 'move': 'agree', 'move_clean': True, 'move_pairs': [[5387, 5385, 5387]]}
+{'m': '20261026_154319', 'card': 'Skeletons', 'R': 5911, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [5910, 5911], 'move': 'agree', 'move_clean': True, 'move_pairs': [[5932, 5931, 5933], [5932, 5931, 5933], [5932, 5931, 5933]]}
+{'m': '20261026_154839', 'card': 'Skeletons', 'R': 2185, 'dated': None, 'lag': 43, 'drop': 'R_after', 'drop_pair': [2184, 2185], 'move': 'no_move'}
+{'m': '20261026_160930', 'card': 'IceWizard', 'R': 1538, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [1537, 1538], 'move': 'no_move'}
+{'m': '20261026_161448', 'card': 'Knight', 'R': 4339, 'dated': None, 'lag': 43, 'drop': 'R_after', 'drop_pair': [4337, 4339], 'move': 'no_row'}
+{'m': '20261026_162012', 'card': 'Knight', 'R': 2961, 'dated': None, 'lag': 43, 'drop': 'R_after', 'drop_pair': [2960, 2961], 'move': 'agree', 'move_clean': True, 'move_pairs': [[2997, 2995, 2997]]}
+{'m': '20261026_165839', 'card': 'IceWizard', 'R': 1099, 'dated': None, 'lag': 21, 'drop': 'R_after', 'drop_pair': [1098, 1099], 'move': 'no_move'}
+{'m': '20261026_170600', 'card': 'Skeletons', 'R': 2081, 'dated': None, 'lag': 24, 'drop': 'R_after', 'drop_pair': [2080, 2081], 'move': 'no_move'}
+{'m': '20261026_170912', 'card': 'Skeletons', 'R': 1075, 'dated': None, 'lag': 21, 'drop': 'R_after', 'drop_pair': [1074, 1075], 'move': 'no_move'}
+{'m': '20261026_170912', 'card': 'IceWizard', 'R': 2056, 'dated': None, 'lag': 21, 'drop': 'R_after', 'drop_pair': [2055, 2056], 'move': 'no_move'}
+{'m': '20261026_171232', 'card': 'IceWizard', 'R': 4571, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [4570, 4571], 'move': 'no_move'}
+{'m': '20261026_171753', 'card': 'Knight', 'R': 1770, 'dated': 'own_play_elixir', 'lag': 28, 'drop': 'in', 'drop_pair': [1770, 1773], 'move': 'game_earlier', 'move_clean': False, 'move_pairs': [[1791, 1787, 1789]]}
+{'m': '20261026_174147', 'card': 'IceWizard', 'R': 4822, 'dated': None, 'lag': 23, 'drop': 'in', 'drop_pair': [4821, 4823], 'move': 'game_earlier', 'move_clean': False, 'move_pairs': [[4911, 4903, 4905], [4824, 4823, 4825]]}
+{'m': '20261026_174147', 'card': 'IceWizard', 'R': 5108, 'dated': None, 'lag': 23, 'drop': 'in', 'drop_pair': [5107, 5109], 'move': 'game_earlier', 'move_clean': False, 'move_pairs': [[5205, 5129, 5131], [5110, 5109, 5111]]}
+{'m': '20261026_174147', 'card': 'Skeletons', 'R': 5389, 'dated': None, 'lag': 24, 'drop': 'R_after', 'drop_pair': [5388, 5389], 'move': 'no_move'}
+{'m': '20261026_174147', 'card': 'IceWizard', 'R': 5705, 'dated': None, 'lag': 23, 'drop': 'in', 'drop_pair': [5704, 5706], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[5727, 5744, 5746], [5707, 5706, 5708]]}
+{'m': '20261026_175456', 'card': 'Skeletons', 'R': 2889, 'dated': None, 'lag': 24, 'drop': 'R_after', 'drop_pair': [2888, 2889], 'move': 'no_move'}
+{'m': '20261026_180015', 'card': 'Skeletons', 'R': 2605, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [2604, 2605], 'move': 'no_move'}
+{'m': '20261026_180015', 'card': 'IceWizard', 'R': 2991, 'dated': None, 'lag': 44, 'drop': 'R_after', 'drop_pair': [2990, 2991], 'move': 'no_move'}
+{'m': '20261026_180015', 'card': 'Knight', 'R': 3157, 'dated': None, 'lag': 42, 'drop': 'R_after', 'drop_pair': [3156, 3157], 'move': 'no_move'}
+{'m': '20261026_180652', 'card': 'Knight', 'R': 4494, 'dated': None, 'lag': 25, 'drop': 'in', 'drop_pair': [4494, 4496], 'move': 'game_earlier', 'move_clean': True, 'move_pairs': [[4515, 4513, 4514]]}
+{'m': '20261026_181217', 'card': 'Knight', 'R': 1255, 'dated': None, 'lag': 42, 'drop': 'R_after', 'drop_pair': [1254, 1255], 'move': 'agree', 'move_clean': True, 'move_pairs': [[1276, 1275, 1277]]}
+{'m': '20261026_181217', 'card': 'Knight', 'R': 5431, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [5430, 5431], 'move': 'agree', 'move_clean': True, 'move_pairs': [[5452, 5450, 5452]]}
+{'m': '20261026_185736', 'card': 'Knight', 'R': 5422, 'dated': None, 'lag': 23, 'drop': 'in', 'drop_pair': [5422, 5424], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[5443, 5457, 5460]]}
+{'m': '20261026_185736', 'card': 'Knight', 'R': 5711, 'dated': None, 'lag': 23, 'drop': 'in', 'drop_pair': [5710, 5712], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[5732, 5816, 5818]]}
+{'m': '20261026_190255', 'card': 'IceWizard', 'R': 344, 'dated': None, 'lag': 22, 'drop': 'in', 'drop_pair': [343, 345], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[366, 414, 416], [346, 345, 347]]}
+{'m': '20261026_190255', 'card': 'Skeletons', 'R': 2161, 'dated': None, 'lag': 24, 'drop': 'R_after', 'drop_pair': [2160, 2161], 'move': 'no_move'}
+{'m': '20261026_190255', 'card': 'Knight', 'R': 3014, 'dated': None, 'lag': 24, 'drop': 'in', 'drop_pair': [3014, 3016], 'move': 'game_earlier', 'move_clean': False, 'move_pairs': [[3122, 3092, 3094]]}
+{'m': '20261026_190255', 'card': 'IceWizard', 'R': 3133, 'dated': None, 'lag': 43, 'drop': 'in', 'drop_pair': [3132, 3134], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[3155, 3285, 3287], [3135, 3134, 3136]]}
+{'m': '20261026_190255', 'card': 'IceWizard', 'R': 3472, 'dated': None, 'lag': 23, 'drop': 'in', 'drop_pair': [3471, 3473], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[3494, 3505, 3507], [3474, 3473, 3475]]}
+{'m': '20261026_190255', 'card': 'Skeletons', 'R': 4261, 'dated': None, 'lag': 24, 'drop': 'R_after', 'drop_pair': [4260, 4261], 'move': 'no_row'}
+{'m': '20261026_194213', 'card': 'IceWizard', 'R': 483, 'dated': None, 'lag': 21, 'drop': 'in', 'drop_pair': [482, 484], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[505, 536, 538], [485, 484, 486]]}
+{'m': '20261026_194213', 'card': 'Knight', 'R': 545, 'dated': None, 'lag': 34, 'drop': 'R_after', 'drop_pair': [544, 545], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[566, 580, 582]]}
+{'m': '20261026_194858', 'card': 'IceWizard', 'R': 2123, 'dated': None, 'lag': 23, 'drop': 'in', 'drop_pair': [2122, 2124], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[2145, 2174, 2176], [2125, 2124, 2126]]}
+{'m': '20261026_194858', 'card': 'Knight', 'R': 3007, 'dated': None, 'lag': 22, 'drop': 'in', 'drop_pair': [3007, 3009], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[3028, 3031, 3033]]}
+{'m': '20261026_194858', 'card': 'Knight', 'R': 3531, 'dated': None, 'lag': 24, 'drop': 'in', 'drop_pair': [3531, 3533], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[3552, 3589, 3591]]}
+{'m': '20261026_201258', 'card': 'IceWizard', 'R': 198, 'dated': None, 'lag': 22, 'drop': 'R_after', 'drop_pair': [197, 198], 'move': 'no_move'}
+{'m': '20261026_201258', 'card': 'Knight', 'R': 2797, 'dated': None, 'lag': 22, 'drop': 'in', 'drop_pair': [2796, 2798], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[2818, 2838, 2840]]}
+{'m': '20261026_201258', 'card': 'Knight', 'R': 3198, 'dated': None, 'lag': 23, 'drop': 'in', 'drop_pair': [3197, 3199], 'move': 'game_earlier', 'move_clean': False, 'move_pairs': [[3267, 3253, 3255]]}
+{'m': '20261026_202455', 'card': 'Knight', 'R': 4125, 'dated': None, 'lag': 43, 'drop': 'in', 'drop_pair': [4124, 4126], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[4146, 4184, 4186]]}
+{'m': '20261026_202455', 'card': 'IceWizard', 'R': 4321, 'dated': None, 'lag': 43, 'drop': 'in', 'drop_pair': [4320, 4322], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[4343, 4538, 4540], [4323, 4322, 4324]]}
+{'m': '20261026_204202', 'card': 'Xbow', 'R': 381, 'dated': None, 'lag': 24, 'drop': 'R_after', 'drop_pair': [380, 381], 'move': 'no_move'}
+{'m': '20261026_204202', 'card': 'Skeletons', 'R': 3501, 'dated': None, 'lag': 24, 'drop': 'R_after', 'drop_pair': [3500, 3501], 'move': 'agree', 'move_clean': True, 'move_pairs': [[3522, 3521, 3523], [3522, 3521, 3523], [3522, 3521, 3523]]}
+{'m': '20261026_204837', 'card': 'Knight', 'R': 2891, 'dated': None, 'lag': 22, 'drop': 'in', 'drop_pair': [2891, 2893], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[2912, 2917, 2919]]}
+{'m': '20261026_204837', 'card': 'Knight', 'R': 3351, 'dated': None, 'lag': 21, 'drop': 'R_after', 'drop_pair': [3350, 3351], 'move': 'agree', 'move_clean': False, 'move_pairs': [[3382, 3381, 3383]]}
+{'m': '20261026_210720', 'card': 'Skeletons', 'R': 751, 'dated': None, 'lag': 42, 'drop': 'R_after', 'drop_pair': [750, 751], 'move': 'agree', 'move_clean': True, 'move_pairs': [[772, 771, 773], [772, 771, 773], [772, 771, 773]]}
+{'m': '20261026_210720', 'card': 'IceWizard', 'R': 1888, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [1887, 1888], 'move': 'no_move'}
+{'m': '20261026_210720', 'card': 'IceWizard', 'R': 5018, 'dated': None, 'lag': 24, 'drop': 'R_after', 'drop_pair': [5017, 5018], 'move': 'no_move'}
+{'m': '20261026_210720', 'card': 'Skeletons', 'R': 5168, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [5167, 5168], 'move': 'no_move'}
+{'m': '20261026_211239', 'card': 'Skeletons', 'R': 4765, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [4764, 4765], 'move': 'agree', 'move_clean': False, 'move_pairs': [[4786, 4785, 4787], [4786, 4785, 4787], [4786, 4785, 4787]]}
+{'m': '20261026_212111', 'card': 'Skeletons', 'R': 3155, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [3154, 3155], 'move': 'no_move'}
+{'m': '20261026_212917', 'card': 'IceWizard', 'R': 2982, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [2981, 2982], 'move': 'no_move'}
+{'m': '20261026_213436', 'card': 'Knight', 'R': 3242, 'dated': None, 'lag': 24, 'drop': 'in', 'drop_pair': [3242, 3244], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[3263, 3298, 3300]]}
+{'m': '20261026_220317', 'card': 'Xbow', 'R': 4422, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [4421, 4422], 'move': 'no_move'}
+{'m': '20261026_220728', 'card': 'IceWizard', 'R': 3007, 'dated': None, 'lag': 24, 'drop': 'R_after', 'drop_pair': [3005, 3007], 'move': 'no_move'}
+{'m': '20261026_220728', 'card': 'Knight', 'R': 3341, 'dated': None, 'lag': 23, 'drop': 'in', 'drop_pair': [3341, 3343], 'move': 'game_earlier', 'move_clean': True, 'move_pairs': [[3390, 3388, 3389]]}
+{'m': '20261026_221406', 'card': 'Knight', 'R': 3387, 'dated': None, 'lag': 23, 'drop': 'in', 'drop_pair': [3386, 3388], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[3408, 3426, 3428]]}
+{'m': '20261026_221406', 'card': 'IceWizard', 'R': 4461, 'dated': None, 'lag': 24, 'drop': 'R_after', 'drop_pair': [4460, 4461], 'move': 'no_row'}
+{'m': '20261026_221926', 'card': 'IceWizard', 'R': 1809, 'dated': None, 'lag': 24, 'drop': 'R_after', 'drop_pair': [1808, 1809], 'move': 'no_move'}
+{'m': '20261026_222240', 'card': 'IceWizard', 'R': 1051, 'dated': None, 'lag': 26, 'drop': 'R_after', 'drop_pair': [1050, 1051], 'move': 'no_move'}
+{'m': '20261026_222240', 'card': 'Skeletons', 'R': 2051, 'dated': None, 'lag': 26, 'drop': 'R_after', 'drop_pair': [2050, 2051], 'move': 'no_move'}
+{'m': '20261026_222712', 'card': 'Skeletons', 'R': 3252, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [3251, 3252], 'move': 'no_move'}
+{'m': '20261026_222712', 'card': 'IceWizard', 'R': 4183, 'dated': None, 'lag': 24, 'drop': 'R_after', 'drop_pair': [4182, 4183], 'move': 'no_move'}
+{'m': '20261026_223723', 'card': 'Knight', 'R': 212, 'dated': None, 'lag': 21, 'drop': 'R_after', 'drop_pair': [211, 212], 'move': 'agree', 'move_clean': True, 'move_pairs': [[233, 232, 234]]}
+{'m': '20261026_230512', 'card': 'Knight', 'R': 205, 'dated': None, 'lag': 21, 'drop': 'R_after', 'drop_pair': [204, 205], 'move': 'agree', 'move_clean': True, 'move_pairs': [[226, 225, 227]]}
+{'m': '20261026_230512', 'card': 'Knight', 'R': 1118, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [1117, 1118], 'move': 'agree', 'move_clean': True, 'move_pairs': [[1139, 1138, 1140]]}
+{'m': '20261026_230512', 'card': 'IceWizard', 'R': 5221, 'dated': None, 'lag': 25, 'drop': 'in', 'drop_pair': [5220, 5222], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[5262, 5308, 5310], [5223, 5222, 5224]]}
+{'m': '20261026_232438', 'card': 'Knight', 'R': 3031, 'dated': None, 'lag': 44, 'drop': 'in', 'drop_pair': [3031, 3033], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[3040, 3051, 3053]]}
+{'m': '20261026_232438', 'card': 'Skeletons', 'R': 5873, 'dated': None, 'lag': 21, 'drop': 'R_after', 'drop_pair': [5871, 5873], 'move': 'no_row'}
+{'m': '20261026_232957', 'card': 'Knight', 'R': 1081, 'dated': None, 'lag': 44, 'drop': 'in', 'drop_pair': [1081, 1083], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[1102, 1161, 1163]]}
+{'m': '20261026_232957', 'card': 'IceWizard', 'R': 2748, 'dated': None, 'lag': 23, 'drop': 'in', 'drop_pair': [2747, 2749], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[2770, 2774, 2775], [2750, 2749, 2751]]}
+{'m': '20261026_232957', 'card': 'IceWizard', 'R': 4562, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [4561, 4562], 'move': 'no_row'}
+{'m': '20261026_233436', 'card': 'Knight', 'R': 197, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [196, 197], 'move': 'agree', 'move_clean': True, 'move_pairs': [[218, 216, 218]]}
+{'m': '20261026_233436', 'card': 'IceWizard', 'R': 1002, 'dated': None, 'lag': 24, 'drop': 'R_after', 'drop_pair': [1001, 1002], 'move': 'no_move'}
+{'m': '20261026_233436', 'card': 'IceWizard', 'R': 4922, 'dated': None, 'lag': 24, 'drop': 'R_after', 'drop_pair': [4921, 4922], 'move': 'no_move'}
+{'m': '20261026_233436', 'card': 'Knight', 'R': 5991, 'dated': None, 'lag': 25, 'drop': 'R_after', 'drop_pair': [5990, 5991], 'move': 'no_move'}
+{'m': '20261026_233957', 'card': 'Skeletons', 'R': 4666, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [4665, 4666], 'move': 'agree', 'move_clean': True, 'move_pairs': [[4687, 4685, 4687], [4687, 4685, 4687], [4687, 4685, 4687]]}
+{'m': '20261026_233957', 'card': 'Tesla', 'R': 5461, 'dated': None, 'lag': 26, 'drop': 'R_after', 'drop_pair': [5460, 5461], 'move': 'no_move'}
+{'m': '20261026_233957', 'card': 'Skeletons', 'R': 5725, 'dated': None, 'lag': 21, 'drop': 'R_after', 'drop_pair': [5724, 5725], 'move': 'no_move'}
+{'m': '20261026_234837', 'card': 'Knight', 'R': 2622, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [2621, 2622], 'move': 'agree', 'move_clean': True, 'move_pairs': [[2643, 2641, 2643]]}
+{'m': '20261026_235355', 'card': 'IceWizard', 'R': 3321, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [3320, 3321], 'move': 'no_move'}
+{'m': '20261027_001141', 'card': 'Knight', 'R': 5297, 'dated': None, 'lag': 26, 'drop': 'R_after', 'drop_pair': [5296, 5297], 'move': 'no_move'}
+{'m': '20261027_001141', 'card': 'IceWizard', 'R': 5391, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [5390, 5391], 'move': 'no_move'}
+{'m': '20261027_002948', 'card': 'IceWizard', 'R': 1745, 'dated': None, 'lag': 21, 'drop': 'R_after', 'drop_pair': [1744, 1745], 'move': 'no_move'}
+{'m': '20261027_002948', 'card': 'IceWizard', 'R': 3981, 'dated': None, 'lag': 21, 'drop': 'R_after', 'drop_pair': [3980, 3981], 'move': 'no_move'}
+{'m': '20261027_003506', 'card': 'IceWizard', 'R': 3151, 'dated': None, 'lag': 23, 'drop': 'in', 'drop_pair': [3150, 3152], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[3173, 3454, 3456], [3153, 3152, 3154]]}
+{'m': '20261027_003506', 'card': 'Knight', 'R': 3264, 'dated': None, 'lag': 22, 'drop': 'in', 'drop_pair': [3264, 3266], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[3311, 3358, 3360]]}
+{'m': '20261027_003506', 'card': 'IceWizard', 'R': 5432, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [5431, 5432], 'move': 'no_row'}
+{'m': '20261027_004031', 'card': 'Skeletons', 'R': 4977, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [4976, 4977], 'move': 'agree', 'move_clean': True, 'move_pairs': [[4998, 4995, 4998], [4998, 4995, 4998], [4998, 4995, 4998]]}
+{'m': '20261027_005727', 'card': 'Knight', 'R': 3487, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [3486, 3487], 'move': 'no_move'}
+{'m': '20261027_014928', 'card': 'IceWizard', 'R': 5661, 'dated': None, 'lag': 23, 'drop': 'in', 'drop_pair': [5660, 5662], 'move': 'game_earlier', 'move_clean': False, 'move_pairs': [[5830, 5682, 5684], [5663, 5662, 5664]]}
+{'m': '20261027_014928', 'card': 'Knight', 'R': 5717, 'dated': None, 'lag': 41, 'drop': 'in', 'drop_pair': [5716, 5718], 'move': 'game_earlier', 'move_clean': False, 'move_pairs': [[5758, 5736, 5738]]}
+{'m': '20261027_020134', 'card': 'Knight', 'R': 3548, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [3547, 3548], 'move': 'no_move'}
+{'m': '20261027_021852', 'card': 'Knight', 'R': 398, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [397, 398], 'move': 'agree', 'move_clean': True, 'move_pairs': [[419, 417, 419]]}
+{'m': '20261027_021852', 'card': 'Skeletons', 'R': 1459, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [1458, 1459], 'move': 'agree', 'move_clean': True, 'move_pairs': [[1480, 1479, 1481], [1480, 1479, 1481], [1480, 1479, 1481]]}
+{'m': '20261027_022149', 'card': 'IceWizard', 'R': 2412, 'dated': None, 'lag': 23, 'drop': 'in', 'drop_pair': [2411, 2413], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[2434, 2511, 2513], [2414, 2413, 2415]]}
+{'m': '20261027_022149', 'card': 'Knight', 'R': 3181, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [3180, 3181], 'move': 'agree', 'move_clean': False, 'move_pairs': [[3202, 3201, 3204]]}
+{'m': '20261027_022149', 'card': 'IceWizard', 'R': 3307, 'dated': None, 'lag': 39, 'drop': 'in', 'drop_pair': [3306, 3308], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[3363, 3404, 3406], [3309, 3308, 3310]]}
+{'m': '20261027_023451', 'card': 'Knight', 'R': 2751, 'dated': None, 'lag': 24, 'drop': 'in', 'drop_pair': [2751, 2753], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[2772, 2785, 2787]]}
+{'m': '20261027_023451', 'card': 'IceWizard', 'R': 2858, 'dated': None, 'lag': 43, 'drop': 'in', 'drop_pair': [2857, 2859], 'move': 'game_earlier', 'move_clean': False, 'move_pairs': [[2910, 2907, 2909], [2860, 2859, 2861]]}
+{'m': '20261027_023839', 'card': 'Knight', 'R': 3162, 'dated': None, 'lag': 23, 'drop': 'in', 'drop_pair': [3161, 3163], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[3177, 3185, 3187]]}
+{'m': '20261027_031722', 'card': 'IceWizard', 'R': 1747, 'dated': None, 'lag': 23, 'drop': 'in', 'drop_pair': [1746, 1748], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[1769, 1790, 1792], [1749, 1748, 1750]]}
+{'m': '20261027_031722', 'card': 'Knight', 'R': 2801, 'dated': None, 'lag': 26, 'drop': 'in', 'drop_pair': [2801, 2803], 'move': 'game_later', 'move_clean': False, 'move_pairs': [[2861, 2873, 2875]]}
+{'m': '20261027_032352', 'card': 'Knight', 'R': 4921, 'dated': None, 'lag': 23, 'drop': 'R_after', 'drop_pair': [4920, 4921], 'move': 'agree', 'move_clean': True, 'move_pairs': [[4942, 4940, 4942]]}
+{'m': '20261027_040302', 'card': 'Knight', 'R': 5483, 'dated': None, 'lag': 36, 'drop': 'R_after', 'drop_pair': [5482, 5483], 'move': 'agree', 'move_clean': True, 'move_pairs': [[5530, 5529, 5531]]}
+{'m': '20261027_040821', 'card': 'Skeletons', 'R': 1185, 'dated': None, 'lag': 27, 'drop': 'R_after', 'drop_pair': [1184, 1185], 'move': 'agree', 'move_clean': True, 'move_pairs': [[1206, 1205, 1207], [1206, 1205, 1207], [1206, 1205, 1207]]}
+{'m': '20261027_041602', 'card': 'IceWizard', 'R': 3941, 'dated': None, 'lag': 43, 'drop': 'R_after', 'drop_pair': [3940, 3941], 'move': 'no_move'}

@@ -1,0 +1,46 @@
+jobs=138 failed=0 
+units 14716; pre and clean 8112
+all   Counter({'agree': 6074, 'game_earlier': 2017, 'game_later': 21})
+barblog Counter({'agree': 96, 'game_earlier': 31, 'game_later': 2})
+  ('Skeleton', 'agree') 1557
+  ('Skeleton', 'game_earlier') 1074
+  ('IceWizardHero', 'agree') 885
+  ('Knight', 'agree') 625
+  ('IceWizardHeroFloatingCube', 'game_earlier') 445
+  ('Knight_EV1', 'agree') 224
+  ('Graveyard_rework_Skeleton', 'agree') 221
+  ('FireSpirits', 'agree') 148
+  ('ElectroSpirit', 'agree') 129
+  ('Barbarian', 'agree') 128
+  ('HogRider', 'agree') 116
+  ('Firecracker', 'agree') 100
+  ('IceWizardHero_IceCube', 'agree') 92
+  ('ValkyrieHero', 'agree') 71
+  ('BlowdartGoblin', 'agree') 59
+  ('MightyMiner', 'agree') 57
+  ('SkeletonBalloon', 'agree') 56
+  ('Bat', 'agree') 51
+  ('SpearGoblin_Dummy', 'game_earlier') 51
+  ('SkeletonArmy_EV1_Soldier', 'game_earlier') 51
+  ('Furnace_rework', 'agree') 50
+  ('FireSpirits', 'game_earlier') 48
+  ('IceSpirits', 'agree') 47
+  ('Knight', 'game_earlier') 46
+  ('Valkyrie', 'agree') 46
+  ('BabyDragon', 'agree') 45
+  ('Musketeer', 'agree') 44
+  ('Wallbreaker', 'agree') 41
+  ('BarrelGoblin', 'game_earlier') 41
+  ('IceGolemite', 'agree') 41
+  ('KnightHero', 'agree') 40
+  ('Barbarian', 'game_earlier') 34
+  ('GoldenKnight', 'agree') 31
+  ('ElectroWizard', 'agree') 31
+  ('Ghost', 'agree') 31
+  ('MegaKnight', 'agree') 30
+  ('MovingCannon', 'agree') 29
+  ('IceGolemiteHero', 'agree') 28
+  ('DarkPrinceHero', 'agree') 27
+  ('RascalBoy', 'agree') 26
+first move, all Counter({'agree': 7908, 'game_earlier': 3})
+first move, barblog Counter({'agree': 107})

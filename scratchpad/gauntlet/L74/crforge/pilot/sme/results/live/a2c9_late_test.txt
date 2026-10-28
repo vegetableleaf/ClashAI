@@ -1,0 +1,10 @@
+# a2c9/late_test.py k1768L.json (r87 plan, 171753 Knight cmd19 at R=1768, late_reads [1770]), SME_LATE9=1, sme9, lib_f635c
+late frame 1770 cmd 19 base: torn_late
+  planted our elixir +1                            -> div
+  planted our elixir with the cost taken           -> div
+  planted a recorded body of ours moved 1 unit     -> div
+  planted the play's body added at its point       -> div
+  planted an opponent body removed                 -> div
+  planted a projectile added                       -> div
+  same frame, not listed (late_reads emptied) -> div
+  next frame 1773, not listed -> div

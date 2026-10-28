@@ -317,7 +317,79 @@ def own_play_elixir(p, frames, my, own_plays):
     a, b = min(drops, key=lambda ab: abs(ab[0] - R))
     if a < R or any(a - 1 <= lo <= b for lo, hi, c in own_plays if (lo, hi) != tuple(p['run_ticks'])):
         return p
+    if LATE9 and p['run_ticks'][0] == p['run_ticks'][1]:
+        # round 9 (A2c-9T): a play dated by the game's own birth stamp (phase-3 card tick, lo = hi) keeps it; the frames
+        # after R up to the drop are reads of a history without the play (late_reclass). 171753: the Knight's object
+        # 5000047 reads card tick 1768, created 1769, yet frame 1770 shows neither it nor the cost; crforge with R = 1768
+        # walks it exactly as the game (first move 1789), with R = 1770 two ticks late.
+        return dict(p, late_reads=[t for t in ts if R < t <= a], dated='own_late_read')
     return dict(p, tick=a, run_ticks=[a, b - 1], dated='own_play_elixir')
+
+
+LATE9 = int(os.environ.get('SME_LATE9', '0'))  # round 9: own play run at its birth stamp, read late (171753@1770)
+MADE9 = int(os.environ.get('SME_MADE9', '0'))  # round 9: an area's made tick from the clock of its later sightings
+
+
+def fx_made_clock(path, plays):
+    """Round 9 (SME_MADE9=1, extractor): an fx_made-dated spell play (R = the area's made tick, from its FIRST sighting:
+    first - (life - remaining) / 50) whose first frame is off the area's own clock. Each sighting of one area (gen id)
+    gives v = tick * 50 + remaining ms, constant while the frame label is right. When >= 2 of the next 3 sightings agree
+    on a v the first does not hold, the first frame is mislabelled and R moves by (that v - first v) / 50.
+    a2c9/fx_clock.py over the 138: 3,079 area gens agree, 3 have a first sighting off the clock, and 1 of those dates a
+    play: 222712's Earthquake (gen 3000035: 2950 ms on 4183, 2850 / 2750 / 2650 on 4186 / 4188 / 4190), R 4182 -> 4183.
+    With R = 4183 crforge's Skeleton 5000103 holds the game's point from 4186 on (the Earthquake's -50% speed starts a tick
+    later) and frame 4183 equals crforge's line 4184 but for 3 objects not yet listed."""
+    if not MADE9 or not any(p.get('dated') == 'fx_made' for p in plays):
+        return plays
+    g = collections.defaultdict(list)
+    for line in open(path, 'rb'):
+        if b'"frame"' not in line[:40]:
+            continue
+        d = json.loads(line)
+        if d['tick'] is None or d['tick'] < 0:
+            continue
+        for e in d['fx']:
+            if e[4] is not None and e[4] > 0:
+                g[e[7]].append((d['tick'], e[0], e[1], e[2], e[4]))
+    first = {k: sorted(set(v)) for k, v in g.items()}
+    out = []
+    for p in plays:
+        if p.get('dated') == 'fx_made':
+            gs = sorted((v for v in first.values() if v[0][1] == p['side'] and (v[0][2], v[0][3]) == (p['x'], p['y'])
+                         and p['tick'] - 1 <= v[0][0] <= p['tick'] + 3), key=lambda v: v[0][0])
+            if gs and len(gs[0]) >= 3:
+                v = [t * 50 + rem for t, s, x, y, rem in gs[0]]
+                mode, n = collections.Counter(v[1:4]).most_common(1)[0]
+                if n >= 2 and mode != v[0] and (mode - v[0]) % 50 == 0:
+                    R = p['tick'] + (mode - v[0]) // 50
+                    p = dict(p, tick=R, run_ticks=[R, R], dated='fx_made_clock')
+        out.append(p)
+    return out
+
+
+def late_reclass(plan, frames, me, an, workdir):
+    """Round 9 (SME_LATE9=1): a div frame t listed in a play's late_reads (own_play_elixir) is 'torn_late' when it equals,
+    by the full comparison, crforge's state at t with that play run at t instead (its cost and units first on line
+    t+1): a read of the game's history before it heard the play, which it then re-ran from the play's run tick (crforge's
+    checkDelay: a command heard late is run in a history replayed from before its run tick). Exact, crforge's own state."""
+    cls = dict(an['cls'])
+    jobs = [(i, t) for i, c in enumerate(plan['cmds']) for t in c['_src'].get('late_reads', ())
+            if cls.get(t) == 'div']
+    if not jobs:
+        return an
+    outs = run_batch([(runnable(apply(plan, i, {'run': t, 'given': t - 20})), t + 1, t) for i, t in jobs], workdir)
+    for (i, t), ob in zip(jobs, outs):
+        o = next((x for x in ob or () if x['t'] == t), None)
+        if o is None:
+            continue
+        r, s = canon_live(frames[t], me), sim_canon(o, me)
+        if HP_PH:
+            r = fill_placeholder(r, s)
+        if not diff(r, s):
+            cls[t] = 'torn_late'
+    ts = sorted(cls)
+    first = next((t for t in ts if cls[t] == 'div'), None)
+    return dict(an, cls=cls, first=first, counts=dict(collections.Counter(cls.values())))
 
 
 RASCAL7 = int(os.environ.get('SME_RASCAL7', '0'))  # round 7.4
@@ -424,6 +496,8 @@ def plan_from(rec, opp_deal, frames=None):
             continue
         cmds[-1]['_src'] = {'lo': p['run_ticks'][0], 'hi': p['run_ticks'][1], 'tick': p['tick'],
                             'source': p.get('source'), 'own': s == me}
+        if LATE9 and p.get('late_reads'):   # round 9: frames read before the game heard this play (late_reclass)
+            cmds[-1]['_src']['late_reads'] = p['late_reads']
     deals = [None, None]
     own = list(rec['deal'][str(me)])
     if own.count(-1) == 1:  # one queue card never seen: it is the one index missing
@@ -818,6 +892,8 @@ def do_match(args):
             if int(os.environ.get('SME_MECH_CROSS', '0')):  # A2c-M: a body crossed between t and t+1 (mech_torn.py)
                 import mech_torn
                 an = mech_torn.reclass(an, o, frames, me)
+            if LATE9:  # round 9: reads of a history without a late-heard own play (late_reclass)
+                an = late_reclass(plan, frames, me, an, os.path.join(mo, 'work'))
             by = {x['t']: x for x in o}
             plays = [p for x in o for p in x['plays']]
             moved = [(c.get('card', 'ability'), c['run'] - c['_src']['tick']) for c in plan['cmds'] if c['run'] != c['_src']['tick']]
