@@ -2820,7 +2820,8 @@ def vf_grad_share(model, B: dict, R: dict, cfg: dict, beta: float, vf: dict) -> 
     value_head that the value loss reaches through the trunk features (critic_ctx's Learner-owned ``CtxHead`` is not
     a model parameter, so it is excluded too). -> {share = |g_v| / (|g_v| + |g_pg|), norms}."""
     N = len(B["A"])
-    idx = torch.arange(0, N, max(1, N // int(cfg["minibatch"])), device=B["A"].device)[:int(cfg["minibatch"])]
+    m = min(int(cfg["minibatch"]), int(cfg.get("micro_batch") or cfg["minibatch"]))   # micro_batch: a micro-batch's rows
+    idx = torch.arange(0, N, max(1, N // m), device=B["A"].device)[:m]
     kw = dict(tau=cfg["tau"], T=cfg["T"], clip=cfg["clip"], beta=beta, n_total=N, T_gate=cfg.get("T_gate"))
     params = [p for n, p in model.named_parameters() if p.requires_grad and not n.startswith("value_head.")]
     l_v, _ = minibatch_loss(model, B, R, idx, vf={**vf, "policy": False, "trunk_grad": True}, **kw)
@@ -2833,6 +2834,48 @@ def vf_grad_share(model, B: dict, R: dict, cfg: dict, beta: float, vf: dict) -> 
     npg = norm(g_pg)
     return {"share": nv / (nv + npg) if nv + npg > 0 else None, "grad_v": nv, "grad_pg": npg,
             "trunk_tensors": len(trunk), "rows": int(len(idx))}
+
+
+_ST_SUM = ("l_pg", "l_v", "l_post", "l_ab", "n", "post_n", "ab_n")
+_ST_MAX = ("ratio_maxdev", "post_ratio_maxdev", "ab_ratio_maxdev")
+_ST_W = {"kl_gate": "g", "ent_gate": "g", "ent0_gate": "g", "kl_card": "p", "kl_cell": "p", "ent_card": "p",
+         "ent_cell": "p", "ent0_card": "p", "ent0_cell": "p", "ratio_mean": "n", "clip_frac": "n",
+         "ent_posture": "post_n", "ent_ability": "ab_n"}
+
+
+def accum_backward(model, B: dict, R: dict, idx, micro: int, n_total: int, kw: dict) -> tuple[torch.Tensor, dict]:
+    """LEARNER-SCALE ``micro_batch``: minibatch_loss of the minibatch ``idx`` computed in micro-batches of ``micro`` rows,
+    each backpropagated at once (memory: one micro-batch's graph). Micro-batch j runs with n_total x |j| / |idx|, so its
+    loss is |j| / |idx| x its own full-batch estimate and the micro losses (and gradients) SUM to the minibatch's
+    (fp32 summation order aside). The caller zeroes the gradients first. -> (summed loss, detached; the minibatch's
+    monitors: sums for the scaled losses / counts, max for the max-deviations, row-count-weighted means for the rest
+    with minibatch_loss's own masks: gate-sampled rows for the gate KL / entropy, played rows for card / cell)."""
+    sts, wts, total = [], [], None
+    for s in range(0, len(idx), micro):
+        ii = idx[s:s + micro]
+        loss, st = minibatch_loss(model, B, R, ii, n_total=n_total * len(ii) / len(idx), **kw)
+        if torch.isfinite(loss):
+            loss.backward()
+        total = loss.detach() if total is None else total + loss.detach()
+        sts.append(st)
+        wts.append({"g": int(B["gate_sampled"][ii].sum()), "p": int(B["played"][ii].sum()), "n": len(ii),
+                    "post_n": st.get("post_n") or 0, "ab_n": st.get("ab_n") or 0})
+    out = {}
+    for k in sts[0]:
+        vals = [st[k] for st in sts]
+        if k in _ST_SUM:
+            out[k] = None if all(v is None for v in vals) else sum(v for v in vals if v is not None)
+        elif k in _ST_MAX:
+            out[k] = None if all(v is None for v in vals) else max(v for v in vals if v is not None)
+        elif k == "lp_maxdiff":
+            out[k] = {h: max(v[h] for v in vals) for h in vals[0]}
+        elif k in _ST_W:
+            pairs = [(v, w[_ST_W[k]]) for v, w in zip(vals, wts) if v is not None and w[_ST_W[k]] > 0]
+            den = sum(w for _, w in pairs)
+            out[k] = sum(v * w for v, w in pairs) / den if den else (0.0 if k.startswith("kl_") else None)
+        else:
+            raise KeyError(f"micro_batch: no merge rule for monitor {k!r}")
+    return total, out
 
 
 def ppo_update(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.random.Generator,
@@ -2850,7 +2893,10 @@ def ppo_update(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
     ``ability`` (B6 {head, opt, ent_coef}): the press term and the AbilityHead's own Adam, exactly as ``posture``.
     ``ent_ref`` (LOOP-LRN, with ``cfg["ent_pair_every"]`` k): the frozen init's per-head entropy on the rows of every k-th
     epoch-0 minibatch that steps -> ``ent_pair_init``, with the policy's on the same minibatches -> ``ent_pair``
-    (no_grad, no RNG: the steps are unchanged)."""
+    (no_grad, no RNG: the steps are unchanged).
+    ``cfg["micro_batch"]`` m (LEARNER-SCALE; absent / null = off): a minibatch larger than m rows is computed in micro-batches
+    of m rows with gradient accumulation (``accum_backward``): the same loss, gradient, clip and step as one forward of
+    the whole minibatch (fp32 summation order aside), so ``minibatch`` can be 32k-131k rows on one GPU."""
     frozen = [p for n, p in model.named_parameters()
               if vf is not None and not vf["policy"] and not n.startswith("value_head.") and p.requires_grad]
     for p in frozen:
@@ -2877,6 +2923,9 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
     ks = cfg.get("kl_stop_prev")                              # LOOP-LRN early stop (None = off: the loop unchanged)
     stop = None
     pe = int(cfg.get("ent_pair_every") or 0) if ent_ref is not None else 0   # LOOP-LRN paired entropy baseline
+    micro = int(cfg.get("micro_batch") or 0)                  # LEARNER-SCALE gradient accumulation (0 = off)
+    if micro and ("cf" in B or "low" in R):
+        raise SystemExit("micro_batch: cf_credit rows / kl_ref_gate_max_elixir are not supported (their monitors)")
 
     def summary(nonfinite: Optional[str]) -> dict:
         """Every key present even on the non-finite early exit (one_update logs them; None = not measured)."""
@@ -2903,11 +2952,17 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
         cur = []
         for s in range(0, N, mb):
             idx = perm[s:s + mb]
-            loss, st = minibatch_loss(model, B, R, idx, tau=cfg["tau"], T=cfg["T"], clip=cfg["clip"], beta=beta,
-                                      n_total=N, vf=vf, T_gate=cfg.get("T_gate"),
-                                      **({"posture": posture} if posture is not None else {}),
-                                      **({"ability": ability} if ability is not None else {}),
-                                      **({"ent_ref": ent_ref} if pe and ep == 0 and (s // mb) % pe == 0 else {}))
+            kw = dict(tau=cfg["tau"], T=cfg["T"], clip=cfg["clip"], beta=beta, vf=vf, T_gate=cfg.get("T_gate"),
+                      **({"posture": posture} if posture is not None else {}),
+                      **({"ability": ability} if ability is not None else {}),
+                      **({"ent_ref": ent_ref} if pe and ep == 0 and (s // mb) % pe == 0 else {}))
+            if micro and micro < len(idx):                    # LEARNER-SCALE micro_batch: the same minibatch loss and
+                for o in (opt, ctx_opt, post_opt, ab_opt):    # gradient, accumulated over micro-batches (backward per
+                    if o is not None:                         # micro-batch; the KL check below sees the whole minibatch)
+                        o.zero_grad(set_to_none=True)
+                loss, st = accum_backward(model, B, R, idx, micro, N, kw)
+            else:
+                loss, st = minibatch_loss(model, B, R, idx, n_total=N, **kw)
             if first is None:
                 first = st
             if not torch.isfinite(loss):
@@ -2920,14 +2975,15 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
                 if not last_ep:
                     last_ep.extend(cur or ep0)
                 return summary(None)
-            opt.zero_grad(set_to_none=True)
-            if ctx_opt is not None:
-                ctx_opt.zero_grad(set_to_none=True)
-            if post_opt is not None:
-                post_opt.zero_grad(set_to_none=True)
-            if ab_opt is not None:
-                ab_opt.zero_grad(set_to_none=True)
-            loss.backward()
+            if not (micro and micro < len(idx)):              # (micro_batch: zeroed and backpropagated above)
+                opt.zero_grad(set_to_none=True)
+                if ctx_opt is not None:
+                    ctx_opt.zero_grad(set_to_none=True)
+                if post_opt is not None:
+                    post_opt.zero_grad(set_to_none=True)
+                if ab_opt is not None:
+                    ab_opt.zero_grad(set_to_none=True)
+                loss.backward()
             gn = torch.nn.utils.clip_grad_norm_(model.parameters(), float(cfg["grad_clip"]))
             if not torch.isfinite(gn):
                 return summary(f"grad norm {float(gn)} at epoch {ep} minibatch {s // mb}")
@@ -3529,7 +3585,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                               "ot_start_share", "xbow_start_share", "remote_actors", "kl_ref_refresh_every",
                               "tau_phase", "memory", "memory_aux", "memory_encoder_frozen",
                               "memory_zero_empty", "learner_deterministic", "kl_stop_prev", "stored_values",
-                              "ent_init_rows", "lazy_refine", "ent_pair_every", "matches_per_update",
+                              "ent_init_rows", "lazy_refine", "ent_pair_every", "matches_per_update", "micro_batch",
                               "barrel_decoy_sim") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS and k not in CROWN_KEYS
                 and k not in HT.KEYS and k not in CF.KEYS):
@@ -3590,6 +3646,9 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
             raise SystemExit(f"ent_pair_every must be null or an int >= 1, got {pe!r}")
         if cfg.get("ent_init_rows") is not None:
             raise SystemExit("ent_pair_every replaces ent_init_rows: set one of them")
+    mi = cfg.get("micro_batch")                              # LEARNER-SCALE gradient accumulation: absent / null = off
+    if mi is not None and (type(mi) is not int or mi < 1):
+        raise SystemExit(f"micro_batch must be null or an int >= 1, got {mi!r}")
     frac = cfg.get("learner_pipeline_frac", 0.0)
     if isinstance(frac, bool) or not isinstance(frac, (int, float)) or not 0 <= frac <= 1:
         raise SystemExit("learner_pipeline_frac must be a finite number in [0, 1]")
@@ -3646,6 +3705,8 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "lazy_refine"}
     if cfg.get("ent_pair_every") is None:                    # LOOP-LRN paired entropy baseline off = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "ent_pair_every"}
+    if cfg.get("micro_batch") is None:                       # LEARNER-SCALE accumulation off = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "micro_batch"}
     if cfg.get("memory") is None:                            # Plan A memory off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "memory"}
     elif cfg["memory"] == "v2":                              # S1c: the version AND the artifacts its features read

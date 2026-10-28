@@ -120,8 +120,8 @@ def main():
     t0 = time.perf_counter()
     if a.warm is not None:                                    # critic warm-up on disjoint records (u < critic_warmup_updates)
         wres = [LR.to_result(LR.decode(p.read_bytes())) for p in sorted(a.warm.glob("*.rec"))]
-        assert a.warm_updates <= int(cfg["critic_warmup_updates"])
-        for u in range(a.warm_updates):
+        assert a.warm_updates < int(cfg["critic_warmup_updates"])   # u 1.. : u0 asserts on-policy (id0 = a fresh ability head)
+        for u in range(1, a.warm_updates + 1):
             rec = SG.run_update(L, u, SG.with_v(L, cfg, wres), {})
             print("warm", u, json.dumps({k: rec.get(k) for k in ("steps",)} | {"gae": {k: (rec.get("gae") or {}).get(k)
                   for k in ("l_v", "explained_var", "value_mae")}}), flush=True)
