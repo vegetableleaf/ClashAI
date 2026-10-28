@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# sme_gate.sh TAG LIB -- CF-MAIN SME gates on pod 32657 with LIB (the TickProbe build of clashbot-main), SME-F1FIX's commands:
+#   dev    = run H2  (f1fix/runH.sh: sme11f hardened comparator, inputs_v30 = SME_HIDDEN_GEN extract, 16.402.22, frames2);
+#   FRESH1 = run HF2 (the same with 16.635.3, f1_gen2_rf, fresh1 frames).
+# Each is compared with the SME-F1FIX run (round_cmp.py: counts, regressions, frames, torn, plant suite), match by match on
+# counts / first_div / frames / first_detail (same_res.py), and by results.jsonl sha256. Output: /workspace/pilot/f1fix/runs/.
+TAG=$1; LIB=$2; F=/workspace/pilot/f1fix; R=$F/runs; S=$F/sme11f; O=$R/main_$TAG.gate.txt
+cd $F
+WORKERS=48 bash runH.sh main_${TAG}_dev /workspace/crforge_cache/tables/16.402.22 $F/inputs_v30.jsonl /workspace/pilot/sme_live/frames2 SME_LIB=$LIB
+WORKERS=48 bash runH.sh main_${TAG}_fresh1 /workspace/crforge_cache/tables/16.635.3 $F/f1_gen2_rf.jsonl /workspace/pilot/fresh/fresh1/frames SME_LIB=$LIB
+{ echo "lib $LIB core $(sha256sum $LIB/core-1.0-SNAPSHOT.jar | cut -c1-16)"
+  echo "## dev vs H2_dev_v30"; ( cd $S && python3 round_cmp.py /workspace/pilot/inputs/inputs_rngfree.jsonl $R/H2_dev_v30 $R/main_${TAG}_dev; echo rc=$? )
+  python3 $F/same_res.py $R/H2_dev_v30/results.jsonl $R/main_${TAG}_dev/results.jsonl
+  echo "## FRESH1 vs HF2_both"; ( cd $S && python3 round_cmp.py $F/f1_gen2_rf.jsonl $R/HF2_both $R/main_${TAG}_fresh1; echo rc=$? )
+  python3 $F/same_res.py $R/HF2_both/results.jsonl $R/main_${TAG}_fresh1/results.jsonl
+  sha256sum $R/H2_dev_v30/results.jsonl $R/main_${TAG}_dev/results.jsonl $R/HF2_both/results.jsonl $R/main_${TAG}_fresh1/results.jsonl
+} > $O 2>&1
+echo done >> $O
