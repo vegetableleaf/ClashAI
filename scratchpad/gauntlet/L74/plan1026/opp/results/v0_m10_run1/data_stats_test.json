@@ -1,0 +1,59 @@
+{
+ "rows": 1950054,
+ "play_rows": 136966,
+ "slot_rows": 1813088,
+ "slot_rows_weighted": 1813088.0,
+ "events": 136392,
+ "event_rate_weighted": 0.07522635161876678,
+ "slot_tick_hist": {
+  "1": 35933,
+  "2": 14112,
+  "3": 13960,
+  "4": 13672,
+  "5": 13306,
+  "6": 13643,
+  "7": 13820,
+  "8": 12666,
+  "9": 5280
+ },
+ "card_ok_share_of_play_rows": 0.8444796518844093,
+ "ab_slots": 465108,
+ "ab_events": 5835,
+ "deck_ids": 211,
+ "rows_with_deck_id": 0.49705546615632185,
+ "ctx_band": {
+  "1": 1583528,
+  "2": 366526
+ },
+ "ctx_mode": {
+  "1": 1583528,
+  "4": 156909,
+  "3": 159690,
+  "5": 34656,
+  "7": 5333,
+  "6": 9938
+ },
+ "split": {
+  "2": 1950054
+ },
+ "replays": 2667,
+ "censored_slots_lower_bound": 27858,
+ "censored_share_of_slots_lower_bound": 0.01513243734471299,
+ "meta_stats": {
+  "rows_in": 41483430,
+  "rows_kept": 1950054,
+  "play_rows": 136966,
+  "slot_event_rows": 136392,
+  "slot_noevent_rows": 1676696,
+  "grid_rows_in": 35928773,
+  "offgrid_wait_dropped": 2831097,
+  "unusable_rows": 0,
+  "decks": 2206,
+  "decks_with_id": 210,
+  "rows_with_deck_id": 969285,
+  "rows": 1950054,
+  "split_counts": "{2: 1950054}",
+  "tags": 2667,
+  "shards": 241
+ }
+}

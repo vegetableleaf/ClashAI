@@ -24,6 +24,26 @@ def command(*a, **k):
 
 
 gap.command = command
+_run = gap.subprocess.run
+
+
+def run_retry(cmd, **kw):
+    """a chunk that crashes (intermittent SIGSEGV in libtorch oneDNN inside the JPype JVM) is redone from scratch, up to 3
+    tries; same seeds -> the same matches. Its per-chunk log keeps only the last try."""
+    import shutil
+    dest = Path(cmd[cmd.index("--out") + 1])
+    for k in range(3):
+        try:
+            return _run(cmd, **kw)
+        except gap.subprocess.CalledProcessError:
+            if k == 2:
+                raise
+            shutil.rmtree(dest, ignore_errors=True)
+            kw["stdout"].seek(0)
+            kw["stdout"].truncate()
+
+
+gap.subprocess.run = run_retry
 SMOKE = os.environ.get("X23_SMOKE")          # "JxS": only the first J chunks with S seeds each (smoke test only)
 if SMOKE:
     _prepare = gap.prepare

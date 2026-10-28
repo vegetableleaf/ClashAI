@@ -40,3 +40,8 @@ Not started (need their own tickets): live slot rows for opponent seats (step 3)
   v0 trains on the first 168 shards. Pretrain speed on the loaded pod: 3.7 steps/s (40k steps ~3 h).
   Level-A test file building: `/workspace/opp/v0/hf_slot_v0_test.npz` (all 241 shards, split 2, every slot; log v0/rows_test.log).
   Then: `python cbt/.../opp/level_a.py --ckpt v0/m10/opp_m10_s0.pt --data v0/hf_slot_v0_test.npz --memory-tables v0/hf_slot_v0_test_memory.npz --split 2 --out v0/m10/level_a_hf_test.json`
+- 15:20 UTC: pretrain run 1 was OOM-KILLED at step ~10,000 (container oom_kill 2 -> 3, 14:55 UTC; the container is
+  shared, limit 125 GB). Kept: `/workspace/opp/v0/m10_run1/` (best = step 10,000, held-out total 6.064; curve copied to
+  results/v0_m10_run1/). Run 2 relaunched from scratch, same command (`v0/m10/`, log v0/m10/train.log). main_opp has
+  no mid-run resume: an OOM means a fresh restart (or --init from the last checkpoint with a new schedule).
+  Level-A test rows are the EXTRACTED dir `/workspace/opp/v0/hf_slot_v0_test` (1,950,054 rows, 2,667 split-2 replays).

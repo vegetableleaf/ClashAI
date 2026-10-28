@@ -119,7 +119,8 @@ def main(argv=None) -> int:
     dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model, st = load_model(a.ckpt, dev)
     model.eval()
-    arrs, meta = load_ds(a.data)
+    from pipeline.train_gen import load_dir
+    arrs, meta = load_dir(a.data) if a.data.is_dir() else load_ds(a.data)
     if (meta.get("row_builder") or {}).get("keep_wait") != 1:
         raise SystemExit("level A needs every slot: build the rows with rows_to_npz --keep-wait 1")
     if meta["card_vocab"] != st["card_vocab"]:
