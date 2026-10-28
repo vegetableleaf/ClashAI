@@ -1,0 +1,20 @@
+[rl] runtime {"card_table": {"cards_json_fnv1a64": "803ec02c7eac9fd3", "cards_json_hash_source": "embedded", "cards_vintage": "15.535.29 client (2026, LIVE build family)"}, "manifest_sha256": "2c5a5f930cf5a467311eedd446c0e859f6e70dd7d23b974e4466a572a955083d", "pins": {"RoyaleGym": "a7deb6e48c3580fe2cd7d856b7c7d19ce67f02f9", "RoyaleSim": "3f5676076fa7293de5355fa7c76275ddfbf4322c"}, "runtime_id": "fin16-linux", "schema": 1, "wheels": {"royalegym": "royalegym==0.1.23", "royalesim": "royalesim-0.1.36-cp310-abi3-manylinux_2_34_x86_64.whl"}}
+[rl] START d2smoke_rsN3 pid 1604146 SMOKE config sha 9d707c161ed7 argv ['--run', 'd2smoke_rsN3', '--config', 'scratchpad/gauntlet/L74/stepd/cfg/succ48_x_s101.yaml', '--smoke', 'actor_device=cpu', 'learner_device=cpu', 'n_actors=3']
+/workspace/d2/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+[rl] run d2smoke_rsN3: train 1204 loadable, held-out 234 loadable (screen uses 8); init icebow/data/bench/rl_royale/rlarm_succ48_o_s91/rlarm_succ48_o_s91_u0075.pt (GENERALIST) grid lattice; conditions (rollouts + screens): noise_off=all opp_elixir=counter action_delay_ticks=26 extrapolate_ticks=26; leash max; TAU_PHASE [0.35, 0.45, 0.55] (learner rollouts + screens); advantage gae gae_gamma=0.999 gae_lambda=0.95 vf_coef=0.5 vf_clip=0.2 critic_warmup_updates=5 shaping=tower_crown shaping_w_tower=0.3 shaping_w_crown=0.3 vf_trunk_grad=True gae_gamma_unit=tick gae_gamma_tick=0.99994 gae_terminal_gap=False shaping_critic_scale=3.5; ABILITY head (learner presses) ent 0.01 lr 0.0003 warm start 8 rule rollouts x 300 steps
+[rl] LEAGUE: 999 census decks + icebow (share 0.0), weights sides^1.0 floor 0.0x mean (max p 0.0558, min 0.0001); opponents mix {'latest': 0.5, 'older': 0.25, 'init': 0.25, 's1': 0.0} (opp policy sample), S1 specialist icebow/data/pipeline/s1_icebow_v6aug_s1.pt (icebow only); snapshot every 1 updates, keep 12
+[rl] init pro agreement (1000 VAL rows, 162s): cell 0.1459 card 0.6687 gate_bal 0.7315
+/workspace/d2/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+/workspace/d2/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+/workspace/d2/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+[rl] ability_head warm start: 916 labels from 8 rule rollouts {'IceWizard': 916}; rule q mean 0.0076; BCE 0.0449 -> 0.0018 (floor 0.0000); head p mean 0.0076 -> 0.0076 (161s)
+[rl] init held-out screen: 24 matches, winrate 0.875, plays/min 9.47, guards outlived 0.000 <=10dlv 0.000 refused/m 0.125 (159s)
+[rl] saved /workspace/d2/cb/icebow/data/bench/rl_royale/d2smoke_rsN3/d2smoke_rsN3_u0000.pt
+/workspace/d2/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+[rl] SMOKE u0000 round trip via eval_gen.load_model: pro agreement identical (floats to 1e-6) = True
+[rl] W16 u0000 batch_sha 3b9d66595afa7a98 weights_sha 3e07cff4b6fcd5d6
