@@ -169,6 +169,9 @@ def one(path):
     return {"file": path.name, "skip": None, "date": path.name[10:18], "y": y, "label_src": src, "crowns": (cm, co),
             "ticks": ticks[keep], "L": L[keep].astype(np.float32), "C": C[keep].astype(np.float32),
             "LT": LT[keep].astype(np.float32), "end_tick": int(ticks[-1]),
+            # RX-X23: own elixir + the PUBLIC counter's opponent estimate at the kept rows (never the hidden true value)
+            "E": np.array([[np.nan if f[k] is None else f[k] for k in ("elixir", "opp_elixir")] for f in frames],
+                          np.float32)[keep],
             "body_known_frac": known / max(1, allb), "own_king_max": own_pr, "ckpt": head.get("ckpt", ""),
             "trace": frames[0].get("src", "frame"), "n_obs": len(frames)}
 
@@ -186,11 +189,12 @@ def main():
     with mp.Pool(workers, initializer=init) as pool:
         res = pool.map(one, files, chunksize=4)
     ok = [r for r in res if r["skip"] is None]
-    np.savez_compressed(a[1], meta=np.array(json.dumps([{k: v for k, v in r.items() if k not in ("ticks", "L", "C", "LT")}
+    np.savez_compressed(a[1], meta=np.array(json.dumps([{k: v for k, v in r.items() if k not in ("ticks", "L", "C", "LT", "E")}
                                                          for r in ok])),
                         skipped=np.array(json.dumps([r for r in res if r["skip"]])),
                         **{f"t_{i}": r["ticks"] for i, r in enumerate(ok)}, **{f"L_{i}": r["L"] for i, r in enumerate(ok)},
-                        **{f"C_{i}": r["C"] for i, r in enumerate(ok)}, **{f"LT_{i}": r["LT"] for i, r in enumerate(ok)})
+                        **{f"C_{i}": r["C"] for i, r in enumerate(ok)}, **{f"LT_{i}": r["LT"] for i, r in enumerate(ok)},
+                        **{f"E_{i}": r["E"] for i, r in enumerate(ok)})
     from collections import Counter
     print(len(files), "files;", len(ok), "kept;", Counter(r["skip"] for r in res if r["skip"]),
           Counter(r["label_src"] for r in ok), Counter(r["y"] for r in ok))

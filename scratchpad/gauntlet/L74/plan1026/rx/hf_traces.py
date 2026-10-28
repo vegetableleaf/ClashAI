@@ -7,6 +7,7 @@ Observer = side 0 (team). Both sides' elixir is the engine's exact value (no pub
 engine entity_id (exact identity), recorded every 10 ticks (drive()'s record_every). Label y = HF crowns (team > opp);
 date = str(int(tag[:8], 16) % 5): HF payloads carry no date, SPLIT_HF.json holds out '4'. Meta also keeps the HF
 aggregate_stats (committed elixir and leak per side) to validate the trace's committed / leak streams. Nothing is written into the re-drive's output.
+E_i (RX-X23): both sides' exact elixir in hand [rows, 2] at the kept rows (SIM / HF training features may be exact).
 """
 import json
 import multiprocessing as mp
@@ -70,7 +71,8 @@ def shard(job):
                     "body_known_frac": float(np.mean([e[1] in VALUES for f in fr for e in f["ents"] if e[1] != -1]
                                                      or [1.0])),
                     "ticks": ticks[keep], "L": L[keep].astype(np.float32), "C": C[keep].astype(np.float32),
-                    "LT": LT[keep].astype(np.float32)})
+                    "LT": LT[keep].astype(np.float32),
+                    "E": np.array([[f["elixir"], f["opp_elixir"]] for f in fr], np.float32)[keep]})
     return res
 
 
@@ -87,11 +89,12 @@ def main():
     with mp.Pool(opt("--workers", 40), initializer=init, initargs=(set(opt("--tiers", "A").split(",")),)) as pool:
         res = [r for rs in pool.imap_unordered(shard, js) for r in rs]
     ok = [r for r in res if r["skip"] is None]
-    np.savez_compressed(a[1], meta=np.array(json.dumps([{k: v for k, v in r.items() if k not in ("ticks", "L", "C", "LT")}
+    np.savez_compressed(a[1], meta=np.array(json.dumps([{k: v for k, v in r.items() if k not in ("ticks", "L", "C", "LT", "E")}
                                                         for r in ok])),
                         skipped=np.array(json.dumps([r for r in res if r["skip"]])),
                         **{f"t_{i}": r["ticks"] for i, r in enumerate(ok)}, **{f"L_{i}": r["L"] for i, r in enumerate(ok)},
-                        **{f"C_{i}": r["C"] for i, r in enumerate(ok)}, **{f"LT_{i}": r["LT"] for i, r in enumerate(ok)})
+                        **{f"C_{i}": r["C"] for i, r in enumerate(ok)}, **{f"LT_{i}": r["LT"] for i, r in enumerate(ok)},
+                        **{f"E_{i}": r["E"] for i, r in enumerate(ok)})
     from collections import Counter
     print(len(res), "replays;", len(ok), "kept;", Counter(r["skip"] for r in res if r["skip"]),
           Counter(r["y"] for r in ok), "dates", min((r["date"] for r in ok), default=None),
