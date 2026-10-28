@@ -630,3 +630,35 @@ Not pushed to any remote (none set up); `current` link untouched on all pods; no
 - Still refused, unevidenced: Three Musketeers (~9 faults per 17,000), Electro Wizard hero. Expect HF faults ~7 + 9 unless evidence is found.
 **Tooling:** `parity/fights.py` flags `SME_CHAMP_OWN=1`, `SME_CHAMP_EXTRA=LittlePrince` (default off) make the extractor emit Little Prince plays and ability presses (it dropped them as children of the 2556 hp guardian); `fork/f1fix3/tools/regen_lo.sh` (live-only extraction); SME inputs `rg_lp3.jsonl` and frames on pod 32657 `/workspace/f1fix3/rg1/`; run: `cd /workspace/pilot/f1fix && WORKERS=4 bash runH.sh NAME /workspace/crforge_cache/tables/16.402.22 /workspace/f1fix3/rg1/rg_lp3.jsonl /workspace/f1fix3/rg1/frames SME_LIB=/workspace/f1fix3/lib_w1/tickprobe/lib`.
 **Next (in order):** (1) HF replica for 33920: tar copy 30408 `/workspace/d1c/{hf,cb,pylib,build_new}` -> 33920 `/dev/shm/d1c` (2 MB/s via laptop, was ~40% done, the laptop-side pipe may have died; check `du -sm /dev/shm/d1c` on 33920, else HF dataset VanguardX101/IL_Replay) + `/workspace/cfspeed/pylib`; `ln -s /dev/shm/d1c /workspace/d1c` (33920 disk is 97% full); 30408 has only ~12 GB container headroom (P4 training holds 50 GB), so do NOT run HF there. Then `CRFORGE_LIB=<lib>/plain/lib CRFORGE_TABLES=/workspace/crforge_cache/tables/16.402.22 bash <d1c/cb>/scratchpad/gauntlet/L74/plan1026/d1c/faults.sh OUT --limit 20000 --workers 32`; tally with `fork/main/pod/hf_tally.py`. Plain lib of WIP3 is on 30408 `/workspace/f1fix3/lib_w3/plain` (needs rebuild for `ea7f623f`: `cd /workspace/cfmain && bash build_main.sh ea7f623f... OUT [tp]`). (2) Fix whatever new refusals HF shows. (3) Gates 1-6 via `fork/main/pod/gates30408.sh` (NO_HF=1), `sme_gate.sh` (32657), `clone_sweep.sh` (33920). (4) Squash to one commit with these sources cited, report.
+
+### F1FIX-3 STATUS update (2026-10-28 ~17:45 EDT, worker F1FIX-3 re-dispatch, account 2)
+- **HF replica on 33920 (a):** `/dev/shm/d1c/{hf,cb,build_new}` sha-identical to 30408 `/workspace/d1c` (tree sha256
+  `9bbe2284...`), `/workspace/cfspeed/pylib` identical (`b4c2e7a8...`); `/workspace/d1c -> /dev/shm/d1c`. **Trap:** /dev/shm is
+  mounted noexec, so pyarrow's .so cannot load from it: `/dev/shm/d1c/pylib` is now a symlink to `/workspace/d1c_pylib`
+  (sha-identical copy, 167 MB; 33920 / has ~1.8 GB free). Launch faults.sh from `cd /root`, not from inside /dev/shm.
+- **Lib (a):** ea7f623f plain lib built on 30408 (`/workspace/f1fix3/lib_w4/plain`, core `3440d441664b7caa`), copied
+  sha-checked to 33920 `/dev/shm/d1c/f1fix3/lib_w4/plain`.
+- **HF 20k faults on ea7f623f (a): 22 faults in 20,000 replays (80/80 shards, 336 s, 32 workers on 33920)**; base
+  f20k_cfclone2 = 7 on the same 20,000; outcome changes: 15 ran -> fault, 0 fault -> ran. By first message:
+  5 mirror, 1 GiantHero_Slap_Pushback clone/rider, 1 target_is_ground (= the 7 base faults);
+  **11 Three Musketeers** (`ThreeMusketeer_Rework_Character_1/2/3`, still refused by design);
+  **4 NEW: `proj_<id> is deflected carrying copies that change its damage, not modelled`** (replays 93da8133, 4f76d259,
+  ea4aa5e2, b1d928dc): a projectile carrying the enchant copy (now attached to sequence projectiles) is deflected.
+  m0's 319 Rune Giant faults (Little Prince, evo Angry Barbarian, hero Bowler, maker-left, ...) are all gone.
+  Files: `.foreman/scratch/a2/f1fix3/f20k_w4.tally.txt`, `f20k_w4.faults.tsv`, `f20k_w4_grades/` (laptop, not committed);
+  pod 33920 `/dev/shm/d1c/f20k_w4/grades` (tmpfs: lost on pod restart).
+  Re-run: `cd /root && CRFORGE_LIB=/dev/shm/d1c/f1fix3/lib_w4/plain/lib CRFORGE_TABLES=/workspace/crforge_cache/tables/16.402.22
+  nohup bash /workspace/d1c/cb/scratchpad/gauntlet/L74/plan1026/d1c/faults.sh /dev/shm/d1c/f20k_w4 --limit 20000 --workers 32 &`;
+  tally: `cd /dev/shm/d1c && python3 hf_tally.py f20k_cfclone2/grades f20k_w4/grades`.
+- **Evidence state: unchanged.** Little Prince (a, live); every other path (evo Angry Barbarian, hero Bowler, hero Elite
+  Archer, evo Musketeer / Archer / Princess, riders, maker-left, Berserker) is still (b). Table support only: the shipped
+  giantbuffer_enchanting_buff row names `EliteArcherHero_Ability_Power_Shot_Projectile_Middle` (= hero Elite Archer's
+  sequence entry 1) and `BerserkerHero_BearForm` with multiplier 340, and the riders' rows (SpearGoblinGiantProjectile,
+  RamRiderBola) with 0. No decompiled-client evidence was produced (no decompiler is configured; that route was not used).
+- **Gates 1-6: not run.** Not merged, no lib switched, `current` untouched.
+- Codex dispatches: `.foreman/scratch/a2/codex/F1FIX3_1.md` (medium; replica sha + lib build OK, HF launch BLOCKED by the
+  noexec /dev/shm), `F1FIX3_2.md` (medium; HF run + tally DONE, numbers checked against faults.tsv).
+- **Next:** (1) the lead / owner chooses the evidence source for the (b) paths (live frames of an enchanted unit; FRESH2
+  matches), since F1FIX-3 is not to merge on (b) alone; (2) the 4 deflected-copy faults: find the deflecting unit and model
+  or keep refused; (3) then gates 1-6 (`gates30408.sh NO_HF=1`, `sme_gate.sh` on 32657 with WORKERS<=24, `clone_sweep.sh`
+  on 33920), squash, report before any merge.
