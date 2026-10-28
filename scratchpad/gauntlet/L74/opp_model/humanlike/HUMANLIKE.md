@@ -8,6 +8,7 @@
 | 2026-10-27 | THRESHOLDS.json v3 | `0c42e9142d70842b1c59623b7fbe71ea4da890192e55bb3c2f677916712ec703` | before any new model score; human controls only. B3 point band becomes a CI-overlap rule (see changelog in the file); TOST unchanged. v2 superseded |
 | 2026-10-28 | THRESHOLDS.json v4 | `a5eb2c8fb232ccf94f3fee68617a297451dbcbd62287f3111e24fe9a5ad05695` | P2-SCORE, before any model score on the new items; human controls only: 25-stat closed-loop list, B-HF sufficiency 3,700 games per class, siege margins S (design-size 95% human pass), C built. B-live rule unchanged (decision owed). v3 superseded |
 | 2026-10-28 | THRESHOLDS.json v5 | `438a7692d85bfe58127c23eb30bffae5b1d585407535727e26e64ef327ff31b9` | P2-SCORE (account 2), owner decision 10-28 (HANDOFF_1028 9.9): B-live + C-live from ALL recorded live matches, recency-weighted; human controls only, registered BEFORE any model score (section 9). v4 superseded |
+| 2026-10-28 | THRESHOLDS.json v6 | `265681678b39907533182e9d9f499b267b97bc067635807ed2044dc45c20b309` | P2-SCORE, OWNER DECISION 10-28 16:10: calibrated to TODAY's humans (drift-aware newest-block null, half-life 2 d, SE-scaled per-stat margins, RMS 0.10, C-live human class = newest block); LF sha; registered before any model score (section 11). v5 superseded |
 
 `scorecard.py` refuses to run if THRESHOLDS.json does not hash to the LAST sha in this table.
 
@@ -247,3 +248,21 @@ sealed block stays untouched; D1 belongs to predict_live.py).
 - p2score_1 (medium): G2 smoke pair + pyflakes + pytest on 32657 -> DONE (numbers above, checked against the logs).
 - p2score_2 / 2b / 2c (medium): log copy + parse on 33308 -> BLOCKED three times (ssh array quoting; sealed caches in the cache dir,
   correctly refused; ssh consuming the piped script). Done by hand instead (p2s_xfer.sh).
+
+## 11. THRESHOLDS v6 (owner decision 10-28 ~16:10 EDT: calibrate to TODAY's humans)
+All (a) measured, human data only, registered (LF sha 26568167...) before any model score. Outputs `out/v6_bnull.json`,
+`out/v6_cnull.json` (+ `out/v6_cnull/`); commands `allref.py bnull6 / cnull6 / csum6 / register6` (pod 32657, run_v6null.sh).
+- Reference: the same 4,752 icebow matches, half-life **2 d** (Kish n_eff 1,129; the newest block holds 82% of the weight). Masks
+  unchanged; the Mark-change extension of the reader rule is LEAD-APPROVED (10-28).
+- Newest block = the current Mark: CLXIII since it went live (10-25 08:49 .. seal), 856 matches with >= 3 plays.
+- **B-live** (drift-aware null, 1,000 draws: model = 1,900 draws from the newest block, reference = n_eff draws ~ w from the pool):
+  per-stat rule |d_k| <= **3.2 x SE_k** (each stat's own SE at the scored n; replaces the flat 25-stat TOST), RMS <= 0.10, B3 CI,
+  >= 1,900 model games. **Today's humans pass 95.4%** (RMS 100%, B3 99.8%; max z median 2.21, q95 3.17; RMS median 0.043,
+  q95 0.060). The v5 rule on the same draws: 57.7%.
+- **C-live**: human class in scoring = the newest block only (fixes the mixed-Mark part of the ticks caveat: both classes now
+  face CLXIII). Null: 40 fresh discriminators, human class = a random half of the newest block (weighted, n_eff ~393), model =
+  1,900 draws from the other half: AUC mean 0.500, upper-CI q95 0.597 (max 0.657); 47.5% pass at 0.55 -> **limit 0.60**.
+  Conservative (the scored human class has about twice this n_eff). Remaining caveat (b): the discriminator still sees our
+  play ticks (SIM CLXIII vs live CLXIII: an instrument / engine difference can separate them, not only the opponent).
+- What v6 makes stricter / looser: per-stat checks are now "no detectable difference at this n" (z <= 3.2), so a stat with a large
+  SE (pocket_share, ppm_ot) gets a wide margin and a well-measured stat a narrow one; RMS 0.10 is the substantive bound.

@@ -1,6 +1,6 @@
 {
-  "version": 5,
-  "changelog": "v5 (2026-10-28, P2-SCORE, owner decision 10-28: B-live rule and C-live limit set from ALL recorded live matches, recency-weighted; human controls only, before any model score). B-live / C-live reference = B.live_reference (4752 matches, half-life 7.0 d, Kish n_eff 3417; reader / Mark shift masks {'react_s': '20261019_002011', 'react_3s': '20261019_002011', 'react_lift': '20261019_002011', 'own_half': '20261025_084914', 'gap_p10': '20261019_002011', 'gap_p50': '20261019_002011', 'bridge': '20261025_084914', 'troop_depth': '20261025_084914'}). Human null at the scored n (n_eff draws vs 1900 model games, 1000 draws): full B-live pass 0.924 under the plan margins; RMS q95 0.050, max per-stat TOST q95 0.212 -> limits RMS 0.1, per-stat 0.22 (max of plan and human q95; full pass at these limits in B.b_live_human_null). C-live: 40 fresh discriminators on human halves (weighted human class, 1900 humans as the model), upper CI q95 0.556 -> limit 0.56; sufficiency = >= 1900 model games (C.n_per_class_min stays for C-HF). S (siege) unchanged on the CLXIII calibration block. v4 sha a5eb2c8f...; v4 text: v4 (2026-10-28, P2-SCORE, before any model is scored on these items; human controls only, .foreman/scratch/p2score/): (1) B.stats_closed_loop = the 25 closed-loop stats card.py computes (CORE9 + POS4 + 5 play-gap/card-mix + 7 new; repeat_rate dropped: a card cannot be played twice in a row, HF SD 0); B-live rule UNCHANGED (TOST 0.20 every stat, RMS 0.10, B3 CI) although HF humans at the design size 856 vs 1,920 pass it 31/40 (decision owed by the coordinator). (2) B.b_hf_min_games_per_class 3700: HF human halves pass B-HF (23 stats, TOST 0.10) 0/20 at 1,000, 6/20 at 2,000, 18/20 at 3,700 matches per half, so the plan's 2,000 games per archetype cannot certify humans. (3) S = siege-fact equivalence margins (SIM - live, match-cluster bootstrap 90% CI inside +-margin), each the smallest margin a human sample of the design size passes 95% of the time ((1.645 + 1.96) x bootstrap SE_diff, live calibration 856 vs 1,920): lock 0.046, zero-lock 0.051, P(lock|prev failed) 0.064, cond gap 0.095 (rounded up below); per-archetype lock rate +-0.10 needs >= 600 live X-Bows (hog, other, weak_other today). v3 sha 0c42e914... ; v3 text: v3 (2026-10-27, before any new model score, human controls only): B3 point band replaced by a CI rule: pass unless the 90% CI of SD_model/SD_live (kurtosis-aware, SE of log SD = sqrt((kurt-1)/(4n))) lies wholly outside b3_spread_ratio_range; TOST unchanged. Human halves of the 12k set: 48/50 full-B passes (seeds 100-149) vs 15/20 under v2. v2 sha 0ba3aa32... ; v2 text: v2 (2026-10-27, before any model score): b3_stats drops first_tick (heavy-tailed: SD ratio between two random halves of 12k humans was 0.76-0.94, so humans failed the band); A.ece_min_decisions added (bin-ECE of a perfectly calibrated model is 1.9 pp at n=6000). Both found by the human-vs-human control, not by scoring a model. v1 sha 5b9cd2fa...",
+  "version": 6,
+  "changelog": "v6 (2026-10-28, P2-SCORE, OWNER DECISION 10-28 16:10: calibrate to TODAY's humans; human controls only, before any model score). Reference half-life 2.0 d (Kish n_eff 1129); masks unchanged (Mark rule lead-approved). B-live: per-stat rule |d_k| <= 3.2 x SE_k (SE-scaled, replaces the flat 25-stat TOST), RMS <= 0.1, B3 CI, >= 1900 model games; drift-aware null (1000 draws, model = 1900 draws from the newest block of 856): today's humans pass 0.954 (v5 rule on the same draws: 0.577). C-live: human class = the newest block (Mark ICEBOW Mark CLXIII: NOLEAK since 20261025_084914); 40 fresh discriminators on newest-block halves, upper CI q95 0.597 -> limit 0.6. v5 sha 438a7692...; v5 text: v5 (2026-10-28, P2-SCORE, owner decision 10-28: B-live rule and C-live limit set from ALL recorded live matches, recency-weighted; human controls only, before any model score). B-live / C-live reference = B.live_reference (4752 matches, half-life 7.0 d, Kish n_eff 3417; reader / Mark shift masks {'react_s': '20261019_002011', 'react_3s': '20261019_002011', 'react_lift': '20261019_002011', 'own_half': '20261025_084914', 'gap_p10': '20261019_002011', 'gap_p50': '20261019_002011', 'bridge': '20261025_084914', 'troop_depth': '20261025_084914'}). Human null at the scored n (n_eff draws vs 1900 model games, 1000 draws): full B-live pass 0.924 under the plan margins; RMS q95 0.050, max per-stat TOST q95 0.212 -> limits RMS 0.1, per-stat 0.22 (max of plan and human q95; full pass at these limits in B.b_live_human_null). C-live: 40 fresh discriminators on human halves (weighted human class, 1900 humans as the model), upper CI q95 0.556 -> limit 0.56; sufficiency = >= 1900 model games (C.n_per_class_min stays for C-HF). S (siege) unchanged on the CLXIII calibration block. v4 sha a5eb2c8f...; v4 text: v4 (2026-10-28, P2-SCORE, before any model is scored on these items; human controls only, .foreman/scratch/p2score/): (1) B.stats_closed_loop = the 25 closed-loop stats card.py computes (CORE9 + POS4 + 5 play-gap/card-mix + 7 new; repeat_rate dropped: a card cannot be played twice in a row, HF SD 0); B-live rule UNCHANGED (TOST 0.20 every stat, RMS 0.10, B3 CI) although HF humans at the design size 856 vs 1,920 pass it 31/40 (decision owed by the coordinator). (2) B.b_hf_min_games_per_class 3700: HF human halves pass B-HF (23 stats, TOST 0.10) 0/20 at 1,000, 6/20 at 2,000, 18/20 at 3,700 matches per half, so the plan's 2,000 games per archetype cannot certify humans. (3) S = siege-fact equivalence margins (SIM - live, match-cluster bootstrap 90% CI inside +-margin), each the smallest margin a human sample of the design size passes 95% of the time ((1.645 + 1.96) x bootstrap SE_diff, live calibration 856 vs 1,920): lock 0.046, zero-lock 0.051, P(lock|prev failed) 0.064, cond gap 0.095 (rounded up below); per-archetype lock rate +-0.10 needs >= 600 live X-Bows (hog, other, weak_other today). v3 sha 0c42e914... ; v3 text: v3 (2026-10-27, before any new model score, human controls only): B3 point band replaced by a CI rule: pass unless the 90% CI of SD_model/SD_live (kurtosis-aware, SE of log SD = sqrt((kurt-1)/(4n))) lies wholly outside b3_spread_ratio_range; TOST unchanged. Human halves of the 12k set: 48/50 full-B passes (seeds 100-149) vs 15/20 under v2. v2 sha 0ba3aa32... ; v2 text: v2 (2026-10-27, before any model score): b3_stats drops first_tick (heavy-tailed: SD ratio between two random halves of 12k humans was 0.76-0.94, so humans failed the band); A.ece_min_decisions added (bin-ECE of a perfectly calibrated model is 1.9 pp at n=6000). Both found by the human-vs-human control, not by scoring a model. v1 sha 5b9cd2fa...",
   "registered": "2026-10-28",
   "source": "scratchpad/gauntlet/L74/plan1026/PLAN.md Pillar 2 + REPORT_opponents.md section 4; numbers copied, none tuned on baseline scores",
   "rule": "every pass is an equivalence test; a cell with too little data FAILS (never passes by default)",
@@ -115,12 +115,12 @@
     "live_reference": {
       "rule": "every non-sealed, non-dry live_play log of the icebow deck (all Marks, both accounts) with public frames and >= 3 detected opponent plays (allref.py build over live_table parser-v2 caches)",
       "deck": "icebow",
-      "half_life_days": 7.0,
+      "half_life_days": 2.0,
       "weight": "w = 0.5 ** (age_days / half_life_days), age from sealed_from",
       "sealed_from": "20261028_090648",
       "stems_sha256": "ad3d6f795989b1aba7c6da9e2812f016f85a9cc04f4a55247804828380802954",
       "n_matches": 4752,
-      "neff": 3416.6,
+      "neff": 1129.2,
       "masks": {
         "react_s": "20261019_002011",
         "react_3s": "20261019_002011",
@@ -131,23 +131,28 @@
         "bridge": "20261025_084914",
         "troop_depth": "20261025_084914"
       },
-      "mask_rule": "a stat the shift test flags at boundary b is NaN before b (|d| > 1.96 sqrt(SE^2 + tau^2), tau^2 from 6 placebo boundaries)"
+      "mask_rule": "a stat the shift test flags at boundary b is NaN before b (|d| > 1.96 sqrt(SE^2 + tau^2), tau^2 from 6 placebo boundaries) (Mark-change extension of the owner's reader rule: LEAD-APPROVED 10-28)"
     },
     "b_live_min_sim_games": 1900,
     "b_live_human_null": {
       "draws": 1000,
       "n_sim": 1900,
-      "neff": 3416.6040144762205,
-      "pass_full": 0.924,
+      "neff": 1129.156165868693,
+      "n_newest": 856,
+      "newest_share": 0.8209217255565421,
+      "pass_full": 0.954,
       "pass_rms": 1.0,
-      "pass_tost": 0.924,
-      "pass_b3": 0.999,
-      "rms_q50": 0.03369319391509602,
-      "rms_q95": 0.04966017296008129,
-      "tost_max_q50": 0.1552484768994425,
-      "tost_max_q95": 0.2116020409089298,
-      "pass_full_at_registered_limits": 0.974
-    }
+      "pass_b3": 0.998,
+      "rms_q50": 0.043194887732213576,
+      "rms_q95": 0.059980328427312615,
+      "z_q50": 2.2050409220920226,
+      "z_q95": 3.1687474362206007,
+      "pass_v5_rule": 0.577,
+      "control": "drift-aware: model = n_sim draws from the newest block (CLXIII since 10-25 08:49)"
+    },
+    "b_live_rule": "se_scaled",
+    "b_live_z_max": 3.2,
+    "b_live_per_stat_abs_d_max_note": "v6: unused by B-live (se_scaled rule); kept for v5 reproduction"
   },
   "C": {
     "auc_upper_ci_max_overall": 0.55,
@@ -155,18 +160,22 @@
     "auc_vs_human_12k13k_margin": 0.03,
     "n_per_class_min": 5000,
     "status": "built (humanlike/disc.py); HF human halves 5,000/5,000 AUC 0.512 [0.495, 0.529]",
-    "live_auc_upper_ci_max": 0.56,
+    "live_auc_upper_ci_max": 0.6,
     "live_min_model_games": 1900,
     "live_human_null": {
       "draws": 40,
-      "auc_mean": 0.49868878151568985,
-      "auc_q95": 0.5282546750095356,
-      "upper_ci_q95": 0.5556997467620443,
-      "upper_ci_max": 0.575971515144825,
-      "pass_at_055": 0.9,
-      "neff_h": 1707.8640721234303,
-      "n_m": 1900
-    }
+      "auc_mean": 0.5000473040479327,
+      "auc_q95": 0.5521786341687924,
+      "upper_ci_q95": 0.5973396766240123,
+      "upper_ci_max": 0.6572098588556295,
+      "pass_at_055": 0.475,
+      "neff_h": 393.38780613225583,
+      "n_m": 1900,
+      "control": "drift-aware: human class = half the newest block (weighted), model = n_sim draws from the other half"
+    },
+    "live_human_class": "newest",
+    "live_newest_from": "20261025_084914",
+    "live_newest_mark": "ICEBOW Mark CLXIII: NOLEAK"
   },
   "D": {
     "min_sealed_matches": 1500,

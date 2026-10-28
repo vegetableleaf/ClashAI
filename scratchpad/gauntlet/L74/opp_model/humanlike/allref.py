@@ -304,6 +304,119 @@ def csum():
     print(json.dumps(res))
 
 
+# ------------------------------------------------------------------ v6 (owner 10-28 16:10): calibrated to TODAY's humans
+NEWEST_FROM, NEWEST_MARK = '20261025_084914', C3          # the newest block = the current Mark (CLXIII) since it went live
+
+
+def newest(R):
+    return [i for i, r in enumerate(R) if r['mark'] == NEWEST_MARK and r['ts'] >= NEWEST_FROM]
+
+
+def bnull6(th, half_life, n_sim, draws, seed=0, out='v6_bnull.json'):
+    """Drift-aware B-live null: the 'model' = n_sim draws from the NEWEST block (today's humans), the reference = n_eff draws ~ w
+    from the whole weighted pool (the scored reference, Kish n_eff). Per draw: RMS d, B3, z_max = max_k |d_k| / SE_k. The v6
+    per-stat rule is |d_k| <= z_max_limit x SE_k; z_max_limit = the smallest value at which RMS <= limit, B3 and the z rule pass
+    jointly in >= 95% of draws."""
+    masks = json.loads((OUT / 'v5_shift.json').read_text())['masks']
+    meta, R, X = weighted(half_life, masks)
+    ws = [x['_w'] for x in X]
+    ne = neff(ws)
+    cum, s = [], 0.0
+    for w in ws:
+        s += w
+        cum.append(s)
+    nw = newest(R)
+    rng = random.Random(seed)
+    rmax = th['B']['b_live_rms_d_max']
+    res = []
+    for _ in range(draws):
+        Ri = [dict(X[j], _w=1.0) for j in _draw(rng, cum, round(ne))]
+        Mi = [X[nw[rng.randrange(len(nw))]] for _ in range(n_sim)]
+        b = CD.level_b(Ri, Mi, th)
+        res.append(dict(rms=b['rms'], b3=b['pass_b3'], z=max(abs(b['stats'][k][6]) / b['stats'][k][7] for k in b['have']),
+                        v5=b['passed']))
+    ok = sorted(o['z'] for o in res if o['rms'] <= rmax and o['b3'])
+    need = math.ceil(0.95 * draws)
+    zlim = _up(ok[need - 1], 0.05) if len(ok) >= need else None          # None: RMS / B3 alone fail > 5% of today's humans
+    q = lambda v, p: sorted(v)[min(len(v) - 1, int(p * len(v)))]  # noqa: E731
+    r = dict(half_life=half_life, n_sim=n_sim, draws=draws, n_matches=len(X), neff=ne, n_newest=len(nw),
+             newest_share=sum(ws[i] for i in nw) / sum(ws), masks=masks, z_max_limit=zlim,
+             pass_full=(sum(o['rms'] <= rmax and o['b3'] and o['z'] <= zlim for o in res) / draws) if zlim else 0.0,
+             pass_rms=sum(o['rms'] <= rmax for o in res) / draws, pass_b3=sum(o['b3'] for o in res) / draws,
+             rms_q50=q([o['rms'] for o in res], .5), rms_q95=q([o['rms'] for o in res], .95),
+             z_q50=q([o['z'] for o in res], .5), z_q95=q([o['z'] for o in res], .95),
+             pass_v5_rule=sum(o['v5'] for o in res) / draws)
+    (OUT / out).write_text(json.dumps(r, indent=1))
+    print(json.dumps(r, indent=1))
+    return r
+
+
+def cnull6(half_life, n_sim, seeds, threads=4):
+    """Drift-aware C-live null: the human class = a random half of the newest block (weights ~ w, as scored), the 'model' =
+    n_sim draws from the OTHER half (match-level split keeps duplicates together). Conservative: the scored human class is the
+    whole newest block (about twice this n_eff)."""
+    import disc
+    masks = json.loads((OUT / 'v5_shift.json').read_text())['masks']
+    meta, R, X = weighted(half_life, masks)
+    nw = newest(R)
+    d = OUT / 'v6_cnull'
+    d.mkdir(parents=True, exist_ok=True)
+    for sd in seeds:
+        rng = random.Random(2000 + sd)
+        idx = list(nw)
+        rng.shuffle(idx)
+        A, B = idx[:len(idx) // 2], idx[len(idx) // 2:]
+        H = [R[i] for i in A]
+        M = [{k: v for k, v in R[B[rng.randrange(len(B))]].items() if k != 'w'} for _ in range(n_sim)]
+        r = disc.train_eval(H, M, seed=sd, threads=threads)
+        (d / f'{sd}.json').write_text(json.dumps(dict(seed=sd, auc=r['auc'], ci=r['ci'], n_h=r['n_h'], neff_h=r['neff_h'], n_m=r['n_m'])))
+        print(sd, round(r['auc'], 4), [round(x, 4) for x in r['ci']], round(r['neff_h']), flush=True)
+
+
+def register6(half_life, n_sim):
+    """THRESHOLDS v6 from v5 + out/v6_bnull.json + out/v6_cnull.json (csum6). LF bytes (the logged sha is of LF)."""
+    th = json.loads((HERE / 'THRESHOLDS.json').read_text())
+    assert th['version'] == 5, 'register6 builds v6 from v5 only'
+    bn, cn = (json.loads((OUT / f).read_text()) for f in ('v6_bnull.json', 'v6_cnull.json'))
+    assert bn['half_life'] == half_life and bn['n_sim'] == n_sim and bn['z_max_limit']
+    B, C = th['B'], th['C']
+    R = B['live_reference']
+    R['half_life_days'], R['neff'] = half_life, round(bn['neff'], 1)
+    R['mask_rule'] += ' (Mark-change extension of the owner\'s reader rule: LEAD-APPROVED 10-28)'
+    B['b_live_rule'], B['b_live_z_max'] = 'se_scaled', bn['z_max_limit']
+    B['b_live_per_stat_abs_d_max_note'] = 'v6: unused by B-live (se_scaled rule); kept for v5 reproduction'
+    B['b_live_human_null'] = {k: bn[k] for k in ('draws', 'n_sim', 'neff', 'n_newest', 'newest_share', 'pass_full', 'pass_rms',
+                                                 'pass_b3', 'rms_q50', 'rms_q95', 'z_q50', 'z_q95', 'pass_v5_rule')}
+    B['b_live_human_null']['control'] = 'drift-aware: model = n_sim draws from the newest block (CLXIII since 10-25 08:49)'
+    auc = max(C['auc_upper_ci_max_overall'], _up(cn['upper_ci_q95'], 0.005))
+    C['live_auc_upper_ci_max'] = auc
+    C['live_human_class'], C['live_newest_from'], C['live_newest_mark'] = 'newest', NEWEST_FROM, NEWEST_MARK
+    C['live_human_null'] = {k: cn[k] for k in ('draws', 'auc_mean', 'auc_q95', 'upper_ci_q95', 'upper_ci_max', 'pass_at_055', 'neff_h', 'n_m')}
+    C['live_human_null']['control'] = 'drift-aware: human class = half the newest block (weighted), model = n_sim draws from the other half'
+    old = th['changelog']
+    th['version'], th['registered'] = 6, datetime.now().strftime('%Y-%m-%d')
+    th['changelog'] = (f"v6 ({th['registered']}, P2-SCORE, OWNER DECISION 10-28 16:10: calibrate to TODAY's humans; human controls only, "
+                       f"before any model score). Reference half-life {half_life} d (Kish n_eff {bn['neff']:.0f}); masks unchanged (Mark rule "
+                       f"lead-approved). B-live: per-stat rule |d_k| <= {bn['z_max_limit']} x SE_k (SE-scaled, replaces the flat 25-stat "
+                       f"TOST), RMS <= {B['b_live_rms_d_max']}, B3 CI, >= {n_sim} model games; drift-aware null ({bn['draws']} draws, model = "
+                       f"{n_sim} draws from the newest block of {bn['n_newest']}): today's humans pass {bn['pass_full']:.3f} (v5 rule on the same "
+                       f"draws: {bn['pass_v5_rule']:.3f}). C-live: human class = the newest block (Mark {NEWEST_MARK} since {NEWEST_FROM}); "
+                       f"{cn['draws']} fresh discriminators on newest-block halves, upper CI q95 {cn['upper_ci_q95']:.3f} -> limit {auc}. "
+                       f"v5 sha 438a7692...; v5 text: {old}")
+    (HERE / 'THRESHOLDS.json').write_bytes((json.dumps(th, indent=2) + '\n').encode())
+    print(hashlib.sha256((HERE / 'THRESHOLDS.json').read_bytes()).hexdigest())
+
+
+def csum6():
+    v = [json.loads(f.read_text()) for f in sorted((OUT / 'v6_cnull').glob('*.json'))]
+    up, au = sorted(x['ci'][1] for x in v), sorted(x['auc'] for x in v)
+    k = min(len(up) - 1, math.ceil(.95 * len(up)) - 1)
+    res = dict(draws=len(v), auc_mean=sum(au) / len(au), auc_q95=au[k], upper_ci_q95=up[k], upper_ci_max=up[-1],
+               pass_at_055=sum(u <= 0.55 for u in up) / len(up), neff_h=sum(x['neff_h'] for x in v) / len(v), n_m=v[0]['n_m'], uppers=up)
+    (OUT / 'v6_cnull.json').write_text(json.dumps(res, indent=1))
+    print(json.dumps({k_: v_ for k_, v_ in res.items() if k_ != 'uppers'}))
+
+
 def _up(x, step):
     return math.ceil(x / step - 1e-9) * step
 
@@ -355,7 +468,8 @@ def register(half_life, n_sim):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('cmd', choices=('scan', 'parse', 'build', 'shift', 'bnull', 'cnull', 'csum', 'register'))
+    ap.add_argument('cmd', choices=('scan', 'parse', 'build', 'shift', 'bnull', 'cnull', 'csum', 'register', 'bnull6', 'cnull6',
+                                    'csum6', 'register6'))
     ap.add_argument('--out', default=str(META))
     ap.add_argument('--logs')
     ap.add_argument('--list')
@@ -378,10 +492,18 @@ def main():
         csum()
     elif a.cmd == 'register':
         register(a.half_life, a.n_sim)
+    elif a.cmd == 'register6':
+        register6(a.half_life, a.n_sim)
+    elif a.cmd == 'csum6':
+        csum6()
+    elif a.cmd == 'cnull6':
+        cnull6(a.half_life, a.n_sim, a.seeds, a.threads)
     else:
         th = json.loads((HERE / 'THRESHOLDS.json').read_text()) if a.unregistered else CD.SC.load_thresholds()[0]
         if a.cmd == 'bnull':
             bnull(th, a.half_life, a.n_sim, a.draws)
+        elif a.cmd == 'bnull6':
+            bnull6(th, a.half_life, a.n_sim, a.draws)
         else:
             cnull(th, a.half_life, a.n_sim, a.seeds, a.threads)
 

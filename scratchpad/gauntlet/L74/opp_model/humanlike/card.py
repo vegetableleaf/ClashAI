@@ -374,7 +374,10 @@ def level_b(L, S, th, feats=STATS, margin=None, rms_max=None):
     c = wcohen(L, S, feats, B['min_n_per_side_for_a_stat'])
     have = [k for k in feats if not math.isnan(c[k][6])]
     marg = margin if margin is not None else B['b_live_per_stat_abs_d_max']
-    tost = {k: abs(c[k][6]) + SC.Z90 * c[k][7] < marg for k in have}
+    if margin is None and B.get('b_live_rule') == 'se_scaled':   # v6: each stat's margin = z_max x its OWN SE at the scored n
+        tost = {k: abs(c[k][6]) <= B['b_live_z_max'] * c[k][7] for k in have}
+    else:
+        tost = {k: abs(c[k][6]) + SC.Z90 * c[k][7] < marg for k in have}
     r = SC.rms(c, have)
     lo, hi = B['b3_spread_ratio_range']
     b3 = {}
@@ -573,7 +576,8 @@ def score(name, sim_root, th, sha, a_args, hf_sim=None, do_c=True, out_dir=None,
     # B-HF
     if hf_sim:
         Hs, meta = hf_records(th['_hf_ref'], split=2)
-        bh = level_b(rows(Hs), rows(sim_records(hf_sim, live_visible=False)), th, feats=[k for k in STATS if k not in ('opp_el', 'pocket_share')],
+        HM = sim_records(hf_sim, live_visible=False, mvm=True)          # pairs.py --mvm rows: one record per seat
+        bh = level_b(rows(Hs), rows(HM), th, feats=[k for k in STATS if k not in ('opp_el', 'pocket_share')],
                      margin=th['B']['b_hf_per_stat_abs_d_max'])
         need = th['B'].get('b_hf_min_games_per_class', 0)
         bh['enough'] = min(bh['n_live'], bh['n_sim']) >= 2 * need          # records are sides: 2 per match
@@ -601,10 +605,22 @@ def score(name, sim_root, th, sha, a_args, hf_sim=None, do_c=True, out_dir=None,
     # C
     if do_c:
         import disc
-        c = disc.level_c(LV, S, th, tag=name)
+        CH = LV
+        if th['C'].get('live_human_class') == 'newest':      # v6: today's humans vs the CURRENT Mark only (ticks caveat)
+            CH = [r for r in LV if r['mark'] == th['C']['live_newest_mark'] and r['ts'] >= th['C']['live_newest_from']]
+        c = disc.level_c(CH, S, th, tag=name)
         rep['C_live'] = c
         lines.append('## C-live: ' + disc.fmt(c))
-        lines.append('   C-HF: FAIL -- not scored (pairs.py --mvm rows exist as a smoke only; C-HF wiring owed)')
+        if hf_sim:                                           # C-HF: HF humans (test split, both sides) vs the model's seat records
+            import random as _r
+            Hh = list(Hs)
+            _r.Random(0).shuffle(Hh)
+            ch = disc.level_c(Hh[:len(HM)], HM, th, tag=name + '_hf')
+            rep['C_HF'] = ch
+            lines.append('   C-HF: ' + disc.fmt(ch))
+        else:
+            rep['C_HF'] = dict(passed=False, why='no --hf-sim rows')
+            lines.append('   C-HF: FAIL -- not scored (no --hf-sim rows: hf_ref.py --jobs N, then pairs.py run --mvm)')
     else:
         rep['C_live'] = dict(passed=False, why='skipped (--no-c)')
         lines.append('## C: FAIL -- skipped (--no-c)')
