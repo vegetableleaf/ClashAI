@@ -279,6 +279,8 @@ def main_opp(a, arrs: dict, meta: dict) -> int:
                          **opp).to(dev)
         if a.memory:
             model.add_memory(version=a.memory, zero_empty=True, zero_init=False)
+        if a.opp_cell_refine:            # P2-OPP2: the cell head's CellRefine (REPORT_opponents 2); absent = v0's model
+            model.add_cell_refine(*(int(v) for v in a.opp_cell_refine.split(",")))
     if a.memory:
         from .dataset_gen import checkpoint_gid, load_memory_tables
         if a.memory_tables is None:
@@ -395,6 +397,8 @@ def main(argv=None) -> int:
     ap.add_argument("--opp-ability", action="store_true", help="ability-press head (same slot structure)")
     ap.add_argument("--opp-deck-enc", action="store_true", help="set-transformer deck encoder + deck id (20%% dropout)")
     ap.add_argument("--opp-ctx", default="", help="context tokens, e.g. band=8,mode=8,era=8 (ids from the rows)")
+    ap.add_argument("--opp-cell-refine", default="", help="C,LAYERS: attach CellRefine(C, LAYERS) to a fresh opp model "
+                    "(e.g. 32,4); --init checkpoints carry their own")
     ap.add_argument("--memory", default=None, choices=(None, "v1", "v2"), help="joint memory encoder (opp trainer)")
     ap.add_argument("--memory-tables", type=Path, default=None)
     ap.add_argument("--hand-inferred", default="mask_card", help="mask_card (no card label on hand-inferred rows) | drop")

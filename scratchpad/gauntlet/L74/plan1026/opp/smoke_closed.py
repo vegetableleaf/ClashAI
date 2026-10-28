@@ -31,6 +31,7 @@ def main() -> int:
     ap.add_argument("--opp-T", type=float, default=1.0)
     ap.add_argument("--extra", default="")
     ap.add_argument("--python", default=sys.executable)
+    ap.add_argument("--diag", action="store_true", help="in-process worker with refusal reasons (diag_refuse.py)")
     a = ap.parse_args()
     plan = gap.prepare(a.out / "inputs", G, 741200, a.opp, a.opp_T, str(ROOT / "scratchpad/gauntlet/L74/mix/decks_live_eval.json"))
     job = dict(plan["jobs"][0], seeds=[int(s) for s in a.seeds.split(",")])
@@ -38,6 +39,9 @@ def main() -> int:
     (a.out / "D3").mkdir(parents=True)
     cmd = gap.command("D3", job, a.out / "inputs" / plan["censuses"][job["census"]]["path"], dest, a.python,
                       (EX + " " + a.extra).split(), (), (), "all16")
+    if a.diag:                                         # same argv, the worker script swapped for diag_refuse.py
+        i = next(i for i, c in enumerate(cmd) if str(c).endswith("gap.py"))
+        cmd = list(cmd[:i]) + [str(Path(__file__).resolve().parent / "diag_refuse.py")] + list(cmd[i + 1:])
     print(" ".join(map(str, cmd)), flush=True)
     with dest.with_suffix(".log").open("w") as log:
         rc = subprocess.run(cmd, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT).returncode
@@ -45,7 +49,9 @@ def main() -> int:
     for r in rows:
         opp = [p for p in r.get("hab", {}).get("opp", [])]
         print(json.dumps({"seed": r["seed"], "outcome": r["outcome"], "end_tick": r["end_tick"], "plays": r["plays_attempted"],
-                          "opp_accepted": r["opp_plays_accepted"], "opp_hab_plays": len(opp), "deck": r.get("opp_deck_name")}))
+                          "opp_accepted": r["opp_plays_accepted"], "opp_hab_plays": len(opp), "deck": r.get("opp_deck_name"),
+                          "opp_refused": [p[2:3] + p[5:6] + p[10:] for p in opp if not p[3]],
+                          "opp_ability_presses": (r.get("ability_presses") or {})}))
     print(json.dumps({"rc": rc, "rows": len(rows)}))
     return rc
 

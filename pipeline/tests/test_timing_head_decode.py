@@ -27,6 +27,11 @@ from pipeline import e1_eval as E                                         # noqa
 from pipeline.model_gen import GenModel                                   # noqa: E402
 from pipeline.tests.test_league import _SPEnv, _cfg, _run, _spec, _tiny_gen, VOCAB   # noqa: E402
 
+try:
+    import royalegym.protocol  # noqa: F401
+    HAS_RG = True
+except ImportError:            # the laptop venv: run this file on a pod for the engine-check test
+    HAS_RG = False
 CTX = {"band": 6, "mode": 8, "era": 4}
 SIM = {"ctx": {"band": 1, "mode": 1, "era": 1}, "deck_keys": []}
 H, PMF = 0.25, np.array([0.0, 0.5, 0.3, 0.2, 0, 0, 0, 0, 0, 0])
@@ -176,6 +181,69 @@ class TestFakeMatch(unittest.TestCase):
         self.assertEqual(a[2].log, b[2].log)
         with self.assertRaises(ValueError):
             self._match(E.GenPolicy(_timing_gen(3), VOCAB, SIM), _cfg("live", record=False))
+
+
+class TestEngineGaps(unittest.TestCase):
+    """P2-OPP2 decode fixes found in v0's level B: Mirror's real cost, the decided-match window, the learned ability head."""
+
+    @staticmethod
+    def _seat(deck, plays=(), elixir=10.0, status=None, ready=(), oa=None):
+        from types import SimpleNamespace as NS
+        q = []
+        env = NS(engine_delay_ticks=20, _scan=lambda side, gate: list(ready),
+                 queue_abilities=lambda side, cmds, d: q.append((side, cmds, d)))
+        if status is not None:
+            from royalegym.protocol import DeployStatus
+            env.core = NS(check_deploy=lambda c: getattr(DeployStatus, status))
+        m = NS(env=env, engine_deck=list(deck), deck_index_of_slot=list(range(8)), costs=[3.0] * 7 + [1.0],
+               done_plays=list(plays), _cur=(1000, None, NS(my_elixir=elixir)), _th_slot=None, side=1, tag="t",
+               rng_behave=np.random.default_rng(0), _gen_row=None if oa is None else {"own_ability": oa})
+        return m, q
+
+    DECK = ["Knight", "Archers", "Giant", "Musketeer", "Arrows", "Fireball", "Valkyrie", "Mirror"]
+
+    def test_mirror_costs_the_last_card_plus_one(self):
+        m, _ = self._seat(self.DECK)
+        self.assertEqual(E.th_costs(m)[7], math.inf)                     # nothing to repeat yet
+        m.costs[2] = 5.0
+        m.done_plays = [(900, 2, 0, 0)]
+        self.assertEqual(E.th_costs(m)[7], 6.0)
+        m.done_plays.append((950, 7, 0, 0))                               # a Mirror is skipped: it repeats the same card
+        self.assertEqual(E.th_costs(m)[7], 6.0)
+        m.costs[2] = 9.5
+        self.assertEqual(E.th_costs(m)[7], 10.0)                          # capped at the bar
+        no = self._seat(self.DECK[:7] + ["Zap"])[0]
+        self.assertIs(E.th_costs(no), no.costs)                           # no Mirror: the catalogue costs untouched
+
+    @unittest.skipUnless(HAS_RG, "royalegym (pod runtime) not importable")
+    def test_decided_match_plays_nothing_and_draws_nothing(self):
+        heads = {"hazard": torch.full((1,), 20.0), "tick": torch.zeros(1, 10), "card": torch.zeros(1, 8)}
+        m, _ = self._seat(self.DECK, status="GAME_OVER")
+        state = m.rng_behave.bit_generator.state
+        out = E.timing_decide_batch(None, {}, heads, np.ones((1, 8), bool), [m], {"T": 1.0})
+        self.assertEqual(out[0]["why"], "game_over")
+        self.assertEqual(m.rng_behave.bit_generator.state, state)
+        self.assertFalse(E.th_decided(self._seat(self.DECK, status="OK")[0]))
+        self.assertFalse(E.th_decided(self._seat(self.DECK)[0]))         # an env with no engine check: never decided
+
+    def test_ability_head_presses_ready_buttons_at_its_tick(self):
+        pmf = np.log(np.maximum(np.array([0, 0, 0, 1.0, 0, 0, 0, 0, 0, 0]), 1e-30))
+        heads = {"ab_hazard": torch.full((1,), 20.0), "ab_tick": torch.tensor(pmf)[None]}
+        vis = np.zeros((2, 7), np.float32)
+        vis[0, 0] = 1
+        m, q = self._seat(self.DECK, ready=[(0, 5, 77)], oa=vis)
+        E.th_ability(m, heads, 0)
+        self.assertEqual(q, [(1, [(0, 5, 77)], 3)])
+        m, q = self._seat(self.DECK, ready=[], oa=vis)                   # visible but not ready: drawn, not pressed
+        E.th_ability(m, heads, 0)
+        self.assertEqual((q, m.th_ab), ([], {"slots": 1, "draws": 1, "queued": 0}))
+        m, q = self._seat(self.DECK, ready=[(0, 5, 77)], oa=np.zeros((2, 7), np.float32))   # no controller: no draw
+        E.th_ability(m, heads, 0)
+        self.assertEqual((q, getattr(m, "th_ab", None)), ([], None))
+        heads["ab_hazard"].fill_(-20.0)
+        m, q = self._seat(self.DECK, ready=[(0, 5, 77)], oa=vis)
+        E.th_ability(m, heads, 0)
+        self.assertEqual(q, [])
 
 
 if __name__ == "__main__":

@@ -69,18 +69,28 @@ class Spool:
         return np.fromfile(self.root / f"{name}.bin", dtype=dt).reshape((n,) + tuple(tail))
 
     def write_npz(self, out: Path, arrays: dict, skip=()):
+        """``out`` *.npz -> one uncompressed npz; any other name -> an EXTRACTED dir of NAME.npy files (train_gen --data reads
+        both; the dir skips the npz + unzip copies, ~2x the rows on disk at peak)."""
+        import contextlib
         import shutil
         import zipfile
-        with zipfile.ZipFile(out, "w", zipfile.ZIP_STORED, allowZip64=True) as z:
+        if out.suffix == ".npz":
+            z = zipfile.ZipFile(out, "w", zipfile.ZIP_STORED, allowZip64=True)
+            opener = lambda name: z.open(name + ".npy", "w", force_zip64=True)   # noqa: E731
+        else:
+            out.mkdir(parents=True, exist_ok=False)
+            z = contextlib.nullcontext()
+            opener = lambda name: (out / f"{name}.npy").open("wb")              # noqa: E731
+        with z:
             for name, (dt, tail, n) in self.meta.items():
                 if name in skip or name in arrays:
                     continue
-                with z.open(name + ".npy", "w", force_zip64=True) as f, (self.root / f"{name}.bin").open("rb") as src:
+                with opener(name) as f, (self.root / f"{name}.bin").open("rb") as src:
                     np.lib.format.write_array_header_2_0(f, {"descr": np.lib.format.dtype_to_descr(np.dtype(dt)),
                                                              "fortran_order": False, "shape": (n,) + tuple(tail)})
                     shutil.copyfileobj(src, f, length=1 << 22)
             for name, a in arrays.items():
-                with z.open(name + ".npy", "w", force_zip64=True) as f:
+                with opener(name) as f:
                     np.lib.format.write_array(f, np.asanyarray(a), allow_pickle=False)
         shutil.rmtree(self.root)
 

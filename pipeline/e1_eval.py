@@ -677,6 +677,59 @@ def timing_cfg(cfg: dict) -> dict:
                 extrapolate_ticks=0, stall_elixir=None)
 
 
+def th_has_ability(policy) -> bool:
+    """A timing-head seat whose GenModel has the learned ability head (it presses, not the env's rule)."""
+    return is_timing(policy) and bool(policy.model.opp.get("ability"))
+
+
+def th_costs(m) -> list:
+    """A timing-head seat's per-slot costs: Mirror costs the card it repeats + 1, capped at 10 (crforge
+    LadderMatch.mirrorItem: min(Mirror + repeated card, max elixir); with the catalogue's Mirror cost v0's level B had 70
+    of 110 Mirror plays refused not_enough_elixir), the repeated card = this seat's last issued non-Mirror card; no
+    card issued yet = Mirror unplayable. Every other card: its catalogue cost."""
+    from pipeline.dataset_gen import card_key
+    names = [card_key(m.engine_deck[m.deck_index_of_slot[s]]) for s in range(N_SLOTS)]
+    if "mirror" not in names:
+        return m.costs
+    ms, costs = names.index("mirror"), list(m.costs)
+    last = next((s for _, s, *_ in reversed(m.done_plays) if s != ms), None)
+    costs[ms] = math.inf if last is None else min(m.costs[last] + 1.0, 10.0)
+    return costs
+
+
+def th_decided(m) -> bool:
+    """The engine refuses every play now (crforge: the match is decided and in its end period before game over; v0's
+    level B had 1,303 of 1,531 opponent refusals in a match's last 80 ticks, none accepted there): its own check."""
+    core = getattr(m.env, "core", None)
+    if not hasattr(core, "check_deploy"):
+        return False
+    from royalegym.protocol import DeployCommand, DeployStatus
+    return core.check_deploy(DeployCommand(m.side, 0, 0, 0)) == DeployStatus.GAME_OVER
+
+
+def th_ability(m, heads, r: int) -> None:
+    """The learned ability head of a timing-head seat (SelfPlaySide.prepare keeps the env's press rule off its side). At a
+    slot start with a visible own ability controller (the rows' ab_ok) draw Bernoulli(h) and the tick j inside the slot
+    from the seat's own ability stream (its card / cell draws untouched); a press of a READY button is queued j ticks on
+    (the env's queue rechecks readiness then); no ready button = no press (the HF rows label accepted presses only)."""
+    from .decision_options import timing_slot_draw
+    oa = (getattr(m, "_gen_row", None) or {}).get("own_ability")
+    ready = m.env._scan(m.side, lambda *_: True)             # readiness only (royale_env._any_gate)
+    if not (ready if oa is None else (np.asarray(oa)[..., 0] > 0).any()):
+        return
+    if getattr(m, "_th_ab_rng", None) is None:
+        m._th_ab_rng = np.random.default_rng(zlib.crc32(f"{m.tag}:th_ability".encode()))
+    st = m.__dict__.setdefault("th_ab", {"slots": 0, "draws": 0, "queued": 0})
+    st["slots"] += 1
+    j = timing_slot_draw(float(heads["ab_hazard"][r]), heads["ab_tick"][r].detach().float().cpu().numpy(), m._th_ab_rng)
+    if j is None:
+        return
+    st["draws"] += 1
+    if ready:
+        st["queued"] += 1
+        m.env.queue_abilities(m.side, [ready[0]], j)
+
+
 def timing_decide_batch(model, enc, heads, allowed: np.ndarray, matches: Sequence, cfg: dict) -> list[dict]:
     """gate_decode 'timing_head' on one shared forward. A side at a slot start (``_th_slot`` None) draws Bernoulli(h_s)
     and the tick j inside the slot from ITS ``rng_behave`` (decision_options.timing_slot_draw); j > 0 -> no play now,
@@ -690,14 +743,17 @@ def timing_decide_batch(model, enc, heads, allowed: np.ndarray, matches: Sequenc
     if not all(hasattr(m, "_th_slot") for m in matches):
         raise ValueError("timing_head decodes a SelfPlaySide seat only")
     allowed = np.array(allowed, dtype=bool)
+    over = []
     for r, m in enumerate(matches):
         eng = int(getattr(m.env, "engine_delay_ticks", 0))
         held = [s for t, s, *_ in m.done_plays if t + eng >= int(m._cur[0])]  # issued, not yet run (the board at
         #                                                                       its run tick is still the one before)
+        costs = th_costs(m)
         if held:
             allowed[r, held] = False
-            el = math.floor(float(m._cur[2].my_elixir) - sum(m.costs[s] for s in held) + 1e-9)
-            allowed[r] &= np.asarray(m.costs) <= el
+        el = math.floor(float(m._cur[2].my_elixir) - sum(costs[s] for s in held) + 1e-9)
+        allowed[r] &= np.asarray(costs) <= el
+        over.append(th_decided(m))
     T = float(cfg.get("T", 1.0))
     hz = heads["hazard"].detach().float().cpu().numpy()
     tk = heads["tick"].detach().float().cpu().numpy()
@@ -705,6 +761,11 @@ def timing_decide_batch(model, enc, heads, allowed: np.ndarray, matches: Sequenc
     cell = model_cell_logits(model, enc, heads["card"].device)
     out = []
     for r, m in enumerate(matches):
+        if over[r]:                                           # crforge: the match is decided, every play is refused
+            out.append({"play": False, "slot": -1, "cell": -1, "why": "game_over"})
+            continue
+        if m._th_slot is None and "ab_hazard" in heads:     # the learned ability head (its own slot draw + stream)
+            th_ability(m, heads, r)
         if m._th_slot is None:
             j = timing_slot_draw(hz[r], tk[r], m.rng_behave)
             if j is None or j > 0:
@@ -912,7 +973,8 @@ class GenPolicy:
         card = card.scatter(1, b["hand_slot"], h["card"])[:, :N_SLOTS]       # col 8 = unknown positions, dropped
         enc = {**enc, "slot_card": b["slot_card"], "slot_form": b["slot_form"]}
         if "gate" not in h:                                  # P2 timing head: the slot hazard + tick (no gate)
-            return enc, {"card": card, "card_hand": h["card"], "hazard": h["hazard"], "tick": h["tick"]}
+            return enc, {"card": card, "card_hand": h["card"], "hazard": h["hazard"], "tick": h["tick"],
+                         **{k: h[k] for k in ("ab_hazard", "ab_tick") if k in h}}   # + the ability head (th_ability)
         return enc, {"gate": h["gate"], "card": card, "card_hand": h["card"]}
 
     def forward_batch(self, rows: Sequence[dict], device: str = "cpu"):
@@ -1090,6 +1152,9 @@ class Match:
             # by my side's own later ability_commands, never made in head mode; _v2_dt is set again by every call that
             # reads it, and ability_options creates the same _v2_info entries at the same tick.
             head = bool(cfg.get("ability")) and cfg["ability"]["mode"] != "label"
+            if getattr(self, "timing", False) and th_has_ability(self.model):   # P2: its learned head presses
+                head = True                                  # (timing_decide_batch -> th_ability), never the rule
+                self.env.learned_sides.add(self.side)
             self._ability_commands = {s: [] if head and s == self.side else self.env.ability_commands(s) for s in sides}
             if cfg.get("ability"):                           # rl_royale ability_head: MY side's options (ability_decide)
                 rule = self._ability_commands[self.side]

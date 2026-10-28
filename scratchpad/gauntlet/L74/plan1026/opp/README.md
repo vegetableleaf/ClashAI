@@ -21,7 +21,64 @@ python cbt/.../opp/level_a.py --ckpt runs/NAME/opp_NAME_s0.pt --data hf_slot_NEW
 ```
 Live split: `live_split.json` (frozen 2026-10-28 09:06 EDT, never rewritten; sealed = every log from 20261028_090648).
 
-## STATUS (P2-OPP re-dispatch, account 2; updated 2026-10-28 20:20 UTC; keep current). Nothing of mine is running.
+## STATUS (P2-OPP2, account 2; updated 2026-10-28 21:30 UTC; keep current)
+Pod: 33903 (1x 4090, 125 GB cgroup, 120 GB /workspace) = ALL my GPU + closed-loop work (lead 10-28). 33308 GPU1 released
+(nothing of mine ran there after 20:00 UTC; its container restarted again ~20:53 UTC, not my load).
+Step 1 (CPU-side decode gaps; e1_eval timing hunks + tests; pod smoke = see below):
+- (a) v0 level B refusals (960 games, 27,778 opponent plays, 1,531 refused = 5.5%): 1,303 in a match's last 80 ticks with 0
+  accepted there (crforge refuses every play once the match is decided; diag on 33308 diag1: reason game_over, incl. ALL three
+  hero Mega Minion refusals at 4.9-6.7 elixir = they were game_over, not a Mega Minion bug); Mirror 70 / 110 refused
+  not_enough_elixir (crforge LadderMatch.mirrorItem bytecode: cost = min(Mirror + repeated card, max elixir), the repeated card =
+  lastPlayedCopy; our table had Mirror's catalogue cost); the remaining ~160 spread over cards at 3-10% (cause not split; b).
+- Fixes (e1_eval, timing-head seats only; every other model unchanged): th_costs (Mirror = last issued non-Mirror card + 1,
+  cap 10, unplayable before any card), th_decided (the engine's own check_deploy says GAME_OVER -> no play, no draw),
+  th_ability (the learned ability head: at each slot start with a visible own ability controller (rows' ab_ok) Bernoulli(h) +
+  tick j from its own stream, a READY button is queued j ticks on; SelfPlaySide.prepare keeps the env's v2 rule off that seat).
+  Tests: test_timing_head_decode.py TestEngineGaps (3; the GAME_OVER one needs royalegym = pod only).
+- Tick-in-slot head (a): it is NOT broken. HF slot labels (1,887,461 play slots, v0 rows): offset 0 never, 1 = 26.7%, 2-8 ~10%
+  each, 9 = 3.8%; that marginal's entropy = 2.08 nats = the head's held-out 2.0795 (ln 8 is a coincidence): the head learned the
+  marginal and there is no further within-slot signal. The offset-1 pile-up (plays at offsets 0 and ~60% of 9 moved to 1) is a
+  re-drive timing artefact (shape a, cause b: the pass-1 driver's frame / command order); the decode reproduces it (+<= 0.1 s).
+Step 3 code: train_gen --opp-cell-refine C,LAYERS (fresh opp model gets CellRefine; absent = v0 build); rows_to_npz --out
+  without .npz = EXTRACTED dir written directly (no npz + unzip copies; checked equal to the npz path on a synthetic spool).
+Step 2 (live opponent-seat rows) NOT STARTED; findings for the build (a): opp_model/out/live_matches.jsonl.gz is STALE (3,372
+  rows, newest 20261019_235402, no mode field; 1,087 icebow >= 12k since 10-15 17:26 in the train block) -> the builder must list
+  logs BY NAME from L68/live_reader inside live_split.json's blocks (train: 20261015_172600 <= ts < 20261025_000000; calibration:
+  20261025_000000 <= ts < 20261028_090648; never open ts >= sealed_from) and call live_table.parse_log per listed log only
+  (never live_table.main). Bands (REPORT_opponents 1.3): live_L = 12.0-12.9k trophies, live_M = 13k+, live_R = Ranked.
+  Plan: plan1026/opp/build_live.py = o1_records.build with FRAME_EVERY 2 + SPELL_TARGETS, opponent log tick = first sighting
+  - 20 (play frame = last frame <= that tick), record ticks shifted by -phase (phase = first frame tick % 10; <= 0.45 s clock
+  shift, ponytail ceiling) so rows_to_npz's tick % 10 grid is the frame grid; dataset_gen.build(wait_stride 10, play_window 0)
+  + slot_redrive.sidecar + memory tables per shard; rows_to_npz with ctx_band 4/5/6, era 2, --deck-map of the HF rows;
+  o1_finalize self-check on OUR seat >= 99% before any training.
+  Mode (Ranked vs ladder) is NOT in live_table.parse_log; Ranked lists today = clx_ranked/rows.json (static, 233 logs) and
+  P2-SCORE's v5 / v6 all-matches human reference (HUMANLIKE.md 11.1-11.2): take the mode from the v6 reference builder (b).
+Step 1 pod smoke (33903, crforge fe364ceb, v0 opp_m10_s0_sim.pt vs CLXIII, seeds 741200-741205, DIAG=1; trees
+/workspace/opp/cb_base = HEAD 39901d6, /workspace/opp/cb = this change; logs /workspace/opp/logs/smoke_cb*.log) (a):
+  base: 15 / 157 opponent plays refused (Mirror 7 of 8 not_enough_elixir, game_over 7, Witch 1); new: 0 / 174 refused, Mirror 2
+  played / 0 refused. Ability: the first new run pressed NOTHING for the opponent (heads_t dropped ab_hazard / ab_tick, and the
+  env rule was already off for the seat) -> fixed in GenPolicy.heads_t; re-run (seeds 741201 / 02 / 04, the 3 hero decks): 1
+  press per match (Valkyrie, Mega Minion, Mini P.E.K.K.A), 262 of 1,056 slot starts with a visible controller, mean h 0.013
+  (max 0.108); the env's v2 rule pressed 1-2 per match on the same decks. 1 Witch refusal at 5.85 elixir left (cause b).
+  test_opp_model's legacy fingerprint FAILS on the pod for HEAD too (platform floats; passes on the laptop) = not this change.
+v1 (33903; code copy /workspace/opp/cb = HEAD 39901d6 + this commit's files, icebow/data -> /workspace/icebow_data, venv
+/workspace/venvf16 built from PyPI + fin16 wheel b5c35101 + JPype1 1.7.1 + pyarrow 26; crforge /workspace/crforge_main/fe364ceb):
+- rows (a): ALL 241 shards -> /workspace/opp/v1/hf_slot_v1 (EXTRACTED dir, 9,693,018 rows = 8,716,121 train / 488,468 held-out
+  / 488,429 test, 52,544 replays, 2,711,442 play slots, 303 deck ids; v0: 6.75 M rows, 168 shards, 211 ids; 526 s) + _memory.npz;
+  level-A test dir hf_slot_v1_test (split 2, every slot, --deck-map hf_slot_v1). Rebuild: `bash /workspace/opp/v1/build_rows.sh`.
+- RUNNING: pretrain seed 0 = v0's recipe + CellRefine(32, 4), 100k steps (v0 40k), d 320 x 7, bs 256, lr 3e-4 one-cycle;
+  /workspace/opp/v1/run_s0/{train.log, curve_v1_s0.jsonl, opp_v1_s0.pt}; 11,290,371 params; GPU 12.9 GB, util 88%.
+  Restart (fresh; no mid-run resume): `cd /workspace/opp && (OPP_CODE=/workspace/opp/cb CELL_REFINE=32,4 setsid nohup bash /workspace/opp/cb/scratchpad/gauntlet/L74/plan1026/opp/run_pretrain.sh /workspace/opp/v1/hf_slot_v1 /workspace/opp/v1/run_s0 v1 320 7 100000 0 0 > /workspace/opp/v1/run_s0/train.log 2>&1 < /dev/null &)`
+  Seed 1 = the same with run_s1 and last arg 1 (after seed 0, or alongside if the GPU allows).
+- Then: attach_sim.py (opp_sim, deck ids from hf_slot_v1) -> level A on hf_slot_v1_test (same scorer as v0) -> level B on fe364ceb,
+  >= 4 x 480-game blocks (>= 1,900 games), card.py under THRESHOLDS v6 (sha 26568167; lead 10-28).
+Codex: P2OPP2_1 (setup through the laptop, low) STOPPED (relay ~2 MB/s); P2OPP2_2 (venv from PyPI + copies, low) did the venv +
+  crforge + tables (checked: versions, CUDA, wheel sha, crforge SHA256SUMS + manifest equal) and was STOPPED during the data copy;
+  the data went pod to pod by rsync with ssh agent forwarding (lead 10-28), slot shards checked (1,206 files, 4,460,796,283 bytes,
+  slot-sidecar md5 equal both sides). Logs .foreman/scratch/a2/codex/P2OPP2_{1,2}.log.
+Split (owner 10-28 ~19:30): step 2 (live rows) -> V1-LIVEROWS, strength calibration -> V1-STRENGTH; this seat = decoder + model.
+
+## STATUS history (P2-OPP re-dispatch, account 2; 2026-10-28 20:20 UTC)
 1. Pretrain run 2 FINISHED (40k steps, best held-out total 5.515 at step 40k, 11.2 M params, 2.0 h; ckpt
    `/workspace/opp/v0/m10/opp_m10_s0.pt` sha256 99c231bf...). Level A on HF test split 2 (1.95 M rows, 2,667 replays), THRESHOLDS
    v3 sha 0c42e914 (its A section == v4's, checked): `results/v0_m10_run2/level_a_hf_test.json` (run 1 = step 10k: `results/v0_m10_run1/`).
