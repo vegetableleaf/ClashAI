@@ -9,7 +9,7 @@ POINTS = [('m2', 'cv1_m2_s0'), ('m5', 'cv1_m5_s0'),
           ('m10 s0 (base_pre)', 'base_pre'), ('m10 s1', 'cv1_m10_s1'),
           ('m20', 'cv1_m20_s0')]
 RUNS = ['base_pre', 'base_ice', 'cv1_m2_s0', 'cv1_m5_s0',
-        'cv1_m20_s0', 'cv1_m10_s1', 'clxiii', 'v0_m10']
+        'cv1_m20_s0', 'cv1_m10_s1', 'clxiii', 'v0_m10', 'ctl_m10_s0']
 V0 = {'m2': 5.3494, 'm5': 5.2780, 'm10': 5.2467, 'm20': 5.2342}
 
 
@@ -154,6 +154,26 @@ def generate(root):
            'graph argmax equal', 'graph max abs diff gate', 'graph max abs diff card', 'graph max abs diff cell', 'GPU name'], rows)
     if errors:
         lines.extend(['', 'Recorded latency errors:'] + ['- ' + error for error in errors])
+    groups = ('heldout_v32', 'heldout_hf', 'v3val', 'train_v32', 'train_hf')
+    rows = []
+    for label, name, recipe in [
+        ('v0 m10', 'v0_m10', 'v32 only, legacy trainer, fv5 plain, 4 epochs'),
+        ('control m10', 'ctl_m10_s0', 'v32 train rows only, step trainer, fv6 + memory v2, 51,000 steps'),
+        ('v1 m10 (base_pre)', 'base_pre', 'mix (v32 + HF re-drive), step trainer, fv6 + memory v2, 51,000 steps'),
+    ]:
+        rows.append([label] + [fmt(total(name, group)) for group in groups] + [recipe])
+    table(lines, 'Table 7. Data effect vs recipe effect at m10 (control)',
+          ['model'] + [group + ' total' for group in groups] + ['training data / recipe'], rows)
+    lines.extend(['', 'All rows: ~10.6-11.1 M params, 320 x 7.', '', 'Differences (negative = better):'])
+    for label, a, b, note in [
+        ('recipe/family effect = control - v0 m10', 'ctl_m10_s0', 'v0_m10', 'same data, v32 only'),
+        ('data effect = v1 m10 - control', 'base_pre', 'ctl_m10_s0', 'same recipe'),
+        ('total = v1 m10 - v0 m10', 'base_pre', 'v0_m10', ''),
+    ]:
+        values = ', '.join(group + ': ' + fmt(difference(total(a, group), total(b, group)))
+                           for group in ('heldout_v32', 'heldout_hf'))
+        lines.append('- ' + label + (f' ({note})' if note else '') + ': ' + values)
+    lines.extend(['', 'heldout_hf of the control uses a differently drawn selection sample than the others (its split-1 row indices differ), so heldout_hf compares at the ~0.002 level only; heldout_v32 is exact.'])
     lines.extend(['', 'Missing inputs: ' + (', '.join(missing) if missing else 'none') + '.',
                   'Missing metric keys are shown as n/a. curve_*.jsonl files are not needed for these tables.'])
     return '\n'.join(lines) + '\n'
