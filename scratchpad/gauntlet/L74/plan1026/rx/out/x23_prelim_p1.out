@@ -1,0 +1,125 @@
+HF {'decisive': 14845, 'train': 11867, 'heldout': 2978, 'end_tick_p50_p99_max': [3680.0, 6230.0, 6270.0]}
+IDENTITY {
+ "end": {
+  "n": 14845,
+  "r": 0.9819803661707668,
+  "lhs_sd": 8.48305475588099,
+  "resid_mean": 0.005531828559285143,
+  "resid_sd": 1.605170028363247,
+  "resid_abs_median": 0.3252835273742676,
+  "resid_abs_p95": 2.4420289993286115,
+  "slope_rhs_on_lhs": 0.9735978959606106
+ },
+ "all_rows": {
+  "n": 3117947,
+  "r": 0.9776388710573252,
+  "lhs_sd": 3.997801819044565,
+  "resid_mean": 0.005656827046219566,
+  "resid_sd": 0.8409115134440245,
+  "resid_abs_median": 0.12371528148651123,
+  "resid_abs_p95": 0.9968570947647094,
+  "slope_rhs_on_lhs": 0.9511778437336168
+ },
+ "60s": {
+  "n": 14694,
+  "r": 0.991996857836493,
+  "lhs_sd": 3.1696799647073677,
+  "resid_mean": 0.007120005499175556,
+  "resid_sd": 0.40035919800042413,
+  "resid_abs_median": 0.09199981391429901,
+  "resid_abs_p95": 0.32977122664451514,
+  "slope_rhs_on_lhs": 0.9874562374475631
+ },
+ "120s": {
+  "n": 13753,
+  "r": 0.9773361142268521,
+  "lhs_sd": 3.8893852939415634,
+  "resid_mean": 0.01539695929536267,
+  "resid_sd": 0.8235081816417544,
+  "resid_abs_median": 0.13014113903045654,
+  "resid_abs_p95": 0.6842577695846533,
+  "slope_rhs_on_lhs": 0.959145363046393
+ },
+ "180s": {
+  "n": 11672,
+  "r": 0.9639906758656692,
+  "lhs_sd": 5.356647102444859,
+  "resid_mean": 0.010365827238082508,
+  "resid_sd": 1.4245424439648653,
+  "resid_abs_median": 0.28828907012939453,
+  "resid_abs_p95": 1.3382439970970113,
+  "slope_rhs_on_lhs": 0.9305279214488642
+ },
+ "end_hf_committed": {
+  "n": 14845,
+  "r": 0.8513168004405737,
+  "lhs_sd": 9.051008648626995,
+  "resid_mean": 0.002610215820364576,
+  "resid_sd": 4.800731575381504,
+  "resid_abs_median": 2.2688571214675903,
+  "resid_abs_p95": 10.13665758371353,
+  "slope_rhs_on_lhs": 0.7910853039063832
+ },
+ "a_lin_vs_committed_diff_r": 0.33481744667343605,
+ "a_lin_vs_stock_leak_diff_r": 0.3169608576887866
+}
+x1_hf_heldout i {'60s': 'n 2943 auc 0.662 [0.642 0.684] ece 0.020 [0.014 0.04 ] pred 0.658 obs 0.662', '120s': 'n 2760 auc 0.810 [0.793 0.825] ece 0.026 [0.021 0.045] pred 0.653 obs 0.662', '180s': 'n 2337 auc 0.912 [0.901 0.922] ece 0.024 [0.018 0.04 ] pred 0.659 obs 0.659'}
+x1_hf_heldout ii {'60s': 'n 2943 auc 0.661 [0.64  0.682] ece 0.025 [0.015 0.044] pred 0.658 obs 0.662', '120s': 'n 2760 auc 0.809 [0.793 0.825] ece 0.027 [0.022 0.046] pred 0.653 obs 0.662', '180s': 'n 2337 auc 0.912 [0.901 0.922] ece 0.025 [0.019 0.041] pred 0.659 obs 0.659'}
+x1_hf_heldout iii {'60s': 'n 2943 auc 0.663 [0.643 0.685] ece 0.012 [0.01  0.034] pred 0.660 obs 0.662', '120s': 'n 2760 auc 0.810 [0.793 0.825] ece 0.020 [0.017 0.039] pred 0.659 obs 0.662', '180s': 'n 2337 auc 0.913 [0.901 0.923] ece 0.014 [0.012 0.032] pred 0.663 obs 0.659'}
+x1_hf_heldout i_sym {'60s': 'n 2943 auc 0.663 [0.643 0.685] ece 0.143 [0.126 0.159] pred 0.520 obs 0.662', '120s': 'n 2760 auc 0.810 [0.793 0.825] ece 0.107 [0.093 0.122] pred 0.554 obs 0.662', '180s': 'n 2337 auc 0.912 [0.901 0.922] ece 0.061 [0.049 0.075] pred 0.600 obs 0.659'}
+x1_hf_heldout ii_sym {'60s': 'n 2943 auc 0.661 [0.64  0.682] ece 0.143 [0.127 0.159] pred 0.520 obs 0.662', '120s': 'n 2760 auc 0.809 [0.792 0.825] ece 0.107 [0.093 0.122] pred 0.554 obs 0.662', '180s': 'n 2337 auc 0.912 [0.901 0.922] ece 0.060 [0.048 0.074] pred 0.600 obs 0.659'}
+x1_hf_heldout iii_sym {'60s': 'n 2943 auc 0.664 [0.643 0.686] ece 0.143 [0.127 0.16 ] pred 0.519 obs 0.662', '120s': 'n 2760 auc 0.809 [0.793 0.825] ece 0.109 [0.094 0.123] pred 0.553 obs 0.662', '180s': 'n 2337 auc 0.912 [0.901 0.922] ece 0.063 [0.051 0.078] pred 0.596 obs 0.659'}
+x1_live_all i {'60s': 'n 2989 auc 0.679 [0.66  0.697] ece 0.166 [0.148 0.183] pred 0.644 obs 0.478', '120s': 'n 2925 auc 0.813 [0.798 0.828] ece 0.087 [0.073 0.104] pred 0.574 obs 0.487', '180s': 'n 2753 auc 0.919 [0.909 0.929] ece 0.076 [0.065 0.091] pred 0.576 obs 0.503'}
+x1_live_all ii {'60s': 'n 2989 auc 0.677 [0.657 0.694] ece 0.172 [0.154 0.189] pred 0.650 obs 0.478', '120s': 'n 2925 auc 0.813 [0.797 0.827] ece 0.091 [0.078 0.108] pred 0.578 obs 0.487', '180s': 'n 2753 auc 0.919 [0.91  0.929] ece 0.083 [0.071 0.097] pred 0.583 obs 0.503'}
+x1_live_all iii {'60s': 'n 2989 auc 0.681 [0.662 0.698] ece 0.177 [0.16  0.194] pred 0.655 obs 0.478', '120s': 'n 2925 auc 0.812 [0.798 0.827] ece 0.101 [0.087 0.117] pred 0.588 obs 0.487', '180s': 'n 2753 auc 0.919 [0.91  0.929] ece 0.090 [0.077 0.103] pred 0.592 obs 0.503'}
+x1_live_all i_sym {'60s': 'n 2989 auc 0.679 [0.659 0.697] ece 0.032 [0.028 0.055] pred 0.511 obs 0.478', '120s': 'n 2925 auc 0.813 [0.798 0.827] ece 0.025 [0.019 0.043] pred 0.478 obs 0.487', '180s': 'n 2753 auc 0.919 [0.909 0.929] ece 0.034 [0.026 0.048] pred 0.522 obs 0.503'}
+x1_live_all ii_sym {'60s': 'n 2989 auc 0.676 [0.657 0.693] ece 0.039 [0.032 0.059] pred 0.518 obs 0.478', '120s': 'n 2925 auc 0.812 [0.797 0.827] ece 0.024 [0.018 0.042] pred 0.484 obs 0.487', '180s': 'n 2753 auc 0.919 [0.91  0.929] ece 0.037 [0.028 0.051] pred 0.529 obs 0.503'}
+x1_live_all iii_sym {'60s': 'n 2989 auc 0.680 [0.661 0.698] ece 0.041 [0.03  0.059] pred 0.519 obs 0.478', '120s': 'n 2925 auc 0.812 [0.797 0.827] ece 0.023 [0.018 0.041] pred 0.485 obs 0.487', '180s': 'n 2753 auc 0.920 [0.91  0.929] ece 0.029 [0.021 0.042] pred 0.531 obs 0.503'}
+x1_live_heldout_dates i {'60s': 'n 1131 auc 0.668 [0.636 0.697] ece 0.215 [0.188 0.241] pred 0.640 obs 0.425', '120s': 'n 1114 auc 0.791 [0.765 0.815] ece 0.138 [0.113 0.163] pred 0.570 obs 0.432', '180s': 'n 1062 auc 0.888 [0.868 0.906] ece 0.103 [0.083 0.126] pred 0.531 obs 0.432'}
+x1_live_heldout_dates ii {'60s': 'n 1131 auc 0.666 [0.635 0.696] ece 0.221 [0.194 0.247] pred 0.646 obs 0.425', '120s': 'n 1114 auc 0.791 [0.765 0.815] ece 0.143 [0.117 0.168] pred 0.575 obs 0.432', '180s': 'n 1062 auc 0.889 [0.868 0.906] ece 0.112 [0.091 0.135] pred 0.539 obs 0.432'}
+x1_live_heldout_dates iii {'60s': 'n 1131 auc 0.670 [0.64  0.699] ece 0.226 [0.201 0.253] pred 0.651 obs 0.425', '120s': 'n 1114 auc 0.790 [0.764 0.815] ece 0.151 [0.125 0.176] pred 0.583 obs 0.432', '180s': 'n 1062 auc 0.890 [0.87  0.908] ece 0.124 [0.102 0.147] pred 0.554 obs 0.432'}
+x1_live_heldout_dates i_sym {'60s': 'n 1131 auc 0.668 [0.636 0.697] ece 0.078 [0.054 0.106] pred 0.502 obs 0.425', '120s': 'n 1114 auc 0.791 [0.765 0.816] ece 0.037 [0.028 0.069] pred 0.466 obs 0.432', '180s': 'n 1062 auc 0.888 [0.868 0.906] ece 0.044 [0.031 0.069] pred 0.465 obs 0.432'}
+x1_live_heldout_dates ii_sym {'60s': 'n 1131 auc 0.666 [0.635 0.695] ece 0.085 [0.06  0.113] pred 0.509 obs 0.425', '120s': 'n 1114 auc 0.791 [0.765 0.815] ece 0.041 [0.031 0.071] pred 0.472 obs 0.432', '180s': 'n 1062 auc 0.889 [0.868 0.906] ece 0.048 [0.034 0.073] pred 0.473 obs 0.432'}
+x1_live_heldout_dates iii_sym {'60s': 'n 1131 auc 0.670 [0.64  0.699] ece 0.086 [0.063 0.113] pred 0.511 obs 0.425', '120s': 'n 1114 auc 0.790 [0.763 0.815] ece 0.049 [0.036 0.077] pred 0.473 obs 0.432', '180s': 'n 1062 auc 0.890 [0.869 0.908] ece 0.053 [0.037 0.078] pred 0.480 obs 0.432'}
+/workspace/venvf16/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:3029: RuntimeWarning: Degrees of freedom <= 0 for slice
+  c = cov(x, y, rowvar, dtype=dtype)
+/workspace/venvf16/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2902: RuntimeWarning: divide by zero encountered in divide
+  c *= np.true_divide(1, fact)
+/workspace/venvf16/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2902: RuntimeWarning: invalid value encountered in multiply
+  c *= np.true_divide(1, fact)
+x2 e4 win_only undisc FAIL spearman nan {'clxiii': 'win 0.694 comp +0.388 dC +0.000 dW +0.000'}
+x2 e4 i undisc FAIL spearman nan {'clxiii': 'win 0.694 comp +0.580 dC +0.000 dW +0.000'}
+x2 e4 ii undisc FAIL spearman nan {'clxiii': 'win 0.694 comp +0.580 dC +0.000 dW +0.000'}
+x2 e4 iii disc FAIL spearman nan {'clxiii': 'win 0.694 comp +0.142 dC +0.000 dW +0.000'}
+x2 iu40 win_only undisc FAIL spearman nan {'clxiii': 'win 0.577 comp +0.154 dC +0.000 dW +0.000'}
+x2 iu40 i undisc FAIL spearman nan {'clxiii': 'win 0.577 comp +0.239 dC +0.000 dW +0.000'}
+x2 iu40 ii undisc FAIL spearman nan {'clxiii': 'win 0.577 comp +0.239 dC +0.000 dW +0.000'}
+x2 iu40 iii disc FAIL spearman nan {'clxiii': 'win 0.577 comp -0.044 dC +0.000 dW +0.000'}
+x2 e4+iu40 win_only undisc FAIL spearman nan {'clxiii': 'win 0.635 comp +0.271 dC +0.000 dW +0.000'}
+x2 e4+iu40 i undisc FAIL spearman nan {'clxiii': 'win 0.635 comp +0.409 dC +0.000 dW +0.000'}
+x2 e4+iu40 ii undisc FAIL spearman nan {'clxiii': 'win 0.635 comp +0.409 dC +0.000 dW +0.000'}
+x2 e4+iu40 iii disc FAIL spearman nan {'clxiii': 'win 0.635 comp +0.049 dC +0.000 dW +0.000'}
+x2_sym e4 win_only undisc FAIL spearman nan {'clxiii': 'win 0.694 comp +0.388 dC +0.000 dW +0.000'}
+x2_sym e4 i undisc FAIL spearman nan {'clxiii': 'win 0.694 comp +0.580 dC +0.000 dW +0.000'}
+x2_sym e4 ii undisc FAIL spearman nan {'clxiii': 'win 0.694 comp +0.580 dC +0.000 dW +0.000'}
+x2_sym e4 iii disc FAIL spearman nan {'clxiii': 'win 0.694 comp +0.299 dC +0.000 dW +0.000'}
+x2_sym iu40 win_only undisc FAIL spearman nan {'clxiii': 'win 0.577 comp +0.154 dC +0.000 dW +0.000'}
+x2_sym iu40 i undisc FAIL spearman nan {'clxiii': 'win 0.577 comp +0.239 dC +0.000 dW +0.000'}
+x2_sym iu40 ii undisc FAIL spearman nan {'clxiii': 'win 0.577 comp +0.239 dC +0.000 dW +0.000'}
+x2_sym iu40 iii disc FAIL spearman nan {'clxiii': 'win 0.577 comp +0.113 dC +0.000 dW +0.000'}
+x2_sym e4+iu40 win_only undisc FAIL spearman nan {'clxiii': 'win 0.635 comp +0.271 dC +0.000 dW +0.000'}
+x2_sym e4+iu40 i undisc FAIL spearman nan {'clxiii': 'win 0.635 comp +0.409 dC +0.000 dW +0.000'}
+x2_sym e4+iu40 ii undisc FAIL spearman nan {'clxiii': 'win 0.635 comp +0.410 dC +0.000 dW +0.000'}
+x2_sym e4+iu40 iii disc FAIL spearman nan {'clxiii': 'win 0.635 comp +0.206 dC +0.000 dW +0.000'}
+X3 e4 i {'60s': 'n 480 auc 0.646 ece 0.034 [0.024 0.082] pred 0.706 obs 0.694', '120s': 'n 478 auc 0.785 ece 0.034 [0.03  0.082] pred 0.693 obs 0.697', '180s': 'n 470 auc 0.913 ece 0.051 [0.038 0.089] pred 0.668 obs 0.706'}
+X3 e4 ii {'60s': 'n 480 auc 0.642 ece 0.033 [0.025 0.082] pred 0.709 obs 0.694', '120s': 'n 478 auc 0.784 ece 0.032 [0.027 0.079] pred 0.695 obs 0.697', '180s': 'n 470 auc 0.912 ece 0.056 [0.041 0.092] pred 0.669 obs 0.706'}
+X3 e4 iii {'60s': 'n 480 auc 0.642 ece 0.025 [0.021 0.078] pred 0.705 obs 0.694', '120s': 'n 478 auc 0.786 ece 0.030 [0.028 0.077] pred 0.699 obs 0.697', '180s': 'n 470 auc 0.913 ece 0.034 [0.028 0.071] pred 0.682 obs 0.706'}
+X3 e4 i_sym {'60s': 'n 480 auc 0.645 ece 0.118 [0.086 0.162] pred 0.576 obs 0.694', '120s': 'n 478 auc 0.785 ece 0.097 [0.069 0.137] pred 0.600 obs 0.697', '180s': 'n 470 auc 0.913 ece 0.099 [0.075 0.131] pred 0.614 obs 0.706'}
+X3 e4 ii_sym {'60s': 'n 480 auc 0.640 ece 0.115 [0.083 0.157] pred 0.579 obs 0.694', '120s': 'n 478 auc 0.785 ece 0.095 [0.069 0.134] pred 0.602 obs 0.697', '180s': 'n 470 auc 0.912 ece 0.097 [0.075 0.131] pred 0.615 obs 0.706'}
+X3 e4 iii_sym {'60s': 'n 480 auc 0.641 ece 0.123 [0.089 0.166] pred 0.570 obs 0.694', '120s': 'n 478 auc 0.786 ece 0.097 [0.069 0.133] pred 0.599 obs 0.697', '180s': 'n 470 auc 0.912 ece 0.090 [0.066 0.122] pred 0.617 obs 0.706'}
+X3 iu40 i {'60s': 'n 477 auc 0.681 ece 0.048 [0.039 0.096] pred 0.622 obs 0.581', '120s': 'n 469 auc 0.815 ece 0.058 [0.043 0.102] pred 0.560 obs 0.591', '180s': 'n 441 auc 0.924 ece 0.065 [0.052 0.105] pred 0.577 obs 0.628'}
+X3 iu40 ii {'60s': 'n 477 auc 0.681 ece 0.043 [0.039 0.095] pred 0.623 obs 0.581', '120s': 'n 469 auc 0.816 ece 0.053 [0.041 0.098] pred 0.560 obs 0.591', '180s': 'n 441 auc 0.924 ece 0.065 [0.048 0.102] pred 0.577 obs 0.628'}
+X3 iu40 iii {'60s': 'n 477 auc 0.684 ece 0.055 [0.044 0.106] pred 0.635 obs 0.581', '120s': 'n 469 auc 0.809 ece 0.066 [0.05  0.109] pred 0.570 obs 0.591', '180s': 'n 441 auc 0.923 ece 0.051 [0.04  0.086] pred 0.596 obs 0.628'}
+X3 iu40 i_sym {'60s': 'n 477 auc 0.682 ece 0.107 [0.082 0.159] pred 0.488 obs 0.581', '120s': 'n 469 auc 0.814 ece 0.128 [0.098 0.169] pred 0.463 obs 0.591', '180s': 'n 441 auc 0.924 ece 0.104 [0.083 0.142] pred 0.524 obs 0.628'}
+X3 iu40 ii_sym {'60s': 'n 477 auc 0.680 ece 0.108 [0.083 0.159] pred 0.489 obs 0.581', '120s': 'n 469 auc 0.815 ece 0.128 [0.096 0.168] pred 0.464 obs 0.591', '180s': 'n 441 auc 0.924 ece 0.104 [0.08  0.142] pred 0.524 obs 0.628'}
+X3 iu40 iii_sym {'60s': 'n 477 auc 0.684 ece 0.105 [0.076 0.154] pred 0.499 obs 0.581', '120s': 'n 469 auc 0.807 ece 0.128 [0.102 0.171] pred 0.466 obs 0.591', '180s': 'n 441 auc 0.923 ece 0.098 [0.075 0.134] pred 0.530 obs 0.628'}
