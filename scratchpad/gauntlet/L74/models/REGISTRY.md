@@ -8,6 +8,7 @@ Owner rule 2026-10-17: every model checkpoint is named **"[DECK] Mark [Roman num
 - Current Bait model (L70/live/bait/CKPT_OVERRIDE): **Bait Mark I: SPECIALIST**.
 - Live periods come from the start events of scratchpad/gauntlet/L68/live_reader*/live_play_*.jsonl (matches with >= 5 plays, dry runs excluded; deck = bait when the bait CKPT_OVERRIDE / LIVE_OPTIONS was used). Before 09-25 they come from scratchpad/live_run*.log and HANDOFF_ARCHIVE.md.
 - '(pod backup only)' files live under C:/Users/benpe/pod_backup_weekend/ (same volume, so they are hard-linked too).
+- 10-28 (lead): scratchpad/gauntlet/L74/memory/s1c/*.json are LF in every tree (.gitattributes). Memory checkpoints whose memory_v2 meta records the old laptop CRLF copies (4312a8ad / 15065623) -- ICEBOW Mark CLXIV: MEMORY, the 10-25 memory arms, mem_best_ze.pt -- no longer load on the laptop (model_gen.check_memory_meta); accepted: live runs CLXIII (no memory).
 
 Original files are never moved or renamed. Each Mark has NTFS hard links (zero extra space, sha256-verified) under `icebow/data/models/<DECK>/` named `<DECK>_Mark_<ROMAN>_<WORD>.pt` (`_grafted.pt` = the grafted twin that live play loads). `register_ckpt.py --name PATH` prints any file's Mark name.
 
@@ -197,7 +198,7 @@ Original files are never moved or renamed. Each Mark has NTFS hard links (zero e
    It hashes the file(s), appends the Mark to registry.json, creates + verifies the hard link(s) and regenerates this file. Commit registry.json + REGISTRY.md (never icebow/data).
 5. When a Mark goes live, add its live period to its `live` field in registry.json and run `--render`.
 
-## Unmarked checkpoints (1284 files)
+## Unmarked checkpoints (1285 files)
 
 Files that exist but are not distinct models (snapshots, seed replicates, smokes, failed runs, test scaffolding, opponent/exploiter policies, eval controls). `--name` reports the relation below.
 
@@ -234,10 +235,11 @@ Files that exist but are not distinct models (snapshots, seed replicates, smokes
 | evaluated snapshot of ICEBOW Mark XXII: GEOMETRY | 2 | `icebow/data/bench/armG_m10k.pt`<br>`icebow/data/bench/armG_m5k.pt` |
 | exploiter (opponent) policy of an adaptive league (not an icebow model) | 168 | `C:/Users/benpe/pod_backup_weekend/memory/pod3/x_MEMP3/cb_memory/icebow/data/bench/rl_royale/wk_memory_exp1/wk_memory_exp1_latest.pt`<br>`C:/Users/benpe/pod_backup_weekend/memory/pod3/x_MEMP3/cb_memory/icebow/data/bench/rl_royale/wk_memory_exp1/wk_memory_exp1_snap_u0005.pt`<br>`C:/Users/benpe/pod_backup_weekend/memory/pod3/x_MEMP3/cb_memory/icebow/data/bench/rl_royale/wk_memory_exp1/wk_memory_exp1_snap_u0010.pt`<br>... (+165) |
 | failed run: rl30 stopped at u5 by a false-alarm exploit guard (rerun = rl30b) | 3 | `icebow/data/bench/rl_royale/rl30_20260924/rl30_20260924_latest.pt`<br>`icebow/data/bench/rl_royale/rl30_20260924/rl30_20260924_u0000.pt`<br>`icebow/data/bench/rl_royale/rl30_20260924/rl30_20260924_u0005.pt` |
-| fast-loop pilot start point B0 (untrained; lead 10-28: not a Mark): CLXIII NOLEAK's 141 tensors unchanged + the S3-aux memory v2 encoder's 50 mem.* / mem_aux.* tensors (from mem_best_ze.pt 3d75a25d, trained on the RAW succ48_o_s91 u75), coupling mem.out = 0; identical to CLXIII on 1,718 recorded live decisions (CPU + CUDA). Built by plan1026/pilot/ops/build_b0.py; the trained pilot checkpoint becomes ICEBOW Mark CLXV | 1 | `icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt` |
+| fast-loop pilot start point B0 (untrained; lead 10-28: not a Mark): CLXIII NOLEAK's 141 tensors unchanged + the S3-aux memory v2 encoder's 50 mem.* / mem_aux.* tensors (from mem_best_ze.pt 3d75a25d, trained on the RAW succ48_o_s91 u75), coupling mem.out = 0, memory_v2 meta = the LF s1c JSONs (178955c2 / ca144009); identical to CLXIII on 1,718 recorded live decisions (CPU + CUDA). Built by plan1026/pilot/ops/build_b0.py; the trained pilot checkpoint becomes ICEBOW Mark CLXV | 1 | `icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt` |
 | final snapshot (m10200) of ICEBOW Mark XVIII: QUADRUPLE | 1 | `icebow/data/policy_gatec2_20260903.pt` |
 | final snapshot (m36350) of ICEBOW Mark XXI: LONGER | 1 | `icebow/data/policy_c2r_20260903.pt` |
 | final snapshot (m6849) of ICEBOW Mark IV: SEARCH | 1 | `icebow/data/policy_sim_ppo.pt` |
+| first B0 build (10-28): memory_v2 meta = the laptop CRLF s1c JSONs (4312a8ad / 15065623); refused on LF pod trees; superseded by the LF rebuild | 1 | `icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt.crlf.bak` |
 | first distillation attempt (default selection), superseded by ICEBOW Mark XXXIV: DISTILL | 1 | `icebow/data/pipeline/s1_icebow_distill_s0.pt` |
 | hazard A/B control arm | 3 | `icebow/data/bench/policy_haz_c00_s61.pt`<br>`icebow/data/bench/policy_haz_c00_s62.pt`<br>`icebow/data/bench/policy_haz_c00_s63.pt` |
 | intermediate (CellRefine only) of ICEBOW Mark CXIV: REFIT | 1 | `C:/Users/benpe/pod_backup_weekend/pod1014_refit/x_refit/icebow/data/bench/rl_royale/newsim_base_main/newsim_base_main_u0060_cellref.pt` |

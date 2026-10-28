@@ -6,7 +6,8 @@
   "Current live icebow model (L70/live/CKPT_OVERRIDE): **ICEBOW Mark CXXIV: LONGER** (`icebow/data/bench/rl_royale/rlarm_gae/rlarm_gae_u0250_grafted.pt`).",
   "Current Bait model (L70/live/bait/CKPT_OVERRIDE): **Bait Mark I: SPECIALIST**.",
   "Live periods come from the start events of scratchpad/gauntlet/L68/live_reader*/live_play_*.jsonl (matches with >= 5 plays, dry runs excluded; deck = bait when the bait CKPT_OVERRIDE / LIVE_OPTIONS was used). Before 09-25 they come from scratchpad/live_run*.log and HANDOFF_ARCHIVE.md.",
-  "'(pod backup only)' files live under C:/Users/benpe/pod_backup_weekend/ (same volume, so they are hard-linked too)."
+  "'(pod backup only)' files live under C:/Users/benpe/pod_backup_weekend/ (same volume, so they are hard-linked too).",
+  "10-28 (lead): scratchpad/gauntlet/L74/memory/s1c/*.json are LF in every tree (.gitattributes). Memory checkpoints whose memory_v2 meta records the old laptop CRLF copies (4312a8ad / 15065623) -- ICEBOW Mark CLXIV: MEMORY, the 10-25 memory arms, mem_best_ze.pt -- no longer load on the laptop (model_gen.check_memory_meta); accepted: live runs CLXIII (no memory)."
  ],
  "marks": [
   {
@@ -10706,15 +10707,21 @@
   },
   {
    "path": "icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt",
-   "sha256": "984bf5729ecc85bda6ad48a2e4e0198cfa97e1a1218b537930635764466c73a4",
+   "sha256": "76d786192f7e9c27ec1d71aa47d421b8ee09a4dee6f400471288d6cb396639a2",
    "of": "ICEBOW Mark CLXIII: NOLEAK",
-   "why": "fast-loop pilot start point B0 (untrained; lead 10-28: not a Mark): CLXIII NOLEAK's 141 tensors unchanged + the S3-aux memory v2 encoder's 50 mem.* / mem_aux.* tensors (from mem_best_ze.pt 3d75a25d, trained on the RAW succ48_o_s91 u75), coupling mem.out = 0; identical to CLXIII on 1,718 recorded live decisions (CPU + CUDA). Built by plan1026/pilot/ops/build_b0.py; the trained pilot checkpoint becomes ICEBOW Mark CLXV"
+   "why": "fast-loop pilot start point B0 (untrained; lead 10-28: not a Mark): CLXIII NOLEAK's 141 tensors unchanged + the S3-aux memory v2 encoder's 50 mem.* / mem_aux.* tensors (from mem_best_ze.pt 3d75a25d, trained on the RAW succ48_o_s91 u75), coupling mem.out = 0, memory_v2 meta = the LF s1c JSONs (178955c2 / ca144009); identical to CLXIII on 1,718 recorded live decisions (CPU + CUDA). Built by plan1026/pilot/ops/build_b0.py; the trained pilot checkpoint becomes ICEBOW Mark CLXV"
   },
   {
    "path": "C:/Users/benpe/pod_backup_weekend/night1025/mem_best_ze.pt",
    "sha256": "3d75a25d8ebedd4ed34bd63981fe676e448dedcb325fc7b3e5ff36e484175ac4",
    "of": "ICEBOW Mark CLXIII: NOLEAK",
    "why": "S3-aux memory v2 encoder (zero_empty, coupling 0) on the RAW succ48_o_s91 u75 trunk (3eda9d23; = CLXIII minus its grafted heads); init of the 10-25 night memory arms; source of B0's memory tensors"
+  },
+  {
+   "path": "icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt.crlf.bak",
+   "sha256": "984bf5729ecc85bda6ad48a2e4e0198cfa97e1a1218b537930635764466c73a4",
+   "of": "ICEBOW Mark CLXIII: NOLEAK",
+   "why": "first B0 build (10-28): memory_v2 meta = the laptop CRLF s1c JSONs (4312a8ad / 15065623); refused on LF pod trees; superseded by the LF rebuild"
   }
  ]
 }

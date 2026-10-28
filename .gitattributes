@@ -1,3 +1,6 @@
 # Shell scripts are run by Git Bash on Windows; CRLF makes bash read the  as part of every
 # command ("set: -: invalid option", "cd: pipeline/..: No such file"). Keep them LF on checkout.
 *.sh text eol=lf
+# Memory v2 artifacts: model_gen.check_memory_meta compares their raw sha256 with the checkpoint's memory_v2 meta, so every
+# tree (laptop + pods) must hold the same bytes (LOOP-OPS 10-28, lead: LF everywhere).
+scratchpad/gauntlet/L74/memory/s1c/*.json text eol=lf

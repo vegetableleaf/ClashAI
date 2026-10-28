@@ -1,6 +1,6 @@
 # LOOP-OPS artifacts: sha256 TAB dest (under $W on the loop pod; cb/ = the code tree; a dest ending in / = a .tgz extracted there) TAB source
 # (laptop:REL | PORT:/ABS | store). Generated with loop_pod.sh add / add-tgz; staged to 33308:/workspace/loop_stage/store/<sha256>.
-984bf5729ecc85bda6ad48a2e4e0198cfa97e1a1218b537930635764466c73a4	cb/icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt	laptop:icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt
+76d786192f7e9c27ec1d71aa47d421b8ee09a4dee6f400471288d6cb396639a2	cb/icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt	laptop:icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt
 8d328a43bf09fb7e389d41f01524fbb50955e15b64fdb72e28488a123eabad42	cb/icebow/data/models/ICEBOW/ICEBOW_Mark_CLXIII_NOLEAK.pt	laptop:icebow/data/models/ICEBOW/ICEBOW_Mark_CLXIII_NOLEAK.pt
 a0ecce3890d4137e4624b0b2c1ad271dae06798913d93ae0ccb82d7b2f618862	cb/icebow/data/pipeline/gen_dataset_v32_fv5_memory_v1.npz	laptop:icebow/data/pipeline/gen_dataset_v32_fv5_memory_v1.npz
 c37cb7bd7fe3d1fd1985c789ae610502f0d0b35687e6000e794f82a407badc80	cb/icebow/data/ghost_pool/pool_env_v1.jsonl	33308:/workspace/d2/cb/icebow/data/ghost_pool/pool_env_v1.jsonl

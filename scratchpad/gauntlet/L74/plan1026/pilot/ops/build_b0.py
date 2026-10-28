@@ -7,7 +7,7 @@ B0's state dict = CLXIII's 141 tensors unchanged + the encoder file's mem.* / me
 from rlarm_gae_u0250_grafted (cell_refine / tower_refine / projectile_target_*). Refuses unless: both input shas match, the
 encoder file's non-memory tensors equal CLXIII's on every shared non-head tensor (same trunk), and the coupling mem.out is
 exactly zero. Top level = CLXIII's (args, rl incl. the ability head, grafted_heads_from, ...) + the encoder's memory keys
-(memory v2, memory_aux v1, memory_v2 artifact shas, s3 provenance) + b0 provenance.
+(memory v2, memory_aux v1, s3 provenance) + memory_v2 = this tree's LF artifact shas + b0 provenance.
 """
 import hashlib
 import sys
@@ -16,6 +16,7 @@ from pathlib import Path
 import torch
 
 ROOT = Path(__file__).resolve().parents[6]
+sys.path.insert(0, str(ROOT))
 CLXIII = ROOT / 'icebow/data/models/ICEBOW/ICEBOW_Mark_CLXIII_NOLEAK.pt'
 ENC = Path('C:/Users/benpe/pod_backup_weekend/night1025/mem_best_ze.pt')
 SHA = {CLXIII: '8d328a43bf09fb7e389d41f01524fbb50955e15b64fdb72e28488a123eabad42',
@@ -45,8 +46,13 @@ def main(out=OUT):
     assert mem['mem.out.weight'].abs().max() == 0 and mem['mem.out.bias'].abs().max() == 0, 'coupling mem.out is not zero'
     assert 'mem.zero_empty' in mem, 'encoder lacks zero_empty'
     b0 = {**a, 'model': {**sa, **mem}}
-    for k in ('memory', 'memory_aux', 'memory_v2', 's3'):
+    for k in ('memory', 'memory_aux', 's3'):
         b0[k] = e[k]
+    # memory_v2 = the LF (git) bytes' shas (lead 10-28): the encoder file recorded the laptop's CRLF copies (4312a8ad / 15065623),
+    # which model_gen.check_memory_meta refuses on every LF tree. Same JSON content; .gitattributes keeps s1c/*.json LF.
+    from pipeline.match_memory import LOCK_HEAD, PRIORS, v2_meta
+    assert b'\r' not in PRIORS.read_bytes() + LOCK_HEAD.read_bytes(), 's1c JSONs are not LF (re-checkout them)'
+    b0['memory_v2'] = v2_meta()
     b0['b0'] = {'base': str(CLXIII.relative_to(ROOT)).replace('\\', '/'), 'base_sha256': SHA[CLXIII],
                 'encoder': str(ENC).replace('\\', '/'), 'encoder_sha256': SHA[ENC], 'coupling': 'zero (mem.out = 0)',
                 'tensors': {'clxiii': len(sa), 'memory': len(mem)}, 'builder': 'scratchpad/gauntlet/L74/plan1026/pilot/ops/build_b0.py'}

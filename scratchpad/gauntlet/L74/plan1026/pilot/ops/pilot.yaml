@@ -2,7 +2,7 @@
 # load_config). Base = stepd/cfg/succ48_x_s101.yaml (production crforge reference). Changes vs that file, each named:
 #  - init = B0 GRAFTED (lead 10-28): CLXIII NOLEAK's 141 tensors unchanged + the S3-aux memory v2 encoder's 50 mem.* / mem_aux.*
 #    tensors, coupling mem.out exactly 0 = icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt
-#    sha256 984bf5729ecc85bda6ad48a2e4e0198cfa97e1a1218b537930635764466c73a4 (pilot/ops/build_b0.py; identity: pilot/ops/README.md).
+#    sha256 76d786192f7e9c27ec1d71aa47d421b8ee09a4dee6f400471288d6cb396639a2 (LF memory_v2 meta; pilot/ops/build_b0.py; README).
 #    Not a Mark (lead): the TRAINED pilot checkpoint gets ICEBOW Mark CLXV.
 #  - memory v2 + memory_aux v1 + memory_encoder_frozen + memory_zero_empty (the 10-25 night arms' memory keys; plan R3 unfreezes).
 #  - reward = R_win + tower-only Phi: shaping tower_phat (LOOP-LRN; reward_shaping.STATE_PHI_MODES, coefficients pending RX-X23),
@@ -15,10 +15,14 @@
 #    blocks below are x_s101's and get replaced from POOL.json); learner snapshot share 0 (league_mix latest / older 0,
 #    league_snapshot_every above max_updates); screen_every above max_updates (no held-out actor pool in the loop).
 #  - training decode = the live decision config (fastloop.decode below -> decision_options.decide with L70/live/LIVE_OPTIONS);
-#    the rl_royale decode keys (T, tau, T_gate, tau_phase, decide_every) stay x_s101's for the reference path.
+#    the rl_royale decode keys (T, tau, tau_phase, decide_every) stay x_s101's; T_gate 0.3 -> 0.1 (lead 10-28: the pilot trains the
+#    SAMPLED gate at T .1; live must decode the same way before trial30 -- no live option for that exists yet).
 #  - E4 (rdef_e4 u20 grafted, 430faaee) = a 7th pool checkpoint (lead 10-28: equal share, not more; E4 is also an eval set);
 #    league_pfsp_gamma 1e-9 = uniform over init + the 6 externals to 1e-8 (adaptive_opponents refuses gamma <= 0; at gamma 2 PFSP
-#    up-weights the ones the learner loses to). w14opp_I keeps its own 0.3 exploiter share, so E4 = 1/7 of the other 70% = 10%.
+#    up-weights the ones the learner loses to).
+#  - w14opp_I keeps its own exploiter slot and calibrated decode (T .1, decide 20, tau .2, live decks) at share 0.125
+#    (lead 10-28; x_s101: 0.3); init + 5 old externals + E4 split the other 7/8 uniformly -> 8 opponents at 12.5% each
+#    (pre-run check: pilot/ops/pool_shares.py; verify in the first update's match log).
 #  - crforge tables 16.635.3 (lead 10-28: the live client); the gate runs both models on the same tables + jars.
 #  - seed 1028; max_updates 1000 (~512k matches, ~1.7 h at 300k matches/h); save_every 25 = the off-pod streaming interval.
 init: icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt
@@ -68,7 +72,7 @@ actor_threads: 1
 actor_timeout_s: 3600
 T: 0.5
 tau: 0.35
-T_gate: 0.3
+T_gate: 0.1
 afford_mask: true
 stall_elixir: null
 stall_seconds: 12
@@ -137,7 +141,7 @@ ability_features: freeze
 league_exploiters:
   ckpt: icebow/data/pipeline/o2/w14opp_I.pt
   decks: scratchpad/gauntlet/L74/mix/decks_live_train.json
-  share: 0.3
+  share: 0.125
   T: 0.1
   decide_every: 20
   tau: 0.2

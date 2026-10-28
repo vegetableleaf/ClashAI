@@ -8,6 +8,7 @@ import argparse
 import hashlib
 import json
 import os
+import sys
 import time
 from pathlib import Path
 
@@ -19,7 +20,7 @@ def main():
     ap.add_argument('--out', required=True)
     ap.add_argument('--every', type=float, default=5.0)
     ap.add_argument('--max-updates', type=int, default=0)
-    a, _ = ap.parse_known_args()
+    a, _ = ap.parse_known_args([x for x in sys.argv[1:] if x != '--'])   # fastloop argv: [opts] --out R -- [rl_royale args]
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     init = next(ln.split(':', 1)[1].strip() for ln in open(a.config) if ln.startswith('init:'))

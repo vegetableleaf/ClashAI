@@ -74,13 +74,17 @@ log "artifacts: $n entries verified by sha256 ($(wc -l < $W/need.txt) pulled fro
 # 6. start the loop
 export ROYALE_RUNTIME=fin16-linux ROYALE_ENGINE=crforge ROYALE_HEROIW_FORM=hero CRFORGE_LIB=$W/crforge/lib \
   CRFORGE_TABLES=$W/crforge/tables/$TABLES OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 \
-  PYTHONNOUSERSITE=1 PYTHONPATH=$CB:$W/pylib
+  PYTHONNOUSERSITE=1 PYTHONPATH=$CB:$W/pylib RL_BATCH_SHA=1 CUBLAS_WORKSPACE_CONFIG=:4096:8 CRFORGE_FACADE_BUILD=$W/jbuild
 unset ROYALE_HEROIW_PRESS
 cp $W/in/pilot.yaml $R/pilot.yaml
 cd $CB
-setsid nohup $V/bin/python -u $ENTRY --run $RUN --config $R/pilot.yaml --out $R $ENTRY_ARGS > $R/loop.log 2>&1 < /dev/null &
+if [ -f scratchpad/gauntlet/L74/plan1026/pilot/loop/producer.py ]; then   # = loop/run.sh: facade + obsid builders + CfTrain
+  $V/bin/python -c "import sys, os, pathlib; sys.path.insert(0, 'scratchpad/gauntlet/L74/plan1026/pilot/loop'); import producer; producer.compile_java(pathlib.Path(os.environ['CRFORGE_FACADE_BUILD']), pathlib.Path(os.environ['CRFORGE_LIB']))" || die "javac (producer.compile_java)"
+fi
+# fastloop.py argv (LOOP-INT 10-28): [its options] --out RUN_DIR -- [rl_royale args]
+setsid nohup $V/bin/python -u $ENTRY $ENTRY_ARGS --out $R -- --run $RUN --config $R/pilot.yaml > $R/loop.log 2>&1 < /dev/null &
 echo $! > $R/loop.pid
-log "loop started pid $(cat $R/loop.pid): $ENTRY --run $RUN --config $R/pilot.yaml --out $R $ENTRY_ARGS"
+log "loop started pid $(cat $R/loop.pid): $ENTRY $ENTRY_ARGS --out $R -- --run $RUN --config $R/pilot.yaml"
 trap - ERR
 set +e
 
