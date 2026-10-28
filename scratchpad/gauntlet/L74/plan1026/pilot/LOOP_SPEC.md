@@ -7,8 +7,10 @@ LOOP-INT); don't change it silently. Labels: (a) measured, (b) untested, (c) con
 PPO training of B0 (CLXIII + the S3-aux memory encoder, sha 3d75a25d, coupling zero, so identical to CLXIII at u0) on
 crforge at >= 300k matches/h on a rented 8x RTX PRO 6000 pod (about 27 vCPU per GPU, 96 GB each), with:
 - rollouts: actions and outcomes identical to rl_royale's crforge path; log-probs within 1e-5;
-- the learner: rl_royale's PPO math (GAE gamma_tick 0.99994, lambda 0.95, lr 1e-5, clip 0.2, critic warm-up 5, KL early
-  stop 0.02 vs the previous update, batch 512 matches);
+- the learner: rl_royale's PPO math (GAE gamma_tick 0.99994, lambda 0.95, lr 1e-5, clip 0.2, critic warm-up 5, batch
+  512 matches) plus the NEW opt-in kl_stop_prev 0.02 (rl_royale had no KL early stop; LOOP-LRN adds it: minibatch KL to
+  the previous update's policy via kl_ref_refresh_every 1), with the KL penalty off (beta0 = beta_min = beta_max = 0;
+  the owner's no-leash rule);
 - the reward: R_win + potential shaping gamma*Phi(s') - Phi(s), Phi = P_hat(win | tower terms, time to go) - 0.5,
   Phi(terminal) = 0.
 
