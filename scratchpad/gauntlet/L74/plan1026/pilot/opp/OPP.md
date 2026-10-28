@@ -6,7 +6,7 @@ Labels: (a) measured, (b) untested, (c) contradicted.
 - DONE: pool manifest `POOL.json` (built on pod 32657 by `pool_manifest.py` from succ48_x_s101 + E4 as a 6th
   league_external; every file sha256 + bytes + in_git); `pipeline/loop_opp.py` (opponent cfg, RNG, schedule, decode);
   decision identity harness `oppcheck/` (hooks rl_royale's actors; production code untouched).
-- RUNNING: `oppcheck1` on pod 32657 (tree /workspace/loopopp/cb = HEAD code overlaid on a symlink copy of
+- DONE (warm start, 128 matches; u0000 may still run): `oppcheck1` on pod 32657 (tree /workspace/loopopp/cb = HEAD code overlaid on a symlink copy of
   /workspace/cb_stepd; lib /workspace/loopopp/lib_cfclone = 33308's d2t2/lib_cfclone, core 3e86169b), 12 actors,
   CPUs 100-115, max_updates 1, with D2-T2's Java obs check chained (OBSCHECK=1). Log /workspace/loopopp/logs/oppcheck1.log,
   per-actor JSON /workspace/loopopp/oppcheck1/, obs check /workspace/loopopp/oppcheck1_obs/.
@@ -57,4 +57,26 @@ plays + [0, 4] ticks.
 - (a, code) `league_opp_T` never reaches the actors (actor_base does not copy it): opponents sample at the run's T.
 - E4 has no rl_royale training role in succ48_x_s101; the lead decides its share (here: PFSP like an external).
 
-## 4. Measured (oppcheck1) -- pending
+## 4. Measured (oppcheck1, pod 32657, HEAD b84b440 code, CF-CLONE lib; succ48_x_s101 + E4 as a 6th external)
+The 128 ability warm-start self-play rollouts (12 actors). results/oppcheck1_warm_sum.json and
+results/oppcheck1_warm_obs_sum.json hold the data. All (a):
+| opponent | matches | decisions | identical | max lp diff | rows / match | intervals |
+|---|---:|---:|---:|---:|---:|---|
+| w14opp_I | 39 | 6,824 | 6,824 | 0.0 | 175.0 | 20, 40 after a play |
+| wk_adapt_exp1 / 2 / 3 | 13 / 10 / 13 | 4,169 / 3,521 / 3,980 | all | 0.0 | 321 / 352 / 306 | 10, 30 after a play |
+| newsim_base_exp1 / 2 | 11 / 15 | 3,620 / 5,331 | all | 0.0 | 329 / 355 | 10, 30 |
+| E4 | 16 | 5,317 | all | 0.0 | 332 | 10, 30 |
+| init (learner arch) | 11 | 3,744 | all | 0.0 | 340 | 10, 30 |
+- The cfg (DECISION_KEYS + style) was equal in 128 / 128 matches, and the behaviour RNG was equal at start in 128 / 128
+  and after every one of the 36,506 decisions (0 resyncs). The schedule matched on 36,506 / 36,506 decisions.
+- Bank inputs read off the row (sc[3] x 10, tokens): the elixir is off by at most 2.98e-07 and the enemy-half flag
+  never differed. The bank verdict flipped 0 times in 36,506 rows (b: a flip is possible when bank is within 3e-7 of
+  the elixir; an exact producer takes the Java double).
+- Java obs (D2-T2's builders, chained): all 20 keys were IDENTICAL on 80,375 seat-rows. That is 43,869 learner rows +
+  36,506 opponent rows, so every opponent row was compared (0 skipped, cue on the 47,613 cue-model rows).
+- Learner: 342.7 rows / match.
+- Not covered: the style spell delay never fired (0 plays: no opponent deck is the icebow card set). The candidate
+  forward ran on CPU, not on the GPU server, so GPU float noise is untested. allowed / stalled were taken from
+  production (the Java legality port is LOOP-INT's).
+- u0000 (256 more matches) was still running when this was written. Re-summarise with `summ.py
+  /workspace/loopopp/oppcheck1` once it finishes.

@@ -1,0 +1,31 @@
+{
+ "actors": 12,
+ "batches": 12,
+ "seat_rows": 80375,
+ "tick_mismatch": 0,
+ "skipped": {},
+ "errors": {},
+ "status_by_key": {
+  "_sc_prepare": "IDENTICAL 80375/80375",
+  "cue": "IDENTICAL 47613/47613",
+  "deck_card": "IDENTICAL 80375/80375",
+  "deck_form": "IDENTICAL 80375/80375",
+  "effects": "IDENTICAL 80375/80375",
+  "hand_card": "IDENTICAL 80375/80375",
+  "hand_form": "IDENTICAL 80375/80375",
+  "hand_slot": "IDENTICAL 80375/80375",
+  "mask": "IDENTICAL 80375/80375",
+  "next_card": "IDENTICAL 80375/80375",
+  "next_form": "IDENTICAL 80375/80375",
+  "opp_cycle": "IDENTICAL 80375/80375",
+  "opp_past": "IDENTICAL 80375/80375",
+  "own_ability": "IDENTICAL 80375/80375",
+  "past": "IDENTICAL 80375/80375",
+  "projectiles": "IDENTICAL 80375/80375",
+  "sc": "IDENTICAL 80375/80375",
+  "slot_card": "IDENTICAL 80375/80375",
+  "slot_form": "IDENTICAL 80375/80375",
+  "tok": "IDENTICAL 80375/80375",
+  "unit_form": "IDENTICAL 80375/80375"
+ }
+}
