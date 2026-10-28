@@ -93,9 +93,12 @@ def build(a) -> dict:
                                "weights": cfg.get("league_deck_weights"), "icebow_share": cfg["league_icebow_share"]},
                      "decode": decode(o, ar["grid"], ar["feature_version"])})
     init = {"id": "init", "type": "init", "cat": "init", "path": cfg["init"]}
-    ar = arch(REPO / cfg["init"], learner_vocab)
-    learner_pool = {"init": {"ckpt": cfg["init"], "sha256": f(cfg["init"]), "arch": ar,
-                             "decode": decode(init, ar["grid"], ar["feature_version"])},
+    try:                                              # a learner checkpoint this tree cannot load is reported, not fatal
+        ar = arch(REPO / cfg["init"], learner_vocab)
+        dec = decode(init, ar["grid"], ar["feature_version"])
+    except Exception as e:                            # noqa: BLE001
+        ar, dec = {"load_error": repr(e)[:600]}, None
+    learner_pool = {"init": {"ckpt": cfg["init"], "sha256": f(cfg["init"]), "arch": ar, "decode": dec},
                     "snapshots": {"every": cfg["league_snapshot_every"], "keep": cfg["league_snapshot_keep"],
                                   "note": "the learner's own weights at update u (its architecture and inputs, incl. "
                                           "memory / cue); decode as init"}}

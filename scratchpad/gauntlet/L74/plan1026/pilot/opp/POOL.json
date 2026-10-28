@@ -1,11 +1,9 @@
 {
  "config": {
-  "path": "scratchpad/gauntlet/L74/stepd/cfg/succ48_x_s101.yaml",
-  "sha256": "4c16651f3c1e81273f3987b4ce9b309759100d2dd91779af3894f9250fc37d01",
-  "overrides": [
-   "league_external=[icebow/data/bench/rl_royale/wk_adapt_exp1/wk_adapt_exp1_u0015.pt, icebow/data/bench/rl_royale/wk_adapt_exp2/wk_adapt_exp2_u0015.pt, icebow/data/bench/rl_royale/wk_adapt_exp3/wk_adapt_exp3_u0015.pt, icebow/data/bench/rl_royale/newsim_base_exp1/newsim_base_exp1_u0015.pt, icebow/data/bench/rl_royale/newsim_base_exp2/newsim_base_exp2_u0015.pt, icebow/data/bench/rl_royale/rdef_e4/rdef_e4_u0020_barrel2k_cellref_towerref_w2.pt]"
-  ],
-  "config_sha": "4b1897f295d151f986bc8f71b77482f20355c16a665e680cef6ba63f080f8b58"
+  "path": "scratchpad/gauntlet/L74/plan1026/pilot/ops/pilot.yaml",
+  "sha256": "6adcf953841c70b9e570178d18e365dcd250ec9923d7fd71cca37a7fa31e6249",
+  "overrides": [],
+  "config_sha": "3354a6c3aaf5510bd1d72ef373e6dfcd0aab88cac4108c58aa59ebd57e73ac3c"
  },
  "exploiter_share": 0.3,
  "opponents": [
@@ -631,208 +629,30 @@
     },
     "style_rule": "per match (adaptive_opponents.style_config, seed = spec seed, rollout = k): tau - aggression clipped [.01, .99], T x temperature, lane bias on cell logits x T, WAIT while my elixir < bank and no enemy body on my half, spell plays + spell_delay ticks (icebow-card-set decks only: other decks have placeholder slot ids)"
    }
-  },
-  {
-   "id": "external:icebow/data/bench/rl_royale/rdef_e4/rdef_e4_u0020_barrel2k_cellref_towerref_w2.pt",
-   "type": "exploiter",
-   "ckpt": "icebow/data/bench/rl_royale/rdef_e4/rdef_e4_u0020_barrel2k_cellref_towerref_w2.pt",
-   "sha256": "430faaee52d9aebc788a780cc6a5977d25e7c7126ae4abd9726829dc2751062a",
-   "arch": {
-    "gen": true,
-    "loads_as": "GenPolicy",
-    "feature_version": 6,
-    "d": 128,
-    "layers": 4,
-    "d_c": 64,
-    "grid": "lattice",
-    "n_params": 1756616,
-    "cue": false,
-    "memory": false,
-    "refine": [
-     "cell_refine",
-     "tower_refine"
-    ],
-    "gen_row_keys": [
-     "tok",
-     "mask",
-     "sc",
-     "past",
-     "hand_card",
-     "hand_form",
-     "next_card",
-     "next_form",
-     "deck_card",
-     "deck_form",
-     "hand_slot",
-     "slot_card",
-     "slot_form",
-     "unit_form",
-     "opp_past",
-     "opp_cycle",
-     "projectiles",
-     "effects",
-     "own_ability"
-    ],
-    "card_vocab_sha256": "fb4a09385feedf6d1dd682de5a3c3dae6a85f64bcf08a4b566359889c97cf6c3",
-    "card_vocab_n": 124,
-    "vocab_equals_learner": true,
-    "grafted_heads_from": "rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt"
-   },
-   "selection": {
-    "rule": "PFSP (adaptive_opponents.sample_opponent) over init + learner snapshots + externals, weight (1 - p_learner_win)^gamma + floor",
-    "share_of_rest": "1 / pool size at equal ratings",
-    "pfsp_gamma": 2.0,
-    "pfsp_floor": 0.05
-   },
-   "decks": {
-    "file": "icebow/data/rltest/decks_rl.json",
-    "sha256": "b43dd085d95890cfaafd1f5d13733dc068c62f0c56d193815ee481b45b8fccdc",
-    "weights": {
-     "GoblinBarrel": 2.5,
-     "SkeletonBalloon": 2.5,
-     "BlowdartGoblin": 2.5,
-     "Princess": 2.5,
-     "GoblinGang": 2.5
-    },
-    "icebow_share": 0.0
-   },
-   "decode": {
-    "policy": "sample",
-    "T": 0.5,
-    "T_gate": null,
-    "tau": 0.35,
-    "decide_every": 10,
-    "action_delay_ticks": 26,
-    "extrapolate_ticks": 26,
-    "opp_elixir": "counter",
-    "noise": "Noise(recall=False, false_pos=False, position=False, team=False, unit_hp=False, my_elixir=False, opp_elixir=False, king_hp=False, deploying=False, conf=False)",
-    "obs": "live",
-    "afford_mask": true,
-    "stall_elixir": null,
-    "stall_seconds": 12.0,
-    "grid": "lattice",
-    "record": false,
-    "feature_version": 6,
-    "style": {
-     "opp_style": "on",
-     "opp_style_aggression": [
-      -0.08,
-      0.08
-     ],
-     "opp_style_lane_bias": [
-      -0.7,
-      0.7
-     ],
-     "opp_style_temperature": [
-      0.8,
-      1.2
-     ],
-     "opp_style_spell_delay": [
-      0,
-      4
-     ],
-     "opp_style_bank": [
-      0.0,
-      4.0
-     ]
-    },
-    "style_rule": "per match (adaptive_opponents.style_config, seed = spec seed, rollout = k): tau - aggression clipped [.01, .99], T x temperature, lane bias on cell logits x T, WAIT while my elixir < bank and no enemy body on my half, spell plays + spell_delay ticks (icebow-card-set decks only: other decks have placeholder slot ids)"
-   }
   }
  ],
  "learner_pool": {
   "init": {
-   "ckpt": "icebow/data/bench/rl_royale/rlarm_succ48_o_s91/rlarm_succ48_o_s91_u0075.pt",
-   "sha256": "3eda9d23db3f8476c5be42e902be9c32ab4ff59a9e9a6d13d3ca608255c23cd4",
+   "ckpt": "icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt",
+   "sha256": "984bf5729ecc85bda6ad48a2e4e0198cfa97e1a1218b537930635764466c73a4",
    "arch": {
-    "gen": true,
-    "loads_as": "GenPolicy",
-    "feature_version": 6,
-    "d": 128,
-    "layers": 4,
-    "d_c": 64,
-    "grid": "lattice",
-    "n_params": 1549480,
-    "cue": true,
-    "memory": false,
-    "refine": [],
-    "gen_row_keys": [
-     "tok",
-     "mask",
-     "sc",
-     "past",
-     "hand_card",
-     "hand_form",
-     "next_card",
-     "next_form",
-     "deck_card",
-     "deck_form",
-     "hand_slot",
-     "slot_card",
-     "slot_form",
-     "unit_form",
-     "opp_past",
-     "opp_cycle",
-     "projectiles",
-     "effects",
-     "own_ability",
-     "cue"
-    ],
-    "card_vocab_sha256": "fb4a09385feedf6d1dd682de5a3c3dae6a85f64bcf08a4b566359889c97cf6c3",
-    "card_vocab_n": 124,
-    "vocab_equals_learner": true,
-    "grafted_heads_from": null
+    "load_error": "ValueError(\"memory v2 artifacts changed since this checkpoint: {'priors_sha256': '4312a8ada3ec930f65008447e593641c3f1d9155192fc0387ed89a9d5df54f8a', 'lock_head_sha256': '150656239778310ea0db27f0d61975b9ea147c80d88cf9046e018423bca6498d'} vs now {'priors_sha256': '178955c24f48494cca36b6c6cd3a01c0aa049a4ec31c137a7bcca966e0786563', 'lock_head_sha256': 'ca1440098e3e4b1bd86f4febcd032f14b22ac0338e42f1bb2e30551a52e404d6'} (counter_priors.json / lock_head.json; the model's memory inputs would differ)\")"
    },
-   "decode": {
-    "policy": "sample",
-    "T": 0.5,
-    "T_gate": null,
-    "tau": 0.35,
-    "decide_every": 10,
-    "action_delay_ticks": 26,
-    "extrapolate_ticks": 26,
-    "opp_elixir": "counter",
-    "noise": "Noise(recall=False, false_pos=False, position=False, team=False, unit_hp=False, my_elixir=False, opp_elixir=False, king_hp=False, deploying=False, conf=False)",
-    "obs": "live",
-    "afford_mask": true,
-    "stall_elixir": null,
-    "stall_seconds": 12.0,
-    "grid": "lattice",
-    "record": false,
-    "feature_version": 6,
-    "style": {
-     "opp_style": "on",
-     "opp_style_aggression": [
-      -0.08,
-      0.08
-     ],
-     "opp_style_lane_bias": [
-      -0.7,
-      0.7
-     ],
-     "opp_style_temperature": [
-      0.8,
-      1.2
-     ],
-     "opp_style_spell_delay": [
-      0,
-      4
-     ],
-     "opp_style_bank": [
-      0.0,
-      4.0
-     ]
-    },
-    "style_rule": "per match (adaptive_opponents.style_config, seed = spec seed, rollout = k): tau - aggression clipped [.01, .99], T x temperature, lane bias on cell logits x T, WAIT while my elixir < bank and no enemy body on my half, spell plays + spell_delay ticks (icebow-card-set decks only: other decks have placeholder slot ids)"
-   }
+   "decode": null
   },
   "snapshots": {
-   "every": 5,
+   "every": 100000,
    "keep": 12,
    "note": "the learner's own weights at update u (its architecture and inputs, incl. memory / cue); decode as init"
   }
  },
  "files": [
+  {
+   "path": "icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt",
+   "sha256": "984bf5729ecc85bda6ad48a2e4e0198cfa97e1a1218b537930635764466c73a4",
+   "bytes": 27880223,
+   "in_git": false
+  },
   {
    "path": "icebow/data/bench/rl_royale/newsim_base_exp1/newsim_base_exp1_u0015.pt",
    "sha256": "d0ef0ea32e05089955a038c375892730021f9f5113f70873d803da0d6d7b86ff",
@@ -843,18 +663,6 @@
    "path": "icebow/data/bench/rl_royale/newsim_base_exp2/newsim_base_exp2_u0015.pt",
    "sha256": "24cbbe3fcdb78bf82406cbb010ddb9e499d228942f6a87278a53b9946fec3d6e",
    "bytes": 18695003,
-   "in_git": false
-  },
-  {
-   "path": "icebow/data/bench/rl_royale/rdef_e4/rdef_e4_u0020_barrel2k_cellref_towerref_w2.pt",
-   "sha256": "430faaee52d9aebc788a780cc6a5977d25e7c7126ae4abd9726829dc2751062a",
-   "bytes": 28768563,
-   "in_git": false
-  },
-  {
-   "path": "icebow/data/bench/rl_royale/rlarm_succ48_o_s91/rlarm_succ48_o_s91_u0075.pt",
-   "sha256": "3eda9d23db3f8476c5be42e902be9c32ab4ff59a9e9a6d13d3ca608255c23cd4",
-   "bytes": 25149209,
    "in_git": false
   },
   {

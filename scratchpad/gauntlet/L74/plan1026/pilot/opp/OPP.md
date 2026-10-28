@@ -44,6 +44,11 @@ plays + [0, 4] ticks.
   the server (`cell_fn(rows, slots)`), the lane bias added in the producer.
 
 ## 3. Findings
+- (a) POOL.json is now built from pilot/ops/pilot.yaml (sha 6adcf953841c; its opponent blocks = x_s101's: w14opp_I + the
+  5 externals; E4 not in it). B0 grafted (984bf572) does NOT load on an LF tree: its memory_v2 meta records
+  counter_priors.json / lock_head.json sha256 4312a8ad / 15065623 = the LAPTOP's CRLF working copies; git (LF, the pods)
+  has 178955c2 / ca144009 (same JSON, other line endings) -> model_gen.check_memory_meta raises. Re-record the meta from
+  LF files (or graft on a pod) before B0 can play on a pod, as learner or as the init opponent.
 - (a, code) spell delay applies only to opponents whose deck is the icebow card set: other decks get placeholder slot
   ids (dataset_gen.side_deck), so vocab.is_spell is False. Kept as production does it.
 - (a, code) `league_opp_T` never reaches the actors (actor_base does not copy it): opponents sample at the run's T.
