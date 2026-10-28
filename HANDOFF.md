@@ -1,3 +1,14 @@
+## 2026-10-28 14:35 EDT -- live navigator: Claim All screen + adb-drop diagnosis deployed (2bf0322); live restarted 14:34
+
+- LIVE-OPS P1 (blind verifier PASS_WITH_NOTES): template claim_all + bounded action (<= 6 taps, button rect only, between
+  matches only) + after 4 failed screenshot grabs log adb state and `adb connect` (never taps; the 60 s stop unchanged).
+  Planned match-boundary restart: stop 14:33, `start_live.sh icebow --no-fast-plays --ranked` 14:34 (check PASS, towers 4858,
+  barrel_decoy true). Rollback: cp scratchpad/gauntlet/L68/live_reader/ladder_nav.py.pre_claimall_20261028 back +
+  templates/manifest.json.pre_claim_all, then a match-boundary restart.
+- LIVE-OPS findings (866039a, liveops/STATUS.md): win 32.7% [29.1, 36.5] since 10-26, flat; unconfirmed taps 5.2% vs 3.2%
+  since 11:45, cause unknown (decoy contradicted) -> re-check after ~100 matches; Claim All stalled live 7x historically.
+- Watcher: liveops/stuck_watch2.py runs under the lead's Monitor (re-arm every 30 min). Old stuck_watch.sh retired.
+
 ## 2026-10-28 ~13:20 EDT -- owner: build the Zap rule, lazy_refine ON (+2 fixes), KL cap A (0.02); re-dispatch with Codex
 
 - Details in plan1026/HANDOFF_1028.md 10.3. Workers re-dispatched by the new lead; each hands menial work to Codex.
