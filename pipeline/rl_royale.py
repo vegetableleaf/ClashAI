@@ -2082,6 +2082,8 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
         B["w_post"] = cat(lambda j: np.where(results[j]["traj"]["posture_new"][keep[j]], 1.0 / (max(nc[j], 1) * Mp), 0.0))
     if use and "gate_tau" in results[use[0]]["traj"]:                # tau_phase: the threshold each row was sampled at
         B["gate_tau"] = cat(lambda j: results[j]["traj"]["gate_tau"][keep[j]])
+    if use and "v_old" in results[use[0]]["traj"]:                   # LOOP-LRN: the server's V(s) per row (stored_values)
+        B["v_stored"] = cat(lambda j: results[j]["traj"]["v_old"][keep[j]].astype(np.float64))
     if use and "ab_sampled" in results[use[0]]["traj"]:              # B6: the press decisions (actor cfg ability)
         for k in ("ab_sampled", "ab_press", "ab_lp", "ab_feat"):
             B[k] = cat(lambda j, k=k: results[j]["traj"][k][keep[j]])
@@ -2539,6 +2541,56 @@ def ref_terms(ref, B: dict, tau: float, T: float, chunk: int = 512, T_gate: Opti
     return R
 
 
+def row_subset(B: dict, rows) -> dict:
+    """B restricted to ``rows`` (a LongTensor on B's device): every row-aligned entry indexed, the per-match memory
+    tables (mem_tab_*) kept whole (mem_row_tab still points into them)."""
+    n = len(B["A"])
+    r_np = rows.cpu().numpy()
+    return {k: v if k.startswith("mem_tab_") or len(v) != n else (v[rows] if torch.is_tensor(v) else v[r_np])
+            for k, v in B.items()}
+
+
+class LazyRef(dict):
+    """LOOP-LRN ``stored_values``: ``ref_terms``' x / card_lp / cell_lp filled only for the rows a minibatch uses (one
+    no-grad forward of ``ref`` on the rows not seen yet, ``fill``), instead of a pass over every row. Same keys and
+    layout as ref_terms' R (minibatch_loss reads it unchanged); no "ent" (the entropy baseline is ``ent_init_rows``')."""
+
+    def __init__(self, ref, B: dict, tau: float, T: float, T_gate: Optional[float] = None):
+        N, dev = len(B["A"]), B["A"].device
+        played = B["played"]
+        play_pos = torch.full((N,), -1, dtype=torch.long, device=dev)
+        play_pos[played] = torch.arange(int(played.sum()), device=dev)
+        super().__init__(x=torch.zeros(N, dtype=torch.float64, device=dev),
+                         card_lp=torch.zeros(N, B["allowed"].shape[1], dtype=torch.float64, device=dev),
+                         cell_lp=torch.zeros(int(played.sum()), E.N_CELLS, dtype=torch.float64, device=dev),
+                         play_pos=play_pos)
+        self.ref, self.B, self.tau, self.T, self.T_gate = ref, B, tau, T, T_gate
+        self.done = torch.zeros(N, dtype=torch.bool, device=dev)
+
+    @torch.no_grad()
+    def fill(self, idx) -> int:
+        new = torch.unique(idx[~self.done[idx]])
+        if len(new):
+            t = policy_terms(self.ref, self.B, new, self.tau, self.T, T_gate=self.T_gate)
+            self["x"][new], self["card_lp"][new] = t["x"], t["card_lp"]
+            pn = new[self.B["played"][new]]
+            if len(pn):
+                self["cell_lp"][self["play_pos"][pn]] = t["cell_lp"]
+            self.done[new] = True
+        return int(len(new))
+
+
+def ent_init_rows(B: dict, cfg: dict, u: int):
+    """``ent_init_rows`` N (absent / null = every row): a fixed-seed (seed, update) sample of N rows, sorted, for the
+    entropy floor's ref_init baseline; None = all rows."""
+    n = cfg.get("ent_init_rows")
+    N = len(B["A"])
+    if n is None or int(n) >= N:
+        return None
+    rng = np.random.default_rng(zlib.crc32(f"ent_init:{int(cfg['seed'])}:{int(u)}".encode()))
+    return torch.from_numpy(np.sort(rng.choice(N, int(n), replace=False))).to(B["A"].device)
+
+
 def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: float, beta: float,
                    n_total: int, vf: Optional[dict] = None, T_gate: Optional[float] = None,
                    posture: Optional[dict] = None, ability: Optional[dict] = None) -> tuple[torch.Tensor, dict]:
@@ -2559,6 +2611,8 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
     ``ability`` (B6 {head, ent_coef}): the same construction for the press decisions (``B["ab_sampled"]`` rows):
     r = pi_new(a) / pi_old(a) of the Bernoulli press (``B["ab_lp"]``), the row's A, weights ``B["w_ab"]``, minus
     ent_coef x the head's weighted Bernoulli entropy; reaches the AbilityHead only (g detached)."""
+    if hasattr(R, "fill"):                                    # LOOP-LRN stored_values: the anchor's terms of these rows
+        R.fill(idx)
     t = policy_terms(model, B, idx, tau, T, value=vf is not None,
                      value_trunk=True if vf is None else bool(vf.get("trunk_grad", True)), T_gate=T_gate,
                      ctx_head=None if vf is None else vf.get("ctx_head"))
@@ -3346,7 +3400,8 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                               "heroiw_press", "ability_features", "kl_heads", "kl_ref_card", "league_deck_weights",
                               "ot_start_share", "xbow_start_share", "remote_actors", "kl_ref_refresh_every",
                               "tau_phase", "memory", "memory_aux", "memory_encoder_frozen",
-                              "memory_zero_empty", "learner_deterministic", "kl_stop_prev") + OPP_TEMPO_KEYS
+                              "memory_zero_empty", "learner_deterministic", "kl_stop_prev", "stored_values",
+                              "ent_init_rows") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS and k not in CROWN_KEYS
                 and k not in HT.KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
@@ -3445,6 +3500,10 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "kl_ref_refresh_every"}
     if cfg.get("kl_stop_prev") is None:                      # LOOP-LRN early stop off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "kl_stop_prev"}
+    if not cfg.get("stored_values"):                         # LOOP-LRN stored V / lazy ref off = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "stored_values"}
+    if cfg.get("ent_init_rows") is None:                     # LOOP-LRN entropy-baseline subsample off = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "ent_init_rows"}
     if cfg.get("memory") is None:                            # Plan A memory off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "memory"}
     elif cfg["memory"] == "v2":                              # S1c: the version AND the artifacts its features read
@@ -4357,17 +4416,30 @@ class Learner:
         card_ref = getattr(self, "card_ref", None)            # K1 kl_ref_card (None = the init ref)
         # LOOP-LRN shared pass: with kl_ref_refresh_every 1 the anchor IS the update-start model, so ref_terms' forward
         # also gives gae_batch's V(s) (one no-grad pass over every row instead of two; identity-gated, LRN.md)
+        stored = bool(cfg.get("stored_values"))
+        if stored and (gate_ref is not None or card_ref is not None or glo is not None or "cf" in B
+                       or getattr(self, "ctx_head", None) is not None or getattr(self, "posture_head", None) is not None
+                       or "v_stored" not in B or adv_cfg(cfg)["advantage"] != "gae"):
+            raise SystemExit("stored_values needs gae, rows with the server's v_old, and no kl_ref_gate / kl_ref_card / "
+                             "kl_ref_gate_max_elixir / critic_ctx / posture_head / cf_credit")
+        v_stored = B.pop("v_stored", None)                    # recompute mode: the stored V is not used
         share = (cfg.get("kl_ref_refresh_every") == 1 and gate_ref is None and card_ref is None and glo is None
                  and getattr(self, "ctx_head", None) is None and adv_cfg(cfg)["advantage"] == "gae" and "cf" not in B
-                 and getattr(self, "share_ref_value", True))
-        R = ref_terms(self.ref, B, cfg["tau"], cfg["T"], T_gate=cfg.get("T_gate"), gate_ref=gate_ref,
-                      **({"gate_lo_max": glo["max_elixir"]} if glo else {}),
-                      **({"card_ref": card_ref} if card_ref is not None else {}), **({"value": True} if share else {}))
+                 and getattr(self, "share_ref_value", True) and not stored)
+        if stored:                                            # LOOP-LRN: the server's V, the anchor only on minibatch rows
+            R = LazyRef(self.ref, B, cfg["tau"], cfg["T"], T_gate=cfg.get("T_gate"))
+            B["v_shared"] = v_stored
+        else:
+            R = ref_terms(self.ref, B, cfg["tau"], cfg["T"], T_gate=cfg.get("T_gate"), gate_ref=gate_ref,
+                          **({"gate_lo_max": glo["max_elixir"]} if glo else {}),
+                          **({"card_ref": card_ref} if card_ref is not None else {}), **({"value": True} if share else {}))
         if share:
             B["v_shared"] = R.pop("v")
-        ent_init = R["ent"]                                   # the entropy floor's baseline: the INIT's, same rows
-        if self.ref is not getattr(self, "ref_init", self.ref):   # W16 moved anchor: one more no-grad pass, init net
-            ent_init = ref_terms(self.ref_init, B, cfg["tau"], cfg["T"], T_gate=cfg.get("T_gate"), gate_ref=gate_ref,
+        sub = ent_init_rows(B, cfg, u)                        # LOOP-LRN: ref_init's baseline on a row sample (None = all)
+        ent_init = R.get("ent")                               # the entropy floor's baseline: the INIT's, same rows
+        if stored or self.ref is not getattr(self, "ref_init", self.ref):   # W16 moved anchor: one more no-grad pass
+            ent_init = ref_terms(self.ref_init, B if sub is None else row_subset(B, sub), cfg["tau"], cfg["T"],
+                                 T_gate=cfg.get("T_gate"), gate_ref=gate_ref,
                                  **({"gate_lo_max": glo["max_elixir"]} if glo else {}),
                                  **({"card_ref": card_ref} if card_ref is not None else {}))["ent"]
         if cfg.get("kl_heads") is not None:                   # K1: only these heads' KL enters the loss

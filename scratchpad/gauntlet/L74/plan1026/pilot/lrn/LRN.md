@@ -73,6 +73,32 @@ Labels: (a) measured, (b) untested, (c) contradicted. Spec: ../LOOP_SPEC.md.
   The ratio stays PPO's behaviour ratio exp(lp_new - lp_old) (what rl_royale already does). The KL stop stays
   "to update-start" on the sampled minibatch rows. Stored-vs-recomputed effect on one update's record: NOT measured yet.
   lp parity is measured (server 7.6e-6); value parity is not.
+- DONE (a) (iv) stored_values (lead-approved 10-28). Keys:
+    stored_values: true   GAE / value clip use the producers' traj["v_old"] (LOOP-SRV b03fdb7); the anchor's terms are
+                          computed lazily, only for the rows each minibatch uses (LazyRef.fill)
+    ent_init_rows: N      the entropy floor's ref_init baseline on a fixed-seed (seed, update) sample of N rows
+    matches_per_update    (loop_learner only) records per update; absent = E x G
+  Recompute mode (stored_values absent) is unchanged; it stays the identity check.
+  stored_gate.py (33920 4090, TF32 off, recompute-equivalence: v_old = the update-start model's V):
+  - gate (a), update 5, 512 matches: advantages, returns, v_old and final weights all differ by max |diff| 0.0 (weights
+    bit-identical). The lazy anchor moves only the KL monitors, ~1e-9 (stop KL 0.020779451 vs 0.020779465; beta 0, so
+    the KL does not enter the loss); the stop step is the same (145). Update 67.9 s (recompute + shared pass) -> 49.9 s.
+  - gate (c), 3 consecutive updates on 3 disjoint ~341-match batches: KL, clip fraction, entropy, value loss and the
+    stop step (150 / 61 / 67) agree to ~1e-8 in both modes. Seconds per update: recompute 54.8 / 43.8 / 44.4,
+    stored 48.5 / 23.5 / 25.6.
+    (The gate (c) batches mix in records captured with a fresh ability head, the id0 set; both modes see the same data.)
+  - gate (b): crforge smoke with this code e816a6a4 / f060b678 SMOKE PASS.
+  - Cadence in stored mode on the 4090: 512 matches 48.0 s (145 steps); 1,024 matches 58.1 s (172 steps, 318,569
+    rows) -> ~38k and ~63k matches/h. 2,048 matches is projected at ~75-85 s (~90k/h) (b, while kl_stop keeps binding).
+    Stored mode is now PPO-step bound: about 295 ms per step, because the lazy anchor forward adds ~105 ms to each
+    192 ms step.
+- (a) entropy baseline subsample (lead: keep the guard; subsample size within 1%, 3 updates): NOT within 1% at any
+  measured size. Max relative error over gate / card / cell and 3 seeds, for 3 batches of ~106k rows: 20k rows
+  .013-.020 / .006-.011 / .016-.032; 10k .024-.033; 5k .014-.051; 1k up to .30. Full pass 25-27 s; 20k rows ~5 s.
+  The error scales like 1/sqrt(n), so 1% needs ~60k+ of ~106k rows, which is most of the pass. Proposal: keep
+  ent_init_rows 20000 (~3% error against the guard's 0.5x floor), OR compute ref_init's entropy on exactly the rows
+  PPO's epoch 0 visits (paired with the policy entropy the guard compares). The paired option costs one more lazy
+  forward per step; neither is built.
 - NOT DONE (proposed next tickets): (1) rows-per-forward cost: compute cell_refine / tower_refine only on played rows
   (SPEED.md estimates about 2x), and with kl_ref_refresh_every 1 the ref pass equals the value pass on the same weights
   (one no-grad pass saved, ~40 s per update); (2) DDP: from the 64-row step (94 ms), 4-way DDP at minibatch 256 gives

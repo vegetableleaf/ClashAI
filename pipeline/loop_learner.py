@@ -56,7 +56,7 @@ class LoopLearner(R.Learner):
         self.wdir.mkdir(parents=True, exist_ok=True)
 
     def rollout(self, u: int) -> tuple[list[dict], dict]:
-        n = int(self.cfg["E"]) * int(self.cfg["G"])
+        n = int(self.cfg.get("matches_per_update") or int(self.cfg["E"]) * int(self.cfg["G"]))   # loop key; absent = E x G
         t = time.perf_counter()
         recs, info = LR.take(self.spool, n, min_wver=self.update - 1, stop=self.run_dir / "STOP")
         res = [LR.to_result(r) for r in recs]
