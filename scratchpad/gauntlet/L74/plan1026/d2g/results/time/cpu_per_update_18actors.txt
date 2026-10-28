@@ -1,0 +1,7 @@
+== crforge (first 3 lines) / fin16 (last 3 lines)
+u0001: wall 876 s, actors 14394 core-s (16.4 cores), learner 75 core-s
+u0002: wall 936 s, actors 15480 core-s (16.5 cores), learner 73 core-s
+u0003: wall 979 s, actors 16525 core-s (16.9 cores), learner 72 core-s
+u0001: wall 925 s, actors 11566 core-s (12.5 cores), learner 55 core-s
+u0002: wall 979 s, actors 12598 core-s (12.9 cores), learner 47 core-s
+u0003: wall 1011 s, actors 13248 core-s (13.1 cores), learner 42 core-s

@@ -1,0 +1,38 @@
+/workspace/d2/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+Picked up JAVA_TOOL_OPTIONS: -XX:TieredStopAtLevel=1
+[s0] plain      gen seed 741200 win  1-0 towerHP +4049 plays 27 searched 0 unsearched 0 ovr 0 wait 0 s/dec None wall 44.0s
+[s0] plain      gen seed 741201 win  1-0 towerHP -1713 plays 27 searched 0 unsearched 0 ovr 0 wait 0 s/dec None wall 40.8s
+[s0] plain      gen seed 741202 win  1-0 towerHP +4528 plays 43 searched 0 unsearched 0 ovr 0 wait 0 s/dec None wall 48.4s
+[s0] plain      gen seed 741203 win  2-1 towerHP +918 plays 47 searched 0 unsearched 0 ovr 0 wait 0 s/dec None wall 53.7s
+[s0] plain      gen seed 741204 win  1-0 towerHP +4341 plays 28 searched 0 unsearched 0 ovr 0 wait 0 s/dec None wall 38.2s
+[s0] plain      gen seed 741205 win  1-0 towerHP +3186 plays 34 searched 0 unsearched 0 ovr 0 wait 0 s/dec None wall 43.0s
+{
+ "per_arm_opp": {
+  "plain|gen": {
+   "n": 6,
+   "win": 6,
+   "loss": 0,
+   "draw": 0,
+   "crowns_diff_mean": 1.0,
+   "tower_hp_diff_mean": 2551.5,
+   "plays_accepted_mean": 34.3,
+   "searched": 0,
+   "unsearched": 0,
+   "gate_skipped": 0,
+   "overrides": 0,
+   "chose_wait": 0,
+   "s_per_searched_mean": null,
+   "wall_s_mean": 44.7,
+   "wall_truncated": 0
+  }
+ },
+ "paired_vs_plain": {},
+ "wall_total_s": 277.0
+}
+
+real	4m41.636s
+user	4m42.943s
+sys	0m4.312s
+6
+done

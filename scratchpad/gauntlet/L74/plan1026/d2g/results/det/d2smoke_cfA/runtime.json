@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "pins": {
+    "RoyaleSim": "3f5676076fa7293de5355fa7c76275ddfbf4322c",
+    "RoyaleGym": "a7deb6e48c3580fe2cd7d856b7c7d19ce67f02f9"
+  },
+  "wheels": {
+    "royalesim": "royalesim-0.1.36-cp310-abi3-manylinux_2_34_x86_64.whl",
+    "royalegym": "royalegym==0.1.23"
+  },
+  "manifest_sha256": "2c5a5f930cf5a467311eedd446c0e859f6e70dd7d23b974e4466a572a955083d",
+  "card_table": {
+    "cards_json_fnv1a64": "803ec02c7eac9fd3",
+    "cards_vintage": "15.535.29 client (2026, LIVE build family)",
+    "cards_json_hash_source": "embedded"
+  },
+  "runtime_id": "fin16-linux",
+  "engine": {
+    "name": "crforge",
+    "crforge": "ad8ef3a532ada8dea732bf1ecdeb01beef0fb4b0",
+    "tables": "16.402.22",
+    "body_map_sha256": "47c7c71390ace5225673beae4255a7dacb76ae384f60a677dddcb734873326d5",
+    "facade_java_sha256": "f31af91c33d9853f1326e1d64e345f057345c3f22d8014aacbe70defffeff788"
+  }
+}

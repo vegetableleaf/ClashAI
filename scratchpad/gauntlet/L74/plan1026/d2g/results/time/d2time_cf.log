@@ -1,0 +1,56 @@
+[rl] runtime {"card_table": {"cards_json_fnv1a64": "803ec02c7eac9fd3", "cards_json_hash_source": "embedded", "cards_vintage": "15.535.29 client (2026, LIVE build family)"}, "engine": {"body_map_sha256": "47c7c71390ace5225673beae4255a7dacb76ae384f60a677dddcb734873326d5", "crforge": "ad8ef3a532ada8dea732bf1ecdeb01beef0fb4b0", "facade_java_sha256": "f31af91c33d9853f1326e1d64e345f057345c3f22d8014aacbe70defffeff788", "name": "crforge", "tables": "16.402.22"}, "manifest_sha256": "2c5a5f930cf5a467311eedd446c0e859f6e70dd7d23b974e4466a572a955083d", "pins": {"RoyaleGym": "a7deb6e48c3580fe2cd7d856b7c7d19ce67f02f9", "RoyaleSim": "3f5676076fa7293de5355fa7c76275ddfbf4322c"}, "runtime_id": "fin16-linux", "schema": 1, "wheels": {"royalegym": "royalegym==0.1.23", "royalesim": "royalesim-0.1.36-cp310-abi3-manylinux_2_34_x86_64.whl"}}
+[rl] START d2time_cf pid 1519278 config sha 615cb71f5cca argv ['--run', 'd2time_cf', '--config', 'scratchpad/gauntlet/L74/stepd/cfg/succ48_x_s101.yaml', 'n_actors=18', 'max_updates=4', 'learner_device=cuda:0']
+/workspace/d2/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+[rl] run d2time_cf: train 1204 loadable, held-out 234 loadable (screen uses 234); init icebow/data/bench/rl_royale/rlarm_succ48_o_s91/rlarm_succ48_o_s91_u0075.pt (GENERALIST) grid lattice; conditions (rollouts + screens): noise_off=all opp_elixir=counter action_delay_ticks=26 extrapolate_ticks=26; leash max; TAU_PHASE [0.35, 0.45, 0.55] (learner rollouts + screens); advantage gae gae_gamma=0.999 gae_lambda=0.95 vf_coef=0.5 vf_clip=0.2 critic_warmup_updates=5 shaping=tower_crown shaping_w_tower=0.3 shaping_w_crown=0.3 vf_trunk_grad=True gae_gamma_unit=tick gae_gamma_tick=0.99994 gae_terminal_gap=False shaping_critic_scale=3.5; ABILITY head (learner presses) ent 0.01 lr 0.0003 warm start 128 rule rollouts x 300 steps
+[rl] LEAGUE: 999 census decks + icebow (share 0.0), weights sides^1.0 floor 0.0x mean (max p 0.0558, min 0.0001); opponents mix {'latest': 0.5, 'older': 0.25, 'init': 0.25, 's1': 0.0} (opp policy sample), S1 specialist icebow/data/pipeline/s1_icebow_v6aug_s1.pt (icebow only); snapshot every 5 updates, keep 12
+[rl] init pro agreement (12237 VAL rows, 40s): cell 0.1487 card 0.6212 gate_bal 0.7367
+/workspace/d2/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+/workspace/d2/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+/workspace/d2/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+/workspace/d2/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+/workspace/d2/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+/workspace/d2/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+/workspace/d2/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+/workspace/d2/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+/workspace/d2/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+/workspace/d2/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+/workspace/d2/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+/workspace/d2/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+/workspace/d2/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+/workspace/d2/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+/workspace/d2/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+/workspace/d2/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+/workspace/d2/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+/workspace/d2/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+[rl] ability_head warm start: 13088 labels from 128 rule rollouts {'IceWizard': 13088}; rule q mean 0.0189; BCE 0.0936 -> 0.0444 (floor 0.0000); head p mean 0.0189 -> 0.0188 (615s)
+[rl] init held-out screen: 702 matches, winrate 0.915, plays/min 11.11, guards outlived 0.210 <=10dlv 0.056 refused/m 1.470 (1473s)
+[rl] saved /workspace/d2/cb/icebow/data/bench/rl_royale/d2time_cf/d2time_cf_u0000.pt
+[rl] W16 u0000 batch_sha 7183dbabfa88eddd weights_sha 3e07cff4b6fcd5d6
+[rl] update-0 plays/min baseline 12.379 (stop outside [0.6, 1.6]x for 2 updates)
+[rl] u0000 W/L/D 155/101/0 ppm 12.38 pgate 0.205 KL g/c/x 0.0000/0.0000/0.0000 beta 0.03->0.03 (leash max: card) clip 0.000 mixed 44/64 rows 79821 wall roll 863s upd 24s | gae WARMUP (critic only) vloss 0.0039 ev 0.885 A -0.0082/0.3014 ret +0.086 V +0.026 vshare - | ability dec 25822 press 0.023 p 0.022 acc/m 2.23 H 0.058 lab +0.2142 | habit r/m idle -0.0371 trade -0.1302 thr/m 3.01 idle/m 0.74 push/m 6.62 | shape |F| 0.0017 (t 0.0010 c 0.0007) |Phi| 0.0507 dom 0.051 | league wr init 0.64/44 snapshot -/0 s1 -/0 exploiter 0.73/132 exploiter_league 0.39/80 D 0
+[rl] W16 u0001 batch_sha 5cd4a6097c923497 weights_sha 0988882a5e55e404
+[rl] u0001 W/L/D 170/86/0 ppm 12.70 pgate 0.211 KL g/c/x 0.0000/0.0000/0.0000 beta 0.03->0.03 (leash max: card) clip 0.000 mixed 40/64 rows 81332 wall roll 838s upd 25s | gae WARMUP (critic only) vloss 0.0036 ev 0.878 A -0.0042/0.2866 ret +0.150 V +0.043 vshare - | ability dec 27043 press 0.022 p 0.023 acc/m 2.30 H 0.059 lab +0.1748 | habit r/m idle -0.0342 trade -0.1465 thr/m 2.71 idle/m 0.68 push/m 6.87 | shape |F| 0.0017 (t 0.0009 c 0.0007) |Phi| 0.0471 dom 0.047 | league wr init 0.62/24 snapshot -/0 s1 -/0 exploiter 0.77/152 exploiter_league 0.47/80 D 0
+[rl] W16 u0002 batch_sha d7cd01d0a722cd56 weights_sha 0cdfb04271f1a086
+[rl] u0002 W/L/D 180/76/0 ppm 12.53 pgate 0.209 KL g/c/x 0.0000/0.0000/0.0000 beta 0.03->0.03 (leash max: card) clip 0.000 mixed 40/64 rows 79107 wall roll 896s upd 30s | gae WARMUP (critic only) vloss 0.0036 ev 0.886 A +0.0003/0.2817 ret +0.212 V +0.058 vshare - | ability dec 25069 press 0.025 p 0.024 acc/m 2.41 H 0.060 lab +0.1528 | habit r/m idle -0.0348 trade -0.1379 thr/m 2.74 idle/m 0.70 push/m 6.82 | shape |F| 0.0017 (t 0.0010 c 0.0008) |Phi| 0.0528 dom 0.053 | league wr init 0.65/40 snapshot -/0 s1 -/0 exploiter 0.78/160 exploiter_league 0.54/56 D 0
+[rl] W16 u0003 batch_sha 5275509c40263081 weights_sha 1b23ad5cbefbf167
+[rl] u0003 W/L/D 169/87/0 ppm 12.59 pgate 0.209 KL g/c/x 0.0000/0.0000/0.0000 beta 0.03->0.03 (leash max: card) clip 0.000 mixed 41/64 rows 81114 wall roll 939s upd 23s | gae WARMUP (critic only) vloss 0.0033 ev 0.888 A -0.0080/0.2755 ret +0.153 V +0.044 vshare - | ability dec 27090 press 0.021 p 0.022 acc/m 2.22 H 0.057 lab +0.1208 | habit r/m idle -0.0355 trade -0.1526 thr/m 2.65 idle/m 0.71 push/m 7.11 | shape |F| 0.0016 (t 0.0009 c 0.0007) |Phi| 0.0484 dom 0.048 | league wr init 0.75/40 snapshot -/0 s1 -/0 exploiter 0.73/148 exploiter_league 0.46/68 D 0
+[rl] DONE: max_updates 4 reached
