@@ -40,6 +40,33 @@ def clone_jobs(jobs, n, k):
     return out
 
 
+def start_servers(base, update, sd, jobs, devices, mode, block_max, root="/dev/shm/loop", push=True):
+    """One serve.py per device (LOOP-SRV) + (push) this update's learner weights in the watch dir -> the Popen list; the
+    producer for device g connects to ROOT/srv{g}.sock. base["init_path"] = the learner's architecture checkpoint."""
+    import torch
+    from pipeline import rl_royale as R
+    wd = Path(root) / "weights"
+    wd.mkdir(parents=True, exist_ok=True)
+    if push:
+        msd, _ = R.split_actor_sd(sd, "cpu")
+        R.pop_prefix(msd, R.ABILITY_SD)
+        torch.save({"version": int(update), "state_dict": msd}, wd / f"learner.v{int(update):08d}.pt")
+        (wd / "learner.latest").write_text(str(int(update)))
+    opps = sorted({j[1]["opp"]["path"] for j in jobs})
+    servers = []
+    for g, dv in enumerate(devices):
+        addr = f"{root}/srv{g}.sock"
+        Path(addr + ".ready").unlink(missing_ok=True)
+        servers.append(subprocess.Popen([sys.executable, str(HERE / "serve.py"), "--listen", addr, "--device", dv,
+                                         "--watch", str(wd), "--learner", base["init_path"] if "init_path" in base
+                                         else opps[0], "--block-max", str(block_max), "--mode", mode, "--opp", *opps]))
+        while not Path(addr + ".ready").exists():
+            if servers[-1].poll() is not None:
+                raise SystemExit("serve.py exited")
+            time.sleep(1)
+    return servers
+
+
 def worker(k, a, base, update, sd, jobs, q):
     try:
         _worker(k, a, base, update, sd, jobs, q)
@@ -85,28 +112,7 @@ def main():
     a = ap.parse_args()
     base, update, sd, jobs = pickle.loads(Path(a.msg).read_bytes())
     base = {**base, "actor_device": a.devices.split(",")[0]}
-    servers = []
-    if a.server:                                             # one serve.py per device + this update's learner weights
-        import torch
-        from pipeline import rl_royale as R
-        wd = Path("/dev/shm/loop/weights")
-        wd.mkdir(parents=True, exist_ok=True)
-        msd, _ = R.split_actor_sd(sd, "cpu")
-        R.pop_prefix(msd, R.ABILITY_SD)
-        torch.save({"version": int(update), "state_dict": msd}, wd / f"learner.v{int(update):08d}.pt")
-        (wd / "learner.latest").write_text(str(int(update)))
-        opps = sorted({j[1]["opp"]["path"] for j in jobs})
-        for g, dv in enumerate(a.devices.split(",")):
-            addr = f"/dev/shm/loop/srv{g}.sock"
-            Path(addr + ".ready").unlink(missing_ok=True)
-            servers.append(subprocess.Popen([sys.executable, str(HERE / "serve.py"), "--listen", addr, "--device", dv,
-                                             "--watch", str(wd), "--learner", base["init_path"] if "init_path" in base
-                                             else opps[0], "--block-max", str(a.matches), "--mode", a.server,
-                                             "--opp", *opps]))
-            while not Path(addr + ".ready").exists():
-                if servers[-1].poll() is not None:
-                    raise SystemExit("serve.py exited")
-                time.sleep(1)
+    servers = start_servers(base, update, sd, jobs, a.devices.split(","), a.server, a.matches) if a.server else []
     ctx = mp.get_context("spawn")
     q = ctx.Queue()
     ps = [ctx.Process(target=worker, args=(k, a, base, update, sd, jobs, q), daemon=True) for k in range(a.producers)]

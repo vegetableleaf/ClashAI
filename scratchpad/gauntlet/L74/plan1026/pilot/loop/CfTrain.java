@@ -25,11 +25,13 @@ public final class CfTrain implements AutoCloseable {
   static final int CUE = 64 * 22, MAX_U = 64, F = 14, S = 70, PAST = 15, IDS = 48, PROJ = 64 * 8, EFF = 32 * 6, ABIL = 8 * 7,
       CYC = 8 * 4;
   public static final int ENG = 20;                          // crforge's own command delay (CrforgeCore.DELAY)
-  public static final int DONE = 6;                          // row stage: 0 opp.update 1 main 2 cue 3 past/ids 4 pub.update 5 pub.build
+  // row stage: 0 opp.update 1 main 2 cue 3 past/ids 4 pub.update 5 pub.build 6 memory (CfMem observe + features)
+  public static final int DONE = 7;
   // row meta ints: valid, match, seat, tick, viewTick, stage, jobSerial, decisionsOfSeat
   public static final int META = 8;
-  // per-row action ints Python writes: play (0/1), our deck slot, cell, crforge x, crforge y
-  public static final int ACT = 5;
+  // per-row action ints Python writes: play (0/1), our deck slot, cell, crforge x, crforge y, engine x, engine y (the
+  // pool units royale_env._Core.act receives: CfMem.Log's play point)
+  public static final int ACT = 7;
   // per-match result ints: finished, endTick, over, winner (-1 none / 0 / 1 / 2), crowns0, crowns1, jobSerial, crashed
   public static final int RES = 8;
   // per-match per-seat tallies: attempted, accepted, unlanded, refusedNotInHand, refusedEngine, decisions
@@ -46,6 +48,13 @@ public final class CfTrain implements AutoCloseable {
   public final CfPubObj.Tables pub = new CfPubObj.Tables();
   public CfCue.Tables cue;                                 // null = the policy has no cue layer
   public final HashMap<Integer, Integer> gid = new HashMap<>();
+  // LOOP-MEM memory v2 (null = no memory model plays here): shared tables, one action Log per core, one CfMem per
+  // memory seat per match (production: one MatchMemory per Match), rows at r * CfMem.BYTES in memB
+  public CfMem.Tables memT;
+  public ByteBuffer memB;
+  CfMem.Log[] mlog;
+  CfMem[][] mem;
+  boolean[][] jMem;
 
   final CfCore[] core;
   final TrainMatch[] m;
@@ -59,7 +68,7 @@ public final class CfTrain implements AutoCloseable {
   final int[][] jTl, jDe, jDelay;
   final boolean[] fresh, live;
   // schedule (SelfPlaySide.next_tick / pending)
-  final int[][] next, pendLand, pendSlot, pendCell, pendX, pendY;
+  final int[][] next, pendLand, pendSlot, pendCell, pendX, pendY, pendPX, pendPY;
 
   public final ByteBuffer tokB, maskB, scB, formB, oppPastB, idsB, pastB, projB, effB, abilB, cycB, cueB, metaB, actB, elB,
       resB, talB;
@@ -80,7 +89,7 @@ public final class CfTrain implements AutoCloseable {
     jSlotDeal = new int[n][][]; jSeed = new int[n]; jSerial = new int[n]; jTl = new int[n][]; jDe = new int[n][];
     jDelay = new int[n][]; fresh = new boolean[n]; live = new boolean[n];
     next = new int[n][2]; pendLand = new int[n][2]; pendSlot = new int[n][2]; pendCell = new int[n][2]; pendX = new int[n][2];
-    pendY = new int[n][2];
+    pendY = new int[n][2]; pendPX = new int[n][2]; pendPY = new int[n][2];
     pool = Executors.newFixedThreadPool(threads, r -> { Thread t = new Thread(r, "cftrain"); t.setDaemon(true); return t; });
     long r2 = 2L * n;
     tokB = direct(r2 * MAX_U * F * 4); maskB = direct(r2 * MAX_U); scB = direct(r2 * S * 4); formB = direct(r2 * MAX_U);
@@ -132,6 +141,23 @@ public final class CfTrain implements AutoCloseable {
 
   public void start() { for (int i = 0; i < n; i++) id[i].gid.putAll(gid); }
 
+  /** Memory v2 on (once, before the first step): rows get MEM_KEYS from CfMem when setMem marks their seat. */
+  public void enableMemory(CfMem.Tables t) {
+    memT = t;
+    memB = direct(2L * n * CfMem.BYTES);
+    mlog = new CfMem.Log[n]; mem = new CfMem[n][2]; jMem = new boolean[n][2];
+    for (int i = 0; i < n; i++) mlog[i] = new CfMem.Log(core[i], t);   // syncs itself on each new battle
+  }
+
+  /** Which seats of match i's next job decide with a memory model (call after setJob). */
+  public void setMem(int i, boolean m0, boolean m1) { jMem[i][0] = m0; jMem[i][1] = m1; }
+
+  /** A memory seat's CfMem of match i (its table() at the end = rl_royale's result["memory"], obs_id.JavaMem.java_table). */
+  public CfMem memOf(int i, int s) { return mem[i][s]; }
+
+  /** Match i's facade (Python's table fills read its state: production's raw() of the same battle). */
+  public CfCore core(int i) { return core[i]; }
+
   void reset(int i) {
     CfCore c = core[i];
     c.reset(jSeed[i] & 0x7FFFFFFF, jDeck[i][0], jForm[i][0], jDeck[i][1], jForm[i][1], jLv[i][0], jLv[i][1], jTl[i][0],
@@ -140,6 +166,7 @@ public final class CfTrain implements AutoCloseable {
     m[i].extrap = extrap;
     po[i].extrap = extrap;
     cueSeat[i][0] = new CfCue.Seat(); cueSeat[i][1] = new CfCue.Seat();   // production: a fresh Match per match
+    if (memT != null) for (int s = 0; s < 2; s++) mem[i][s] = jMem[i][s] ? new CfMem(c, memT, mlog[i], s) : null;
     for (int s = 0; s < 2; s++) {
       pendLand[i][s] = -1;
       for (int k = 0; k < TAL; k++) tal.put((2 * i + s) * TAL + k, 0);
@@ -189,10 +216,12 @@ public final class CfTrain implements AutoCloseable {
     int hs = -1;
     for (int j = 0; j < h.length; j++) if (h[j] == k) { hs = j; break; }
     if (hs < 0) { tally(i, s, 3); return; }               // _Core.act: cid not in hand -> NOT_IN_HAND
-    int t = c.tick();
+    int t = c.tick(), cid = c.s.deckIds[s][k];
+    int form = memT != null ? CfMem.Log.playForm(c, s, cid) : 0;   // read BEFORE the play (public_plays' form)
     int[] r = c.play(s, hs, pendX[i][s], pendY[i][s]);
     if (r[0] != 0) { tally(i, s, 4); return; }
     tally(i, s, 1);
+    if (memT != null) mlog[i].play(s, t, cid, form, pendPX[i][s], pendPY[i][s]);
     id[i].played(c, s, t, slot, pendCell[i][s]);          // past: the facade tick at the act, slot, decided cell
     po[i].act(s, t, c.s.deckIds[s][k]);                   // public_plays / own events: the act tick (+ DELAY inside)
   }
@@ -204,6 +233,7 @@ public final class CfTrain implements AutoCloseable {
       pendLand[i][s] = t + delay;
       pendSlot[i][s] = act.get(r * ACT + 1); pendCell[i][s] = act.get(r * ACT + 2);
       pendX[i][s] = act.get(r * ACT + 3); pendY[i][s] = act.get(r * ACT + 4);
+      pendPX[i][s] = act.get(r * ACT + 5); pendPY[i][s] = act.get(r * ACT + 6);
       next[i][s] = t + de * ((delay + ENG) / de + 1);
     } else {
       next[i][s] = t + de;
@@ -295,7 +325,17 @@ public final class CfTrain implements AutoCloseable {
       if (!po[i].update(seat)) { meta.put(b + 5, 4); misses.incrementAndGet(); return; }
       st = 5;
     }
-    po[i].build(seat, proj, r * PROJ, eff, r * EFF, abil, r * ABIL, opp, cyc, r * CYC);
+    if (st == 5) {
+      po[i].build(seat, proj, r * PROJ, eff, r * EFF, abil, r * ABIL, opp, cyc, r * CYC);
+      st = 6;
+    }
+    CfMem mm = mem == null ? null : mem[i][seat];
+    if (mm != null) {                                    // Match.gen_row's last step: _memory(policy, deck_card)
+      if (!mm.observe(opp)) { meta.put(b + 5, 6); misses.incrementAndGet(); return; }
+      int[] deck = new int[8];
+      for (int k = 0; k < 8; k++) deck[k] = (int) idsL.get(r * IDS + 14 + k);   // the row's deck_card
+      mm.features(deck, memB, r * CfMem.BYTES);
+    }
     meta.put(b + 5, DONE);
     rowsBuilt.incrementAndGet();
   }

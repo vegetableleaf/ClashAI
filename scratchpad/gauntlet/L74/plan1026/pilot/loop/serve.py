@@ -32,7 +32,10 @@ ROW = {"tok": ((64, 14), "<f4"), "mask": ((64,), "|b1"), "sc": ((70,), "<f4"), "
 
 def spec_for(model) -> dict:
     from pipeline import e1_eval as E
-    return {k: ROW[k] for k in E.gen_row_keys(model.model)}
+    from pipeline import match_memory as MM
+    row = {**ROW, "mem_ev": ((MM.E_MAX, MM.F), "<f4"), "mem_mask": ((MM.E_MAX,), "|b1"), "mem_card": ((MM.E_MAX,), "<i8"),
+           "mem_form": ((MM.E_MAX,), "<i8"), "mem_summary": ((MM.S_V2,), "<f4"), "mem_answer": ((), "<i8")}   # CfMem rows
+    return {k: row[k] for k in E.gen_row_keys(model.model)}
 
 
 def main():

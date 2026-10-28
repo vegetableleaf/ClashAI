@@ -7,8 +7,10 @@ rl_royale.actor_main's self-play branch does per decision with PRODUCTION code: 
 ``Match.prepare`` + ``gen_row`` (the obsid builders). The forward runs on this process's device (``GenPolicy.heads_t``
 on a batch gathered straight from the JVM's buffers), one forward per policy per round.
 
+Memory v2 (LOOP-MEM's CfMem, both seats, learner and frozen opponents) is wired: MEM_KEYS per row, mem_t per recorded
+row, the learner's end-of-match event table in result["memory"].
 Not supported yet (each raises): hero ability presses (LOOP-IW), opp_style, follow-ups, pipelined decisions, tap
-loss / slow, tower troops, mid-match starts, posture / ability heads, memory models (LOOP-MEM), decision rules in the
+loss / slow, tower troops, mid-match starts, posture / ability heads, decision rules in the
 sampled decide (LOOP-CTX), record_phi / crown / habit / spell tracking (record fields that need production state).
 """
 from __future__ import annotations
@@ -28,7 +30,7 @@ OBSID = REPO / "scratchpad/gauntlet/L74/speed/crforge/obsid"
 SPEED = REPO / "scratchpad/gauntlet/L74/speed/crforge"
 CFCORE = REPO / "scratchpad/gauntlet/L74/crforge/facade/CfCore.java"
 JAVA_SRC = [CFCORE, SPEED / "CfSpeed.java"] + [OBSID / f for f in ("CfObsBind.java", "CfOppElixir.java", "CfIdent.java",
-                                                                  "CfCue.java", "CfPubObj.java")] + [HERE / "CfTrain.java"]
+                                                                  "CfCue.java", "CfPubObj.java", "CfMem.java")] + [HERE / "CfTrain.java"]
 UNSUPPORTED_CFG = ("posture", "ability", "spell_track", "crown_track", "habit_track", "record_phi", "record_ctx",
                    "record_elixir", "pipeline_decisions", "tap_loss", "tap_slow", "follow_ups", "_opp_style",
                    "own_effects", "predict_drops", "afford_ticks")
@@ -55,13 +57,51 @@ class Rows:
             ("ids", "idsB", np.int64, (48,)), ("past", "pastB", np.float32, (3, 5)),
             ("projectiles", "projB", np.float32, (64, 8)), ("effects", "effB", np.float32, (32, 6)),
             ("own_ability", "abilB", np.float32, (8, 7)), ("opp_cycle", "cycB", np.float32, (8, 4)),
-            ("cue", "cueB", np.float32, (64, 22)), ("meta", "metaB", np.int32, (8,)), ("act", "actB", np.int32, (5,)),
+            ("cue", "cueB", np.float32, (64, 22)), ("meta", "metaB", np.int32, (8,)), ("act", "actB", np.int32, (7,)),
             ("el", "elB", np.float64, ()), ("tal", "talB", np.int32, (6,)))
 
     def __init__(self, L, n: int):
         for k, attr, dt, shape in self.KEYS:
             setattr(self, k, np.frombuffer(memoryview(getattr(L, attr)), dt).reshape((2 * n,) + shape))
         self.res = np.frombuffer(memoryview(L.resB), np.int32).reshape(n, 8)
+
+    def memory(self, L, n: int) -> None:
+        """MEM_KEYS views of CfTrain.memB (row r at r * CfMem.BYTES, layout CfMem.OFF_*; no copy)."""
+        import jpype
+        C = jpype.JClass("CfMem")
+        mv, B, n2 = memoryview(L.memB), int(C.BYTES), 2 * n
+        mk = (lambda shape, dt, off, inner: np.ndarray((n2,) + shape, dt, buffer=mv, offset=int(off), strides=(B,) + inner))
+        self.mem_ev = mk((int(C.E_MAX), int(C.F)), np.float32, C.OFF_EV, (4 * int(C.F), 4))
+        self.mem_mask = mk((int(C.E_MAX),), np.bool_, C.OFF_MASK, (1,))
+        self.mem_card = mk((int(C.E_MAX),), np.int64, C.OFF_CARD, (8,))
+        self.mem_form = mk((int(C.E_MAX),), np.int64, C.OFF_FORM, (8,))
+        self.mem_summary = mk((int(C.S_V2),), np.float32, C.OFF_SUM, (4,))
+        self.mem_answer = mk((), np.int64, C.OFF_ANS, ())
+
+
+def has_mem(policy) -> bool:
+    return getattr(policy.model, "mem", None) is not None
+
+
+def loop_mem(obs_id, main, gid):
+    """obs_id.JavaMem's tables (production's own functions: v2_lut, lock_head, _regen_table, slugs, units, detector
+    slugs, java_table) WITHOUT its harness hooks (those wrap production's act / _memory / result for the identity run)."""
+    import jpype
+    from pipeline import match_memory as MM
+    J = object.__new__(obs_id.JavaMem)
+    J.MM, J.main, J.ident, J.gid = MM, main, None, gid
+    J.C = C = jpype.JClass("CfMem")
+    J.T = T = C.Tables()
+    J.check_constants()
+    D = jpype.JArray(jpype.JDouble)
+    lut, head, (bp, rate, cum) = MM.v2_lut(gid), MM.lock_head(), MM._regen_table()
+    T.lutDeck, T.lutAns = D(lut["deck"].tolist()), D(lut["answer"].tolist())
+    T.lockMean, T.lockStd, T.lockW = (D(head[k].tolist()) for k in ("mean", "std", "w"))
+    T.lockB = float(np.asarray(head["b"]).reshape(-1)[0])
+    T.regenBp, T.regenRate, T.regenCum = D(bp.tolist()), D(rate.tolist()), D(cum.tolist())
+    J.slug_of, J.unit_of, J.cid_ready = {}, {}, False
+    J.Int = jpype.JArray(jpype.JInt)
+    return J
 
 
 # ids [48] = hand_slot 4, hand_card 4, hand_form 4, next_card, next_form, deck_card 8, deck_form 8, slot_card 9, slot_form 9
@@ -147,6 +187,8 @@ class Producer:
         self.tm = Counter()                                  # seconds per stage (java / fill / start / decide / forward ...)
         self.progress = None                                 # bench.py: called after every round with the totals
         self.cl, self.opp_name, self.want_ver = None, {}, None
+        self.lmem = None                                     # loop_mem(): CfMem tables once a memory model plays
+        self._raw = RoyaleSelfPlayEnv.raw                    # production's raw() (the capture env's is stubbed)
         if server:                                           # LOOP-SRV PolicyServer (serve.py) at this address
             from pipeline.policy_server import connect
             self.cl = connect(server)
@@ -176,12 +218,48 @@ class Producer:
                            int(catalog_card_form(f[0]["card_id"])[1]) if f else 0)
             k += 1
         shim = SimpleNamespace(L=L, main=self.main, pub=self.pub, jc=self.jc, names=self.card_names)
-        return k + self.fill_fn(shim)                      # the rest (names, pub, cue, cyc) as Cohort.fill does
+        k += self.fill_fn(shim)                            # the rest (names, pub, cue, cyc) as Cohort.fill does
+        if self.lmem is not None:                          # CfMem: detector slugs, then the bodies observe() missed
+            self.lmem.fill_det()
+            k += self._mem_bodies()
+        return k
+
+    def _mem_bodies(self) -> int:
+        """obs_id.JavaMem.resolve for the fast loop: each missing "card|body|form#entity id" -> the unit of the key
+        MatchMemory gives that body (public_frame source 'sim' on production's raw() entity of the SAME battle, read
+        off the facade of a match whose row stopped at the memory stage)."""
+        from pipeline import vocab
+        from pipeline.obs_contract import catalog_card_form
+        from pipeline.public_observation import public_frame
+        miss = [str(m) for m in self.lmem.T.takeMissing()]
+        if not miss:
+            return 0
+        rows = np.flatnonzero(self.v.meta[:, 0].astype(bool) & (self.v.meta[:, 5] == 6))
+        env, cf0 = self.env, self.env.core._cf
+        ents = []
+        try:
+            for i in sorted({int(r) // 2 for r in rows}):
+                env.core._cf = self.L.core(i)
+                st = self._raw(env)
+                ents.append((st["tick"], {int(e["entity_id"]): e for e in st["entities"]}))
+        finally:
+            env.core._cf = cf0
+        for m in miss:
+            k, eid = m.rsplit("#", 1)
+            hit = [(t, e[int(eid)]) for t, e in ents if int(eid) in e]
+            if not hit:
+                raise RuntimeError(f"CfMem missing body {m}: entity in no stopped match")
+            self.stats["mem_eid_shared"] += int(len(hit) > 1)
+            f = public_frame({"tick": hit[0][0], "entities": [hit[0][1]]}, source="sim")["entities"]
+            name = catalog_card_form(int(f[0]["card_id"]))[0] if f else None
+            key = vocab.engine_key(name) if name else None
+            self.lmem.T.putBody(k, self.lmem.unit(key) if key else -1)
+        return len(miss)
 
     def _resolve_rows(self) -> None:
         """Rows that met a table key Python had not filled: fill, resume them; until none is left."""
         for _ in range(20):
-            if not (self.v.meta[:, 0].astype(bool) & (self.v.meta[:, 5] != 6)).any():
+            if not (self.v.meta[:, 0].astype(bool) & (self.v.meta[:, 5] != int(self.L.DONE))).any():
                 return
             self.stats["fills"] += self._fill()
             if int(self.L.rebuild()) == 0:
@@ -194,8 +272,8 @@ class Producer:
             pol, mi = self.E.load_policy(self.R.REPO / path, self.dev)
             if not isinstance(pol, self.E.GenPolicy) or pol.gid != self.model.gid:
                 raise NotImplementedError(f"opponent {path}: CfTrain shares one card-id table per match (same vocab only)")
-            if getattr(pol.model, "mem", None) is not None:
-                raise NotImplementedError(f"opponent {path}: inputs the learner's builders do not make")
+            if has_mem(pol) and getattr(pol.model.mem, "version", "v1") != "v2":
+                raise NotImplementedError(f"opponent {path}: memory {pol.model.mem.version} (CfMem ports v2)")
             self.opp_cache[path] = (pol, str(mi.get("grid", "floor")))
             self.opp_name[id(pol)] = path                    # the server's model name for it (serve.py --opp PATH)
         return self.opp_cache[path]
@@ -255,6 +333,8 @@ class Producer:
                     self.L.putGidMatch(i, int(cid), int(self.model.gid[card_key(nm)]))
         self.serial += 1
         self.L.setJob(i, self.serial, int(seed) & 0x7FFFFFFF, *a[0], *a[1])
+        if self.lmem is not None:
+            self.L.setMem(i, has_mem(sides[0].model), has_mem(sides[1].model))
         for s in sides:                                       # Match.prepare's first-decision clock
             s.last_play_tick = None
             s.fl = Counter()                                  # fast-loop tallies (result())
@@ -309,6 +389,8 @@ class Producer:
              **({"extrapolate_ticks": ls.extrap} if ls.extrap else {}),
              **({"forms_mode": "deck", "form_fallbacks": m["form_fallbacks"]}
                 if getattr(self.env, "forms_mode", "base") == "deck" else {}),
+             **({"memory": self.lmem.java_table(self.L.memOf(i, side))} if cfg.get("record") and has_mem(ls.model)
+                else {}),
              "fastloop": {"crashed": bool(res[7]), "approx": ["card_mix_accepted", "plays", "opp_counter",
                                                               "refuse_reasons names", "ghost_distinct_delivered"]}}
         r["league"] = dict(m["spec"])
@@ -330,8 +412,6 @@ class Producer:
             raise NotImplementedError("posture / ability heads are not in the fast loop yet")
         self.net.load_state_dict(msd)
         self.net.eval()
-        if getattr(self.net, "mem", None) is not None:
-            raise NotImplementedError("memory models: LOOP-MEM's Java tables are not in CfTrain yet")
         cfg = R.actor_cfg(base, "rollout", self.aid, self.dev)
         need = {j[1]["opp"]["path"] for j in jobs}
         for pth in [x for x in self.opp_cache if x not in need]:
@@ -345,6 +425,16 @@ class Producer:
             oc = {**ocfg0, "policy": base["league_opp_policy"], "record": False, "T_gate": None, "T": R.opp_T(base),
                   **{k: base[k] for k in R.AO.STYLE_KEYS if k in base}, "grid": grid}
             opps[o["id"]] = (pol, R.live_opp_cfg(R.own_opp_cfg(oc, specs[o["id"]], base), specs[o["id"]], base))
+        mem_pols = [m for m in [self.model] + [x[0] for x in opps.values()] if has_mem(m)]
+        if mem_pols and self.lmem is None:                    # CfMem: one table set per JVM (v2 LUT of ONE gid)
+            if has_mem(self.model) and getattr(self.net.mem, "version", "v1") != "v2":
+                raise NotImplementedError(f"learner memory {self.net.mem.version}: CfMem ports v2")
+            self.lmem = loop_mem(self.obs_id, self.main, self.model.gid)
+            self.L.enableMemory(self.lmem.T)
+            self.lmem.slugs(self.env)
+            self.v.memory(self.L, self.n)
+        if any(m.gid != self.model.gid for m in mem_pols):
+            raise NotImplementedError("memory opponents with another card-id table (CfMem's LUT is per gid)")
         todo = list(R.rollout_jobs(jobs, update, base.get("learner_pipeline_frac", 0), base["seed"]))[::-1]
         live: dict = {}                                       # match slot -> its record
         results, skipped, st = [], [], Counter()
@@ -417,6 +507,10 @@ class Producer:
                      "effects": v.effects[idx], "own_ability": v.own_ability[idx], "opp_cycle": v.opp_cycle[idx]}
             if self.jc is not None:
                 batch["cue"] = v.cue[idx]
+            if has_mem(model):                                # Match._memory's MEM_KEYS (CfMem)
+                from pipeline.match_memory import MEM_KEYS
+                for k in MEM_KEYS:
+                    batch[k] = getattr(v, k)[idx]
             ids = v.ids[idx]
             for k, a, b in ID_SPLIT:
                 batch[k] = np.ascontiguousarray(ids[:, a:b] if b is not None else ids[:, a])
@@ -484,6 +578,8 @@ class Producer:
                     s.last_play_tick = tick
                 s._cur = (tick, SimpleNamespace(t_sec=vt * 0.05), SimpleNamespace(my_elixir=float(v.el[r])))
                 s._view_tick = vt
+                if has_mem(model) and getattr(s, "mem", None) is None:
+                    s.mem = "cfmem"                           # _record's mem_t switch (the table is CfMem's)
                 s._gen_row = {k: batch[k][j] for k in keys}
                 s._obs = (s._gen_row["tok"], s._gen_row["mask"], s._gen_row["sc"], s._gen_row["past"])
             pre = [s.pre(hand[j]) for j, s in enumerate(sides)]
@@ -496,12 +592,12 @@ class Producer:
                 a = v.act[r]
                 if d["play"]:
                     X, Y = ep.cell_to_engine(d["cell"], s.mirror, s.cfg["grid"])
-                    a[:] = (1, int(d["slot"]), int(d["cell"]), int(X) * SCALE // K, int(Y) * SCALE // K)
+                    a[:] = (1, int(d["slot"]), int(d["cell"]), int(X) * SCALE // K, int(Y) * SCALE // K, int(X), int(Y))
                     s.fl[s.deck.cards[d["slot"]]] += 1        # card_mix_attempted / play_elixir / stall (Match._land)
                     s.fl_el.append(float(int(s._cur[2].my_elixir)))
                     s.n_stall += int(d["why"] == "stall")
                 else:
-                    a[:] = (0, -1, -1, 0, 0)
+                    a[:] = (0, -1, -1, 0, 0, 0, 0)
             self.tm["decide_py"] += time.perf_counter() - d0
         if fs:
             self.cl.done(list(fs.values()))
@@ -571,7 +667,15 @@ class Producer:
             if s.cfg.get("record"):
                 rows = s.__dict__.setdefault("fl_rows", {})
                 for k in keys:
-                    rows.setdefault(k, []).append(batch[k][j])
+                    if not k.startswith("mem_"):              # MEM_KEYS ride in result["memory"] (production)
+                        rows.setdefault(k, []).append(batch[k][j])
+                if has_mem(model):
+                    rows.setdefault("mem_t", []).append(int(tick[j]))
+                    if MEMHASH:                               # compare.py: the forward's MEM row vs the learner rebuild
+                        import hashlib
+                        from pipeline.match_memory import MEM_KEYS
+                        rows.setdefault("mem_h", []).append(hashlib.sha1(b"".join(
+                            np.ascontiguousarray(batch[k][j]).tobytes() for k in MEM_KEYS)).hexdigest())
                 for k, x in (("tick", int(tick[j])), ("allowed", allowed[j]), ("stalled", bool(stalled[j])),
                              ("gate_sampled", bool(gate_sampled[j])), ("played", bool(playing[j])),
                              ("slot", int(slots[j])), ("cell", int(cells[j])), ("lp_gate", float(lp_gate[j])),
@@ -582,11 +686,11 @@ class Producer:
             a = v.act[r]
             if playing[j]:
                 X, Y = ep.cell_to_engine(int(cells[j]), s.mirror, s.cfg["grid"])
-                a[:] = (1, int(slots[j]), int(cells[j]), int(X) * SCALE // K, int(Y) * SCALE // K)
+                a[:] = (1, int(slots[j]), int(cells[j]), int(X) * SCALE // K, int(Y) * SCALE // K, int(X), int(Y))
                 s.fl[s.deck.cards[int(slots[j])]] += 1
                 s.fl_el.append(float(el_int[j]))
             else:
-                a[:] = (0, -1, -1, 0, 0)
+                a[:] = (0, -1, -1, 0, 0, 0, 0)
 
     @staticmethod
     def _choice(P, rngs):
@@ -624,6 +728,10 @@ class Producer:
             out["tick"] = sc("tick", np.int64)
         if "gate_tau" in rows:
             out["gate_tau"] = sc("gate_tau", np.float64)
+        if "mem_t" in rows:                                  # Plan A memory model: each row's memory tick
+            out["mem_t"] = sc("mem_t", np.int64)
+        if "mem_h" in rows:
+            out["mem_h"] = list(rows["mem_h"])
         if "v_old" in rows:                                  # LOOP-SRV: the critic of the same batch / version
             out["v_old"] = sc("v_old", np.float64)
             out["wver"] = sc("wver", np.int64)
@@ -631,6 +739,7 @@ class Producer:
 
 
 FAST_DECIDE = os.environ.get("FASTLOOP_DECIDE", "fast") == "fast"
+MEMHASH = bool(os.environ.get("FASTLOOP_MEMHASH"))           # compare.py only: per-row MEM_KEYS hashes in the traj
 
 
 def fast_ok(c: dict) -> bool:

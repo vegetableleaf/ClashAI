@@ -8,7 +8,7 @@ export PYTHONPATH=$HOOK$CB:/workspace/d2/stage/pylib ROYALE_RUNTIME=fin16-linux 
   MKL_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1 RL_BATCH_SHA=1 ROYALE_ENGINE=crforge \
   CRFORGE_LIB=${CF_LIB:-/workspace/d2t2/lib_cfclone} CRFORGE_TABLES=/workspace/crforge_cache/tables/16.402.22 \
   CRFORGE_FACADE_BUILD=${FACADE_BUILD:-$CB/scratchpad/gauntlet/L74/plan1026/pilot/loop/jbuild} CUBLAS_WORKSPACE_CONFIG=:4096:8
-CFG=scratchpad/gauntlet/L74/plan1026/pilot/loop/ref_v0.yaml
+CFG=${CFG:-scratchpad/gauntlet/L74/plan1026/pilot/loop/ref_v0.yaml}
 PY=/workspace/venvf16/bin/python
 mkdir -p /workspace/loop/logs
 $PY -c "import sys; sys.path.insert(0, 'scratchpad/gauntlet/L74/plan1026/pilot/loop'); import producer, pathlib, os; producer.compile_java(pathlib.Path(os.environ['CRFORGE_FACADE_BUILD']), pathlib.Path(os.environ['CRFORGE_LIB']))" || exit 1
