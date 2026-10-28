@@ -37,6 +37,8 @@ sys.path.insert(0, str(ROOT))
 
 CAP = 6600                 # last tick driven (regulation 3600 + overtime 2400 = 6000, plus the tiebreak)
 TOWER_OK = "tower-princess"
+# HF tower_card -> crforge_core.TOWER_GROUPS name (D1-C facade, c1853e0); a key not here blocks the replay
+TOWER_TROOPS = {TOWER_OK: None, "dagger-duchess": "DaggerDuchess", "cannoneer": "Cannoneer", "royal-chef": "ChefTower"}
 
 
 def base(key: str) -> str:
@@ -66,8 +68,9 @@ def source(r: dict, acts: list, catalog: dict) -> dict:
             if base(c["card_key"]) not in catalog:
                 src["blocks"].append("unsupported_card:" + base(c["card_key"]))
         tower = (p.get("tower_card") or {}).get("card_key") or TOWER_OK
-        if tower != TOWER_OK:
+        if tower not in TOWER_TROOPS:
             src["blocks"].append("tower_troop:" + tower)
+        src.setdefault("troops", {})[s] = TOWER_TROOPS.get(tower)
         src["decks"][s] = [c["card_key"] for c in deck]
         src["levels"]["cards"][s] = [int(c.get("level") or 16) for c in deck]
         src["levels"]["towers"][s] = int((p.get("tower_card") or {}).get("level") or 16)
@@ -170,6 +173,7 @@ def drive(src: dict, offset: int) -> tuple[dict, dict | None]:
                  for k in src["decks"][s]] for s in (0, 1)}
     cmds = {s: [p for p in src["plays"] if p["side"] == s] for s in (0, 1)}
     env.levels = src["levels"]
+    env.core._battle.set_tower_troops(src["troops"][0], src["troops"][1])   # persists across resets: set every replay
     try:
         env.reset(dict(tag=src["tag"], our_side=0, ghost_side=1, our_deck=decks[0], ghost_deck=decks[1],
                        our_commands=cmds[0], ghost_commands=cmds[1]))
@@ -318,18 +322,45 @@ def npz_to_parquet(npz: Path, out: Path, grades: dict) -> int:
     return n
 
 
+def facade_sha():
+    f = Path(os.environ.get("CRFORGE_LIB", "")).parent / "CfCore.java"
+    return hashlib.sha256(f.read_bytes()).hexdigest() if f.exists() else None
+
+
+def _atomic(path: Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path.with_suffix(".part"), "w") as f:   # fsync: the 10-28 02:22 reboot left 12 zero-length shard files
+        f.write(text)
+        f.flush()
+        os.fsync(f.fileno())
+    path.with_suffix(".part").rename(path)
+
+
 def run_shard(job: dict) -> dict:
-    out, sid = Path(job["out"]), job["sid"]
+    """One shard. ``job["redo"]`` = a reason prefix (e.g. "unusable:tower_troop:"): re-drive only that finished shard's
+    replays graded with it, write their rows to rows/<sid>.redo.parquet (own card_vocab, like every shard file), merge
+    their grades into grades/<sid>.jsonl and the counts into shards/<sid>.json; marker shards_redo/<sid>.json."""
+    out, sid, redo = Path(job["out"]), job["sid"], job.get("redo")
     done = out / "shards" / f"{sid}.json"
-    if done.exists():
+    mark = out / "shards_redo" / f"{sid}.json"
+    if redo is None and done.exists():
         return json.loads(done.read_text())
+    want = None
+    if redo is not None:
+        if mark.exists():
+            return json.loads(mark.read_text())
+        old = {g["tag"]: g for g in map(json.loads, (out / "grades" / f"{sid}.jsonl").read_text().splitlines())}
+        want = {t for t, g in old.items() if f"{g['tier']}:{g.get('reason', '')}".startswith(redo)}
+    sfx = "" if redo is None else ".redo"
     t0 = time.time()
-    tmp = out / "tmp" / sid
+    tmp = out / "tmp" / (sid + sfx)
     shutil.rmtree(tmp, ignore_errors=True)
     (tmp / "corpus").mkdir(parents=True)
     env, catalog = env_and_catalog()
     grades = {}
-    for src in hf_sources(Path(job["rp"]), Path(job["ap"]), job["lo"], job["hi"], catalog):
+    for src in (hf_sources(Path(job["rp"]), Path(job["ap"]), job["lo"], job["hi"], catalog) if want != set() else ()):
+        if want is not None and src["tag"] not in want:
+            continue
         g, rec = drive(src, job["offset"])
         grades[g["tag"]] = g
         if rec is not None:
@@ -355,20 +386,36 @@ def run_shard(job: dict) -> dict:
                     f.unlink()
             build([tmp / "corpus"], tmp / "rows.npz", feature_version=5, grid="lattice", workers=1, wait_stride=40,
                   play_window=20, shift_ticks=0, val_pct=10, log=None)
-        pth = out / "rows" / f"{sid}.parquet"
+        pth = out / "rows" / f"{sid}{sfx}.parquet"
         pth.parent.mkdir(parents=True, exist_ok=True)
         res["rows"] = npz_to_parquet(tmp / "rows.npz", pth, grades)
         res["parquet_sha256"] = hashlib.sha256(pth.read_bytes()).hexdigest()
         res["parquet_bytes"] = pth.stat().st_size
+        res["files"] = [dict(path=f"rows/{pth.name}", rows=res["rows"], sha256=res["parquet_sha256"],
+                             bytes=res["parquet_bytes"], facade_sha256=facade_sha())]
+    res["rows_s"] = round(time.time() - t1, 1)
+    if redo is not None:                                       # merge into the finished shard, then mark
+        base = json.loads(done.read_text())
+        base.setdefault("files", [dict(path=f"rows/{sid}.parquet", rows=base["rows"], sha256=base.get("parquet_sha256"),
+                                       bytes=base.get("parquet_bytes"), facade_sha256=job.get("prev_facade"))]
+                        if base["rows"] else [])
+        old.update(grades)
+        grades = old
+        base["files"] += res.get("files", [])
+        base["rows"] += res["rows"]
+        base["parquet_bytes"] = base.get("parquet_bytes", 0) + res.get("parquet_bytes", 0)
+        base["drive_s"] += res["drive_s"]
+        base["rows_s"] += res["rows_s"]
+        base.setdefault("redo", []).append(dict(reason=redo, replays=res["replays"], rows=res["rows"],
+                                                tiers=res["tiers"], build_failed=res["build_failed"]))
+        res, mres = base, res
     res["tiers"] = dict(Counter(g["tier"] for g in grades.values()))
     res["reasons"] = dict(Counter(f"{g['tier']}:{g.get('reason', '')}" for g in grades.values()))
-    res["rows_s"] = round(time.time() - t1, 1)
-    (out / "grades").mkdir(parents=True, exist_ok=True)
-    (out / "grades" / f"{sid}.jsonl").write_text("".join(json.dumps(g) + "\n" for g in grades.values()))
+    _atomic(out / "grades" / f"{sid}.jsonl", "".join(json.dumps(g) + "\n" for g in grades.values()))
     shutil.rmtree(tmp, ignore_errors=True)
-    done.parent.mkdir(parents=True, exist_ok=True)
-    done.with_suffix(".part").write_text(json.dumps(res))
-    done.with_suffix(".part").rename(done)
+    _atomic(done, json.dumps(res))
+    if redo is not None:
+        _atomic(mark, json.dumps(mres))
     return res
 
 
@@ -418,8 +465,12 @@ def manifest(out: Path, args: dict) -> dict:
              shards=len(done), replays=sum(d["replays"] for d in done), rows=sum(d["rows"] for d in done),
              bytes=sum(d.get("parquet_bytes", 0) for d in done), tiers=dict(tiers), reasons=dict(reasons.most_common()),
              drive_s=round(sum(d["drive_s"] for d in done), 1), rows_s=round(sum(d["rows_s"] for d in done), 1),
-             files=[dict(path=f"rows/{d['sid']}.parquet", rows=d["rows"], sha256=d.get("parquet_sha256"),
-                         replays=d["replays"], tiers=d["tiers"]) for d in done if d["rows"]])
+             files=[f for d in done for f in (d.get("files") or ([dict(
+                 path=f"rows/{d['sid']}.parquet", rows=d["rows"], sha256=d.get("parquet_sha256"),
+                 bytes=d.get("parquet_bytes"), facade_sha256=None)] if d["rows"] else []))])
+    # files written before a redo pass carry facade None here (= the manifest's facade_sha256 of that pass)
+    m["facade_sha256_by_file"] = dict(Counter(str(f["facade_sha256"]) for f in m["files"]))
+    m["redo"] = dict(Counter(f"{r['reason']}" for d in done for r in d.get("redo", [])))
     (out / "manifest.json").write_text(json.dumps(m, indent=1))
     return m
 
@@ -434,6 +485,8 @@ def main(argv=None) -> int:
     r.add_argument("--limit", type=int, default=0, help="replays (whole shards, round-robin over parts)")
     r.add_argument("--workers", type=int, default=48)
     r.add_argument("--offset", type=int, default=0, help="given tick = HF replay tick + offset")
+    r.add_argument("--redo", default=None, help="re-drive only finished shards' replays graded '<tier>:<reason>' "
+                   "starting with this, e.g. 'unusable:tower_troop:' (run_shard docstring)")
     m = sub.add_parser("manifest")
     m.add_argument("--out", type=Path, required=True)
     a = ap.parse_args(argv)
@@ -446,6 +499,10 @@ def main(argv=None) -> int:
     a.out.mkdir(parents=True, exist_ok=True)
     js = jobs(a.data, a.out, a.chunk, a.limit, a.offset)
     todo = [j for j in js if not (a.out / "shards" / f"{j['sid']}.json").exists()]
+    if a.redo:                                                 # only finished shards, once each (shards_redo marker)
+        prev = json.loads((a.out / "manifest.json").read_text()).get("facade_sha256")
+        todo = [dict(j, redo=a.redo, prev_facade=prev) for j in js
+                if (a.out / "shards" / f"{j['sid']}.json").exists() and not (a.out / "shards_redo" / f"{j['sid']}.json").exists()]
     print(f"[rd1] {len(js)} shards, {len(todo)} to do, {a.workers} workers", flush=True)
     t0, errs = time.time(), 0
     import multiprocessing as mp
