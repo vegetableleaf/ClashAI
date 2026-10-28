@@ -1,0 +1,61 @@
+matches 76 | RNG-free 40 | not RNG-free 36 {'Arrows': 28, 'Arrows,SkeletonKing': 1, 'Hunter': 4, 'Princess': 3}
+flags (all): {'own_cycle_fail': 3, 'opp_no_fitting_deal': 12} | flags (RNG-free): {'own_cycle_fail': 3, 'opp_no_fitting_deal': 10}
+unflagged 28 | exact apart from torn 22 | strictly exact (no torn frame) 21
+exact frames (all RNG-free) 73196 | frames 93286 | unflagged exact frames 67040 of 70025
+torn frames (unflagged): {'torn_hidden': 41} | matches with each: {'torn_hidden': 1}
+fitter moves kept (unflagged): 164 | of them FITNEXT (run after the onset): 0 | ghost presses enabled: 0
+  20261028_075553 unflagged                    first_div None  counts {'exact': 1804} detail null
+  20261028_075911 unflagged                    first_div None  counts {'exact': 2999} detail null
+  20261028_080427 own_cycle_fail,opp_no_fitting_deal first_div 1139  counts {'exact': 495, 'div': 1388} detail [["U_rec_only", [0, 11903, 14500, 130], "SkeletonArmy", null], ["U_rec_only", [0, 12844, 14497, 130], "SkeletonArmy", null], ["U_rec_only", [0, 13126, 13264, 13
+  20261028_081253 unflagged                    first_div None  counts {'exact': 3038} detail null
+  20261028_082325 unflagged                    first_div None  counts {'exact': 1765} detail null
+  20261028_083011 unflagged                    first_div None  counts {'exact': 3027} detail null
+  20261028_083923 unflagged                    first_div None  counts {'exact': 1814, 'torn_hidden': 41} detail null
+  20261028_084244 unflagged                    first_div None  counts {'exact': 2121} detail null
+  20261028_084638 own_cycle_fail               first_div 4285  counts {'exact': 2065, 'div': 412} detail [["S0_elixir", 51537, null, 61537]]
+  20261028_085416 unflagged                    first_div None  counts {'exact': 2359} detail null
+  20261028_091720 unflagged                    first_div 3519  counts {'exact': 2860, 'div': 170} detail [["U_rec_only", [1, 6499, 23499, 2076], "Knight", [0, 0, -392]], ["U_sim_only", [1, 6499, 23499, 1684], "C:Knight_EV1", [0, 0, 392]]]
+  20261028_092800 unflagged                    first_div None  counts {'exact': 1899} detail null
+  20261028_093127 opp_no_fitting_deal          first_div 151   counts {'div': 1754} detail [["U_rec_only", [0, 1544, 14749, 2711], "HogRider", null]]
+  20261028_093648 unflagged                    first_div None  counts {'exact': 3029} detail null
+  20261028_094226 unflagged                    first_div None  counts {'exact': 1943} detail null
+  20261028_095125 unflagged                    first_div None  counts {'exact': 1761} detail null
+  20261028_095444 unflagged                    first_div None  counts {'exact': 2268} detail null
+  20261028_100341 unflagged                    first_div 2930  counts {'exact': 1384, 'div': 374} detail [["U_rec_only", [1, 8500, 23500, -1], "Tombstone", [0, 0, 704]], ["U_rec_only", [1, 8606, 23606, 6748], "Tombstone", [-106, -106, -6045]], ["U_sim_only", [1, 85
+  20261028_101018 unflagged                    first_div 5968  counts {'exact': 2905, 'div': 121} detail [["U_rec_only", [0, 3499, 14500, 3578], "Goblinstein", null], ["U_rec_only", [0, 4499, 11000, 1153], "Goblinstein", null], ["U_rec_only", [1, 2226, 20256, 998],
+  20261028_101540 opp_no_fitting_deal          first_div 223   counts {'exact': 36, 'div': 1727} detail [["U_rec_only", [1, 13500, 17424, 323], "GoblinGang", null], ["U_rec_only", [1, 13501, 18076, 212], "GoblinGang", null], ["U_rec_only", [1, 14500, 17499, 323], 
+  20261028_101857 own_cycle_fail               first_div 2791  counts {'exact': 1320, 'div': 445} detail [["U_rec_only", [0, 11586, 12045, 1966], "Knight", [1, -44, 0]], ["U_rec_only", [0, 12065, 11077, 130], "Skeletons", [-478, 924, 1836]], ["U_rec_only", [0, 1305
+  20261028_103056 opp_no_fitting_deal          first_div 386   counts {'exact': 116, 'div': 1644} detail [["U_rec_only", [0, 7276, 250, 417], "Rascals", null], ["U_rec_only", [0, 8337, 1981, 2928], "Rascals", null], ["U_rec_only", [0, 9722, 250, 417], "Rascals", nu
+  20261028_103409 unflagged                    first_div None  counts {'exact': 2839} detail null
+  20261028_105639 unflagged                    first_div None  counts {'exact': 3012} detail null
+  20261028_110156 unflagged                    first_div None  counts {'exact': 3018} detail null
+  20261028_110715 unflagged                    first_div 4505  counts {'exact': 2165, 'div': 495} detail [["U_rec_only", [1, 1500, 19500, 2556], "Xbow", [1000, 0, 0]], ["U_sim_only", [1, 2500, 19500, 2556], "C:Xbow", [-1000, 0, 0]]]
+  20261028_111523 unflagged                    first_div None  counts {'exact': 1763} detail null
+  20261028_112825 opp_no_fitting_deal          first_div 1123  counts {'exact': 486, 'div': 1279} detail [["A_rec_only", [1, 3500, 17500], "A:RoyalDelivery", null]]
+  20261028_114527 unflagged                    first_div None  counts {'exact': 3004} detail null
+  20261028_120054 opp_no_fitting_deal          first_div 289   counts {'exact': 478, 'div': 1092, 'torn_t1': 192, 'torn_step': 1} detail [["P_rec_only", [0, 8861, 3787], "P:Snowball", null]]
+  20261028_120406 unflagged                    first_div None  counts {'exact': 2744} detail null
+  20261028_120902 opp_no_fitting_deal          first_div 1653  counts {'exact': 751, 'div': 2285} detail [["U_rec_only", [0, 15261, 13589, 323], "Goblins", [0, -90, 0]], ["U_rec_only", [0, 16537, 14613, 2711], "HogRider", [-82, 136, 0]], ["U_sim_only", [0, 15261, 1
+  20261028_121643 unflagged                    first_div None  counts {'exact': 3020} detail null
+  20261028_122525 unflagged                    first_div None  counts {'exact': 3042} detail null
+  20261028_123045 unflagged                    first_div 1768  counts {'exact': 809, 'div': 1643} detail [["U_rec_only", [0, 1937, 13256, 130], "Witch", [-2, 0, 0]], ["U_rec_only", [0, 2622, 13578, 130], "Witch", [0, -4, 0]], ["U_rec_only", [0, 2783, 14372, 1341], 
+  20261028_124309 opp_no_fitting_deal          first_div 513   counts {'exact': 286, 'div': 1479} detail [["U_rec_only", [0, 2499, 14500, 130], "SuspiciousBush", null]]
+  20261028_124640 opp_no_fitting_deal          first_div 151   counts {'div': 1765} detail [["U_rec_only", [1, 14500, 17499, 2711], "HogRider", null]]
+  20261028_125629 unflagged                    first_div None  counts {'exact': 3022} detail null
+  20261028_130148 unflagged                    first_div 3404  counts {'exact': 1626, 'div': 141} detail [["T_rec_only", [0, 3500, 6500, 563], "tower", [0, 0, -77]], ["T_sim_only", [0, 3500, 6500, 486], "T:PrincessTower", [0, 0, 77]]]
+  20261028_130522 opp_no_fitting_deal          first_div 397   counts {'exact': 123, 'div': 1642} detail [["U_rec_only", [1, 10500, 25499, 1153], "Musketeer", null]]
+95% one-sided CP lower bound, exact apart from torn: 22/28 -> 0.6203
+95% one-sided CP lower bound, strictly exact: 21/28 -> 0.5813
+
+plants {'plants': 22434, 'caught': 22405} missed []
+all: unflagged 28 pass 22 (CP95 0.620) strict 21 (CP95 0.581)
+never scored before (not READER-TORN trial): unflagged 23 pass 17 (CP95 0.549) strict 16 (CP95 0.504)
+trial subset: unflagged 5 pass 5 (CP95 0.549) strict 5 (CP95 0.549)
+first-divergence census (unflagged failures):
+  20261028_091720 first_div 3519 div frames 170 [["U_rec_only", [1, 6499, 23499, 2076], "Knight", [0, 0, -392]], ["U_sim_only", [1, 6499, 23499, 1684], "C:Knight_EV1", [0, 0, 392]]]
+  20261028_100341 first_div 2930 div frames 374 [["U_rec_only", [1, 8500, 23500, -1], "Tombstone", [0, 0, 704]], ["U_rec_only", [1, 8606, 23606, 6748], "Tombstone", [-106, -106, -6045]], ["U_sim_only", [1, 8500, 23500, 703], "C:TombstoneHero_Monster_Passive", [0, 0, -704]], ["U_sim_only", [1, 8500, 23500, 4089995], "C:TombstoneHero_visual_dummy",
+  20261028_101018 first_div 5968 div frames 121 [["U_rec_only", [0, 3499, 14500, 3578], "Goblinstein", null], ["U_rec_only", [0, 4499, 11000, 1153], "Goblinstein", null], ["U_rec_only", [1, 2226, 20256, 998], "IceWizard", [27, -53, 0]], ["U_rec_only", [1, 2226, 20256, 1100], "IceWizard", [27, -53, -102]], ["U_sim_only", [1, 2253, 20203, 998], "C:
+  20261028_110715 first_div 4505 div frames 495 [["U_rec_only", [1, 1500, 19500, 2556], "Xbow", [1000, 0, 0]], ["U_sim_only", [1, 2500, 19500, 2556], "C:Xbow", [-1000, 0, 0]]]
+  20261028_123045 first_div 1768 div frames 1643 [["U_rec_only", [0, 1937, 13256, 130], "Witch", [-2, 0, 0]], ["U_rec_only", [0, 2622, 13578, 130], "Witch", [0, -4, 0]], ["U_rec_only", [0, 2783, 14372, 1341], "Witch", [-2, -2, 0]], ["U_rec_only", [0, 3350, 13317, 130], "Witch", [2, -1, 0]], ["U_rec_only", [0, 3745, 15205, 2875], "GoldenKnight", [-
+  20261028_130148 first_div 3404 div frames 141 [["T_rec_only", [0, 3500, 6500, 563], "tower", [0, 0, -77]], ["T_sim_only", [0, 3500, 6500, 486], "T:PrincessTower", [0, 0, 77]]]
+sorted results sha256 ba810965dd467894
