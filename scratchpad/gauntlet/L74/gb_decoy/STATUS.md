@@ -62,3 +62,28 @@
   `bash scratchpad/gauntlet/L70/live/start_live.sh icebow --no-fast-plays --ranked`.
 - Successor: `goblin-barrel-decoy` in the card vocab; Java obs rename (LOOP-INT notified).
 - Post-landing: GoblinDummy bodies still read as `goblins`; barrel_lane abstains while they live.
+
+## SIM side (LOOP-DECOY, 10-28 ~16:40 EDT): `barrel_decoy_sim: true` = the SIM shows what live's --barrel-decoy on shows
+- Change: `pipeline/crforge_core.barrel_decoy_sim_objects` (CRFORGE_BARREL_DECOY_SIM=1, set by rl_royale `barrel_decoy_sim:
+  true` via `barrel_decoy_sim_cfg`; absent = unset = today's spellObj) maps spells_evolved GoblinBarrel_EV1's Projectile
+  GoblinBarrelSpell_EV1 -> GoblinBarrel FLIGHT. The decoy (GoblinBarrelSpell_EV1_Decoy, actions GoblinBarrel_EV1_CreateDecoy)
+  stays unmapped = a crown-tower shot that projectile_observation.objects drops. No Java change: CfTrain copies the template
+  core's spellObj, so the fast loop gets the same map. pilot.yaml sets the key.
+- (a) probe `pilot/loop/decoy_probe.py` (33308, private tree /workspace/decoy/cb, fe364ceb + 16.635.3, B0 vocab), seeds 5-10:
+  6 evo casts: key off 0/144 in-flight ticks with a barrel token; key on 144/144 ticks exactly one token, = the live relabel
+  of the same board (reader rows, real first) 144/144; 22 plain casts identical off/on; entity rows identical on 1,056/1,056 ticks.
+  Results: .foreman/scratch/a2/decoy/probe_s{5..10}.json.
+- (a) compare.py lint_pn2 msg (32 matches, 8 with evo GB decks), GPU 1: key off 32/32 identical; key on 32/32 identical
+  (lp max 1.4e-6 card / 2.3e-6 cell), 6/32 matches play differently from key off (both paths agree in each).
+- (a) smokes (succ48_x_s101 --smoke): base tree (HEAD) and key-absent tree log the same u0000 batch_sha 1258dce43c686622;
+  key on d0fdbde9f2ed131e (expected); u0001 base = off 6639f4986ccd0c49, on 2c2d81f70c225d5b; config sha base = off
+  b5e2a2bbafef, on 5cefd49d1734; all 3 SMOKE PASS (resume check), 0 tracebacks. Laptop + pod tests: pipeline/tests/test_barrel_decoy_sim.py (5) + test_barrel_decoy.py.
+- Known limit (b): a successor whose vocab adds DECOY_KEY sees the decoy live, not in the SIM (needs a name -> card for the
+  decoy in sim_objects / royale_env.names: outside this ticket). Same gap, untested: Snowball_EV1 (projectile SnowballSpell_EV1)
+  and Zap_EV1 (area) are spells_evolved rows spell_objects does not walk; GoblinDummy bodies' SIM card not checked.
+- Eval / gate runs outside rl_royale (e1_eval, compare.py) must export CRFORGE_BARREL_DECOY_SIM=1 to use the same SIM.
+- Restart: `33308: cd /workspace/decoy/cb; . /workspace/decoy/env.sh; python scratchpad/gauntlet/L74/plan1026/pilot/loop/
+  decoy_probe.py --seed 5 --ckpt icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt --out /workspace/decoy/probe.json`;
+  compare `DECOY=1 CPUS=236-247 GPU=1 bash /workspace/decoy/cmp.sh MSG OUT.json --in-flight 8 --matches 8 --threads 4`;
+  smoke `CPUS=a-b bash /workspace/decoy/smoke.sh TREE RUN [barrel_decoy_sim=true]`.
+- Codex: LOOP-DECOY_1 (medium) BLOCKED correctly (GPU 0 busy, not covered); LOOP-DECOY_2 (medium) DONE: smokes + compares on GPU 1 (.foreman/scratch/a2/decoy/codex2_result.md; checked here).
