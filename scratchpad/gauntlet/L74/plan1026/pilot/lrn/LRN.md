@@ -44,6 +44,35 @@ Labels: (a) measured, (b) untested, (c) contradicted. Spec: ../LOOP_SPEC.md.
 - (a) TF32 off costs the learner nothing measurable: step 204 -> 184 ms, forward 133 -> 102 ms (sequential runs).
   rl_royale now sets cudnn + matmul allow_tf32 False under learner_deterministic. CPU smoke with
   learner_deterministic=true: crforge e816a6a4 / f060b678, SMOKE PASS (/workspace/lrn/logs/lrn_smoke_det.log).
+- DONE (a) (ii) shared no-grad pass (lead-approved): with kl_ref_refresh_every 1 (and no gate_ref / card_ref /
+  F6' / critic_ctx / cf), ref_terms(value=True) returns V(s), and value_rows reuses it (B["v_shared"]). share_gate.py,
+  update 5 on the 512 records with TF32 off: weights, ability head, both Adam states and the update record are
+  BIT-IDENTICAL to the two-pass code (model da447cc0, opt cfbefd6a). Update 115.6 -> 67.6 s (gae + vf-share 38.6 -> 0.7 s).
+  Log: /workspace/lrn/logs/share_gate.log.
+- (b, from code) the pilot pays a THIRD full pass per update: with kl_ref_refresh_every 1, self.ref stops being
+  ref_init after u0, so one_update reruns ref_terms(ref_init) for the entropy-floor baseline (~40 s per update). My
+  gates start fresh learners, so this pass is not in their timings. It only feeds a guard; a row subsample would do.
+- (i) cell_refine / tower_refine on played rows only: EXACT in math. cell_feat and tower_cell_feat
+  (model_gen.encode_gen) are read only by cell_logits_gen, which policy_terms calls only on the played rows (enc sliced
+  by pi). No batch-wide normalisation reads them. Bit identity depends on batch-size-dependent conv kernels (b). Not built.
+- (iv) evaluation (b, from the measured per-row costs on the 4090: no-grad forward ~0.2-0.26 ms/row, fwd+bwd step
+  ~0.72-0.8 ms/row; 512 matches = 159k rows; kl_stop_prev binds after ~145 steps = 37k rows):
+    today (refresh 1, 3 passes)   ~3 x 37 s + 27 s = ~140 s per 512 matches -> ~13k matches/h per 4090
+    + (ii)                        ~2 x 37 s + 27 s = ~100 s                  -> ~18k matches/h
+    + (i) (forwards ~2x, SPEED.md) ~2 x 19 s + 14 s = ~52 s                  -> ~35k matches/h
+    (iv) stored lp_old + v_old    0 full passes; KL to update-start needs a ref forward on the 145 x 256 minibatch rows
+                                  only (~4-8 s) + PPO 14-27 s = ~20-35 s, NEARLY INDEPENDENT of matches per update while
+                                  kl_stop binds -> 512 matches/update: 50-90k/h; 2,048/update: 210-370k/h on ONE 4090
+  DDP (2-4 GPUs) speeds only the PPO steps: 4-way at minibatch 256 = 64 rows/GPU, 94 vs 204 ms -> <= 2.2x (b). An RTX
+  PRO 6000 at ~1.7x (b) and 96 GB: larger minibatches do not help, because the step is linear in rows (measured).
+  So (iv) + more matches per update reaches 300k/h; (i) + (ii) + DDP alone does not.
+  LOOP-SRV (b03c70a, measured): the server does not return value today (cheap to add: one 128->7 Linear on its kept g,
+  28 B/row); value parity server vs CPU fp32 = 4.9e-7 max, lp 7.6e-6. Caveat: critic_ctx would need CtxHead in the push.
+- crforge smoke with the shared-pass code (refresh 50 there, so off): e816a6a4 / f060b678 SMOKE PASS.
+  Required with (iv): the server stores v (value_scalar of the same forward's value logits) per row; asked LOOP-SRV.
+  The ratio stays PPO's behaviour ratio exp(lp_new - lp_old) (what rl_royale already does). The KL stop stays
+  "to update-start" on the sampled minibatch rows. Stored-vs-recomputed effect on one update's record: NOT measured yet.
+  lp parity is measured (server 7.6e-6); value parity is not.
 - NOT DONE (proposed next tickets): (1) rows-per-forward cost: compute cell_refine / tower_refine only on played rows
   (SPEED.md estimates about 2x), and with kl_ref_refresh_every 1 the ref pass equals the value pass on the same weights
   (one no-grad pass saved, ~40 s per update); (2) DDP: from the 64-row step (94 ms), 4-way DDP at minibatch 256 gives

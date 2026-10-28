@@ -2338,6 +2338,8 @@ def value_rows(model, B: dict, chunk: int = 512, ctx_head=None) -> torch.Tensor:
     on ``B["ctx"]`` under critic_ctx)."""
     N = len(B["A"])
     out = []
+    if "v_shared" in B:                                       # LOOP-LRN: ref_terms' V, same weights (Learner.one_update)
+        return B.pop("v_shared")[:N]
     for s in range(0, N, chunk):
         idx = torch.arange(s, min(s + chunk, N), device=B["A"].device)
         if "hand_card" in B:
@@ -2487,7 +2489,7 @@ def cat_ent(lp):
 
 @torch.no_grad()
 def ref_terms(ref, B: dict, tau: float, T: float, chunk: int = 512, T_gate: Optional[float] = None,
-              gate_ref=None, gate_lo_max: Optional[float] = None, card_ref=None) -> dict:
+              gate_ref=None, gate_lo_max: Optional[float] = None, card_ref=None, value: bool = False) -> dict:
     """Frozen-ref tempered distributions for every row, once per update (E1 3.4): gate x [N], card log-probs [N, 8],
     cell log-probs [P, 2304] for the P played rows (``play_pos`` maps a row to its position, -1 if not played).
     ``gate_ref`` (F6 ``kl_ref_gate``): the gate x -- and so KL_gate and the gate entropy baseline -- comes from this
@@ -2500,10 +2502,12 @@ def ref_terms(ref, B: dict, tau: float, T: float, chunk: int = 512, T_gate: Opti
     dev = B["A"].device
     if gate_lo_max is not None and (gate_ref is None or "elixir" not in B):
         raise ValueError("gate_lo_max needs gate_ref and the per-row elixir (actor_cfg record_elixir)")
-    xs, xis, cards, cells = [], [], [], []
+    xs, xis, cards, cells, vs = [], [], [], [], []           # vs: ``value`` (LOOP-LRN shared pass) -> R["v"] = V(s)
     for s in range(0, N, chunk):
         idx = torch.arange(s, min(s + chunk, N), device=dev)
-        t = policy_terms(ref, B, idx, tau, T, T_gate=T_gate)
+        t = policy_terms(ref, B, idx, tau, T, T_gate=T_gate, value=value)
+        if value:
+            vs.append(t["v"])
         if gate_ref is not None:
             xg = policy_terms(gate_ref, B, idx, tau, T, T_gate=T_gate)["x"]
             if gate_lo_max is None:
@@ -2521,6 +2525,8 @@ def ref_terms(ref, B: dict, tau: float, T: float, chunk: int = 512, T_gate: Opti
     R = {"x": torch.cat(xs), "card_lp": torch.cat(cards),
          "cell_lp": torch.cat(cells) if cells else torch.zeros(0, E.N_CELLS, dtype=torch.float64, device=dev),
          "play_pos": play_pos}
+    if value:
+        R["v"] = torch.cat(vs) if vs else torch.zeros(0, dtype=torch.float64, device=dev)
     gs = B["gate_sampled"]
     if gate_lo_max is not None:
         low, xi = B["elixir"] < gate_lo_max, torch.cat(xis)
@@ -4349,9 +4355,16 @@ class Learner:
         gate_ref = getattr(self, "gate_ref", None)            # F6 kl_ref_gate (None = the init ref for all heads)
         glo = gate_lo_cfg(cfg)                                # F6' (None = off)
         card_ref = getattr(self, "card_ref", None)            # K1 kl_ref_card (None = the init ref)
+        # LOOP-LRN shared pass: with kl_ref_refresh_every 1 the anchor IS the update-start model, so ref_terms' forward
+        # also gives gae_batch's V(s) (one no-grad pass over every row instead of two; identity-gated, LRN.md)
+        share = (cfg.get("kl_ref_refresh_every") == 1 and gate_ref is None and card_ref is None and glo is None
+                 and getattr(self, "ctx_head", None) is None and adv_cfg(cfg)["advantage"] == "gae" and "cf" not in B
+                 and getattr(self, "share_ref_value", True))
         R = ref_terms(self.ref, B, cfg["tau"], cfg["T"], T_gate=cfg.get("T_gate"), gate_ref=gate_ref,
                       **({"gate_lo_max": glo["max_elixir"]} if glo else {}),
-                      **({"card_ref": card_ref} if card_ref is not None else {}))
+                      **({"card_ref": card_ref} if card_ref is not None else {}), **({"value": True} if share else {}))
+        if share:
+            B["v_shared"] = R.pop("v")
         ent_init = R["ent"]                                   # the entropy floor's baseline: the INIT's, same rows
         if self.ref is not getattr(self, "ref_init", self.ref):   # W16 moved anchor: one more no-grad pass, init net
             ent_init = ref_terms(self.ref_init, B, cfg["tau"], cfg["T"], T_gate=cfg.get("T_gate"), gate_ref=gate_ref,
