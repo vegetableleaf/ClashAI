@@ -47,6 +47,29 @@ Live split: `live_split.json` (frozen 2026-10-28 09:06 EDT, never rewritten; sea
    + pipeline/ of this commit; icebow/data -> /workspace/d2/cb/icebow/data (CLXIII 8d328a43, GEN 05db85a0, E4 430faaee == 32657);
    crforge a677e080 plain copied to /workspace/crforge_main/a677e080/plain (SHA256SUMS OK); tables 16.402.22 identical.
    Opponent: `/workspace/opp/cbs/opp_ckpt/opp_m10_s0_sim.pt` (sha256 88f8bc16...). Smokes: `bash /workspace/opp/smoke.sh CKPT OUT SEEDS T`.
+   18:41 UTC: the 33308 CONTAINER RESTARTED (uptime reset; every process on it died, other workers' too: P4 gate gap workers,
+   P2-SCORE allref.py, a d2tt gap run). cgroup memory usage was 117.97 GB of 125 GB at 18:30 (incl. page cache; Codex poll);
+   my load then = 24 closed-loop workers (~1.2 GB RSS each, measured after the restart: 12 workers = 15.0 GB) + 2 rl smokes.
+   Whether my load tipped it is (b) untested. Relaunched at 12 workers 18:42 UTC; smokes relaunched (old logs *_killed.log).
+   Level B rows RUNNING (33308, since 18:42 UTC, 12 workers): `/workspace/opp/score/rows/v0m10/` (driver log /workspace/opp/score/v0m10.out),
+   CLXIII vs v0 at T 1, crforge a677e080, G2 OFF (same as P2-SCORE's E4 / iu40 rows), seeds 741200 742000 (paired with them), 24 workers.
+   Restart (resumable per 480-game block): `cd /workspace/opp/score && (CB=/workspace/opp/cbs LIB=/workspace/crforge_main/a677e080/plain OPP_CKPT=opp_ckpt/opp_m10_s0_sim.pt OPP_T=1.0 WORKERS=12 setsid nohup bash /workspace/opp/cbs/scratchpad/gauntlet/L74/opp_model/humanlike/run_closed.sh v0m10 /workspace/opp/score/rows/v0m10 741200 742000 >> /workspace/opp/score/v0m10.out 2>&1 < /dev/null &)` (24 workers preceded the container restart)
+   Score (laptop, after fetching the rows to humanlike/rows/v0m10): `card.py score --name v0m10 --sim .../rows/v0m10 --no-d`.
+   rl_royale --smoke before / after this change RUNNING (33308): trees /workspace/opp/cbs_base (6b13c25^) and /workspace/opp/cbs
+   (6b13c25), logs /workspace/opp/logs/p2opp_smoke_{before,after}.log (`bash /workspace/opp/pod_rl_smoke.sh TREE RUN`); the W16
+   batch / weight shas must be identical. NOTE: pushed BEFORE this smoke finished (COMMON asks for it before the push).
+   Codex: `.foreman/scratch/a2/codex/P2OPP_1.md` (low): babysit both, fetch + score, tabulate.
+3. NOT STARTED: live opponent-seat slot rows. Spec for the build (reuses opp_model/o1_records.py + slot_redrive.sidecar + rows_to_npz):
+   blocks from live_split.json by log NAME before any read (the sealed block is never opened; live_table.main reads every graded log,
+   so do not call it); o1_records.build with FRAME_EVERY 2 (its counter miss was the 8-tick cadence) and --spell-targets; the
+   reader's frame ticks are on ONE parity per match (e.g. 151, 153, ...), never on tick % 10 == 0, so the live slot grid = the
+   frames at (tick - phase) % 10 == 0; opponent play tick = first sighting - (crforge 20 + detector lag), the lag measured on OUR
+   seat (tap tick -> first public sighting) so labels use the HF act-tick convention (a, `live_lag.py`, 150 logs per block: decided
+   play -> confirmed spawn p50 26 / 24 ticks train / calibration, modes 24-26, a second mode at 42-44 = a re-tap; = our ~6-tick tap
+   + crforge's 20 + detection, so an opponent's act tick ~ first sighting - 20, to refine per frame parity); ctx_band 4/5/6 = live L/M/R (trophies / mode),
+   era 2; deck ids via --deck-map of the HF rows; the 99% self-check on OUR seat = o1_finalize's check on the new records (O1 missed it
+   on the public opponent-elixir counter, 93.8 / 96.2%, and on train-era unit counts, 96.8%). Then `train_gen --init opp_m10_s0.pt`
+   on the TRAIN block (+ 20% HF share, lr 1e-5..3e-5, stop on a time-ordered tail of the train block), level A on the calibration block.
 
 ## STATUS history (P2-OPP1, updated 2026-10-28 ~13:57 EDT pod clock)
 Done + pushed: step 1 model / trainer options + tests (70cd720); live split frozen (0bc4874); slot re-drive, rows_to_npz,
