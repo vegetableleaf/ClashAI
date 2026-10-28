@@ -7,8 +7,9 @@ Per row (REPORT_opponents 1.4: every play slot, 1/8 of the no-play slots weighte
   * kept: tier A / B rows (B = the prefix before the first refusal, as built); PLAY rows; WAIT rows on the 10-tick grid
     (tick % 10 == 0). Off-grid wait rows (frames on the other side's play ticks) are dropped: not slots.
   * slot_ok = grid row (wait rows; a play ON a grid tick would be one, HF has none); slot_ev = this side plays within the
-    slot (0 <= play_dt < 10), slot_tick = play_dt. No-play grid rows are kept with probability 1 / keep_wait by a stable
-    hash of (tag, side, tick) and get row_w = keep_wait; every other row has row_w 1.
+    slot (0 <= play_dt < 10), slot_tick = play_dt. Grid rows with a play or an ability press in the slot are always
+    kept; the other grid rows with probability 1 / keep_wait (stable hash of tag, side, tick) and row_w = keep_wait
+    (Horvitz-Thompson: row_w = 1 / inclusion probability, so the timing AND ability likelihoods stay unbiased).
   * card_ok = not hand_inferred (the hand before a side's 4th play is a fitted deal: no card label there).
   * ab_ok = grid row with an own visible ability controller (own_ability card > 0); ab_ev = 0 <= ab_dt < 10.
   * deck_gid = id of the (card, form) set when >= --deck-min-sides train sides have it, else 0 (unknown).
@@ -93,7 +94,9 @@ def main(argv=None) -> int:
         utag, inv = np.unique(tags, return_inverse=True)
         crc = np.array([zlib.crc32(x.encode()) for x in utag], np.uint64)[inv]
         keep_w = mix(crc, side, tick) % np.uint64(a.keep_wait) == 0
-        keep = np.isin(tier, ("A", "B")) & ((gate == 1) | ev | (grid & keep_w))
+        abev = grid & (ab_dt >= 0) & (ab_dt < SLOT_TICKS)
+        sure = ev | abev                     # inclusion probability 1; other grid rows 1 / keep_wait -> row_w = 1 / that
+        keep = np.isin(tier, ("A", "B")) & ((gate == 1) | sure | (grid & keep_w))
         if a.only_split is not None:
             c100 = np.array([zlib.crc32(x.encode()) % 100 for x in utag])[inv]
             keep &= np.where(c100 < 5, 1, np.where(c100 < 10, 2, 0)) == a.only_split
@@ -123,7 +126,7 @@ def main(argv=None) -> int:
         sel = np.concatenate([np.arange(off[j], off[j + 1]) for j in idx]) if len(idx) else np.zeros(0, np.int64)
         toks.append(flat[sel]); uforms.append(uf[sel])
         d["_cnt"] = cnt
-        w = np.where(grid & ~ev, float(a.keep_wait), 1.0)[idx].astype(np.float32)
+        w = np.where(grid & ~sure, float(a.keep_wait), 1.0)[idx].astype(np.float32)
         hi = np.asarray(t.column("hand_inferred").combine_chunks()).astype(bool)[idx]
         oa = d["own_ability"]
         d.update(row_w=w, card_ok=(~hi).astype(np.int8), slot_ok=grid[idx].astype(np.int8),
