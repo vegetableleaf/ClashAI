@@ -29,12 +29,17 @@
   barrel_decoy, F5 docs. Re-run (a): model replay r2 byte-identical to r1 on all 56 logs (`results/model_replay_r2.txt`);
   --check with the flag on: LIVE_CHECK_PASS, barrel_decoy true, reader merged_sf.
 
+- DEPLOYED 10-28 11:45 EDT (owner go via lead; verifier PASS_WITH_NOTES + fixes): `--barrel-decoy on` appended to
+  scratchpad/gauntlet/L70/live/LIVE_OPTIONS; backup scratchpad/gauntlet/L70/live/LIVE_OPTIONS.pre_gbdecoy_20261028.
+  Deploy --check: LIVE_CHECK_PASS, barrel_decoy true, merged_sf. First 3 matches (114527, 115053, 115543): start event
+  barrel_decoy true, from_file on, merged_sf; normal stops; 0 tracebacks / decoy warnings in overnight.out since the start.
+  Entry live_play.py (HAND_READER_ENABLED 0). Watch: `python .foreman/scratch/gb_decoy/newlogs.py 20261028_1144`.
+
 ## Next
-- After PASS: append `--barrel-decoy on` to scratchpad/gauntlet/L70/live/LIVE_OPTIONS; start_live.sh icebow
-  --no-fast-plays --ranked --check; stop_live.sh (wait 'done'); no live_play.py left; start_live.sh icebow
-  --no-fast-plays --ranked; start event barrel_decoy true + reader merged_sf. Rollback: remove the line, same restart.
-- Model-level replay of the 50 evo windows (baseline vs barrel_decoy.objects) through the real GenPilot, as
-  `scratchpad/gauntlet/L74/speed/live_profile.py` does; run on a pod (not the live laptop). Not started.
-- Successor: add `goblin-barrel-decoy` to the card vocab; crforge Java obs (CfPubObj) must rename the decoy.
-- Post-landing: GoblinDummy bodies map to `goblins` (vocab._SPELL_BODY; the "81-hp body" = GoblinDummy 32 x 2.56 at
-  L11); barrel_lane abstains while they live. Not changed.
+- Watch evo-barrel casts live: re-run `scan.py 'live_play_20261028_1[2-9]*.jsonl' ...` + `measure.py` on post-deploy logs;
+  compare the play metrics with the 30 matches before 11:43.
+- Rollback: `cp scratchpad/gauntlet/L70/live/LIVE_OPTIONS.pre_gbdecoy_20261028 scratchpad/gauntlet/L70/live/LIVE_OPTIONS`;
+  `bash scratchpad/gauntlet/L70/live/stop_live.sh`; wait for '[sup] done' in supervisor.log;
+  `bash scratchpad/gauntlet/L70/live/start_live.sh icebow --no-fast-plays --ranked`.
+- Successor: `goblin-barrel-decoy` in the card vocab; Java obs rename (LOOP-INT notified).
+- Post-landing: GoblinDummy bodies still read as `goblins`; barrel_lane abstains while they live.
