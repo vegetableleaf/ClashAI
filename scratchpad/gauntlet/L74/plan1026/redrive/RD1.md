@@ -62,7 +62,10 @@ python -I summarize.py /workspace/redrive/full_NEW                              
 Pod 33308, `/workspace/redrive/full_bec5811a` (main PID 1576976, log `/workspace/redrive/full_bec5811a.log`),
 1,010 shards x 250, 50 workers. Outputs: `rows/<part>_<lo>.parquet`, `grades/<sid>.jsonl` (per replay tier, reason,
 cut), `shards/<sid>.json`, `manifest.json` (crforge build sha, tables, facade sha, code head, totals, per file sha256).
-Estimate (b) from the pilot: ~6 GB, 7-10 h.
+First 38 shards (9,500 replays, (a)): A 2,046 (21.5%) / B 6,195 / unusable 1,259; 64.5% of driven plays accepted;
+0 shard errors; ~700 s wall per 250-replay shard at 50 workers (38 shards in ~12 min, ~13 replays/s), so the
+1,010 shards take about 5 h (b, extrapolated). ~40-46k rows per shard -> ~42 M rows. Disk 93 GB free after the first
+wave; parquet ~6 GB projected (b).
 
 ## Not done
 - **Self-check (builder on our seat vs live decision inputs, >= 99% fields): not run.** Live `decision` events carry
