@@ -30,6 +30,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument("code"); ap.add_argument("ckpt"); ap.add_argument("data"); ap.add_argument("out_json")
 ap.add_argument("--mode", default="all", choices=("all", "nolat", "latonly"))
 ap.add_argument("--memory-tables", default=None)
+ap.add_argument("--mmap-cache-dir", default=None, help="fresh dir: the npz is extracted there and memory-mapped (pods with a small memory cap)")
 ap.add_argument("--groups", default="heldout_v32,heldout_hf,v3val,train_v32,train_hf,ice_v32,ice_hf")
 a = ap.parse_args()
 sys.path.insert(0, a.code)
@@ -42,7 +43,11 @@ from pipeline.model_v3 import cell_label, cell_index, tile_of_cell, GRID_X, GRID
 ICEBOW = ("tornado", "tesla", "ice-wizard", "x-bow", "rocket", "knight", "the-log", "skeletons")
 dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 t0 = time.time()
-arrs, meta = load_ds(a.data)
+if a.mmap_cache_dir:
+    from pipeline.dataset_spool import load_mapped
+    arrs, meta = load_mapped(a.data, a.mmap_cache_dir)
+else:
+    arrs, meta = load_ds(a.data)
 vocab = meta["card_vocab"]
 model, st = load_model(a.ckpt, dev)
 model.eval()
