@@ -78,7 +78,7 @@ PRESPELL_SPAWN = {'GoblinBarrel', 'Graveyard'}
 # Monk, Mighty Miner; the Golden Knight shows none) are dated from it as hero casts are, replayed through the ability slot,
 # and no longer flag their fights opp_ability_unobserved on ext logs
 CHAMP_CASTS = os.environ.get('PARITY_CHAMP_CASTS', '1') != '0'   # the default since 10-20 (as H-PRESPELL); PARITY_CHAMP_CASTS=0 restores
-CHAMP_STATE10 = {'SkeletonKing', 'Monk', 'MightyMiner'}
+CHAMP_STATE10 = {'SkeletonKing', 'Monk', 'MightyMiner'} | set(filter(None, os.environ.get('SME_CHAMP_EXTRA', '').split(',')))   # SME-F1FIX-3: SME_CHAMP_EXTRA=LittlePrince (off by default)
 SPAWN_SLOW = os.environ.get('PARITY_SPAWN_SLOW', '1') == '1'   # H-SPAWN-SLOW (W19 round 1, kept: +11 / -4 on 43,867 fights); PARITY_SPAWN_SLOW=0 restores
 FORM_ORACLE = set(filter(None, os.environ.get('PARITY_FORM_ORACLE', '').split(',')))   # W19 DIAGNOSTIC oracle (cards), never a default
 FORM_SYM = set(filter(None, os.environ.get('PARITY_FORM_SYM', '').split(',')))         # W19 round-2 probe (cards), opt-in
@@ -681,8 +681,11 @@ def deployments(m, catalog, life=None, own_unit=None, stats=None):
         # A hero's ability object can share the card id and dwarf its units (Hero Goblins: a 3720 / 4090 hp object over
         # 293 / 323 hp goblins), so the max_hp rule dropped every Hero Goblins play as a role-child (diag_night/knight).
         # A hero body whose max_hp IS the card's own unit at some level (own_unit = Engine.level) is a play's body.
+        # SME-F1FIX-3 (SME_CHAMP_OWN=1, off by default): the same exemption for a champion whose ability body shares its
+        # card id and out-sizes it (Little Prince 1116 hp, guardian 2556: 0.437 < .45 made every Little Prince play a child).
         child_by_hp = r['max_hp'] < .45*top[r['side'], r['card_id']] and not (
-            own_unit and form_of(r['card_id'], c) == 2 and own_unit(c['display_name'], r['max_hp']))
+            own_unit and (form_of(r['card_id'], c) == 2 or (os.environ.get('SME_CHAMP_OWN') == '1' and c.get('rarity') == 'Champion'))
+            and own_unit(c['display_name'], r['max_hp']))
         if near_parent or child_by_hp:
             continue
         if c.get('type') == 'spell' and any(e['kind'] == 'play' and e['side'] == r['side'] and e['name'] == c['display_name']

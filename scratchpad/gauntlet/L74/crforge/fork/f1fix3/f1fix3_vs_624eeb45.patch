@@ -1,0 +1,496 @@
+diff --git a/core/src/main/java/org/crforge/core/battle/action/ActionOwner.java b/core/src/main/java/org/crforge/core/battle/action/ActionOwner.java
+index 2a11e94a..1643ed33 100644
+--- a/core/src/main/java/org/crforge/core/battle/action/ActionOwner.java
++++ b/core/src/main/java/org/crforge/core/battle/action/ActionOwner.java
+@@ -6,6 +6,7 @@
+ 
+ package org.crforge.core.battle.action;
+ 
++import java.util.List;
+ import java.util.function.IntSupplier;
+ import org.crforge.core.battle.filter.FilterSubject;
+ import org.crforge.core.battle.filter.ObjectCensus;
+@@ -583,14 +584,40 @@ public interface ActionOwner {
+     return false;
+   }
+ 
++  /**
++   * The rows through which the owner's attached children (riders) deal damage: each projectile row
++   * they launch, or their own row for a direct hit. Empty for an owner with no attached children or
++   * whose children deal none.
++   */
++  default List<String> actionAttachedDamageRows() {
++    return List.of();
++  }
++
+   /**
+    * True for an owner whose attack sequence replaces its row's attack - two or more in its order -
+-   * with an entry that launches a projectile or runs an action in place of a hit.
++   * with an entry that runs an action in place of the hit, or in place of the row's attack action.
++   * An entry that launches a projectile, or hits, keeps the hit hooks of the row (SME-F1FIX-3).
+    */
+   default boolean actionAttackSequence() {
+     return false;
+   }
+ 
++  /**
++   * True when every entry of the owner's attack sequence is the same, so that the index into its
++   * order picks no entry that differs from another: setting the index changes nothing a hit reads.
++   */
++  default boolean actionAttackSequenceUniform() {
++    return false;
++  }
++
++  /**
++   * The shortest time between two of the owner's attacks, in milliseconds: its row's hit speed
++   * scaled by the fastest pace of any attack sequence entry.
++   */
++  default int actionMinAttackIntervalMs() {
++    return 0;
++  }
++
+   /**
+    * The owner's hit points and shield as an action that writes what caused it into a context reads
+    * them: at a level, its row's hit points and shield hit points that many steps above the Common
+diff --git a/core/src/main/java/org/crforge/core/battle/action/Berserk.java b/core/src/main/java/org/crforge/core/battle/action/Berserk.java
+index d1810b9e..0ededdc7 100644
+--- a/core/src/main/java/org/crforge/core/battle/action/Berserk.java
++++ b/core/src/main/java/org/crforge/core/battle/action/Berserk.java
+@@ -27,8 +27,9 @@ import org.crforge.core.fidelity.FidelityStatus;
+             + " store with the component's bit ignored and the step that does nothing; held,"
+             + " through the attacks the index picks, by the reference battles card_Berserker and"
+             + " random_battle16_s0007. Refused: a row that sets any column besides its class, and"
+-            + " a run started beside an enchanting buff, whose own count sets the Berserker's"
+-            + " index.")
++            + " a run started beside an enchanting buff on a unit whose entries differ: the"
++            + " buff's own count sets the index, which picks nothing when the entries are all the"
++            + " same, as the Berserker's are.")
+ public final class Berserk extends RowAction {
+ 
+   /** What the run did to the index, as the battle's observers are told. */
+@@ -49,7 +50,8 @@ public final class Berserk extends RowAction {
+   @Override
+   public ActionInstance start(ActionHolder holder) {
+     for (ActionInstance instance : holder.running()) {
+-      if (instance instanceof GiantBufferBuff.Run) {
++      if (instance instanceof GiantBufferBuff.Run
++          && !holder.getOwner().actionAttackSequenceUniform()) {
+         throw new UnsupportedOperationException(
+             name() + " started beside an enchanting buff, which is not modelled");
+       }
+diff --git a/core/src/main/java/org/crforge/core/battle/action/GiantBufferBuff.java b/core/src/main/java/org/crforge/core/battle/action/GiantBufferBuff.java
+index a84eb349..415e61b2 100644
+--- a/core/src/main/java/org/crforge/core/battle/action/GiantBufferBuff.java
++++ b/core/src/main/java/org/crforge/core/battle/action/GiantBufferBuff.java
+@@ -51,10 +51,16 @@ import org.crforge.core.pathfinding.math.FixedMath;
+             + " finished action; held by the reference battle cg_giantbuffer_buffs_friends, a"
+             + " Knight's hits for the hook and the count and an Archer's for a projectile's copy."
+             + " Not modelled: the enemy-target visual it hands a landed hit to, which is"
+-            + " presentation. Refused: a unit with attached children, which would get copies, a"
+-            + " unit whose attack sequence replaces its attack with an entry that launches or"
+-            + " acts, and the Berserker's attack sequence step. A ramp of damage entries alone"
+-            + " (the Inferno Dragon) is held by SME-F1FIX's live 010824.")
++            + " presentation, and the copies the game hands a unit's attached children: a copy"
++            + " adds nothing when every row the children hit through takes a multiplier of 0 (the"
++            + " Goblin Giant's and the Ram's riders do, in the shipped row), and any other child is"
++            + " refused. Refused: a unit whose attack sequence replaces its hit with an entry's"
++            + " action, and the Berserker's attack sequence step unless its entries are all the"
++            + " same. A sequence of hit or projectile entries (the Inferno Dragon, the Little"
++            + " Prince, the evolved Angry Barbarians) keeps the hit hooks of the row, held by"
++            + " SME-F1FIX's live 010824 and SME-F1FIX-3's live matches; a giver whose maker has"
++            + " left ends the run at once, as a cause with no object does, which no damage tells"
++            + " apart from the countdown of the finish time (see start).")
+ public final class GiantBufferBuff extends RowAction {
+ 
+   /**
+@@ -119,12 +125,26 @@ public final class GiantBufferBuff extends RowAction {
+   public ActionInstance start(ActionHolder holder, ActionHolder instigator) {
+     ActionOwner owner = holder.getOwner();
+     if (owner.actionSpawnsAttached()) {
+-      throw new UnsupportedOperationException(
+-          name()
+-              + " on "
+-              + owner.actionRowName()
+-              + ", whose attached children get copies,"
+-              + " which is not modelled");
++      // The game hands each attached child a copy of the run (SME-F1FIX-3). A copy adds damage
++      // only through the rows its child hits through, scaled by the row's multiplier, so where
++      // every one of those rows takes a multiplier of 0 the copies change nothing and are left
++      // out: the Goblin Giant's SpearGoblinGiantProjectile and the Ram's RamRiderBola. A child
++      // that hits through any other row would get damage the battle does not model.
++      for (String row : owner.actionAttachedDamageRows()) {
++        int multiplier =
++            columns
++                .projectileMultipliers()
++                .getOrDefault(row, columns.characterMultipliers().getOrDefault(row, NO_MULTIPLIER));
++        if (multiplier != 0) {
++          throw new UnsupportedOperationException(
++              name()
++                  + " on "
++                  + owner.actionRowName()
++                  + ", whose attached children get copies that add damage through "
++                  + row
++                  + ", which is not modelled");
++        }
++      }
+     }
+     if (owner.actionAttackSequence()) {
+       // The hits of a unit whose attack sequence replaces its attack with an entry's projectile, or
+@@ -152,8 +172,23 @@ public final class GiantBufferBuff extends RowAction {
+         }
+         ActionOwner maker = giver.actionCreator();
+         if (maker == null) {
+-          throw new UnsupportedOperationException(
+-              name() + " walks back from an object whose maker has left, which is not modelled");
++          // The maker left while its projectile flew (the Rune Giant fell with its enchant in the
++          // air): no object to take the level, the rarity or the source from, which ends the run at
++          // once as a cause with no object does (b). Whether the game instead lets it run its
++          // finish time out cannot show in any damage while no unit completes a count inside that
++          // time, so a unit that could is refused.
++          if (columns.finishIfInstigatorDiesMs() < 0
++              || (long) owner.actionMinAttackIntervalMs() * (columns.attackAmount() - 1)
++                  < columns.finishIfInstigatorDiesMs()) {
++            throw new UnsupportedOperationException(
++                name()
++                    + " on "
++                    + owner.actionRowName()
++                    + " walks back from an object whose maker has left, and the unit could"
++                    + " complete a count before the run would end, which is not modelled");
++          }
++          run.finish();
++          return run;
+         }
+         giver = maker;
+         depth--;
+@@ -252,7 +287,10 @@ public final class GiantBufferBuff extends RowAction {
+       int before = counter;
+       counter = before + 1;
+       if (before == columns.attackAmount() - 2) {
+-        if (owner.actionRowName().equals("Berserker")) {
++        // The game sets the Berserker's attack sequence index here (b). Its entries are all the
++        // same in the shipped rows, so the index picks nothing a hit reads and is not set; a row
++        // whose entries differ would need the value.
++        if (owner.actionRowName().equals("Berserker") && !owner.actionAttackSequenceUniform()) {
+           throw new UnsupportedOperationException(
+               name() + " sets the Berserker's attack sequence step, which is not modelled");
+         }
+diff --git a/core/src/main/java/org/crforge/core/battle/unit/WorldEntity.java b/core/src/main/java/org/crforge/core/battle/unit/WorldEntity.java
+index 5759180b..661aef1d 100644
+--- a/core/src/main/java/org/crforge/core/battle/unit/WorldEntity.java
++++ b/core/src/main/java/org/crforge/core/battle/unit/WorldEntity.java
+@@ -2370,17 +2370,60 @@ public abstract class WorldEntity extends BattleEntity implements ActionOwner, S
+ 
+   @Override
+   public boolean actionAttackSequence() {
+-    // SME-F1FIX: a sequence of damage entries alone (the Inferno Dragon's ramp) hits as the row's
+-    // attack does, so only one whose entries launch or act counts.
++    // SME-F1FIX-3: a sequence replaces the hit only through an entry's action (the Three
++    // Musketeers' bayonet) or its own attack action; an entry that hits or launches a projectile
++    // (the Inferno Dragon's ramp, the Little Prince, the evolved Angry Barbarians) keeps the hit
++    // hooks of the row.
+     AttackSequence sequence = data.attackSequence();
+     return sequence.replacesAttack()
+         && sequence.entries().stream()
+-            .anyMatch(
+-                e ->
+-                    e.projectile() != null
+-                        || e.customFirstProjectile() != null
+-                        || e.doAttackAction() != null
+-                        || e.customOnAttackAction() != null);
++            .anyMatch(e -> e.doAttackAction() != null || e.customOnAttackAction() != null);
++  }
++
++  @Override
++  public boolean actionAttackSequenceUniform() {
++    return data.attackSequence().entries().stream().distinct().count() <= 1;
++  }
++
++  @Override
++  public int actionMinAttackIntervalMs() {
++    int pace = 100;
++    for (AttackSequence.Entry entry : data.attackSequence().entries()) {
++      pace = Math.max(pace, entry.hitSpeedMultiplier());
++    }
++    return (int) ((long) data.hitSpeedMs() * 100 / pace);
++  }
++
++  @Override
++  public List<String> actionAttachedDamageRows() {
++    if (!data.spawnAttach()) {
++      return List.of();
++    }
++    UnitData child = world.getRecords().unit(data.spawnCharacter());
++    List<String> rows = new ArrayList<>();
++    List<ProjectileData> projectiles = new ArrayList<>();
++    projectiles.add(child.projectile());
++    projectiles.add(child.customFirstProjectile());
++    projectiles.add(child.projectileSpecial());
++    boolean direct = child.damage() > 0 || child.damageSpecial() > 0;
++    for (AttackSequence.Entry entry : child.attackSequence().entries()) {
++      projectiles.add(entry.projectile());
++      projectiles.add(entry.customFirstProjectile());
++      direct |= entry.damage() > 0 || entry.doAttackAction() != null;
++    }
++    boolean launches = false;
++    for (ProjectileData projectile : projectiles) {
++      if (projectile != null) {
++        launches = true;
++        if (!rows.contains(projectile.name())) {
++          rows.add(projectile.name());
++        }
++      }
++    }
++    if (direct && !launches) {
++      rows.add(child.name());
++    }
++    return rows;
+   }
+ 
+   @Override
+diff --git a/core/src/test/java/org/crforge/core/battle/unit/BattleRuneGiantEnchantTest.java b/core/src/test/java/org/crforge/core/battle/unit/BattleRuneGiantEnchantTest.java
+new file mode 100644
+index 00000000..3df5fba8
+--- /dev/null
++++ b/core/src/test/java/org/crforge/core/battle/unit/BattleRuneGiantEnchantTest.java
+@@ -0,0 +1,241 @@
++/*
++ * crforge - https://github.com/voonhous/crforge
++ * SPDX-License-Identifier: Apache-2.0
++ * Porting this code? Please cite this file and the commit you read: see the README.
++ */
++
++package org.crforge.core.battle.unit;
++
++import static org.assertj.core.api.Assertions.assertThat;
++import static org.assertj.core.api.Assertions.assertThatCode;
++import static org.assertj.core.api.Assertions.assertThatThrownBy;
++
++import com.fasterxml.jackson.databind.JsonNode;
++import com.fasterxml.jackson.databind.node.ArrayNode;
++import com.fasterxml.jackson.databind.node.ObjectNode;
++import java.io.IOException;
++import java.nio.file.Path;
++import java.util.ArrayList;
++import java.util.List;
++import org.crforge.core.battle.GameData;
++import org.crforge.core.battle.action.ActionInstance;
++import org.crforge.core.battle.action.BattleAction;
++import org.crforge.core.battle.action.GiantBufferBuff;
++import org.crforge.core.battle.data.BattleRecords;
++import org.crforge.core.battle.data.GameTables;
++import org.crforge.core.battle.projectile.ProjectileEntity;
++import org.junit.jupiter.api.DisplayName;
++import org.junit.jupiter.api.Test;
++import org.junit.jupiter.api.io.TempDir;
++import org.junit.jupiter.params.ParameterizedTest;
++import org.junit.jupiter.params.provider.ValueSource;
++
++/**
++ * What the Rune Giant's enchanting buff does on the units whose attack sequence it used to refuse
++ * (SME-F1FIX-3): the third landed hit carries the added damage, as it does on a unit with no
++ * sequence, and the others do not.
++ */
++class BattleRuneGiantEnchantTest {
++
++  private static final int LEVEL = Standard1v1Battle.DEFAULT_LEVEL;
++
++  private static final int X = 9000;
++
++  private static final int Y = 12000;
++
++  /** One unit standing still next to a Giant, with or without the buff on it. */
++  private static final class Scene {
++    final Standard1v1Battle match;
++    final CharacterEntity unit;
++    final CharacterEntity giver;
++    final CharacterEntity target;
++    final List<Integer> hits = new ArrayList<>();
++
++    Scene(String row, int targetDistance) {
++      this(GameData.tables(), row, targetDistance);
++    }
++
++    Scene(GameTables tables, String row, int targetDistance) {
++      match = new Standard1v1Battle(tables, LEVEL, false);
++      giver = still(0, "Knight", X, Y - 3000);
++      target = still(1, "Golem", X, Y + targetDistance);
++      if (match.getWorld().getRecords().unit(row).spawnAttach()) {
++        // A unit that makes its riders is made by its card.
++        String card = row.equals("Ram") ? "RamRider" : row;
++        match.play(2, match.getWorld().getRecords().card(card), LEVEL, 0, X, Y, "Blue");
++        for (int i = 0; i < 4; i++) {
++          match.getBattle().step();
++        }
++        unit =
++            match.getWorld().present().stream()
++                .filter(e -> e.getData().name().equals(row))
++                .map(CharacterEntity.class::cast)
++                .findFirst()
++                .orElseThrow();
++        unit.setActive(CharacterEntity.MOVEMENT_SLOT, false);
++      } else {
++        unit = still(0, row, X, Y);
++      }
++    }
++
++    CharacterEntity still(int side, String row, int x, int y) {
++      CharacterEntity made =
++          match.deploy(0, match.getWorld().getRecords().unit(row), LEVEL, side, x, y, row);
++      made.setActive(CharacterEntity.MOVEMENT_SLOT, false);
++      return made;
++    }
++
++    void enchant() {
++      BattleWorld world = match.getWorld();
++      BattleAction buff =
++          world.getActions().build("giantbuffer_enchanting_buff", world.binding(unit));
++      unit.actionHolder().start(buff, giver.actionHolder());
++    }
++
++    void step(int ticks) {
++      for (int i = 0; i < ticks; i++) {
++        int before = target.getHitPoints().getHitPoints();
++        match.getBattle().step();
++        int lost = before - target.getHitPoints().getHitPoints();
++        if (lost > 0) {
++          hits.add(lost);
++        }
++      }
++    }
++  }
++
++  private static List<Integer> hits(String row, int distance, boolean enchanted, int ticks) {
++    Scene scene = new Scene(row, distance);
++    // The unit's own starting actions run as it deploys, before the buff lands on it.
++    scene.step(2);
++    assertThat(scene.hits).as("hits before the buff").isEmpty();
++    if (enchanted) {
++      scene.enchant();
++    }
++    scene.step(ticks);
++    return scene.hits;
++  }
++
++  @ParameterizedTest
++  @ValueSource(
++      strings = {
++        "LittlePrince",
++        "AngryBarbarian_EV1",
++        "AngryBarbarian_EV1_2",
++        "BowlerHero",
++        "EliteArcherHero",
++        "Musketeer_EV1",
++        "Archer_EV1",
++        "Princess_EV1",
++        "Berserker",
++      })
++  @DisplayName("every third landed hit of a unit with an attack sequence carries the added damage")
++  void everyThirdHitIsEnchanted(String row) {
++    // The evolved Angry Barbarians' first entry and the Berserker's are melee hits, so the target
++    // stands next to them.
++    int distance = row.startsWith("AngryBarbarian") || row.equals("Berserker") ? 1200 : 2500;
++    List<Integer> plain = hits(row, distance, false, 600);
++    List<Integer> enchanted = hits(row, distance, true, 600);
++    assertThat(plain).hasSizeGreaterThanOrEqualTo(6);
++    // The last hit may be the one that kills the target, which cuts it short.
++    int n = Math.min(plain.size(), enchanted.size()) - 1;
++    for (int i = 0; i < n; i++) {
++      if (i % 3 == 2) {
++        assertThat(enchanted.get(i)).as(row + " hit " + i).isGreaterThan(plain.get(i));
++      } else {
++        assertThat(enchanted.get(i)).as(row + " hit " + i).isEqualTo(plain.get(i));
++      }
++    }
++  }
++
++  @ParameterizedTest
++  @ValueSource(strings = {"Ram", "GoblinGiant", "GoblinGiant_EV1"})
++  @DisplayName(
++      "a unit whose riders hit through rows the buff gives a multiplier of 0 is enchanted without"
++          + " copies for them")
++  void aUnitWithRidersIsEnchanted(String row) {
++    Scene scene = new Scene(row, 1200);
++    scene.step(2);
++    assertThatCode(scene::enchant).doesNotThrowAnyException();
++    assertThatCode(() -> scene.step(200)).doesNotThrowAnyException();
++  }
++
++  @Test
++  @DisplayName("a unit whose riders hit through a row the buff does not zero is refused")
++  void ridersThroughAnUnzeroedRowAreRefused(@TempDir Path folder) throws IOException {
++    GameTables tables =
++        GameData.altered(
++            folder,
++            "actions",
++            rows -> {
++              ObjectNode fields =
++                  (ObjectNode) rows.get("giantbuffer_enchanting_buff").get("fields");
++              JsonNode names = fields.get("DamageMultiplierPerUnitNames");
++              ArrayNode values = (ArrayNode) fields.get("DamageMultiplierPerUnitValues");
++              for (int i = 0; i < names.size(); i++) {
++                if (names.get(i).asText().equals("RamRiderBola")) {
++                  values.set(i, values.numberNode(1000));
++                }
++              }
++            });
++    Scene scene = new Scene(tables, "Ram", 1200);
++    scene.step(2);
++    assertThatThrownBy(scene::enchant)
++        .isInstanceOf(UnsupportedOperationException.class)
++        .hasMessageContaining("attached children get copies that add damage through RamRiderBola");
++  }
++
++  @Test
++  @DisplayName("a Berserker whose attack sequence entries differ is refused at its second attack")
++  void aBerserkerWithDifferentEntriesIsRefused(@TempDir Path folder) throws IOException {
++    GameTables tables =
++        GameData.altered(
++            folder,
++            "characters",
++            rows -> {
++              ObjectNode columns = (ObjectNode) rows.get("Berserker").get("columns");
++              ((ObjectNode) columns.get("AttackSequenceList").get(1)).put("Damage", 41);
++            });
++    Scene scene = new Scene(tables, "Berserker", 1200);
++    scene.step(2);
++    scene.enchant();
++    assertThatThrownBy(() -> scene.step(200))
++        .hasMessageContaining("sets the Berserker's attack sequence step");
++  }
++
++  @Test
++  @DisplayName(
++      "an enchant that lands after the Rune Giant that threw it has gone ends its run at once")
++  void anEnchantFromAGoneRuneGiantEndsAtOnce() {
++    Standard1v1Battle match = new Standard1v1Battle(GameData.tables(), LEVEL, false);
++    BattleRecords records = match.getWorld().getRecords();
++    CharacterEntity friend = match.deploy(0, records.unit("Knight"), LEVEL, 0, 3500, 12500);
++    CharacterEntity giant = match.deploy(0, records.unit("GiantBuffer"), LEVEL, 0, 3500, 9500);
++    List<ProjectileEntity> thrown = new ArrayList<>();
++    match
++        .getWorld()
++        .addObserver(
++            new WorldObserver() {
++              @Override
++              public void projectileLaunched(int t, ProjectileEntity projectile) {
++                if (projectile.getData().name().equals("GiantBuffProjectile")) {
++                  thrown.add(projectile);
++                }
++              }
++            });
++    for (int step = 0; step < 200 && thrown.isEmpty(); step++) {
++      match.getBattle().step();
++    }
++    assertThat(thrown).as("the enchant was thrown").isNotEmpty();
++    // The Giant falls with its enchant in the air.
++    match.getWorld().kill(giant, null);
++    boolean ran = false;
++    for (int step = 0; step < 100; step++) {
++      match.getBattle().step();
++      for (ActionInstance instance : friend.actionHolder().running()) {
++        ran |= instance instanceof GiantBufferBuff.Run && !instance.isFinished();
++      }
++    }
++    assertThat(ran).as("a run on the friend after its Giant had gone").isFalse();
++  }
++}
