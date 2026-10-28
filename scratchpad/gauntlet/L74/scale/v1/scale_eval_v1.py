@@ -193,10 +193,85 @@ def lat(bs, amp, it):
     return {"p50_ms": float(np.percentile(ts, 50)), "p90_ms": float(np.percentile(ts, 90)), "p99_ms": float(np.percentile(ts, 99))}
 
 
+def pct_ms(ts):
+    ts = np.array(ts)
+    return {"p50_ms": float(np.percentile(ts, 50)), "p90_ms": float(np.percentile(ts, 90)), "p99_ms": float(np.percentile(ts, 99))}
+
+
+def lat_decide(res, reps=300):
+    """ONE_FORWARD.md: the live decide's model part at batch 1 -- encode_gen -> heads_gen -> the cell head for the argmax
+    hand card, with the host syncs the decide has (gate, card argmax, cell argmax) = GenPilot._policy_forward; its kernel
+    count; and the SAME work as ONE CUDA graph (trunk + heads + the cell logits of all hand slots, inputs copied into static
+    buffers, outputs copied back). Eager numbers are stored before the graph is tried; an error is recorded, never raised."""
+    b = batch(G[next(iter(G))][:1])
+    out = res["latency_decide"] = {}
+
+    @torch.no_grad()
+    def decide_eager():
+        enc = model.encode_gen(b); o = model.heads_gen(enc, b)
+        float(torch.sigmoid(o["gate"][0]))
+        pos = int(o["card"][0].argmax())
+        return int(model.cell_logits_gen(enc, b["hand_card"][:, pos], b["hand_form"][:, pos])[0].argmax())
+
+    ts = []
+    for k in range(reps + 20):
+        torch.cuda.synchronize(); t = time.perf_counter(); decide_eager()
+        if k >= 20:
+            ts.append((time.perf_counter() - t) * 1e3)
+    out["eager"] = pct_ms(ts)
+    try:
+        from torch.profiler import profile, ProfilerActivity
+        with profile(activities=[ProfilerActivity.CUDA]) as pr:
+            decide_eager(); torch.cuda.synchronize()
+        out["n_cuda_kernels"] = sum(1 for e in pr.events() if e.device_type.name == "CUDA")
+    except Exception as e:                                                       # noqa: BLE001
+        out["n_cuda_kernels_error"] = repr(e)[:200]
+    try:
+        nh = int(b["hand_card"].shape[1])
+
+        @torch.no_grad()
+        def full(bb):
+            enc = model.encode_gen(bb); o = model.heads_gen(enc, bb)
+            cells = torch.stack([model.cell_logits_gen(enc, bb["hand_card"][:, i], bb["hand_form"][:, i]) for i in range(nh)], 1)
+            return o["gate"], o["card"], cells
+        sb = {k: v.clone() for k, v in b.items() if torch.is_tensor(v)}
+        s = torch.cuda.Stream(); s.wait_stream(torch.cuda.current_stream())
+        with torch.cuda.stream(s):
+            for _ in range(3):
+                full(sb)
+        torch.cuda.current_stream().wait_stream(s); torch.cuda.synchronize()
+        g = torch.cuda.CUDAGraph()
+        with torch.cuda.graph(g):
+            so = full(sb)
+        ref = full(b)
+        for k in sb:
+            sb[k].copy_(b[k])
+        g.replay(); torch.cuda.synchronize()
+        out["graph_max_abs_diff_vs_eager"] = {n: float((x.float() - y.float()).abs().nan_to_num(posinf=0, neginf=0).max())
+                                              for n, x, y in zip(("gate", "card", "cell"), so, ref)}
+        out["graph_argmax_equal"] = bool(int(so[1][0].argmax()) == int(ref[1][0].argmax()))
+        ts = []
+        for k in range(reps + 20):
+            torch.cuda.synchronize(); t = time.perf_counter()
+            for n in sb:
+                sb[n].copy_(b[n])
+            g.replay()
+            _ = [x.cpu() for x in so]
+            if k >= 20:
+                ts.append((time.perf_counter() - t) * 1e3)
+        out["graph"] = pct_ms(ts)
+    except Exception as e:                                                       # noqa: BLE001
+        out["graph_error"] = repr(e)[:300]
+
+
 if a.mode != "nolat" and dev.type == "cuda":
     res["latency_ms"] = {f"bs{bs}_{'bf16' if amp else 'fp32'}": lat(bs, amp, it)
                          for bs, it in ((1, 300), (1024, 40)) for amp in (False, True)}
     res["gpu"] = torch.cuda.get_device_name(0)
+    try:
+        lat_decide(res)
+    except Exception as e:                                                       # noqa: BLE001
+        res["latency_decide"] = {"error": repr(e)[:300]}
 res["seconds"] = round(time.time() - t0)
 json.dump(res, open(a.out_json, "w"), indent=1)
 print(json.dumps({"n_params": n_params, "latency": res.get("latency_ms")}))

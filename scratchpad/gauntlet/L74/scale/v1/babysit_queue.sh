@@ -1,13 +1,15 @@
 #!/bin/bash
 # babysit_queue.sh [MAX_MIN] -- P4-10M: poll pod 30408's queue (queue.sh) every 5 min for up to MAX_MIN minutes (default 9),
-# print one status line per poll, and exit with a code a worker can act on. Idempotent: re-run it after exit 20.
-#   exit 0  = the queue printed DONE and no queue.sh is running (a round is complete; stdout says the DONE count)
-#   exit 20 = MAX_MIN reached, queue still running normally (just run it again)
-#   exit 10 = queue.sh is NOT running and the log does not end in DONE (died or was stopped): diagnostics printed
-#   exit 11 = the train_gen / scale_eval process used NO CPU for 15 min (hung): diagnostics printed
-#   exit 12 = the queue has waited on "gpu busy" for > 90 min (another tenant holds the GPU): diagnostics printed
-#   exit 30 = ssh failed 3 times in a row
+# print one status line per poll, and exit with a code a worker can act on. Idempotent: re-run it after status 20.
+#   status 0  = the queue printed DONE and no queue.sh is running (a round is complete; stdout says the DONE count)
+#   status 20 = MAX_MIN reached, queue still running normally (just run it again)
+#   status 10 = queue.sh is NOT running and the log does not end in DONE (died or was stopped): diagnostics printed
+#   status 11 = the train_gen / scale_eval process used NO CPU for 15 min (hung): diagnostics printed
+#   status 12 = the queue has waited on "gpu busy" for > 90 min (another tenant holds the GPU): diagnostics printed
+#   status 30 = ssh failed 3 times in a row
+# The last stdout line is always POLLER_STATUS=<code> (read it, not the process exit status: PowerShell turns every nonzero code into 1).
 # Read-only on the pod. Log (appended): .foreman/scratch/a2/p4/babysit.log ; hang state: .foreman/scratch/a2/p4/cpu_state
+fin() { echo "POLLER_STATUS=$1"; exit $1; }   # the LAST stdout line carries the code: a Windows shell wrapper reports every nonzero exit as 1
 MAX=${1:-9}; D=/c/Users/benpe/ClashBot/.foreman/scratch/a2/p4; LOG=$D/babysit.log; ST=$D/cpu_state; mkdir -p $D
 SSH="ssh -o BatchMode=yes -o ConnectTimeout=25 -i $HOME/.ssh/runpod_clashbot -p 30408 root@157.157.221.29"
 END=$(( $(date +%s) + MAX * 60 )); FAILS=0
@@ -21,25 +23,25 @@ diag() { $SSH 'W=/workspace/p4; tail -n 25 $W/queue.log; echo ---; for f in $(ls
   nvidia-smi --query-gpu=memory.used,memory.free,utilization.gpu --format=csv; ps -eo pid,etimes,args | grep -E "queue.sh|train_gen|scale_eval" | grep -v grep | cut -c1-200'; }
 while true; do
   R=$($SSH "$SNAP" 2>/dev/null)
-  if [ -z "$R" ]; then FAILS=$((FAILS + 1)); echo "$(date -u +%FT%TZ) ssh fail $FAILS" | tee -a $LOG; [ $FAILS -ge 3 ] && exit 30
+  if [ -z "$R" ]; then FAILS=$((FAILS + 1)); echo "$(date -u +%FT%TZ) ssh fail $FAILS" | tee -a $LOG; [ $FAILS -ge 3 ] && fin 30
   else FAILS=0; IFS='|' read -r ND LAST QP TT GF <<< "$R"; NOW=$(date +%s)
     echo "$(date -u +%FT%TZ) done_count=$ND queue_pids='${QP}' train_cpu=$TT gpu_free=$GF last='$LAST'" | tee -a $LOG
     if [ -z "${QP// /}" ]; then
-      case "$LAST" in *" DONE") echo "ROUND COMPLETE: DONE count $ND"; exit 0;; esac
-      echo "QUEUE NOT RUNNING and no DONE"; diag; exit 10
+      case "$LAST" in *" DONE") echo "ROUND COMPLETE: DONE count $ND"; fin 0;; esac
+      echo "QUEUE NOT RUNNING and no DONE"; diag; fin 10
     fi
     if [ -n "$TT" ]; then   # hang check: same pid and same cumulative CPU ticks for >= 15 min
       SPID=; [ -f $ST ] && read -r SPID STICK STIME < $ST
       if [ "${SPID:-}:${STICK:-}" = "$TT" ]; then
-        [ $((NOW - STIME)) -ge 900 ] && { echo "HUNG: ${TT} unchanged for $((NOW - STIME)) s"; diag; exit 11; }
+        [ $((NOW - STIME)) -ge 900 ] && { echo "HUNG: ${TT} unchanged for $((NOW - STIME)) s"; diag; fin 11; }
       else echo "${TT%%:*} ${TT##*:} $NOW" > $ST; fi
     fi
     case "$LAST" in
       *"gpu busy"*) [ -f $D/busy_state ] || echo $NOW > $D/busy_state; B0=$(cat $D/busy_state)
-        [ $((NOW - B0)) -ge 5400 ] && { echo "GPU BUSY > 90 min"; diag; exit 12; } ;;
+        [ $((NOW - B0)) -ge 5400 ] && { echo "GPU BUSY > 90 min"; diag; fin 12; } ;;
       *) rm -f $D/busy_state ;;
     esac
   fi
-  [ $(date +%s) -ge $END ] && exit 20
+  [ $(date +%s) -ge $END ] && fin 20
   sleep 300
 done
