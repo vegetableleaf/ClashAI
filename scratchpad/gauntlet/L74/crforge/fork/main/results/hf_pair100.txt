@@ -1,0 +1,4 @@
+[d1c] 1/1 {'sid': 'part-000000_00000', 'n': 100, 's': 395.0, 'outcomes': {'ran': 100}} t=396s errs=0
+[d1c] 1/1 {'sid': 'part-000000_00000', 'n': 100, 's': 389.9, 'outcomes': {'ran': 99, 'fault': 1}} t=391s errs=0
+DIFF 034fd0b7c5b342609329bcf805497606 {'accepted': (53, 49), 'faults': ([], [['error', 3480, 'java.lang.UnsupportedOperationException:java.lang.UnsupportedOperationException: giantbuffer_enchanting_buff on LittlePrince, whose attack sequence replaces its attack, which is not modelled']]), 'outcome': ('ran', 'fault'), 'end_tick': (3681, 3481), 'terminated': (True, False)}
+replays identical on common keys 99 differing 1

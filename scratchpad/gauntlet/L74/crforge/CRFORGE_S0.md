@@ -598,3 +598,20 @@ rewritten; it is meant to be merged (CF-MAIN cherry-picks everything past bac756
     `CRFORGE_LIB=/workspace/cfclone/lib_fix3 bash /workspace/d1c/cb/scratchpad/gauntlet/L74/plan1026/d1c/faults.sh
     /workspace/d1c/f20k_cfclone3 --limit 20000 --workers 48`).
 - Next: none for CF-CLONE. Not done: the d2t deterministic-CUDA rollout re-run.
+
+## CF-MAIN (2026-10-28): one branch, clashbot-main; new pin for SME, training held (details: `fork/MAIN.md`)
+Labels as above. **Pin: `clashbot-main` = `624eeb45183e1fe981252dd18f99225877595d2b`** (pod 30408 fork
+`/workspace/f635/crforge_fork`, worktree `/workspace/cfmain/crforge_fork`) = `bec5811a` + CF-CLONE `62558795`,
+CF-CLONE-2 `bac75659`, F1FIX-1 `c99784e4`, F1FIX-2 `89b93932`, CF-CLONE-3 `3ebb4115`, cherry-picked without conflict.
+**Determinism hash (Probe, plain and TickProbe libs): 16.402.22 `a0bd88c41f98b46d`, 16.635.3 `575c99887ba28802`,
+IDENTICAL on 1 vs 4 threads (a)**, both unchanged. Core jar sha256: plain `d1bba465afef9808`, TickProbe `de16981de9c74277`.
+- **Gates (a):** core tests 2188 / 0 on both versions; SME dev (H2's command) 109 / 109, 0 regressions, plants 0 missed,
+  results byte-identical to H2; FRESH1 6 / 7, byte-identical to HF2; Clone sweep 0 Clone refusals (scene, match, cm, mc,
+  both versions).
+- **HF 20k fault sample: FAIL (a).** On the 17,000 replays of 68 / 80 shards (m0 = the same code minus CF-CLONE-3):
+  328 faults vs 7 for CF-CLONE-2's run; 319 are F1FIX's Rune Giant enchant reaching paths crforge refuses (an attack
+  sequence that launches: Little Prince 117, evolved Angry Barbarian 130, hero Bowler 18, ...; the maker-left walk 23).
+  F1FIX-1 made the Rune Giant find friends at all, so these paths are newly reached; SME's 138 + FRESH1 never reach them.
+- **So:** SME uses `/workspace/crforge_main/624eeb45/tickprobe/lib` (all four pods). Facade / training / re-drive stay on
+  their current libs until the Rune Giant enchant paths are modelled (or a lib without F1FIX is chosen).
+- `fork/upstream_sync.sh` now merges upstream onto clashbot-main (pod 30408).

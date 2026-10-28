@@ -1,0 +1,21 @@
+head 624eeb45183e1fe981252dd18f99225877595d2b
+16.402.22 core tests 2188 failures 0 errors 0 skipped 29 rc=0
+16.635.3 core tests 2188 failures 0 errors 0 skipped 6 rc=0
+built /workspace/crforge_main/624eeb45/plain core d1bba465afef9808
+built /workspace/crforge_main/624eeb45/tickprobe core de16981de9c74277
+== plain 16.402.22
+run 0 (1 threads): obs sha256 a0bd88c41f98b46d  winners -1 -1 -1 -1 -1 -1 -1 -1 
+run 1 (4 threads): obs sha256 a0bd88c41f98b46d  winners -1 -1 -1 -1 -1 -1 -1 -1 
+determinism: IDENTICAL
+== plain 16.635.3
+run 0 (1 threads): obs sha256 575c99887ba28802  winners -1 -1 -1 -1 -1 -1 -1 -1 
+run 1 (4 threads): obs sha256 575c99887ba28802  winners -1 -1 -1 -1 -1 -1 -1 -1 
+determinism: IDENTICAL
+== tickprobe 16.402.22
+run 0 (1 threads): obs sha256 a0bd88c41f98b46d  winners -1 -1 -1 -1 -1 -1 -1 -1 
+run 1 (4 threads): obs sha256 a0bd88c41f98b46d  winners -1 -1 -1 -1 -1 -1 -1 -1 
+determinism: IDENTICAL
+== tickprobe 16.635.3
+run 0 (1 threads): obs sha256 575c99887ba28802  winners -1 -1 -1 -1 -1 -1 -1 -1 
+run 1 (4 threads): obs sha256 575c99887ba28802  winners -1 -1 -1 -1 -1 -1 -1 -1 
+determinism: IDENTICAL

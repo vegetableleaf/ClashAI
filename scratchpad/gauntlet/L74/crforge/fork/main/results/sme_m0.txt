@@ -1,0 +1,32 @@
+lib /workspace/crforge_main/a677e080/tickprobe/lib core 84bdecc819e324b8
+## dev vs H2_dev_v30
+unflagged (120): exact apart from torn 113/120 -> 113/120 | regressions 0 | gained 0
+unflagged (120): exact frames 266296 -> 266296
+all (138): exact frames 278872 -> 278872
+torn before, unflagged: {'torn_cmd': 69, 'torn_cross': 1, 'torn_hidden': 46, 'torn_late': 1, 'torn_mixed': 18, 'torn_snap': 33, 'torn_step': 55, 'torn_t1': 40}
+torn after,  unflagged: {'torn_cmd': 69, 'torn_cross': 1, 'torn_hidden': 46, 'torn_late': 1, 'torn_mixed': 18, 'torn_snap': 33, 'torn_step': 55, 'torn_t1': 40}
+torn before, all: {'torn_cmd': 73, 'torn_cross': 1, 'torn_hidden': 46, 'torn_late': 1, 'torn_mixed': 19, 'torn_snap': 34, 'torn_step': 58, 'torn_t1': 71}
+torn after,  all: {'torn_cmd': 73, 'torn_cross': 1, 'torn_hidden': 46, 'torn_late': 1, 'torn_mixed': 19, 'torn_snap': 34, 'torn_step': 58, 'torn_t1': 71}
+   4  hp only: sim less/mixed damage at the same points
+   2  body position (movement / collision / targeting)
+   1  body in the reader, none near in the sim (play missed / late / unit not made)
+plant suite (138 matches): {'plants': 65874, 'caught': 65654, 'missed': 0, 'window_mismatch': 0} | legal {'legal_state': 10, 'legal_absent': 124, 'legal_t': 29, 'legal_t1': 15, 'legal_version': 42} | targets {'REPR': 117, 'exact': 411, 'torn_snap': 34, 'torn_cmd': 73, 'torn_step': 58, 'torn_t1': 71, 'torn_mixed': 19, 'placeholder': 51, 'torn_late': 1, 'KIND_T': 18, 'torn_hidden': 46, 'torn_cross': 1}
+rc=0
+matches 138 138 | differ on counts/first_div/frames/first_detail: 0 []
+## FRESH1 vs HF2_both
+unflagged (7): exact apart from torn 6/7 -> 6/7 | regressions 0 | gained 0
+unflagged (7): exact frames 15509 -> 15509
+all (9): exact frames 15598 -> 15598
+torn before, unflagged: {'torn_cmd': 5, 'torn_hidden': 110, 'torn_mixed': 1, 'torn_snap': 2, 'torn_step': 4, 'torn_t1': 6}
+torn after,  unflagged: {'torn_cmd': 5, 'torn_hidden': 110, 'torn_mixed': 1, 'torn_snap': 2, 'torn_step': 4, 'torn_t1': 6}
+torn before, all: {'torn_cmd': 5, 'torn_hidden': 110, 'torn_mixed': 1, 'torn_snap': 2, 'torn_step': 4, 'torn_t1': 6}
+torn after,  all: {'torn_cmd': 5, 'torn_hidden': 110, 'torn_mixed': 1, 'torn_snap': 2, 'torn_step': 4, 'torn_t1': 6}
+   1  body in the sim, none near in the reader
+plant suite (9 matches): {'plants': 10904, 'caught': 10894, 'missed': 0, 'window_mismatch': 0} | legal {'legal_absent': 7, 'legal_state': 1, 'legal_t': 1, 'legal_version': 1} | targets {'torn_t1': 6, 'torn_mixed': 1, 'torn_hidden': 110, 'torn_step': 4, 'placeholder': 3, 'exact': 27, 'torn_snap': 2, 'torn_cmd': 5, 'REPR': 3}
+rc=0
+matches 9 9 | differ on counts/first_div/frames/first_detail: 0 []
+15371187ad0150c0a4736f2a36557d9c6abae911e02a9f80b3060bdc30173ff5  /workspace/pilot/f1fix/runs/H2_dev_v30/results.jsonl
+15371187ad0150c0a4736f2a36557d9c6abae911e02a9f80b3060bdc30173ff5  /workspace/pilot/f1fix/runs/main_m0_dev/results.jsonl
+e0965a7d1d2925c275a65bd038699d70cb4b76baf850baf0c7038f36baae00f8  /workspace/pilot/f1fix/runs/HF2_both/results.jsonl
+e0965a7d1d2925c275a65bd038699d70cb4b76baf850baf0c7038f36baae00f8  /workspace/pilot/f1fix/runs/main_m0_fresh1/results.jsonl
+done

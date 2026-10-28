@@ -1,0 +1,23 @@
+shards 68 replays 17000
+outcomes base {'ran': 16989, 'fault': 7, 'out_of_scope': 4} | new {'ran': 16668, 'fault': 328, 'out_of_scope': 4}
+outcome changes {'ran -> fault': 321}
+  117  giantbuffer_enchanting_buff on LittlePrince, whose attack sequence replaces its attack, which is not modelled
+   80  giantbuffer_enchanting_buff on AngryBarbarian_EV1, whose attack sequence replaces its attack, which is not mo
+   50  giantbuffer_enchanting_buff on AngryBarbarian_EV1_2, whose attack sequence replaces its attack, which is not 
+   23  giantbuffer_enchanting_buff walks back from an object whose maker has left, which is not modelled
+   18  giantbuffer_enchanting_buff on BowlerHero, whose attack sequence replaces its attack, which is not modelled
+   10  giantbuffer_enchanting_buff on Musketeer_EV1, whose attack sequence replaces its attack, which is not modelle
+    8  giantbuffer_enchanting_buff on EliteArcherHero, whose attack sequence replaces its attack, which is not model
+    5  mirror
+    3  giantbuffer_enchanting_buff sets the Berserker's attack sequence step, which is not modelled
+    2  giantbuffer_enchanting_buff on GoblinGiant_EV1, whose attached children get copies, which is not modelled
+    2  giantbuffer_enchanting_buff on ThreeMusketeer_Rework_Character_1, whose attack sequence replaces its attack, 
+    2  # is deflected carrying copies that change its damage, not modelled
+    1  GiantHero_Slap_Pushback runs on #, a clone or a rider, not modelled
+    1  giantbuffer_enchanting_buff on GoblinGiant, whose attached children get copies, which is not modelled
+    1  giantbuffer_enchanting_buff on ThreeMusketeer_Rework_Character_3, whose attack sequence replaces its attack, 
+    1  target_is_ground on #, which is not a character and carries FORCE_IS_GROUND, not modelled
+    1  giantbuffer_enchanting_buff on Ram, whose attached children get copies, which is not modelled
+    1  giantbuffer_enchanting_buff on ThreeMusketeer_Rework_Character_2, whose attack sequence replaces its attack, 
+    1  giantbuffer_enchanting_buff on Princess_EV1, whose attack sequence replaces its attack, which is not modelled
+    1  giantbuffer_enchanting_buff on Archer_EV1, whose attack sequence replaces its attack, which is not modelled
