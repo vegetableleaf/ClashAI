@@ -727,3 +727,15 @@ Evidence: `.foreman/scratch/a2/f1fix3/gates/` (laptop). Codex: F1FIX3_GATES.md (
 16.402 transient ENOSPC, SME not run: relative paths in my ticket), F1FIX3_GATES2.md (medium; 16.402 re-run + SME PASS).
 **Next (lead):** merge fe364ceb into clashbot-main (cherry-pick, no conflict expected: off 624eeb45), re-gate if the
 merge is not a fast-forward, ship_main.sh fe364ceb, switch facade / training / re-drive libs in the coordinated window.
+
+## Upstream sync 2026-10-28 (ENG-SME step 4): gates pass, NOT adopted (lead decision 10-28)
+- 19 upstream commits merged conflict-free onto 624eeb45 -> `clashbot-upstream-20261028` = 0a1a18e9 (pod 30408). Core
+  2191 / 0 on both versions; determinism = the pin's; SME dev 109/109 byte-identical to H2, FRESH1 = HF2; J7 0.808 for
+  pin and sync, identical runs (a; `fork/main/results/sync_20261028/SUMMARY.txt`, pilot/sme/SME.md ENG-SME 5).
+- Upstream eb8c7da3 builds for Java 21 (class version 65); the pods run JDK 17. The gates used a gradle-provisioned JDK 21
+  on PATH only. TickProbe 0002 needed a port (drainRemovable is an index loop since 823b578b).
+- **Lead decision 10-28: do not adopt and do not install JDK 21 on the pods yet.** The fast loop's CfAbil (LOOP-IW) uses
+  jdk.incubator.foreign with --add-modules=jdk.incubator.foreign, which JDK 21 removed (java.lang.foreign is preview in 21),
+  so a JDK 21 runtime breaks the pilot's exact hero-press observation. Order after the pilot: port CfAbil to
+  java.lang.foreign and re-verify its exactness, then redo the upstream merge onto the current clashbot-main (fe364ceb)
+  and run the full gate set.

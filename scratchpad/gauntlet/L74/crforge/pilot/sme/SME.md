@@ -2569,6 +2569,12 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
   onto fe364ceb and re-gate. Mid-run the lead moved clashbot-main and `current` to fe364ceb (Codex stopped on it and
   changed neither).
 
+- **Lead decision 10-28: do not adopt and do not install JDK 21 on the pods yet.** The fast loop's CfAbil (LOOP-IW) uses
+  jdk.incubator.foreign with --add-modules=jdk.incubator.foreign, which JDK 21 removed (java.lang.foreign is preview in 21),
+  so a JDK 21 runtime breaks the pilot's exact hero-press observation. Order after the pilot: port CfAbil to
+  java.lang.foreign and re-verify its exactness, then redo the upstream merge onto the current clashbot-main (fe364ceb)
+  and run the full gate set.
+
 ## Codex dispatches (ENG-SME)
 | ticket | effort | outcome |
 |---|---|---|
