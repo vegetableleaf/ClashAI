@@ -1,0 +1,10 @@
+# NAME CKPT T   (v0 m10 run 2; band 1 hf_pol, 2 hf_other, 3 pro; T = card / cell sampling temperature, timing head T = 1)
+b1_T1   /workspace/strength/ckpt/opp_m10_b1.pt 1.0
+b1_T05  /workspace/strength/ckpt/opp_m10_b1.pt 0.5
+b3_T1   /workspace/strength/ckpt/opp_m10_b3.pt 1.0
+b3_T05  /workspace/strength/ckpt/opp_m10_b3.pt 0.5
+b1_T07  /workspace/strength/ckpt/opp_m10_b1.pt 0.7
+b2_T1   /workspace/strength/ckpt/opp_m10_b2.pt 1.0
+b3_T07  /workspace/strength/ckpt/opp_m10_b3.pt 0.7
+b2_T05  /workspace/strength/ckpt/opp_m10_b2.pt 0.5
+b2_T07  /workspace/strength/ckpt/opp_m10_b2.pt 0.7
