@@ -26,6 +26,24 @@ def test_the_later_created_mirrored_barrel_is_the_decoy():
     assert B.decoy_indices([REAL, dict(DECOY, target_x=12000)]) == set()     # not mirrored
     assert B.decoy_indices([REAL, dict(DECOY, side=0)]) == set()             # the other player's barrel
     assert B.decoy_indices([REAL, dict(DECOY, card_id=28000001)]) == set()   # an Arrows shot
+    # F1: two REAL casts at mirrored points (Mirror + Goblin Barrel) are not back-to-back objects: never marked
+    assert B.decoy_indices([REAL, dict(DECOY, generation_key=4000371)]) == set()
+
+
+def test_malformed_rows_are_never_marked_and_never_raise(capsys):
+    from pipeline.public_observation import PublicObserver
+    for bad in (dict(DECOY, generation_key='4000358x'), dict(DECOY, target_x='east'), dict(DECOY, target_y=[1])):
+        seen = []
+        assert B.decoy_indices([REAL, bad], seen) == set() and seen == [True]
+        calls = []
+        B.objects(dict(projectiles=[REAL, bad], effects=[]), source='reader', on_malformed=lambda: calls.append(1))
+        assert calls == [1]
+    obs = PublicObserver(ME)
+    obs.barrel_decoy = True
+    frame = dict(game_tick=300, entities=[], projectiles=[REAL, dict(DECOY, generation_key='x')], effects=[])
+    obs.update(frame, source='reader')
+    obs.update(dict(frame, game_tick=302), source='reader')
+    assert capsys.readouterr().out.count('[barrel_decoy] WARNING') == 1     # one warning per match
 
 
 def test_objects_rename_only_the_reader_decoy_and_the_model_sees_one_barrel():

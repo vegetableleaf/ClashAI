@@ -757,6 +757,7 @@ def main() -> int:
               public_audit=a.public_audit, legal_guard=getattr(pilot, 'legal_guard', None), predict_drops=a.predict_drops, own_effects=bool(getattr(a, 'own_effects', False)),
                 iw_press_pstar=a.iw_press_pstar, hero_ability_spec=getattr(a, "hero_ability_spec", "off"),
               identity_ext=bool(getattr(pilot, "identity_ext", False)), decision_options=vars(pilot.decision_options), live_options=a.live_options,
+              barrel_decoy=bool(getattr(pilot, "barrel_decoy", False)),
               **({'posture_head': posture_summary(pilot.posture)} if getattr(pilot, 'posture', None) else {}),   # C1: absent = off
               **({"cue_inputs": cue_log(pilot, a.reader)} if getattr(a, "cue_inputs", "off") == "on" else {}),
               **head_log(a))))

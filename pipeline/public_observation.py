@@ -125,6 +125,13 @@ class PublicObserver:
         self.own_events = []
         from .projectile_motion import ProjectileMotion
         self.motion = ProjectileMotion(catalog_fallback=True)
+        self._decoy_warned = False
+
+    def _decoy_malformed(self):
+        if not self._decoy_warned:              # GB-DECOY: once per match (reset() = a new match)
+            self._decoy_warned = True
+            print('[barrel_decoy] WARNING: a malformed Goblin Barrel projectile row was left unmarked '
+                  "(today's behaviour); further ones this match are not reported", flush=True)
 
     def update(self, frame, *, source):
         f = public_frame(frame, source=source)
@@ -141,9 +148,11 @@ class PublicObserver:
             self.ability_rows.append(own)
         if self.barrel_decoy:
             from .barrel_decoy import objects
+            got = objects(frame, source=source, on_malformed=self._decoy_malformed)
         else:
             from .projectile_observation import objects
-        observed = self.motion.update(objects(frame, source=source), tick)
+            got = objects(frame, source=source)
+        observed = self.motion.update(got, tick)
         # Store only normalized public objects, never the player/private blocks.
         # Compress unchanged snapshots; past queries must not see future objects.
         if self.object_ticks and self.object_ticks[-1] == tick:
