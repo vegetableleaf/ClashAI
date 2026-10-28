@@ -136,6 +136,13 @@ def _losses(model: GenModel, b: dict, mirror: bool, grid: str = "floor", rocket_
     return sum(parts.values()), parts
 
 
+def load_dir(path: Path):
+    """An EXTRACTED npz (a directory of <key>.npy + meta.npy), memory-mapped copy-on-write: the 27 GB P2-OPP1 row file
+    stays file-backed (page cache) instead of resident heap. Same arrays and values as np.load of the npz."""
+    arrs = {f.stem: np.load(f, mmap_mode="c", allow_pickle=False) for f in sorted(path.glob("*.npy"))}
+    return arrs, json.loads(str(arrs.pop("meta")))
+
+
 def _wmean(x: torch.Tensor, w: torch.Tensor) -> torch.Tensor:
     return (x * w).sum() / w.sum() if len(x) and float(w.sum()) > 0 else x.new_zeros(())
 
@@ -173,7 +180,7 @@ def evaluate_opp(model: GenModel, rows: "GenRows", bs: int = 512, grid: str = "l
     ``total`` = cell + card + timing + ability + 0.5 wait + 0.5 value (the training weights)."""
     model.eval()
     acc = dict.fromkeys(("cell", "card", "wait", "timing", "tick", "ability", "value", "cell_top1", "card_top1", "n_cell",
-                         "n_card", "w_wait", "w_slot", "n_ev", "w_ab", "w_all", "hz_sum", "ev_sum"), 0.0)
+                         "n_card", "w_wait", "w_slot", "n_ev", "w_ab", "w_all", "hz_sum", "ev_sum", "gate"), 0.0)
     for s0 in range(0, len(rows.idx), bs):
         b = rows.batch(rows.idx[s0:s0 + bs])
         out = model(b, card=b["card"], form=b["form"])
@@ -212,6 +219,9 @@ def evaluate_opp(model: GenModel, rows: "GenRows", bs: int = 512, grid: str = "l
                                                   b["ab_tick"][s]) * w[s]).sum())
                 acc["w_ab"] += float(w[s].sum())
         acc["value"] += float((Fn.cross_entropy(out["value"].float(), b["value"], reduction="none") * w).sum())
+        if "gate" in out:            # a gate model (no timing head): the legacy loss's gate BCE, in the selection total
+            acc["gate"] += float((Fn.binary_cross_entropy_with_logits(out["gate"].float(), b["gate"].float(),
+                                                                      reduction="none") * w).sum())
         acc["w_all"] += float(w.sum())
     r = {"cell": acc["cell"] / max(acc["n_cell"], 1), "card": acc["card"] / max(acc["n_card"], 1),
          "wait": acc["wait"] / max(acc["w_wait"], 1e-9), "timing": acc["timing"] / max(acc["w_slot"], 1e-9),
@@ -221,6 +231,9 @@ def evaluate_opp(model: GenModel, rows: "GenRows", bs: int = 512, grid: str = "l
          "hazard_mean": acc["hz_sum"] / max(acc["w_slot"], 1e-9), "event_rate": acc["ev_sum"] / max(acc["w_slot"], 1e-9),
          "n_cell": int(acc["n_cell"]), "n_card": int(acc["n_card"]), "w_slot": acc["w_slot"], "w_ab": acc["w_ab"]}
     r["total"] = r["cell"] + r["card"] + r["timing"] + r["ability"] + 0.5 * r["wait"] + 0.5 * r["value"]
+    if acc["gate"]:                  # gate models only: a timing model's total (and every key it reports) is unchanged
+        r["gate"] = acc["gate"] / max(acc["w_all"], 1e-9)
+        r["total"] += r["gate"]
     return r
 
 
@@ -390,12 +403,15 @@ def main(argv=None) -> int:
     ap.add_argument("--eval-every", type=int, default=2000)
     ap.add_argument("--eval-rows", type=int, default=100000)
     a = ap.parse_args(argv)
-    opp_mode = a.opp_timing or a.opp_ability or a.opp_deck_enc or bool(a.opp_ctx) or a.init is not None
+    # --memory alone (P4-10M: a plain gate model + joint memory) also takes the step trainer; the legacy trainer has no
+    # memory inputs, so before this the flag was silently ignored there
+    opp_mode = (a.opp_timing or a.opp_ability or a.opp_deck_enc or bool(a.opp_ctx) or a.init is not None
+                or a.memory is not None)
     if a.mmap_cache_dir is not None:
         from .dataset_spool import load_mapped
         arrs, meta = load_mapped(a.data, a.mmap_cache_dir)
     else:
-        arrs, meta = load_ds(a.data)
+        arrs, meta = load_dir(a.data) if a.data.is_dir() else load_ds(a.data)
     version = int(meta.get("feature_version", 1))
     expected_data_version = 5 if a.feature_version == 6 else a.feature_version
     if a.feature_version is not None and max(expected_data_version, 2) != max(version, 2):
