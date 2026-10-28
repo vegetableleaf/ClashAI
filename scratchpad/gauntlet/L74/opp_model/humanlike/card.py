@@ -55,6 +55,15 @@ NEW7 = ['ppm_ot', 'lane_left', 'split_rate', 'troop_depth', 'spell_depth', 'pock
 STATS = CORE9 + POS4 + [k for k in EXTRA if k != 'repeat_rate'] + NEW7    # 25: repeat_rate dropped (a card cannot be played twice in a row; HF SD 0)
 
 
+def arch2(names):
+    """= opp_model/analyze.arch2 (copied: analyze imports doctrine/measure -> polars, absent on the pods)."""
+    import archetypes as A
+    a = A.classify(names)
+    if a in ('weak_other', 'other') and 'hogrider' in {A.canon(n) for n in names}:
+        return 'hog'
+    return a
+
+
 # ------------------------------------------------------------------ the time split
 def block_of(stem: str) -> str:
     s = stem[len('live_play_'):] if stem.startswith('live_play_') else stem
@@ -163,14 +172,13 @@ def _live_one(path):
 def live_records(block='calibration', _allow_sealed=False):
     if block == 'sealed' and not _allow_sealed:
         raise SystemExit('the sealed block is read only by level D')
-    import analyze as AN
     out = []
     for f in sorted(LOGS.glob('live_play_*.jsonl')):
         if block_of(f.stem) != block:
             continue                                               # the sealed block is never opened here (name test first)
         r = _live_one(f)
         if r is not None and len(r['plays']) >= 3:
-            r['arch'] = AN.arch2(r['seen'])
+            r['arch'] = arch2(r['seen'])
             out.append(r)
     return out
 
@@ -187,7 +195,6 @@ def _canon_sim(name):
 def sim_records(root, live_visible=True):
     """run_closed.sh rows -> records (+ outcome for D).  live_visible: keep only plays the live detector can see (o3_score.visible:
     bodiless spells never appear in the live public frames), so B-live / C-live compare like with like; False for B-HF."""
-    import analyze as AN
     import o3_score as O3
     import xbow_count as XC
     from pipeline.opp_elixir_count import card_cost
@@ -220,7 +227,7 @@ def sim_records(root, live_visible=True):
         o = xb_sim(h)
         deck = [_canon_sim(c) for c in (r.get('opp_deck') or [])]
         out.append(dict(src='sim', id=f"{r['seed']}:{r['tag']}", t0=0, end=int(r['end_tick']), side=1 - L, plays=plays,
-                        mine=[int(q[0]) for q in own], seen=deck, own_fall=fall, xb=o[0], xbt=o[1], arch=AN.arch2(deck),
+                        mine=[int(q[0]) for q in own], seen=deck, own_fall=fall, xb=o[0], xbt=o[1], arch=arch2(deck),
                         win=int(r['outcome'] == 'win'), outcome=r['outcome']))
     return out
 
@@ -252,13 +259,12 @@ def xb_sim(h):
 
 
 def hf_records(path, split=None):
-    import analyze as AN
     d = json.loads(gzip.decompress(Path(path).read_bytes()))
     out = []
     for r in d['records']:
         if split is not None and r['split'] != split:
             continue
-        r['arch'] = AN.arch2(r['deck'])
+        r['arch'] = arch2(r['deck'])
         r['own_fall'] = None
         out.append(r)
     return out, d['meta']
