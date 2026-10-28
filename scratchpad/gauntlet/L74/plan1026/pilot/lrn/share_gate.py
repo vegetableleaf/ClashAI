@@ -26,7 +26,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from pipeline import rl_royale as R  # noqa: E402
 from pipeline import loop_records as LR  # noqa: E402
 from pipeline import loop_learner as LL  # noqa: E402
-from rec_identity import jd, strip, sd_sha  # noqa: E402
+from rec_identity import jd, lazy_off, strip, sd_sha  # noqa: E402
 
 
 def main():
@@ -35,7 +35,7 @@ def main():
     ap.add_argument("--keep", type=Path, required=True)
     ap.add_argument("--u", type=int, default=5)
     a = ap.parse_args()
-    cfg = R.load_config(REPO / a.config, [], smoke=False)
+    cfg = lazy_off(R.load_config(REPO / a.config, [], smoke=False))   # identity gate: lazy OFF (LRN.md)
     res = [LR.to_result(LR.decode(p.read_bytes())) for p in sorted(a.keep.glob("*.rec"))]
     tag, out = str(int(time.time())), {}
     for name, share in (("two_pass", False), ("shared", True)):

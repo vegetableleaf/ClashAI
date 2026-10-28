@@ -10,7 +10,11 @@
 #  - batch 512 matches = E 128 x G 4 (LOOP-LRN).
 #  - PPO = the plan's: gae, gamma_tick 0.99994, lambda 0.95, lr 1e-5, clip 0.2, critic warm-up 5; learner_deterministic (CUDA
 #    deterministic on). KL early stop 0.02 vs the previous update = kl_stop_prev + kl_ref_refresh_every 1 with beta 0 (no leash;
-#    LOOP-LRN's proposed key, PENDING the lead / its commit: rl_royale refuses unknown keys until then).
+#    owner 10-28 option A: 0.02 stays).
+#  - learner (LOOP-LRN, owner / lead 10-28; pilot/lrn/LRN.md): stored_values (the producers' lp_old + v_old, the KL anchor
+#    only on minibatch rows); lazy_refine (cell / tower refine features on the played rows only; identity gates run it OFF;
+#    reversal criterion R1/R2 in LRN.md); ent_pair_every 1 (gate 10-28: k 4 / 2 miss the 1% bar; the entropy floor's init baseline on EVERY epoch-0
+#    minibatch, paired with the policy's on the same rows; replaces ent_init_rows / the full pass).
 #  - opponents: frozen pool from LOOP-OPP's pilot/opp/POOL.json (PENDING; the league_* / league_exploiters / league_external
 #    blocks below are x_s101's and get replaced from POOL.json); learner snapshot share 0 (league_mix latest / older 0,
 #    league_snapshot_every above max_updates); screen_every above max_updates (no held-out actor pool in the loop).
@@ -91,6 +95,9 @@ beta_max: 0.0
 kl_target: 0.3
 kl_stop_prev: 0.02
 kl_ref_refresh_every: 1
+stored_values: true
+lazy_refine: true
+ent_pair_every: 1
 leash: max
 seed: 1028
 max_updates: 1000

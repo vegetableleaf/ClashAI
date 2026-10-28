@@ -37,6 +37,15 @@ WALL = ("wall_rollout_s", "wall_update_s", "wall_save_s", "wall_total_s", "time"
         "actor_gpu_peak_mb", "learner_gpu_peak_mb", "ckpt", "spool")
 
 
+def lazy_off(cfg):
+    """Owner 10-28: every identity / recompute / stored gate runs with lazy_refine OFF, so the bit-identity proof stays
+    on the eager model (lazy is math-exact but not bit-exact: batch-size-dependent conv kernels). Off = the historical
+    config hash (rl_royale.config_sha drops a false lazy_refine)."""
+    if cfg.get("lazy_refine"):
+        print("[gate] lazy_refine forced OFF for this identity gate (LRN.md rule)", flush=True)
+    return {**cfg, "lazy_refine": False}
+
+
 def jd(x):
     return json.dumps(R._py(x), sort_keys=True)
 
@@ -61,7 +70,7 @@ def main():
     ap.add_argument("--capture-only", action="store_true", help="stop after the LOOP-REC test (learner_device=cpu is fine)")
     ap.add_argument("overrides", nargs="*")
     a = ap.parse_args()
-    cfg = R.load_config(REPO / a.config, a.overrides, smoke=False)
+    cfg = lazy_off(R.load_config(REPO / a.config, a.overrides, smoke=False))   # identity gate: lazy OFF (LRN.md)
     keep, spool = a.out / "keep", a.out / "spool"
     res_out = {"config_sha": R.config_sha(cfg), "E": cfg["E"], "G": cfg["G"]}
     tag = str(int(time.time()))

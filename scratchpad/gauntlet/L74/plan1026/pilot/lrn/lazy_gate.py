@@ -29,10 +29,9 @@ def main():
     for mode, extra in (("recompute", {}), ("stored", {"stored_values": True, "ent_init_rows": 20000})):
         caps = {}
         for lazy in (False, True):
-            cfg = {**base, **extra}
+            cfg = {**base, **extra, "lazy_refine": lazy}       # the rl_royale key (set on model + refs at init)
             L = SG.learner(cfg, f"lz{mode}{int(lazy)}")
-            for m in {id(x): x for x in (L.model, L.ref, getattr(L, "ref_init", L.ref))}.values():
-                m.lazy_refine = lazy
+            assert all(getattr(m, "lazy_refine", False) is lazy for m in (L.model, L.ref, L.ref_init))
             rr = SG.with_v(L, cfg, res) if extra else res
             cap = {}
             SG.run_update(L, 5, rr, cap)

@@ -2676,7 +2676,8 @@ def ent_init_rows(B: dict, cfg: dict, u: int):
 
 def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: float, beta: float,
                    n_total: int, vf: Optional[dict] = None, T_gate: Optional[float] = None,
-                   posture: Optional[dict] = None, ability: Optional[dict] = None) -> tuple[torch.Tensor, dict]:
+                   posture: Optional[dict] = None, ability: Optional[dict] = None,
+                   ent_ref=None) -> tuple[torch.Tensor, dict]:
     """PPO-clip on the joint log pi = lp_gate + g (lp_card + lp_cell) (E1 3.3) with per-match weights, scaled by
     n_total / |mb| so each minibatch estimates the full-batch loss; + beta (mean KL_gate + mean KL_card + mean KL_cell).
     ``vf`` (gae mode: {coef, clip, policy}): + coef x the PPO-clipped value loss 0.5 max((V - ret)^2, (V_old +
@@ -2693,7 +2694,9 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
     reaches the head only. Dropped with L_pg in the critic warm-up.
     ``ability`` (B6 {head, ent_coef}): the same construction for the press decisions (``B["ab_sampled"]`` rows):
     r = pi_new(a) / pi_old(a) of the Bernoulli press (``B["ab_lp"]``), the row's A, weights ``B["w_ab"]``, minus
-    ent_coef x the head's weighted Bernoulli entropy; reaches the AbilityHead only (g detached)."""
+    ent_coef x the head's weighted Bernoulli entropy; reaches the AbilityHead only (g detached).
+    ``ent_ref`` (LOOP-LRN ent_pair_every): + st ``ent0_*`` = that frozen net's entropy on these rows, with the masks of the
+    policy's ``ent_*`` monitors (no_grad; the loss is unchanged)."""
     if hasattr(R, "fill"):                                    # LOOP-LRN stored_values: the anchor's terms of these rows
         R.fill(idx)
     t = policy_terms(model, B, idx, tau, T, value=vf is not None,
@@ -2775,6 +2778,12 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
               "ent_gate": float(bern_ent(t["x"][gs]).mean()) if gs.any() else None,
               "ent_card": float(cat_ent(t["card_lp"][pl]).mean()) if pl.any() else None,
               "ent_cell": float(cat_ent(cl).mean()) if pl.any() else None}
+        if ent_ref is not None:                               # LOOP-LRN ent_pair_every: the init, same rows and masks
+            t0 = policy_terms(ent_ref, B, idx, tau, T, T_gate=T_gate)
+            c0 = t0["cell_lp"] if real is None or t0["cell_lp"] is None else t0["cell_lp"][real[B["played"][idx]]]
+            st.update(ent0_gate=float(bern_ent(t0["x"][gs]).mean()) if gs.any() else None,
+                      ent0_card=float(cat_ent(t0["card_lp"][pl]).mean()) if pl.any() else None,
+                      ent0_cell=float(cat_ent(c0).mean()) if pl.any() else None)
         if "low" in R:
             st["kl_gate_imit_low"] = None if kl_gi is None else float(kl_gi)
         if vf is not None:
@@ -2810,7 +2819,8 @@ def vf_grad_share(model, B: dict, R: dict, cfg: dict, beta: float, vf: dict) -> 
 
 
 def ppo_update(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.random.Generator,
-               vf: Optional[dict] = None, posture: Optional[dict] = None, ability: Optional[dict] = None) -> dict:
+               vf: Optional[dict] = None, posture: Optional[dict] = None, ability: Optional[dict] = None,
+               ent_ref=None) -> dict:
     """``ppo_epochs`` passes over the batch in random minibatches. Returns the monitors; ``first`` = epoch 0 minibatch 0
     (the on-policy check), ``nonfinite`` set (and the step skipped) on a non-finite loss or gradient norm.
     ``vf`` (gae mode, ``minibatch_loss``): + ``l_v``; ``vf["policy"]`` False = critic warm-up: ONLY ``value_head``
@@ -2820,20 +2830,23 @@ def ppo_update(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
     separately at grad_clip, so the model's clipping is exactly the plain critic's.
     ``posture`` (C1 {head, opt, ent_coef}): the posture term (``minibatch_loss``) and the head's own Adam, stepped with
     ``opt``, grad norm clipped separately at grad_clip; no step in the critic warm-up (the term is dropped there).
-    ``ability`` (B6 {head, opt, ent_coef}): the press term and the AbilityHead's own Adam, exactly as ``posture``."""
+    ``ability`` (B6 {head, opt, ent_coef}): the press term and the AbilityHead's own Adam, exactly as ``posture``.
+    ``ent_ref`` (LOOP-LRN, with ``cfg["ent_pair_every"]`` k): the frozen init's per-head entropy on the rows of every k-th
+    epoch-0 minibatch that steps -> ``ent_pair_init``, with the policy's on the same minibatches -> ``ent_pair``
+    (no_grad, no RNG: the steps are unchanged)."""
     frozen = [p for n, p in model.named_parameters()
               if vf is not None and not vf["policy"] and not n.startswith("value_head.") and p.requires_grad]
     for p in frozen:
         p.requires_grad_(False)
     try:
-        return _ppo_steps(model, opt, B, R, cfg, beta, rng, vf, posture, ability)
+        return _ppo_steps(model, opt, B, R, cfg, beta, rng, vf, posture, ability, ent_ref)
     finally:
         for p in frozen:
             p.requires_grad_(True)
 
 
 def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.random.Generator,
-               vf: Optional[dict], posture: Optional[dict] = None, ability: Optional[dict] = None) -> dict:
+               vf: Optional[dict], posture: Optional[dict] = None, ability: Optional[dict] = None, ent_ref=None) -> dict:
     N = len(B["A"])
     dev = B["A"].device
     mb = int(cfg["minibatch"])
@@ -2846,9 +2859,11 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
     ab_opt = None if ability is None else ability["opt"]
     ks = cfg.get("kl_stop_prev")                              # LOOP-LRN early stop (None = off: the loop unchanged)
     stop = None
+    pe = int(cfg.get("ent_pair_every") or 0) if ent_ref is not None else 0   # LOOP-LRN paired entropy baseline
 
     def summary(nonfinite: Optional[str]) -> dict:
         """Every key present even on the non-finite early exit (one_update logs them; None = not measured)."""
+        pr = [x for x in ep0 if "ent0_gate" in x]             # ent_pair_every: the paired epoch-0 minibatches
         return {"first": first, "nonfinite": nonfinite, "steps": len(ratios),
                 **({"kl_stop": stop} if ks is not None else {}),
                 **({"l_post": mean(last_ep, "l_post"), "ent_posture": mean(ep0, "ent_posture")}
@@ -2859,6 +2874,10 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
                 "kl_cell": mean(last_ep, "kl_cell"), "l_pg": mean(last_ep, "l_pg"),
                 **({"kl_gate_imit_low": mean(last_ep, "kl_gate_imit_low")} if "low" in R else {}),
                 "ent": {h: mean(ep0, f"ent_{h}") for h in ("gate", "card", "cell")},
+                **({"ent_pair": {h: mean(pr, f"ent_{h}") for h in ("gate", "card", "cell")},
+                    "ent_pair_init": {h: mean(pr, f"ent0_{h}") for h in ("gate", "card", "cell")},
+                    "ent_pair_rows": sum(x["n"] for x in pr)}
+                   if pe else {}),
                 "ratio_mean": avg(ratios), "clip_frac": avg(clips), "grad_norm_mean": avg(gnorms),
                 **({"l_v": mean(last_ep, "l_v"), "l_v_first": first["l_v"] if first else None} if vf is not None else {})}
 
@@ -2870,7 +2889,8 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
             loss, st = minibatch_loss(model, B, R, idx, tau=cfg["tau"], T=cfg["T"], clip=cfg["clip"], beta=beta,
                                       n_total=N, vf=vf, T_gate=cfg.get("T_gate"),
                                       **({"posture": posture} if posture is not None else {}),
-                                      **({"ability": ability} if ability is not None else {}))
+                                      **({"ability": ability} if ability is not None else {}),
+                                      **({"ent_ref": ent_ref} if pe and ep == 0 and (s // mb) % pe == 0 else {}))
             if first is None:
                 first = st
             if not torch.isfinite(loss):
@@ -3492,7 +3512,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                               "ot_start_share", "xbow_start_share", "remote_actors", "kl_ref_refresh_every",
                               "tau_phase", "memory", "memory_aux", "memory_encoder_frozen",
                               "memory_zero_empty", "learner_deterministic", "kl_stop_prev", "stored_values",
-                              "ent_init_rows") + OPP_TEMPO_KEYS
+                              "ent_init_rows", "lazy_refine", "ent_pair_every", "matches_per_update") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS and k not in CROWN_KEYS
                 and k not in HT.KEYS and k not in CF.KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
@@ -3544,6 +3564,14 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
         if rr != 1:                                           # the anchor must BE the previous update's policy
             raise SystemExit(f"kl_stop_prev needs kl_ref_refresh_every: 1 (the KL anchor = the previous update's "
                              f"policy), got {rr!r}")
+    if cfg.get("lazy_refine") is not None and type(cfg["lazy_refine"]) is not bool:   # LOOP-LRN: absent / null / false = off
+        raise SystemExit(f"lazy_refine must be a bool or null, got {cfg['lazy_refine']!r}")
+    pe = cfg.get("ent_pair_every")                           # LOOP-LRN paired entropy-floor baseline: absent / null = off
+    if pe is not None:
+        if type(pe) is not int or pe < 1:
+            raise SystemExit(f"ent_pair_every must be null or an int >= 1, got {pe!r}")
+        if cfg.get("ent_init_rows") is not None:
+            raise SystemExit("ent_pair_every replaces ent_init_rows: set one of them")
     frac = cfg.get("learner_pipeline_frac", 0.0)
     if isinstance(frac, bool) or not isinstance(frac, (int, float)) or not 0 <= frac <= 1:
         raise SystemExit("learner_pipeline_frac must be a finite number in [0, 1]")
@@ -3596,6 +3624,10 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "stored_values"}
     if cfg.get("ent_init_rows") is None:                     # LOOP-LRN entropy-baseline subsample off = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "ent_init_rows"}
+    if not cfg.get("lazy_refine"):                           # LOOP-LRN lazy refine off = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "lazy_refine"}
+    if cfg.get("ent_pair_every") is None:                    # LOOP-LRN paired entropy baseline off = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "ent_pair_every"}
     if cfg.get("memory") is None:                            # Plan A memory off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "memory"}
     elif cfg["memory"] == "v2":                              # S1c: the version AND the artifacts its features read
@@ -3819,6 +3851,11 @@ class Learner:
         self.league = None                                    # league on: {"snapshots": [{id, update, path}]}
         if cfg.get("league"):
             self._league_setup()
+        if cfg.get("lazy_refine"):                            # LOOP-LRN: refine cell features on the played rows only;
+            if not self.gen:                                  # set BEFORE the ref copies (deepcopy keeps it). Identity
+                raise SystemExit("lazy_refine needs a generalist (GenModel) init")   # gates run it off (LRN.md)
+            self.model.lazy_refine = True
+            log("[rl] lazy_refine: cell_refine / tower_refine cell features on the played rows only (model + refs)")
         self.ref = copy.deepcopy(self.model).eval()
         for p in self.ref.parameters():
             p.requires_grad_(False)
@@ -4538,7 +4575,11 @@ class Learner:
             B["v_shared"] = R.pop("v")
         sub = ent_init_rows(B, cfg, u)                        # LOOP-LRN: ref_init's baseline on a row sample (None = all)
         ent_init = R.get("ent")                               # the entropy floor's baseline: the INIT's, same rows
-        if stored or self.ref is not getattr(self, "ref_init", self.ref):   # W16 moved anchor: one more no-grad pass
+        pe = cfg.get("ent_pair_every")                        # LOOP-LRN: the baseline on epoch-0 minibatch rows (paired)
+        if pe and (gate_ref is not None or card_ref is not None or glo is not None):
+            raise SystemExit("ent_pair_every needs no kl_ref_gate / kl_ref_card / kl_ref_gate_max_elixir (their gate / "
+                             "card baselines come from another net)")
+        if not pe and (stored or self.ref is not getattr(self, "ref_init", self.ref)):   # W16 moved anchor: one more pass
             ent_init = ref_terms(self.ref_init, B if sub is None else row_subset(B, sub), cfg["tau"], cfg["T"],
                                  T_gate=cfg.get("T_gate"), gate_ref=gate_ref,
                                  **({"gate_lo_max": glo["max_elixir"]} if glo else {}),
@@ -4586,7 +4627,10 @@ class Learner:
         mark("gae_vfshare_heads")
         upd = ppo_update(self.model, self.opt, B, R, cfg, beta_used, self.rng, vf=vf,
                          **({"posture": post} if post is not None else {}),
-                         **({"ability": abl} if abl is not None else {}))
+                         **({"ability": abl} if abl is not None else {}),
+                         **({"ent_ref": getattr(self, "ref_init", self.ref)} if pe else {}))
+        if pe:                                                # the guard compares policy and init on the SAME rows
+            ent_init = upd["ent_pair_init"]
         mark("ppo_update")
         t_upd = time.perf_counter() - t1
         if prof is not None:
@@ -4663,7 +4707,7 @@ class Learner:
                 self.log(f"[rl] update-0 plays/min baseline {self.guards.s['base']['plays_per_min']:.3f} (stop outside "
                          f"[{cfg['plays_lo']}, {cfg['plays_hi']}]x for {cfg['stop_consecutive']} updates)")
             reasons += self.guards.after_update(mon, beta_used, upd["kl_cell"] or 0.0, upd["kl_gate"] or 0.0,
-                                                ent=upd["ent"], ent_init=ent_init)
+                                                ent=upd["ent_pair"] if pe else upd["ent"], ent_init=ent_init)
             self.update = u + 1                                 # a crashed update is not counted (crash save = u)
             rr = cfg.get("kl_ref_refresh_every")
             if rr and self.update % int(rr) == 0:               # W16 moving anchor: KL now to this policy (the entropy floor stays the init's)
@@ -4680,6 +4724,7 @@ class Learner:
                **({"kl_stop_prev": cfg["kl_stop_prev"], "kl_stop": upd["kl_stop"], "steps": upd["steps"]}
                   if "kl_stop" in upd else {}),                 # LOOP-LRN early stop (None = all epochs ran)
                "entropy": upd["ent"], "entropy_init": ent_init, "clip_frac": upd["clip_frac"],
+               **({"entropy_pair": upd["ent_pair"], "ent_pair_rows": upd["ent_pair_rows"]} if pe else {}),
                "ratio_mean": upd["ratio_mean"], "grad_norm_mean": upd["grad_norm_mean"],
                "first_minibatch": {k: first[k] for k in ("ratio_maxdev", "kl_gate", "kl_card", "kl_cell", "lp_maxdiff")},
                "picked": rinfo["picked"], "skipped": rinfo["skipped"],

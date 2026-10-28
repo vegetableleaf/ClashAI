@@ -78,6 +78,14 @@ Lead 10-28: tables 16.635.3 (the live client; launcher default TABLES=16.635.3, 
 is refused); w14opp_I keeps its 0.3 exploiter share, so E4 is ~10% of matches. Because E4 is in the training pool, the gate's
 E4 set is partly IN-DISTRIBUTION; iu40 is the cleaner comparison.
 Correctness comparisons must be SAME-DEVICE: CLXIII on CPU vs CUDA differs by up to 6.0e-3 cell log-prob and on 3/1,718 taps (a).
+Learner keys (LOOP-LRN, owner / lead 10-28; pilot/lrn/LRN.md): `stored_values: true` (the producers' lp_old + v_old; rows
+without the LOOP-SRV v_old are refused), `lazy_refine: true` (cell / tower refine features only on the played rows: exact in
+math, not in bits -- weights <= 6.4e-6 apart after one update; reversal criterion R1 / R2 in LRN.md), `ent_pair_every`
+(the entropy floor's init baseline on every k-th epoch-0 minibatch, paired with the policy's on the same rows).
+**Rule (owner 10-28): every identity / recompute / stored gate runs with lazy_refine OFF** (the bit-identity proof stays on
+the eager model). rec_identity.py / stored_gate.py / share_gate.py force it off (rec_identity.lazy_off); any other A/B that
+builds a learner from pilot.yaml (fastloop / loop/run.sh learner arms, loop_learner) passes `lazy_refine=false`.
+LOOP-INT's compare.py compares ACTOR paths only (actors load weights from bytes and never carry lazy_refine): unaffected.
 
 ### Eval after training (the order is fixed; nothing goes live without both)
 1. SIM gate vs CLXIII on crforge, paired, on the SAME jars + tables as training (baseline rows from another build do not pair):

@@ -34,7 +34,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from pipeline import rl_royale as R  # noqa: E402
 from pipeline import loop_records as LR  # noqa: E402
 from pipeline import loop_learner as LL  # noqa: E402
-from rec_identity import collate_kw, jd, strip  # noqa: E402
+from rec_identity import collate_kw, jd, lazy_off, strip  # noqa: E402
 
 TAG = str(int(time.time()))
 
@@ -111,7 +111,7 @@ def main():
     a = ap.parse_args()
     a.out.mkdir(parents=True, exist_ok=True)
     parts = a.parts.split(",")
-    base = R.load_config(REPO / a.config, [], smoke=False)
+    base = lazy_off(R.load_config(REPO / a.config, [], smoke=False))   # identity gate: lazy OFF (LRN.md)
     res1 = [LR.to_result(LR.decode(p.read_bytes())) for p in sorted(a.keep.glob("*.rec"))]
     res2 = [LR.to_result(LR.decode(p.read_bytes())) for p in sorted(a.keep2.glob("*.rec"))]
     allr = res1 + res2
