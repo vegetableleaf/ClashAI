@@ -1,0 +1,9 @@
+{
+  "rule": "held-out split by match DATE (local date in the log file name live_play_YYYYMMDD_*), fixed before any fit",
+  "train_dates": ["20261001", "20261020"],
+  "heldout_dates": ["20261021", "20261027"],
+  "fixed_at": "2026-10-27 19:45 EDT, before build/fit outputs existed",
+  "opp_leak_rule": "pre-registered: the opponent's leak (from the logged public counter opp_elixir_est) enters the fit only if its per-match total correlates with the battle log's public opponent elixirLeaked at Pearson r >= 0.7 on the matched matches; otherwise the leak feature is our own leak only (documented)",
+  "checkpoints_s": [60, 120, 180, "end"],
+  "checkpoint_rule": "a match counts at checkpoint t only if its last frame is after t (ended matches are not scored at later checkpoints); the model used is the phase of t (60 s -> 1x, 120 s -> 2x, 180 s -> OT); 'end' = last frame, model of its phase"
+}

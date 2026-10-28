@@ -1,0 +1,42 @@
+{
+ "data": {
+  "decisive": 2996,
+  "train": 1863,
+  "heldout": 1133,
+  "train_winrate": 0.5099302200751477,
+  "heldout_winrate": 0.42541924095322153,
+  "rows_per_phase_train": [
+   208884,
+   105641,
+   65018
+  ],
+  "body_known_frac_mean": 0.9987729064657379
+ },
+ "battlelog": {
+  "battles": 405,
+  "matched": 395,
+  "label_checked": 395,
+  "label_agree": 376,
+  "leak_n": 395,
+  "own_leak_r": 0.9863819054247297,
+  "opp_leak_r": 0.9022596736435925,
+  "own_leak_mae": 0.3975750404573694,
+  "opp_leak_mae": 4.609846279551334,
+  "mean_own_log_vs_battlelog": [
+   3.5365732289379155,
+   3.420810126582278
+  ],
+  "mean_opp_est_vs_battlelog": [
+   11.453933076909449,
+   7.478126582278481
+  ],
+  "opp_leak_used": true
+ }
+}
+1x {'princess': '+1.525 [+1.291,+1.753]', 'king': '+3.564 [+1.540,+6.130]', 'king_on': '-0.530 [-0.858,-0.269]', 'crowns': '+1.442 [+1.066,+1.865]', 'elixir': '+0.008 [-0.005,+0.023]', 'leak': '+0.014 [-0.026,+0.056]'} rho 186.2 [68.70640493080921, 1511.4386079849903] {'princess': True, 'elixir': False, 'leak': False}
+2x {'princess': '+2.222 [+1.950,+2.508]', 'king': '+2.969 [+1.410,+5.493]', 'king_on': '-0.459 [-0.795,-0.141]', 'crowns': '+1.986 [+1.621,+2.411]', 'elixir': '+0.003 [-0.007,+0.013]', 'leak': '-0.020 [-0.046,+0.006]'} rho 839.5 [159.27821660009377, 4865.611241562189] {'princess': True, 'elixir': False, 'leak': False}
+OT {'princess': '+2.958 [+2.524,+3.447]', 'king': '+1.211 [-0.576,+3.234]', 'king_on': '-0.205 [-0.711,+0.268]', 'crowns': '+8.185 [+6.990,+10.679]', 'elixir': '+0.005 [-0.002,+0.013]', 'leak': '+0.006 [-0.019,+0.027]'} rho 554.3 [211.5980096266301, 3221.554651794606] {'princess': True, 'elixir': False, 'leak': False}
+60s n 1131 auc 0.668 [0.637 0.698] ece 0.083 [0.059 0.11 ] tower-only 0.665 gain +0.004 [-0.001  0.009] univariate {'princess': np.float64(0.66), 'king': np.float64(0.517), 'king_on': np.float64(0.539), 'crowns': np.float64(0.546), 'elixir': np.float64(0.517), 'leak': np.float64(0.532)}
+120s n 1114 auc 0.789 [0.763 0.813] ece 0.058 [0.042 0.086] tower-only 0.788 gain +0.001 [-0.001  0.003] univariate {'princess': np.float64(0.776), 'king': np.float64(0.574), 'king_on': np.float64(0.606), 'crowns': np.float64(0.64), 'elixir': np.float64(0.482), 'leak': np.float64(0.55)}
+180s n 1062 auc 0.887 [0.865 0.904] ece 0.034 [0.027 0.06 ] tower-only 0.886 gain +0.001 [-0.     0.002] univariate {'princess': np.float64(0.861), 'king': np.float64(0.632), 'king_on': np.float64(0.688), 'crowns': np.float64(0.751), 'elixir': np.float64(0.509), 'leak': np.float64(0.584)}
+end n 1133 auc 0.984 [0.976 0.992] ece 0.018 [0.011 0.025] tower-only 0.984 gain +0.000 [-0.001  0.001] univariate {'princess': np.float64(0.967), 'king': np.float64(0.685), 'king_on': np.float64(0.911), 'crowns': np.float64(0.985), 'elixir': np.float64(0.5), 'leak': np.float64(0.63)}

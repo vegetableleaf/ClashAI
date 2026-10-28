@@ -1,0 +1,53 @@
+17 matches in both; 17 decision traces
+60s n 17
+  princess own: frame    0.27 decision    0.28 mean|d|   0.00 max|d|   0.04
+  princess opp: frame    0.28 decision    0.28 mean|d|   0.00 max|d|   0.04
+  king     own: frame    0.00 decision    0.00 mean|d|   0.00 max|d|   0.00
+  king     opp: frame    0.00 decision    0.00 mean|d|   0.00 max|d|   0.00
+  king_on  own: frame    0.00 decision    0.00 mean|d|   0.00 max|d|   0.00
+  king_on  opp: frame    0.00 decision    0.00 mean|d|   0.00 max|d|   0.00
+  crowns   own: frame    0.00 decision    0.00 mean|d|   0.00 max|d|   0.00
+  crowns   opp: frame    0.00 decision    0.00 mean|d|   0.00 max|d|   0.00
+  elixir   own: frame   10.31 decision   10.01 mean|d|   0.29 max|d|   1.22
+  elixir   opp: frame   13.91 decision   13.76 mean|d|   0.27 max|d|   2.00
+  leak     own: frame    1.51 decision    1.15 mean|d|   0.36 max|d|   1.11
+  leak     opp: frame    1.71 decision    2.51 mean|d|   0.79 max|d|   1.27
+120s n 17
+  princess own: frame    0.67 decision    0.67 mean|d|   0.00 max|d|   0.00
+  princess opp: frame    0.57 decision    0.57 mean|d|   0.00 max|d|   0.00
+  king     own: frame    0.01 decision    0.01 mean|d|   0.00 max|d|   0.06
+  king     opp: frame    0.00 decision    0.00 mean|d|   0.00 max|d|   0.00
+  king_on  own: frame    0.18 decision    0.18 mean|d|   0.00 max|d|   0.00
+  king_on  opp: frame    0.00 decision    0.00 mean|d|   0.00 max|d|   0.00
+  crowns   own: frame    0.12 decision    0.12 mean|d|   0.00 max|d|   0.00
+  crowns   opp: frame    0.00 decision    0.00 mean|d|   0.00 max|d|   0.00
+  elixir   own: frame   23.63 decision   23.15 mean|d|   0.48 max|d|   1.31
+  elixir   opp: frame   32.25 decision   31.80 mean|d|   0.64 max|d|   2.72
+  leak     own: frame    2.63 decision    2.02 mean|d|   0.61 max|d|   1.30
+  leak     opp: frame    3.02 decision    4.24 mean|d|   1.22 max|d|   2.41
+180s n 16
+  princess own: frame    0.92 decision    0.92 mean|d|   0.00 max|d|   0.08
+  princess opp: frame    1.14 decision    1.13 mean|d|   0.00 max|d|   0.04
+  king     own: frame    0.01 decision    0.01 mean|d|   0.00 max|d|   0.00
+  king     opp: frame    0.03 decision    0.03 mean|d|   0.00 max|d|   0.00
+  king_on  own: frame    0.50 decision    0.50 mean|d|   0.00 max|d|   0.00
+  king_on  opp: frame    0.38 decision    0.38 mean|d|   0.00 max|d|   0.00
+  crowns   own: frame    0.31 decision    0.31 mean|d|   0.00 max|d|   0.00
+  crowns   opp: frame    0.38 decision    0.38 mean|d|   0.00 max|d|   0.00
+  elixir   own: frame   49.33 decision   48.28 mean|d|   1.05 max|d|   1.78
+  elixir   opp: frame   63.27 decision   62.04 mean|d|   1.24 max|d|   4.35
+  leak     own: frame    3.17 decision    2.24 mean|d|   0.93 max|d|   2.93
+  leak     opp: frame    6.13 decision    9.17 mean|d|   3.04 max|d|   7.84
+end n 17
+  princess own: frame    1.14 decision    1.13 mean|d|   0.00 max|d|   0.06
+  princess opp: frame    1.27 decision    1.27 mean|d|   0.00 max|d|   0.00
+  king     own: frame    0.08 decision    0.08 mean|d|   0.00 max|d|   0.00
+  king     opp: frame    0.04 decision    0.04 mean|d|   0.00 max|d|   0.00
+  king_on  own: frame    0.59 decision    0.53 mean|d|   0.06 max|d|   1.00
+  king_on  opp: frame    0.65 decision    0.65 mean|d|   0.00 max|d|   0.00
+  crowns   own: frame    0.76 decision    0.71 mean|d|   0.06 max|d|   1.00
+  crowns   opp: frame    0.71 decision    0.71 mean|d|   0.00 max|d|   0.00
+  elixir   own: frame   64.19 decision   63.07 mean|d|   1.12 max|d|   2.35
+  elixir   opp: frame   81.68 decision   79.96 mean|d|   1.72 max|d|   7.35
+  leak     own: frame    3.12 decision    2.14 mean|d|   0.99 max|d|   2.93
+  leak     opp: frame    8.37 decision   12.93 mean|d|   4.56 max|d|   9.64
