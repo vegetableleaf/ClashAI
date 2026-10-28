@@ -1,3 +1,23 @@
+## 2026-10-28 ~18:10 EDT -- account 2 checkpoint: pilot READY but POSTPONED for opponent v1; v6 thresholds; 100x speed work
+
+- Owner decisions today (all in HANDOFF_1028.md 10.x + memory): Zap rule built; lazy_refine ON; KL cap 0.02 (option A);
+  thresholds v6 = today's humans (sha 26568167; RMS 0.10 pass bar, 0.05 stretch target reported); pilot runs on 33308, NOT
+  the 8x box; the 8x RTX PRO 6000 only for a MEASURED ~50-100x learning-speed gain (fp32, cap 0.02); overlap (play while
+  training, one version stale) APPROVED; pilot WAITS for opponent v1 (old pool too easy: CLXIII SIM 56-70% vs live 32.7%);
+  trial bar = 30-match safety (revert if <= 5/30 or idle worse) + 150-match block (promote if CI low > 32.7%); I may start
+  the pilot's live trial + auto-revert myself when it runs. New pod 33903 (4090) = opponent model.
+- Done today: F1FIX-3 shipped (crforge clashbot-main = fe364ceb on all pods; HF faults 0.11%); FRESH2 frozen + run: 22/28
+  exact (LB 0.62) - fix loop on 5 failures; Zap rule (fires only on 000420); live navigator Claim All + adb diagnosis
+  (2bf0322, live restarted 14:34); evo barrel + evo snowball SIM fix (barrel_decoy_sim, in pilot.yaml); lazy_refine +
+  ent_pair_every 4 + micro_batch accumulation (learner); fast loop exact vs production incl. abilities (16/16), pilot
+  READY_TO_TRAIN_ON_33308 (LOOP_INT.md "Pilot on 33308"; needs ~106 GB = clear the pod; re-sync from committed code).
+- Measured: policy-gradient noise scale >= ~126-160k rows (small-step PPO is mostly random walk); big steps overshoot the
+  cap (sqrt-lr contradicted); steady-state base learner uses ~4k rows/update; overlap alone <= ~2x; 100x needs a ~15-20x
+  faster fp32 learner + overlap (LEARNER-SCALE SCALE.md). Opponent v0: B-live RMS 0.34, CLXIII wins 89% -> v1 work.
+- Workers (ledger .foreman/ledger.md "RUN 2026-10-28b"): LEARNER-SCALE, LOOP-ASYNC, ENG-SME, P2-OPP2 (33903), V1-LIVEROWS,
+  V1-STRENGTH (sweep on 33553, Codex babysits), P3-FORK2, P6-MACRO, P4-10M (curve v1 on 30408). Live: CLXIII Ranked +
+  barrel decoy + new navigator; watcher liveops/stuck_watch2.py under the lead's Monitor.
+
 ## 2026-10-28 14:35 EDT -- live navigator: Claim All screen + adb-drop diagnosis deployed (2bf0322); live restarted 14:34
 
 - LIVE-OPS P1 (blind verifier PASS_WITH_NOTES): template claim_all + bounded action (<= 6 taps, button rect only, between
