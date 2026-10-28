@@ -144,13 +144,13 @@ def main(argv=None) -> int:
         for t, ss in sorted(by.items()):
             row = {}
             for h in hs:
-                ok = [at(s, h) for s in ss if all("qh" in c for c in s["cands"])]
+                ok = [at(s, h) for s in ss if all(h in c.get("qh", {}) for c in s["cands"])]
                 rel = CF.reliability([CF.sample_adv(s["cands"]) for s in ok])
                 row[h] = {"n": rel["n"], "snr": rel["snr"], "factor": rel["factor"],
                           "snr_ci90": boot(ok, lambda x: CF.reliability([CF.sample_adv(s["cands"]) for s in x])["snr"], n=200)}
             sw["snr"][t] = row
         for h in hs:
-            ah = [at(s, h) for s in aud if all("qh" in c for c in s["cands"])]
+            ah = [at(s, h) for s in aud if all(h in c.get("qh", {}) for c in s["cands"])]
             sw["slope"][h] = {**CF.slope_audit(ah), "levels_ci90": boot(ah, lambda x: CF.slope_audit(x)["levels"]["slope"], n=200),
                               "diffs_ci90": boot(ah, lambda x: CF.slope_audit(x)["diffs"]["slope"], n=200)}
         out["horizon_sweep"] = sw

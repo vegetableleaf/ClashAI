@@ -1,4 +1,4 @@
-# P3-FORK (cf_credit, R_fork) STATUS -- updated 2026-10-28 ~14:30 EDT (re-dispatch, account 2)
+# P3-FORK (cf_credit, R_fork) STATUS -- updated 2026-10-28 ~16:10 EDT (re-dispatch, account 2): step 1-3 done
 
 Labels: (a) measured, (b) plausible / untested, (c) contradicted.
 
@@ -36,23 +36,40 @@ Labels: (a) measured, (b) plausible / untested, (c) contradicted.
 - Orphans: a killed learner leaves its 40 actors alive until their current job ends (they check parent.is_alive() only when
   idle, every 30 s) -- kill them by the PIDs in <run_dir>/actors.pid (done for cfrepro40).
 
-## Running / done on pod 32657 (logs /workspace/cf3/logs, tree /workspace/cf3/cfh = HEAD pipeline + working-tree cf_credit.py)
-- cfpilot2: the L1 pilot, owner return (shaping tower_phat), CLXIII init, 6 updates x 128 matches, critic warm-up all updates,
-  n_actors 26, CPUs 0-27, CF_DUMP /workspace/cf3/logs/pilot2.jsonl, memwatch logs/cfpilot2.mem.tsv. Launched/babysat by Codex
-  (.foreman/scratch/a2/codex/P3FORK_1.md); results land in plan1026/cf/data/ (pilot2.jsonl, pilot2_report.json, pilot2_tables.md).
-- done: cfmem1 (4 actors, 16 matches), cfrepro40 (u0000 only, killed with SIGINT to its PID after update 0), cfmini1 (2 actors,
-  new triggers on: tornado_redirect fired and collated, rows +34, slope 1.34/25).
+## Results (details + tables: PILOT_RESULTS.md; data/ is gitignored, kept on the laptop and pod 32657 /workspace/cf3/logs)
+- pilot2 (cfpilot2, lib_cfclone3, Codex-run): 6 x 128 matches, all triggers incl. the two new ones, K 2 / 600 ticks. SNR >= 0.5 for 9 of 11 triggers; idle_full and
+  random 0.0. Slope levels 0.79, differences 0.717 +- 0.072 (in band, lower edge). Fork cost 5.87x.
+- pilot3 (cfpilot3, fe364ceb): noise study (horizon sweep + K 4): horizon 300 with K 2 gives SNR >= 0.77 for the five weak triggers at half the cost.
+- pilot4 (cfpilot4, fe364ceb, DEFAULTS): fork cost 0.71x match ticks (target <= 1x), SNR >= 0.5 on all 11 (small n), slope levels 0.80; the per-update slope on
+  differences is too noisy at 1x sample counts (n 69, SE 0.53): gate it pooled over >= 8 updates or with cf_audit_p 0.3.
+- Defaults now in cf_credit: P_DEFAULT (1.0x model), HORIZON_DEFAULT {idle_full, log_bait, wincon, siege, random: 300}; rocket_tornado / tornado_redirect stay opt-in
+  (measured p 0.055 / 0.0011 for 1x). New opt-in knobs: cf_k_by, cf_horizon_by, cf_horizon_sweep (diagnostic).
+- Cause of cfpilot1's death: see above (b, OOM-kill of the learner on the shared cgroup most probable; not reproduced in isolation; guard + 26 actors in place).
+
+## Engine
+- Lead 10-28: crforge clashbot-main fe364ceb is the lib for NEW runs. pilot2 ran on lib_cfclone3 (finished on it); pilot3 / pilot4 ran on
+  CRFORGE_LIB=/workspace/crforge_main/fe364ceb/plain/lib + facade rebuilt to /workspace/cf3/build_fe (javac against that lib; same CfCore.java c003fc74), tables 16.402.22.
+  run.sh takes CRFORGE_LIB / CRFORGE_FACADE_BUILD / CRFORGE_TABLES overrides. Do not compare pilot2 against pilot3 / 4 numbers as a paired A/B (different lib).
+
+## Pod 32657 now: nothing of mine is running (cfpilot2/3/4 finished; trees cfh, cfh2, cfh3, cfh4 = hard-link copies, cfh4 = the committed cf_credit 65e80370276f343c).
 
 ## Commands
-- Sync code: `bash plan1026/cf/sync_tree.sh pipeline/cf_credit.py ...` (REF=HEAD for committed versions); tests on the pod:
-  `ssh ... 'cd /workspace/cf3 && ./test_pod.sh 0-3 pipeline/tests/test_cf_credit.py -k NewTrigger'` (crforge engine).
-- Run (returns at once): `cd /workspace/cf3 && CF_DUMP=logs/X.jsonl TREE=/workspace/cf3/cfh GUARD_GB=100 ./guarded.sh crforge RUN 0-27
-  --config scratchpad/gauntlet/L74/plan1026/cf/cf_pilot_clxiii.yaml max_updates=6 critic_warmup_updates=6 n_actors=26 E=32 G=4
-  screen_every=1000 proagree_every=1000 learner_device=cuda ability_bc_matches=64 screen_entries=8 "screen_seeds=[0]"
-  cf_audit_p=0.2 cf_cap_ticks=40000 "cf_p={...}"` (the cf_p of the pilot is in the Codex ticket).
-- Report: `research/ext/Royale/.venv/Scripts/python.exe plan1026/cf/pilot_report.py plan1026/cf/data/pilot2.jsonl --from-update 2`.
+- Sync code: `TREE_NAME=cfh4 bash plan1026/cf/sync_tree.sh pipeline/cf_credit.py ...` (REF=HEAD for committed versions; never into a tree a run is using);
+  tests on the pod (crforge): `ssh ... 'cd /workspace/cf3 && TREE_NAME=cfh4 ./test_pod.sh 0-3 pipeline/tests/test_cf_credit.py -k NewTrigger'`.
+- Run (returns at once; GUARD_GB is a CGROUP-wide limit, so a neighbour's memory counts): `cd /workspace/cf3 && CRFORGE_LIB=/workspace/crforge_main/fe364ceb/plain/lib
+  CRFORGE_FACADE_BUILD=/workspace/cf3/build_fe CF_DUMP=logs/X.jsonl TREE=/workspace/cf3/cfh4 GUARD_GB=100 ./guarded.sh crforge RUN 0-27 --config
+  scratchpad/gauntlet/L74/plan1026/cf/cf_pilot_clxiii.yaml max_updates=4 critic_warmup_updates=4 n_actors=26 E=32 G=4 screen_every=1000 proagree_every=1000
+  learner_device=cuda ability_bc_matches=64 screen_entries=8 "screen_seeds=[0]" [cf_horizon_sweep=[150,300,450]] ["cf_p={...}"]`.
+- Traps: `pgrep -f "rl_royale --run X"` matches the ssh shell that contains it (use `^/workspace/venvf16/bin/python -u -m pipeline.rl_royale --run X`); the first
+  update line appears after ~7-12 min.
+- Report: `research/ext/Royale/.venv/Scripts/python.exe plan1026/cf/pilot_report.py plan1026/cf/data/X.jsonl --from-update 1 [--cost-scale t=f] [--weights t=w]`.
+
+## Codex dispatches
+- P3FORK_1 (.foreman/scratch/a2/codex/P3FORK_1.md, medium): launched + babysat cfpilot2 (~75 min), collected, ran pilot_report, wrote pilot2_tables.md. Outcome DONE; its
+  numbers re-checked against my own run of pilot_report (matches 512, samples 2,907 identical).
 
 ## Next
-1. pilot2 verdicts per trigger: SNR >= 0.5 (else more K / matched horizon / control variate, never dropped), slope in [0.7, 1.3],
-   cost; set P_DEFAULT from the budget model; re-run at the new defaults to confirm <= 1x fork ticks.
-2. P6 macro prefixes + Java forks: design notes written (P6_DESIGN.md, JAVA_FORKS.md); not built.
+1. Lead / owner: enable rocket_tornado / tornado_redirect in a production cf_p (p 0.055 / 0.0011 = 1x share) and decide cf_w (signal share ~0.1-0.2% at cf_w 1) and
+   whether to calibrate the advantage by the within-sample slope (~0.72).
+2. P6 prefix executor + Java forks: designs in P6_DESIGN.md / JAVA_FORKS.md; not built.
+3. Pilots with the pillar-2 human-like opponents once rollouts use them (forks use the match's own opponent).
