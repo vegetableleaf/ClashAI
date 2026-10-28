@@ -222,6 +222,10 @@ log_air and the IW press), and live (`live_gen_v2.decide`, a line-by-line re-imp
   out of PPO.
 - The IW press uses the live rule in every path.
 - `pipeline/tests/test_decide_identity.py`: recorded rows give identical logits, log-probs and actions through every path.
+**OWNER DECISION 10-28 (supersedes the R_exchange form below): R = R_win (terminal) + potential-based shaping
+gamma*Phi(s') - Phi(s) with Phi = P_hat(win) - 0.5 (RX-X23 variant (iii); policy-invariant, Ng et al.) + R_fork. No
+elixir-committed term, no 0.5 cap. Revisit variant (ii) (towers + elixir destroyed) only if (iii)'s results point to
+it. Evidence: rx/x23/STATUS.md, REWARD_REVIEW.md.**
 **P2, the reward: R = R_win + R_exchange + R_fork (P3, incl. the macro alternatives of P6). No KL term toward any
 reference policy.**
 Is the owner right that win-only is too weak? (a) yes: win-only signal-to-noise was ~0.2 (10-07), and credit over ~20
