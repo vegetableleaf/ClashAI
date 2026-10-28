@@ -1,0 +1,18 @@
+# per-flag SME activation on fresh1 (pod 33920, looS.sh): each flag off alone vs L_base; L_base sorted sha256 = F1 (32657) = 0dc85268
+flag_off	matches_changed	unflagged_pass	exact_frames	class_delta	changed
+BANNER	0	5	13709	{}	
+BP_FITNEXT	0	5	13709	{}	
+BP_MIXPH	0	5	13709	{}	
+BP_SNAP	1	4	13709	{'div': 1, 'torn_snap': -1}	20261028_001302
+HIDDEN	0	5	13709	{}	
+HP_PLACEHOLDER	1	5	13588	{'exact': -121, 'div': 121}	20261028_000420
+KIND_T	0	5	13709	{}	
+LATE9	0	5	13709	{}	
+MADE9	0	5	13709	{}	
+MECH_CROSS	0	5	13709	{}	
+REPR	1	4	13699	{'exact': -10, 'div': 11, 'torn_step': -1}	20261028_001302
+STEP_CLOCK	0	5	13709	{}	
+TORN_CMD	3	5	13709	{'torn_cmd': -5, 'torn_snap': 5}	20261028_001302,20261028_003008,20261028_005912
+TORN_CMD3	0	5	13709	{}	
+TORN_STEP	3	5	13709	{'torn_mixed': 2, 'torn_step': -4, 'torn_snap': 2}	20261028_000420,20261028_001302,20261028_005912
+base	0	5	13709	{}	
