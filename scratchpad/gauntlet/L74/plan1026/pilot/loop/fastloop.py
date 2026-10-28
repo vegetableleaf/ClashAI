@@ -57,9 +57,9 @@ def producer_main(aid, base: dict, n: int, threads: int, device: str, build: str
         msg = in_q.get()
         if msg is None:
             return
-        update, sd, jobs = msg
+        update, sd, jobs, ver = msg
         try:
-            out_q.put(("done", aid, P.run(update, sd, jobs)))
+            out_q.put(("done", aid, P.run(update, sd, jobs, ver)))
         except Exception:
             out_q.put(("error", aid, traceback.format_exc()))
 
@@ -75,7 +75,7 @@ class FastPool:
         self.devs = a.devices.split(",")
         self.out_q = self.ctx.Queue()
         self.in_qs, self.procs, self.gen = [None] * a.producers, [None] * a.producers, [0] * a.producers
-        self.restarts = 0
+        self.restarts = self.prefetch_miss = 0
         self.servers, self.srv_root = [], Path(f"/dev/shm/fastloop_{os.getpid()}")
         self.started = False
 
@@ -96,8 +96,10 @@ class FastPool:
         self.log(f"[fastloop] {a.producers} producers x {a.matches} matches x {a.threads} threads on {self.devs}"
                  + (f", forwards on {len(self.servers)} serve.py ({a.server})" if a.server else ""))
 
-    def _push(self, update: int, sd: bytes) -> None:
-        """This update's learner weights -> the servers' watch dir (serve.py loads learner.vN + learner.latest)."""
+    def _push(self, ver: int, sd: bytes) -> None:
+        """Learner weights of version ``ver`` (updates done) -> the servers' watch dir (serve.py loads learner.vN +
+        learner.latest; an equal version is not reloaded). Called only between waves: no producer is mid-share, so
+        every wave sees ONE version (policy_server.push flips its copies atomically besides)."""
         import torch
         from pipeline import rl_royale as R
         wd = self.srv_root / "weights"
@@ -105,7 +107,7 @@ class FastPool:
         sys.path.insert(0, str(HERE))
         from producer import server_version
         msd, _ = R.split_actor_sd(sd, "cpu")             # the ability head's tensors ride along (policy_server._load)
-        v = server_version(update, any(k.startswith(R.ABILITY_SD) for k in msd))
+        v = server_version(ver, any(k.startswith(R.ABILITY_SD) for k in msd))
         tmp = wd / f".learner.v{v:08d}.pt"
         torch.save({"version": v, "state_dict": msd}, tmp)
         os.replace(tmp, wd / f"learner.v{v:08d}.pt")
@@ -141,7 +143,7 @@ class FastPool:
             if msg[0] == "ready":
                 ks.discard(k)
 
-    def _restart(self, k: int, why: str, share, update: int, sd: bytes, tries: dict) -> None:
+    def _restart(self, k: int, why: str, share, update: int, sd: bytes, tries: dict, ver: int) -> None:
         """A dead / failed producer: its partial matches are gone with it (a producer returns only whole matches, at the
         end of its share); restart it and replay the whole share (per-match deterministic: the same results)."""
         tries[k] = tries.get(k, 0) + 1
@@ -153,10 +155,17 @@ class FastPool:
             self.procs[k].kill()
         self._spawn(k)
         self._wait_ready({k})
-        self.in_qs[k].put((update, sd, share))
+        self.in_qs[k].put((update, sd, share, ver))
 
     def run(self, update: int, sd: bytes, jobs: list):
-        from pipeline.rl_royale import row_key
+        return self.collect(self.submit(update, sd, jobs, update))
+
+    def submit(self, update: int, sd: bytes, jobs: list, ver: int) -> dict:
+        """Start one wave, non-blocking: ``update``'s jobs (their seeds) played with the learner weights ``sd`` of weight
+        version ``ver`` (= updates done when ``sd`` was taken: ``update`` itself, or update - 1 for an --overlap
+        prefetch). One wave at a time. -> the handle for ``collect``."""
+        if getattr(self, "busy", False):
+            raise RuntimeError("FastPool.submit: a wave is still in flight (collect it first)")
         t0 = time.perf_counter()
         if os.environ.get("FASTLOOP_DUMP"):                   # compare.py's input: the exact actor message
             import pickle
@@ -165,25 +174,33 @@ class FastPool:
                 out = out.with_name(f"fast_msg_u{update:04d}_{time.time_ns()}.pkl")
             out.write_bytes(pickle.dumps((self.base, update, sd, jobs)))
         if self.a.server:
-            self._push(update, sd)
+            self._push(ver, sd)
         if not self.started:
             self._start(jobs)
         shares = {k: jobs[k::len(self.in_qs)] for k in range(len(self.in_qs)) if jobs[k::len(self.in_qs)]}
         for k, js in shares.items():
-            self.in_qs[k].put((update, sd, js))
+            self.in_qs[k].put((update, sd, js, ver))
+        self.busy = True
+        return {"update": update, "sd": sd, "jobs": jobs, "ver": ver, "shares": shares, "t0": t0}
+
+    def collect(self, h: dict):
+        """Wait for the wave ``h`` (restarting dead producers, replaying their share) -> ActorPool.run's triple."""
+        from pipeline.rl_royale import row_key
+        update, sd, ver, shares, t0 = h["update"], h["sd"], h["ver"], h["shares"], h["t0"]
+        tw = time.perf_counter()
         results, skipped, stats, tries = [], [], {}, {}
         while len(stats) < len(shares):
             try:
                 msg = self.out_q.get(timeout=10)
             except queue.Empty:
                 for k in [k for k in shares if k not in stats and not self.procs[k].is_alive()]:
-                    self._restart(k, f"process exited {self.procs[k].exitcode}", shares[k], update, sd, tries)
+                    self._restart(k, f"process exited {self.procs[k].exitcode}", shares[k], update, sd, tries, ver)
                 continue
             (k, g) = msg[1]
             if g != self.gen[k] or k in stats:
                 continue                                          # a replaced producer's message
             if msg[0] == "error":
-                self._restart(k, msg[2], shares[k], update, sd, tries)
+                self._restart(k, msg[2], shares[k], update, sd, tries, ver)
                 continue
             if msg[0] != "done":
                 continue
@@ -191,7 +208,12 @@ class FastPool:
             results += r
             skipped += s
             stats[k] = st
+        self.busy = False
         results.sort(key=row_key)
+        for r in results:                                     # every row's server weight version = the one sent (LOOP-SRV)
+            w = (r.get("traj") or {}).get("wver")
+            if w is not None and len(w) and any(int(x) != int(ver) for x in set(w.tolist())):
+                raise RuntimeError(f"u{update:04d} {r.get('tag')}: rows at wver {sorted(set(w.tolist()))}, sent v{ver}")
         label = any(bool(r["traj"]["ab_cand"].any()) for r in results if "ab_cand" in (r.get("traj") or {}))
         if os.environ.get("FASTLOOP_RECORDS") and not label:   # LOOP-LRN: this update's rollout (traj: lp_*, v_old, wver);
             import pickle                                     # not the B6 warm start's label rollouts (no PPO rows)
@@ -211,6 +233,9 @@ class FastPool:
                 "per_stage_s": {k: sum(st["time"].get(k, 0.0) for st in stats.values()) for k in ("java", "fill", "decide")},
                 "java_engine_core_s": sum(st["java_engine_core_s"] for st in stats.values()),
                 "java_obs_core_s": sum(st["java_obs_core_s"] for st in stats.values()),
+                **({"behaviour_ver": int(ver), "staleness": int(update) - int(ver),
+                    "wait_s": time.perf_counter() - tw, "wave_s": max((st["wall_s"] for st in stats.values()), default=0.0),
+                    "prefetch_miss": self.prefetch_miss} if self.a.overlap is not None else {}),
                 "producers": stats}
         for d in {self.a.rl_dir, self.a.out} - {None}:
             Path(d).mkdir(parents=True, exist_ok=True)
@@ -230,6 +255,71 @@ class FastPool:
             s.kill()
 
 
+def match_rng(cfg: dict, u: int):
+    """--overlap: update u's matchup stream, a function of (seed, u) only -- the learner's rng then draws only minibatch
+    orders, and the wave of u+1 can be drawn before update u's PPO steps (their count varies with kl_stop)."""
+    import zlib
+    import numpy as np
+    return np.random.default_rng(zlib.crc32(f"overlap:{int(cfg['seed'])}:{int(u)}".encode()))
+
+
+def install(R, a, state: dict, pool=FastPool) -> None:
+    """Route rl_royale's self-play rollouts to ``pool`` (FastPool): ActorPool.run('selfplay') -> pool.collect(pool.submit).
+    --overlap (OVERLAP.md): Learner.rollout(u) draws u's matchups from match_rng(u) (production's rollout code itself,
+    its rng swapped for the call), and with --overlap 1, right after it returns (league ratings updated), submits update
+    u+1's wave with the CURRENT weights (version u) -- it plays while one_update(u) learns. rollout(u+1)'s own actors.run
+    then collects that wave if its jobs are the ones it asks for, else drains it and plays the asked jobs now
+    (prefetch_miss; e.g. a league snapshot taken by update u). Absent: the alternating loop, unchanged."""
+    orig_init, orig_run, orig_rollout = R.ActorPool.__init__, R.ActorPool.run, R.Learner.rollout
+    stop = (lambda: (Path(a.rl_dir) / "STOP").exists() or bool(a.out and (Path(a.out) / "STOP").exists()))
+
+    def init(self, base, n, log, *args, **kw):
+        orig_init(self, base, n, log, *args, **kw)
+        if "fast" not in state:
+            state["fast"] = pool(base, a, log)
+
+    def run(self, kind, update, sd, jobs, shares=None):
+        if kind == "selfplay" and "fast" in state:
+            if a.out and (Path(a.out) / "STOP").exists() and not (Path(a.rl_dir) / "STOP").exists():
+                (Path(a.rl_dir) / "STOP").write_text("from --out STOP\n")   # rl_royale stops after this update
+            fp, pend = state["fast"], state.pop("pending", None)
+            if pend is not None:
+                if pend["update"] == update and pend["jobs"] == jobs:
+                    return fp.collect(pend)                    # the overlapped wave: played with version pend["ver"]
+                fp.collect(pend)                               # not the jobs asked for: drained and dropped
+                fp.prefetch_miss += 1
+                fp.log(f"[fastloop] overlap: prefetched wave u{pend['update']:04d} dropped (asked u{update:04d}, jobs "
+                       f"{'equal' if pend['jobs'] == jobs else 'differ'}); prefetch_miss {fp.prefetch_miss}")
+            return fp.collect(fp.submit(update, sd, jobs, update))
+        return orig_run(self, kind, update, sd, jobs, shares)
+
+    def rollout(self, u):
+        cfg = self.cfg
+        if getattr(self, "league", None) is None:
+            raise SystemExit("--overlap: league self-play only (the fast loop serves 'selfplay')")
+        if a.overlap == 1 and not (a.server and cfg.get("stored_values")):
+            raise SystemExit("--overlap 1 needs --server and stored_values (the behaviour lp_old / v_old / wver rows)")
+        if a.overlap == 1 and cfg.get("kl_stop_prev") is not None and cfg.get("kl_ref_refresh_every") != 1:
+            raise SystemExit("--overlap 1 with kl_stop_prev needs kl_ref_refresh_every 1 (KL stop to the update-start policy)")
+        rng, self.rng = self.rng, match_rng(cfg, u)
+        try:
+            out = orig_rollout(self, u)
+        finally:
+            self.rng = rng
+        if a.overlap == 1 and u + 1 < int(cfg["max_updates"]) and not stop():
+            specs = R.sample_matchups(match_rng(cfg, u + 1), int(cfg["E"]), u + 1, self.league["snapshots"], cfg,
+                                      self.census, self.census_p,     # = production rollout's call (a miss is caught)
+                                      **({"league_state": self.league} if cfg.get("league_pfsp") == "hard" else {}),
+                                      exploiters=getattr(self, "exploiters", None))
+            jobs = [(i, sp, g) for i, sp in enumerate(specs) for g in range(int(cfg["G"]))]
+            state["pending"] = state["fast"].submit(u + 1, self._actor_bytes(), jobs, int(self.update))
+        return out
+
+    R.ActorPool.__init__, R.ActorPool.run = init, run
+    if a.overlap is not None:
+        R.Learner.rollout = rollout
+
+
 def main() -> int:
     argv = sys.argv[1:]
     cut = argv.index("--") if "--" in argv else len(argv)
@@ -241,6 +331,9 @@ def main() -> int:
     ap.add_argument("--build", default=str(HERE / "jbuild"))
     ap.add_argument("--out", default=None, help="extra dir for throughput.jsonl / STOP / FINAL (LOOP-OPS)")
     ap.add_argument("--server", default=None, help="eager | graphs: forwards on LOOP-SRV serve.py, one per device")
+    ap.add_argument("--overlap", type=int, choices=(0, 1), default=None,
+                    help="OVERLAP.md: 1 = the next wave plays while the learner trains (one version stale); 0 = its "
+                         "synchronous control (same matchup stream); absent = production's alternating loop")
     a = ap.parse_args(argv[:cut])
     rl_argv = argv[cut + 1:]
     from pipeline import rl_royale as R
@@ -257,21 +350,7 @@ def main() -> int:
         rl_argv[ci] = str(stripped)
     a.rl_dir = str(R.RUN_ROOT / run_name)
     state = {}
-    orig_init, orig_run = R.ActorPool.__init__, R.ActorPool.run
-
-    def init(self, base, n, log, *args, **kw):
-        orig_init(self, base, n, log, *args, **kw)
-        if "fast" not in state:
-            state["fast"] = FastPool(base, a, log)
-
-    def run(self, kind, update, sd, jobs, shares=None):
-        if kind == "selfplay" and "fast" in state:
-            if a.out and (Path(a.out) / "STOP").exists() and not (Path(a.rl_dir) / "STOP").exists():
-                (Path(a.rl_dir) / "STOP").write_text("from --out STOP\n")   # rl_royale stops after this update
-            return state["fast"].run(update, sd, jobs)
-        return orig_run(self, kind, update, sd, jobs, shares)
-
-    R.ActorPool.__init__, R.ActorPool.run = init, run
+    install(R, a, state)
     try:
         rc = R.main(rl_argv)
     finally:

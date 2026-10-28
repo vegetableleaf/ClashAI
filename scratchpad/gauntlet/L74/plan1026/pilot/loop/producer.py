@@ -479,8 +479,9 @@ class Producer:
         return r
 
     # ------------------------------------------------------------------------------------------------ one update
-    def run(self, update: int, sd: bytes, jobs: list) -> tuple[list[dict], list[dict], dict]:
-        """actor_main's ('selfplay', update, sd, jobs) -> (results, skipped, stats)."""
+    def run(self, update: int, sd: bytes, jobs: list, ver=None) -> tuple[list[dict], list[dict], dict]:
+        """actor_main's ('selfplay', update, sd, jobs) -> (results, skipped, stats). ``ver`` (fastloop --overlap): the
+        weight version of ``sd`` when it is not ``update`` (a wave one update stale); the jobs' seeds stay update's."""
         R, base = self.R, self.base
         t0 = time.perf_counter()
         c0 = (int(self.L.engineNs.get()), int(self.L.obsNs.get()), int(self.L.rowsBuilt.get()))   # JVM counters: per run
@@ -489,7 +490,7 @@ class Producer:
         if psd:
             raise NotImplementedError("the posture head is not in the fast loop yet")
         # the server's learner = this update's weights (server_version: a message with the ability head is its own version)
-        self.want_ver = server_version(update, bool(asd)) if self.cl is not None else None
+        self.want_ver = server_version(update if ver is None else ver, bool(asd)) if self.cl is not None else None
         self.net.load_state_dict(msd)
         self.net.eval()
         cfg = R.actor_cfg(base, "rollout", self.aid, self.dev)
