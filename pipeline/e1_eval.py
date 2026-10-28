@@ -990,14 +990,18 @@ class Match:
         tick = int(self.env.tick)
         if getattr(self.env, "hero_abilities", False):
             sides = [self.side] if isinstance(self, SelfPlaySide) else [0, 1]
-            self._ability_commands = {s: self.env.ability_commands(s) for s in sides}
+            # LOOP-IW: when the head decides MY side's presses, the rule's answer for my side was discarded, so it is
+            # no longer asked (its LiveIWPolicy observe + gates were pure cost). Identity-safe: what that call left
+            # behind (my side's IW observer and frame, _ability_check[my side], _v2_dt, _v2_info entries) is read only
+            # by my side's own later ability_commands, never made in head mode; _v2_dt is set again by every call that
+            # reads it, and ability_options creates the same _v2_info entries at the same tick.
+            head = bool(cfg.get("ability")) and cfg["ability"]["mode"] != "label"
+            self._ability_commands = {s: [] if head and s == self.side else self.env.ability_commands(s) for s in sides}
             if cfg.get("ability"):                           # rl_royale ability_head: MY side's options (ability_decide)
                 rule = self._ability_commands[self.side]
-                if cfg["ability"]["mode"] != "label":         # the head decides: the rule never presses for my side
+                if head:                                     # the head decides: the rule never presses for my side
                     self.env.learned_sides.add(self.side)
-                    self._ability_commands[self.side] = []
-                self._ability_opts = self.env.ability_options(self.side, rule if cfg["ability"]["mode"] == "label"
-                                                              else None)
+                self._ability_opts = self.env.ability_options(self.side, None if head else rule)
         self._gen_row = None
         if self.last_play_tick is None:
             self.last_play_tick = tick                       # match start = first decision (anti-stall clock)
