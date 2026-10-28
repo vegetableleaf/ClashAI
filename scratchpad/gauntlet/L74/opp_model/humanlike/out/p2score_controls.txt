@@ -1,0 +1,25 @@
+# P2-SCORE human controls (2026-10-28; THRESHOLDS v3 when run, rules unchanged in v4 except the registered additions)
+
+## card.py selftest (live calibration block, B-live + siege)
+THRESHOLDS.json sha256 0c42e9142d70842b1c59623b7fbe71ea4da890192e55bb3c2f677916712ec703 (matches HUMANLIKE.md)
+calibration block CLXIII live matches with >= 3 opponent plays: 856
+B-live human control, 50 random halves of the calibration block (n ~428/side, 25 stats): RMS 47/50 TOST 0/50 B3 50/50 full 0/50
+train-block CLXIII matches: 0 (CLXIII went live 10-25: no era control at one Mark)
+planted (react_s x1.15, troop depth +1 tile): passed=False RMS 0.20
+siege human control, 25 halves of the calibration block: full 0/25; lock_rate 10, zero_lock 8, p_lock_after_fail 24, cond_gap 13
+planted siege (every X-Bow locks): passed=False
+live calibration siege facts: {"matches": 856, "xbows": 3108, "lock_rate": 0.466, "zero_lock": 0.118, "n_multi": 754, "p_lock_after_fail": 0.356, "p_lock_after_lock": 0.511, "n_after_fail": 1267, "n_after_lock": 1007, "cond_gap": 0.155, "persistence": 1.159, "again_fail": 0.653, "again_lock": 0.564}
+
+## B-HF halves (hf_ctl.py)
+1,000 matches/half: 0/20 full; 2,000/half (test split): 6/20 full (RMS 20/20, TOST 6/20, B3 20/20); 3,700/half (splits 1+2): 18/20 full
+
+## design size (design_n.py)
+
+B-live rule on HF humans at 856 vs 1,920 (23 stats), 40 draws: full 31/40 (RMS 40, TOST 31, B3 40)
+siege margins for a 95% human pass at 856 vs 1,920: lock 0.046, zero-lock 0.051, P(lock|fail) 0.064, cond gap 0.095; per arch hog 0.100, other 0.094, weak_other 0.072, others 0.145-0.633
+
+## level C (disc.py, final form: events + CLS stat vector, 12 epochs)
+HF human halves 5,000/5,000 (pod 33920 GPU): AUC 0.492 [0.474, 0.511]; planted +1 s 0.747 [0.732, 0.762]; planted +0.5 tile 0.630 [0.613, 0.645]
+(event stream only, before the stat token: human 0.506-0.519, planted +1 s 0.513-0.519 = blind)
+live calibration halves (428 / 428): AUC 0.549 [0.490, 0.610]
+planted: half B plays 1 s later: AUC 0.964 [0.946, 0.979]
