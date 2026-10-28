@@ -1,0 +1,38 @@
+# ENG-SME SME_ZAP_CHAIN1 (regen_fresh.sh + SME_HIDDEN_GEN + SME_TOWER_ZAP, with vs without the flag)
+## dev 138 (16.402.22)
+records 138 138 same order True
+differs live_play_20261026_095134 ['unplaced'] plays 50 -> 50 opp_deal_fit same True flags [] -> []
+differs live_play_20261026_142027 ['unplaced'] plays 54 -> 54 opp_deal_fit same True flags [] -> []
+differs live_play_20261026_204837 ['plays'] plays 115 -> 114 opp_deal_fit same True flags ['0:opp_no_fitting_deal:0'] -> ['0:opp_no_fitting_deal:0']
+differs live_play_20261026_205934 ['unplaced'] plays 41 -> 41 opp_deal_fit same True flags [] -> []
+-- 095134
+removed []
+added []
+unplaced removed ['{"card": null, "kind": "play", "side": 1, "tick": 1607, "x": 4500, "y": 8500}']
+unplaced added []
+-- 142027
+removed []
+added []
+unplaced removed ['{"card": null, "kind": "play", "side": 0, "tick": 2397, "x": 13037, "y": 24453}']
+unplaced added []
+-- 205934
+removed []
+added []
+unplaced removed ['{"card": null, "kind": "play", "side": 1, "tick": 3451, "x": 15700, "y": 7200}']
+unplaced added []
+-- 204837
+removed ['{"card": "Zap", "kind": "play", "side": 0, "tick": 3322, "x": 17000, "y": 19100}']
+added []
+unplaced removed []
+unplaced added []
+## FRESH1 rf 9
+records 9 9 same order True
+## FRESH2 40 (frozen inputs vs chain)
+records 40 40 same order True
+differs live_play_20261028_130148 ['opp_deal_fit', 'plays'] plays 50 -> 48 opp_deal_fit same False flags [] -> []
+removed ['{"card": "Zap", "kind": "play", "side": 1, "tick": 1352, "x": 5100, "y": 7400}', '{"card": "Zap", "kind": "play", "side": 1, "tick": 3402, "x": 2955, "y": 7700}']
+added []
+unplaced removed []
+unplaced added []
+## SME 130148 with the chain inputs (pod 32657 run F2c_130148, m1 lib): {'exact': 1767} first_div None, plants missed []
+## sme_live / sme / bp_snap / plant_suite / round_cmp never read 'unplaced' (grep): the 109's SME inputs are unchanged

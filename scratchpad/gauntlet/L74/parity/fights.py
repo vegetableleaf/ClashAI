@@ -593,6 +593,20 @@ def unseen_zaps(m, catalog, seen, stats):
             first.setdefault(b['id'], (t, b))
     ewiz = [(t, b['side']) for t, b in first.values() if (catalog.get(b['card_id']) or {}).get('display_name') == 'ElectroWizard']
     cands, fr = [], m['frames']
+    # ENG-SME (SME_ZAP_CHAIN1=1): a body that takes the same drop (+-1) in another frame gap within 12 ticks has a
+    # periodic attacker, so that drop is no Zap evidence. FRESH2 130148@3404: our tower takes 77 every 4-6 ticks from the
+    # opponent's hero Valkyrie (3384 .. 3408) and our 15-hp hero IW dies in the same gap -> a false level-16 Zap; crforge,
+    # given it, sits 77 below the game from 3404 (first divergence). The old repeat test needs the same SET of hit bodies.
+    chain = os.environ.get('SME_ZAP_CHAIN1') == '1'
+    seen_drops = defaultdict(list)
+    if chain:
+        for (ta, A), (tb, B) in zip(fr, fr[1:]):
+            pa = {b['id']: b for b in A}
+            for b in B:
+                p = pa.get(b['id'])
+                if tb - ta <= 3 and p and p['hp'] > 0 and b['hp'] >= 0 and p['hp'] != b['hp']:
+                    seen_drops[b['id']].append((tb, p['hp'] - b['hp']))
+    periodic = lambda i, t, d: any(t2 != t and abs(t2 - t) <= 12 and abs(d2 - d) <= 1 for t2, d2 in seen_drops[i])  # noqa: E731
     for (ta, A), (tb, B) in zip(fr, fr[1:]):
         if tb - ta > 3:
             continue
@@ -609,7 +623,7 @@ def unseen_zaps(m, catalog, seen, stats):
                     # Barbarian hits for that level's Zap damage: 124601@682 was two Barbarian swings, diag_night/r5c)
                     melee = any(o['side'] != v and not o['tower'] and (catalog.get(o['card_id']) or {}).get('display_name') in ZAP_TWINS
                                 and math.hypot(o['x']-p['x'], o['y']-p['y']) <= 2000 + rad(o) + rad(p) for o in A)
-                    if not melee and (abs(d - zc) <= 1 if k == 'tower' else zb <= d <= zb + 5*(tb - ta) if k == 'building' else abs(d - zt) <= 1):
+                    if not melee and (abs(d - zc) <= 1 if k == 'tower' else zb <= d <= zb + 5*(tb - ta) if k == 'building' else abs(d - zt) <= 1)                             and not (chain and periodic(b['id'], tb, d)):
                         hit.append(p)
                 dead = [p for k_, p in pa.items() if k_ not in ids and p['side'] == v and not p['tower'] and 0 < p['hp'] <= zt
                         and hit and min(math.hypot(p['x']-h['x'], p['y']-h['y']) for h in hit) <= 2*ZAP_R]
