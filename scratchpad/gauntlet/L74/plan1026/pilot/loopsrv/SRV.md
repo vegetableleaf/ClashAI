@@ -12,6 +12,9 @@ Labels: (a) measured, (b) untested / projected, (c) contradicted.
   - `cd /workspace/loopsrv && nohup bash sweep.sh > sweep.log 2>&1 &` (resumable: configs with a json are skipped);
   - `python lp_check.py --out lp_check.json`;
   - `python srv_bench.py --part bare --out bare.json`.
+- **STOP 10-28 (account switch)**: nothing of mine is running; the last runs were stopped by exact PID.
+  - Last commit: b03fdb7 (value head, `v_old` per row).
+  - Owed: the throughput cost of the value head, on a FREE 4090. Both were held by other agents' jobs at the stop. Command: `cd /workspace/loopsrv && OMP_NUM_THREADS=2 /workspace/venvf15/bin/python srv_bench.py --part mix --mode graphs --configs 512x24 --out mix_value_512x24.json`; compare with `results/mix_graphs_512x24_f7_fp32.json` (15,388 rows/s).
 - **NEXT** (not this ticket):
   - rerun the mix with OPP's final row shares;
   - measure on the RTX PRO 6000 (the projection below is b);
