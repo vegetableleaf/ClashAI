@@ -11,18 +11,15 @@ seat-rows at the live cfg (succ48_x_s101), through the facade, CF-CLONE lib. Con
   + the cheap-win e1_eval.py; CF-CLONE lib_fix (core 3e86169b, from 30408 /workspace/cfclone/lib_fix) at
   /workspace/loopiw/lib; the old lib (e94447c0, from 32657 cfspeed) at /workspace/loopiw/oldlib; jpype at
   /workspace/loopiw/pylib (from 32657 cfspeed/pylib).
-- DONE: float-op probe (below). Cheap win written (pipeline/e1_eval.py prepare), smokes RUNNING:
-  /workspace/loopiw/logs/liw_smoke_cf.log, liw_smoke_rs.log (old lib e94447c0: expect crforge e816a6a4 / f060b678,
-  fin16 d4ef5467 / 6cd7292f). Restart: `cd /workspace/loopiw && ./smoke.sh crforge liw_smoke_cf
-  /workspace/loopiw/oldlib` (pod 33920) (royalesim liw_smoke_rs for fin16).
-- CfAbil (3a + 3b + 3c, speed/crforge/obsid/CfAbil.java) + obsid/ability_id.py (tables + JavaAbil builder) + hook/
-  (actor_abil.py: actor-path comparison) + abilcheck.sh + abil_sum.py. Harness trials under --smoke (1 actor, warm start
-  8 label rollouts + u0000 + u0001, CF-CLONE lib, pod 33920): see "Results". FULL RUN RUNNING: liw_full1 (12 actors,
-  max_updates=1: warm start 128 label rollouts + init screen + u0000), log /workspace/loopiw/logs/liw_full1.log,
-  per-actor JSONs /workspace/loopiw/liw_full1/, summary `python abil_sum.py /workspace/loopiw/liw_full1 OUT.json`.
-  Restart: `cd /workspace/loopiw/cb/scratchpad/gauntlet/L74/plan1026/pilot/loopiw && ./abilcheck.sh RUN 12 max_updates=1`.
-- NEXT: commit the cheap win once both shas match; fix harness trial findings; full identity run (>= 38,400 seat-rows,
-  warm start = label mode + rollouts + screens); cost per seat-row; message LOOP-INT per part.
+- DONE (a): cheap win committed (bffcb94; smokes = the known shas). CfAbil identical to production on 657,699 actor
+  seat-rows (liw_full1, see Results). LOOP-INT messaged with the interface (7a747da). No runs of mine left on 33920.
+- Restart / re-check: `cd /workspace/loopiw/cb/scratchpad/gauntlet/L74/plan1026/pilot/loopiw && ./abilcheck.sh RUN 12
+  max_updates=1` (pod 33920), then `/workspace/venvf16/bin/python abil_sum.py /workspace/loopiw/RUN OUT.json`.
+  Smokes: `cd /workspace/loopiw && ./smoke.sh crforge|royalesim RUN /workspace/loopiw/oldlib`.
+- OPEN (b): _near (a hero button with neither a v2 model nor the live IW rule) never ran (nNear 0); self-play vs
+  RoyalePoolEnv screen rows not counted apart (the 702-match init screen ran through the hook: all its rows are in the
+  totals); numpy exp == glibc exp only measured on these AMD EPYC pods (no AVX512); a CfCore.load fork (search) would
+  reset CfAbil's state (not on the live cfg's path).
 
 ## Float exactness (a, pod 32657: AMD EPYC 7702, glibc 2.39, numpy + scipy-openblas, no AVX512)
 fp/ (fp_gen.py, FpProbe.java, Libm.java):
@@ -59,3 +56,11 @@ with the same values by ability_options at the same tick.
   CfAbil 43 us per seat-row inside the JVM (177 us with JPype + the harness's Python wrappers).
 - Cheap win smokes (old lib e94447c0, pod 33920): crforge u0000 e816a6a499f7c706, fin16 u0000 d4ef5467f45f2f06 = the
   known shas; u0001 pending.
+- liw_full1 (12 actors, max_updates=1, CF-CLONE lib, pod 33920; results_liw_full1_sum.json): warm start 128 rule
+  rollouts (label mode, 13,095 labels) + init held-out screen 702 matches (RoyalePoolEnv, greedy head) + the u0000
+  rollout (sample head; batch_sha 4754a08f33d21453). 657,699 seat-rows, every check IDENTICAL, 0 errors:
+  commands 360,633/360,633 (1,606 with a press), options (head) 297,066/297,066 (99,687 with a button), options label
+  43,084/43,084 (13,095 with a button, q incl.), float32 feat 340,150/340,150, recheck 2,712/2,712; pending queue
+  0 diffs / 1,128,637 fires. Rule paths run: IW live gate 14,450 (hazard model 730), v2 model + draw 47,080, _near 0.
+  Self-tests 0 mismatches in all 12 actors. Cost per seat-row: production ability_commands + ability_options 329 us
+  (with the cheap win); CfAbil 13.3 us inside the JVM, 43.7 us through JPype + the harness wrappers.

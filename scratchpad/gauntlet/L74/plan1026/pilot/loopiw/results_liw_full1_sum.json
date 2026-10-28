@@ -1,0 +1,70 @@
+{
+ "actors": 12,
+ "wall_s": 8255,
+ "seat_rows": 657699,
+ "opt_rows": 112782,
+ "py_ns": 216605468885,
+ "java_ns": 28712285372,
+ "pending_checks": 1128637,
+ "pending_diff": 0,
+ "java_nIw": 14450,
+ "java_nV2": 47080,
+ "java_nNear": 0,
+ "java_nHazard": 730,
+ "java_nanos": 8734546557,
+ "java_calls": 705678,
+ "exact": [
+  "True"
+ ],
+ "selftest": [
+  {
+   "draw_mismatch": 0,
+   "libm_mismatch": 0,
+   "sum_mismatch": 0
+  },
+  12
+ ],
+ "py_us_per_seat_row": 329.34,
+ "java_us_per_seat_row_incl_jpype": 43.66,
+ "java_us_per_seat_row_in_jvm": 13.28,
+ "errors": {},
+ "status": {
+  "commands": "IDENTICAL 360633/360633 (nonempty 1606)",
+  "options": "IDENTICAL 297066/297066 (nonempty 99687)",
+  "options_f32": "IDENTICAL 340150/340150 (nonempty 0)",
+  "options_label": "IDENTICAL 43084/43084 (nonempty 13095)",
+  "recheck": "IDENTICAL 2712/2712 (nonempty 2652)"
+ },
+ "keys": {
+  "commands": {
+   "calls": 360633,
+   "equal": 360633,
+   "nonempty": 1606,
+   "first_diffs": []
+  },
+  "options_label": {
+   "calls": 43084,
+   "equal": 43084,
+   "nonempty": 13095,
+   "first_diffs": []
+  },
+  "options_f32": {
+   "calls": 340150,
+   "equal": 340150,
+   "nonempty": 0,
+   "first_diffs": []
+  },
+  "recheck": {
+   "calls": 2712,
+   "equal": 2712,
+   "nonempty": 2652,
+   "first_diffs": []
+  },
+  "options": {
+   "calls": 297066,
+   "equal": 297066,
+   "nonempty": 99687,
+   "first_diffs": []
+  }
+ }
+}
