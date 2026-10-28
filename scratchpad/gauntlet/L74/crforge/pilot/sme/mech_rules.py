@@ -101,7 +101,60 @@ def drill_surface(p, frames):
     return None
 
 
+# A2c-10 SME_IWGHOST10=1 (needs the raw live log): an opponent hero Ice Wizard press that was never cast. The ability
+# waits for a valid target (an enemy with the hero's Cold / Slow buff, sme_live.iw_valid_ticks), and crforge's held press
+# re-searches the hero's route. 211239's IW (play 4366) had a valid target only over [4511, 4762] and died at 4912 with no
+# cast; a press at 4892 alone makes the match exact (4890, 4891, 4893 do not), and the reader shows nothing of it. Such a
+# hero gets a 'ghost' press with window [max(play + 1, last valid frame + 1), last frame listed]: plan_from writes it as
+# kind 'skip', and the fitter enables it only at an onset where that hero diverges (sme_live.variants_at).
+IWGHOST10 = int(os.environ.get('SME_IWGHOST10', '0'))
+
+
+def hero_lives(path, name='IceWizardHero'):
+    """[(side, first tick, last tick)] of every generation of a hero unit in a raw live log (phase-2 units)."""
+    import json
+    life = {}
+    for line in open(path, 'rb'):
+        if b'"frame"' not in line[:40] or name.encode() not in line:
+            continue
+        d = json.loads(line)
+        for u in (d.get('phase2') or {}).get('units', []):
+            if u.get('name') == name:
+                r = life.setdefault(u['generation'], [u['side'], d['tick'], d['tick']])
+                r[2] = d['tick']
+    return sorted(life.values(), key=lambda r: r[1])
+
+
+def iw_ghosts(path, plays, my, log=None):
+    import sme_live
+    vt, lives, out = None, None, list(plays)
+    for p in plays:
+        if p['kind'] != 'play' or p['card'] != 'IceWizard' or p.get('form') != 2 or p['side'] == my:
+            continue
+        if lives is None:
+            lives, vt = hero_lives(path), sme_live.iw_valid_ticks(path)
+        s, k = p['side'], p['deck_index']
+        g = next((r for r in lives if r[0] == s and p['tick'] - 2 <= r[1] <= p['tick'] + 30), None)
+        if g is None:
+            continue
+        nxt = min((q['tick'] for q in plays if q is not p and q['side'] == s and q['deck_index'] == k and q['kind'] == 'play'
+                   and q['tick'] > p['tick']), default=10 ** 9)
+        if any(q['side'] == s and q['deck_index'] == k and q['kind'] == 'ability' and p['tick'] < q['tick'] < nxt for q in plays):
+            continue   # cast (or its press dated): not a ghost
+        lastv = max((t for t in vt if p['tick'] < t <= g[2] and vt[t][s]), default=None)
+        lo, hi = max(p['tick'] + 1, (lastv or 0) + 1), min(g[2], nxt - 1)
+        if lo > hi:
+            continue
+        if log is not None:
+            log.append(('iw_ghost', s, p['tick'], [lo, hi]))
+        out.append(dict(side=s, kind='ability', card='IceWizard', deck_index=k, name='IceWizard', form=0, run_ticks=[lo, hi],
+                        tick=lo, source='iw_ghost', ghost=1))
+    return out
+
+
 def apply(path, plays, sides, frames, log=None):
+    if IWGHOST10 and path:
+        plays = iw_ghosts(path, plays, next(s for s in sides if sides[s].get('role') == 'us'), log)
     if not (GB or DRILL or HB or ZAP):
         return plays
     zap = buff_made(path, 'ZapFreeze') if ZAP and path and any(p['card'] == 'Zap' for p in plays) else set()

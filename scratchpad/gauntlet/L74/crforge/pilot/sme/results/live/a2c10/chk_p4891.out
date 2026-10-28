@@ -1,0 +1,5 @@
+{"frames": 3022, "counts": {"exact": 3011, "torn_cmd": 1, "div": 10}, "first": 4892}
+div runs [(4892, 4910)]
+4892 [["U_rec_only", [1, 3217, 14099, 242], "IceWizard", [3, 1, 0]], ["U_rec_only", [1, 3217, 14099, 1100], "IceWizard", [3, 1, -858]], ["U_sim_only", [1, 3220, 14100, 242], "C:IceWizardHero", [-3, -1, 0]], ["U_sim_only", [1, 3220, 14100, 1100], "C:IceWizardHeroFloatingCube", [-3, -1, -858]], ["P_rec_only", [0, 3269, 12789], "P:tower_shot", [1, 0]], ["P_sim_only", [0, 3270, 12789], "P:TowerPrincessProjectile", [-1, 0]]]
+4894 [["U_rec_only", [1, 3224, 13980, 69], "IceWizard", [-1, 0, 0]], ["U_rec_only", [1, 3224, 13980, 1100], "IceWizard", [-1, 0, -1031]], ["U_sim_only", [1, 3223, 13980, 69], "C:IceWizardHero", [1, 0, 0]], ["U_sim_only", [1, 3223, 13980, 1100], "C:IceWizardHeroFloatingCube", [1, 0, -1031]]]
+4896 [["U_rec_only", [1, 3226, 13860, 69], "IceWizard", [-1, 0, 0]], ["U_rec_only", [1, 3226, 13860, 1100], "IceWizard", [-1, 0, -1031]], ["U_sim_only", [1, 3225, 13860, 69], "C:IceWizardHero", [1, 0, 0]], ["U_sim_only", [1, 3225, 13860, 1100], "C:IceWizardHeroFloatingCube", [1, 0, -1031]]]

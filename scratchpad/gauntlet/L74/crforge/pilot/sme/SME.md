@@ -2106,3 +2106,100 @@ of the hero's side carrying its Cold / Slow, by `source_side_cached`):
 - **Pods:**
   - 33920: `/workspace/pilot/{sme9, inputs_v27, inputs_v27o, inputs_v28, a2c9n}`, runs `sme_live/{n93, n9Y, n9P}`;
   - 32657: `/workspace/pilot/a2c9n` (AimRun7 / 9 traces of 171753).
+
+---
+
+# A2c-10: the last two onsets, our Log windows and the opponent's hero IW press that is never cast (worker a2c10, pod 32657)
+
+Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted. **No crforge change and no comparator change.**
+Redirected mid-ticket: A2c-9N's held-press rule took 014928 and 211239's first onsets. This round covers the onsets after it.
+
+| run | change | layer | inputs | exact apart from torn (unflagged) | exact frames | regressions | gained |
+|---|---|---|---|---:|---:|---|---|
+| n9P | (9N) | | v28 `65b5e131` | 108 / 109 | 278,863 | | |
+| **a10G1** | an opponent hero IW press that is never cast (SME_IWGHOST10): plan kind `skip`, enabled by the fitter only where its hero diverges | extractor + SME fitter | **v29** `88ca12a2` (LF) = v28 + 22 ghost presses in 14 records | **109 / 109** | **278,872** (+9) | **0** | `211239` |
+
+- Against bp9Y1: 106 -> 109 / 109, 276,782 -> 278,872, 0 regressions (`results/live/a2c10/a10G1.cmp.txt`).
+- 124 matches have byte-identical result lines to n9P. The 13 other ghost-carrying matches keep every count and first div;
+  only `commands` (+1), the `repair` log and `refused_plays` command indices differ (a skip command shifts indices).
+- a10G1 = bp9Y1's command (`bp9/run9.sh`, lib_f635c, SME_LATE9 + SME_MADE9, WORKERS=48) with SME_DIR = `/workspace/pilot/sme10`
+  (sme9 + this round's `sme_live.py`) on `/workspace/pilot/inputs_v29`. Sorted results sha256 `015f496e`.
+- v29 = `a2c9n/regen9n.sh OUT SME_SAMETICK_ORDER=1 SME_IWPEND9=1 SME_IWGHOST10=1`, then CRLF -> LF (laptop file `27a545f4`).
+  Against v28 (`a2c10/indiff10.py`, `results/live/a2c10/inputs_v28_v29.txt`): 124 records identical; the other 14 differ only
+  by added `iw_ghost` rows.
+
+## 1. 211239@1582 and 171753@3886 (onsets on 9N's single-match plans): our Log run a tick early, fitter-reachable (a)
+- Both are our Log 360 units ahead in crforge. Spell windows are 2 ticks wide ([1580, 1581] and [3884, 3885]). The plan ran
+  the Log at lo; the game's first sighting shows the projectile at its spawn point (211239: frame 1582 at y 8,860 = crforge's
+  line 1581 for run 1580), so the game ran it at hi.
+- Moving the Log to hi (chk, no fitter; `a2c10/mv10.py`, `results/live/a2c10/chk_m1_211239.out`, `chk_m2_171753.out`):
+  - 211239: 1582 -> 4894.
+  - 171753: 3886 -> isolated 3915 and 4850, then 5345. Its opponent Fireball cmd 58, window [4030, 4031], also has to be
+    moved to 4031.
+- **No input rule is needed.** The fitter already varies a run inside [lo, hi] at an onset: in bp9Y1's fitted plans, 621 of
+  the 1,481 two-tick spell windows run at a tick other than lo. n9P took both: 211239's repair log moves cmd 16 1580 -> 1581,
+  and 171753 is exact.
+- (c) for my first reading: a crforge census that assumed the plan's run was lo is void, because fitted plans move runs. Its
+  "never late before the first div" was a selection effect, so the projectile-clock rule built on it was reverted unrun.
+
+## 2. 211239@4894: the opponent pressed the hero IW ability at 4892 and it never cast (a)
+- **The event.** The opponent's hero IW (cmd 64, played 4366) steps (7, -119) over 4892 -> 4894; crforge steps (2, -120)
+  toward its held aim (3250, 12750). After that the offset of 5 persists, shrinking to 2. The hero dies at 4912.
+- **One input explains it.** An ability press of `cmd64_0` added at run 4892 makes the whole match exact (chk: 3,021 exact +
+  1 torn_cmd, 0 div). Runs 4890 / 4891 leave 4892-4910 div; 4893 leaves 4896-4908 (`results/live/a2c10/chk_p489*.out`). The
+  press re-searches the hero's route (9N's mechanism), and the new route's first step is the game's.
+- **Why no cast (a).** Side 1's valid-target frames (an enemy carrying its IceWizardHeroCold / Slow) are [4511, 4762] only
+  (`a2c10/vt10.py`). Pressed at 4892, the ability waits for a target, and the hero dies at 4912 before one appears.
+- **The reader shows nothing (a).** Over 4886-4896 the hero's `pending_on_body` stays 0, its cast timer stays 0, and no
+  field of its reader records changes apart from position and hp (`a2c10/gdiff10.py`). The whole frame records show nothing
+  else either (`a2c10/fdiff10.py`). The opponent's elixir is not read.
+- **Own-side ground truth (A2c-9N census):** our two presses that never got a target and never cast (222240@3598,
+  225213@3587) are in matches that are exact. So crforge's held, uncast press matches the game where the tick is known.
+- **Over-fit sweep (`a2c10/sweep10.py` = 9N's sweep9n, `results/live/a2c10/sweep_ghost_211239.txt`).** The press was run at
+  every R in the ghost window [4763, 4911] (149 runs, whole match each):
+  - only R = 4892 is exact (0 div);
+  - the next best are 4901 (5 div) and 4893 (7);
+  - no press gives 9 div;
+  - other R values give 9 to 197 div.
+
+## 3. Rule SME_IWGHOST10 (extractor `mech_rules.iw_ghosts` + SME `sme_live.plan_from` / `variants_at`)
+- **Extractor.** An opponent hero IW play (form 2) gets one ghost press when no ability of that card follows it before the
+  card's next play. The hero's life comes from its phase-2 generation (`hero_lives`).
+  - window = [max(play + 1, last valid-target frame in its life + 1), last frame listed];
+  - row kind `ability`, `source: iw_ghost`, `ghost: 1`, tick = lo.
+  - Our own heroes are never ghosted.
+- **Plan.** `plan_from` writes a ghost as kind `skip`, which SmeRun ignores, so an unfitted plan runs as without it.
+- **Fitter.** At an onset d, a ghost is tried at R in [d - 4, d - 1] inside its window, and only when its hero is a
+  sim-only body of the frame-d diff (`ghost_heroes`). Otherwise it stays `skip`.
+- **Across the 138 (a).** 22 ghosts in 14 records. The fitter enabled exactly one: 211239 cmd 76 at 4892 (round 4, 12
+  variants, first div 4894 -> 5776; round 5 then moved a Log, cmd 107, to reach exact). The other 21 stay `skip`.
+- **Self-check `a2c10/ghost_test.py` (ok 4):**
+  - the 211239 window [4763, ...] holds 4892;
+  - no ghost for our own side;
+  - the fitter's gating (no variants when the hero does not diverge; R = d-4..d-1; capped at the window end);
+  - `plan_from` writes kind skip and adds nothing without a ghost.
+
+## 4. What fails now: nothing (a10G1, 0 / 109)
+- Every unflagged match is exact apart from torn frames. The comparator is unchanged.
+- Thinnest pins:
+  - 171753 (9N: 1 frame separates 3291 from the runners-up);
+  - this ghost (4892 against 5 div at 4901).
+- (b) A ghost could in principle fit a divergence it did not cause. It is gated to an onset where its own hero diverges and
+  to a tick when the ability could not cast. It was enabled once in 138 matches.
+
+## Files (A2c-10)
+- **Code:**
+  - `sme/mech_rules.py`: `IWGHOST10`, `hero_lives`, `iw_ghosts`, called first in `apply`. The hook in `extract.match` runs
+    when SME_MECH_GB / DRILL / HB / ZAP is set, which the v24+ flag set does.
+  - `sme/sme_live.py`: `plan_from` writes kind skip for a ghost; `GHOST_BACK`, `ghost_heroes`, `variants_at(..., heroes)`;
+    the `fit_match` call.
+- **Tools (`a2c10/`):**
+  - single-match runs: `chk10.py`, `near10.py`, `mv10.py`, `addp10.py`, `sweep10.py`;
+  - raw log: `vt10.py`, `gdiff10.py`, `fdiff10.py`, `ab10.py`, `raw10.py`;
+  - census and checks: `iwnc10.py`, `indiff10.py`, `ghost_test.py`.
+- **Results (`results/live/a2c10/`):** `a10G1_{results.jsonl,cmp.txt}`, `inputs_v28_v29.txt`, `sweep_ghost_211239.txt`,
+  `chk_*.out`.
+- **Pod 32657:**
+  - `/workspace/pilot/{sme10, inputs_v29, a2c10}`;
+  - runs `sme_live/a10G1`, plus `sme_live/n9P_from33920` (n9P's results.jsonl, `e38bb85e`);
+  - AimRun4 trace of 211239 (`a2c10/tr/`).

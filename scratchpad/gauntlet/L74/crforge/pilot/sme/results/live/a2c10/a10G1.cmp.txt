@@ -1,0 +1,2 @@
+exact apart from torn: 108/109 -> 109/109 | exact frames 278863 -> 278872 | regressions 0 | gained 1
+torn frames after: {'torn_snap': 21, 'torn_cmd': 73, 'torn_step': 70, 'torn_t1': 71, 'torn_mixed': 31, 'torn_late': 1, 'torn_hidden': 46, 'torn_cross': 1}

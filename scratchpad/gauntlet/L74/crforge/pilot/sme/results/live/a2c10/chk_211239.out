@@ -1,0 +1,12 @@
+{"frames": 3022, "counts": {"exact": 2950, "div": 71, "torn_cmd": 1}, "first": 1582}
+div runs [(1582, 1694), (1720, 1728), (4894, 4910)]
+1582 [["P_rec_only", [0, 3500, 8860], "P:Log", [0, 360]], ["P_sim_only", [0, 3500, 9220], "P:LogProjectile", [0, -360]]]
+1584 [["P_rec_only", [0, 3500, 9580], "P:Log", [0, 360]], ["P_sim_only", [0, 3500, 9940], "P:LogProjectile", [0, -360]]]
+1586 [["P_rec_only", [0, 3500, 10300], "P:Log", [0, 360]], ["P_sim_only", [0, 3500, 10660], "P:LogProjectile", [0, -360]]]
+1588 [["P_rec_only", [0, 3500, 11020], "P:Log", [0, 360]], ["P_sim_only", [0, 3500, 11380], "P:LogProjectile", [0, -360]]]
+1590 [["U_rec_only", [1, 3323, 12657, 1545], "Pekka", [-22, 148, 0]], ["U_sim_only", [1, 3301, 12805, 1545], "C:Pekka", [22, -148, 0]], ["P_rec_only", [0, 3500, 11500], "P:Log", [0, 200]], ["P_sim_only", [0, 3500, 11700], "P:LogProjectileRolling", [0, -200]]]
+1592 [["U_rec_only", [1, 3283, 12928, 1545], "Pekka", [-15, 98, 0]], ["U_sim_only", [1, 3268, 13026, 1545], "C:Pekka", [15, -98, 0]], ["P_rec_only", [0, 3500, 11900], "P:Log", [0, 200]], ["P_sim_only", [0, 3500, 12100], "P:LogProjectileRolling", [0, -200]]]
+1594 [["U_rec_only", [1, 3257, 13100, 1545], "Pekka", [-7, 49, 0]], ["U_sim_only", [1, 3250, 13149, 1545], "C:Pekka", [7, -49, 0]], ["P_rec_only", [0, 3500, 12300], "P:Log", [0, 200]], ["P_sim_only", [0, 3500, 12500], "P:LogProjectileRolling", [0, -200]]]
+1596 [["P_rec_only", [0, 3500, 12700], "P:Log", [0, 200]], ["P_sim_only", [0, 3500, 12900], "P:LogProjectileRolling", [0, -200]]]
+1598 [["U_rec_only", [1, 3251, 13149, 1545], "Pekka", [0, -45, 0]], ["U_sim_only", [1, 3251, 13104, 1545], "C:Pekka", [0, 45, 0]], ["P_rec_only", [0, 3500, 13100], "P:Log", [0, 200]], ["P_sim_only", [0, 3500, 13300], "P:LogProjectileRolling", [0, -200]]]
+1600 [["U_rec_only", [1, 3273, 13066, 1194], "Pekka", [-3, -45, 0]], ["U_sim_only", [1, 3270, 13021, 1194], "C:Pekka", [3, 45, 0]], ["P_rec_only", [0, 3500, 13500], "P:Log", [0, 200]], ["P_sim_only", [0, 3500, 13700], "P:LogProjectileRolling", [0, -200]]]

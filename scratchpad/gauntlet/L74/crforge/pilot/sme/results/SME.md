@@ -1,4 +1,12 @@
 
+## Remaining failures of a10G1 (0 unflagged; 109 / 109, 278,872 exact frames; A2c-10 on n9P)
+a10G1 = n9P's command with sme10 code (`plan_from` / `variants_at` ghost hooks) on inputs_v29 (`88ca12a2` = v28 + SME_IWGHOST10:
+22 never-cast opponent hero IW presses in 14 records, plan kind `skip`, enabled by the fitter only where their hero diverges).
+0 regressions; 124 matches byte-identical to n9P, the other 13 ghost-carrying matches with unchanged counts. Fixed by it:
+`211239` (ghost press at 4892, the only exact run in a 149-run sweep) (SME.md A2c-10).
+
+None.
+
 ## Remaining failures of n9P (1 unflagged; 108 / 109, 278,863 exact frames; A2c-9N on bp9Y1)
 n9P = bp9Y1's command (sme9 code, lib_f635c, SME_LATE9 + SME_MADE9, `bp9/run9.sh`) on inputs_v28 (`65b5e131` = v27o +
 SME_IWPEND9: 10 opponent hero Ice Wizard presses in 7 matches get the run window back to their last valid-target frame).

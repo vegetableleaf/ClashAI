@@ -1,0 +1,10 @@
+{"frames": 3040, "counts": {"exact": 1888, "div": 1151, "torn_step": 1}, "first": 1770}
+div runs [(1770, 1770), (3886, 4284), (4292, 4302), (4318, 4318), (4326, 4336), (4358, 6232)]
+3886 [["P_rec_only", [0, 4500, 11860], "P:Log", [0, 360]], ["P_sim_only", [0, 4500, 12220], "P:LogProjectile", [0, -360]]]
+3888 [["P_rec_only", [0, 4500, 12580], "P:Log", [0, 360]], ["P_sim_only", [0, 4500, 12940], "P:LogProjectile", [0, -360]]]
+3890 [["P_rec_only", [0, 4500, 13300], "P:Log", [0, 360]], ["P_sim_only", [0, 4500, 13660], "P:LogProjectile", [0, -360]]]
+3892 [["P_rec_only", [0, 4500, 14020], "P:Log", [0, 360]], ["P_sim_only", [0, 4500, 14380], "P:LogProjectile", [0, -360]]]
+3894 [["P_rec_only", [0, 4500, 14500], "P:Log", [0, 200]], ["P_sim_only", [0, 4500, 14700], "P:LogProjectileRolling", [0, -200]]]
+3896 [["P_rec_only", [0, 4500, 14900], "P:Log", [0, 200]], ["P_sim_only", [0, 4500, 15100], "P:LogProjectileRolling", [0, -200]]]
+3898 [["P_rec_only", [0, 4500, 15300], "P:Log", [0, 200]], ["P_sim_only", [0, 4500, 15500], "P:LogProjectileRolling", [0, -200]]]
+3900 [["P_rec_only", [0, 4500, 15700], "P:Log", [0, 200]], ["P_sim_only", [0, 4500, 15900], "P:LogProjectileRolling", [0, -200]]]

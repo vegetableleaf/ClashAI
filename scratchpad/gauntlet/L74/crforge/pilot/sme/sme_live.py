@@ -548,6 +548,9 @@ def plan_from(rec, opp_deal, frames=None):
                             'source': p.get('source'), 'own': s == me}
         if LATE9 and p.get('late_reads'):   # round 9: frames read before the game heard this play (late_reclass)
             cmds[-1]['_src']['late_reads'] = p['late_reads']
+        if p.get('ghost'):   # A2c-10 (mech_rules.iw_ghosts): a press never cast runs only if the fitter enables it
+            cmds[-1]['kind'] = 'skip'
+            cmds[-1]['_src']['ghost'] = 1
     deals = [None, None]
     own = list(rec['deal'][str(me)])
     if own.count(-1) == 1:  # one queue card never seen: it is the one index missing
@@ -764,10 +767,28 @@ def analyse(obs, frames, me, lo=0, hi=10 ** 9):
             'missing_in_sim': sum(1 for t in frames if lo <= t <= hi and t not in by)}
 
 
-def variants_at(plan, d, rec_frames_end):
+GHOST_BACK = 4   # A2c-10: a ghost press is tried at R in [d - GHOST_BACK, d - 1] (211239: press 4892, first moved frame 4894)
+
+
+def ghost_heroes(o_by, frames, me, d):
+    """A2c-10: the plays ('cmdN') whose sim body at line d is a sim-only body of the frame-d diff."""
+    if d not in o_by or d not in frames:
+        return set()
+    sim_only = {x[:3] for k, x, _ in diff(canon_live(frames[d], me), sim_canon(o_by[d], me)) if k == 'U_sim_only'}
+    return {e[8] for e in o_by[d]['E'] if e[1] == 'C' and (e[3], e[4], e[5]) in sim_only and e[8]}
+
+
+def variants_at(plan, d, rec_frames_end, heroes=frozenset()):
     vs = []
     for i, c in enumerate(plan['cmds']):
         s = c['_src']
+        if s.get('ghost') and c['kind'] == 'skip':
+            # A2c-10: an opponent hero IW press never cast (mech_rules.iw_ghosts) is enabled only at an onset where its
+            # hero is a diverging body, at R just before the onset and inside the window where it could not cast
+            if c['unit'].split('_')[0] in heroes:
+                vs += [(i, {'kind': 'ability', 'run': R, 'given': R - 20})
+                       for R in range(max(s['lo'], d - GHOST_BACK), min(s['hi'], d - 1) + 1)]
+            continue
         # A2c-BP2 (SME_BP_FITNEXT=1): a command run after the onset whose window reaches back to it is varied too
         # (080929: our Log run 3132, window [3131, 3133], the game's cost read at 3131; R = 3131 heals 3131-3216)
         if not (d - WIN <= c['run'] <= d or (FITNEXT and s['lo'] <= d < c['run'])):
@@ -848,7 +869,8 @@ def fit_match(rec, frames, out):
             break
         d = eps[0][0]
         skip = [(e[0], e[1]) for e in episodes(an) if e[0] in given_up]
-        vs = variants_at(plan, d, end)
+        ghosts = any(c['_src'].get('ghost') for c in plan['cmds'])
+        vs = variants_at(plan, d, end, ghost_heroes({x['t']: x for x in o}, frames, me, d) if ghosts else frozenset())
         lo, hi = max(0, d - WIN - 5), min(end, d + 400)
         best = None
         if vs:
