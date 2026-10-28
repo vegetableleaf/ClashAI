@@ -10703,6 +10703,18 @@
    "path": "icebow/data/bc_pro/models/diag_head_rescaled.pt",
    "sha256": "af6eac9ef7948a8bff3c953b24419b1cb9ae5f822180e31d976b4897bd593121",
    "why": "offline BC screen (not a candidate)"
+  },
+  {
+   "path": "icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt",
+   "sha256": "984bf5729ecc85bda6ad48a2e4e0198cfa97e1a1218b537930635764466c73a4",
+   "of": "ICEBOW Mark CLXIII: NOLEAK",
+   "why": "fast-loop pilot start point B0 (untrained; lead 10-28: not a Mark): CLXIII NOLEAK's 141 tensors unchanged + the S3-aux memory v2 encoder's 50 mem.* / mem_aux.* tensors (from mem_best_ze.pt 3d75a25d, trained on the RAW succ48_o_s91 u75), coupling mem.out = 0; identical to CLXIII on 1,718 recorded live decisions (CPU + CUDA). Built by plan1026/pilot/ops/build_b0.py; the trained pilot checkpoint becomes ICEBOW Mark CLXV"
+  },
+  {
+   "path": "C:/Users/benpe/pod_backup_weekend/night1025/mem_best_ze.pt",
+   "sha256": "3d75a25d8ebedd4ed34bd63981fe676e448dedcb325fc7b3e5ff36e484175ac4",
+   "of": "ICEBOW Mark CLXIII: NOLEAK",
+   "why": "S3-aux memory v2 encoder (zero_empty, coupling 0) on the RAW succ48_o_s91 u75 trunk (3eda9d23; = CLXIII minus its grafted heads); init of the 10-25 night memory arms; source of B0's memory tensors"
   }
  ]
 }

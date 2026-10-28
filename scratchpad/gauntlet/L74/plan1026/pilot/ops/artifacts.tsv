@@ -1,0 +1,53 @@
+# LOOP-OPS artifacts: sha256 TAB dest (under $W on the loop pod; cb/ = the code tree; a dest ending in / = a .tgz extracted there) TAB source
+# (laptop:REL | PORT:/ABS | store). Generated with loop_pod.sh add / add-tgz; staged to 33308:/workspace/loop_stage/store/<sha256>.
+984bf5729ecc85bda6ad48a2e4e0198cfa97e1a1218b537930635764466c73a4	cb/icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt	laptop:icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt
+8d328a43bf09fb7e389d41f01524fbb50955e15b64fdb72e28488a123eabad42	cb/icebow/data/models/ICEBOW/ICEBOW_Mark_CLXIII_NOLEAK.pt	laptop:icebow/data/models/ICEBOW/ICEBOW_Mark_CLXIII_NOLEAK.pt
+a0ecce3890d4137e4624b0b2c1ad271dae06798913d93ae0ccb82d7b2f618862	cb/icebow/data/pipeline/gen_dataset_v32_fv5_memory_v1.npz	laptop:icebow/data/pipeline/gen_dataset_v32_fv5_memory_v1.npz
+c37cb7bd7fe3d1fd1985c789ae610502f0d0b35687e6000e794f82a407badc80	cb/icebow/data/ghost_pool/pool_env_v1.jsonl	33308:/workspace/d2/cb/icebow/data/ghost_pool/pool_env_v1.jsonl
+29ecefa9d3025a51d7d4e4cbf67ad15a6fe79a9fd7b222b394dd391e0bc76530	cb/icebow/data/pipeline/gen_dataset_v32_fv5.npz	33308:/workspace/d2/cb/icebow/data/pipeline/gen_dataset_v32_fv5.npz
+8034bea462e1f0e548b6f8d002ee792d0e43d3c886c5c098cc9c3d51afcc02fe	cb/icebow/data/pipeline/gen_dataset_v32_fv5.json	33308:/workspace/d2/cb/icebow/data/pipeline/gen_dataset_v32_fv5.json
+434019007e3f1e1d196c5eec362066672d34c953d3a0b95e2f792ec7a9c0cfa6	cb/icebow/data/pipeline/s1_dataset.npz	33308:/workspace/d2/cb/icebow/data/pipeline/s1_dataset.npz
+287dda04db3b439ab9acdc44405944ab1c498cf01fc8db4a56bbb51b9a3f0ddb	cb/icebow/data/pipeline/s1_icebow_v6aug_s1.pt	33308:/workspace/d2/cb/icebow/data/pipeline/s1_icebow_v6aug_s1.pt
+b43dd085d95890cfaafd1f5d13733dc068c62f0c56d193815ee481b45b8fccdc	cb/icebow/data/rltest/decks_rl.json	33308:/workspace/d2/cb/icebow/data/rltest/decks_rl.json
+4ff9fe93b02dcdd445e4fb2a0e8c65e5ad78909534f3d6db965ba00432c8d444	cb/icebow/data/pipeline/o2/w14opp_I.pt	33308:/workspace/d2/cb/icebow/data/pipeline/o2/w14opp_I.pt
+3e019ae9280206b141ef9ad250dac86142e247256391d7fab16b2cdb493bddb5	cb/icebow/data/bench/rl_royale/wk_adapt_exp1/wk_adapt_exp1_u0015.pt	33308:/workspace/d2/cb/icebow/data/bench/rl_royale/wk_adapt_exp1/wk_adapt_exp1_u0015.pt
+efe5e3f6ebfd19c59a5248157e9a1fa59446dec7fbab2917ee2e58310c653340	cb/icebow/data/bench/rl_royale/wk_adapt_exp2/wk_adapt_exp2_u0015.pt	33308:/workspace/d2/cb/icebow/data/bench/rl_royale/wk_adapt_exp2/wk_adapt_exp2_u0015.pt
+ead818a8322eb854dd015314ea4e36a3bd2f5b06d7b2a46b094383052b5e34d9	cb/icebow/data/bench/rl_royale/wk_adapt_exp3/wk_adapt_exp3_u0015.pt	33308:/workspace/d2/cb/icebow/data/bench/rl_royale/wk_adapt_exp3/wk_adapt_exp3_u0015.pt
+d0ef0ea32e05089955a038c375892730021f9f5113f70873d803da0d6d7b86ff	cb/icebow/data/bench/rl_royale/newsim_base_exp1/newsim_base_exp1_u0015.pt	33308:/workspace/d2/cb/icebow/data/bench/rl_royale/newsim_base_exp1/newsim_base_exp1_u0015.pt
+24cbbe3fcdb78bf82406cbb010ddb9e499d228942f6a87278a53b9946fec3d6e	cb/icebow/data/bench/rl_royale/newsim_base_exp2/newsim_base_exp2_u0015.pt	33308:/workspace/d2/cb/icebow/data/bench/rl_royale/newsim_base_exp2/newsim_base_exp2_u0015.pt
+b86bb66f610079e0bf790d62e2ff68853eb0dc4748a6d68ae28bce92b68094aa	crforge/lib/aircompressor-2.0.3.jar	33308:/workspace/d2t2/lib_cfclone/aircompressor-2.0.3.jar
+3e86169b225447b7bc889b332ad561aad4153bd8b57a55330d0d7d6dac6e1a14	crforge/lib/core-1.0-SNAPSHOT.jar	33308:/workspace/d2t2/lib_cfclone/core-1.0-SNAPSHOT.jar
+fdb9fe83ee6edd18e225019cc96d0383b54151157cc0d9611c33b82558ca3b10	crforge/lib/env-1.0-SNAPSHOT.jar	33308:/workspace/d2t2/lib_cfclone/env-1.0-SNAPSHOT.jar
+21ddb598807d3a51a876704eb979d9296e1c6a6f47ab1826ff88c6d6a127a2d0	crforge/lib/jackson-annotations-2.22.jar	33308:/workspace/d2t2/lib_cfclone/jackson-annotations-2.22.jar
+ff167a6317be15895706c26668f45b898efe40ab8780970658210fe1393d52a6	crforge/lib/jackson-core-2.22.2.jar	33308:/workspace/d2t2/lib_cfclone/jackson-core-2.22.2.jar
+d0da14c12b16b5d54719aa172d83b542ff4abeb8b0fb7db476fde8ceece760ca	crforge/lib/jackson-databind-2.22.2.jar	33308:/workspace/d2t2/lib_cfclone/jackson-databind-2.22.2.jar
+6d0c2d0001b858b0d4cfd8edb30bd5b621eedda890cfbbc9e9fa095dd8370a71	crforge/tables/16.402.22/actions.json	33308:/workspace/crforge_cache/tables/16.402.22/actions.json
+5115c470ed98674b7d9f3aec0112d324388012dd4b28a4c950b616ca93601e59	crforge/tables/16.402.22/area_effect_objects.json	33308:/workspace/crforge_cache/tables/16.402.22/area_effect_objects.json
+42a4fad184d90f29a1d9b85faa98b31b3eac735ccdd7ee39934c8ea3ae07345c	crforge/tables/16.402.22/battle_timelines.json	33308:/workspace/crforge_cache/tables/16.402.22/battle_timelines.json
+e9e7e8fe68838b72282a1b0df42a636f0e8c608ec5153b0a7ffea7b06b121bc2	crforge/tables/16.402.22/build.properties	33308:/workspace/crforge_cache/tables/16.402.22/build.properties
+a27e51e69db1e59019fac5db8541276d951ae6172ed7f846e37f9e180a72b528	crforge/tables/16.402.22/buildings.json	33308:/workspace/crforge_cache/tables/16.402.22/buildings.json
+2376420943d2256f88bc44c3394474beb77e6bafc478b93f58fcb0a98d729e25	crforge/tables/16.402.22/card_groups.json	33308:/workspace/crforge_cache/tables/16.402.22/card_groups.json
+34a919e933f355dfc9ddb778b05e2da14ef92c8998481cf72316f80619afa448	crforge/tables/16.402.22/character_abilities.json	33308:/workspace/crforge_cache/tables/16.402.22/character_abilities.json
+0c51ece225f9f7e523bbeb71696b24537cfce8cb530d5e841450eab09bea4cbb	crforge/tables/16.402.22/character_buffs.json	33308:/workspace/crforge_cache/tables/16.402.22/character_buffs.json
+3d77b09e14e162551084282da33047c18c05f4225bc2ddedb0f22b736179bf41	crforge/tables/16.402.22/characters.json	33308:/workspace/crforge_cache/tables/16.402.22/characters.json
+ec4d9829da6d25ce24e0379eecd736f94e62bf85cc1b772da0afd3dfedcf0643	crforge/tables/16.402.22/damage_types.json	33308:/workspace/crforge_cache/tables/16.402.22/damage_types.json
+591f57b2b0296b8b0cf0b042725bba01b458f985465fde28b8ca486ce3724b0a	crforge/tables/16.402.22/game_modes.json	33308:/workspace/crforge_cache/tables/16.402.22/game_modes.json
+33602adbf4337035e3942216b79a28b3f6960b651e0d58213612a1b3b682b297	crforge/tables/16.402.22/game_object_filters.json	33308:/workspace/crforge_cache/tables/16.402.22/game_object_filters.json
+09013cc99df12c90b680e5f89d2928a84c8e68fe75148650bd3bad00f48e9c03	crforge/tables/16.402.22/game_tags.json	33308:/workspace/crforge_cache/tables/16.402.22/game_tags.json
+ea121c3b8740ed853d0d007ce5526e21392e9762a61783986470f96de6499ab4	crforge/tables/16.402.22/globals.json	33308:/workspace/crforge_cache/tables/16.402.22/globals.json
+ec43d309b5007064f5268ff5c859d6e4df75557ab6168f867be8852dbc3e160f	crforge/tables/16.402.22/locations.json	33308:/workspace/crforge_cache/tables/16.402.22/locations.json
+d19a4a275401c75dbaf4f0b0ba2018b298a2ede2e2a24e1cc5356eb09adbb535	crforge/tables/16.402.22/projectiles.json	33308:/workspace/crforge_cache/tables/16.402.22/projectiles.json
+8a7663e5d20a43dec7be50ace1ea11d56db1b4ffaaa15e8b86b8930feeafe159	crforge/tables/16.402.22/rarities.json	33308:/workspace/crforge_cache/tables/16.402.22/rarities.json
+586871176b5e59f8d1ca2ac3e637b29a6997f6a80ac913b4625533c9aadd1bd9	crforge/tables/16.402.22/shapes.json	33308:/workspace/crforge_cache/tables/16.402.22/shapes.json
+33fe4d84d33f75ae9cf47ea36319e9d608e4b27ca78638e193f7d19b567f5579	crforge/tables/16.402.22/spawn_groups.json	33308:/workspace/crforge_cache/tables/16.402.22/spawn_groups.json
+2549a9c209c59837929c1b4de01a60ffe49642bbda415cffe59a238d1fb1b5e3	crforge/tables/16.402.22/spells_buildings.json	33308:/workspace/crforge_cache/tables/16.402.22/spells_buildings.json
+e506e693ae3c43918fced20cead033b9d559dd3bafa5203fac302628fc417d1a	crforge/tables/16.402.22/spells_characters.json	33308:/workspace/crforge_cache/tables/16.402.22/spells_characters.json
+f5e7a02106db874467dfa697841f4d10cfb6031012e4f42e52d45f8017daae64	crforge/tables/16.402.22/spells_evolved.json	33308:/workspace/crforge_cache/tables/16.402.22/spells_evolved.json
+65ba5f14913e2bb2882c270cac31719675c76161063663a8cbe445b12d7eeb36	crforge/tables/16.402.22/spells_hero_form.json	33308:/workspace/crforge_cache/tables/16.402.22/spells_hero_form.json
+d131d30317d63638804f95e88f78c463a7c15663d932b3c4cfd87df63bd1441b	crforge/tables/16.402.22/spells_other.json	33308:/workspace/crforge_cache/tables/16.402.22/spells_other.json
+5bdbad5b925e0352e003254fd8a3e32e3c5a4a143f147cec9806ef437ce73f7e	crforge/tables/16.402.22/support_cards.json	33308:/workspace/crforge_cache/tables/16.402.22/support_cards.json
+354178a96b32f4c854cfa080864d80c0d4c418612b38a8f7b1122df9e351e6e4	crforge/tables/16.402.22/support_rarities.json	33308:/workspace/crforge_cache/tables/16.402.22/support_rarities.json
+45393ac9b640819054b7df92f628b444c7495890d3442141758659dfa9043003	crforge/tables/16.402.22/target_resolvers.json	33308:/workspace/crforge_cache/tables/16.402.22/target_resolvers.json
+19cfbb14d31091b7eb2723f3ddcbc71a08627def799390fcd1b95a4c8d083f6c	crforge/tables/16.402.22/variables.json	33308:/workspace/crforge_cache/tables/16.402.22/variables.json
+06a85cecec90fb3194f7698a62b5a350441fbe9bc75a9a15210d6c8714bc56f3	pylib/	store (tar of 33308:/workspace/d2/stage/pylib)
+60fd413d84760e8b63e461e11d1824db99003e58be26fb9fec92f936f28f0fdd	venv/lib/python3.12/site-packages/	store (tar of 33308:/workspace/loop_stage/engine16)

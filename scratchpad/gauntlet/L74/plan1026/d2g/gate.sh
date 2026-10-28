@@ -2,13 +2,15 @@
 # gate.sh ENGINE TAG MODE CPUS WORKERS SEED... -- D2-G CLXIII re-baseline: push_cal/gate_eval.sh's command (gap.py D3, all16, live
 # census, LIVE_OPTIONS decision stack) on fin16-linux with ROYALE_ENGINE=ENGINE. MODE e4 | iu40. Tower troops dropped (the crforge
 # facade refuses them) on BOTH engines; --record-plays / --record-board dropped (output only).
+# env (LOOP-OPS 10-28; unset = the values above): GATE_CKPT (the gated checkpoint, default CLXIII NOLEAK), GATE_CB, GATE_PY,
+# GATE_LIB / GATE_TABLES / GATE_FACADE (crforge build: gate a candidate and its CLXIII baseline on the SAME jars + tables).
 E=$1; TAG=$2; MODE=$3; CPUS=$4; W=$5; shift 5
-CB=/workspace/d2/cb; PYX=/workspace/venvf16/bin/python; G=icebow/data/models/ICEBOW/ICEBOW_Mark_CLXIII_NOLEAK.pt
+CB=${GATE_CB:-/workspace/d2/cb}; PYX=${GATE_PY:-/workspace/venvf16/bin/python}; G=${GATE_CKPT:-icebow/data/models/ICEBOW/ICEBOW_Mark_CLXIII_NOLEAK.pt}
 cd $CB || exit 1
 unset ROYALE_HEROIW_PRESS
 export HABITS_REC=1 PYTHONPATH=$CB:/workspace/d2/stage/pylib ROYALE_HEROIW_FORM=hero OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
   PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1 O3_PLAYS=1 ROYALE_ENGINE=$E ROYALE_RUNTIME=fin16-linux \
-  CRFORGE_LIB=/workspace/d2/stage/lib CRFORGE_TABLES=/workspace/crforge_cache/tables/16.402.22 CRFORGE_FACADE_BUILD=/workspace/d2/build
+  CRFORGE_LIB=${GATE_LIB:-/workspace/d2/stage/lib} CRFORGE_TABLES=${GATE_TABLES:-/workspace/crforge_cache/tables/16.402.22} CRFORGE_FACADE_BUILD=${GATE_FACADE:-/workspace/d2/build}
 EX="--habit-log --live-levels --card-levels Rocket=16 Log=15 --ability-stats --ability-head-decode=sample --crown-log"
 OA=(); XF=""
 if [ "$MODE" = iu40 ]; then

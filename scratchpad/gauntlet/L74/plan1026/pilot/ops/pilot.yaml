@@ -1,0 +1,157 @@
+# LOOP-OPS pilot config (2026-10-28; pilot/LOOP_SPEC.md; rl_royale keys exactly, + the fastloop: block LOOP-INT strips before
+# load_config). Base = stepd/cfg/succ48_x_s101.yaml (production crforge reference). Changes vs that file, each named:
+#  - init = B0 GRAFTED (lead 10-28): CLXIII NOLEAK's 141 tensors unchanged + the S3-aux memory v2 encoder's 50 mem.* / mem_aux.*
+#    tensors, coupling mem.out exactly 0 = icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt
+#    sha256 984bf5729ecc85bda6ad48a2e4e0198cfa97e1a1218b537930635764466c73a4 (pilot/ops/build_b0.py; identity: pilot/ops/README.md).
+#    Not a Mark (lead): the TRAINED pilot checkpoint gets ICEBOW Mark CLXV.
+#  - memory v2 + memory_aux v1 + memory_encoder_frozen + memory_zero_empty (the 10-25 night arms' memory keys; plan R3 unfreezes).
+#  - reward = R_win + tower-only Phi: shaping tower_phat (LOOP-LRN; reward_shaping.STATE_PHI_MODES, coefficients pending RX-X23),
+#    shaping_critic_scale 1.5 (1 + phi bound .5); tower_crown weights, habit terms and their caps removed.
+#  - batch 512 matches = E 128 x G 4 (LOOP-LRN).
+#  - PPO = the plan's: gae, gamma_tick 0.99994, lambda 0.95, lr 1e-5, clip 0.2, critic warm-up 5; learner_deterministic (CUDA
+#    deterministic on). KL early stop 0.02 vs the previous update = kl_stop_prev + kl_ref_refresh_every 1 with beta 0 (no leash;
+#    LOOP-LRN's proposed key, PENDING the lead / its commit: rl_royale refuses unknown keys until then).
+#  - opponents: frozen pool from LOOP-OPP's pilot/opp/POOL.json (PENDING; the league_* / league_exploiters / league_external
+#    blocks below are x_s101's and get replaced from POOL.json); learner snapshot share 0 (league_mix latest / older 0,
+#    league_snapshot_every above max_updates); screen_every above max_updates (no held-out actor pool in the loop).
+#  - training decode = the live decision config (fastloop.decode below -> decision_options.decide with L70/live/LIVE_OPTIONS);
+#    the rl_royale decode keys (T, tau, T_gate, tau_phase, decide_every) stay x_s101's for the reference path.
+#  - seed 1028; max_updates 1000 (~512k matches, ~1.7 h at 300k matches/h); save_every 25 = the off-pod streaming interval.
+init: icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt
+pool: icebow/data/ghost_pool/pool_env_v1.jsonl
+proagree_data: icebow/data/pipeline/s1_dataset.npz
+proagree_rows: 0
+proagree_data_gen: icebow/data/pipeline/gen_dataset_v32_fv5.npz
+noise_off: all
+opp_elixir: counter
+action_delay_ticks: 26
+extrapolate_ticks: 26
+hero_abilities: true
+forms_mode: deck
+league: true
+league_decks: icebow/data/rltest/decks_rl.json
+league_specialist: icebow/data/pipeline/s1_icebow_v6aug_s1.pt
+league_opp_policy: sample
+league_mix:
+  latest: 0.0
+  older: 0.0
+  init: 1.0
+  s1: 0.0
+league_snapshot_every: 100000
+league_snapshot_keep: 12
+league_icebow_share: 0.0
+league_deck_alpha: 1.0
+league_deck_floor: 0.0
+E: 128
+G: 4
+adv_clip: 2.0
+advantage: gae
+gae_gamma: 0.999
+gae_gamma_unit: tick
+gae_gamma_tick: 0.99994
+gae_terminal_gap: false
+gae_lambda: 0.95
+vf_coef: 0.5
+vf_clip: 0.2
+critic_warmup_updates: 5
+vf_trunk_grad: true
+shaping: tower_phat
+shaping_critic_scale: 1.5
+n_actors: 48
+in_flight: 8
+actor_device: cpu
+actor_threads: 1
+actor_timeout_s: 3600
+T: 0.5
+tau: 0.35
+T_gate: 0.3
+afford_mask: true
+stall_elixir: null
+stall_seconds: 12
+obs: live
+decide_every: 10
+learner_device: cuda
+learner_deterministic: true
+lr: 1.0e-05
+grad_clip: 0.5
+ppo_epochs: 2
+minibatch: 256
+clip: 0.2
+beta0: 0.0
+beta_min: 0.0
+beta_max: 0.0
+kl_target: 0.3
+kl_stop_prev: 0.02
+kl_ref_refresh_every: 1
+leash: max
+seed: 1028
+max_updates: 1000
+save_every: 25
+proagree_every: 250
+screen_every: 100000
+screen_entries: 0
+screen_seeds:
+- 0
+- 1
+- 2
+stop_consecutive: 2
+plays_lo: 0.6
+plays_hi: 1.6
+kl_cell_stop: 0.5
+kl_gate_stop: 0.1
+tripwire_cell_pp: 5.0
+hard_cell_pp: 8.0
+hard_card_pp: 8.0
+hard_gate_bal: 0.05
+screen_stop_pp: -10.0
+entropy_floor_frac: 0.5
+outlived_pp: 15.0
+low_delivered_pp: 10.0
+ghost_refusal_x: 2.0
+league_pfsp: hard
+opp_style: 'on'
+league_pfsp_gamma: 2.0
+league_pfsp_floor: 0.05
+league_external:
+- icebow/data/bench/rl_royale/wk_adapt_exp1/wk_adapt_exp1_u0015.pt
+- icebow/data/bench/rl_royale/wk_adapt_exp2/wk_adapt_exp2_u0015.pt
+- icebow/data/bench/rl_royale/wk_adapt_exp3/wk_adapt_exp3_u0015.pt
+- icebow/data/bench/rl_royale/newsim_base_exp1/newsim_base_exp1_u0015.pt
+- icebow/data/bench/rl_royale/newsim_base_exp2/newsim_base_exp2_u0015.pt
+league_learner_icebow_share: 1.0
+ability_policy: v2
+branch_gate: false
+learner_pipeline_frac: 0.0
+cue_inputs: true
+live_levels: all16
+heroiw_press: live
+kl_heads:
+- card
+ability_head: true
+ability_features: freeze
+league_exploiters:
+  ckpt: icebow/data/pipeline/o2/w14opp_I.pt
+  decks: scratchpad/gauntlet/L74/mix/decks_live_train.json
+  share: 0.3
+  T: 0.1
+  decide_every: 20
+  tau: 0.2
+league_deck_weights:
+  GoblinBarrel: 2.5
+  SkeletonBalloon: 2.5
+  BlowdartGoblin: 2.5
+  Princess: 2.5
+  GoblinGang: 2.5
+tau_phase: [0.35, 0.45, 0.55]
+memory: v2
+memory_aux: v1
+memory_encoder_frozen: true
+memory_zero_empty: true
+fastloop:
+  decode: live
+  live_options: scratchpad/gauntlet/L70/live/LIVE_OPTIONS
+  producers: 48
+  matches_per_producer: 32
+  threads: 4
+  gpus: [0, 1, 2, 3, 4, 5, 6, 7]
+  server: {max_batch: 4096, wait_ms: 2}

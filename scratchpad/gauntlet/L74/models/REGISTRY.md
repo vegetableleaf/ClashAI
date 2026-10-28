@@ -197,7 +197,7 @@ Original files are never moved or renamed. Each Mark has NTFS hard links (zero e
    It hashes the file(s), appends the Mark to registry.json, creates + verifies the hard link(s) and regenerates this file. Commit registry.json + REGISTRY.md (never icebow/data).
 5. When a Mark goes live, add its live period to its `live` field in registry.json and run `--render`.
 
-## Unmarked checkpoints (1282 files)
+## Unmarked checkpoints (1284 files)
 
 Files that exist but are not distinct models (snapshots, seed replicates, smokes, failed runs, test scaffolding, opponent/exploiter policies, eval controls). `--name` reports the relation below.
 
@@ -207,6 +207,7 @@ Files that exist but are not distinct models (snapshots, seed replicates, smokes
 | A/B control arm (m18000 init) | 4 | `icebow/data/ab3/policy_control_s41.pt`<br>`icebow/data/ab3/policy_control_s42.pt`<br>`icebow/data/ab3/policy_control_s43.pt`<br>... (+1) |
 | BC run whose --init fell back to scratch (never usable) | 1 | `icebow/data/policy.pt` |
 | PPO drill output after 08-23; provenance not found | 1 | `icebow/data/policy_ppo_drill.pt` |
+| S3-aux memory v2 encoder (zero_empty, coupling 0) on the RAW succ48_o_s91 u75 trunk (3eda9d23; = CLXIII minus its grafted heads); init of the 10-25 night memory arms; source of B0's memory tensors | 1 | `C:/Users/benpe/pod_backup_weekend/night1025/mem_best_ze.pt` |
 | SCALE control (A: 1.52M-param baseline retrain on gen_dataset_v32) | 1 | `C:/Users/benpe/pod_backup_weekend/podE/x_SCALE/results/SCALE/A.pt` |
 | TowerRefine head artifact of ICEBOW Mark CXIV: REFIT (not a full model) | 1 | `C:/Users/benpe/pod_backup_weekend/pod1014_refit/x_refit/scratchpad/gauntlet/L73/chip_rocket/tr_w2_r1.pt` |
 | aborted run | 2 | `icebow/data/bench/aborted_real_cpu_20260901/policy_real_20260901.pt`<br>`icebow/data/bench/aborted_real_nohaz_20260901/policy_real_20260901.pt` |
@@ -233,6 +234,7 @@ Files that exist but are not distinct models (snapshots, seed replicates, smokes
 | evaluated snapshot of ICEBOW Mark XXII: GEOMETRY | 2 | `icebow/data/bench/armG_m10k.pt`<br>`icebow/data/bench/armG_m5k.pt` |
 | exploiter (opponent) policy of an adaptive league (not an icebow model) | 168 | `C:/Users/benpe/pod_backup_weekend/memory/pod3/x_MEMP3/cb_memory/icebow/data/bench/rl_royale/wk_memory_exp1/wk_memory_exp1_latest.pt`<br>`C:/Users/benpe/pod_backup_weekend/memory/pod3/x_MEMP3/cb_memory/icebow/data/bench/rl_royale/wk_memory_exp1/wk_memory_exp1_snap_u0005.pt`<br>`C:/Users/benpe/pod_backup_weekend/memory/pod3/x_MEMP3/cb_memory/icebow/data/bench/rl_royale/wk_memory_exp1/wk_memory_exp1_snap_u0010.pt`<br>... (+165) |
 | failed run: rl30 stopped at u5 by a false-alarm exploit guard (rerun = rl30b) | 3 | `icebow/data/bench/rl_royale/rl30_20260924/rl30_20260924_latest.pt`<br>`icebow/data/bench/rl_royale/rl30_20260924/rl30_20260924_u0000.pt`<br>`icebow/data/bench/rl_royale/rl30_20260924/rl30_20260924_u0005.pt` |
+| fast-loop pilot start point B0 (untrained; lead 10-28: not a Mark): CLXIII NOLEAK's 141 tensors unchanged + the S3-aux memory v2 encoder's 50 mem.* / mem_aux.* tensors (from mem_best_ze.pt 3d75a25d, trained on the RAW succ48_o_s91 u75), coupling mem.out = 0; identical to CLXIII on 1,718 recorded live decisions (CPU + CUDA). Built by plan1026/pilot/ops/build_b0.py; the trained pilot checkpoint becomes ICEBOW Mark CLXV | 1 | `icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt` |
 | final snapshot (m10200) of ICEBOW Mark XVIII: QUADRUPLE | 1 | `icebow/data/policy_gatec2_20260903.pt` |
 | final snapshot (m36350) of ICEBOW Mark XXI: LONGER | 1 | `icebow/data/policy_c2r_20260903.pt` |
 | final snapshot (m6849) of ICEBOW Mark IV: SEARCH | 1 | `icebow/data/policy_sim_ppo.pt` |

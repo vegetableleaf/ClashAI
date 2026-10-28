@@ -20,3 +20,17 @@ python cbt/.../opp/level_a.py selftest
 python cbt/.../opp/level_a.py --ckpt runs/NAME/opp_NAME_s0.pt --data hf_slot_NEW_test.npz --memory-tables hf_slot_NEW_test_memory.npz --split 2 --out A.json
 ```
 Live split: `live_split.json` (frozen 2026-10-28 09:06 EDT, never rewritten; sealed = every log from 20261028_090648).
+
+## STATUS (P2-OPP1, updated 2026-10-28 ~13:57 EDT pod clock; keep current)
+Done + pushed: step 1 model / trainer options + tests (70cd720); live split frozen (0bc4874); slot re-drive, rows_to_npz,
+level_a (3c1bcdd, 27988a7, + spool converter).
+Running (pod 33308, root@157.157.221.29 -p 33308):
+- slot re-drive `/workspace/opp/slot_bec5811a` (log `/workspace/opp/slot_bec5811a.log`, 241 shards = 60k HF replays,
+  14 workers, nice 10). Restart (resumable per shard):
+  `cd /workspace/opp && setsid nohup bash cb/scratchpad/gauntlet/L74/plan1026/opp/run_slot.sh /workspace/redrive/rd_lib_bec5811a /workspace/opp/slot_bec5811a --chunk 250 --limit 60000 --workers 14 > slot_bec5811a.log 2>&1 &`
+- v0 rows `/workspace/opp/v0/hf_slot_v0.npz` (+ `_memory.npz`) from the shards finished at launch (log v0/rows_to_npz.log).
+  Code copies: `/workspace/opp/cb` (driving, = pass-1 copy), `/workspace/opp/cbt` (training, git archive + opp/ + humanlike/).
+  The 33308 container limit is 125 GB (others use ~80 GB): the in-memory converter was OOM-killed once; it now spools to disk.
+Next: v0 pretrain `bash cbt/.../opp/run_pretrain.sh /workspace/opp/v0/hf_slot_v0.npz /workspace/opp/v0/m10 m10 320 7 40000 1`
+(11.2 M params, ~1.45k rows/s measured), then the level-A test file + level_a.py on HF split 2.
+Not started (need their own tickets): live slot rows for opponent seats (step 3), SIM timing-head decoder + level B (step 4).

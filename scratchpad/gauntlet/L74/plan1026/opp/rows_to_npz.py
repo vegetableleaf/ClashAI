@@ -46,6 +46,45 @@ def col(t, name, shape):
     return np.asarray(c.flatten()).reshape((len(t),) + tuple(shape))     # npz_to_parquet: one FixedSizeList level
 
 
+class Spool:
+    """Per-array raw files appended shard by shard, then streamed into an uncompressed .npz (np.load reads it as usual):
+    peak memory = one shard, not the whole dataset (the in-memory version was OOM-killed at 100 / 128 shards on 33308)."""
+
+    def __init__(self, root: Path):
+        self.root = root
+        root.mkdir(parents=True, exist_ok=False)
+        self.meta = {}
+
+    def append(self, name, a):
+        a = np.ascontiguousarray(a)
+        dt, tail, n = self.meta.get(name, (a.dtype, a.shape[1:], 0))
+        if dt != a.dtype or tail != a.shape[1:]:
+            raise ValueError(f"spool {name}: {a.dtype}{a.shape[1:]} after {dt}{tail}")
+        with (self.root / f"{name}.bin").open("ab") as f:
+            a.tofile(f)
+        self.meta[name] = (dt, tail, n + len(a))
+
+    def load(self, name):
+        dt, tail, n = self.meta[name]
+        return np.fromfile(self.root / f"{name}.bin", dtype=dt).reshape((n,) + tuple(tail))
+
+    def write_npz(self, out: Path, arrays: dict, skip=()):
+        import shutil
+        import zipfile
+        with zipfile.ZipFile(out, "w", zipfile.ZIP_STORED, allowZip64=True) as z:
+            for name, (dt, tail, n) in self.meta.items():
+                if name in skip or name in arrays:
+                    continue
+                with z.open(name + ".npy", "w", force_zip64=True) as f, (self.root / f"{name}.bin").open("rb") as src:
+                    np.lib.format.write_array_header_2_0(f, {"descr": np.lib.format.dtype_to_descr(np.dtype(dt)),
+                                                             "fortran_order": False, "shape": (n,) + tuple(tail)})
+                    shutil.copyfileobj(src, f, length=1 << 22)
+            for name, a in arrays.items():
+                with z.open(name + ".npy", "w", force_zip64=True) as f:
+                    np.lib.format.write_array(f, np.asanyarray(a), allow_pickle=False)
+        shutil.rmtree(self.root)
+
+
 def mix(tagcrc, side, tick):
     h = (tagcrc.astype(np.uint64) * np.uint64(0x9E3779B1) + side.astype(np.uint64) * np.uint64(0x85EBCA77)
          + tick.astype(np.uint64) * np.uint64(0xC2B2AE3D)) & np.uint64(0xFFFFFFFF)
@@ -74,7 +113,8 @@ def main(argv=None) -> int:
     done = {p.stem for p in (a.src / "shards").glob("*.json")}
     files = [f for f in sorted((a.src / "rows").glob("*.parquet")) if f.stem in done]
     files = files[: a.max_shards] if a.max_shards else files
-    parts, toks, uforms, mems, st = [], [], [], [], Counter()
+    mems, st = [], Counter()
+    sp = Spool(a.out.with_suffix(".spool"))
     tag_list, tag_ix, n_tables = [], {}, 0
     for i, f in enumerate(files):
         t = pq.read_table(f)
@@ -124,7 +164,7 @@ def main(argv=None) -> int:
         uf = np.asarray(t.column("unit_form").combine_chunks().values)
         cnt = (off[1:] - off[:-1])[idx]
         sel = np.concatenate([np.arange(off[j], off[j + 1]) for j in idx]) if len(idx) else np.zeros(0, np.int64)
-        toks.append(flat[sel]); uforms.append(uf[sel])
+        sp.append("tok", flat[sel].astype(np.float32)); sp.append("unit_form", uf[sel])
         d["_cnt"] = cnt
         w = np.where(grid & ~sure, float(a.keep_wait), 1.0)[idx].astype(np.float32)
         hi = np.asarray(t.column("hand_inferred").combine_chunks()).astype(bool)[idx]
@@ -156,17 +196,13 @@ def main(argv=None) -> int:
         else:
             st["shards_without_memory"] += 1
             d["_mem_row_tab"] = np.full(len(idx), -1, np.int32)
-        parts.append(d)
+        for k, v in d.items():
+            sp.append(k, v)
         if (i + 1) % 20 == 0:
             print(f"[rows_to_npz] {i + 1}/{len(files)} rows_kept={st['rows_kept']} {time.time() - t0:.0f}s", flush=True)
-    keys = [k for k in parts[0] if not k.startswith("_")]
-    arrs = {k: np.concatenate([p[k] for p in parts]) for k in keys}
-    cnt = np.concatenate([p["_cnt"] for p in parts])
-    arrs["off"] = np.concatenate([[0], np.cumsum(cnt)]).astype(np.int64)
-    arrs["tok"] = np.concatenate(toks).astype(np.float32)
-    arrs["unit_form"] = np.concatenate(uforms)
-    arrs["tags"] = np.asarray(tag_list)
-    arrs["v3val"] = np.zeros(len(arrs["split"]), np.int8)
+    arrs = {k: sp.load(k) for k in ("deck_card", "deck_form", "rep", "side", "split")}
+    new = {"off": np.concatenate([[0], np.cumsum(sp.load("_cnt"))]).astype(np.int64), "tags": np.asarray(tag_list)}
+    new["v3val"] = np.zeros(len(arrs["split"]), np.int8)
     # deck ids: (card, form) sets with >= deck_min_sides TRAIN sides
     order = np.argsort(arrs["deck_card"], 1)
     key = np.concatenate([np.take_along_axis(arrs["deck_card"].astype(np.int64), order, 1),
@@ -179,18 +215,18 @@ def main(argv=None) -> int:
         big = np.where(nside >= a.deck_min_sides)[0]
         remap = np.zeros(len(ukey), np.int32)
         remap[big] = np.arange(1, len(big) + 1)
-        arrs["deck_keys"] = ukey[big].astype(np.int16)            # id i = row i - 1 (rows_to_npz --deck-map reads it)
+        new["deck_keys"] = ukey[big].astype(np.int16)             # id i = row i - 1 (rows_to_npz --deck-map reads it)
     else:
         dk = np.load(a.deck_map, mmap_mode="r")["deck_keys"]
         known = {tuple(r): i + 1 for i, r in enumerate(np.asarray(dk).tolist())}
         remap = np.array([known.get(tuple(r), 0) for r in ukey.tolist()], np.int32)
         big = np.where(remap > 0)[0]
-        arrs["deck_keys"] = np.asarray(dk)
-    arrs["deck_gid"] = remap[kinv]
-    arrs["deck_id"] = arrs["deck_gid"].copy()
+        new["deck_keys"] = np.asarray(dk)
+    new["deck_gid"] = remap[kinv]
+    new["deck_id"] = new["deck_gid"].copy()
     st = dict(st)
     st.update(decks=int(len(ukey)), decks_with_id=int(len(big)),
-              rows_with_deck_id=int((arrs["deck_gid"] > 0).sum()), rows=int(len(arrs["split"])),
+              rows_with_deck_id=int((new["deck_gid"] > 0).sum()), rows=int(len(arrs["split"])),
               split_counts=str(dict(Counter(arrs["split"].tolist()))), tags=len(tag_list), shards=len(files))
     meta = {"kind": "generalist", "feature_version": 5, "grid": "lattice", "card_vocab": vocab, "F": 14, "S": 70,
             "PAST_K": 3, "OPP_PAST_K": 3, "source": "hf_il_replay slot re-drive (P2-OPP1)", "src_dir": str(a.src),
@@ -204,14 +240,14 @@ def main(argv=None) -> int:
             if (a.src / "manifest.json").exists() else None,
             "stats": {k: (int(v) if not isinstance(v, str) else v) for k, v in st.items()}, "built": time.strftime("%Y-%m-%d %H:%M:%S")}
     a.out.parent.mkdir(parents=True, exist_ok=True)
-    np.savez(a.out, meta=json.dumps(meta), **arrs)
+    row_tab = sp.load("_mem_row_tab")
+    sp.write_npz(a.out, dict(new, meta=np.asarray(json.dumps(meta))), skip=("_cnt", "_mem_row_tab"))
     if mems:
         from pipeline.match_memory import TABLE_KEYS
         off = [np.asarray(m["off"]) for m in mems]
         base = np.concatenate([[0], np.cumsum([o[-1] for o in off])])
         packed = {k: np.concatenate([m[k] for m in mems]) for k in TABLE_KEYS}
         packed["off"] = np.concatenate([[0]] + [o[1:] + b for o, b in zip(off, base[:-1])]).astype(np.int64)
-        row_tab = np.concatenate([p["_mem_row_tab"] for p in parts])
         mmeta = {"kind": "match_memory_tables", "dataset": str(a.out), "tables": int(len(packed["off"]) - 1),
                  "rows": int(len(row_tab)), "rows_with_table": int((row_tab >= 0).sum()), "card_vocab": vocab}
         np.savez(a.out.with_name(a.out.stem + "_memory.npz"), **{"tab_" + k: v for k, v in packed.items()},
