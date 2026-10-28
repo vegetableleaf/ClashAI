@@ -122,3 +122,16 @@ Closest to passing is B u20 vs Ranked at 0.53, still 5.3x over; the human 12k-vs
     certifiable at +-0.10 (>= ~600 live X-Bows) -> arch_min_live_xbows 600. Halves control (428/side): 0/25 full (smaller n than the design).
   - Runs: pod 32657 `/workspace/score/rows/e4` and `/workspace/score/rows/iu40` (40 workers each, ~16 rows/min each, G2 OFF:
     e1_eval HEAD raises "tap_loss / tap_slow are not defined for follow_ups plays" with the live stack). Restart = same command (resumable per block).
+- 14:45 update: THRESHOLDS v4 registered (a5eb2c8f, logged above) before any model score. card.py end to end on 146 partial E4
+  rows (debug, --no-c --no-d; not a result): every level runs; SIM plays are filtered to live-visible cards (o3_score.visible).
+  Pod 32657 has a 54-CPU cgroup quota (cpu.max 5440000/100000), shared: E4 + I u40 at 40 workers each give ~7 rows/min each
+  (~4.5 h for 1,920). Plan: score each at 960 rows (2 seed blocks), let the other 2 blocks finish (resumable).
+- NEXT (in order): (1) score E4 / I u40 with `card.py score --name e4 --sim humanlike/rows/e4` (fetch: `card.py card --name e4 --no-run`),
+  (2) C controls (disc.py selftest), (3) split items below.
+- SPLIT (not buildable inside this ticket; each needs a production-path change outside humanlike/**):
+  a. timing-head SIM decode (`gate_decode='timing_head'` in decision_options / e1_eval; REPORT_opponents section 5): without it no
+     P2-OPP1 checkpoint can play a closed-loop match, so card.py can score them on level A only;
+  b. model-vs-model runner with BOTH decks + levels from HF deck pairs (search_s0 has no learner-deck option): B-HF and C-HF closed loop;
+  c. persona fork test (SIM forks on crforge at post-failed-X-Bow states, X-Bow again vs wait, per opponent persona);
+  d. predict_live.py: per-sealed-match P_hat (64 games per match, battle-log deck); card.py's D uses per-archetype P_hat meanwhile;
+  e. G2 handicap with the live stack (e1_eval: tap_loss / tap_slow undefined for follow_ups plays).
