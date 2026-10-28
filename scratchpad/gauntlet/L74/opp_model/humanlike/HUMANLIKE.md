@@ -87,3 +87,14 @@ Closest to passing is B u20 vs Ranked at 0.53, still 5.3x over; the human 12k-vs
   No script that writes the dump exists yet (checked `pipeline/*.py` and `opp_model/pod/o2_finetune.py`; the latter only logs aggregate val NLL). The intended command, to write as `humanlike/dump_probs.py` (not built, outside this ticket's scope):
   `icebow/.venv/Scripts/python.exe -I scratchpad/gauntlet/L74/opp_model/humanlike/dump_probs.py --ckpt CKPT --data scratchpad/gauntlet/L74/opp_model/out/o1_holdout_v32.npz --out humanlike/out/probs_NAME.npz`
   with outputs `p_true`, `top1`, `p_top`, `correct_top`, `gaps_rescaled` (the `level_a()` inputs). The holdout is the time-ordered 15,885 live opponent rows O2 used; E4 / RL checkpoints were not trained on it, O2 / O2b were fine-tuned on the earlier part only.
+
+## 7. P2-SCORE STATUS (closed-loop levels; updated 2026-10-28 ~13:55 EDT)
+- Done: `run_closed.sh` = pod runner (CLXIII vs one opponent on crforge, gap.py D3, G2 handicap, --record-board/--habit-log/--crown-log;
+  writes OUTROOT/ENGINE.json with the crforge build, facade sha, tables, code head). Resumable: a 480-row seed block is skipped.
+- Running: pod 32657, `/workspace/score/rows/e4` (E4 baseline, seeds 741200 742000 743000 744000, 40 workers), code copy
+  `/workspace/score/cb` (git archive of b84b440 pipeline + tools + L74 tree; icebow/data -> /workspace/d2x/cb/icebow/data;
+  research/ext copied with the LAPTOP catalogue 936cd3c4, the pod's 7b01d9ac is stale), crforge CF-MAIN a677e080 plain.
+  Restart: `ssh -p 32657 root@157.157.221.29 'cd /workspace/score && WORKERS=40 setsid nohup bash run_closed.sh e4 /workspace/score/rows/e4 741200 742000 743000 744000 > e4.out 2>&1 < /dev/null &'`
+  (I u40: `OPP_CKPT=icebow/data/pipeline/o2/w14opp_I.pt OPP_EXTRA="--opp-decide-every 20 --opp-tau 0.2" ... run_closed.sh iu40 /workspace/score/rows/iu40 ...`).
+- Next: card.py (one command: refs live by time block / HF tier A, ~28 stats, B-live, B3, signatures, siege facts, C via disc.py, D sealed last),
+  hf_ref.py (pod 33308), human controls, THRESHOLDS v4 from controls, then score E4 / I u40.
