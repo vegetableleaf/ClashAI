@@ -1,3 +1,29 @@
+# P3-FORK2 (fresh seat, account 2) -- 2026-10-28 evening: STATUS ADDENDUM (read first; the P3-FORK status below it is the predecessor's)
+
+Labels: (a) measured, (b) plausible / untested, (c) contradicted.
+
+## Landed by P3-FORK2
+- 9807c71: P_DEFAULT rocket_tornado 0.055 / tornado_redirect 0.0011 (combo falls back to 0.0 for a config without action_delay_ticks /
+  with pipeline_decisions, tap_loss, tap_slow; explicit cf_p > 0 there is refused); cf_adv_scale (training advantage x factor, the critic-slope
+  calibration, opt-in, hash-neutral at 1.0, range (0, 2]); cf_diag (P4 audit record: sample ctx, per-fork dg = Phi / critic parts + tower
+  snapshot + plays since the root at every stop, candidate meta, match opp). Tests 34/34 local (RoyaleSim) and 31 pass / 3 skip on pod 32657
+  (crforge fe364ceb). p4_audit.py (tables), p4_persona.py (persona fork test).
+## Running
+- cfaud1 on pod 32657 (P4 audit + persona strata), started 20:50 UTC: tree /workspace/cf3/cfh5, CPUs 0-27, 26 actors, 8 updates x 128 matches, cf_diag,
+  horizon 900 (+ sweep 150..750), audit_p 0.4. Log /workspace/cf3/logs/cfaud1.log, dump logs/cfaud1.jsonl, mem logs/cfaud1.mem.tsv.
+  Restart (only if dead; resumable? NO -- start again with a new run name): see the command in "Commands" below with RUN=cfaud2.
+- LESSONS (both cost a restart): CF_DUMP must be an ABSOLUTE path (relative = the run's TREE, which has no logs/); the per-match fork cap
+  cf_cap_ticks (default 8000) throttles a high-p audit to ~1 sample/match (cfaud2 u0: 124 samples, ~400 capped, fork 1.64x) -> audit runs set
+  cf_cap_ticks=40000. cfaud1 (CRASH: relative CF_DUMP) and cfaud2 (cap) were stopped; cfaud2 u0 kept as data/cfaud2_u0.jsonl (128 matches, tooling test).
+- Current run: cfaud3 (same config as cfaud1 + cf_cap_ticks=40000), started 21:03 UTC, dump /workspace/cf3/logs/cfaud3.jsonl.
+  Command (from /workspace/cf3, ssh to 32657): `CRFORGE_LIB=/workspace/crforge_main/fe364ceb/plain/lib CRFORGE_FACADE_BUILD=/workspace/cf3/build_fe
+  CF_DUMP=/workspace/cf3/logs/cfaudN.jsonl TREE=/workspace/cf3/cfh5 GUARD_GB=100 ./guarded.sh crforge cfaudN 0-27 --config
+  scratchpad/gauntlet/L74/plan1026/cf/cf_pilot_clxiii.yaml max_updates=8 critic_warmup_updates=8 n_actors=26 E=32 G=4 screen_every=1000 proagree_every=1000
+  learner_device=cuda ability_bc_matches=64 screen_entries=8 "screen_seeds=[0]" cf_diag=true "cf_horizon_sweep=[150,300,450,600,750]" cf_horizon_ticks=900
+  "cf_horizon_by={wincon: 900, siege: 900}" cf_audit_p=0.4 cf_cap_ticks=40000 "cf_p={rocket: 0.003, rocket_played: 1.0, rocket_tornado: 0.5, tornado_redirect: 0.004,
+  wincon: 0.015, siege: 0.1, xbow_after_fail: 0.03, xbow: 0.1, idle_full: 0.0, log_bait: 0.0, random: 0.0}"`
+- Collect + tabulate after it ends: Codex ticket .foreman/scratch/a2/codex/P3FORK2_1.md (cfaud1 -> read cfaud3 in the ticket's names), tools p4_audit.py / p4_persona.py.
+
 # P3-FORK (cf_credit, R_fork) STATUS -- updated 2026-10-28 ~16:10 EDT (re-dispatch, account 2): step 1-3 done
 
 Labels: (a) measured, (b) plausible / untested, (c) contradicted.
