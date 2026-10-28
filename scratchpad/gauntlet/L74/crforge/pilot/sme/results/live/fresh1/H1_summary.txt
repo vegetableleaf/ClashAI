@@ -1,0 +1,32 @@
+# H1 = SME-HARDEN 3bbf50c (sme11 + sme.py tables by env), a10G1 flags, 16.635.3, lib_f635c, SME_PLANTS default on; pod 33920 runL.sh CODE=sme11f
+matches 17 | RNG-free 9 | not RNG-free 8 {'Princess': 2, 'Arrows': 6}
+flags (all): {'opp_no_fitting_deal': 5} | flags (RNG-free): {'opp_no_fitting_deal': 2}
+unflagged 7 | exact apart from torn 5 | strictly exact (no torn frame) 2
+exact frames (all RNG-free) 13709 | frames 19655 | unflagged exact frames 13620 of 15719
+torn frames (unflagged): {'torn_t1': 6, 'torn_mixed': 1, 'torn_step': 3, 'torn_snap': 2, 'torn_cmd': 5} | matches with each: {'torn_t1': 3, 'torn_mixed': 1, 'torn_step': 3, 'torn_snap': 1, 'torn_cmd': 3}
+fitter moves kept (unflagged): 37 | of them FITNEXT (run after the onset): 1 | ghost presses enabled: 0
+  20261028_000420 unflagged                    first_div 1095  counts {'exact': 1570, 'torn_t1': 1, 'torn_mixed': 1, 'div': 192, 'torn_step': 1} detail [["U_sim_only", [0, 14927, 22473, 2102], "C:MiniPekkaHero", null]]
+  20261028_001302 unflagged                    first_div None  counts {'exact': 3033, 'torn_snap': 2, 'torn_step': 1, 'torn_cmd': 1, 'torn_t1': 3} detail null
+  20261028_002146 unflagged                    first_div None  counts {'exact': 1804} detail null
+  20261028_003008 unflagged                    first_div None  counts {'exact': 3031, 'torn_cmd': 2, 'torn_t1': 2} detail null
+  20261028_004256 opp_no_fitting_deal          first_div 237   counts {'exact': 43, 'div': 1517} detail [["U_rec_only", [1, 9500, 31500, 1629], "MergeMaiden_Mounted", null]]
+  20261028_005912 unflagged                    first_div None  counts {'exact': 2215, 'torn_cmd': 2, 'torn_step': 1} detail null
+  20261028_010318 opp_no_fitting_deal          first_div 242   counts {'exact': 46, 'div': 2330} detail [["U_rec_only", [0, 7499, 500, 1341], "Witch", null]]
+  20261028_010824 unflagged                    first_div 419   counts {'exact': 202, 'div': 1890} detail [["P_rec_only", [1, 7163, 21163], "P:GiantBuffer", null]]
+  20261028_011215 unflagged                    first_div None  counts {'exact': 1765} detail null
+95% one-sided CP lower bound, exact apart from torn: 5/7 -> 0.3413
+95% one-sided CP lower bound, strictly exact: 2/7 -> 0.0534
+
+## round_cmp (sme11) L_base (= F1, sme10f) -> H1
+unflagged (7): exact apart from torn 5/7 -> 5/7 | regressions 0 | gained 0
+unflagged (7): exact frames 13620 -> 13620
+all (9): exact frames 13709 -> 13709
+torn before, unflagged: {'torn_cmd': 5, 'torn_mixed': 1, 'torn_snap': 1, 'torn_step': 4, 'torn_t1': 6}
+torn after,  unflagged: {'torn_cmd': 5, 'torn_mixed': 1, 'torn_snap': 2, 'torn_step': 3, 'torn_t1': 6}
+torn before, all: {'torn_cmd': 5, 'torn_mixed': 1, 'torn_snap': 1, 'torn_step': 4, 'torn_t1': 6}
+torn after,  all: {'torn_cmd': 5, 'torn_mixed': 1, 'torn_snap': 2, 'torn_step': 3, 'torn_t1': 6}
+   1  body in the sim, none near in the reader
+   1  projectile only (launch timing / flight)
+plant suite (9 matches): {'plants': 3631, 'caught': 3624, 'missed': 0, 'window_mismatch': 0} | legal {'legal_absent': 5, 'legal_state': 1, 'legal_t': 1} | targets {'torn_t1': 6, 'torn_mixed': 1, 'torn_step': 3, 'placeholder': 3, 'exact': 27, 'torn_snap': 2, 'torn_cmd': 5, 'REPR': 3}
+round_cmp exit 0
+sorted results sha256: dd3a48baef07743af5e08d281fc3b4061598f8c1d3436f4f6fff62a1f52bddc6  -
