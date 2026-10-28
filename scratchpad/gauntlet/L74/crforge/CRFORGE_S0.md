@@ -696,3 +696,18 @@ modelled: the shipped Deflect/MegaDeflect area-effect row carries only `DeflectP
 enchant copy, nor the copy's target / side / damage after the projectile's side and target flip.** So the tables do not
 define it; the base engine refuses it for the same reason; no live frames exist (HF holds plays only; needs a
 Monk-vs-RuneGiant match with reader frames). Stays refused; detector flags it (`REFUSED_deflect_copy`) so it is tracked.
+
+### F1FIX-3 STATUS (2026-10-28 ~18:50 EDT): squashed; gates running
+- **Fork squashed to one commit `fe364ceb2e988d84e726beaf7e45e9ecd147dfec`** (pod 30408
+  `/workspace/f1fix3/crforge_fork`, branch clashbot-f1fix3; off 624eeb45; tree byte-identical to the old
+  ea7f623f WIP head). No code change from the HF run. Patch: `crforge/fork/f1fix3/f1fix3_vs_624eeb45.patch`
+  (5 files: ActionOwner, Berserk, GiantBufferBuff, WorldEntity, BattleRuneGiantEnchantTest).
+- **Gates 1-6 running** (Codex `.foreman/scratch/a2/codex/F1FIX3_GATES.md`, high; HF skipped, already 22/20000):
+  - 30408 `gates30408.sh f1fix3 NO_HF=1` (core both versions, determinism, builds plain+tickprobe into
+    `/workspace/crforge_main/fe364ceb`): restart `cd /workspace/cfmain && WT=/workspace/f1fix3/crforge_fork NO_HF=1 nohup bash gates30408.sh f1fix3 &`; done = `/workspace/cfmain/g_f1fix3/done`.
+  - 32657 SME dev (inputs_v30, 16.402.22) + FRESH1 (f1_gen2_rf, 16.635.3), WORKERS=24 `taskset -c 54-77`
+    (ENG-SME on 28-53, others on 0-27 + 236-247; do NOT use those), lib `/workspace/crforge_main/fe364ceb/tickprobe/lib`.
+  - 33920 `clone_sweep.sh /dev/shm/d1c/f1fix3/lib_w4/plain/lib /dev/shm/cs_f1fix3 "scene match cm mc"` (outputs in
+    /dev/shm; 33920 / only ~1.8 GB free). Gate = `cp_clone_refusals.txt` empty.
+- **NOT merged, no lib switched, `current` untouched.** After gates pass: report to the lead BEFORE any merge into
+  clashbot-main / ship_main.sh / lib switch (the lead coordinates the switch window).
