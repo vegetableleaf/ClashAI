@@ -2449,9 +2449,19 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
   (Boss Bandit death vs hit order, b), 100341 (hero Tombstone repr), 101018 (Goblinstein), 110715 (our X-Bow 1 tile off), 123045 (Witch).
 - **FRESH3 (a):** 9/13 (CP 0.427), strict 9/13, on fe364ceb, no fixes; pooled FRESH2 + FRESH3 31/41 (section 6).
 - **D2 tower troops (a, section 4):** crforge 70.47% / 56.09% vs fin16 74.53% / 59.32% (E4 / iu40); gap -4.06 / -3.23 pp.
-- **Running:** nothing.
-- **Next:** the fix loop (section 7): first the hero Tombstone pair (2 cases) and the 091720 death-vs-hit order
-  (engine: fork branch off fe364ceb, to the lead), then the own-play points (110715, 142926). FRESH4 about daily:
+- **ENG-FIX (section 8, 10-28 night):** 9 of the 10 open FRESH2/FRESH3 failures are extractor mechanisms (a), fixed by 5
+  flags (SME_TOMB_HERO, SME_BB_RISE, SME_OWN_SPAWN, SME_OWN_NEARDEAD, SME_NEAR_BIGGER; all off by default, planted checks).
+  Single-match probes: 8 go exact (apart from torn), 142926 moves 254 -> 581 (8 div). 091720 is not an engine bug (c).
+  Open: 123045 (body position, b), 142926 own Skeletons under client lag (b). No engine fork branch was needed.
+- **Running:** Codex ENG-FIX_1b (TOMB_HERO dev/fresh regen + SME of changed matches, `engfix/r1/`), then ENG-FIX_2 (all
+  five flags, `engfix/r2/`, ticket `.foreman/scratch/a2/codex/ENG-FIX_2.md`). Restart: `sh .foreman/scratch/a2/codex_full.sh
+  .foreman/scratch/a2/codex/ENG-FIX_2.md medium .foreman/scratch/a2/codex/out/ENG-FIX_2.jsonl` (fresh OUT name).
+- **Lead queue 10-28 (P4 audit):** (1) crforge refusal `Deflect ... from the king tower ... without a target` is a
+  deliberate refusal (BattleWorld.java:5013-5023, fe364ceb: a homing king-tower shot that lost its target, deflected by
+  the Monk's ability; "no recording holds"); needs a live recording before any engine change; (2) Rocket tower damage /
+  level-16 scaling, (3) scripted Hog-at-bridge Tornado-to-king check, (4) overtime tie-break rule: NOT started.
+- **Next:** read ENG-FIX_2's table (no dev regression -> fresh_prep.sh gains the five flags for FRESH4+); then the lead
+  queue; then FRESH4 about daily:
   `fresh/freeze.py 20261028_1500 FRESH4.tsv` (after FRESH3's battle-log end 19:00:33Z = 15:00 EDT), `fresh_prep.sh`,
   commit the freeze, run on fe364ceb with no fixes. A 0.98 lower bound needs ~150 unflagged matches.
 - **Sync:** not adopted (lead 10-28: JDK 21 breaks CfAbil's jdk.incubator.foreign; section 5).
@@ -2601,7 +2611,30 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
   bodies) + our elixir 3.0 off (own press dating, b); 142926@254 Blowdart Goblin 258 off + our Knight 3,000 / 7,000 off (an
   own-play point, b); 145600@1308 the hero Tombstone rows again (2nd case of 100341's class).
 
-## 7. Fix loop on the open failures (lead 10-28; in progress)
+## 8. ENG-FIX: five extractor rules, all off by default, each with planted checks (commits 17d006b, 11b28aa, next)
+Probes: the frozen FRESH2 / FRESH3 inputs + one rule, runH.sh on fe364ceb tickprobe, pod 32657
+(`results/live/engfix/EF_t{1,2,3,4}_f1_results.jsonl`; flag-off control EF_t1_f0 reproduces F2_fe / F3_fe). FRESH2 / FRESH3
+are dev data now: these are NOT gate numbers.
+
+| match | div before | mechanism (label) | rule | after |
+|---|---:|---|---|---|
+| F3 145600 | 1308 | opponent hero Tombstone press: no cast state / pending flag; visible only as the passive monster's row swap to TombstoneHero_Monster_Active (a); crforge models the press (TombstoneHeroTest) | SME_TOMB_HERO (mech_rules.tomb_presses): R = swap - 2, window [last passive, swap - 1], unit 2; cast_seen Tombstone rows (the active monster's death area, 4/4) dropped. The fitter put all 3 presses on swap - 2 | 2695/2695 exact (was 579) |
+| F2 100341 | 2930 | same (a) | same | 1758/1758 (was 1384) |
+| F2 091720 | 3519 | NOT death-vs-hit order (c): the opponent pressed the Boss Bandit ability ~3516 (state 10, cast_timer 2, attack progress reset at 3517), a tower shot killed it at 3518, so no buff and no cast (a) | SME_BB_RISE (mech_rules.bb_presses): rise without buff in [t, t+10] -> R = t + cast_timer - 4, window [R-1, R+1]; buff start = rise + cast_timer on 11/11 buffed casts (`engfix/bb_census.txt`); fires once | 3030/3030 |
+| F2 110715 | 4505 | the game put our X-Bow 1 tile off the tap; the bot's own confirmation saw it there (err_tiles 1.0) (a); opponent bodies in the footprint do not move buildings (c, `engfix/bld_block.py`) | SME_OWN_SPAWN (fights.read_match): one-body own play (Knight/X-Bow/Tesla/IceWizard) with err_tiles >= 0.75 takes the confirmation's spawn point; one-body err_tiles are 0..0.5 (0.5 = 71 Knight back-row clamps) or >= 1.0 (4) (`engfix/spawn_census.txt`) | 2660/2660 |
+| F3 141254 | 3044 | our Knight 3.16 tiles off the tap; Hog / Firecracker / BarbLog offsets were consequences (a) | SME_OWN_SPAWN | 3028 + 8 torn_late |
+| F3 142926 | 254 | our Knight tap went unconfirmed, the bot re-tapped elsewhere, the game ran the first tap (err 7.61) (a) | SME_OWN_SPAWN | div 254 -> 581: 2038 exact, 8 div (own Skeletons ~10 ticks early in crforge; 3 unconfirmed taps in the opening = client lag; b) |
+| F3 142334 | 1693 | our hero IW (confirmed tap 1669, born 1693) 2,954 units from our earlier hero IW that died at 1692: H-NEARPARENT took it for a death child (a) | SME_OWN_NEARDEAD (fights.deployments) | 1763/1763 (was 767) |
+| F2 101018 | 5968 | a second Goblinstein (monster 3578) next to the first play's LIVING doctor (479/1153): dropped as its child (a) | SME_NEAR_BIGGER (fights.deployments): no child of a living smaller same-card body | 3026/3026 |
+| F2 123045 | 1768 | Witch skeletons 2-4 units, Golden Knight 60 units off (b: body position) | none | - |
+
+- Planted: `engfix/tomb_test.py` ok 10, `bb_test.py` ok 7, `spawn_test.py` ok 8, `neardead_test.py` ok 4, `nearbig_test.py`
+  ok 3. Hero Tombstone census (`tomb_census.txt`, 50 logs): 42 swaps with the building standing, 21 after its death, 144
+  never swap; dev 138 has 3 failing hero-Tombstone matches (164130@939, 185736@4012, 201258) the rule targets.
+- No-regression runs (dev 138, FRESH1, FRESH2, FRESH3, changed records only, Codex): ENG-FIX_1b (TOMB_HERO), ENG-FIX_2 (all).
+  Codex dispatches: ENG-FIX_1 (BLOCKED: runH.sh output paths outside my allowed dir; ticket fixed), ENG-FIX_1b (running).
+
+## 7. Fix loop on the open failures (superseded by section 8)
 | match | first div | mechanism so far | layer |
 |---|---:|---|---|
 | FRESH2 091720 | 3519 | our evo Knight (13000000) takes a 392 hit in crforge at step 3517-3518 that the game never lands: the opponent's Boss Bandit (26000103, 162 hp) hitting it dies in that gap (diagF on F2_H: 3471-3517 exact, 3519 hp 1684 vs 2076). Death-before-hit order on one tick (b) | engine (b) |
