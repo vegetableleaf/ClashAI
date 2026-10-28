@@ -63,7 +63,14 @@ def summary(recs):
     return np.concatenate([A, miss.astype(np.float64)], 1).astype(np.float32)
 
 
-def auc(y, p):
+def auc(y, p, w=None):
+    """P(p_model > p_human); w = per-row weights of the human (y == 0) rows (v5 recency weights), None = all 1."""
+    if w is not None:
+        pm, ph, wh = np.sort(p[y == 1]), p[y == 0], w[y == 0]
+        if not len(pm) or not len(ph) or wh.sum() <= 0:
+            return float('nan')
+        hi, lo = np.searchsorted(pm, ph, 'right'), np.searchsorted(pm, ph, 'left')
+        return float((wh * (len(pm) - hi + 0.5 * (hi - lo))).sum() / (len(pm) * wh.sum()))
     o = np.argsort(p)
     r = np.empty(len(p))
     r[o] = np.arange(1, len(p) + 1)
@@ -88,10 +95,17 @@ def train_eval(H, M, seed=0, epochs=12, device=None, threads=4):
     X = np.concatenate([xh, xm])
     Z = summary(H + M)
     y = np.concatenate([np.zeros(len(H)), np.ones(len(M))]).astype(np.float32)
-    idx = list(range(len(y)))
-    rng.shuffle(idx)
-    cut = int(0.7 * len(idx))
-    tr, te = np.array(idx[:cut]), np.array(idx[cut:])
+    # v5: human rows carry recency weights 'w' (card.ref_v5); model rows weigh 1. None of them weighted = the v4 path exactly.
+    wts = np.array([r.get('w', 1.0) for r in H] + [1.0] * len(M), np.float64) if any('w' in r for r in H) else None
+    # match-level split: rows sharing an 'id' (a human match drawn twice into a null control) stay in one fold; unique ids = v4's split
+    ids = [r.get('id', i) for i, r in enumerate(H + M)]
+    groups = list(dict.fromkeys(ids))
+    rng.shuffle(groups)
+    cut = int(0.7 * len(groups))
+    pos = {g: i for i, g in enumerate(groups)}
+    order = sorted(range(len(y)), key=lambda i: pos[ids[i]])
+    ntr = sum(1 for i in order if pos[ids[i]] < cut)
+    tr, te = np.array(order[:ntr]), np.array(order[ntr:])
 
     class Net(nn.Module):
         def __init__(s, nv, d=64):
@@ -112,15 +126,21 @@ def train_eval(H, M, seed=0, epochs=12, device=None, threads=4):
     opt = torch.optim.AdamW(net.parameters(), lr=1e-3, weight_decay=1e-2)
     Ct, Xt, yt, Zt = (torch.tensor(a) for a in (C, X, y, Z))
     w = torch.tensor([len(y) / (2 * max(1, (y == 0).sum())), len(y) / (2 * max(1, (y == 1).sum()))])   # class balance
+    if wts is not None:                                   # human weights normalised to mean 1 over the human TRAIN rows
+        h_tr = [i for i in tr if y[i] == 0]
+        wts = wts.copy()
+        wts[y == 0] /= wts[h_tr].mean()
+        wrow = torch.tensor(wts, dtype=torch.float32)
     for _ in range(epochs):
         net.train()
         perm = np.random.RandomState(seed + _).permutation(tr)
         for k in range(0, len(perm), 128):
             b = perm[k:k + 128]
             yb = yt[b].to(device)
+            rw = w[yb.long().cpu()] if wts is None else w[yb.long().cpu()] * wrow[b]
             loss = (nn.functional.binary_cross_entropy_with_logits(net(Ct[b].to(device), Xt[b].to(device), Zt[b].to(device)), yb,
                                                                    reduction='none')
-                    * w[yb.long().cpu()].to(device)).mean()
+                    * rw.to(device)).mean()
             opt.zero_grad()
             loss.backward()
             opt.step()
@@ -130,14 +150,17 @@ def train_eval(H, M, seed=0, epochs=12, device=None, threads=4):
                                               Zt[te[k:k + 512]].to(device))).cpu().numpy()
                             for k in range(0, len(te), 512)])
     yte = y[te]
-    a = auc(yte, p)
+    wte = None if wts is None else wts[te]
+    a = auc(yte, p, wte)
     bs = []
     r2 = np.random.RandomState(seed)
     for _ in range(400):
         s = r2.randint(0, len(te), len(te))
-        bs.append(auc(yte[s], p[s]))
+        bs.append(auc(yte[s], p[s], None if wte is None else wte[s]))
     bs = sorted(x for x in bs if x == x)
-    return dict(auc=a, ci=(bs[int(.05 * len(bs))], bs[int(.95 * len(bs)) - 1]), n_h=len(H), n_m=len(M), te=te, p=p, y=yte)
+    nh = len(H) if wts is None else float(wts[:len(H)].sum() ** 2 / (wts[:len(H)] ** 2).sum())
+    return dict(auc=a, ci=(bs[int(.05 * len(bs))], bs[int(.95 * len(bs)) - 1]), n_h=len(H), n_m=len(M), neff_h=nh, te=te, p=p, y=yte,
+                w=wte)
 
 
 def level_c(H, M, th, tag='', seed=0):
@@ -148,16 +171,23 @@ def level_c(H, M, th, tag='', seed=0):
     for a in sorted({x['arch'] for x in allrec}):
         sel = np.array([allrec[i]['arch'] == a for i in r['te']])
         if sel.sum() >= 40 and 0 < r['y'][sel].sum() < sel.sum():
-            arch[a] = (int(sel.sum()), auc(r['y'][sel], r['p'][sel]))
-    enough = min(len(H), len(M)) >= C['n_per_class_min']
-    ok = enough and r['ci'][1] <= C['auc_upper_ci_max_overall']
-    return dict(auc=r['auc'], ci=r['ci'], n_h=len(H), n_m=len(M), enough=bool(enough), arch=arch, passed=bool(ok))
+            arch[a] = (int(sel.sum()), auc(r['y'][sel], r['p'][sel], None if r['w'] is None else r['w'][sel]))
+    if 'live_min_model_games' in C and r['w'] is not None:   # v5 C-live: the limit is calibrated at the scored n (human n_eff)
+        enough = len(M) >= C['live_min_model_games']
+        lim = C['live_auc_upper_ci_max']
+    else:
+        enough = min(len(H), len(M)) >= C['n_per_class_min']
+        lim = C['auc_upper_ci_max_overall']
+    ok = enough and r['ci'][1] <= lim
+    return dict(auc=r['auc'], ci=r['ci'], n_h=len(H), n_m=len(M), neff_h=r['neff_h'], enough=bool(enough), limit=lim, arch=arch,
+                passed=bool(ok))
 
 
 def fmt(c):
     if 'auc' not in c:
         return f'FAIL -- {c.get("why")}'
-    return (f'AUC {c["auc"]:.3f} 90% CI [{c["ci"][0]:.3f}, {c["ci"][1]:.3f}] (human {c["n_h"]}, model {c["n_m"]}; need >= 5,000 per class: '
+    return (f'AUC {c["auc"]:.3f} 90% CI [{c["ci"][0]:.3f}, {c["ci"][1]:.3f}] vs upper limit {c.get("limit")} (human {c["n_h"]} matches, '
+            f'n_eff {c.get("neff_h", c["n_h"]):.0f}; model {c["n_m"]}; sample size enough: '
             f'{c["enough"]}) per arch (held-out n, AUC): ' + ', '.join(f'{a} {n} {v:.2f}' for a, (n, v) in c['arch'].items())
             + f' => {"PASS" if c["passed"] else "FAIL"}')
 

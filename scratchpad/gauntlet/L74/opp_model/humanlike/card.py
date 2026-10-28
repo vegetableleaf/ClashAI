@@ -274,10 +274,72 @@ def rows(recs):
     return [stat_row(r, r['arch']) for r in recs]
 
 
+# ------------------------------------------------------------------ v5: the weighted all-matches live reference (allref.py)
+def wcohen(L, S, keys, nmin=5):
+    """SC.cohen with per-row weights '_w' on the live side (absent = 1): weighted mean / SD, n = Kish n_eff (sum w)^2 / sum w^2.
+    All weights 1 -> exactly SC.cohen."""
+    out = {}
+    for k in keys:
+        lv = [(x[k], x.get('_w', 1.0)) for x in L if not math.isnan(x[k])]
+        W, W2 = sum(w for _, w in lv), sum(w * w for _, w in lv)
+        nl = W * W / W2 if W2 else 0.0
+        ml = sum(v * w for v, w in lv) / W if W else float('nan')
+        sl = math.sqrt(sum(w * (v - ml) ** 2 for v, w in lv) / W * nl / (nl - 1)) if nl > 1 else float('nan')
+        ns, ms_, ss = SC._ms([x[k] for x in S])
+        d = se = float('nan')
+        if nl >= nmin and ns >= nmin:
+            sp = math.sqrt(((nl - 1) * sl ** 2 + (ns - 1) * ss ** 2) / (nl + ns - 2))
+            if sp > 0:
+                d = (ms_ - ml) / sp
+                se = math.sqrt(1 / nl + 1 / ns + d * d / (2 * (nl + ns)))
+        out[k] = (nl, ml, sl, ns, ms_, ss, d, se)
+    return out
+
+
+def _wlse(rows, k):
+    """SC._lse with weights '_w' (n = Kish n_eff)."""
+    xs = [(x[k], x.get('_w', 1.0)) for x in rows if not math.isnan(x[k])]
+    W, W2 = sum(w for _, w in xs), sum(w * w for _, w in xs)
+    n = W * W / W2
+    mu = sum(v * w for v, w in xs) / W
+    v = sum(w * (x - mu) ** 2 for x, w in xs) / W
+    kt = sum(w * (x - mu) ** 4 for x, w in xs) / W / (v * v) if v > 0 else 3.0
+    return 0.5 * math.log(v) if v > 0 else float('nan'), math.sqrt(max(kt - 1, 0) / (4 * n))
+
+
+def wspread_ci(L, S, k, z):
+    ls, es = _wlse(S, k)
+    ll, el = _wlse(L, k)
+    r, e = ls - ll, math.sqrt(es * es + el * el)
+    return math.exp(r - z * e), math.exp(r + z * e)
+
+
+def ref_v5(th):
+    """The v5 B-live / C-live live reference: (records, stat rows) from data/allref_v5.json.gz (allref.py build), every row
+    weighted '_w' (THRESHOLDS B.live_reference: recency half-life) and the reader / Mark shift masks applied (a masked stat is
+    NaN for matches before its boundary).  The file's stems sha must equal the registered one."""
+    R = th['B']['live_reference']
+    d = json.loads(gzip.decompress((HERE / 'data' / 'allref_v5.json.gz').read_bytes()))
+    if d['meta']['stems_sha256'] != R['stems_sha256']:
+        raise SystemExit('data/allref_v5.json.gz is not the registered v5 reference (stems sha differs): refusing')
+    keep = [i for i, r in enumerate(d['records']) if r['deck'] == R['deck']]
+    recs, rows_ = [d['records'][i] for i in keep], [d['rows'][i] for i in keep]
+    for r, x in zip(recs, rows_):
+        w = 0.5 ** (r['age_d'] / R['half_life_days'])
+        r['w'] = x['_w'] = w
+        for k, b in R.get('masks', {}).items():
+            if r['ts'] < b:
+                x[k] = float('nan')
+        for k in STATS:
+            if x.get(k) is None:
+                x[k] = float('nan')
+    return recs, rows_
+
+
 # ------------------------------------------------------------------ level B (B-live and B-HF share the rule; feats = STATS)
 def level_b(L, S, th, feats=STATS, margin=None, rms_max=None):
     B = th['B']
-    c = SC.cohen(L, S, feats, B['min_n_per_side_for_a_stat'])
+    c = wcohen(L, S, feats, B['min_n_per_side_for_a_stat'])
     have = [k for k in feats if not math.isnan(c[k][6])]
     marg = margin if margin is not None else B['b_live_per_stat_abs_d_max']
     tost = {k: abs(c[k][6]) + SC.Z90 * c[k][7] < marg for k in have}
@@ -286,7 +348,7 @@ def level_b(L, S, th, feats=STATS, margin=None, rms_max=None):
     b3 = {}
     for k in B['b3_stats']:
         if k in have:
-            ci = SC.spread_ci(L, S, k, B['b3_ci_z'])
+            ci = wspread_ci(L, S, k, B['b3_ci_z'])
             b3[k] = (ci[0] <= hi and ci[1] >= lo, ci)
     rmax = rms_max if rms_max is not None else B['b_live_rms_d_max']
     ok = bool(have) and r <= rmax and all(tost.values()) and bool(b3) and all(v[0] for v in b3.values())
@@ -454,17 +516,22 @@ def score(name, sim_root, th, sha, a_args, hf_sim=None, do_c=True, out_dir=None,
              'NOTE: closed-loop numbers before D2 can be engine-limited (the build above is the one that produced them).']
     rep = dict(name=name, thresholds_sha=sha, engine=eng)
     S = sim_records(sim_root)
-    L = live_records('calibration')
-    SR, LR = rows(S), rows(L)
+    L = live_records('calibration')                      # siege facts: THRESHOLDS S stays on the CLXIII calibration block
+    SR = rows(S)
+    LV, LR = ref_v5(th) if th['B'].get('live_reference') else (L, rows(L))   # v5: B-live / C-live on the all-matches reference
     # A
     A = level_a(*a_args, out_dir / 'A.json')
     rep['A'] = A
     lines.append(f'## A (per decision): {"PASS" if A["passed"] else "FAIL"}' + ('' if A.get('scored') else f' -- not scored: {A["why"]}'))
     # B-live
     b = level_b(LR, SR, th)
+    nmin = th['B'].get('b_live_min_sim_games', 0)
+    b['enough'] = len(SR) >= nmin
+    b['passed'] = bool(b['passed'] and b['enough'])
     pa = per_arch(LR, SR, th, 30)
     rep['B_live'], rep['B_live_arch'] = b, pa
-    lines.append('## B-live (vs live humans vs CLXIII, calibration block)')
+    lines.append('## B-live (vs live humans: ' + (f'v5 all-matches reference, {len(LR)} matches, recency-weighted' if th['B'].get('live_reference')
+                                                  else 'CLXIII calibration block') + f'; model games >= {nmin}: {b["enough"]})')
     lines.append(print_b('B-live pooled', b))
     for a, v in pa.items():
         lines.append('  ' + print_b(f'arch {a}', v))
@@ -502,7 +569,7 @@ def score(name, sim_root, th, sha, a_args, hf_sim=None, do_c=True, out_dir=None,
     # C
     if do_c:
         import disc
-        c = disc.level_c(L, S, th, tag=name)
+        c = disc.level_c(LV, S, th, tag=name)
         rep['C_live'] = c
         lines.append('## C-live: ' + disc.fmt(c))
         lines.append('   C-HF: FAIL -- not scored (needs the model-vs-model HF-deck-pair rows, as B-HF)')
