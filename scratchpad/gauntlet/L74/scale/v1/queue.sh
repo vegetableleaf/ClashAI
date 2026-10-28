@@ -32,6 +32,9 @@ for C in base_ice/opp_base_ice_s0 base_pre/opp_base_pre_s0; do
     --memory-tables data/mix_v1_memory.npz --mmap-cache-dir data/cache_ev > runs/${C%%/*}/eval.out 2>&1; rm -rf data/cache_ev; }; done
 [ -f runs/clxiii_eval.json ] || { step eval clxiii; $PY $V/scale_eval_v1.py $W/code data/ICEBOW_Mark_CLXIII_NOLEAK.pt data/mix_v1.npz \
   runs/clxiii_eval.json --mmap-cache-dir data/cache_ev > runs/clxiii_eval.out 2>&1; rm -rf data/cache_ev; }
+# 6b. equivalence: curve v0's m10 (sha 3183c41b) on the mix: heldout_v32 must reproduce SCALE.md's heldout_clean (5.2467)
+[ -f runs/v0_m10_eval.json ] || { step eval v0_m10; $PY $V/scale_eval_v1.py $W/code data/v0_gen_m10_s0.pt data/mix_v1.npz \
+  runs/v0_m10_eval.json --mode nolat --mmap-cache-dir data/cache_ev > runs/v0_m10_eval.out 2>&1; rm -rf data/cache_ev; }
 # 7. curve v1 (1 epoch each = curve v0's sample count; v0 = 4 epochs of 3.17 M)
 for R in "m10 320 7 0" "m2 160 4 0" "m5 224 6 0" "m20 384 10 0" "m10 320 7 1"; do set -- $R
   [ -f runs/${1}_s$4/eval.json ] || { step curve $R; bash $V/run_size_v1.sh $1 $2 $3 $4 1; }; done
