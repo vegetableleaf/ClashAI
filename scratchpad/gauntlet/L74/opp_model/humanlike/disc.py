@@ -49,6 +49,20 @@ def encode(recs, vocab):
     return C, X
 
 
+def summary(recs):
+    """Per-match B stats (card.STATS, minus the ones a source may lack: opp_el, pocket_share), z-scored on the pooled set,
+    NaN -> 0 plus a missing flag. The event stream alone was blind to a planted 1 s tempo shift (AUC 0.52) that B sees at d 0.72."""
+    import card as CD
+    keys = [k for k in CD.STATS if k not in ('opp_el', 'pocket_share')]
+    R = CD.rows(recs)
+    A = np.array([[r[k] for k in keys] for r in R], np.float64)
+    miss = np.isnan(A)
+    mu = np.nanmean(A, 0)
+    sd = np.nanstd(A, 0) + 1e-9
+    A = np.where(miss, 0.0, (A - mu) / sd)
+    return np.concatenate([A, miss.astype(np.float64)], 1).astype(np.float32)
+
+
 def auc(y, p):
     o = np.argsort(p)
     r = np.empty(len(p))
@@ -72,6 +86,7 @@ def train_eval(H, M, seed=0, epochs=12, device=None, threads=4):
     cm, xm = encode(M, vocab)
     C = np.concatenate([ch, cm])
     X = np.concatenate([xh, xm])
+    Z = summary(H + M)
     y = np.concatenate([np.zeros(len(H)), np.ones(len(M))]).astype(np.float32)
     idx = list(range(len(y)))
     rng.shuffle(idx)
@@ -83,19 +98,19 @@ def train_eval(H, M, seed=0, epochs=12, device=None, threads=4):
             super().__init__()
             s.emb = nn.Embedding(nv, d, padding_idx=0)
             s.num = nn.Linear(NUM, d)
-            s.cls = nn.Parameter(torch.zeros(1, 1, d))
+            s.cls = nn.Linear(Z.shape[1], d)              # the CLS token carries the match's stat vector (card.py B stats)
             s.enc = nn.TransformerEncoder(nn.TransformerEncoderLayer(d, 4, 128, 0.1, batch_first=True), 2)
             s.out = nn.Linear(d, 1)
 
-        def forward(s, c, x):
+        def forward(s, c, x, z):
             h = s.emb(c) + s.num(x)
-            h = torch.cat([s.cls.expand(len(c), 1, -1), h], 1)
+            h = torch.cat([s.cls(z)[:, None], h], 1)
             pad = torch.cat([torch.zeros(len(c), 1, dtype=torch.bool, device=c.device), c == 0], 1)
             return s.out(s.enc(h, src_key_padding_mask=pad)[:, 0]).squeeze(1)
 
     net = Net(len(vocab) + 3).to(device)
     opt = torch.optim.AdamW(net.parameters(), lr=1e-3, weight_decay=1e-2)
-    Ct, Xt, yt = (torch.tensor(a) for a in (C, X, y))
+    Ct, Xt, yt, Zt = (torch.tensor(a) for a in (C, X, y, Z))
     w = torch.tensor([len(y) / (2 * max(1, (y == 0).sum())), len(y) / (2 * max(1, (y == 1).sum()))])   # class balance
     for _ in range(epochs):
         net.train()
@@ -103,14 +118,16 @@ def train_eval(H, M, seed=0, epochs=12, device=None, threads=4):
         for k in range(0, len(perm), 128):
             b = perm[k:k + 128]
             yb = yt[b].to(device)
-            loss = (nn.functional.binary_cross_entropy_with_logits(net(Ct[b].to(device), Xt[b].to(device)), yb, reduction='none')
+            loss = (nn.functional.binary_cross_entropy_with_logits(net(Ct[b].to(device), Xt[b].to(device), Zt[b].to(device)), yb,
+                                                                   reduction='none')
                     * w[yb.long().cpu()].to(device)).mean()
             opt.zero_grad()
             loss.backward()
             opt.step()
     net.eval()
     with torch.no_grad():
-        p = np.concatenate([torch.sigmoid(net(Ct[te[k:k + 512]].to(device), Xt[te[k:k + 512]].to(device))).cpu().numpy()
+        p = np.concatenate([torch.sigmoid(net(Ct[te[k:k + 512]].to(device), Xt[te[k:k + 512]].to(device),
+                                              Zt[te[k:k + 512]].to(device))).cpu().numpy()
                             for k in range(0, len(te), 512)])
     yte = y[te]
     a = auc(yte, p)
