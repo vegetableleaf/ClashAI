@@ -340,3 +340,19 @@ carry over. Re-dispatch from the docs listed here.
   scratchpad/gauntlet/L70/live/LIVE_OPTIONS.pre_gbdecoy_20261028; rollback in gb_decoy/STATUS.md. Owed: measure evo
   answers on post-deploy matches (.foreman/scratch/gb_decoy/newlogs.py). At the stop, every pipeline/ live-path file is
   committed (live runs committed code). stash@{0}/{1} (autostash) kept as backups - safe to drop after a diff check.
+
+### 9.9 Owner decisions, final (10-28 ~12:45)
+- **P2-SCORE thresholds (B-live rule and C-live limit): set BOTH from real human data across ALL recorded live matches
+  (thousands, not only the 856-match calibration block), weighted toward recent matches (harder opponents at higher
+  trophies).** Implementation notes for the worker: (1) calibrate with the SAME weights used for scoring and size the
+  bootstrap by the weighted effective n (Kish n_eff), so humans pass >= 95% at the n we actually score with;
+  (2) check older matches for reader-version detection differences (pre-merged_sf / pre-160635001) before including
+  them, and drop or correct any stat a reader change shifts; (3) keep the sealed D block untouched; (4) pre-register the
+  new THRESHOLDS version (sha) before scoring any model, as v4 was. Owner said yes to this; it is a re-calibration
+  against human controls, not loosening for a model (E4/iu40 fail by far either way).
+- **8x RTX PRO 6000 box: ~32 cores per GPU = up to 256 cores.** At 0.70 core-s/match, 300k/h needs ~58 producer cores,
+  so CPU is not the limit on that box. The owner rents it when the lead gives the go-ahead (the pilot is ready per 9.8).
+- **The owner switches accounts only after everything is closed out.** At 12:45 every subagent shows completed, no laptop
+  copy jobs remain, live runs committed code. Still running on pods by design (no agent attached): P4-10M queue on 30408,
+  P2-OPP1 pretrain run 2 + level A on 33308, P3-FORK cfpilot1 + trigger audit on 32657, LOOP-LRN lazy gate on 33920.
+  F1FIX-3's laptop tar copy to 33920 /dev/shm/d1c is gone (re-run it from its STATUS).
