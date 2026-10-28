@@ -20,6 +20,7 @@ import numpy as np
 HERE = Path(__file__).resolve().parent
 sys.path[:0] = [str(HERE), str(HERE.parents[1] / 'weekend')]
 MAXLEN = 160
+NUM = 9          # t, x, y, cost, spell, valid, dt since any / same-side / other-side event (s / 10, cap 10 s)
 
 
 def _spell(k):
@@ -29,15 +30,22 @@ def _spell(k):
 
 def encode(recs, vocab):
     import archetypes as A
-    X = np.zeros((len(recs), MAXLEN, 6), np.float32)
+    X = np.zeros((len(recs), MAXLEN, NUM), np.float32)
     C = np.zeros((len(recs), MAXLEN), np.int64)            # 0 pad, 1 our play, 2.. opponent card
     for i, r in enumerate(recs):
         ev = [(p[0], vocab.setdefault(A.canon(p[1]), len(vocab) + 2), p[3] / 18, p[4] / 32, (p[2] or 0) / 10, float(_spell(p[1])))
               for p in r['plays']] + [(t, 1, 0.0, 0.0, 0.0, 0.0) for t in r['mine']]
         ev.sort(key=lambda e: e[0])
+        last = {0: None, 1: None}                          # relative timing made explicit: a 1 s tempo shift is 0.003 of t / 6000
+        prev = None
         for j, (t, c, x, y, cost, sp) in enumerate(ev[:MAXLEN]):
+            mine = int(c == 1)
+            da = min(10.0, (t - prev) / 20) / 10 if prev is not None else 1.0
+            ds = min(10.0, (t - last[mine]) / 20) / 10 if last[mine] is not None else 1.0
+            do = min(10.0, (t - last[1 - mine]) / 20) / 10 if last[1 - mine] is not None else 1.0
+            prev, last[mine] = t, t
             C[i, j] = c
-            X[i, j] = (t / 6000, x, y, cost, sp, 1.0)
+            X[i, j] = (t / 6000, x, y, cost, sp, 1.0, da, ds, do)
     return C, X
 
 
@@ -50,10 +58,12 @@ def auc(y, p):
     return float((r[y == 1].sum() - n1 * (n1 + 1) / 2) / (n1 * n0)) if n1 and n0 else float('nan')
 
 
-def train_eval(H, M, seed=0, epochs=12, device='cpu', threads=4):
+def train_eval(H, M, seed=0, epochs=12, device=None, threads=4):
     """H human records, M model records -> dict(auc, ci, n_h, n_m, test predictions)."""
     import torch
     import torch.nn as nn
+    import os
+    device = device or os.environ.get('DISC_DEVICE', 'cpu')
     torch.manual_seed(seed)
     torch.set_num_threads(threads)
     rng = random.Random(seed)
@@ -72,7 +82,7 @@ def train_eval(H, M, seed=0, epochs=12, device='cpu', threads=4):
         def __init__(s, nv, d=64):
             super().__init__()
             s.emb = nn.Embedding(nv, d, padding_idx=0)
-            s.num = nn.Linear(6, d)
+            s.num = nn.Linear(NUM, d)
             s.cls = nn.Parameter(torch.zeros(1, 1, d))
             s.enc = nn.TransformerEncoder(nn.TransformerEncoderLayer(d, 4, 128, 0.1, batch_first=True), 2)
             s.out = nn.Linear(d, 1)
