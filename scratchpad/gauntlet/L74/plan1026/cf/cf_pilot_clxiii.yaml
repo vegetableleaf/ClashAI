@@ -1,7 +1,9 @@
 # P3-FORK (10-28): cf_credit L1 pilot / smoke config = succ48_x_s101 (CLXIII init, crforge-ready production recipe)
 # minus every term the fork return cannot value (shaping tower_crown -> none, habit terms removed) + cf_credit on.
-# R_win-only return: the R1 control arm. CLXIII's critic was fitted under o_s91's residual critic (s 2.2 + habit), so the
-# pilot runs the critic warm-up (critic_warmup_updates = max_updates: the policy never steps) before the slope audit.
+# 10-28 re-dispatch: the OWNER's return, R_win + shaping tower_phat (variant iii; shaping_critic_scale 1.5 = 1 + the Phi bound .5),
+# so the SNR / slope numbers are those the production loop will see. CLXIII's critic was fitted under o_s91's residual critic
+# (s 2.2 + habit), so the pilot runs the critic warm-up (critic_warmup_updates = max_updates: the policy never steps) before
+# the slope audit.
 init: icebow/data/bench/rl_royale/rlarm_succ48_o_s91/rlarm_succ48_o_s91_u0075.pt
 pool: icebow/data/ghost_pool/pool_env_v1.jsonl
 proagree_data: icebow/data/pipeline/s1_dataset.npz
@@ -40,9 +42,7 @@ vf_coef: 0.5
 vf_clip: 0.2
 critic_warmup_updates: 5
 vf_trunk_grad: true
-shaping_w_tower: 0.3
-shaping_w_crown: 0.3
-shaping_critic_scale: 3.5
+shaping_critic_scale: 1.5
 n_actors: 48
 in_flight: 8
 actor_device: cpu
@@ -128,5 +128,5 @@ league_deck_weights:
 kl_ref_refresh_every: 50
 
 tau_phase: [0.35, 0.45, 0.55]
-shaping: none
+shaping: tower_phat
 cf_credit: true

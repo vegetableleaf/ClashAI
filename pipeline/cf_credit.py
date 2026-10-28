@@ -28,7 +28,13 @@ check (``slope_audit``: terminal return on the horizon Q, PLAN band [0.7, 1.3]);
 
 Triggers (PLAN P3 table; each fires with probability cf_p[name] when its condition holds, >= cf_gap_ticks after its last
 sample; one sample per decision, the first firing trigger in TRIGGERS order that has an alternative):
-  rocket_played   the policy plays the Rocket           -> wait, second_card (its best other card)
+  rocket_tornado  (opt-in, cf_p 0 unless set) Rocket + Tornado both in hand, 9 elixir by the follow-up and a clump whose
+                  pull holds cf_combo_value and more than the best lone blast (decision_options.rocket_tornado_choice,
+                  the measured rule set)                       -> combo (Rocket at the pull centre + the Tornado as a
+                  follow_ups play), rocket_clump (the best lone blast), wait
+  tornado_redirect (opt-in) Tornado affordable, BOTH our princesses alive, a mobile ground unit on the bridge / our bank
+                  within cf_redirect_dist_tiles of our nearest princess -> tornado_king (centre toward our king), wait,
+                  tornado_on (centre on the unit: no net pull)  rocket_played   the policy plays the Rocket           -> wait, second_card (its best other card)
   rocket          Rocket affordable, not played          -> rocket_clump, rocket_princess (weakest enemy princess)
   wincon          an enemy building-targeting troop on our half -> wait, rocket_on, troop_on (its best troop), cheap_on
   siege           an enemy building locked on our tower, or an enemy X-Bow / Mortar in reach of one
@@ -39,8 +45,9 @@ sample; one sample per decision, the first firing trigger in TRIGGERS order that
   idle_full       the policy waits at >= cf_full_elixir  -> play_now (its best card, argmax cell)
   log_bait        the policy plays the Log after the opponent showed a bait card -> wait
   random          any sampled decision                   -> cf_random_alts policy-sampled actions
-A restricted alternative takes the policy's own argmax cell inside its cell set. Not here yet (NOT dropped; next ticket):
-the Rocket + Tornado combo, the Tornado redirect and P6 macro prefixes (multi-step alternatives).
+A restricted alternative takes the policy's own argmax cell inside its cell set. The combo's alternative row carries its FIRST
+play only (the Rocket); its Tornado is a scripted follow_ups play with no row of its own (cf/P6_DESIGN.md: prefix rows).
+Not here yet (NOT dropped): P6 macro prefixes (multi-step alternatives with a row per step).
 
 Record (``SelfPlayMatch.result()["cf"]``, the interface the fast loop also produces; JSON-able):
   {"samples": [{"row": traj row index of the decision, "tick", "trigger", "fired": [...], "audit": bool, "to_end": bool,
@@ -50,7 +57,9 @@ Record (``SelfPlayMatch.result()["cf"]``, the interface the fast loop also produ
    "triggers": {name: samples}, "capped": {name: n}, "decisions", "fork_ticks", "wall_s", "xbow_failed", "k"}"""
 from __future__ import annotations
 
+import copy
 import math
+import os
 import random
 import time
 import zlib
@@ -59,13 +68,18 @@ from typing import Optional
 
 import numpy as np
 
-TRIGGERS = ("rocket_played", "rocket", "wincon", "siege", "xbow_after_fail", "xbow", "idle_full", "log_bait", "random")
+TRIGGERS = ("rocket_tornado", "tornado_redirect", "rocket_played", "rocket", "wincon", "siege", "xbow_after_fail", "xbow",
+            "idle_full", "log_bait", "random")
 P_DEFAULT = {"rocket_played": 0.5, "rocket": 0.01, "wincon": 0.1, "siege": 0.25, "xbow_after_fail": 0.5, "xbow": 0.25,
-             "idle_full": 0.05, "log_bait": 0.5, "random": 0.0003}   # ~1-2 samples / match: L1 pilot tunes to <= 1x rollouts
+             "idle_full": 0.05, "log_bait": 0.5, "rocket_tornado": 0.0, "tornado_redirect": 0.0,
+             "random": 0.0003}   # ~1-2 samples / match: L1 pilot tunes to <= 1x rollouts
+OPT_IN = ("rocket_tornado", "tornado_redirect")   # probability 0 unless cf_p sets it: no condition read, no RNG draw, hash unchanged
 DEFAULTS = {"cf_horizon_ticks": 600, "cf_k": 2, "cf_w": 1.0, "cf_clip": 3.0, "cf_max_alts": 3, "cf_gap_ticks": 100,
             "cf_cap_ticks": 8000, "cf_audit_p": 0.1, "cf_end_ticks": 1200, "cf_shrink": True, "cf_shrink_min": 30,
             "cf_p": None, "cf_random_alts": 2, "cf_rocket_min_value": 2.0, "cf_siege_radius_tiles": 2.0,
-            "cf_front_min_tiles": 5.0, "cf_front_max_tiles": 8.0, "cf_xbow_fail_window_ticks": 600, "cf_full_elixir": 9.9}
+            "cf_front_min_tiles": 5.0, "cf_front_max_tiles": 8.0, "cf_xbow_fail_window_ticks": 600, "cf_full_elixir": 9.9,
+            "cf_combo_value": 6.0, "cf_redirect_dist_tiles": 12.0}
+NEW_KEYS = ("cf_combo_value", "cf_redirect_dist_tiles")   # dropped from the config hash at their defaults (older cf-on hashes stay)
 KEYS = ("cf_credit",) + tuple(DEFAULTS)
 INTS = ("cf_horizon_ticks", "cf_k", "cf_max_alts", "cf_gap_ticks", "cf_cap_ticks", "cf_end_ticks", "cf_shrink_min",
         "cf_random_alts", "cf_xbow_fail_window_ticks")
@@ -102,10 +116,10 @@ def cf_cfg(cfg: dict) -> Optional[dict]:
         lo = 1 if k in ("cf_horizon_ticks", "cf_k", "cf_max_alts") else 0
         if not (isinstance(c[k], int) and not isinstance(c[k], bool) and c[k] >= lo):
             bad.append(f"{k} must be an integer >= {lo}, got {c[k]!r}")
-    for k in ("cf_w", "cf_rocket_min_value", "cf_front_min_tiles", "cf_full_elixir"):
+    for k in ("cf_w", "cf_rocket_min_value", "cf_front_min_tiles", "cf_full_elixir", "cf_combo_value"):
         if not (_num(c[k]) and c[k] >= 0):
             bad.append(f"{k} must be a finite number >= 0, got {c[k]!r}")
-    for k in ("cf_clip", "cf_siege_radius_tiles", "cf_front_max_tiles"):
+    for k in ("cf_clip", "cf_siege_radius_tiles", "cf_front_max_tiles", "cf_redirect_dist_tiles"):
         if not (_num(c[k]) and c[k] > 0):
             bad.append(f"{k} must be a finite number > 0, got {c[k]!r}")
     if not (_num(c["cf_audit_p"]) and 0 <= c["cf_audit_p"] <= 1):
@@ -118,6 +132,10 @@ def cf_cfg(cfg: dict) -> Optional[dict]:
     if not isinstance(p, dict) or any(k not in TRIGGERS for k in p) or not all(_num(v) and 0 <= v <= 1 for v in p.values()):
         bad.append(f"cf_p must map trigger names {TRIGGERS} to probabilities in [0, 1], got {p!r}")
         p = {}
+    if p.get("rocket_tornado", 0.0) > 0 and (not cfg.get("action_delay_ticks") or cfg.get("pipeline_decisions")
+                                              or cfg.get("tap_loss") or cfg.get("tap_slow")):
+        bad.append("cf_p rocket_tornado > 0 needs action_delay_ticks > 0 and no pipeline_decisions / tap_loss / tap_slow "
+                   "(its Tornado is a follow_ups play: e1_eval.SelfPlaySide.apply)")
     if cfg.get("advantage", "match_loo") != "gae" or cfg.get("gae_gamma_unit", "row") != "tick":
         bad.append("cf_credit needs advantage gae and gae_gamma_unit tick (the fork return uses GAE's per-tick gamma)")
     if not cfg.get("league"):
@@ -144,9 +162,14 @@ def canonical(cfg: dict) -> dict:
     if cfg.get("cf_credit") is None or cfg.get("cf_credit") is False:
         return {k: v for k, v in cfg.items() if k not in KEYS}
     c = {k: (v if cfg.get(k) is None else cfg[k]) for k, v in DEFAULTS.items()}
-    c["cf_p"] = {**P_DEFAULT, **{k: float(v) for k, v in (cfg.get("cf_p") or {}).items()}}
-    return {**cfg, "cf_credit": True, **{k: (int(v) if k in INTS else v if k in ("cf_shrink", "cf_p") else float(v))
-                                         for k, v in c.items()}}
+    p = {**P_DEFAULT, **{k: float(v) for k, v in (cfg.get("cf_p") or {}).items()}}
+    c["cf_p"] = {k: v for k, v in p.items() if not (k in OPT_IN and v == 0.0)}   # opt-in triggers left off: the older hash
+    out = {**cfg, "cf_credit": True, **{k: (int(v) if k in INTS else v if k in ("cf_shrink", "cf_p") else float(v))
+                                        for k, v in c.items()}}
+    for k in NEW_KEYS:
+        if out.get(k) is None or float(out[k]) == DEFAULTS[k]:
+            out.pop(k, None)
+    return out
 
 
 # ------------------------------------------------------------------------------------------------------
@@ -291,6 +314,71 @@ def bait_seen(m) -> bool:
     """The opponent has played a log-bait card (archetypes.BAIT) by now: every play is public once it lands."""
     from pipeline.archetypes import BAIT
     return any(_norm(c) in BAIT for _, c in getattr(m.opp, "accepted", ()))
+
+
+_COMBO_OPTS: dict = {}
+
+
+def combo_options(value: float):
+    """The DecisionOptions the combo trigger reads the Rocket + Tornado plan with: the measured rule set (window, drift, river,
+    princess bonus), the combo wherever its pull gathers more than the best lone blast (rocket_tornado_lone combo), any half."""
+    if value not in _COMBO_OPTS:
+        from pipeline import decision_options as DO
+        _COMBO_OPTS[value] = DO.DecisionOptions(
+            rocket_tornado="on", rocket_value=float(value), rocket_value_mode="cost", rocket_value_min_y=0.0,
+            rocket_value_hitbox="edge", rocket_tornado_window="measured", rocket_tornado_order="rocket",
+            rocket_tornado_lone="combo", tornado_river="full", rocket_value_towers="on", rocket_tornado_lead="drift")
+    return _COMBO_OPTS[value]
+
+
+def combo_hit(s, allowed, c: dict):
+    """decision_options.rocket_tornado_choice at learner side ``s``'s decision: (rocket slot, tornado slot, cell, plan, value,
+    order) when a Rocket + Tornado combo starts now (both in hand, 9 elixir by the follow-up, a clump whose pull holds
+    cf_combo_value and more than the best single blast), else None."""
+    from pipeline import decision_options as DO
+    names = slot_names(s)
+    if "rocket" not in names or "tornado" not in names or not allowed.any():
+        return None
+    hit = DO.rocket_tornado_choice(combo_options(c["cf_combo_value"]), names, allowed, s._cur[1], s.cfg["grid"])
+    return hit if hit is not None and hit[5] in ("rocket", "tornado") and hit[2] is not None else None
+
+
+def cell_at(grid: str, bx: float, by: float) -> int:
+    """The grid cell whose centre is nearest to board tile (bx, by)."""
+    from pipeline import decision_options as DO
+    x, y = DO.cell_centres_tiles(grid)
+    return int(np.argmin(np.hypot(x - bx, y - by)))
+
+
+def pull_centre(ux: float, uy: float, tx: float, ty: float, reach: float) -> tuple[float, float]:
+    """The Tornado centre that drags a unit at (ux, uy) toward (tx, ty): the point toward it ``reach`` tiles from the unit (or
+    the target itself when nearer), kept on the board."""
+    d = math.hypot(tx - ux, ty - uy)
+    f = min(reach, d)
+    cx, cy = (ux + (tx - ux) / d * f, uy + (ty - uy) / d * f) if d > 1e-9 else (ux, uy)
+    return min(max(cx, 0.5), 17.5), min(max(cy, 0.5), 31.5)
+
+
+def redirect_target(s, c: dict) -> Optional[dict]:
+    """The enemy ground unit a Tornado could redirect into OUR king while both our princesses stand: a mobile non-flying body
+    on the bridge or our bank (board y >= 15: a Tornado holds a ground unit at the river) within cf_redirect_dist_tiles of our
+    nearest princess, the nearest such one. -> {name, bx, by, king, princess, d} (tiles) or None."""
+    from pipeline import decision_options as DO, vocab
+    mine = [t for t in s.state["episode"]["crown_towers"] if int(t["side"]) == s.side and not t.get("destroyed") and t["hp"] > 0]
+    pr = [raw_tiles(t, s.mirror) for t in mine if t.get("type") == "princess"]
+    kg = [raw_tiles(t, s.mirror) for t in mine if t.get("type") == "king"]
+    if len(pr) < 2 or not kg:
+        return None
+    air, fixed = DO.log_air_traits(), DO.immobile_keys()
+    best = None
+    for cls, bx, by, *_ in DO.rocket_bodies(s._cur[1], "cost"):
+        if air.get(int(cls), (False,))[0] or vocab.base_key(vocab.UNIT_VOCAB[int(cls)]) in fixed or by < 15.0:
+            continue
+        d, p = min((math.hypot(bx - px, by - py), (px, py)) for px, py in pr)
+        if d <= c["cf_redirect_dist_tiles"] and (best is None or d < best["d"]):
+            best = {"name": _norm(vocab.UNIT_VOCAB[int(cls)]), "bx": float(bx), "by": float(by), "king": kg[0],
+                    "princess": p, "d": float(d)}
+    return best
 
 
 # ------------------------------------------------------------------------------------------------------
@@ -442,13 +530,32 @@ def candidates(m, s, d: dict, trig: str, c: dict) -> list[dict]:
     chosen = {"kind": "chosen", "play": bool(d["play"]), "slot": int(d["slot"]) if d["play"] else -1,
               "cell": int(d["cell"]) if d["play"] else -1, "lp_gate": float(d["lp_gate"]),
               "lp_card": float(d["lp_card"]), "lp_cell": float(d["lp_cell"])}
+    if d.get("follow_ups"):                               # a rule-decided combo of the real decision (cfg rocket_tornado)
+        chosen["follow_ups"] = [dict(f) for f in d["follow_ups"]]
     pol = _Pol(s, d)
-    seen = {(chosen["slot"], chosen["cell"])}
+    seen = {(chosen["slot"], chosen["cell"], bool(chosen.get("follow_ups")))}
     if trig == "random":
         return [chosen] + sampled_alts(pol, c["cf_random_alts"], m.cf_state["rng"], seen)
     want = []                                             # (kind, slot, where); slot -1 = wait
-    if d["play"] and trig in ("rocket_played", "wincon", "siege", "xbow_after_fail", "xbow", "log_bait"):
+    if d["play"] and trig in ("rocket_played", "wincon", "siege", "xbow_after_fail", "xbow", "log_bait", "rocket_tornado",
+                              "tornado_redirect"):
         want.append(("wait", -1, None))
+    if trig == "rocket_tornado":                          # combo vs the best lone blast (vs the policy's own choice / a wait)
+        from pipeline import e1_eval as E
+        hit = m.cf_state["combo_hit"]
+        first, second = (hit[0], hit[1]) if hit[5] == "rocket" else (hit[1], hit[0])
+        after, within = DO.rocket_tornado_timing(hit[3])
+        want.append(("combo", first, hit[2], {"follow_ups": [E.follow_up_spec(second, hit[2], after, within)]}))
+        if rk is not None:
+            value, elig = DO.best_rocket_clump(DO.rocket_bodies(s._cur[1], "cost"), grid, "edge", None, 0.0,
+                                               towers=DO.enemy_princesses_alive(s._cur[1]))
+            if elig is not None and value >= c["cf_rocket_min_value"]:
+                want.append(("rocket_clump", rk, ("clump", elig)))
+    if trig == "tornado_redirect":                        # a Tornado that drags the unit into our king vs elsewhere
+        tg, tk = m.cf_state["redirect_target"], _slot_of(names, allowed, "tornado")
+        reach = DO.tornado_radius_tiles() - 0.75
+        want.append(("tornado_king", tk, cell_at(grid, *pull_centre(tg["bx"], tg["by"], *tg["king"], reach))))
+        want.append(("tornado_on", tk, cell_at(grid, tg["bx"], tg["by"])))
     if trig == "rocket_played":
         sc = pol.best_card(np.arange(len(names)) != int(d["slot"]))
         if sc is not None:
@@ -493,13 +600,17 @@ def candidates(m, s, d: dict, trig: str, c: dict) -> list[dict]:
         if b is not None:
             want.append(("play_now", b, "argmax"))
     out = [chosen]
-    for kind, slot, where in want:
+    for kind, slot, where, *extra in want:
         if len(out) > c["cf_max_alts"]:
             break
         a = pol.cand(kind, slot, where)
-        if a is not None and (a["slot"], a["cell"]) not in seen:
-            seen.add((a["slot"], a["cell"]))
-            out.append(a)
+        if a is not None:
+            if extra:
+                a.update(extra[0])
+            key = (a["slot"], a["cell"], bool(a.get("follow_ups")))
+            if key not in seen:
+                seen.add(key)
+                out.append(a)
     return out
 
 
@@ -512,14 +623,20 @@ def new_state(s) -> dict:
     seed = zlib.crc32(f"{s.tag}:cf:{s.k}:{int(s.cfg.get('rollout_index', 0))}:{int(s.cfg.get('update', 0))}".encode())
     return {"seed": seed, "rng": np.random.default_rng(seed), "n": Counter(), "capped": Counter(), "fired": Counter(),
             "last": {}, "target": None, "xb": {}, "xb_failed": 0, "xb_fail_tick": -10 ** 9, "samples": [],
-            "wall_s": 0.0, "fork_ticks": 0, "decisions": 0, "k": int((s.cfg.get("cf") or {}).get("cf_k", 2))}
+            "wall_s": 0.0, "fork_ticks": 0, "decisions": 0, "k": int((s.cfg.get("cf") or {}).get("cf_k", 2)),
+            "cond": Counter(), "cond_ticks": {} if os.environ.get("CF_DUMP") else None}
 
 
 def match_record(st: dict) -> dict:
-    """SelfPlayMatch.result()'s ``cf`` entry (picklable, JSON-able)."""
-    return {"samples": st["samples"], "wall_s": round(st["wall_s"], 3), "triggers": dict(st["n"]),
-            "fired": dict(st["fired"]), "capped": dict(st["capped"]), "decisions": st["decisions"],
-            "fork_ticks": st["fork_ticks"], "xbow_failed": st["xb_failed"], "k": st["k"]}
+    """SelfPlayMatch.result()'s ``cf`` entry (picklable, JSON-able). ``cond`` = decisions per trigger whose condition held
+    (before the gap / probability draw); ``cond_ticks`` (only with the CF_DUMP env var, the pilot) = those decisions' ticks,
+    for the offline budget model (pilot_report.py: samples per match and fork ticks at any cf_p)."""
+    out = {"samples": st["samples"], "wall_s": round(st["wall_s"], 3), "triggers": dict(st["n"]),
+           "fired": dict(st["fired"]), "capped": dict(st["capped"]), "decisions": st["decisions"],
+           "fork_ticks": st["fork_ticks"], "xbow_failed": st["xb_failed"], "k": st["k"], "cond": dict(st["cond"])}
+    if st.get("cond_ticks") is not None:
+        out["cond_ticks"] = st["cond_ticks"]
+    return out
 
 
 def triggers(m, s, d: dict, c: dict) -> list[str]:
@@ -552,8 +669,21 @@ def triggers(m, s, d: dict, c: dict) -> list[str]:
     if any(int(e["side"]) != s.side and int(e.get("kind", -1)) in (1, 12) for e in ents):
         sg = siege_target(env, s.side, es)
     cond["siege"] = sg is not None
+    if c["cf_p"]["rocket_tornado"] > 0:                   # opt-in triggers: read only when their probability is set
+        st["combo_hit"] = combo_hit(s, allowed, c)
+        cond["rocket_tornado"] = st["combo_hit"] is not None
+    tg = None
+    if c["cf_p"]["tornado_redirect"] > 0 and _slot_of(names, allowed, "tornado") is not None:
+        tg = redirect_target(s, c)
+    cond["tornado_redirect"] = tg is not None
     out = []
     for t in TRIGGERS:
+        if t in OPT_IN and c["cf_p"][t] <= 0:
+            continue
+        if cond[t]:
+            st["cond"][t] += 1
+            if st["cond_ticks"] is not None:
+                st["cond_ticks"].setdefault(t, []).append(tick)
         if cond[t] and tick - st["last"].get(t, -10 ** 9) >= c["cf_gap_ticks"] and st["rng"].random() < c["cf_p"][t]:
             out.append(t)
     if "wincon" in out:                                   # the deepest one into our half (largest y)
@@ -563,6 +693,8 @@ def triggers(m, s, d: dict, c: dict) -> list[str]:
         bx, by = board_tiles(sg["x"], sg["y"], s.mirror)
         st["siege_target"] = {**sg, "bx": bx, "by": by,
                               "princess": None if sg["princess"] is None else board_tiles(*sg["princess"], s.mirror)}
+    if "tornado_redirect" in out:
+        st["redirect_target"] = tg
     st["fired"].update(out)
     return out
 
@@ -698,7 +830,8 @@ class Runner:
                     else:                                     # (a decided second play belongs to the decision's card)
                         f.learner.apply(p, {**{x: v for x, v in d.items() if x != "follow_ups"}, "play": a["play"],
                                             "slot": a["slot"], "cell": a["cell"], "why": "cf", "lp_gate": a["lp_gate"],
-                                            "lp_card": a["lp_card"], "lp_cell": a["lp_cell"]})
+                                            "lp_card": a["lp_card"], "lp_cell": a["lp_cell"],
+                                            **({"follow_ups": copy.deepcopy(a["follow_ups"])} if a.get("follow_ups") else {})})
                 forks.append(f)
                 meta.append((i, k))
         out = [{"q": [None] * K, "end": [None] * K, "terminal": [None] * K, "q_end": None} for _ in cands]

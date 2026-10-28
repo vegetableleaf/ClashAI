@@ -640,5 +640,180 @@ class TestForks(unittest.TestCase):
         self.assertGreater(st["cf"]["fork_ticks_per_match_tick"], 0)
 
 
+# ------------------------------------------------------------------------------------------------------
+# opt-in triggers: rocket_tornado (combo vs lone Rocket) and tornado_redirect (Tornado into our king)
+# ------------------------------------------------------------------------------------------------------
+OLD_P = {"rocket_played": 0.5, "rocket": 0.01, "wincon": 0.1, "siege": 0.25, "xbow_after_fail": 0.5, "xbow": 0.25,
+         "idle_full": 0.05, "log_bait": 0.5, "random": 0.0003}          # the pre-combo P_DEFAULT (cf-on hash unchanged)
+
+
+class TestNewTriggerConfig(unittest.TestCase):
+    def test_opt_in_defaults_keep_the_historical_cf_on_hash(self):
+        c = CF.cf_cfg(ON)
+        self.assertEqual((c["cf_p"]["rocket_tornado"], c["cf_p"]["tornado_redirect"]), (0.0, 0.0))
+        for name in CF.OPT_IN:
+            self.assertIn(name, CF.TRIGGERS)
+        can = CF.canonical({**ON})
+        self.assertEqual(can["cf_p"], OLD_P)                                     # the opt-in zeros are not in the hash
+        self.assertFalse(set(CF.NEW_KEYS) & set(can))
+        self.assertEqual(CF.canonical({**ON, "cf_combo_value": 6.0, "cf_p": {"tornado_redirect": 0.0}}), can)
+        on = CF.canonical({**ON, "cf_p": {"rocket_tornado": 0.5}})
+        self.assertEqual(on["cf_p"]["rocket_tornado"], 0.5)
+        self.assertNotEqual(on, can)
+        self.assertEqual(CF.canonical({**ON, "cf_redirect_dist_tiles": 9.0})["cf_redirect_dist_tiles"], 9.0)
+        base = RL.load_config(L16, [], False)
+        self.assertEqual(RL.config_sha({**base, "cf_credit": True}),
+                         RL.config_sha({**base, "cf_credit": True, "cf_p": {"rocket_tornado": 0.0}}))
+        self.assertNotEqual(RL.config_sha({**base, "cf_credit": True}),
+                            RL.config_sha({**base, "cf_credit": True, "cf_p": {"tornado_redirect": 0.2}}))
+
+    def test_validation(self):
+        delay = {"action_delay_ticks": 26}
+        self.assertEqual(CF.cf_cfg({**ON, **delay, "cf_p": {"rocket_tornado": 0.3}})["cf_p"]["rocket_tornado"], 0.3)
+        for bad in ({"cf_p": {"rocket_tornado": 0.3}},                         # no action delay: no follow_ups play
+                    {**delay, "pipeline_decisions": True, "cf_p": {"rocket_tornado": 0.3}},
+                    {**delay, "tap_loss": "0.1", "cf_p": {"rocket_tornado": 0.3}},
+                    {"cf_combo_value": -1.0}, {"cf_redirect_dist_tiles": 0}):
+            with self.assertRaises(SystemExit, msg=bad):
+                CF.cf_cfg({**ON, **bad})
+        CF.cf_cfg({**ON, "cf_p": {"tornado_redirect": 0.3}})                  # the redirect needs no follow-up
+
+
+class TestNewTriggerGeometry(unittest.TestCase):
+    def test_pull_centre(self):
+        cx, cy = CF.pull_centre(3.5, 16.0, 9.0, 29.5, 4.75)
+        self.assertAlmostEqual(np.hypot(cx - 3.5, cy - 16.0), 4.75, places=9)             # reach tiles from the unit
+        self.assertLess(np.hypot(9.0 - cx, 29.5 - cy), np.hypot(9.0 - 3.5, 29.5 - 16.0))   # closer to the king
+        self.assertAlmostEqual((cx - 3.5) * (29.5 - 16.0) - (cy - 16.0) * (9.0 - 3.5), 0.0, places=9)   # on the segment
+        self.assertEqual(CF.pull_centre(8.0, 27.0, 9.0, 29.5, 4.75), (9.0, 29.5))           # target within reach: the target
+        self.assertEqual(CF.pull_centre(0.0, 31.9, 0.0, 40.0, 4.75), (0.5, 31.5))           # kept on the board
+        self.assertEqual(CF.pull_centre(5.0, 5.0, 5.0, 5.0, 4.75), (5.0, 5.0))
+
+    def test_cell_at_is_nearest_centre(self):
+        from pipeline import decision_options as DO
+        x, y = DO.cell_centres_tiles("lattice")
+        c = CF.cell_at("lattice", 3.4, 22.6)
+        self.assertEqual(c, int(np.argmin(np.hypot(x - 3.4, y - 22.6))))
+        self.assertLess(np.hypot(x[c] - 3.4, y[c] - 22.6), 1.0)
+
+    def test_redirect_target(self):
+        from pipeline import vocab
+
+        def unit(name, tx, ty, side=1):
+            return NS(side=side, cls=vocab.UNIT_VOCAB.index(name), x=tx / 18.0, y=ty / 32.0, hp_frac=1.0)
+
+        def side(units, dead=()):
+            tw = [{"side": 0, "type": "king", "x": 9000.0, "y": 2500.0}, {"side": 0, "type": "princess", "x": 3500.0, "y": 6500.0},
+                  {"side": 0, "type": "princess", "x": 14500.0, "y": 6500.0}]     # my frame: king (9, 29.5), princesses y 25.5
+            for i, t in enumerate(tw):
+                t.update(hp=0 if i in dead else 1000, destroyed=i in dead)
+            return NS(side=0, mirror=False, state={"episode": {"crown_towers": tw}}, _cur=(100, NS(units=units)))
+        c = CF.cf_cfg(ON)
+        hog = unit("hog_rider", 3.5, 16.5)                                     # on the bridge, 9 tiles from our L princess
+        tg = CF.redirect_target(side([hog]), c)
+        self.assertEqual(tg["name"], "hogrider")
+        self.assertAlmostEqual(tg["d"], 9.0, places=3)
+        self.assertEqual((tg["princess"], tg["king"]), ((3.5, 25.5), (9.0, 29.5)))
+        near = unit("knight", 12.0, 22.0)                                      # nearer to the R princess: wins
+        self.assertEqual(CF.redirect_target(side([hog, near]), c)["name"], "knight")
+        self.assertIsNone(CF.redirect_target(side([unit("balloon", 3.5, 20.0)]), c))     # a flyer is not pulled to the king
+        self.assertIsNone(CF.redirect_target(side([unit("hog_rider", 3.5, 12.0)]), c))   # still on their bank
+        self.assertIsNone(CF.redirect_target(side([unit("cannon", 3.5, 20.0)]), c))      # a building never moves
+        self.assertIsNone(CF.redirect_target(side([unit("hog_rider", 3.5, 16.5, side=0)]), c))   # our own unit
+        self.assertIsNone(CF.redirect_target(side([hog], dead=(1,)), c))       # one princess down: the redirect is off
+        self.assertIsNone(CF.redirect_target(side([hog], dead=(0,)), c))       # no king, no redirect
+        self.assertIsNone(CF.redirect_target(side([unit("hog_rider", 14.5, 15.5)]), {**c, "cf_redirect_dist_tiles": 5.0}))
+
+
+class _NoHand(Exception):
+    pass
+
+
+@unittest.skipIf(RoyaleSelfPlayEnv is None, "royalegym not importable (run in research/ext/Royale/.venv)")
+class TestNewTriggerForks(unittest.TestCase):
+    def test_candidates_and_forks_play_the_scripted_second_card(self):
+        """At the first decision with the Rocket and the Tornado both affordable and >= 9 elixir: the combo candidate (the
+        Rocket + a follow_ups Tornado) is built by candidates() from a combo plan and its fork plays BOTH cards while the
+        lone Rocket's fork plays the Rocket only; the redirect candidates (king pull, centre on the unit) are distinct cells
+        whose king-pull centre is nearer the king than the unit; every Q is finite."""
+        got: dict = {}
+        from pipeline import decision_options as DO
+
+        class Spy(CF.Runner):
+            def hook(self, live, todo):
+                if not live or "done" in got:
+                    return
+                m = live[0]
+                for s, p, d in todo:
+                    if s is not m.learner:
+                        continue
+                    names, al = CF.slot_names(s), np.asarray(d["allowed"], bool)
+                    hand = {str(h["name"]).lower() for pl in s.state["players"] if int(pl["side"]) == s.side for h in pl["hand"]}
+                    if not {"rocket", "tornado"} <= hand:
+                        raise _NoHand(hand)                               # this seed's opening hand: try the next
+                    rk, tk = CF._slot_of(names, al, "rocket"), CF._slot_of(names, al, "tornado")
+                    got.setdefault("seen", []).append((int(m.env.tick), rk is not None, tk is not None, round(CF.own_elixir(s), 1)))
+                    if rk is None or tk is None or not d["gate_sampled"] or CF.own_elixir(s) < 9.0:
+                        d["play"] = False                                 # wait: the elixir builds, the hand stays
+                        continue
+                    c = {**self.c, "cf_max_alts": 4}
+                    m.cf_state = CF.new_state(s)
+                    cell = TS.CELL
+                    m.cf_state["combo_hit"] = (rk, tk, cell, (8, 14), 7.0, "rocket")
+                    cands = CF.candidates(m, s, d, "rocket_tornado", c)
+                    entries = [x for x in todo if x[0] is m.learner or x[0] is m.opp]
+                    out = self.rollouts(m, entries, cands, seed=3)
+                    forks = {}
+                    for fi, f in enumerate(self.last_forks):
+                        if fi < len(cands):                                   # continuation 0 of each candidate
+                            forks[cands[fi]["kind"]] = [str(x) for x in f.learner.accepted]
+                    got.update(done=True, cands=cands, out=out, forks=forks, rk=rk, tk=tk, cell=cell, names=names)
+                    m.cf_state["redirect_target"] = {"name": "hogrider", "bx": 3.5, "by": 16.5, "king": (9.0, 29.5),
+                                                     "princess": (3.5, 25.5), "d": 9.0}
+                    got["red"] = CF.candidates(m, s, d, "tornado_redirect", c)
+                    got["tor_cells"] = (DO.cell_centres_tiles(s.cfg["grid"]), tk)
+                    return
+
+        for seed in range(40):
+            got.clear()
+            gen, opp_gen, lcfg, ocfg, spec = _setup()
+            try:
+                with patch.object(CF, "Runner", Spy):
+                    E.run_selfplay_batch(lambda: RoyaleSelfPlayEnv(tail_cap=TAIL), gen, {"gen": (opp_gen, ocfg)},
+                                         [(0, {**spec, "seed": seed}, 0)], lcfg, 1, on_result=lambda r: None)
+            except _NoHand:
+                continue
+            break
+        both = [x for x in got.get("seen", []) if x[1] and x[2]]
+        self.assertIn("done", got, f"no decision with Rocket + Tornado affordable at >= 9 elixir; decisions {len(got.get('seen', []))}, "
+                                   f"both-affordable {both[:12]}")
+        kinds = [a["kind"] for a in got["cands"]]
+        self.assertEqual(kinds[0], "chosen")
+        self.assertIn("combo", kinds)
+        combo = got["cands"][kinds.index("combo")]
+        self.assertEqual((combo["slot"], combo["cell"]), (got["rk"], got["cell"]))
+        fu = combo["follow_ups"]
+        self.assertEqual((len(fu), fu[0]["slot"], fu[0]["cell"], fu[0]["after_ticks"]), (1, got["tk"], got["cell"], 11 + 2))
+        for a, r in zip(got["cands"], got["out"]["cands"]):
+            self.assertTrue(all(np.isfinite(q) for q in r["q"]), a["kind"])
+        plays = [eval(x) for x in got["forks"]["combo"]]                     # (landing tick, card slug) of the fork's learner
+        first = [t for t, n in plays if n == "rocket"]
+        second = [t for t, n in plays if n == "tornado"]
+        self.assertTrue(first and second and 0 <= second[0] - first[0] <= 20, plays)      # the scripted Tornado follows the Rocket
+        for kind, acc in got["forks"].items():                                    # a lone Rocket (rocket_clump) has no scripted Tornado
+            pl = [eval(x) for x in acc]
+            if kind != "combo" and pl and pl[0][1] == "rocket":
+                self.assertFalse(any(n == "tornado" and 0 <= t - pl[0][0] <= 20 for t, n in pl[1:]), (kind, pl))
+        red = got["red"]
+        rk_ = [a["kind"] for a in red]
+        self.assertTrue({"tornado_king", "tornado_on"} <= set(rk_), rk_)
+        (x, y), tk = got["tor_cells"]
+        cells = {a["kind"]: a["cell"] for a in red if a["play"]}
+        self.assertEqual(len(set(cells.values())), len(cells))
+        kc, uc = cells["tornado_king"], cells["tornado_on"]
+        self.assertLess(np.hypot(x[kc] - 9.0, y[kc] - 29.5), np.hypot(x[uc] - 9.0, y[uc] - 29.5))
+        self.assertTrue(all(a["slot"] == tk for a in red if a["kind"].startswith("tornado")))
+
+
 if __name__ == "__main__":
     unittest.main()
