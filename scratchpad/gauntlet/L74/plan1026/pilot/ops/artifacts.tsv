@@ -51,3 +51,32 @@ d131d30317d63638804f95e88f78c463a7c15663d932b3c4cfd87df63bd1441b	crforge/tables/
 19cfbb14d31091b7eb2723f3ddcbc71a08627def799390fcd1b95a4c8d083f6c	crforge/tables/16.402.22/variables.json	33308:/workspace/crforge_cache/tables/16.402.22/variables.json
 06a85cecec90fb3194f7698a62b5a350441fbe9bc75a9a15210d6c8714bc56f3	pylib/	store (tar of 33308:/workspace/d2/stage/pylib)
 60fd413d84760e8b63e461e11d1824db99003e58be26fb9fec92f936f28f0fdd	venv/lib/python3.12/site-packages/	store (tar of 33308:/workspace/loop_stage/engine16)
+430faaee52d9aebc788a780cc6a5977d25e7c7126ae4abd9726829dc2751062a	cb/icebow/data/bench/rl_royale/rdef_e4/rdef_e4_u0020_barrel2k_cellref_towerref_w2.pt	laptop:icebow/data/bench/rl_royale/rdef_e4/rdef_e4_u0020_barrel2k_cellref_towerref_w2.pt
+66bc8d31f0c8970050980c1d5b66a2356eca0b74925f9211614b3da2ade6f135	crforge/tables/16.635.3/actions.json	32657:/workspace/crforge_cache/tables/16.635.3/actions.json
+c214b39faf31d12e3cee202af6df2e702a3a51fba4581c6b39072a4876df30a6	crforge/tables/16.635.3/area_effect_objects.json	32657:/workspace/crforge_cache/tables/16.635.3/area_effect_objects.json
+7da15d3b6094a77c75b1d8bca5beb5b6b524964978275d7778b7ef270ae5142b	crforge/tables/16.635.3/battle_timelines.json	32657:/workspace/crforge_cache/tables/16.635.3/battle_timelines.json
+bf8f93b0703dc29d8d31d921649deaf4aa1daf261d9f1d06ae87e7c068fc01e3	crforge/tables/16.635.3/build.properties	32657:/workspace/crforge_cache/tables/16.635.3/build.properties
+bc1e4f294ba4ce6632e22eb74ef8705231c87c1e7eec6144e2ab7c7073be5d47	crforge/tables/16.635.3/buildings.json	32657:/workspace/crforge_cache/tables/16.635.3/buildings.json
+1b2693cedda34b8adfaa129f8db2cf260bdce3f95bc9d46a27512a3061834b7e	crforge/tables/16.635.3/card_groups.json	32657:/workspace/crforge_cache/tables/16.635.3/card_groups.json
+086ab2f94183c895886573b5c39cecffd37597ad77f4ba7075a19faee0daae26	crforge/tables/16.635.3/character_abilities.json	32657:/workspace/crforge_cache/tables/16.635.3/character_abilities.json
+b3029edf571135861c138ef3b7eda6ca01af7a56d2b8328f096f80d8e7a7cb7d	crforge/tables/16.635.3/character_buffs.json	32657:/workspace/crforge_cache/tables/16.635.3/character_buffs.json
+a4986811f94e8818c12253661ee4d587ba352ce9bdc9b2109442720076487d58	crforge/tables/16.635.3/characters.json	32657:/workspace/crforge_cache/tables/16.635.3/characters.json
+51f6d6fb350166cbce6884df97c61e75bf58d3800303442e749fcef645fcdfd4	crforge/tables/16.635.3/damage_types.json	32657:/workspace/crforge_cache/tables/16.635.3/damage_types.json
+f6ce3a5404a0e4a05e2f7e16339e1b30f5b0a4e2663fe6a8ee09a1caf2678fab	crforge/tables/16.635.3/game_modes.json	32657:/workspace/crforge_cache/tables/16.635.3/game_modes.json
+c472d0286de26344a3669640b455e00e1e5e10c3bc1abc2e00db225dd3cbb0c5	crforge/tables/16.635.3/game_object_filters.json	32657:/workspace/crforge_cache/tables/16.635.3/game_object_filters.json
+769b5c57445d5e1cf228bfb1e6af4793789003bcbd8699c564935c6b97bd13ca	crforge/tables/16.635.3/game_tags.json	32657:/workspace/crforge_cache/tables/16.635.3/game_tags.json
+0b584e968e59a33b2cf5353f4bed89cfb2552316d29f962de236c63c03d9e249	crforge/tables/16.635.3/globals.json	32657:/workspace/crforge_cache/tables/16.635.3/globals.json
+d4853792c83e3de2e97635f0f23e256bb6144ea92cd3d06c35b92672441c8e28	crforge/tables/16.635.3/locations.json	32657:/workspace/crforge_cache/tables/16.635.3/locations.json
+5701ea7aeda1741f28d2f21feac255d058a78f441fbc8b364b454917a46082c2	crforge/tables/16.635.3/projectiles.json	32657:/workspace/crforge_cache/tables/16.635.3/projectiles.json
+f624c3f8ec1c7d520ebae2bd13d9d53704b799f9a06608235d667597a8f3578c	crforge/tables/16.635.3/rarities.json	32657:/workspace/crforge_cache/tables/16.635.3/rarities.json
+c803bdc646e12f862996b865d3c76ca2e4936d565c2df579fa27e421fc8dd761	crforge/tables/16.635.3/shapes.json	32657:/workspace/crforge_cache/tables/16.635.3/shapes.json
+cbceb606f9dbede7d07d87e9e6d410aa07c774738371ab1e19a9768d9cbb979f	crforge/tables/16.635.3/spawn_groups.json	32657:/workspace/crforge_cache/tables/16.635.3/spawn_groups.json
+67919f14be0948272701fbbbefd9d97fce447716143cabf6bb940e8f3c8b652a	crforge/tables/16.635.3/spells_buildings.json	32657:/workspace/crforge_cache/tables/16.635.3/spells_buildings.json
+df196d308e21cfe32f9b728fc1dba4eb7642cb2ba746f72ee2dee93c984e2476	crforge/tables/16.635.3/spells_characters.json	32657:/workspace/crforge_cache/tables/16.635.3/spells_characters.json
+b8ae70953932839f7f220c90e1dbc346b3d0edf4a659b34da5ba8346b54e9758	crforge/tables/16.635.3/spells_evolved.json	32657:/workspace/crforge_cache/tables/16.635.3/spells_evolved.json
+3f1285f908e12145adbd35b43d98afc53549997c4f5cc05d621239c2dcf12c2c	crforge/tables/16.635.3/spells_hero_form.json	32657:/workspace/crforge_cache/tables/16.635.3/spells_hero_form.json
+6441da59c7dcd3e21fcc309e3186828df7da8b74039d59a1224f2d9f86fb4fa0	crforge/tables/16.635.3/spells_other.json	32657:/workspace/crforge_cache/tables/16.635.3/spells_other.json
+6b4720a331c49b6a45e6892af22ddd22b07a59125c8384841f94cdd1eac396a4	crforge/tables/16.635.3/support_cards.json	32657:/workspace/crforge_cache/tables/16.635.3/support_cards.json
+0212c731e822dfbb0012a15a069742f9e96dcdbabea1a399e7574acbd2b90499	crforge/tables/16.635.3/support_rarities.json	32657:/workspace/crforge_cache/tables/16.635.3/support_rarities.json
+9239e48edbbf942bbbdb64d36b552b56fb916beed0e79d67ba7277a43cb28b45	crforge/tables/16.635.3/target_resolvers.json	32657:/workspace/crforge_cache/tables/16.635.3/target_resolvers.json
+6013b6adc5301dac242b9b2d17952d4f4d964da25c77817d5a8fb46259c45953	crforge/tables/16.635.3/variables.json	32657:/workspace/crforge_cache/tables/16.635.3/variables.json

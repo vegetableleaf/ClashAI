@@ -7,8 +7,8 @@ Labels: (a) measured, (b) untested, (c) contradicted.
   with the fake loop: boot, sha pulls, streaming, STOP, laptop mirror + ack, DONE line (a; see "Dry run").
 - PENDING from other tickets: LOOP-INT fastloop.py (the real ENTRY; launcher defaults to it), LOOP-LRN `shaping: tower_phat`
   (rl_royale refuses it until that commit), CF-MAIN clashbot-main jars + tables 16.635.3 (MAIN.md; artifacts.tsv carries the
-  interim lib_cfclone + 16.402.22), LOOP-OPP POOL.json regenerated for pilot.yaml (then its files added to artifacts.tsv).
-- Store: 33308:/workspace/loop_stage/store/<sha256> (51 rows staged). Dry-run dirs on 33308: /workspace/loop_dry,
+  interim lib_cfclone; tables 16.402.22 + 16.635.3 staged), LOOP-OPP POOL.json regenerated for pilot.yaml (then its files added to artifacts.tsv).
+- Store: 33308:/workspace/loop_stage/store/<sha256> (80 rows staged). Dry-run dirs on 33308: /workspace/loop_dry,
   /workspace/loop_ckpt/loopops_dry (safe to delete). Laptop mirror: C:/Users/benpe/pod_backup_weekend/loop/<run>/.
 - NEXT: when INT's fastloop.py lands: `bash loop_pod.sh add` its sha list + POOL.json files, `stage`, re-run the dry run
   with the real ENTRY on 33308 (W=/workspace/loop_dry2, ENTRY_ARGS small), then `up` on the rented pod.
@@ -39,13 +39,17 @@ update); league_mix latest / older 0 + league_snapshot_every 100000 (snapshot sh
 seed 1028; max_updates 1000; save_every 25 (= the streaming interval); fastloop: {decode: live, live_options L70/live/LIVE_OPTIONS,
 producers 48, ...} (LOOP-INT strips it; its values are INT's call). Opponent blocks are x_s101's until POOL.json is regenerated:
 `python scratchpad/gauntlet/L74/plan1026/pilot/opp/pool_manifest.py --config pilot.yaml --out POOL.json` (pod tree).
-Open (b): E4's share in the pool (lead); which tables (16.402.22 vs 16.635.3 = the live build) the loop trains on.
+Lead 10-28: tables 16.635.3 (the live client; launcher default TABLES=16.635.3, staged from 32657); E4 (rdef_e4 u20 grafted,
+430faaee) is a 7th pool checkpoint with an EQUAL share: league_pfsp_gamma 1e-9 = uniform over init + 6 externals (gamma <= 0
+is refused); w14opp_I keeps its 0.3 exploiter share, so E4 is ~10% of matches. Because E4 is in the training pool, the gate's
+E4 set is partly IN-DISTRIBUTION; iu40 is the cleaner comparison.
+Correctness comparisons must be SAME-DEVICE: CLXIII on CPU vs CUDA differs by up to 6.0e-3 cell log-prob and on 3/1,718 taps (a).
 
 ### Eval after training (the order is fixed; nothing goes live without both)
 1. SIM gate vs CLXIII on crforge, paired, on the SAME jars + tables as training (baseline rows from another build do not pair):
    on a d2 pod (33308 layout), for TAG in cand, base; MODE in e4, iu40:
    `GATE_CKPT=<ckpt> GATE_LIB=<training lib> GATE_TABLES=<training tables> bash scratchpad/gauntlet/L74/plan1026/d2g/gate.sh crforge <TAG>_<MODE> <MODE> <CPUS> <WORKERS> 741200 742000 743000 744000`
-   (base = CLXIII NOLEAK, GATE_CKPT unset; 4 x 480 = 1,920 per set, 3,840 total), then
+   (both on tables 16.635.3 + the training jars; base = CLXIII NOLEAK, GATE_CKPT unset; 4 x 480 = 1,920 per set, 3,840 total), then
    `python scratchpad/gauntlet/L74/memory/pair_both.py '/workspace/d2/ev/cand_e4/cand_e4_{s}/D3/matches.jsonl' '/workspace/d2/ev/cand_iu40/cand_iu40_{s}/D3/matches.jsonl' '/workspace/d2/ev/base_e4/base_e4_{s}/D3/matches.jsonl' '/workspace/d2/ev/base_iu40/base_iu40_{s}/D3/matches.jsonl'`
    -> per-suite + pooled paired delta with 95% CI; PASS = pooled CI low > 0 (plus the plan's L3 behaviour bars).
 2. Live trial (only after 1 passes; the lead / owner starts it): register the checkpoint as ICEBOW Mark CLXV first. Verify the

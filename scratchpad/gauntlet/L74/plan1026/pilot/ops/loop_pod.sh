@@ -11,14 +11,14 @@
 #   bash loop_pod.sh stage                       every artifacts.tsv sha into the store (from its source), sha-verified there
 # env: CFG (pilot.yaml), CODE_SHA (default HEAD; must be on origin), W (/workspace/loop), HOST root@157.157.221.29,
 #      STORE_PORT 33308, POD_STORE (host:port the LOOP POD uses to reach the store; default = the store's public address),
-#      ENTRY, ENTRY_ARGS, TABLES (16.402.22), REQUIRE_ACK (1), MIRROR (C:/Users/benpe/pod_backup_weekend/loop), STREAM_EVERY.
+#      ENTRY, ENTRY_ARGS, TABLES (16.635.3), REQUIRE_ACK (1), MIRROR (C:/Users/benpe/pod_backup_weekend/loop), STREAM_EVERY.
 set -uo pipefail
 D=scratchpad/gauntlet/L74/plan1026/pilot/ops
 A=$D/artifacts.tsv; CFG=${CFG:-$D/pilot.yaml}; W=${W:-/workspace/loop}
 IP=${HOST:-root@157.157.221.29}; STORE_PORT=${STORE_PORT:-33308}; STORE_DIR=/workspace/loop_stage/store
 POD_STORE=${POD_STORE:-$IP:$STORE_PORT}
 ENTRY=${ENTRY:-scratchpad/gauntlet/L74/plan1026/pilot/loop/fastloop.py}; ENTRY_ARGS=${ENTRY_ARGS:-}
-TABLES=${TABLES:-16.402.22}; REQUIRE_ACK=${REQUIRE_ACK:-1}; MIRROR=${MIRROR:-C:/Users/benpe/pod_backup_weekend/loop}
+TABLES=${TABLES:-16.635.3}; REQUIRE_ACK=${REQUIRE_ACK:-1}; MIRROR=${MIRROR:-C:/Users/benpe/pod_backup_weekend/loop}
 K="-i $HOME/.ssh/runpod_clashbot -o StrictHostKeyChecking=no -o ConnectTimeout=20 -o ServerAliveInterval=30"
 sp() { local port=$1; shift; ssh $K -p $port $IP "$@"; }          # sp PORT CMD (store-side pods share $IP)
 SS="ssh $K -p $STORE_PORT $IP"; SSN="ssh -n $K -p $STORE_PORT $IP"   # SSN: no stdin (inside read loops)
