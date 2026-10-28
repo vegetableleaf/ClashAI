@@ -4917,7 +4917,9 @@ def main(argv=None) -> int:
             os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
             torch.use_deterministic_algorithms(True)
             torch.backends.cudnn.benchmark = False
-            log(f"[rl] deterministic learner: torch.use_deterministic_algorithms(True), cudnn.benchmark False, "
+            torch.backends.cudnn.allow_tf32 = False           # LOOP-LRN: TF32 convs moved B0's lp_cell 1.46e-3 vs the fp32
+            torch.backends.cuda.matmul.allow_tf32 = False     # actors (1.5e-5 with both off; the u0 assert is 1e-4)
+            log(f"[rl] deterministic learner: torch.use_deterministic_algorithms(True), cudnn.benchmark False, TF32 off, "
                 f"CUBLAS_WORKSPACE_CONFIG={os.environ['CUBLAS_WORKSPACE_CONFIG']}")
         L = Learner(cfg, a.run, run_dir, ck_dir, log, a.resume)
         if a.resume:

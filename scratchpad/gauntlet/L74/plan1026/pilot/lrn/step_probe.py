@@ -17,6 +17,9 @@ import torch  # noqa: E402
 
 torch.use_deterministic_algorithms(True)
 torch.backends.cudnn.benchmark = False
+if os.environ.get("PROBE_NOTF32"):                          # the lead's TF32-off cost measurement
+    torch.backends.cudnn.allow_tf32 = False
+    torch.backends.cuda.matmul.allow_tf32 = False
 REPO = Path(__file__).resolve().parents[6]
 sys.path.insert(0, str(REPO))
 from pipeline import rl_royale as R  # noqa: E402
@@ -51,7 +54,7 @@ def main():
     abl = {"head": L.ability_head, "opt": L.ability_opt, "ent_coef": float(cfg["ability_ent_coef"])}
     N = len(B["A"])
     rng = np.random.default_rng(0)
-    out = {"rows": N, "collate_s": t_col, "params": sum(p.numel() for p in L.model.parameters()), "ms_per_step": {}}
+    out = {"tf32_off": bool(os.environ.get("PROBE_NOTF32")), "rows": N, "collate_s": t_col, "params": sum(p.numel() for p in L.model.parameters()), "ms_per_step": {}}
     from pipeline import e1_eval as E
     for chunk in (512, 4096):                                # where ref_terms / value_rows time goes: CPU batch build vs forward
         idx = torch.arange(0, chunk, device=L.dev)
@@ -100,7 +103,7 @@ def main():
     out["steps_per_update"] = steps_512
     out["update_ppo_s_1gpu"] = steps_512 * out["ms_per_step"][256]["p50"] / 1000
     print(json.dumps(out, indent=1), flush=True)
-    (a.keep.parent / "step_probe.json").write_text(json.dumps(out, indent=1))
+    (a.keep.parent / f"step_probe{'_notf32' if os.environ.get('PROBE_NOTF32') else ''}.json").write_text(json.dumps(out, indent=1))
 
 
 

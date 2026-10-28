@@ -28,10 +28,28 @@ Labels: (a) measured, (b) untested, (c) contradicted. Spec: ../LOOP_SPEC.md.
   CPU cell 1.2e-5; CUDA default 1.46e-3; CUDA with cudnn + matmul allow_tf32 False 1.5e-5. The fix is one flag in the
   learner AND the server (proposed to the lead).
 - Second capture with B0's ability head adopted in the actors (id1, 159,070 rows): LOOP-REC PASS again (1bea99d7).
-- RUNNING (33920 GPU): rec_identity.py --reuse (learner identity, update 0 + policy update 5, RL_PROFILE timings)
-  -> /workspace/lrn/logs/id1.log, /workspace/lrn/id1/result.json. Restart: `bash /workspace/lrn/run_id.sh --reuse`.
-- NEXT: step_probe.py (step time vs minibatch size, for the DDP projection); a loop_learner process smoke (max_updates 2
-  on the kept records); then the DDP decision.
+- DONE (a) LOOP-LRN identity (rec_identity.py --reuse, 33920 4090, deterministic CUDA, TF32 default as rl_royale):
+  rl_royale.Learner (rollout = the captured results) vs LoopLearner (the spool) on the same 512 records. Weights, ability
+  head, both Adam states and the update record (wall clocks dropped) are BIT-IDENTICAL: update 1 (critic warm-up) model
+  85c759a8, opt adc50026; update 5 (policy) model 53c71d81, ability head f5deb180, opt 9cc4e8e2. Log
+  /workspace/lrn/logs/id1gpu.log; /workspace/lrn/id1/result.json.
+- (a) kl_stop_prev 0.02 is BINDING: the first policy update stopped at epoch 0 minibatch 145 of 622 (KL 0.0201), i.e.
+  145 of 1,244 steps.
+- (a) Update time on the 4090, 159k rows: warm-up 209 s (ref_terms 39 + gae/vf-share 37 + PPO 132 s, 106 ms/step);
+  policy update 106 s (ref 40 + gae 39 + PPO 25 s for 145 steps, 177 ms/step).
+- (a) step_probe.py: the step is compute-bound per row, NOT overhead-bound (contradicts "102 ms is overhead"):
+  no-grad forward 133 ms / 512 rows vs 1,019 ms / 4,096 rows (linear); policy step 204 ms / 256 rows (1,253 rows/s) vs
+  94 ms / 64 rows. A 256-row step peaks at 11.3 GB, and minibatches of 2,048-16,384 rows OOM on 24 GB. gen_batch (CPU
+  memory features) is 32-42 ms of each 512-row forward.
+- (a) TF32 off costs the learner nothing measurable: step 204 -> 184 ms, forward 133 -> 102 ms (sequential runs).
+  rl_royale now sets cudnn + matmul allow_tf32 False under learner_deterministic. CPU smoke with
+  learner_deterministic=true: crforge e816a6a4 / f060b678, SMOKE PASS (/workspace/lrn/logs/lrn_smoke_det.log).
+- NOT DONE (proposed next tickets): (1) rows-per-forward cost: compute cell_refine / tower_refine only on played rows
+  (SPEED.md estimates about 2x), and with kl_ref_refresh_every 1 the ref pass equals the value pass on the same weights
+  (one no-grad pass saved, ~40 s per update); (2) DDP: from the 64-row step (94 ms), 4-way DDP at minibatch 256 gives
+  at most 204 / 94 = 2.2x, compute only (b); (3) the minibatch / lr sweep needs gradient accumulation (2,048 rows does
+  not fit) plus a short real run for the dynamics; (4) a loop_learner process smoke (`python -m pipeline.loop_learner`,
+  max_updates 2 on /workspace/lrn/id1/keep).
 
 ## Pod 33920 layout (restartable)
 - Code tree /workspace/lrn/cb = git HEAD (pipeline, tools, scratchpad/gauntlet/L74) + my files, with read-only symlinks into
