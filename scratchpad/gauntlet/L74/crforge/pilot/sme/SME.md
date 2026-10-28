@@ -2458,8 +2458,16 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
   .foreman/scratch/a2/codex/ENG-FIX_2.md medium .foreman/scratch/a2/codex/out/ENG-FIX_2.jsonl` (fresh OUT name).
 - **Lead queue 10-28 (P4 audit):** (1) crforge refusal `Deflect ... from the king tower ... without a target` is a
   deliberate refusal (BattleWorld.java:5013-5023, fe364ceb: a homing king-tower shot that lost its target, deflected by
-  the Monk's ability; "no recording holds"); needs a live recording before any engine change; (2) Rocket tower damage /
-  level-16 scaling, (3) scripted Hog-at-bridge Tornado-to-king check, (4) overtime tie-break rule: NOT started.
+  the Monk's ability; "no recording holds"); needs a live recording before any engine change (until then the caller
+  must catch it; pipeline, not my write set). (2) **Rocket crown-tower damage = the game (a):** live, our level-16
+  Rocket takes 546 from a crown tower on 7 / 7 first drops (princess and king; `engfix/rocket_tower.py` on FRESH2+3),
+  546 / 4858 = 0.112 of a princess; crforge gives the same 546: 083011@2948, 131923@5872, 075911@5970 are SME-exact
+  through those frames (tower hp compared). Table: RocketSpell Damage 580 (base), CrownTowerDamagePercent -77. So the
+  "~0.11 princess" chip IS real; the SIM's -0.24 price is a value / reward question, not engine damage.
+  (4) **Overtime tie-break = the game (a):** crforge models the Ladder tiebreaker (LadderMatch.java:85-118); 15 FRESH2/3
+  matches past tick 6000 are exact to the end with sim_end = live_end (e.g. 081253, 122525, 135920), and FRESH1
+  001302 / 003008 (1-hp towers removed by the tie-break) are exact apart from torn. Any OT tower-hp mis-pricing is in the
+  value / reward, not the engine. (3) scripted Hog-at-bridge Tornado-to-king check: NOT started.
 - **Next:** read ENG-FIX_2's table (no dev regression -> fresh_prep.sh gains the five flags for FRESH4+); then the lead
   queue; then FRESH4 about daily:
   `fresh/freeze.py 20261028_1500 FRESH4.tsv` (after FRESH3's battle-log end 19:00:33Z = 15:00 EDT), `fresh_prep.sh`,
