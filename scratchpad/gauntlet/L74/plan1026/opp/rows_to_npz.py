@@ -60,6 +60,8 @@ def main(argv=None) -> int:
     ap.add_argument("--max-shards", type=int, default=0)
     ap.add_argument("--keep-wait", type=int, default=8)
     ap.add_argument("--deck-min-sides", type=int, default=50)
+    ap.add_argument("--only-split", type=int, default=None, help="keep only this split (e.g. 2 = test, for level A)")
+    ap.add_argument("--deck-map", type=Path, default=None, help="take deck ids from this (training) npz's deck_keys")
     a = ap.parse_args(argv)
     t0 = time.time()
     vocab = json.loads(a.vocab.read_text())
@@ -92,6 +94,9 @@ def main(argv=None) -> int:
         crc = np.array([zlib.crc32(x.encode()) for x in utag], np.uint64)[inv]
         keep_w = mix(crc, side, tick) % np.uint64(a.keep_wait) == 0
         keep = np.isin(tier, ("A", "B")) & ((gate == 1) | ev | (grid & keep_w))
+        if a.only_split is not None:
+            c100 = np.array([zlib.crc32(x.encode()) % 100 for x in utag])[inv]
+            keep &= np.where(c100 < 5, 1, np.where(c100 < 10, 2, 0)) == a.only_split
         st["rows_in"] += n; st["rows_kept"] += int(keep.sum()); st["play_rows"] += int((keep & (gate == 1)).sum())
         st["slot_event_rows"] += int((keep & ev).sum()); st["slot_noevent_rows"] += int((keep & grid & ~ev).sum())
         st["grid_rows_in"] += int((np.isin(tier, ("A", "B")) & grid).sum())
@@ -165,11 +170,19 @@ def main(argv=None) -> int:
                           np.take_along_axis(arrs["deck_form"].astype(np.int64), order, 1)], 1)
     ukey, kinv = np.unique(key, axis=0, return_inverse=True)
     kinv = kinv.reshape(-1)
-    sides = np.unique(np.stack([arrs["rep"].astype(np.int64), arrs["side"].astype(np.int64), kinv], 1)[arrs["split"] == 0], axis=0)
-    nside = np.bincount(sides[:, 2], minlength=len(ukey))
-    big = np.where(nside >= a.deck_min_sides)[0]
-    remap = np.zeros(len(ukey), np.int32)
-    remap[big] = np.arange(1, len(big) + 1)
+    if a.deck_map is None:
+        sides = np.unique(np.stack([arrs["rep"].astype(np.int64), arrs["side"].astype(np.int64), kinv], 1)[arrs["split"] == 0], axis=0)
+        nside = np.bincount(sides[:, 2], minlength=len(ukey))
+        big = np.where(nside >= a.deck_min_sides)[0]
+        remap = np.zeros(len(ukey), np.int32)
+        remap[big] = np.arange(1, len(big) + 1)
+        arrs["deck_keys"] = ukey[big].astype(np.int16)            # id i = row i - 1 (rows_to_npz --deck-map reads it)
+    else:
+        dk = np.load(a.deck_map, mmap_mode="r")["deck_keys"]
+        known = {tuple(r): i + 1 for i, r in enumerate(np.asarray(dk).tolist())}
+        remap = np.array([known.get(tuple(r), 0) for r in ukey.tolist()], np.int32)
+        big = np.where(remap > 0)[0]
+        arrs["deck_keys"] = np.asarray(dk)
     arrs["deck_gid"] = remap[kinv]
     arrs["deck_id"] = arrs["deck_gid"].copy()
     st = dict(st)
@@ -179,6 +192,7 @@ def main(argv=None) -> int:
     meta = {"kind": "generalist", "feature_version": 5, "grid": "lattice", "card_vocab": vocab, "F": 14, "S": 70,
             "PAST_K": 3, "OPP_PAST_K": 3, "source": "hf_il_replay slot re-drive (P2-OPP1)", "src_dir": str(a.src),
             "row_builder": {"wait_stride": 10, "play_window": 0, "record_every": 10, "keep_wait": a.keep_wait},
+            "only_split": a.only_split, "deck_map": str(a.deck_map) if a.deck_map else None,
             "projectile_cols": ["card", "enemy", "x", "y", "target_x", "target_y", "tti_s", "tti_known"],
             "effect_cols": ["card", "enemy", "x", "y", "remaining_s", "remaining_known"],
             "modes": MODES, "bands": {"1": "hf_pol", "2": "hf_other", "3": "pro", "4": "live_L", "5": "live_M", "6": "live_R"},
