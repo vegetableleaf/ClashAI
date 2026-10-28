@@ -1,0 +1,185 @@
+1793160454 40081 python=0.0 
+1793160455 40082 Sweeper_thread=0.1 python=42.2 G1_Refine=0.1 C2_CompilerThre=17.5 GC_Thread=0.8 Python_Referenc=3.0 G1_Conc=0.8 C1_CompilerThre=2.0 VM_Thread=0.1 
+1793160455 40083 Sweeper_thread=0.1 python=43.9 G1_Refine=0.1 C2_CompilerThre=16.0 GC_Thread=0.4 Python_Referenc=1.9 G1_Conc=0.1 C1_CompilerThre=2.0 VM_Thread=0.0 
+1793160455 40084 Sweeper_thread=0.1 python=43.1 G1_Refine=0.1 C2_CompilerThre=15.6 GC_Thread=0.4 Python_Referenc=2.8 G1_Conc=1.0 C1_CompilerThre=1.8 VM_Thread=0.0 
+1793160456 40085 Sweeper_thread=0.1 python=44.4 G1_Refine=0.1 C2_CompilerThre=12.7 GC_Thread=0.5 Python_Referenc=2.3 G1_Conc=0.5 C1_CompilerThre=1.8 VM_Thread=0.0 
+1793160516 40081 python=0.0 
+1793160516 40082 Sweeper_thread=0.1 G1_Service=0.0 python=101.3 G1_Refine=0.1 C2_CompilerThre=40.3 GC_Thread=1.5 Python_Referenc=4.6 G1_Conc=0.8 C1_CompilerThre=2.6 VM_Thread=0.1 
+1793160516 40083 Sweeper_thread=0.1 python=103.4 G1_Refine=0.1 C2_CompilerThre=32.7 GC_Thread=0.9 Python_Referenc=3.3 G1_Conc=0.1 C1_CompilerThre=2.7 VM_Thread=0.1 
+1793160517 40084 Sweeper_thread=0.1 G1_Service=0.0 python=101.3 G1_Refine=0.1 C2_CompilerThre=39.8 GC_Thread=1.1 Python_Referenc=5.4 G1_Conc=1.5 C1_CompilerThre=2.6 VM_Thread=0.1 
+1793160517 40085 Sweeper_thread=0.1 G1_Service=0.0 python=103.9 G1_Refine=0.1 C2_CompilerThre=33.8 GC_Thread=1.1 Python_Referenc=3.7 G1_Conc=0.5 C1_CompilerThre=2.6 VM_Thread=0.1 
+1793160577 40081 python=0.0 
+1793160578 40082 Sweeper_thread=0.2 G1_Service=0.0 python=161.4 G1_Refine=0.1 C2_CompilerThre=52.8 GC_Thread=1.6 Python_Referenc=5.8 G1_Conc=0.8 C1_CompilerThre=2.8 VM_Thread=0.1 
+1793160578 40083 Sweeper_thread=0.2 G1_Service=0.0 python=163.5 G1_Refine=0.1 C2_CompilerThre=45.5 GC_Thread=1.3 Python_Referenc=4.4 G1_Conc=0.1 C1_CompilerThre=2.9 VM_Thread=0.1 
+1793160578 40084 Sweeper_thread=0.2 G1_Service=0.0 python=162.6 G1_Refine=0.1 C2_CompilerThre=50.0 GC_Thread=1.1 Python_Referenc=5.5 G1_Conc=1.5 C1_CompilerThre=2.8 VM_Thread=0.1 
+1793160579 40085 Sweeper_thread=0.2 Monitor_Deflati=0.0 G1_Service=0.0 python=164.1 G1_Refine=0.1 C2_CompilerThre=50.4 GC_Thread=1.2 Python_Referenc=4.8 G1_Conc=0.5 C1_CompilerThre=2.9 VM_Thread=0.1 
+1793160639 40081 python=0.0 
+1793160639 40082 Sweeper_thread=0.2 G1_Service=0.0 python=221.4 G1_Refine=0.1 C2_CompilerThre=63.0 GC_Thread=1.9 Python_Referenc=7.1 G1_Conc=0.8 C1_CompilerThre=3.0 VM_Thread=0.1 
+1793160639 40083 Sweeper_thread=0.2 G1_Service=0.0 python=223.4 G1_Refine=0.1 C2_CompilerThre=57.8 GC_Thread=1.8 Python_Referenc=5.8 G1_Conc=0.1 C1_CompilerThre=3.0 VM_Thread=0.1 
+1793160640 40084 Sweeper_thread=0.2 Monitor_Deflati=0.0 G1_Service=0.0 python=223.8 G1_Refine=0.1 C2_CompilerThre=63.2 GC_Thread=1.1 Python_Referenc=5.8 G1_Conc=1.5 C1_CompilerThre=3.0 VM_Thread=0.1 
+1793160640 40085 Sweeper_thread=0.2 Monitor_Deflati=0.0 G1_Service=0.0 python=224.9 G1_Refine=0.1 C2_CompilerThre=60.4 GC_Thread=1.4 Python_Referenc=5.5 G1_Conc=0.5 C1_CompilerThre=3.1 VM_Thread=0.1 
+1793160700 40081 python=0.0 
+1793160700 40082 Sweeper_thread=0.2 Monitor_Deflati=0.0 G1_Service=0.0 python=281.6 G1_Refine=0.1 C2_CompilerThre=73.9 GC_Thread=2.0 Python_Referenc=8.2 G1_Conc=0.8 C1_CompilerThre=3.2 VM_Thread=0.1 
+1793160701 40083 Sweeper_thread=0.2 G1_Service=0.0 python=283.9 G1_Refine=0.1 C2_CompilerThre=60.9 GC_Thread=1.8 Python_Referenc=6.6 G1_Conc=0.1 C1_CompilerThre=3.1 VM_Thread=0.1 
+1793160701 40084 Sweeper_thread=0.3 Monitor_Deflati=0.0 G1_Service=0.0 python=283.3 G1_Refine=0.1 C2_CompilerThre=78.8 GC_Thread=1.9 Python_Referenc=7.5 G1_Conc=1.5 C1_CompilerThre=3.3 VM_Thread=0.1 
+1793160702 40085 Sweeper_thread=0.2 Monitor_Deflati=0.0 G1_Service=0.0 python=284.9 G1_Refine=0.1 C2_CompilerThre=66.9 GC_Thread=1.8 Python_Referenc=6.8 G1_Conc=0.5 C1_CompilerThre=3.2 VM_Thread=0.1 
+1793160762 40081 python=0.0 
+1793160762 40082 Sweeper_thread=0.2 Monitor_Deflati=0.0 G1_Service=0.0 python=342.2 G1_Refine=0.1 C2_CompilerThre=76.1 GC_Thread=2.1 Python_Referenc=9.1 G1_Conc=0.8 C1_CompilerThre=3.3 VM_Thread=0.1 
+1793160762 40083 Sweeper_thread=0.2 G1_Service=0.0 python=344.2 G1_Refine=0.1 C2_CompilerThre=62.5 GC_Thread=1.9 Python_Referenc=7.9 G1_Conc=0.1 C1_CompilerThre=3.2 VM_Thread=0.1 
+1793160763 40084 Sweeper_thread=0.3 Monitor_Deflati=0.0 G1_Service=0.1 python=343.7 G1_Refine=0.1 C2_CompilerThre=83.2 GC_Thread=1.9 Python_Referenc=8.5 G1_Conc=1.5 C1_CompilerThre=3.4 VM_Thread=0.1 
+1793160763 40085 Sweeper_thread=0.2 Monitor_Deflati=0.0 G1_Service=0.1 python=345.1 G1_Refine=0.1 C2_CompilerThre=68.5 GC_Thread=1.9 Python_Referenc=8.0 G1_Conc=0.5 C1_CompilerThre=3.3 VM_Thread=0.1 
+1793160823 40081 python=0.0 
+1793160823 40082 Sweeper_thread=0.3 Monitor_Deflati=0.0 G1_Service=0.1 python=402.4 G1_Refine=0.1 C2_CompilerThre=84.2 GC_Thread=2.3 Python_Referenc=10.2 G1_Conc=0.8 C1_CompilerThre=3.4 VM_Thread=0.1 
+1793160824 40083 Sweeper_thread=0.2 G1_Service=0.0 python=376.4 G1_Refine=0.1 C2_CompilerThre=64.9 GC_Thread=2.1 Python_Referenc=8.5 G1_Conc=0.1 C1_CompilerThre=3.2 VM_Thread=0.1 
+1793160824 40084 Sweeper_thread=0.3 Monitor_Deflati=0.0 G1_Service=0.1 python=386.0 G1_Refine=0.1 C2_CompilerThre=86.4 GC_Thread=2.1 Python_Referenc=9.5 G1_Conc=1.5 C1_CompilerThre=3.5 VM_Thread=0.1 
+1793160824 40085 Sweeper_thread=0.3 Monitor_Deflati=0.0 G1_Service=0.1 python=392.5 G1_Refine=0.1 C2_CompilerThre=70.6 GC_Thread=2.0 Python_Referenc=8.8 G1_Conc=0.5 C1_CompilerThre=3.4 VM_Thread=0.1 
+1793160885 40081 python=0.0 
+1793160885 40082 Sweeper_thread=0.3 Monitor_Deflati=0.0 G1_Service=0.1 python=458.6 G1_Refine=0.1 C2_CompilerThre=99.2 GC_Thread=2.7 Python_Referenc=12.4 G1_Conc=0.9 C1_CompilerThre=3.6 VM_Thread=0.2 
+1793160885 40083 Sweeper_thread=0.3 Monitor_Deflati=0.0 G1_Service=0.1 python=423.2 G1_Refine=0.1 C2_CompilerThre=73.8 GC_Thread=2.3 Python_Referenc=10.5 G1_Conc=0.2 C1_CompilerThre=3.5 VM_Thread=0.2 
+1793160886 40084 Sweeper_thread=0.3 Monitor_Deflati=0.0 G1_Service=0.1 python=433.1 G1_Refine=0.1 C2_CompilerThre=96.2 GC_Thread=2.5 Python_Referenc=11.4 G1_Conc=1.6 C1_CompilerThre=3.7 VM_Thread=0.1 
+1793160886 40085 Sweeper_thread=0.3 Monitor_Deflati=0.0 G1_Service=0.1 python=440.2 G1_Refine=0.1 C2_CompilerThre=82.5 GC_Thread=2.2 Python_Referenc=10.6 G1_Conc=0.6 C1_CompilerThre=3.5 VM_Thread=0.1 
+1793160946 40081 python=0.0 
+1793160946 40082 Sweeper_thread=0.3 Monitor_Deflati=0.0 G1_Service=0.1 python=518.1 G1_Refine=0.1 C2_CompilerThre=115.3 GC_Thread=3.1 Python_Referenc=14.2 G1_Conc=0.9 C1_CompilerThre=3.8 VM_Thread=0.2 
+1793160947 40083 Sweeper_thread=0.3 Monitor_Deflati=0.0 G1_Service=0.1 python=482.2 G1_Refine=0.1 C2_CompilerThre=92.0 GC_Thread=3.0 Python_Referenc=12.6 G1_Conc=0.2 C1_CompilerThre=3.8 VM_Thread=0.2 
+1793160947 40084 Sweeper_thread=0.3 Monitor_Deflati=0.0 G1_Service=0.1 python=492.7 G1_Refine=0.1 C2_CompilerThre=111.5 GC_Thread=2.8 Python_Referenc=13.1 G1_Conc=1.6 C1_CompilerThre=3.9 VM_Thread=0.2 
+1793160947 40085 Sweeper_thread=0.3 Monitor_Deflati=0.0 G1_Service=0.1 python=499.8 G1_Refine=0.1 C2_CompilerThre=96.2 GC_Thread=2.4 Python_Referenc=12.4 G1_Conc=0.6 C1_CompilerThre=3.8 VM_Thread=0.1 
+1793161008 40081 python=0.0 
+1793161008 40082 Sweeper_thread=0.4 Monitor_Deflati=0.0 G1_Service=0.1 python=578.2 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=125.4 GC_Thread=3.5 Python_Referenc=15.5 G1_Conc=0.9 C1_CompilerThre=4.0 VM_Thread=0.2 
+1793161008 40083 Sweeper_thread=0.3 Monitor_Deflati=0.0 G1_Service=0.1 python=541.8 G1_Refine=0.1 C2_CompilerThre=100.6 GC_Thread=3.2 Python_Referenc=14.4 G1_Conc=0.2 C1_CompilerThre=3.9 VM_Thread=0.2 
+1793161009 40084 Sweeper_thread=0.3 Monitor_Deflati=0.0 G1_Service=0.1 python=552.6 G1_Refine=0.1 C2_CompilerThre=115.1 GC_Thread=2.9 Python_Referenc=14.7 G1_Conc=1.6 C1_CompilerThre=4.0 VM_Thread=0.2 
+1793161009 40085 Sweeper_thread=0.3 Monitor_Deflati=0.0 G1_Service=0.1 python=559.7 G1_Refine=0.1 C2_CompilerThre=99.4 GC_Thread=2.4 Python_Referenc=13.9 G1_Conc=0.6 C1_CompilerThre=3.8 VM_Thread=0.2 
+1793161069 40081 python=0.0 
+1793161069 40082 Sweeper_thread=0.4 Monitor_Deflati=0.0 G1_Service=0.1 python=639.3 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=127.2 GC_Thread=3.5 Python_Referenc=15.9 G1_Conc=0.9 C1_CompilerThre=4.1 VM_Thread=0.2 
+1793161070 40083 Sweeper_thread=0.4 Monitor_Deflati=0.0 G1_Service=0.1 python=601.4 G1_Refine=0.1 C2_CompilerThre=103.5 GC_Thread=3.3 Python_Referenc=16.2 G1_Conc=0.2 C1_CompilerThre=4.0 VM_Thread=0.2 
+1793161070 40084 Sweeper_thread=0.4 Monitor_Deflati=0.0 G1_Service=0.1 python=611.9 G1_Refine=0.1 C2_CompilerThre=124.6 GC_Thread=3.3 Python_Referenc=16.7 G1_Conc=1.6 C1_CompilerThre=4.2 VM_Thread=0.2 
+1793161070 40085 Sweeper_thread=0.3 Monitor_Deflati=0.0 G1_Service=0.1 python=619.4 G1_Refine=0.1 C2_CompilerThre=101.1 GC_Thread=2.5 Python_Referenc=15.6 G1_Conc=0.6 C1_CompilerThre=4.0 VM_Thread=0.2 
+1793161131 40081 python=0.0 
+1793161131 40082 Sweeper_thread=0.4 Monitor_Deflati=0.0 G1_Service=0.1 python=700.6 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=128.8 GC_Thread=3.6 Python_Referenc=16.1 G1_Conc=0.9 C1_CompilerThre=4.1 VM_Thread=0.2 
+1793161131 40083 Sweeper_thread=0.4 Monitor_Deflati=0.0 G1_Service=0.1 python=661.2 G1_Refine=0.1 C2_CompilerThre=104.9 GC_Thread=3.3 Python_Referenc=17.9 G1_Conc=0.2 C1_CompilerThre=4.0 VM_Thread=0.2 
+1793161132 40084 Sweeper_thread=0.4 Monitor_Deflati=0.0 G1_Service=0.1 python=671.9 G1_Refine=0.1 C2_CompilerThre=131.1 GC_Thread=3.5 Python_Referenc=18.1 G1_Conc=1.6 C1_CompilerThre=4.2 VM_Thread=0.2 
+1793161132 40085 Sweeper_thread=0.3 Monitor_Deflati=0.0 G1_Service=0.1 python=679.4 G1_Refine=0.1 C2_CompilerThre=102.3 GC_Thread=2.6 Python_Referenc=17.1 G1_Conc=0.6 C1_CompilerThre=4.0 VM_Thread=0.2 
+1793161192 40081 python=0.0 
+1793161192 40082 Sweeper_thread=0.4 Monitor_Deflati=0.0 G1_Service=0.1 python=761.6 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=129.5 GC_Thread=3.6 Python_Referenc=16.5 G1_Conc=0.9 C1_CompilerThre=4.2 VM_Thread=0.2 
+1793161193 40083 Sweeper_thread=0.4 Monitor_Deflati=0.0 G1_Service=0.1 python=720.9 G1_Refine=0.1 C2_CompilerThre=106.3 GC_Thread=3.4 Python_Referenc=19.7 G1_Conc=0.2 C1_CompilerThre=4.1 VM_Thread=0.2 
+1793161193 40084 Sweeper_thread=0.4 Monitor_Deflati=0.0 G1_Service=0.1 python=731.9 G1_Refine=0.1 C2_CompilerThre=133.3 GC_Thread=3.6 Python_Referenc=19.6 G1_Conc=1.6 C1_CompilerThre=4.3 VM_Thread=0.2 
+1793161193 40085 Sweeper_thread=0.4 Monitor_Deflati=0.0 G1_Service=0.1 python=739.3 G1_Refine=0.1 C2_CompilerThre=103.5 GC_Thread=2.6 Python_Referenc=18.7 G1_Conc=0.6 C1_CompilerThre=4.0 VM_Thread=0.2 
+1793161253 40081 python=0.0 
+1793161254 40082 Sweeper_thread=0.4 Monitor_Deflati=0.0 G1_Service=0.1 python=822.8 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=131.6 GC_Thread=3.6 Python_Referenc=16.8 G1_Conc=0.9 C1_CompilerThre=4.2 VM_Thread=0.2 
+1793161254 40083 Sweeper_thread=0.4 Monitor_Deflati=0.0 G1_Service=0.1 python=780.5 G1_Refine=0.1 C2_CompilerThre=108.5 GC_Thread=3.5 Python_Referenc=21.5 G1_Conc=0.2 C1_CompilerThre=4.1 VM_Thread=0.2 
+1793161255 40084 Sweeper_thread=0.4 Monitor_Deflati=0.0 G1_Service=0.1 python=791.3 G1_Refine=0.1 C2_CompilerThre=138.6 GC_Thread=4.0 Python_Referenc=21.4 G1_Conc=1.6 C1_CompilerThre=4.4 VM_Thread=0.2 
+1793161255 40085 Sweeper_thread=0.4 Monitor_Deflati=0.0 G1_Service=0.1 python=799.2 G1_Refine=0.1 C2_CompilerThre=105.5 GC_Thread=2.7 Python_Referenc=20.2 G1_Conc=0.6 C1_CompilerThre=4.1 VM_Thread=0.2 
+1793161315 40081 python=0.0 
+1793161315 40082 Sweeper_thread=0.4 Monitor_Deflati=0.0 G1_Service=0.1 python=884.0 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=136.7 GC_Thread=3.6 Python_Referenc=17.1 G1_Conc=0.9 C1_CompilerThre=4.3 VM_Thread=0.3 
+1793161316 40083 Sweeper_thread=0.4 Monitor_Deflati=0.0 G1_Service=0.1 python=840.3 G1_Refine=0.1 C2_CompilerThre=110.8 GC_Thread=3.5 Python_Referenc=23.2 G1_Conc=0.2 C1_CompilerThre=4.2 VM_Thread=0.3 
+1793161316 40084 Sweeper_thread=0.4 Monitor_Deflati=0.1 G1_Service=0.1 python=851.2 G1_Refine=0.1 C2_CompilerThre=140.2 GC_Thread=4.2 Python_Referenc=23.0 G1_Conc=1.6 C1_CompilerThre=4.5 VM_Thread=0.3 
+1793161316 40085 Sweeper_thread=0.4 Monitor_Deflati=0.1 G1_Service=0.1 python=859.2 G1_Refine=0.1 C2_CompilerThre=108.1 GC_Thread=2.7 Python_Referenc=21.8 G1_Conc=0.6 C1_CompilerThre=4.2 VM_Thread=0.2 
+1793161376 40081 python=0.0 
+1793161377 40082 Sweeper_thread=0.4 Monitor_Deflati=0.0 G1_Service=0.1 python=944.8 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=141.2 GC_Thread=3.8 Python_Referenc=17.6 G1_Conc=0.9 C1_CompilerThre=4.4 VM_Thread=0.3 
+1793161377 40083 Sweeper_thread=0.4 Monitor_Deflati=0.0 G1_Service=0.1 python=899.9 G1_Refine=0.1 C2_CompilerThre=112.0 GC_Thread=3.6 Python_Referenc=25.0 G1_Conc=0.2 C1_CompilerThre=4.3 VM_Thread=0.3 
+1793161377 40084 Sweeper_thread=0.4 Monitor_Deflati=0.1 G1_Service=0.1 python=910.9 G1_Refine=0.1 C2_CompilerThre=145.4 GC_Thread=4.3 Python_Referenc=24.8 G1_Conc=1.6 C1_CompilerThre=4.5 VM_Thread=0.3 
+1793161378 40085 Sweeper_thread=0.4 Monitor_Deflati=0.1 G1_Service=0.1 python=918.9 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=113.6 GC_Thread=2.8 Python_Referenc=23.4 G1_Conc=0.6 C1_CompilerThre=4.3 VM_Thread=0.2 
+1793161438 40081 python=0.0 
+1793161438 40082 Sweeper_thread=0.4 Monitor_Deflati=0.1 G1_Service=0.1 python=1004.2 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=146.8 GC_Thread=4.0 Python_Referenc=19.5 G1_Conc=0.9 C1_CompilerThre=4.5 VM_Thread=0.3 
+1793161438 40083 Sweeper_thread=0.4 Monitor_Deflati=0.0 G1_Service=0.1 python=958.6 G1_Refine=0.1 C2_CompilerThre=118.2 GC_Thread=4.2 Python_Referenc=27.3 G1_Conc=0.2 C1_CompilerThre=4.4 VM_Thread=0.3 
+1793161439 40084 Sweeper_thread=0.4 Monitor_Deflati=0.1 G1_Service=0.2 python=970.4 G1_Refine=0.1 C2_CompilerThre=146.0 GC_Thread=4.4 Python_Referenc=26.3 G1_Conc=1.6 C1_CompilerThre=4.6 VM_Thread=0.3 
+1793161439 40085 Sweeper_thread=0.4 Monitor_Deflati=0.1 G1_Service=0.2 python=977.6 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=119.5 GC_Thread=3.3 Python_Referenc=25.5 G1_Conc=0.6 C1_CompilerThre=4.3 VM_Thread=0.3 
+1793161499 40081 python=0.0 
+1793161499 40082 Sweeper_thread=0.4 Monitor_Deflati=0.1 G1_Service=0.2 python=1063.5 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=147.9 GC_Thread=4.0 Python_Referenc=21.1 G1_Conc=0.9 C1_CompilerThre=4.5 VM_Thread=0.3 
+1793161499 40083 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.1 python=1017.9 G1_Refine=0.1 C2_CompilerThre=120.3 GC_Thread=4.3 Python_Referenc=29.0 G1_Conc=0.2 C1_CompilerThre=4.5 VM_Thread=0.3 
+1793161500 40084 Sweeper_thread=0.4 Monitor_Deflati=0.1 G1_Service=0.2 python=1029.6 G1_Refine=0.1 C2_CompilerThre=148.2 GC_Thread=4.6 Python_Referenc=28.1 G1_Conc=1.6 C1_CompilerThre=4.6 VM_Thread=0.3 
+1793161500 40085 Sweeper_thread=0.4 Monitor_Deflati=0.1 G1_Service=0.2 python=1036.4 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=129.4 GC_Thread=4.0 Python_Referenc=27.6 G1_Conc=0.6 C1_CompilerThre=4.5 VM_Thread=0.3 
+1793161560 40081 python=0.0 
+1793161561 40082 Sweeper_thread=0.4 Monitor_Deflati=0.1 G1_Service=0.2 python=1123.3 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=148.7 GC_Thread=4.1 Python_Referenc=22.7 G1_Conc=0.9 C1_CompilerThre=4.6 VM_Thread=0.3 
+1793161561 40083 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1077.3 G1_Refine=0.1 C2_CompilerThre=120.8 GC_Thread=4.4 Python_Referenc=30.8 G1_Conc=0.2 C1_CompilerThre=4.5 VM_Thread=0.3 
+1793161561 40084 Sweeper_thread=0.5 Monitor_Deflati=0.1 G1_Service=0.2 python=1088.9 G1_Refine=0.1 C2_CompilerThre=163.2 GC_Thread=5.2 Python_Referenc=30.0 G1_Conc=1.6 C1_CompilerThre=4.8 VM_Thread=0.4 
+1793161562 40085 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1096.2 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=131.0 GC_Thread=4.1 Python_Referenc=29.2 G1_Conc=0.6 C1_CompilerThre=4.6 VM_Thread=0.3 
+1793161622 40081 python=0.0 
+1793161622 40082 Sweeper_thread=0.4 Monitor_Deflati=0.1 G1_Service=0.2 python=1183.1 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=148.9 GC_Thread=4.2 Python_Referenc=24.3 G1_Conc=0.9 C1_CompilerThre=4.6 VM_Thread=0.3 
+1793161622 40083 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1136.6 G1_Refine=0.1 C2_CompilerThre=128.9 GC_Thread=5.0 Python_Referenc=32.8 G1_Conc=0.2 C1_CompilerThre=4.6 VM_Thread=0.4 
+1793161623 40084 Sweeper_thread=0.5 Monitor_Deflati=0.1 G1_Service=0.2 python=1148.8 G1_Refine=0.1 C2_CompilerThre=169.1 GC_Thread=5.3 Python_Referenc=31.5 G1_Conc=1.6 C1_CompilerThre=4.9 VM_Thread=0.4 
+1793161623 40085 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1156.0 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=132.9 GC_Thread=4.2 Python_Referenc=30.8 G1_Conc=0.6 C1_CompilerThre=4.6 VM_Thread=0.3 
+1793161683 40081 python=0.0 
+1793161684 40082 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1242.9 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=149.4 GC_Thread=4.2 Python_Referenc=26.0 G1_Conc=0.9 C1_CompilerThre=4.6 VM_Thread=0.3 
+1793161684 40083 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1196.3 G1_Refine=0.1 C2_CompilerThre=130.0 GC_Thread=5.1 Python_Referenc=34.7 G1_Conc=0.2 C1_CompilerThre=4.6 VM_Thread=0.4 
+1793161684 40084 Sweeper_thread=0.5 Monitor_Deflati=0.1 G1_Service=0.2 python=1208.5 G1_Refine=0.1 C2_CompilerThre=169.5 GC_Thread=5.4 Python_Referenc=33.3 G1_Conc=1.6 C1_CompilerThre=4.9 VM_Thread=0.4 
+1793161685 40085 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1215.8 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=133.0 GC_Thread=4.2 Python_Referenc=32.5 G1_Conc=0.6 C1_CompilerThre=4.6 VM_Thread=0.3 
+1793161745 40081 python=0.0 
+1793161745 40082 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1302.8 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=149.6 GC_Thread=4.3 Python_Referenc=27.6 G1_Conc=0.9 C1_CompilerThre=4.6 VM_Thread=0.4 
+1793161745 40083 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1256.0 G1_Refine=0.1 C2_CompilerThre=130.8 GC_Thread=5.2 Python_Referenc=36.4 G1_Conc=0.2 C1_CompilerThre=4.7 VM_Thread=0.4 
+1793161746 40084 Sweeper_thread=0.5 Monitor_Deflati=0.1 G1_Service=0.2 python=1268.2 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=170.5 GC_Thread=5.5 Python_Referenc=35.1 G1_Conc=1.6 C1_CompilerThre=5.0 VM_Thread=0.4 
+1793161746 40085 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1275.6 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=133.7 GC_Thread=4.3 Python_Referenc=34.2 G1_Conc=0.6 C1_CompilerThre=4.7 VM_Thread=0.3 
+1793161806 40081 python=0.0 
+1793161807 40082 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1362.5 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=150.3 GC_Thread=4.3 Python_Referenc=29.3 G1_Conc=0.9 C1_CompilerThre=4.7 VM_Thread=0.4 
+1793161807 40083 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1315.7 G1_Refine=0.1 C2_CompilerThre=132.2 GC_Thread=5.2 Python_Referenc=38.2 G1_Conc=0.2 C1_CompilerThre=4.7 VM_Thread=0.4 
+1793161807 40084 Sweeper_thread=0.5 Monitor_Deflati=0.1 G1_Service=0.2 python=1328.0 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=170.7 GC_Thread=5.6 Python_Referenc=36.8 G1_Conc=1.6 C1_CompilerThre=5.0 VM_Thread=0.4 
+1793161808 40085 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1335.3 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=133.8 GC_Thread=4.3 Python_Referenc=36.0 G1_Conc=0.6 C1_CompilerThre=4.7 VM_Thread=0.3 
+1793161868 40081 python=0.0 
+1793161868 40082 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1399.0 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=150.8 GC_Thread=4.4 Python_Referenc=30.3 G1_Conc=0.9 C1_CompilerThre=4.7 VM_Thread=0.4 
+1793161868 40083 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1375.5 G1_Refine=0.1 C2_CompilerThre=133.1 GC_Thread=5.3 Python_Referenc=39.9 G1_Conc=0.2 C1_CompilerThre=4.7 VM_Thread=0.4 
+1793161869 40084 Sweeper_thread=0.5 Monitor_Deflati=0.1 G1_Service=0.2 python=1387.8 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=171.5 GC_Thread=5.6 Python_Referenc=38.5 G1_Conc=1.6 C1_CompilerThre=5.0 VM_Thread=0.4 
+1793161869 40085 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1382.3 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=135.0 GC_Thread=4.4 Python_Referenc=37.4 G1_Conc=0.6 C1_CompilerThre=4.7 VM_Thread=0.3 
+1793161929 40081 python=0.0 
+1793161930 40082 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1450.1 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=151.6 GC_Thread=4.5 Python_Referenc=31.6 G1_Conc=1.1 C1_CompilerThre=4.7 VM_Thread=0.4 
+1793161930 40083 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1430.9 G1_Refine=0.2 C2_CompilerThre=133.8 GC_Thread=5.4 Python_Referenc=41.3 G1_Conc=0.5 C1_CompilerThre=4.7 VM_Thread=0.4 
+1793161930 40084 Sweeper_thread=0.5 Monitor_Deflati=0.1 G1_Service=0.2 python=1447.9 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=172.4 GC_Thread=5.7 Python_Referenc=39.8 G1_Conc=1.7 C1_CompilerThre=5.0 VM_Thread=0.4 
+1793161931 40085 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1434.5 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=135.2 GC_Thread=4.5 Python_Referenc=38.5 G1_Conc=0.8 C1_CompilerThre=4.8 VM_Thread=0.4 
+1793161991 40081 python=0.0 
+1793161991 40082 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1510.4 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=151.6 GC_Thread=4.6 Python_Referenc=32.8 G1_Conc=1.1 C1_CompilerThre=4.7 VM_Thread=0.4 
+1793161991 40083 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1491.0 G1_Refine=0.2 C2_CompilerThre=134.7 GC_Thread=5.6 Python_Referenc=42.7 G1_Conc=0.5 C1_CompilerThre=4.8 VM_Thread=0.4 
+1793161992 40084 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1508.0 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=172.5 GC_Thread=5.8 Python_Referenc=41.1 G1_Conc=1.7 C1_CompilerThre=5.0 VM_Thread=0.4 
+1793161992 40085 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1494.5 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=136.4 GC_Thread=4.7 Python_Referenc=39.9 G1_Conc=0.8 C1_CompilerThre=4.8 VM_Thread=0.4 
+1793162052 40081 python=0.0 
+1793162053 40082 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1570.7 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=151.7 GC_Thread=4.7 Python_Referenc=33.9 G1_Conc=1.1 C1_CompilerThre=4.7 VM_Thread=0.4 
+1793162053 40083 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1551.5 G1_Refine=0.2 C2_CompilerThre=134.7 GC_Thread=5.6 Python_Referenc=43.7 G1_Conc=0.5 C1_CompilerThre=4.8 VM_Thread=0.4 
+1793162053 40084 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1568.4 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=172.6 GC_Thread=5.8 Python_Referenc=42.3 G1_Conc=1.7 C1_CompilerThre=5.1 VM_Thread=0.4 
+1793162054 40085 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1554.9 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=137.2 GC_Thread=4.9 Python_Referenc=41.1 G1_Conc=0.8 C1_CompilerThre=4.8 VM_Thread=0.4 
+1793162114 40081 python=0.0 
+1793162114 40082 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=1630.8 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=152.2 GC_Thread=4.9 Python_Referenc=35.3 G1_Conc=1.1 C1_CompilerThre=4.7 VM_Thread=0.4 
+1793162115 40083 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1611.8 G1_Refine=0.2 C2_CompilerThre=134.9 GC_Thread=5.7 Python_Referenc=45.0 G1_Conc=0.5 C1_CompilerThre=4.8 VM_Thread=0.4 
+1793162115 40084 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=1628.7 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=172.7 GC_Thread=6.0 Python_Referenc=43.4 G1_Conc=1.7 C1_CompilerThre=5.1 VM_Thread=0.4 
+1793162115 40085 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1615.1 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=137.6 GC_Thread=5.0 Python_Referenc=42.3 G1_Conc=0.8 C1_CompilerThre=4.8 VM_Thread=0.4 
+1793162175 40081 python=0.0 
+1793162176 40082 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=1691.3 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=152.2 GC_Thread=5.0 Python_Referenc=36.3 G1_Conc=1.1 C1_CompilerThre=4.8 VM_Thread=0.4 
+1793162176 40083 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1671.8 G1_Refine=0.2 C2_CompilerThre=135.0 GC_Thread=5.9 Python_Referenc=46.3 G1_Conc=0.5 C1_CompilerThre=4.8 VM_Thread=0.5 
+1793162176 40084 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=1689.0 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=172.7 GC_Thread=6.2 Python_Referenc=44.6 G1_Conc=1.7 C1_CompilerThre=5.1 VM_Thread=0.5 
+1793162177 40085 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=1675.4 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=138.1 GC_Thread=5.1 Python_Referenc=43.5 G1_Conc=0.8 C1_CompilerThre=4.8 VM_Thread=0.4 
+1793162237 40081 python=0.0 
+1793162237 40082 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=1751.6 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=152.3 GC_Thread=5.2 Python_Referenc=37.5 G1_Conc=1.1 C1_CompilerThre=4.8 VM_Thread=0.4 
+1793162238 40083 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1732.2 G1_Refine=0.2 C2_CompilerThre=135.3 GC_Thread=6.1 Python_Referenc=47.4 G1_Conc=0.5 C1_CompilerThre=4.8 VM_Thread=0.5 
+1793162238 40084 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=1749.3 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=173.2 GC_Thread=6.3 Python_Referenc=45.8 G1_Conc=1.7 C1_CompilerThre=5.1 VM_Thread=0.5 
+1793162238 40085 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=1735.8 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=138.2 GC_Thread=5.2 Python_Referenc=44.6 G1_Conc=0.8 C1_CompilerThre=4.9 VM_Thread=0.4 
+1793162298 40081 python=0.0 
+1793162299 40082 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=1812.0 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=152.4 GC_Thread=5.3 Python_Referenc=38.5 G1_Conc=1.1 C1_CompilerThre=4.8 VM_Thread=0.5 
+1793162299 40083 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.2 python=1792.4 G1_Refine=0.2 C2_CompilerThre=136.0 GC_Thread=6.3 Python_Referenc=48.6 G1_Conc=0.5 C1_CompilerThre=4.8 VM_Thread=0.5 
+1793162299 40084 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=1809.9 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=173.3 GC_Thread=6.4 Python_Referenc=46.6 G1_Conc=1.7 C1_CompilerThre=5.1 VM_Thread=0.5 
+1793162300 40085 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=1796.0 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=139.7 GC_Thread=5.4 Python_Referenc=45.9 G1_Conc=0.8 C1_CompilerThre=4.9 VM_Thread=0.4 
+1793162360 40081 python=0.0 
+1793162360 40082 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=1872.4 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=153.4 GC_Thread=5.5 Python_Referenc=39.6 G1_Conc=1.1 C1_CompilerThre=4.8 VM_Thread=0.5 
+1793162361 40083 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=1852.8 G1_Refine=0.2 C2_CompilerThre=136.1 GC_Thread=6.4 Python_Referenc=49.7 G1_Conc=0.5 C1_CompilerThre=4.8 VM_Thread=0.5 
+1793162361 40084 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=1870.0 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=173.3 GC_Thread=6.6 Python_Referenc=48.0 G1_Conc=1.7 C1_CompilerThre=5.1 VM_Thread=0.5 
+1793162361 40085 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=1856.5 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=139.8 GC_Thread=5.5 Python_Referenc=46.9 G1_Conc=0.8 C1_CompilerThre=4.9 VM_Thread=0.4 
+1793162421 40081 python=0.0 
+1793162422 40082 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=1932.9 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=153.5 GC_Thread=5.6 Python_Referenc=40.6 G1_Conc=1.1 C1_CompilerThre=4.8 VM_Thread=0.5 
+1793162422 40083 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=1913.1 G1_Refine=0.2 C2_CompilerThre=136.1 GC_Thread=6.5 Python_Referenc=50.8 G1_Conc=0.5 C1_CompilerThre=4.8 VM_Thread=0.5 
+1793162422 40084 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=1929.9 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=177.3 GC_Thread=7.0 Python_Referenc=49.5 G1_Conc=1.7 C1_CompilerThre=5.1 VM_Thread=0.5 
+1793162423 40085 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=1916.9 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=139.8 GC_Thread=5.6 Python_Referenc=47.9 G1_Conc=0.8 C1_CompilerThre=4.9 VM_Thread=0.4 
+1793162483 40081 python=0.0 
+1793162483 40082 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=1993.1 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=154.1 GC_Thread=5.8 Python_Referenc=41.8 G1_Conc=1.1 C1_CompilerThre=4.8 VM_Thread=0.5 
+1793162484 40083 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=1973.5 G1_Refine=0.2 C2_CompilerThre=136.5 GC_Thread=6.6 Python_Referenc=52.0 G1_Conc=0.5 C1_CompilerThre=4.9 VM_Thread=0.5 
+1793162484 40084 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=1990.3 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=177.8 GC_Thread=7.0 Python_Referenc=50.5 G1_Conc=1.7 C1_CompilerThre=5.2 VM_Thread=0.5 
+1793162484 40085 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=1977.0 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=140.4 GC_Thread=5.8 Python_Referenc=49.2 G1_Conc=0.8 C1_CompilerThre=4.9 VM_Thread=0.4 
+1793162544 40081 python=0.0 
+1793162545 40082 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=2053.4 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=154.2 GC_Thread=5.8 Python_Referenc=43.0 G1_Conc=1.1 C1_CompilerThre=4.8 VM_Thread=0.5 
+1793162545 40083 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=2033.9 G1_Refine=0.2 C2_CompilerThre=137.0 GC_Thread=6.7 Python_Referenc=53.0 G1_Conc=0.5 C1_CompilerThre=4.9 VM_Thread=0.5 
+1793162545 40084 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=2050.6 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=178.7 GC_Thread=7.2 Python_Referenc=51.7 G1_Conc=1.7 C1_CompilerThre=5.2 VM_Thread=0.5 
+1793162546 40085 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=2037.5 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=140.5 GC_Thread=5.8 Python_Referenc=50.2 G1_Conc=0.8 C1_CompilerThre=4.9 VM_Thread=0.5 
+1793162606 40081 python=0.0 
+1793162606 40082 Sweeper_thread=0.4 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=2113.8 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=154.4 GC_Thread=6.0 Python_Referenc=44.0 G1_Conc=1.1 C1_CompilerThre=4.8 VM_Thread=0.5 
+1793162607 40083 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=2094.1 G1_Refine=0.2 C2_CompilerThre=137.4 GC_Thread=6.8 Python_Referenc=54.4 G1_Conc=0.5 C1_CompilerThre=4.9 VM_Thread=0.5 
+1793162607 40084 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=2110.8 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=178.7 GC_Thread=7.2 Python_Referenc=52.9 G1_Conc=1.7 C1_CompilerThre=5.2 VM_Thread=0.5 
+1793162607 40085 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 G1_Service=0.3 python=2097.8 G1_Refine=0.1 Service_Thread=0.0 C2_CompilerThre=140.7 GC_Thread=6.0 Python_Referenc=51.3 G1_Conc=0.8 C1_CompilerThre=4.9 VM_Thread=0.5 
+1793162667 40081 python=0.0 
+1793162668 40082 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 python=2135.8 Service_Thread=0.0 C2_CompilerThre=154.6 GC_Thread=6.0 G1_Conc=1.1 C1_CompilerThre=4.8 
+1793162668 40083 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 python=2124.6 C2_CompilerThre=137.4 GC_Thread=1.7 G1_Conc=0.2 C1_CompilerThre=4.9 
+1793162668 40084 Sweeper_thread=0.5 Monitor_Deflati=0.1 Reference_Handl=0.0 python=2122.6 Service_Thread=0.0 C2_CompilerThre=178.8 GC_Thread=2.6 G1_Conc=1.7 C1_CompilerThre=5.2 
+1793162668 40085 python=2114.3 

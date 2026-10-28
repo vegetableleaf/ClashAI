@@ -1,0 +1,95 @@
+Wed Oct 28 04:10:50 2026    /workspace/d2/prof/royalesim.prof
+
+         40908571 function calls (39956595 primitive calls) in 240.851 seconds
+
+   Ordered by: cumulative time
+   List reduced from 6819 to 45 due to restriction <45>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        6    0.000    0.000  236.086   39.348 /workspace/d2/cb/pipeline/search_s0.py:953(_run_job)
+        6    0.091    0.015  233.321   38.887 /workspace/d2/cb/pipeline/search_s0.py:667(play)
+     2557    0.257    0.000  229.536    0.090 /workspace/d2/cb/pipeline/search_s0.py:745(round)
+     4462    0.256    0.000  204.931    0.046 /workspace/d2/cb/pipeline/search_s0.py:456(forward)
+     4462    0.416    0.000  184.512    0.041 /workspace/d2/cb/pipeline/e1_eval.py:824(forward_batch)
+     4462    0.168    0.000  182.653    0.041 /workspace/d2/cb/pipeline/e1_eval.py:810(heads_t)
+     4462    0.619    0.000  178.694    0.040 /workspace/d2/cb/pipeline/model_gen.py:286(encode_gen)
+361742/230372    0.695    0.000  158.311    0.001 /workspace/venvf16/lib/python3.12/site-packages/torch/nn/modules/module.py:1775(_wrapped_call_impl)
+361742/230372    1.164    0.000  157.881    0.001 /workspace/venvf16/lib/python3.12/site-packages/torch/nn/modules/module.py:1783(_call_impl)
+     8924    0.501    0.000   84.109    0.009 /workspace/d2/cb/pipeline/model_gen.py:98(features)
+     4462    1.180    0.000   76.043    0.017 /workspace/d2/cb/pipeline/model_v3.py:120(encode)
+    44620    0.080    0.000   75.761    0.002 /workspace/venvf16/lib/python3.12/site-packages/torch/nn/modules/conv.py:552(forward)
+    44620    0.108    0.000   75.598    0.002 /workspace/venvf16/lib/python3.12/site-packages/torch/nn/modules/conv.py:534(_conv_forward)
+    44621   75.493    0.002   75.493    0.002 {built-in method torch.conv2d}
+     4462    0.244    0.000   67.892    0.015 /workspace/venvf16/lib/python3.12/site-packages/torch/nn/modules/transformer.py:407(forward)
+    17848    0.675    0.000   67.134    0.004 /workspace/venvf16/lib/python3.12/site-packages/torch/nn/modules/transformer.py:799(forward)
+    17848   64.307    0.004   64.307    0.004 {built-in method torch._transformer_encoder_layer_fwd}
+     4462    0.093    0.000   27.375    0.006 /workspace/d2/cb/pipeline/tower_refine.py:45(cell_feat)
+     4462    0.078    0.000   20.162    0.005 /workspace/d2/cb/pipeline/e1_eval.py:1138(gen_row)
+     2198    0.520    0.000   16.676    0.008 /workspace/d2/cb/pipeline/e1_eval.py:686(sim_cue_rows)
+     2198    0.712    0.000   15.946    0.007 /workspace/d2/cb/pipeline/sim_unit_state.py:128(extract)
+     4462    0.434    0.000   15.348    0.003 /workspace/d2/cb/pipeline/e1_eval.py:987(prepare)
+       20    0.001    0.000   13.136    0.657 /workspace/venvf16/lib/python3.12/site-packages/torch/_jit_internal.py:1046(_overload)
+     2198   10.904    0.005   10.904    0.005 {method 'save' of 'royalesim.Battle' objects}
+     4462    1.162    0.000    8.737    0.002 /workspace/d2/cb/pipeline/model_gen.py:253(global_features)
+     4462    0.071    0.000    8.368    0.002 /workspace/d2/cb/pipeline/e1_view.py:181(live_view)
+   107972    0.132    0.000    8.183    0.000 /workspace/venvf16/lib/python3.12/site-packages/torch/nn/modules/linear.py:130(forward)
+   107972    7.890    0.000    7.890    0.000 {built-in method torch._C._nn.linear}
+    32396    0.207    0.000    7.662    0.000 /workspace/venvf16/lib/python3.12/site-packages/torch/nn/modules/container.py:248(forward)
+     4462    0.713    0.000    6.525    0.001 /workspace/d2/cb/pipeline/model_gen.py:231(target_patches)
+    71804    6.524    0.000    6.524    0.000 {built-in method torch._C._nn.gelu}
+        8    0.007    0.001    6.233    0.779 /workspace/d2/cb/icebow/src/clashrl/cards.py:134(__init__)
+       15    0.000    0.000    6.224    0.415 /workspace/venvf16/lib/python3.12/site-packages/yaml/__init__.py:117(safe_load)
+       15    0.035    0.002    6.223    0.415 /workspace/venvf16/lib/python3.12/site-packages/yaml/__init__.py:74(load)
+       15    0.000    0.000    6.175    0.412 /workspace/venvf16/lib/python3.12/site-packages/yaml/constructor.py:47(get_single_data)
+       15    0.000    0.000    5.953    0.397 /workspace/venvf16/lib/python3.12/site-packages/yaml/composer.py:29(get_single_node)
+       15    0.000    0.000    5.939    0.396 /workspace/venvf16/lib/python3.12/site-packages/yaml/composer.py:50(compose_document)
+ 43507/15    0.105    0.000    5.938    0.396 /workspace/venvf16/lib/python3.12/site-packages/yaml/composer.py:63(compose_node)
+  2383/15    0.043    0.000    5.938    0.396 /workspace/venvf16/lib/python3.12/site-packages/yaml/composer.py:117(compose_mapping_node)
+     4462    0.075    0.000    5.610    0.001 /workspace/venvf16/lib/python3.12/site-packages/torch/utils/_contextlib.py:120(decorate_context)
+   120633    0.073    0.000    5.579    0.000 /workspace/venvf16/lib/python3.12/site-packages/yaml/parser.py:94(check_event)
+     4462    0.020    0.000    5.530    0.001 /workspace/d2/cb/pipeline/obs_contract.py:453(mine_classes)
+     4462    0.743    0.000    5.423    0.001 /workspace/d2/cb/pipeline/decision_options.py:1991(decide)
+   316305    0.265    0.000    4.872    0.000 /workspace/venvf16/lib/python3.12/site-packages/yaml/scanner.py:113(check_token)
+     9299    0.049    0.000    4.620    0.000 /usr/lib/python3.12/json/__init__.py:299(loads)
+
+
+Wed Oct 28 04:10:50 2026    /workspace/d2/prof/royalesim.prof
+
+         40908571 function calls (39956595 primitive calls) in 240.851 seconds
+
+   Ordered by: internal time
+   List reduced from 6819 to 30 due to restriction <30>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+    44621   75.493    0.002   75.493    0.002 {built-in method torch.conv2d}
+    17848   64.307    0.004   64.307    0.004 {built-in method torch._transformer_encoder_layer_fwd}
+     2198   10.904    0.005   10.904    0.005 {method 'save' of 'royalesim.Battle' objects}
+   107972    7.890    0.000    7.890    0.000 {built-in method torch._C._nn.linear}
+    71804    6.524    0.000    6.524    0.000 {built-in method torch._C._nn.gelu}
+     9299    4.361    0.000    4.361    0.000 /usr/lib/python3.12/json/decoder.py:343(raw_decode)
+   126098    3.334    0.000    3.334    0.000 {built-in method torch.cat}
+       14    1.472    0.105    1.472    0.105 {built-in method royalesim.royalesim.card_table_source}
+   112374    1.418    0.000    1.418    0.000 {built-in method torch.embedding}
+  1883863    1.399    0.000    1.399    0.000 /workspace/venvf16/lib/python3.12/site-packages/torch/nn/modules/module.py:1955(__getattr__)
+     3422    1.274    0.000    1.274    0.000 {method 'step' of 'royalesim.Battle' objects}
+     4462    1.180    0.000   76.043    0.017 /workspace/d2/cb/pipeline/model_v3.py:120(encode)
+361742/230372    1.164    0.000  157.881    0.001 /workspace/venvf16/lib/python3.12/site-packages/torch/nn/modules/module.py:1783(_call_impl)
+     4462    1.162    0.000    8.737    0.002 /workspace/d2/cb/pipeline/model_gen.py:253(global_features)
+  1789341    1.075    0.000    1.251    0.000 /workspace/venvf16/lib/python3.12/site-packages/yaml/reader.py:99(forward)
+    17848    1.058    0.000    1.058    0.000 {method 'new_zeros' of 'torch._C.TensorBase' objects}
+    20113    0.949    0.000    0.949    0.000 {method 'state_json' of 'royalesim.Battle' objects}
+    75006    0.919    0.000    2.318    0.000 /workspace/venvf16/lib/python3.12/site-packages/yaml/scanner.py:752(scan_to_next_token)
+    22310    0.884    0.000    2.492    0.000 /workspace/d2/cb/pipeline/model_gen.py:68(_pool)
+        7    0.848    0.121    2.871    0.410 /workspace/venvf16/lib/python3.12/site-packages/royalegym/rust_engine.py:689(__init__)
+     4462    0.789    0.000    2.519    0.001 /workspace/d2/cb/pipeline/e1_view.py:87(_degrade_switchable)
+     4462    0.743    0.000    5.423    0.001 /workspace/d2/cb/pipeline/decision_options.py:1991(decide)
+     4462    0.713    0.000    6.525    0.001 /workspace/d2/cb/pipeline/model_gen.py:231(target_patches)
+     2198    0.712    0.000   15.946    0.007 /workspace/d2/cb/pipeline/sim_unit_state.py:128(extract)
+     8924    0.705    0.000    1.905    0.000 /workspace/d2/cb/pipeline/tower_refine.py:17(tower_features)
+361742/230372    0.695    0.000  158.311    0.001 /workspace/venvf16/lib/python3.12/site-packages/torch/nn/modules/module.py:1775(_wrapped_call_impl)
+    17848    0.675    0.000   67.134    0.004 /workspace/venvf16/lib/python3.12/site-packages/torch/nn/modules/transformer.py:799(forward)
+     4462    0.619    0.000  178.694    0.040 /workspace/d2/cb/pipeline/model_gen.py:286(encode_gen)
+   132638    0.597    0.000    0.597    0.000 {method 'to' of 'torch._C.TensorBase' objects}
+    81583    0.572    0.000    0.572    0.000 {method 'sum' of 'torch._C.TensorBase' objects}
+
+

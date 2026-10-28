@@ -1,0 +1,95 @@
+Wed Oct 28 04:10:40 2026    /workspace/d2/prof/crforge.prof
+
+         38969099 function calls (38119470 primitive calls) in 231.269 seconds
+
+   Ordered by: cumulative time
+   List reduced from 6964 to 45 due to restriction <45>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        6    0.000    0.000  226.371   37.729 /workspace/d2/cb/pipeline/search_s0.py:953(_run_job)
+        6    0.085    0.014  222.118   37.020 /workspace/d2/cb/pipeline/search_s0.py:667(play)
+     2369    0.235    0.000  205.474    0.087 /workspace/d2/cb/pipeline/search_s0.py:745(round)
+     3987    0.230    0.000  178.692    0.045 /workspace/d2/cb/pipeline/search_s0.py:456(forward)
+     3987    0.381    0.000  171.611    0.043 /workspace/d2/cb/pipeline/e1_eval.py:824(forward_batch)
+     3987    0.157    0.000  169.950    0.043 /workspace/d2/cb/pipeline/e1_eval.py:810(heads_t)
+     3987    0.558    0.000  166.350    0.042 /workspace/d2/cb/pipeline/model_gen.py:286(encode_gen)
+323990/206410    0.647    0.000  148.157    0.001 /workspace/venvf16/lib/python3.12/site-packages/torch/nn/modules/module.py:1775(_wrapped_call_impl)
+323990/206410    1.086    0.000  147.747    0.001 /workspace/venvf16/lib/python3.12/site-packages/torch/nn/modules/module.py:1783(_call_impl)
+     7974    0.451    0.000   78.163    0.010 /workspace/d2/cb/pipeline/model_gen.py:98(features)
+     3987    1.048    0.000   71.507    0.018 /workspace/d2/cb/pipeline/model_v3.py:120(encode)
+    39870    0.079    0.000   70.188    0.002 /workspace/venvf16/lib/python3.12/site-packages/torch/nn/modules/conv.py:552(forward)
+    39870    0.111    0.000   70.037    0.002 /workspace/venvf16/lib/python3.12/site-packages/torch/nn/modules/conv.py:534(_conv_forward)
+    39870   69.926    0.002   69.926    0.002 {built-in method torch.conv2d}
+     3987    0.222    0.000   64.116    0.016 /workspace/venvf16/lib/python3.12/site-packages/torch/nn/modules/transformer.py:407(forward)
+    15948    0.647    0.000   63.405    0.004 /workspace/venvf16/lib/python3.12/site-packages/torch/nn/modules/transformer.py:799(forward)
+    15948   60.718    0.004   60.718    0.004 {built-in method torch._transformer_encoder_layer_fwd}
+     3987    0.084    0.000   25.138    0.006 /workspace/d2/cb/pipeline/tower_refine.py:45(cell_feat)
+     3987    0.428    0.000   17.143    0.004 /workspace/d2/cb/pipeline/e1_eval.py:987(prepare)
+     2375    0.159    0.000   16.531    0.007 /workspace/d2/cb/pipeline/e1_eval.py:2110(due)
+       20    0.001    0.000   13.722    0.686 /workspace/venvf16/lib/python3.12/site-packages/torch/_jit_internal.py:1046(_overload)
+     2837    0.050    0.000   11.297    0.004 /workspace/d2/cb/pipeline/royale_env.py:354(_advance_to)
+     3391   10.605    0.003   10.699    0.003 /workspace/d2/cb/pipeline/crforge_core.py:257(step)
+     3987    0.068    0.000    8.461    0.002 /workspace/d2/cb/pipeline/e1_view.py:181(live_view)
+     3987    1.045    0.000    8.029    0.002 /workspace/d2/cb/pipeline/model_gen.py:253(global_features)
+    96867    0.119    0.000    7.976    0.000 /workspace/venvf16/lib/python3.12/site-packages/torch/nn/modules/linear.py:130(forward)
+    96867    7.712    0.000    7.712    0.000 {built-in method torch._C._nn.linear}
+    29030    0.193    0.000    6.980    0.000 /workspace/venvf16/lib/python3.12/site-packages/torch/nn/modules/container.py:248(forward)
+     3987    0.073    0.000    6.850    0.002 /workspace/d2/cb/pipeline/e1_eval.py:1138(gen_row)
+        8    0.007    0.001    6.274    0.784 /workspace/d2/cb/icebow/src/clashrl/cards.py:134(__init__)
+       15    0.000    0.000    6.265    0.418 /workspace/venvf16/lib/python3.12/site-packages/yaml/__init__.py:117(safe_load)
+       15    0.034    0.002    6.265    0.418 /workspace/venvf16/lib/python3.12/site-packages/yaml/__init__.py:74(load)
+       15    0.000    0.000    6.215    0.414 /workspace/venvf16/lib/python3.12/site-packages/yaml/constructor.py:47(get_single_data)
+       15    0.000    0.000    5.980    0.399 /workspace/venvf16/lib/python3.12/site-packages/yaml/composer.py:29(get_single_node)
+       15    0.000    0.000    5.962    0.397 /workspace/venvf16/lib/python3.12/site-packages/yaml/composer.py:50(compose_document)
+ 43507/15    0.117    0.000    5.962    0.397 /workspace/venvf16/lib/python3.12/site-packages/yaml/composer.py:63(compose_node)
+  2383/15    0.045    0.000    5.961    0.397 /workspace/venvf16/lib/python3.12/site-packages/yaml/composer.py:117(compose_mapping_node)
+    64280    5.932    0.000    5.932    0.000 {built-in method torch._C._nn.gelu}
+     3987    0.069    0.000    5.869    0.001 /workspace/venvf16/lib/python3.12/site-packages/torch/utils/_contextlib.py:120(decorate_context)
+     3987    0.637    0.000    5.708    0.001 /workspace/d2/cb/pipeline/model_gen.py:231(target_patches)
+     3987    0.715    0.000    5.694    0.001 /workspace/d2/cb/pipeline/decision_options.py:1991(decide)
+   120633    0.076    0.000    5.591    0.000 /workspace/venvf16/lib/python3.12/site-packages/yaml/parser.py:94(check_event)
+    17720    5.073    0.000    5.578    0.000 /workspace/d2/cb/pipeline/crforge_core.py:278(state)
+     3987    0.020    0.000    5.474    0.001 /workspace/d2/cb/pipeline/obs_contract.py:453(mine_classes)
+   316305    0.269    0.000    4.843    0.000 /workspace/venvf16/lib/python3.12/site-packages/yaml/scanner.py:113(check_token)
+
+
+Wed Oct 28 04:10:40 2026    /workspace/d2/prof/crforge.prof
+
+         38969099 function calls (38119470 primitive calls) in 231.269 seconds
+
+   Ordered by: internal time
+   List reduced from 6964 to 30 due to restriction <30>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+    39870   69.926    0.002   69.926    0.002 {built-in method torch.conv2d}
+    15948   60.718    0.004   60.718    0.004 {built-in method torch._transformer_encoder_layer_fwd}
+     3391   10.605    0.003   10.699    0.003 /workspace/d2/cb/pipeline/crforge_core.py:257(step)
+    96867    7.712    0.000    7.712    0.000 {built-in method torch._C._nn.linear}
+    64280    5.932    0.000    5.932    0.000 {built-in method torch._C._nn.gelu}
+    17720    5.073    0.000    5.578    0.000 /workspace/d2/cb/pipeline/crforge_core.py:278(state)
+   112757    3.006    0.000    3.006    0.000 {built-in method torch.cat}
+     5991    1.488    0.000    1.488    0.000 /usr/lib/python3.12/json/decoder.py:343(raw_decode)
+  1686657    1.272    0.000    1.272    0.000 /workspace/venvf16/lib/python3.12/site-packages/torch/nn/modules/module.py:1955(__getattr__)
+   100651    1.260    0.000    1.260    0.000 {built-in method torch.embedding}
+  1789341    1.109    0.000    1.293    0.000 /workspace/venvf16/lib/python3.12/site-packages/yaml/reader.py:99(forward)
+        9    1.091    0.121    1.091    0.121 {built-in method royalesim.royalesim.card_table_source}
+323990/206410    1.086    0.000  147.747    0.001 /workspace/venvf16/lib/python3.12/site-packages/torch/nn/modules/module.py:1783(_call_impl)
+    15948    1.072    0.000    1.072    0.000 {method 'new_zeros' of 'torch._C.TensorBase' objects}
+     3987    1.048    0.000   71.507    0.018 /workspace/d2/cb/pipeline/model_v3.py:120(encode)
+     3987    1.045    0.000    8.029    0.002 /workspace/d2/cb/pipeline/model_gen.py:253(global_features)
+    75006    0.957    0.000    2.410    0.000 /workspace/venvf16/lib/python3.12/site-packages/yaml/scanner.py:752(scan_to_next_token)
+     4381    0.854    0.000    1.242    0.000 /workspace/d2/cb/pipeline/crforge_core.py:210(unit_types)
+     3987    0.789    0.000    2.648    0.001 /workspace/d2/cb/pipeline/e1_view.py:87(_degrade_switchable)
+    19935    0.777    0.000    2.210    0.000 /workspace/d2/cb/pipeline/model_gen.py:68(_pool)
+     3987    0.715    0.000    5.694    0.001 /workspace/d2/cb/pipeline/decision_options.py:1991(decide)
+        6    0.688    0.115    2.402    0.400 /workspace/d2/cb/pipeline/crforge_core.py:169(__init__)
+    19935    0.682    0.000    1.557    0.000 /workspace/d2/cb/pipeline/model_v3.py:71(_fourier)
+     7974    0.654    0.000    1.717    0.000 /workspace/d2/cb/pipeline/tower_refine.py:17(tower_features)
+    15948    0.647    0.000   63.405    0.004 /workspace/venvf16/lib/python3.12/site-packages/torch/nn/modules/transformer.py:799(forward)
+323990/206410    0.647    0.000  148.157    0.001 /workspace/venvf16/lib/python3.12/site-packages/torch/nn/modules/module.py:1775(_wrapped_call_impl)
+     3987    0.637    0.000    5.708    0.001 /workspace/d2/cb/pipeline/model_gen.py:231(target_patches)
+   297029    0.560    0.000    1.550    0.000 /workspace/d2/cb/pipeline/vocab.py:169(engine_key)
+     3987    0.558    0.000  166.350    0.042 /workspace/d2/cb/pipeline/model_gen.py:286(encode_gen)
+  1650765    0.541    0.000    0.541    0.000 {method 'get' of 'dict' objects}
+
+
