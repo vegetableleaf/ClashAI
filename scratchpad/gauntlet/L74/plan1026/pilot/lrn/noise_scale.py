@@ -101,7 +101,7 @@ def estimates(gram_m, GG, n_k, M):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", required=True)
-    ap.add_argument("--keep", type=Path, required=True)
+    ap.add_argument("--keep", type=Path, required=True, help="a dir of .rec files, or comma-separated records_uNNNN.pkl")
     ap.add_argument("--T-gate", type=float, required=True, help="the T_gate the records were SAMPLED at")
     ap.add_argument("--warm", type=Path, default=None)
     ap.add_argument("--warm-updates", type=int, default=3)
@@ -126,7 +126,11 @@ def main():
             print("warm", u, json.dumps({k: rec.get(k) for k in ("steps",)} | {"gae": {k: (rec.get("gae") or {}).get(k)
                   for k in ("l_v", "explained_var", "value_mae")}}), flush=True)
         del wres
-    res = [LR.to_result(LR.decode(p.read_bytes())) for p in sorted(a.keep.glob("*.rec"))]
+    if a.keep.is_dir():
+        res = [LR.to_result(LR.decode(p.read_bytes())) for p in sorted(a.keep.glob("*.rec"))]
+    else:                                                     # LOOP-INT records_uNNNN.pkl ({update, results, skipped}), comma-separated
+        import pickle
+        res = [r for f in str(a.keep).split(",") for r in pickle.loads(Path(f).read_bytes())["results"]]
     if a.max_matches:
         res = res[:a.max_matches]
     Bn, _ = R.collate(res, float(cfg["adv_clip"]), **SG.collate_kw(cfg))

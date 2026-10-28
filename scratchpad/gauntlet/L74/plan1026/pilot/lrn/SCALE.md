@@ -3,18 +3,25 @@
 Labels: (a) measured (number + source), (b) plausible, untested, (c) contradicted. Owner mandate 10-28: learning progress
 per wall-clock hour x50-100+, fp32 only (TF32 off), kl_stop_prev 0.02. Rent only on a measured >= ~50x projection.
 
-## STATUS (keep current)
-- Step 1 noise scale, T_gate 0.3 records, raw B0 critic: DONE (a), see section 1. Warm-critic run (3 critic warm-up
-  updates on disjoint id0 records): running on 33920 (`/workspace/lrn/noise/chain.sh`, log ns_warm3_t03.log, done
-  marker chain.done). T_gate-0.1 records: waiting on LOOP-INT2's path (the lead relays it).
-- Step 2 profile: Codex LEARNER-SCALE_1 (low) dispatched; it waits for chain.done, then runs prof_step.py det 1 / det 0.
-  Outputs go to lrn/prof/ (PROF_TABLE.md).
-- Steps 3-6: not started.
-- Restart: `ssh -p 33920 ...; cd /workspace/lrn/cb && source scratchpad/gauntlet/L74/plan1026/pilot/lrn/env.sh &&
-  $PY -u scratchpad/gauntlet/L74/plan1026/pilot/lrn/noise_scale.py --config scratchpad/gauntlet/L74/plan1026/pilot/ops/pilot.yaml
-  --keep /workspace/lrn/id1/keep --T-gate 0.3 [--warm /workspace/lrn/id0_freshhead/keep --warm-updates 3] --out X.json`
-  (~12 min on the 4090: 7 min for the per-match gradients, then the row minibatches).
-- Codex dispatches: LEARNER-SCALE_1 (low): profiler runs + table (outcome pending).
+## STATUS (keep current; 10-28 ~21:45 EDT)
+- DONE (a) 335f151: step 1 noise scale, T 0.3 records, raw critic (section 1).
+- DONE (a) 3866761: `micro_batch` (section 3a): tests, absent-key smoke, step profile (section 2).
+- DONE (a), this commit:
+  - warm-critic noise scale, T 0.1 noise scale (96 matches; section 1b);
+  - accum_gate (section 3b: identity, and the sqrt-lr rule CONTRADICTED);
+  - micro_batch=32 smoke PASS: config 27c4dc830ce9, u0000 e816a6a4 / 3e07cff4 (bit-equal to off), u0001 f060b678 /
+    f46b1818 (fp32 order);
+  - the cap-fixed learning-speed model (section 4).
+- RUNNING (33920 GPU): `lr_sweep.py`: warmed-Adam large-minibatch lr sweep with the held-out surrogate gain per update.
+  - Command: `/workspace/lrn/sweep/run.sh`; log sweep.log; done marker `done`; ~1 h.
+  - Restart: `cd /workspace/lrn/sweep && setsid nohup bash run.sh &`.
+- Pilot (owner 10-28): postponed until opponent v1 is usable; no arm S / L run tonight.
+- 33308 tree (mine): /workspace/lscale/cb (setup_ls.sh: copies of pipeline + my lrn scripts, symlinks into LOOP-INT2's
+  /workspace/loop/cb; env_ls.sh). GPU1 + <= 30 GB RSS (lead).
+- Codex dispatches: LEARNER-SCALE_1 (low): profiler runs + PROF_TABLE.md. DONE in 779 s; I checked the numbers against
+  the JSONs.
+- NEXT (lead order): lr sweep result -> final arm L lr (and the opt-in KL fixes if one step still overshoots) ->
+  per-row fp32 fixes (gen_batch features once per update, kernel count) -> DDP on 33308's 2 GPUs -> projection.
 
 ## 1. Gradient noise scale (noise_scale.py)
 Method: B_simple = tr(Sigma) / |G|^2. The loss is split into components: gate / card / cell = -sum w A lp_head (the L_pg
@@ -50,6 +57,20 @@ Reading:
   than noise.
 - Caveats: B0 at its init critic; T_gate 0.3 records (the pilot samples at 0.1). The warm-critic and T_gate-0.1 reruns
   are owed.
+
+### 1b. Reruns (a)
+| run | records | policy trS | policy G^2_U | B_match policy (2 sigma lo) | cell B_match | value B_match | file |
+|---|---|---:|---:|---|---|---|---|
+| raw critic | id1 512, T 0.3 | 30.3 | -0.0067 +- 0.041 | >= 405 | 1,826 [630, inf] | 29 [17, 95] | noise/ns_raw_t03.json |
+| critic warmed 3 updates on disjoint id0 | id1 512, T 0.3 | 28.8 | -0.0049 +- 0.031 | >= 513 | 1,249 [513, inf] | 16 [11, 35] | noise/ns_warm3_t03.json |
+| T_gate 0.1 pilot records (lint_pa3 u0-2, abilities + barrel_decoy_sim, fe364ceb + 16.635.3) | 96 matches, T 0.1 | 106.7 | -0.31 +- 1.0 | >= 60 | >= 520 | 89 [18, inf] | noise/ns_pa3_t01.json |
+
+- T 0.1, gate: the gate log-prob scales with 1 / T_gate, so its noise trace is 103.6 vs 22.9 at T 0.3 (x4.5). The
+  256-row gradient norm is 23.5 vs 8.5.
+- T 0.1, n = 96 matches: this can only bound B_match from below at ~60 matches. It says nothing beyond "no policy signal
+  resolved". The 512-match T 0.3 runs are the informative ones until a few hundred T 0.1 matches exist.
+- Both 512-match runs agree (a): the policy signal over 512 matches is below what the noise resolves. B_match >= ~400-500
+  matches (>= ~125-160k rows at 311 rows/match), with no upper bound.
 
 ## 2. Learner step profile (prof_step.py; Codex LEARNER-SCALE_1; table lrn/prof/PROF_TABLE.md)
 Setup (a): 33920 4090, pilot.yaml, T_gate 0.3, 128 matches of id1 records. One PPO step = minibatch_loss + backward +
@@ -103,3 +124,53 @@ Adam step and the kl_stop_prev check then see the whole minibatch, as before.
     identity test.
   - Pod 33920 (a): 79 passed (new + test_kl_stop_prev, test_lazy_refine, test_ent_pair, test_rl_gen, test_rl_royale);
     pyflakes clean.
+
+## 3b. accum_gate on real records (a; 33920, id1, T 0.3, u5 from a fresh B0 learner; accum/gate.json)
+| arm | lr | steps | stop KL | rows used | PPO s | note |
+|---|---:|---:|---:|---:|---:|---|
+| base mb 256 | 1e-5 | 145 | 0.0208 | 37,120 | 38.6 | today |
+| mb 256, micro 64 | 1e-5 | 145 | 0.0208 | 37,120 | 95.7 | identity: monitors <= 3.6e-5 rel, weights max 1.09e-5 |
+| mb 32,768, micro 1,024 | 1.13e-4 (sqrt rule) | 1 | 0.106 | 32,768 | 59.9 | one step = 5x the cap |
+| mb 65,536, micro 1,024 | 1.6e-4 (sqrt rule) | 1 | 0.638 | 65,536 | 115.1 | one step = 32x the cap |
+
+- Identity rule (lead 10-28, accepted): gradients agree <= 1e-7 rel, monitors <= 1e-4 rel. Weights may differ at ~lr
+  scale through Adam's eps on parameters with zero true gradient. Here 1.09e-5 = 1.1 lr after 145 steps; lazy_refine's
+  accepted gate was the same mechanism.
+- The square-root lr rule is CONTRADICTED under the per-update cap (c). From a fresh Adam the first step is a sign step
+  of exactly lr per parameter. A clean large-batch gradient makes the signs coherent, so one step's KL is large: x6 from
+  32k to 65k rows at x1.41 lr.
+- The large-batch lr is set by the KL budget per step: KL ~ lr^2 (b) gives ~2.5e-5 at 32k and ~1.4e-5 at 65k for
+  ~0.005 per step (~4 steps per update). lr_sweep.py measures this with a warmed Adam (running).
+- Cost (a): ~0.88 ms per row-step at 1,024-row micro-batches, including the lazy anchor and gen_batch (115 s for 2 x
+  65k). The minibatch that trips the cap pays a full forward + backward only to read its KL.
+  - Fix (ii): a no-grad KL pass first. It costs 1/3 of a step on every minibatch and saves 2/3 on the tripping one,
+    so it pays only when an update has <= 2 steps.
+
+## 4. Learning speed under the FIXED per-update cap (owner: kl_stop_prev 0.02; lead 10-28 framing)
+progress / h = U x I. U = updates / h = 3600 / (T_roll + T_learn) in the synchronous loop. I = the real improvement per
+update (the cap fixes its KL at ~0.02).
+- I depends on how much of the KL-0.02 move is signal. A crude model (b): with fixed KL the move D has a fixed size, and
+  E[D . G] ~ |D| |G| / sqrt(1 + B_row / R), where R = rows used per update (capped by the rows of the update's matches;
+  beyond that the floor is tr_m / M).
+  - Today R = 37k. With B_row >= ~125k (section 1): I_today / I_max <= 0.48.
+  - All rows of 1,024 matches (318k): I / I_max >= 0.85 at B = 125k.
+  - So the per-update gain from large clean steps is <= sqrt(R_L / R_S): <= 1.7-2.9x at 1,024 matches and
+    <= ~5.9x at 4,096 matches (all rows). It is bounded; it is not the 100x.
+- To measure I: lr_sweep.py's held-out surrogate J (unbiased first-order improvement over B0 on a never-trained
+  256-match batch). Section 1 implies J's per-update change is near the resolution of 256 held-out matches (b), so the
+  SIM A/B over many updates stays the real test.
+- U: the synchronous loop's U is bounded by the wall time of one rollout WAVE. A wave lasts as long as its longest
+  match: 1,024 matches took 170 s on 4 producers (a, PROJECTION.md), ~6-9 s projected on the box (b).
+  - T_learn today: 40-58 s for 512-1,024 matches (a).
+  - Fresh on-policy data per update means matches / h = U x M <= the box's rollout capacity (~400-580k / h, b,
+    PROJECTION.md).
+  - At M = 1,024: U <= ~400-570 / h.
+- Implication (b, from the terms above): the multiple vs today's learner (~80 updates / h at R 37k) is about
+  (U_new / 80) x (I_new / I_today).
+  - At M = 1,024: <= (400-570 / 80) x (1.7-2.9) = ~8-21x, and only if T_learn falls to <= ~6-9 s (i.e. ~20 row-steps / ms
+    on the box, vs ~1.1 / ms on a 4090 today: ~15-20x per-row work).
+  - ~50-100x needs BOTH that learner speed and U past the synchronous wave limit, i.e. rollouts overlapped with the
+    update (behaviour policy one version stale; PPO's ratio uses the stored lp_old, so the maths holds). That is a
+    lead / owner decision (PROJECTION.md way 1).
+- Not measured yet: I_new / I_today (lr_sweep, then the SIM A/B), T_learn on the box (per-row fixes + DDP: next steps),
+  and the overlap.
