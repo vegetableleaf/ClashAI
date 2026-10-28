@@ -1,0 +1,24 @@
+matches 17 | RNG-free 9 | not RNG-free 8 {'Princess': 2, 'Arrows': 6}
+flags (all): {'opp_no_fitting_deal': 5} | flags (RNG-free): {'opp_no_fitting_deal': 2}
+unflagged 7 | exact apart from torn 5 | strictly exact (no torn frame) 2
+exact frames (all RNG-free) 13709 | frames 19655 | unflagged exact frames 13620 of 15719
+torn frames (unflagged): {'torn_t1': 6, 'torn_mixed': 1, 'torn_step': 4, 'torn_cmd': 5, 'torn_snap': 1} | matches with each: {'torn_t1': 3, 'torn_mixed': 1, 'torn_step': 3, 'torn_cmd': 3, 'torn_snap': 1}
+fitter moves kept (unflagged): 37 | of them FITNEXT (run after the onset): 1 | ghost presses enabled: 0
+  20261028_000420 unflagged                    first_div 1095  counts {'exact': 1570, 'torn_t1': 1, 'torn_mixed': 1, 'div': 192, 'torn_step': 1} detail [["U_sim_only", [0, 14927, 22473, 2102], "C:MiniPekkaHero", null]]
+  20261028_001302 unflagged                    first_div None  counts {'exact': 3033, 'torn_step': 2, 'torn_cmd': 1, 'torn_t1': 3, 'torn_snap': 1} detail null
+  20261028_002146 unflagged                    first_div None  counts {'exact': 1804} detail null
+  20261028_003008 unflagged                    first_div None  counts {'exact': 3031, 'torn_cmd': 2, 'torn_t1': 2} detail null
+  20261028_004256 opp_no_fitting_deal          first_div 237   counts {'exact': 43, 'div': 1517} detail [["U_rec_only", [1, 9500, 31500, 1629], "MergeMaiden_Mounted", null]]
+  20261028_005912 unflagged                    first_div None  counts {'exact': 2215, 'torn_cmd': 2, 'torn_step': 1} detail null
+  20261028_010318 opp_no_fitting_deal          first_div 242   counts {'exact': 46, 'div': 2330} detail [["U_rec_only", [0, 7499, 500, 1341], "Witch", null]]
+  20261028_010824 unflagged                    first_div 419   counts {'exact': 202, 'div': 1890} detail [["P_rec_only", [1, 7163, 21163], "P:GiantBuffer", null]]
+  20261028_011215 unflagged                    first_div None  counts {'exact': 1765} detail null
+95% one-sided CP lower bound, exact apart from torn: 5/7 -> 0.3413
+95% one-sided CP lower bound, strictly exact: 2/7 -> 0.0534
+
+sorted results sha256: 0dc85268e095dec567a63b29a773e02de9654ffcaefa02fa4f3c3f92f087ac6c  -
+control ctl402 (4 dev matches, 16.402.22, runF.sh) vs a10G1 result lines:
+  identical 080408
+  identical 171753
+  identical 211239
+  identical 014928

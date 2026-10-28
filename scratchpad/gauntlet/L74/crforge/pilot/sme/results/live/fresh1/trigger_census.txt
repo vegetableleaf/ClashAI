@@ -1,0 +1,39 @@
+== dev 138 records; non-empty reader_hidden: 2 ; ghost rows: 22
+  hero Valkyrie (BP_VALK)                    decks  15
+  Golden Knight (BP_GK, GK8)                 decks   9
+  hero Giant (BP_GIANT)                      decks   2
+  Rascals (BP_RASCALS, RASCAL7)              decks   8
+  evo Goblin Barrel (MECH_GB)                decks   2
+  Goblin Drill (MECH_DRILL)                  decks   4
+  hero Balloon (MECH_HB)                     decks   7
+  Zap (MECH_ZAP, ZAP_ADD/POINT)              decks  23
+  hero Ice Golem (GOLEM7)                    decks   5
+  opp hero Ice Wizard (IWPEND9, IWGHOST10)   decks  18
+  hero Mini PEKKA (HIDDEN)                   decks   8
+  Rune Giant (no rule)                       decks   0
+== fresh_all 17 records; non-empty reader_hidden: 0 ; ghost rows: 0
+  hero Valkyrie (BP_VALK)                    decks   4
+  Golden Knight (BP_GK, GK8)                 decks   0
+  hero Giant (BP_GIANT)                      decks   0
+  Rascals (BP_RASCALS, RASCAL7)              decks   1
+  evo Goblin Barrel (MECH_GB)                decks   0
+  Goblin Drill (MECH_DRILL)                  decks   0
+  hero Balloon (MECH_HB)                     decks   0
+  Zap (MECH_ZAP, ZAP_ADD/POINT)              decks   5
+  hero Ice Golem (GOLEM7)                    decks   1
+  opp hero Ice Wizard (IWPEND9, IWGHOST10)   decks   0
+  hero Mini PEKKA (HIDDEN)                   decks   2
+  Rune Giant (no rule)                       decks   1
+== fresh_rngfree 9 records; non-empty reader_hidden: 0 ; ghost rows: 0
+  hero Valkyrie (BP_VALK)                    decks   3
+  Golden Knight (BP_GK, GK8)                 decks   0
+  hero Giant (BP_GIANT)                      decks   0
+  Rascals (BP_RASCALS, RASCAL7)              decks   1
+  evo Goblin Barrel (MECH_GB)                decks   0
+  Goblin Drill (MECH_DRILL)                  decks   0
+  hero Balloon (MECH_HB)                     decks   0
+  Zap (MECH_ZAP, ZAP_ADD/POINT)              decks   2
+  hero Ice Golem (GOLEM7)                    decks   1
+  opp hero Ice Wizard (IWPEND9, IWGHOST10)   decks   0
+  hero Mini PEKKA (HIDDEN)                   decks   1
+  Rune Giant (no rule)                       decks   1
