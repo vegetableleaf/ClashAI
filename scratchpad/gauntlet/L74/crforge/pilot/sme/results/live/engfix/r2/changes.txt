@@ -1,0 +1,151 @@
+STATUS: BLOCKED
+Stopped at prohibited ALL-vs-OFF field differences in dev.
+No uploads or pod scoring runs started. Single-flag attribution and union checks incomplete.
+Dev OWN_SPAWN extraction was interrupted; its CRLF output is partial and is not a completed build.
+
+dev OFF reused: lines=138 sha256=c5b197f5e407a73d239e9805ce7597690691c3021b65180ecc9e0d6538f11f92; r1 equality reverified PASS; fresh2_fallback=False
+fresh1 OFF reused: lines=9 sha256=d365b39c3d1f3fd78a084ef5b14c5fab58d9162466ab287263d0bab68e1f5d96; r1 equality reverified PASS; fresh2_fallback=False
+fresh2 OFF reused: lines=40 sha256=f8bf661165ada144167bf9669f5b755af4d193709a9b5cbf2636821f3554a263; r1 equality reverified PASS; fresh2_fallback=False
+fresh3 OFF reused: lines=17 sha256=13efec704045c250ee32ed95b03e79af68f997b800fedf5b5efca7dccc6a0423; r1 equality reverified PASS; fresh2_fallback=False
+dev ALL: lines=138 sha256=b72b69b63f17f8949308f8f30a4d586a0e5d7abe8fd1e07786f363e6ccb35366
+
+live_play_20261026_144057 fields=["plays"]
+PROHIBITED=[]
+TOMB_HERO single changes record=False; remaining single flags not completed
+ALL added {"card": "DarkPrince", "kind": "play", "run_ticks": [5787, 5787], "side": 0, "source": "first_seen", "tick": 5787, "x": 3318, "y": 17375}
+
+live_play_20261026_154839 fields=["flags", "opp_deal_fit", "opp_fitting_deals", "plays"]
+PROHIBITED=["flags", "opp_deal_fit", "opp_fitting_deals"]
+TOMB_HERO single changes record=False; remaining single flags not completed
+flags OFF=[] ALL=["1:opp_no_fitting_deal:0"]
+opp_deal_fit OFF=[4, 3, 1, 2, 6, 7, 5, 0] ALL=null
+opp_fitting_deals OFF=6144 ALL=0
+ALL added {"card": "Musketeer", "kind": "play", "run_ticks": [2578, 2578], "side": 1, "source": "first_seen", "tick": 2578, "x": 14838, "y": 11863}
+ALL added {"card": "Musketeer", "kind": "play", "run_ticks": [3629, 3629], "side": 1, "source": "first_seen", "tick": 3629, "x": 14207, "y": 11435}
+
+live_play_20261026_160930 fields=["flags", "own_cycle_fail", "plays"]
+PROHIBITED=["flags", "own_cycle_fail"]
+TOMB_HERO single changes record=False; remaining single flags not completed
+flags OFF=["1:own_cycle_fail:43"] ALL=[]
+own_cycle_fail OFF=43 ALL=null
+ALL added {"card": "Tesla", "kind": "play", "run_ticks": [5209, 5209], "side": 1, "source": "own_tap", "tick": 5209, "x": 13000, "y": 18000}
+
+live_play_20261026_164130 fields=["flags", "opp_deal_fit", "opp_fitting_deals", "plays"]
+PROHIBITED=["flags", "opp_deal_fit", "opp_fitting_deals"]
+TOMB_HERO single changes record=True; remaining single flags not completed
+flags OFF=[] ALL=["1:opp_no_fitting_deal:0"]
+opp_deal_fit OFF=[1, 6, 0, 4, 7, 2, 5, 3] ALL=null
+opp_fitting_deals OFF=6144 ALL=0
+ALL added {"card": "Tombstone", "kind": "ability", "run_ticks": [2534, 2535], "side": 1, "source": "tomb_active", "tick": 2534, "x": null, "y": null}
+ALL added {"card": "Tombstone", "kind": "ability", "run_ticks": [937, 938], "side": 1, "source": "tomb_active", "tick": 937, "x": null, "y": null}
+ALL added {"card": "Tombstone", "kind": "play", "run_ticks": [284, 284], "side": 1, "source": "first_seen", "tick": 284, "x": 9500, "y": 22500}
+ALL removed {"card": "Tombstone", "kind": "ability", "run_ticks": [1486, 1487], "side": 1, "source": "cast_seen", "tick": 1486, "x": null, "y": null}
+ALL removed {"card": "Tombstone", "kind": "ability", "run_ticks": [2932, 2933], "side": 1, "source": "cast_seen", "tick": 2932, "x": null, "y": null}
+
+live_play_20261026_185736 fields=["flags", "opp_deal_fit", "opp_fitting_deals", "plays"]
+PROHIBITED=["flags", "opp_deal_fit", "opp_fitting_deals"]
+TOMB_HERO single changes record=True; remaining single flags not completed
+flags OFF=[] ALL=["1:opp_no_fitting_deal:0"]
+opp_deal_fit OFF=[3, 2, 0, 4, 5, 7, 1, 6] ALL=null
+opp_fitting_deals OFF=6144 ALL=0
+ALL added {"card": "Tombstone", "kind": "ability", "run_ticks": [4010, 4011], "side": 1, "source": "tomb_active", "tick": 4010, "x": null, "y": null}
+ALL added {"card": "Tombstone", "kind": "ability", "run_ticks": [4981, 4982], "side": 1, "source": "tomb_active", "tick": 4981, "x": null, "y": null}
+ALL added {"card": "Tombstone", "kind": "play", "run_ticks": [3851, 3851], "side": 1, "source": "first_seen", "tick": 3851, "x": 11500, "y": 20500}
+ALL removed {"card": "Tombstone", "kind": "ability", "run_ticks": [4483, 4484], "side": 1, "source": "cast_seen", "tick": 4483, "x": null, "y": null}
+ALL removed {"card": "Tombstone", "kind": "ability", "run_ticks": [5329, 5330], "side": 1, "source": "cast_seen", "tick": 5329, "x": null, "y": null}
+
+live_play_20261026_201258 fields=["plays"]
+PROHIBITED=[]
+TOMB_HERO single changes record=True; remaining single flags not completed
+ALL added {"card": "Tombstone", "kind": "ability", "run_ticks": [2500, 2501], "side": 0, "source": "tomb_active", "tick": 2500, "x": null, "y": null}
+ALL removed {"card": "Tombstone", "kind": "ability", "run_ticks": [2806, 2807], "side": 0, "source": "cast_seen", "tick": 2806, "x": null, "y": null}
+
+live_play_20261026_203752 fields=["flags", "opp_deal_fit", "opp_fitting_deals", "plays"]
+PROHIBITED=["flags", "opp_deal_fit", "opp_fitting_deals"]
+TOMB_HERO single changes record=False; remaining single flags not completed
+flags OFF=[] ALL=["0:opp_no_fitting_deal:0"]
+opp_deal_fit OFF=[0, 2, 5, 1, 3, 7, 6, 4] ALL=null
+opp_fitting_deals OFF=6144 ALL=0
+ALL added {"card": "DarkPrince", "kind": "play", "run_ticks": [2183, 2183], "side": 0, "source": "first_seen", "tick": 2183, "x": 14149, "y": 22715}
+
+live_play_20261026_221406 fields=["derived", "plays"]
+PROHIBITED=["derived"]
+TOMB_HERO single changes record=False; remaining single flags not completed
+derived OFF={"0": {"deck": ["Knight", "IceWizard", "Tesla", "Log", "Xbow", "Rocket", "Tornado", "Skeletons"], "deck_seen": 8, "display": ["Knight", "IceWizard", "Tesla", "Log", "Xbow", "Rocket", "Tornado", "Skeletons"], "flags": [], "level_src": ["hp", "hp", "hp", "mode", "hp", "mode", "mode", "hp"], "levels": [16, 16, 16, 16, 16, 16, 16, 16], "slot_flags": [1, 2, 1, 0, 0, 0, 0, 0], "towers": {"group": "King_PrincessTowers", "king_hp": 7728, "king_level": 16, "level": 16, "princess_hp": 4858}, "word": 83616782}, "1": {"deck": ["GoblinHut", "ElectroGiant", "Lightning", "BarbLog", "ElectroWizard", "SkeletonWarriors", null, null], "deck_seen": 6, "display": ["GoblinHut", "ElectroGiant", "Lightning", "BarbLog", "ElectroWizard", "SkeletonWarriors", null, null], "flags": ["deck_seen:6"], "level_src": ["hp", "hp", "mode", "mode", "hp", "hp", null, null], "levels": [15, 16, 16, 16, 16, 15, null, null], "slot_flags": [0, 1, 0, 0, 2, 0, 0, 0], "towers": {"group": "King_PrincessTowers", "king_hp": 7728, "king_level": 16, "level": 16, "princess_hp": 4858}, "word": null}} ALL={"0": {"deck": ["Knight", "IceWizard", "Tesla", "Log", "Xbow", "Rocket", "Tornado", "Skeletons"], "deck_seen": 8, "display": ["Knight", "IceWizard", "Tesla", "Log", "Xbow", "Rocket", "Tornado", "Skeletons"], "flags": [], "level_src": ["hp", "hp", "hp", "mode", "hp", "mode", "mode", "hp"], "levels": [16, 16, 16, 16, 16, 16, 16, 16], "slot_flags": [1, 2, 1, 0, 0, 0, 0, 0], "towers": {"group": "King_PrincessTowers", "king_hp": 7728, "king_level": 16, "level": 16, "princess_hp": 4858}, "word": 83616782}, "1": {"deck": ["GoblinHut", "ElectroGiant", "Lightning", "BarbLog", "ElectroWizard", "SkeletonWarriors", "LittlePrince", null], "deck_seen": 7, "display": ["GoblinHut", "ElectroGiant", "Lightning", "BarbLog", "ElectroWizard", "SkeletonWarriors", "LittlePrince", null], "flags": ["deck_seen:7"], "level_src": ["hp", "hp", "mode", "mode", "hp", "hp", "hp", null], "levels": [15, 16, 16, 16, 16, 15, 16, null], "slot_flags": [0, 1, 0, 0, 2, 0, 0, 0], "towers": {"group": "King_PrincessTowers", "king_hp": 7728, "king_level": 16, "level": 16, "princess_hp": 4858}, "word": null}}
+ALL added {"card": "LittlePrince", "kind": "play", "run_ticks": [3896, 3896], "side": 1, "source": "first_seen", "tick": 3896, "x": 13845, "y": 18192}
+ALL added {"card": "LittlePrince", "kind": "play", "run_ticks": [5268, 5268], "side": 1, "source": "first_seen", "tick": 5268, "x": 14837, "y": 17802}
+
+live_play_20261026_230512 fields=["flags", "own_cycle_fail", "plays"]
+PROHIBITED=["flags", "own_cycle_fail"]
+TOMB_HERO single changes record=False; remaining single flags not completed
+flags OFF=["1:own_cycle_fail:41"] ALL=[]
+own_cycle_fail OFF=41 ALL=null
+ALL added {"card": "IceWizard", "kind": "play", "run_ticks": [4941, 4941], "side": 1, "source": "own_tap", "tick": 4941, "x": 6500, "y": 17500}
+
+live_play_20261026_232438 fields=["flags", "opp_deal_fit", "opp_fitting_deals", "plays"]
+PROHIBITED=["flags", "opp_deal_fit", "opp_fitting_deals"]
+TOMB_HERO single changes record=False; remaining single flags not completed
+flags OFF=["0:own_cycle_fail:8"] ALL=["0:own_cycle_fail:8", "1:opp_no_fitting_deal:0"]
+opp_deal_fit OFF=[1, 3, 2, 7, 4, 5, 0, 6] ALL=null
+opp_fitting_deals OFF=6144 ALL=0
+ALL added {"card": "DarkPrince", "kind": "play", "run_ticks": [4211, 4211], "side": 1, "source": "first_seen", "tick": 4211, "x": 1956, "y": 14879}
+
+live_play_20261027_003506 fields=["plays"]
+PROHIBITED=[]
+TOMB_HERO single changes record=True; remaining single flags not completed
+ALL added {"card": "Tombstone", "kind": "ability", "run_ticks": [1603, 1604], "side": 1, "source": "tomb_active", "tick": 1603, "x": null, "y": null}
+ALL added {"card": "Tombstone", "kind": "ability", "run_ticks": [2875, 2876], "side": 1, "source": "tomb_active", "tick": 2875, "x": null, "y": null}
+ALL added {"card": "Tombstone", "kind": "ability", "run_ticks": [4049, 4050], "side": 1, "source": "tomb_active", "tick": 4049, "x": null, "y": null}
+ALL added {"card": "Tombstone", "kind": "ability", "run_ticks": [4677, 4679], "side": 1, "source": "tomb_active", "tick": 4678, "x": null, "y": null}
+ALL added {"card": "Tombstone", "kind": "ability", "run_ticks": [5437, 5438], "side": 1, "source": "tomb_active", "tick": 5437, "x": null, "y": null}
+ALL added {"card": "Tombstone", "kind": "ability", "run_ticks": [548, 549], "side": 1, "source": "tomb_active", "tick": 548, "x": null, "y": null}
+ALL removed {"card": "Tombstone", "kind": "ability", "run_ticks": [1836, 1837], "side": 1, "source": "cast_seen", "tick": 1836, "x": null, "y": null}
+ALL removed {"card": "Tombstone", "kind": "ability", "run_ticks": [3338, 3339], "side": 1, "source": "cast_seen", "tick": 3338, "x": null, "y": null}
+ALL removed {"card": "Tombstone", "kind": "ability", "run_ticks": [4453, 4454], "side": 1, "source": "cast_seen", "tick": 4453, "x": null, "y": null}
+ALL removed {"card": "Tombstone", "kind": "ability", "run_ticks": [4974, 4975], "side": 1, "source": "cast_seen", "tick": 4974, "x": null, "y": null}
+ALL removed {"card": "Tombstone", "kind": "ability", "run_ticks": [5753, 5754], "side": 1, "source": "cast_seen", "tick": 5753, "x": null, "y": null}
+ALL removed {"card": "Tombstone", "kind": "ability", "run_ticks": [877, 878], "side": 1, "source": "cast_seen", "tick": 877, "x": null, "y": null}
+
+live_play_20261027_010613 fields=["flags", "opp_deal_fit", "opp_fitting_deals", "plays"]
+PROHIBITED=["flags", "opp_deal_fit", "opp_fitting_deals"]
+TOMB_HERO single changes record=False; remaining single flags not completed
+flags OFF=[] ALL=["1:opp_no_fitting_deal:0"]
+opp_deal_fit OFF=[2, 1, 3, 0, 5, 6, 4, 7] ALL=null
+opp_fitting_deals OFF=6144 ALL=0
+ALL added {"card": "DarkPrince", "kind": "play", "run_ticks": [1557, 1557], "side": 1, "source": "first_seen", "tick": 1557, "x": 13714, "y": 15512}
+ALL added {"card": "DarkPrince", "kind": "play", "run_ticks": [2436, 2436], "side": 1, "source": "first_seen", "tick": 2436, "x": 3508, "y": 15756}
+ALL added {"card": "DarkPrince", "kind": "play", "run_ticks": [3002, 3002], "side": 1, "source": "first_seen", "tick": 3002, "x": 15817, "y": 16797}
+ALL added {"card": "DarkPrince", "kind": "play", "run_ticks": [667, 667], "side": 1, "source": "first_seen", "tick": 667, "x": 13619, "y": 10964}
+
+live_play_20261027_020550 fields=["flags", "opp_deal_fit", "opp_fitting_deals", "plays"]
+PROHIBITED=["flags", "opp_deal_fit", "opp_fitting_deals"]
+TOMB_HERO single changes record=False; remaining single flags not completed
+flags OFF=[] ALL=["0:opp_no_fitting_deal:0"]
+opp_deal_fit OFF=[2, 6, 7, 1, 0, 4, 5, 3] ALL=null
+opp_fitting_deals OFF=6144 ALL=0
+ALL added {"card": "DarkPrince", "kind": "play", "run_ticks": [2371, 2371], "side": 0, "source": "first_seen", "tick": 2371, "x": 12802, "y": 21874}
+
+live_play_20261027_023839 fields=["plays"]
+PROHIBITED=[]
+TOMB_HERO single changes record=True; remaining single flags not completed
+ALL added {"card": "Tombstone", "kind": "ability", "run_ticks": [2887, 2888], "side": 0, "source": "tomb_active", "tick": 2887, "x": null, "y": null}
+ALL added {"card": "Tombstone", "kind": "ability", "run_ticks": [3011, 3012], "side": 0, "source": "tomb_active", "tick": 3011, "x": null, "y": null}
+ALL removed {"card": "Tombstone", "kind": "ability", "run_ticks": [3429, 3430], "side": 0, "source": "cast_seen", "tick": 3429, "x": null, "y": null}
+
+live_play_20261027_031722 fields=["flags", "opp_deal_fit", "opp_fitting_deals", "plays"]
+PROHIBITED=["flags", "opp_deal_fit", "opp_fitting_deals"]
+TOMB_HERO single changes record=True; remaining single flags not completed
+flags OFF=[] ALL=["1:opp_no_fitting_deal:0"]
+opp_deal_fit OFF=[0, 6, 4, 3, 2, 1, 7, 5] ALL=null
+opp_fitting_deals OFF=6144 ALL=0
+ALL added {"card": "Tombstone", "kind": "ability", "run_ticks": [1250, 1251], "side": 1, "source": "tomb_active", "tick": 1250, "x": null, "y": null}
+ALL added {"card": "Tombstone", "kind": "ability", "run_ticks": [3092, 3093], "side": 1, "source": "tomb_active", "tick": 3092, "x": null, "y": null}
+ALL added {"card": "Tombstone", "kind": "play", "run_ticks": [2971, 2971], "side": 1, "source": "first_seen", "tick": 2971, "x": 2500, "y": 18500}
+ALL removed {"card": "Tombstone", "kind": "ability", "run_ticks": [1430, 1431], "side": 1, "source": "cast_seen", "tick": 1430, "x": null, "y": null}
+ALL removed {"card": "Tombstone", "kind": "ability", "run_ticks": [3376, 3377], "side": 1, "source": "cast_seen", "tick": 3376, "x": null, "y": null}
+
+dev changed matches=15; prohibited-field matches=11
+ALL no-single and row-union exceptions: NOT EVALUATED (required singles incomplete).
+table.txt: NOT GENERATED (stopped before scoring).
+Stopped exact PIDs: 47068, 107156, 23184, 71132, 38016, 9756, 106632, 19664, 21000.
+Acceptance: 0/3 gates complete; G1 incomplete builds, G2 prohibited fields, G3 no scoring.

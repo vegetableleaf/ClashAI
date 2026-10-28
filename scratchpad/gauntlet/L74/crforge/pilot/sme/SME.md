@@ -2457,7 +2457,14 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
   pod's on all 4 sets (dev v30 c5b197f5, FRESH1 d365b39c, FRESH2 chain 40, FRESH3 13efec70). 9 records change; fixed 6
   (dev 164130, 185736, 023839, 031722; FRESH2 100341; FRESH3 145600), improved 2 (dev 003506 first div 550 -> 2873,
   201258 +110 exact, first div 827 unrelated), FRESH1 004256 flagged and unchanged; 0 regressions, plants 0 missed.
-- **Running:** ENG-FIX_2 (all
+- **SME_NEAR_BIGGER is contradicted on dev (c; Codex ENG-FIX_2 `engfix/r2/changes.txt`):** with it on, dev gains false
+  plays in 8 matches (Dark Prince x 8 rows in 5 matches, Musketeer x 2 in 154839, Little Prince x 2 in 221406, extra
+  hero Tombstone plays beside their own passive monster in 164130 / 185736 / 031722), 7 of them turning to
+  opp_no_fitting_deal. It stays OFF and FRESH2 101018 stays open (the mechanism (a) holds; the rule needs a narrower
+  test, e.g. the smaller body from an earlier PLAY of the side, not one of the same play's bodies). The same run shows
+  SME_OWN_NEARDEAD clearing own_cycle_fail on dev 160930 (Tesla) and 230512 (IceWizard) (a: the cycle now fits).
+- **Running:** Codex ENG-FIX_2b = ENG-FIX_2 without NEAR_BIGGER and with the field gate relaxed (deal-fit fields may
+  change), pid file `.foreman/scratch/a2/codex/out/ENG-FIX_2b.jsonl.pid`, outputs `engfix/r2b/`. Earlier: ENG-FIX_2 (all
   five flags, `engfix/r2/`, ticket `.foreman/scratch/a2/codex/ENG-FIX_2.md`). Restart: `sh .foreman/scratch/a2/codex_full.sh
   .foreman/scratch/a2/codex/ENG-FIX_2.md medium .foreman/scratch/a2/codex/out/ENG-FIX_2.jsonl` (fresh OUT name).
 - **Lead queue 10-28 (P4 audit):** (1) crforge refusal `Deflect ... from the king tower ... without a target` is a
