@@ -132,6 +132,19 @@ def spell_objects(tables_dir: Path = TABLES) -> dict[str, tuple[str, int]]:
     return {k: v for k, v in out.items() if k not in clash}
 
 
+def barrel_decoy_sim_objects() -> dict[str, tuple[str, int]]:
+    """GB-DECOY in the SIM (opt-in: rl_royale ``barrel_decoy_sim: true`` sets CRFORGE_BARREL_DECOY_SIM=1; unset = {} =
+    today's spell objects). The evolved Goblin Barrel's real barrel (spells_evolved GoblinBarrel_EV1's Projectile, which
+    spell_objects does not walk) becomes a Goblin Barrel FLIGHT spell row, as a plain cast's. Its decoy
+    (GoblinBarrelSpell_EV1_Decoy, actions GoblinBarrel_EV1_CreateDecoy) stays unmapped: a crown-tower shot that
+    projectile_observation.objects drops, so the policy sees one barrel, as live's --barrel-decoy on shows a checkpoint
+    whose vocab lacks barrel_decoy.DECOY_KEY (every one so far). A successor that adds DECOY_KEY sees it live, not here."""
+    flag = os.environ.get("CRFORGE_BARREL_DECOY_SIM", "0")
+    if flag not in ("0", "1"):
+        raise ValueError(f"CRFORGE_BARREL_DECOY_SIM must be 0 or 1, got {flag!r}")
+    return {"GoblinBarrelSpell_EV1": ("GoblinBarrel", 0)} if flag == "1" else {}
+
+
 class _Battle:
     """The RoyaleSim ``Battle`` methods pipeline code calls on ``core._battle``."""
 
@@ -203,7 +216,7 @@ class CrforgeCore:
                     self._cf.uniqueCard.put(name, e["rs_card"])
                 else:
                     self._cf.byRoot.put(f"{name}|{e['rs_card']}", J["jpype"].JInt(packed))
-        for obj, (card, motion) in spell_objects().items():
+        for obj, (card, motion) in {**spell_objects(), **barrel_decoy_sim_objects()}.items():
             if card in self.ids:
                 self._cf.spellObj.put(obj, J["jpype"].JInt(self.ids[card] << 4 | motion))
         self._battle = _Battle(self)

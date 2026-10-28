@@ -393,6 +393,23 @@ def heroiw_press_cfg(cfg: dict) -> str:
     return mode
 
 
+def barrel_decoy_sim_cfg(cfg: dict) -> bool:
+    """GB-DECOY in the SIM (10-28). ``barrel_decoy_sim: true`` (optional; absent / null = unchanged, same config hash;
+    false = unchanged behaviour) sets CRFORGE_BARREL_DECOY_SIM=1 for this process and every actor it starts later: crforge_core maps the evolved
+    Goblin Barrel's real barrel to the Goblin Barrel spell row (barrel_decoy_sim_objects), so the policy sees what live's
+    --barrel-decoy on shows. An environment holding a different value refuses."""
+    want = cfg.get("barrel_decoy_sim")
+    if want is None or want is False:
+        return False
+    if want is not True:
+        raise SystemExit(f"barrel_decoy_sim must be true, false or absent, got {want!r}")
+    have = os.environ.get("CRFORGE_BARREL_DECOY_SIM")
+    if have not in (None, "1"):
+        raise SystemExit(f"barrel_decoy_sim true but the environment has CRFORGE_BARREL_DECOY_SIM={have}: unset one")
+    os.environ["CRFORGE_BARREL_DECOY_SIM"] = "1"
+    return True
+
+
 def posture_cfg(cfg: dict) -> Optional[dict]:
     """The C1 keys of a config, validated (SystemExit naming the bad key): None when ``posture_head`` is absent / null /
     false (then the other posture keys must be unset), else {every, dtau, ent_coef, lr} with POSTURE_DEFAULTS filled.
@@ -3512,7 +3529,8 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                               "ot_start_share", "xbow_start_share", "remote_actors", "kl_ref_refresh_every",
                               "tau_phase", "memory", "memory_aux", "memory_encoder_frozen",
                               "memory_zero_empty", "learner_deterministic", "kl_stop_prev", "stored_values",
-                              "ent_init_rows", "lazy_refine", "ent_pair_every", "matches_per_update") + OPP_TEMPO_KEYS
+                              "ent_init_rows", "lazy_refine", "ent_pair_every", "matches_per_update",
+                              "barrel_decoy_sim") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS and k not in CROWN_KEYS
                 and k not in HT.KEYS and k not in CF.KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
@@ -3800,6 +3818,7 @@ class Learner:
         pc = store_posture_cfg(cfg)                           # ... and the C1 keys; the defaults stored
         abc = store_ability_cfg(cfg)                          # ... and the B6 keys; the defaults stored
         heroiw_press_cfg(cfg)                                 # ... heroiw_press -> env (before any actor starts); refusal
+        barrel_decoy_sim_cfg(cfg)                             # ... barrel_decoy_sim -> env (before any actor starts)
         bc = branch_cfg(cfg)                                 # ... and the branch (opt3) keys
         if bc["branch_gate"]:
             try:
