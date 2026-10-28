@@ -1,0 +1,4 @@
+CAVEAT (coordinator 10-28): both opponent sets ran WITHOUT tower troops on BOTH engines (the crforge facade refused
+them at HEAD b24e6b1); the gate's EV_EXTRA has --opp-tower-troops DaggerDuchess:0.028,Cannoneer:0.028,ChefTower:0.014.
+This baseline is therefore not the historical gate number. Re-run gate.sh (both engines, e4 + iu40, same seeds) with
+the tower-troop flag restored once D1-C lands tower troops in the facade.

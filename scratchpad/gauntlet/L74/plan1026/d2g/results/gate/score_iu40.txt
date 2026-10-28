@@ -1,0 +1,11 @@
+rows: crforge 1920, fin16 1920, paired 1920 (seeds [741200, 742000, 743000, 744000])
+crforge  win 1076/1920 = 56.04% [53.81, 58.25]
+fin16    win 1141/1920 = 59.43% [57.21, 61.60]
+paired crforge - fin16: -3.39 pp [-6.11, -0.66]; discordant 325 cf-only wins / 390 fin16-only wins
+per archetype (opponent deck, push_cal rule): n | crforge win% [CI] | fin16 win% [CI] | paired delta pp
+  beatdown   673 | 53.3 [49.6, 57.1] | 59.6 [55.8, 63.2] | -6.2
+  bridge     590 | 49.5 [45.5, 53.5] | 49.3 [45.3, 53.3] | +0.2
+  hog        198 | 62.6 [55.7, 69.1] | 67.2 [60.4, 73.3] | -4.5
+  control    191 | 61.8 [54.7, 68.4] | 57.1 [50.0, 63.9] | +4.7
+  bait       190 | 72.6 [65.9, 78.5] | 81.1 [74.9, 86.0] | -8.4
+  other       78 | 57.7 [46.6, 68.0] | 67.9 [57.0, 77.3] | -10.3
