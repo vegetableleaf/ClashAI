@@ -1,0 +1,70 @@
+{
+ "n_troop": 1329,
+ "n_princess": 8059,
+ "raw": {
+  "troop": 0.6704,
+  "princess": 0.7328
+ },
+ "troop_side_deck": {
+  "strata": 69,
+  "troop_n": 741,
+  "princess_n": 1164,
+  "mh_diff": -0.0715,
+  "ci95": [
+   -0.143,
+   -0.0017
+  ]
+ },
+ "opponent_deck": {
+  "strata": 486,
+  "troop_n": 1042,
+  "princess_n": 8991,
+  "mh_diff": -0.0488,
+  "ci95": [
+   -0.0772,
+   -0.0187
+  ]
+ },
+ "by_length_and_rng": {
+  "ot=0 rng=0": {
+   "troop": [
+    109,
+    0.8073
+   ],
+   "princess": [
+    702,
+    0.8647
+   ]
+  },
+  "ot=0 rng=1": {
+   "troop": [
+    307,
+    0.8111
+   ],
+   "princess": [
+    785,
+    0.8624
+   ]
+  },
+  "ot=1 rng=0": {
+   "troop": [
+    368,
+    0.6332
+   ],
+   "princess": [
+    3403,
+    0.7097
+   ]
+  },
+  "ot=1 rng=1": {
+   "troop": [
+    545,
+    0.589
+   ],
+   "princess": [
+    3169,
+    0.6964
+   ]
+  }
+ }
+}

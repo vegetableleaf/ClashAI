@@ -1,0 +1,17 @@
+d1c_bzk_base live_play_20261026_141505 ({'exact': 3000, 'torn_snap': 1, 'torn_t1': 2, 'torn_step': 1, 'torn_cmd': 2, 'torn_mixed': 1}, None)
+d1c_bzk_base live_play_20261027_040821 ({'exact': 1779, 'torn_cmd': 1, 'torn_step': 1}, None)
+d1c_bzk_cf live_play_20261026_141505 ({'exact': 3000, 'torn_snap': 1, 'torn_t1': 2, 'torn_step': 1, 'torn_cmd': 2, 'torn_mixed': 1}, None)
+d1c_bzk_cf live_play_20261027_040821 ({'exact': 1779, 'torn_cmd': 1, 'torn_step': 1}, None)
+d1c_bzk_plant live_play_20261026_141505 ({'exact': 1964, 'div': 1038, 'torn_snap': 1, 'torn_t1': 2, 'torn_cmd': 1, 'torn_mixed': 1}, 197)
+d1c_bzk_plant live_play_20261027_040821 ({'exact': 1389, 'div': 390, 'torn_cmd': 1, 'torn_step': 1}, 612)
+d1c_chef live_play_20261026_204518 ({'exact': 1765}, None)
+d1c_chef live_play_20261026_205934 ({'exact': 1766}, None)
+d1c_chef live_play_20261027_010245 ({'exact': 1909, 'torn_t1': 1}, None)
+# D1-C 10-28. bp9Y1 config (pod 32657 bp9/run9.sh, lib_f635c, inputs_v27o, SME_LATE9 SME_MADE9), ONLY the named matches.
+# d1c_bzk_base: tables 16.402.22 as built (BerserkerHero / _BearForm inherit OnStartingAction ActionBerserk); result.json = bp9Y1's, byte for byte.
+# d1c_bzk_cf:   the same tables with OnStartingAction removed from both rows (RoyaleSim loader's reading): result.json = base's,
+#               and all 35 sim traces identical to base's after stripping Java object addresses (@hex) in the ability log.
+# d1c_bzk_plant: planted check, BerserkerHero Hitpoints 350 -> 351: diverges at 197 / 612 (the hero's first plays run 193 / 611).
+# Hero Berserker plays in the two matches: 11 + 5 (opponent, form 2); no Berserker ability press (no bear form).
+# d1c_chef: the 3 RNG-free live Royal Chef matches: = bp9Y1; sim traces carry 96 / 114 / 122 ChefTower_pancake_projectile rows
+#           and 1,951 / 1,404 / 1,799 ChefTower_increase_level_buff rows (the pancake level-up is exercised), every frame exact.

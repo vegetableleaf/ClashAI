@@ -1,0 +1,58 @@
+{
+ "n_troop_one_side": 1283,
+ "n_princess": 1329,
+ "all": {
+  "n": 1283,
+  "crowns_wrong_on_troop_towers": 301,
+  "crowns_wrong_on_princess_towers": 340,
+  "discordant": [
+   77,
+   116
+  ],
+  "mcnemar_chi2": 7.88,
+  "mean_hp_err_troop_towers": 1415.3,
+  "mean_hp_err_princess_towers": 1981.6
+ },
+ "cannoneer": {
+  "n": 168,
+  "crowns_wrong_on_troop_towers": 42,
+  "crowns_wrong_on_princess_towers": 42,
+  "discordant": [
+   9,
+   9
+  ],
+  "mcnemar_chi2": 0.0,
+  "mean_hp_err_troop_towers": 1504.3,
+  "mean_hp_err_princess_towers": 1618.1
+ },
+ "dagger-duchess": {
+  "n": 462,
+  "crowns_wrong_on_troop_towers": 108,
+  "crowns_wrong_on_princess_towers": 118,
+  "discordant": [
+   24,
+   34
+  ],
+  "mcnemar_chi2": 1.72,
+  "mean_hp_err_troop_towers": 1377.5,
+  "mean_hp_err_princess_towers": 2020.4
+ },
+ "royal-chef": {
+  "n": 653,
+  "crowns_wrong_on_troop_towers": 151,
+  "crowns_wrong_on_princess_towers": 180,
+  "discordant": [
+   44,
+   73
+  ],
+  "mcnemar_chi2": 7.19,
+  "mean_hp_err_troop_towers": 1419.2,
+  "mean_hp_err_princess_towers": 2047.8
+ },
+ "princess_control": {
+  "crowns_wrong_side0": 308,
+  "crowns_wrong_side1": 304,
+  "mean_hp_err_side0": 1672.4,
+  "mean_hp_err_side1": 1596.1
+ }
+}

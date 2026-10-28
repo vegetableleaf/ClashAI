@@ -149,12 +149,16 @@ def run_one(src: dict, towers: list, finals: dict) -> dict:
     st = env.core.state()
     crowns = {str(p.team): int(p.crowns) for p in st.players}
     g.update(outcome="fault" if g["faults"] else "ran", accepted=n_acc, plays=len(order), end_tick=int(st.tick),
-             terminated=bool(env.terminated), crowns_match=crowns == src["expected"]["crowns_by_side"])
+             terminated=bool(env.terminated), crowns_match=crowns == src["expected"]["crowns_by_side"],
+             crowns=crowns, hf_crowns=src["expected"]["crowns_by_side"])
     if env.terminated and not g["faults"] and not g["skips"]:      # every input ran: compare the end towers
         ok = True
+        g["tower_hp"], g["hf_towers"] = [], []
         for s in (0, 1):
             hf = finals.get(s) or {}
             hp = [max(0, int(v)) for v in st.players[s].tower_hp]
+            g["tower_hp"].append(hp)
+            g["hf_towers"].append([int(hf.get(k) or 0) for k in ("king", "princess_left", "princess_right")])
             ok &= hp[0] == int(hf.get("king") or 0) and sorted(hp[1:]) == sorted(
                 int(hf.get(k) or 0) for k in ("princess_left", "princess_right"))
         g["towers_match"] = bool(ok)
@@ -171,7 +175,10 @@ def run_shard(job: dict) -> dict:
     env, catalog = R.env_and_catalog()
     reps = {r["replay_tag"]: r for r in pq.read_table(job["rp"]).slice(job["lo"], job["hi"] - job["lo"]).to_pylist()}
     rows = []
+    keep = set(json.loads(Path(job["tags"]).read_text())) if job.get("tags") else None
     for src in R.hf_sources(Path(job["rp"]), Path(job["ap"]), job["lo"], job["hi"], catalog):
+        if keep is not None and src["tag"] not in keep:
+            continue
         r = reps[src["tag"]]
         try:
             g = run_one(src, towers_of(r), src.get("final_towers") or {})
@@ -239,6 +246,7 @@ def main(argv=None) -> int:
     r.add_argument("--limit", type=int, default=20000)
     r.add_argument("--chunk", type=int, default=250)
     r.add_argument("--workers", type=int, default=48)
+    r.add_argument("--tags", type=Path, help="JSON list of replay tags: only these are driven (a re-run subset)")
     s = sub.add_parser("summary")
     s.add_argument("out", type=Path)
     a = ap.parse_args(argv)
@@ -246,7 +254,7 @@ def main(argv=None) -> int:
         print(json.dumps(summary(a.out), indent=1))
         return 0
     a.out.mkdir(parents=True, exist_ok=True)
-    js = R.jobs(a.data, a.out, a.chunk, a.limit, 0)
+    js = [dict(j, tags=str(a.tags) if a.tags else None) for j in R.jobs(a.data, a.out, a.chunk, a.limit, 0)]
     (a.out / "sample.json").write_text(json.dumps([[j["sid"], j["lo"], j["hi"]] for j in js]))
     todo = [j for j in js if not (a.out / "grades" / f"{j['sid']}.jsonl").exists()]
     print(f"[d1c] {len(js)} shards, {len(todo)} to do, {a.workers} workers", flush=True)
