@@ -12,7 +12,17 @@
   `rule_replay.py` (rules only, model card/timing held fixed) -> real-lane first answers 30/50 -> 49/50 (Log 9 by
   log_barrel, troops 10 by barrel_lane; 1 Tesla left).
 
+- Owner go 10-28 (via lead; creation order accepted as the colour-cue stand-in). Wiring 464b32d: --barrel-decoy
+  off|on (default off). LIVE_OPTIONS NOT yet edited (deploy step, after the blind verifier's PASS).
+- Model replay (step 1): pod 32657 /workspace/gbdecoy (cp -al of cb_mem + HEAD pipeline overlay + local catalog / cue
+  table), 56 logs in replay_logs/ (replay/windows.json: 32 evo matches + 24 no-evo matches, 102 plain casts), out/ per
+  log. Restart (resumable): `bash /workspace/gbdecoy/run_all.sh`. Summary: `python replay/analyze.py OUT windows.json`.
+- LOOP-INT a9ec050f10f6a04be messaged the interface note (Java obs rename).
+
 ## Next
+- After PASS: append `--barrel-decoy on` to scratchpad/gauntlet/L70/live/LIVE_OPTIONS; start_live.sh icebow
+  --no-fast-plays --ranked --check; stop_live.sh (wait 'done'); no live_play.py left; start_live.sh icebow
+  --no-fast-plays --ranked; start event barrel_decoy true + reader merged_sf. Rollback: remove the line, same restart.
 - Model-level replay of the 50 evo windows (baseline vs barrel_decoy.objects) through the real GenPilot, as
   `scratchpad/gauntlet/L74/speed/live_profile.py` does; run on a pod (not the live laptop). Not started.
 - Successor: add `goblin-barrel-decoy` to the card vocab; crforge Java obs (CfPubObj) must rename the decoy.

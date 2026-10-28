@@ -1,0 +1,2081 @@
+{
+"live_play_20261025_090631.jsonl": [
+{
+"kind": "plain",
+"t0": 738,
+"tland": 792,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1883,
+"tland": 1937,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 2833,
+"tland": 2887,
+"real": "R",
+"decoy": "L"
+}
+],
+"live_play_20261025_101722.jsonl": [
+{
+"kind": "plain",
+"t0": 689,
+"tland": 743,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1723,
+"tland": 1777,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 2542,
+"tland": 2598,
+"real": "R",
+"decoy": "L"
+},
+{
+"kind": "plain",
+"t0": 3095,
+"tland": 3151,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3562,
+"tland": 3618,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 4257,
+"tland": 4311,
+"real": "R",
+"decoy": "L"
+},
+{
+"kind": "plain",
+"t0": 5122,
+"tland": 5178,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 5447,
+"tland": 5503,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 5845,
+"tland": 5901,
+"real": "R",
+"decoy": "L"
+}
+],
+"live_play_20261025_153922.jsonl": [
+{
+"kind": "plain",
+"t0": 184,
+"tland": 243,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1293,
+"tland": 1345,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 3139,
+"tland": 3193,
+"real": "R",
+"decoy": "L"
+}
+],
+"live_play_20261025_200146.jsonl": [
+{
+"kind": "plain",
+"t0": 427,
+"tland": 483,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1733,
+"tland": 1787,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 2589,
+"tland": 2643,
+"real": "L",
+"decoy": "R"
+},
+{
+"kind": "plain",
+"t0": 3018,
+"tland": 3073,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3469,
+"tland": 3531,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 4172,
+"tland": 4230,
+"real": "L",
+"decoy": "R"
+},
+{
+"kind": "plain",
+"t0": 5001,
+"tland": 5055,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 5263,
+"tland": 5319,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 5588,
+"tland": 5642,
+"real": "L",
+"decoy": "R"
+}
+],
+"live_play_20261025_204958.jsonl": [
+{
+"kind": "plain",
+"t0": 818,
+"tland": 872,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2213,
+"tland": 2269,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 2956,
+"tland": 3012,
+"real": "R",
+"decoy": "L"
+},
+{
+"kind": "plain",
+"t0": 3462,
+"tland": 3518,
+"real": "R",
+"decoy": null
+}
+],
+"live_play_20261025_233106.jsonl": [
+{
+"kind": "plain",
+"t0": 312,
+"tland": 368,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1081,
+"tland": 1135,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 1880,
+"tland": 1934,
+"real": "R",
+"decoy": "L"
+},
+{
+"kind": "plain",
+"t0": 2573,
+"tland": 2627,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3675,
+"tland": 3733,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 4065,
+"tland": 4119,
+"real": "R",
+"decoy": "L"
+},
+{
+"kind": "plain",
+"t0": 5144,
+"tland": 5200,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 5496,
+"tland": 5550,
+"real": "R",
+"decoy": null
+}
+],
+"live_play_20261026_002910.jsonl": [
+{
+"kind": "plain",
+"t0": 304,
+"tland": 358,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 919,
+"tland": 975,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 1893,
+"tland": 1959,
+"real": "R",
+"decoy": "L"
+},
+{
+"kind": "plain",
+"t0": 2844,
+"tland": 2908,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3340,
+"tland": 3394,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 3944,
+"tland": 4000,
+"real": "R",
+"decoy": "L"
+}
+],
+"live_play_20261026_052316.jsonl": [
+{
+"kind": "plain",
+"t0": 151,
+"tland": 205,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1084,
+"tland": 1138,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 2437,
+"tland": 2491,
+"real": "L",
+"decoy": "R"
+},
+{
+"kind": "plain",
+"t0": 2823,
+"tland": 2877,
+"real": "L",
+"decoy": null
+}
+],
+"live_play_20261026_053016.jsonl": [
+{
+"kind": "plain",
+"t0": 294,
+"tland": 348,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1533,
+"tland": 1587,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 2512,
+"tland": 2568,
+"real": "L",
+"decoy": "R"
+},
+{
+"kind": "plain",
+"t0": 3287,
+"tland": 3343,
+"real": "L",
+"decoy": null
+}
+],
+"live_play_20261026_085317.jsonl": [
+{
+"kind": "plain",
+"t0": 614,
+"tland": 667,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2043,
+"tland": 2097,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 2437,
+"tland": 2495,
+"real": "L",
+"decoy": "R"
+},
+{
+"kind": "plain",
+"t0": 3162,
+"tland": 3218,
+"real": "L",
+"decoy": null
+}
+],
+"live_play_20261026_130453.jsonl": [
+{
+"kind": "plain",
+"t0": 600,
+"tland": 654,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2026,
+"tland": 2082,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 2916,
+"tland": 2971,
+"real": "R",
+"decoy": "L"
+},
+{
+"kind": "plain",
+"t0": 3383,
+"tland": 3437,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3969,
+"tland": 4013,
+"real": "L",
+"decoy": null
+}
+],
+"live_play_20261026_150458.jsonl": [
+{
+"kind": "plain",
+"t0": 714,
+"tland": 768,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1869,
+"tland": 1931,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 2642,
+"tland": 2706,
+"real": "L",
+"decoy": "R"
+},
+{
+"kind": "plain",
+"t0": 3343,
+"tland": 3405,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3755,
+"tland": 3811,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 4367,
+"tland": 4421,
+"real": "R",
+"decoy": "L"
+},
+{
+"kind": "plain",
+"t0": 4928,
+"tland": 4983,
+"real": "R",
+"decoy": null
+}
+],
+"live_play_20261026_174710.jsonl": [
+{
+"kind": "plain",
+"t0": 723,
+"tland": 777,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2289,
+"tland": 2345,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 2873,
+"tland": 2927,
+"real": "L",
+"decoy": "R"
+},
+{
+"kind": "plain",
+"t0": 3542,
+"tland": 3598,
+"real": "L",
+"decoy": null
+}
+],
+"live_play_20261026_182725.jsonl": [
+{
+"kind": "plain",
+"t0": 244,
+"tland": 298,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1066,
+"tland": 1121,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 1952,
+"tland": 2007,
+"real": "R",
+"decoy": "L"
+},
+{
+"kind": "plain",
+"t0": 2605,
+"tland": 2659,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2957,
+"tland": 3012,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 3342,
+"tland": 3400,
+"real": "R",
+"decoy": "L"
+}
+],
+"live_play_20261026_225533.jsonl": [
+{
+"kind": "plain",
+"t0": 172,
+"tland": 228,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1592,
+"tland": 1656,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 2468,
+"tland": 2522,
+"real": "R",
+"decoy": "L"
+},
+{
+"kind": "plain",
+"t0": 3143,
+"tland": 3197,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3712,
+"tland": 3777,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 4202,
+"tland": 4258,
+"real": "L",
+"decoy": "R"
+},
+{
+"kind": "plain",
+"t0": 4965,
+"tland": 5021,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 5334,
+"tland": 5388,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 5563,
+"tland": 5617,
+"real": "R",
+"decoy": "L"
+}
+],
+"live_play_20261026_231045.jsonl": [
+{
+"kind": "plain",
+"t0": 204,
+"tland": 270,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1121,
+"tland": 1175,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 2462,
+"tland": 2518,
+"real": "L",
+"decoy": "R"
+},
+{
+"kind": "plain",
+"t0": 3264,
+"tland": 3320,
+"real": "L",
+"decoy": null
+}
+],
+"live_play_20261026_231402.jsonl": [
+{
+"kind": "plain",
+"t0": 193,
+"tland": 251,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 814,
+"tland": 874,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 1777,
+"tland": 1833,
+"real": "R",
+"decoy": "L"
+},
+{
+"kind": "plain",
+"t0": 2506,
+"tland": 2560,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3909,
+"tland": 3965,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 4814,
+"tland": 4870,
+"real": "R",
+"decoy": "L"
+},
+{
+"kind": "plain",
+"t0": 5487,
+"tland": 5529,
+"real": "L",
+"decoy": null
+}
+],
+"live_play_20261026_231920.jsonl": [
+{
+"kind": "plain",
+"t0": 814,
+"tland": 868,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1516,
+"tland": 1572,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 2547,
+"tland": 2613,
+"real": "R",
+"decoy": "L"
+},
+{
+"kind": "plain",
+"t0": 3194,
+"tland": 3250,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3698,
+"tland": 3752,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 4117,
+"tland": 4173,
+"real": "R",
+"decoy": "L"
+},
+{
+"kind": "plain",
+"t0": 4483,
+"tland": 4537,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 4876,
+"tland": 4930,
+"real": "R",
+"decoy": null
+}
+],
+"live_play_20261027_012200.jsonl": [
+{
+"kind": "plain",
+"t0": 204,
+"tland": 260,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1053,
+"tland": 1105,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 2554,
+"tland": 2610,
+"real": "R",
+"decoy": "L"
+},
+{
+"kind": "plain",
+"t0": 3435,
+"tland": 3489,
+"real": "R",
+"decoy": null
+}
+],
+"live_play_20261027_035412.jsonl": [
+{
+"kind": "plain",
+"t0": 423,
+"tland": 477,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1385,
+"tland": 1441,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 2465,
+"tland": 2519,
+"real": "R",
+"decoy": "L"
+},
+{
+"kind": "plain",
+"t0": 3355,
+"tland": 3397,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3779,
+"tland": 3835,
+"real": "R",
+"decoy": null
+}
+],
+"live_play_20261027_041602.jsonl": [
+{
+"kind": "plain",
+"t0": 165,
+"tland": 221,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1169,
+"tland": 1225,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 2276,
+"tland": 2330,
+"real": "L",
+"decoy": "R"
+},
+{
+"kind": "plain",
+"t0": 2664,
+"tland": 2719,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3168,
+"tland": 3224,
+"real": "R",
+"decoy": null
+}
+],
+"live_play_20261027_071515.jsonl": [
+{
+"kind": "plain",
+"t0": 1195,
+"tland": 1250,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1787,
+"tland": 1842,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 2587,
+"tland": 2643,
+"real": "R",
+"decoy": "L"
+}
+],
+"live_play_20261027_102455.jsonl": [
+{
+"kind": "plain",
+"t0": 1063,
+"tland": 1117,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2128,
+"tland": 2184,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 3289,
+"tland": 3345,
+"real": "R",
+"decoy": "L"
+},
+{
+"kind": "plain",
+"t0": 4172,
+"tland": 4228,
+"real": "R",
+"decoy": null
+}
+],
+"live_play_20261027_122836.jsonl": [
+{
+"kind": "plain",
+"t0": 1360,
+"tland": 1414,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2670,
+"tland": 2726,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 3415,
+"tland": 3467,
+"real": "L",
+"decoy": "R"
+}
+],
+"live_play_20261027_144058.jsonl": [
+{
+"kind": "plain",
+"t0": 503,
+"tland": 558,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1263,
+"tland": 1319,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 4030,
+"tland": 4084,
+"real": "R",
+"decoy": "L"
+},
+{
+"kind": "plain",
+"t0": 4457,
+"tland": 4511,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 5662,
+"tland": 5718,
+"real": "R",
+"decoy": null
+}
+],
+"live_play_20261027_151657.jsonl": [
+{
+"kind": "plain",
+"t0": 445,
+"tland": 501,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1207,
+"tland": 1263,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 2589,
+"tland": 2645,
+"real": "R",
+"decoy": "L"
+},
+{
+"kind": "plain",
+"t0": 3136,
+"tland": 3190,
+"real": "L",
+"decoy": null
+}
+],
+"live_play_20261027_172512.jsonl": [
+{
+"kind": "plain",
+"t0": 502,
+"tland": 558,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2366,
+"tland": 2422,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 2877,
+"tland": 2931,
+"real": "R",
+"decoy": "L"
+},
+{
+"kind": "plain",
+"t0": 3562,
+"tland": 3626,
+"real": "R",
+"decoy": null
+}
+],
+"live_play_20261027_174036.jsonl": [
+{
+"kind": "plain",
+"t0": 1460,
+"tland": 1526,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2106,
+"tland": 2161,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 2724,
+"tland": 2779,
+"real": "L",
+"decoy": "R"
+},
+{
+"kind": "plain",
+"t0": 3216,
+"tland": 3270,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3498,
+"tland": 3554,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 4233,
+"tland": 4291,
+"real": "R",
+"decoy": "L"
+}
+],
+"live_play_20261027_175446.jsonl": [
+{
+"kind": "plain",
+"t0": 412,
+"tland": 468,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1001,
+"tland": 1055,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 2086,
+"tland": 2140,
+"real": "L",
+"decoy": "R"
+},
+{
+"kind": "plain",
+"t0": 2825,
+"tland": 2880,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3625,
+"tland": 3689,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 4146,
+"tland": 4202,
+"real": "R",
+"decoy": "L"
+},
+{
+"kind": "plain",
+"t0": 4649,
+"tland": 4703,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 5153,
+"tland": 5207,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 5497,
+"tland": 5552,
+"real": "L",
+"decoy": "R"
+},
+{
+"kind": "plain",
+"t0": 5908,
+"tland": 5964,
+"real": "L",
+"decoy": null
+}
+],
+"live_play_20261027_213048.jsonl": [
+{
+"kind": "plain",
+"t0": 488,
+"tland": 546,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1618,
+"tland": 1672,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 3533,
+"tland": 3588,
+"real": "R",
+"decoy": "L"
+},
+{
+"kind": "plain",
+"t0": 3869,
+"tland": 3922,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 4372,
+"tland": 4428,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 5193,
+"tland": 5247,
+"real": "R",
+"decoy": "L"
+},
+{
+"kind": "plain",
+"t0": 5444,
+"tland": 5500,
+"real": "R",
+"decoy": null
+}
+],
+"live_play_20261028_015554.jsonl": [
+{
+"kind": "plain",
+"t0": 159,
+"tland": 213,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1303,
+"tland": 1357,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 2600,
+"tland": 2658,
+"real": "R",
+"decoy": "L"
+},
+{
+"kind": "plain",
+"t0": 3093,
+"tland": 3147,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3815,
+"tland": 3871,
+"real": "R",
+"decoy": null
+}
+],
+"live_play_20261028_090643.jsonl": [
+{
+"kind": "plain",
+"t0": 195,
+"tland": 251,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 936,
+"tland": 990,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 1859,
+"tland": 1917,
+"real": "R",
+"decoy": "L"
+},
+{
+"kind": "plain",
+"t0": 3284,
+"tland": 3338,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3827,
+"tland": 3881,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 4315,
+"tland": 4369,
+"real": "R",
+"decoy": "L"
+},
+{
+"kind": "plain",
+"t0": 4732,
+"tland": 4788,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 5192,
+"tland": 5248,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "evo",
+"t0": 5497,
+"tland": 5553,
+"real": "L",
+"decoy": "R"
+},
+{
+"kind": "plain",
+"t0": 5773,
+"tland": 5827,
+"real": "R",
+"decoy": null
+}
+],
+"live_play_20261025_172622.jsonl": [
+{
+"kind": "plain",
+"t0": 2322,
+"tland": 2378,
+"real": "R",
+"decoy": null
+}
+],
+"live_play_20261025_170806.jsonl": [
+{
+"kind": "plain",
+"t0": 455,
+"tland": 510,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1109,
+"tland": 1163,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1894,
+"tland": 1948,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2508,
+"tland": 2564,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3149,
+"tland": 3205,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3562,
+"tland": 3617,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 4448,
+"tland": 4513,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 4923,
+"tland": 4977,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 5335,
+"tland": 5390,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 5949,
+"tland": 6000,
+"real": "L",
+"decoy": null
+}
+],
+"live_play_20261026_072724.jsonl": [
+{
+"kind": "plain",
+"t0": 307,
+"tland": 363,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1613,
+"tland": 1667,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2384,
+"tland": 2438,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2789,
+"tland": 2845,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3422,
+"tland": 3480,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 4153,
+"tland": 4208,
+"real": "R",
+"decoy": null
+}
+],
+"live_play_20261026_211757.jsonl": [
+{
+"kind": "plain",
+"t0": 283,
+"tland": 337,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1212,
+"tland": 1268,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2360,
+"tland": 2416,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3093,
+"tland": 3147,
+"real": "R",
+"decoy": null
+}
+],
+"live_play_20261025_234511.jsonl": [
+{
+"kind": "plain",
+"t0": 156,
+"tland": 212,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1435,
+"tland": 1489,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2656,
+"tland": 2712,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3657,
+"tland": 3713,
+"real": "R",
+"decoy": null
+}
+],
+"live_play_20261025_185746.jsonl": [
+{
+"kind": "plain",
+"t0": 321,
+"tland": 375,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1294,
+"tland": 1348,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2523,
+"tland": 2579,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2956,
+"tland": 3012,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3601,
+"tland": 3655,
+"real": "R",
+"decoy": null
+}
+],
+"live_play_20261026_051754.jsonl": [
+{
+"kind": "plain",
+"t0": 477,
+"tland": 532,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1330,
+"tland": 1384,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2884,
+"tland": 2938,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3409,
+"tland": 3449,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3919,
+"tland": 3973,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 5093,
+"tland": 5149,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 5523,
+"tland": 5578,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 5820,
+"tland": 5862,
+"real": "L",
+"decoy": null
+}
+],
+"live_play_20261027_230324.jsonl": [
+{
+"kind": "plain",
+"t0": 186,
+"tland": 248,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 638,
+"tland": 694,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2252,
+"tland": 2304,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2983,
+"tland": 3041,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3784,
+"tland": 3836,
+"real": "L",
+"decoy": null
+}
+],
+"live_play_20261026_194213.jsonl": [
+{
+"kind": "plain",
+"t0": 2234,
+"tland": 2288,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3118,
+"tland": 3172,
+"real": "L",
+"decoy": null
+}
+],
+"live_play_20261027_085408.jsonl": [
+{
+"kind": "plain",
+"t0": 224,
+"tland": 280,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1145,
+"tland": 1197,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2316,
+"tland": 2372,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2983,
+"tland": 3041,
+"real": "L",
+"decoy": null
+}
+],
+"live_play_20261027_001702.jsonl": [
+{
+"kind": "plain",
+"t0": 162,
+"tland": 218,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1333,
+"tland": 1387,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3303,
+"tland": 3369,
+"real": "L",
+"decoy": null
+}
+],
+"live_play_20261027_162805.jsonl": [
+{
+"kind": "plain",
+"t0": 687,
+"tland": 741,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1866,
+"tland": 1922,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2756,
+"tland": 2812,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3322,
+"tland": 3378,
+"real": "R",
+"decoy": null
+}
+],
+"live_play_20261027_030003.jsonl": [
+{
+"kind": "plain",
+"t0": 151,
+"tland": 203,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1493,
+"tland": 1547,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2328,
+"tland": 2384,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3063,
+"tland": 3117,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3483,
+"tland": 3539,
+"real": "L",
+"decoy": null
+}
+],
+"live_play_20261028_061708.jsonl": [
+{
+"kind": "plain",
+"t0": 252,
+"tland": 308,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1317,
+"tland": 1371,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2605,
+"tland": 2661,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3576,
+"tland": 3648,
+"real": "L",
+"decoy": null
+}
+],
+"live_play_20261025_090951.jsonl": [
+{
+"kind": "plain",
+"t0": 333,
+"tland": 387,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1802,
+"tland": 1870,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2879,
+"tland": 2933,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3822,
+"tland": 3878,
+"real": "L",
+"decoy": null
+}
+],
+"live_play_20261026_145247.jsonl": [
+{
+"kind": "plain",
+"t0": 151,
+"tland": 203,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1279,
+"tland": 1333,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3183,
+"tland": 3237,
+"real": "L",
+"decoy": null
+}
+],
+"live_play_20261026_033711.jsonl": [
+{
+"kind": "plain",
+"t0": 248,
+"tland": 302,
+"real": "R",
+"decoy": null
+}
+],
+"live_play_20261025_163551.jsonl": [
+{
+"kind": "plain",
+"t0": 775,
+"tland": 832,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1832,
+"tland": 1890,
+"real": "L",
+"decoy": null
+}
+],
+"live_play_20261026_163641.jsonl": [
+{
+"kind": "plain",
+"t0": 169,
+"tland": 225,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1422,
+"tland": 1486,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2543,
+"tland": 2601,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3084,
+"tland": 3150,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3652,
+"tland": 3707,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 4648,
+"tland": 4702,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 5345,
+"tland": 5399,
+"real": "R",
+"decoy": null
+}
+],
+"live_play_20261026_202916.jsonl": [
+{
+"kind": "plain",
+"t0": 206,
+"tland": 262,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1218,
+"tland": 1274,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2452,
+"tland": 2508,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3055,
+"tland": 3111,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3425,
+"tland": 3480,
+"real": "R",
+"decoy": null
+}
+],
+"live_play_20261026_034437.jsonl": [
+{
+"kind": "plain",
+"t0": 727,
+"tland": 787,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1518,
+"tland": 1574,
+"real": "R",
+"decoy": null
+}
+],
+"live_play_20261026_223232.jsonl": [
+{
+"kind": "plain",
+"t0": 1155,
+"tland": 1211,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2224,
+"tland": 2276,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2946,
+"tland": 2998,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3657,
+"tland": 3711,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 4333,
+"tland": 4388,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 4722,
+"tland": 4778,
+"real": "R",
+"decoy": null
+}
+],
+"live_play_20261026_044226.jsonl": [
+{
+"kind": "plain",
+"t0": 268,
+"tland": 322,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 1562,
+"tland": 1618,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2706,
+"tland": 2761,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3175,
+"tland": 3231,
+"real": "L",
+"decoy": null
+}
+],
+"live_play_20261028_014848.jsonl": [
+{
+"kind": "plain",
+"t0": 723,
+"tland": 778,
+"real": "L",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 2187,
+"tland": 2241,
+"real": "R",
+"decoy": null
+},
+{
+"kind": "plain",
+"t0": 3013,
+"tland": 3067,
+"real": "R",
+"decoy": null
+}
+]
+}
