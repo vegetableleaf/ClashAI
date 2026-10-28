@@ -330,6 +330,11 @@ def register(half_life, n_sim):
     B['b_live_rms_d_max'], B['b_live_per_stat_abs_d_max'], B['b_live_min_sim_games'] = rms, tost, n_sim
     B['b_live_human_null'] = {k: bn[k] for k in ('draws', 'n_sim', 'neff', 'pass_full', 'pass_rms', 'pass_tost', 'pass_b3', 'rms_q50',
                                                  'rms_q95', 'tost_max_q50', 'tost_max_q95')}
+    vf = OUT / 'verify' / 'v5_bnull.json'           # the same null re-run AT the registered limits (v5_verify.py)
+    if vf.exists():
+        v = json.loads(vf.read_text())
+        assert v['limits_used'] == dict(rms=rms, tost=tost), (v['limits_used'], rms, tost)
+        B['b_live_human_null']['pass_full_at_registered_limits'] = v['pass_full']
     C['live_auc_upper_ci_max'], C['live_min_model_games'] = auc, n_sim
     C['live_human_null'] = {k: cn[k] for k in ('draws', 'auc_mean', 'auc_q95', 'upper_ci_q95', 'upper_ci_max', 'pass_at_055', 'neff_h', 'n_m')}
     old = th['changelog']
@@ -339,7 +344,8 @@ def register(half_life, n_sim):
                        f"B.live_reference ({meta['n_icebow']} matches, half-life {half_life} d, Kish n_eff {bn['neff']:.0f}; reader / Mark "
                        f"shift masks {sh['masks']}). Human null at the scored n (n_eff draws vs {n_sim} model games, {bn['draws']} draws): "
                        f"full B-live pass {bn['pass_full']:.3f} under the plan margins; RMS q95 {bn['rms_q95']:.3f}, max per-stat TOST "
-                       f"q95 {bn['tost_max_q95']:.3f} -> limits RMS {rms}, per-stat {tost} (max of plan and human q95). C-live: "
+                       f"q95 {bn['tost_max_q95']:.3f} -> limits RMS {rms}, per-stat {tost} (max of plan and human q95; full pass at these limits in "
+                       f"B.b_live_human_null). C-live: "
                        f"{cn['draws']} fresh discriminators on human halves (weighted human class, {n_sim} humans as the model), upper "
                        f"CI q95 {cn['upper_ci_q95']:.3f} -> limit {auc}; sufficiency = >= {n_sim} model games (C.n_per_class_min stays "
                        f"for C-HF). S (siege) unchanged on the CLXIII calibration block. v4 sha a5eb2c8f...; v4 text: {old}")

@@ -7,6 +7,7 @@
 | 2026-10-27 | THRESHOLDS.json v2 | `0ba3aa32763dc3812d55fcaedd827f8fea482605945b2ca2a0cd364d6c5e2802` | before any model score. Two changes found by the human-vs-human control (see section Controls): B3 drops first_tick; A.ece_min_decisions = 200000 added. v1 is superseded |
 | 2026-10-27 | THRESHOLDS.json v3 | `0c42e9142d70842b1c59623b7fbe71ea4da890192e55bb3c2f677916712ec703` | before any new model score; human controls only. B3 point band becomes a CI-overlap rule (see changelog in the file); TOST unchanged. v2 superseded |
 | 2026-10-28 | THRESHOLDS.json v4 | `a5eb2c8fb232ccf94f3fee68617a297451dbcbd62287f3111e24fe9a5ad05695` | P2-SCORE, before any model score on the new items; human controls only: 25-stat closed-loop list, B-HF sufficiency 3,700 games per class, siege margins S (design-size 95% human pass), C built. B-live rule unchanged (decision owed). v3 superseded |
+| 2026-10-28 | THRESHOLDS.json v5 | `c0c2feb4cdc7ad6b004e8fe1bf36b807ad5423e59bea5fef13b71b08d057f1a8` | P2-SCORE (account 2), owner decision 10-28 (HANDOFF_1028 9.9): B-live + C-live from ALL recorded live matches, recency-weighted; human controls only, registered BEFORE any model score (section 9). v4 superseded |
 
 `scorecard.py` refuses to run if THRESHOLDS.json does not hash to the LAST sha in this table.
 
@@ -161,3 +162,50 @@ Reports: `out/card_e4/report.txt|json`, `out/card_iu40/report.txt|json`. Both ba
   first clean sighting), SIM plays = engine run tick (land + 20) at the deploy point; opp_el reads the SIM counter at the last 1-s
   board sample (up to 20 ticks earlier than live's last decision). C-live therefore mixes opponent and instrument differences;
   C-HF (both exact) is the clean form and needs split item b.
+
+## 9. THRESHOLDS v5 (2026-10-28, account 2): B-live and C-live from all recorded live matches (owner decision, HANDOFF_1028 9.9)
+All (a) measured on human data only, before any model score; outputs `out/v5_shift.txt|json`, `out/v5_bnull.json`,
+`out/verify/v5_bnull.json`, `out/v5_cnull.json` (+ per-draw `out/v5_cnull/`), reference `data/allref_v5.json.gz` (local, sha256
+109b37ce...; rebuild = `allref.py scan` on the laptop, `parse` + `build` on a pod: section 9.5).
+### 9.1 Reference
+- Population rule: every non-sealed, non-dry live_play log of the ICEBOW deck (all Marks, both accounts) with public frames and
+  >= 3 detected opponent plays = **4,752 matches** (10-07 .. 10-28 09:06; logs before 10-07 have no public frames). Bait-deck
+  matches (306) are out by rule: same days, bait minus icebow humans differ by d -0.44 opp_el, +0.35 own_half, -0.33 react_s.
+  The sealed block is never opened: every step name-tests the stem first. (The opp_model / humanlike caches DO hold 38
+  sealed-block caches each, written by v4's level_d run; excluded by name from every copy and build.)
+- Weights: w = 0.5 ** (age_days / 7), age from sealed_from; **Kish n_eff 3,417** (half-life 3.5 d: 1,945; 14 d: 4,337; none: 4,752).
+  Why 7 d: the owner asked for recency (harder opponents later); one week = the newest Ranked week keeps >= 50% weight per match.
+- Reader / Mark shift test (`allref.py shift`, 300 matches per side at each boundary, flag |d| > 1.96 sqrt(SE^2 + tau^2), tau =
+  0.099 = the excess spread of 6 same-Mark placebo boundaries): **reader boundaries shift nothing**: v2 -> merged (10-17, + Mark
+  CXXXVIII) 0 stats, game build 160635001 port (10-27 05:00) 0 stats, merged -> merged_sf (10-28 07:53) 0 stats but only 18
+  matches after it (smallest flaggable |d| 0.51: (b) untested at useful power; the reader trial's "play metrics unchanged" is
+  the other evidence). **Mark boundaries do**: CLIX -> CLX (10-19, also the Ranked start) react_s / react_3s / react_lift /
+  gap_p10 / gap_p50 / own_half; CLX -> CLXIII (10-25) own_half / bridge / troop_depth. Rule extended to Mark changes (my call:
+  the opponent reacts to OUR plays, so a stat that moves with the Mark is not comparable to CLXIII SIM rows): a flagged stat is
+  NaN before its latest flagged boundary (dropped, not corrected). Masks: react_s, react_3s, react_lift, gap_p10, gap_p50 from
+  10-19; own_half, bridge, troop_depth from 10-25 (per-stat n_eff 1,604 / 861).
+### 9.2 B-live (human null at the scored n: n_eff draws ~ w vs 1,900 human "model" games ~ w, 1,000 draws)
+- Plan margins (per-stat TOST 0.20, RMS 0.10, B3 CI): humans pass **92.4%** (RMS 100%, B3 99.9%, TOST 92.4%: the max over 25
+  stats of |d| + 1.645 SE has q95 0.212). RMS q95 0.050.
+- v5 = max(plan, human q95): **per-stat 0.22, RMS 0.10, >= 1,900 model games; humans pass 97.4% at these limits** (same null re-run).
+### 9.3 C-live (40 fresh discriminators, weighted human half vs 1,900 humans drawn ~ w from the other half, match-level split)
+- AUC mean 0.499, upper-CI q95 0.556 (max 0.576); 90% of draws pass the plan's 0.55 -> **v5 limit 0.56, >= 1,900 model games**
+  (C.n_per_class_min 5,000 kept for C-HF). Conservative: the null's human class has n_eff ~1,708, the scored one 3,417.
+### 9.4 CONCERN (a) measured: the null has no drift, and human behaviour drifts
+- Same-Mark placebo halves (a day or two apart) differ by tau ~0.10 SD per stat; the newest humans (CLXIII 10-25 .. seal, 867)
+  vs the weighted older reference: RMS d 0.134 (pocket_share -0.32, ppm_ot +0.22, lane_left +0.21).
+- The weighted reference sits away from the newest block by bias RMS 0.015 / 0.043 / 0.077 / 0.096 at half-life 2 / 3.5 / 7 /
+  14 d (worst pocket_share +0.22 at 7 d). A model EQUAL to the newest humans, at 1,900 games, would pass v5's B-live only ~2%
+  at h 7 (per-stat 0.22; RMS median 0.084), 33% at h 3.5, 60% at h 2 (noise of the low-n stats then binds); the direct target
+  control (1,900 draws from the newest 867) agrees (h 7: 3%). So the owner's implementation (bootstrap at n_eff, no drift)
+  makes humans pass 97% of the time only if "human" means the weighted mix, not today's opponents.
+- Not changed in v5 (the owner fixed the method; E4 / I u40 fail by 5x either way). Options for v6 (owner decision): (i) a
+  drift-aware null (human draws from the newest block), which at h 7 needs a per-stat margin ~0.4; (ii) a shorter half-life
+  (2 d: bias 0.015, n_eff 1,129) plus (i); (iii) drop the all-25-stats per-stat TOST (the low-n stats pocket_share / ppm_ot /
+  spell_depth drive its max) for per-stat margins scaled to each stat's own SE, keeping RMS. C-live has the same caveat, plus
+  (b) untested: its human class mixes Marks while the SIM class is CLXIII, and the discriminator sees our play ticks.
+### 9.5 Rebuild
+`allref.py scan` (laptop, 3 min) -> copy logs lacking `opp_model/cache` (data/parse_list.txt) + caches (< sealed_from by name) to a
+pod -> `allref.py parse` (8 shards) -> `build` -> `shift` -> `bnull --unregistered` -> `cnull --unregistered --seeds ...` -> `csum`
+-> `register --half-life 7 --n-sim 1900` (writes v5 from v4). Transfer script used: scratchpad copy of p2s_xfer.sh (tar with
+`--no-same-owner`; root tar exits 2 on Windows uids otherwise).
