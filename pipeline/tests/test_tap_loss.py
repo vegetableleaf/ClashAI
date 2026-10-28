@@ -97,6 +97,39 @@ class TestFakeMatch(unittest.TestCase):
             self._match(_cfg(tap_loss="1x:0.1"))
 
 
+class TestFollowUps(unittest.TestCase):
+    """G2 with the live stack's follow_ups plays (was: ValueError): every tap -- the first play and each fired follow-up -- draws
+    its own loss / slowness; rates 0 = the same match as no key."""
+
+    def _drive(self, **over):
+        from pipeline.tests import test_e1_follow_up_selfplay as FU
+        m, lt, _ = FU.drive({0: (0, [FU.spec(after=4)]), 3: (2, [FU.spec(slot=3, after=4)])}, cfg_over=over or None)
+        return m, lt, FU.acts(m)
+
+    def test_zero_rates_same_match(self):
+        a = self._drive()
+        b = self._drive(tap_loss="1x:0", tap_slow="0:18")
+        self.assertEqual(a[2], b[2])
+        self.assertEqual(a[1], b[1])
+        self.assertEqual(dict(a[0].learner.follow_n), dict(b[0].learner.follow_n))
+        self.assertEqual(len(a[2]), 4)
+
+    def test_lost_taps_never_reach_the_engine(self):
+        m, _, acts = self._drive(tap_loss="1x:0.95")
+        lost = [p for p in m.learner.plays if p.get("reason") == "tap_lost"]
+        self.assertGreater(len(lost), 0)
+        self.assertEqual(m.learner.n_tap_lost, len(lost))
+        self.assertEqual(sorted(t for t, _ in acts), sorted(p["land_tick"] for p in m.learner.plays if p.get("reason") != "tap_lost"))
+
+    def test_slow_taps_land_late(self):
+        base = self._drive()
+        m, _, acts = self._drive(tap_slow="0.95:18")
+        self.assertGreater(m.learner.n_tap_slow, 0)
+        self.assertEqual(base[0].learner.plays[0]["land_tick"] + 18, m.learner.plays[0]["land_tick"])  # a slow first tap
+        self.assertGreater(m.learner.plays[1]["land_tick"], m.learner.plays[0]["land_tick"])            # its follow-up after it
+        self.assertEqual(m.learner.plays[1]["why"], "follow_up")
+
+
 class TestSearchS0Flags(unittest.TestCase):
     def setUp(self):
         try:

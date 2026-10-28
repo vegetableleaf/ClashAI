@@ -1950,9 +1950,8 @@ class SelfPlaySide(Match):
         if d["play"] and d.get("follow_ups"):                 # follow_up_spec second plays: the ghost Match's rules (module comment)
             if not delay:
                 raise ValueError("follow_ups need cfg['action_delay_ticks'] > 0 in a SelfPlaySide")
-            if self.tap_loss is not None or self.tap_slow is not None:
-                raise ValueError("cfg['tap_loss'] / cfg['tap_slow'] are not defined for follow_ups plays")
-            self._follow_start(p, d, tick)
+            d, extra = self._tap_draw(d, tick)                # G2: each tap draws its own loss / slowness (first here,
+            self._follow_start(p, d, tick, extra)             # each fired follow-up in _follow_check)
             if self.pipe:   # + cfg["pipeline_decisions"] (L74 fastplays P2, as live --follow-up-taps + --pipeline-decisions, live_play
                 # ~1306): no decision while a follow-up is scheduled (_follow_start); once resolved, _follow_resolved resumes on the
                 # reader-frame grid with fewer than FOLLOW_MAX_OUT plays out; the decision right after a play accrues no hazard step
@@ -1966,11 +1965,8 @@ class SelfPlaySide(Match):
                 self._hz_step_ticks = self.next_tick - tick
             return
         if d["play"] and delay:
-            if self.tap_loss is not None and self._tl_rng.random() < tap_loss_p(self.tap_loss, tick):
-                d = dict(d, _tap_lost=True)                   # cfg["tap_loss"]: _land refuses it at landing
-            if self.tap_slow is not None and self._ts_rng.random() < self.tap_slow[0]:
-                delay += self.tap_slow[1]                     # cfg["tap_slow"]: this play lands late
-                self.n_tap_slow += 1
+            d, extra = self._tap_draw(d, tick)
+            delay += extra
             self.pending = (tick + delay, p, d)
             self.next_tick = tick + de * ((delay + eng) // de + 1)   # crforge: none until the engine runs it (Match.apply)
             return
@@ -1978,17 +1974,27 @@ class SelfPlaySide(Match):
             self._land(p, d, tick, True)
         self.next_tick = tick + de * (eng // de + 1) if (d["play"] and eng) else tick + de
 
+    def _tap_draw(self, d: dict, tick: int) -> tuple:
+        """One tap's cfg["tap_loss"] / cfg["tap_slow"] draws (W18 G2; no key = no draw): -> (decision, extra landing ticks)."""
+        extra = 0
+        if self.tap_loss is not None and self._tl_rng.random() < tap_loss_p(self.tap_loss, tick):
+            d = dict(d, _tap_lost=True)                       # cfg["tap_loss"]: _land refuses it at landing
+        if self.tap_slow is not None and self._ts_rng.random() < self.tap_slow[0]:
+            extra = self.tap_slow[1]                          # cfg["tap_slow"]: this play lands late
+            self.n_tap_slow += 1
+        return d, extra
+
     # ---- follow_ups (the ghost Match._apply_follow_ups' rules, event-driven: SelfPlayMatch.due calls _follow_check) ----------------
     def _fresh_players(self) -> list:
         return self.env.raw()["players"]
 
-    def _follow_start(self, p: float, d: dict, tick: int) -> None:
+    def _follow_start(self, p: float, d: dict, tick: int, extra: int = 0) -> None:
         """The first play lands at tick + delay (SelfPlayMatch.due); each follow-up is evaluated by _follow_check on the reader-frame
         grid from the first frame at or after its due tick AND after the first tap returned; my next decision is only taken once all
         of them are resolved and landed (the first grid tick after the last landing, as Match.apply)."""
         arrival = int(self.cfg.get("follow_arrival_ticks", FOLLOW_ARRIVAL_TICKS))
         grid = lambda x: tick + -(-(x - tick) // FOLLOW_FRAME_TICKS) * FOLLOW_FRAME_TICKS      # noqa: E731
-        land_a = tick + self.delay
+        land_a = tick + self.delay + extra                   # extra: cfg["tap_slow"] drew this first tap late (_tap_draw)
         self.pend.append((land_a, p, d, self._cur))
         self.pend.sort(key=lambda q: q[0])
         self._fu = dict(tick=tick, land_a=land_a, d=d, arrival=arrival, a_landed=False, a_acc=None, last=land_a, p=p,
@@ -2028,9 +2034,9 @@ class SelfPlaySide(Match):
                     continue
             self.fu_tasks.remove(task)
             if act == "fire":
-                land_b = max(fu0["land_a"] + max(t - fu0["tick"] - fu0["arrival"], 0), t + 1)
-                self.pend.append((land_b, fu0["p"], {"play": True, "slot": fu["slot"], "cell": fu["cell"], "why": "follow_up"},
-                                  fu0["cur"]))
+                db, extra = self._tap_draw({"play": True, "slot": fu["slot"], "cell": fu["cell"], "why": "follow_up"}, t)
+                land_b = max(fu0["land_a"] + max(t - fu0["tick"] - fu0["arrival"], 0), t + 1) + extra
+                self.pend.append((land_b, fu0["p"], db, fu0["cur"]))
                 self.pend.sort(key=lambda q: q[0])
                 fu0["last"] = max(fu0["last"], land_b)
                 self.follow_n["fired"] += 1
