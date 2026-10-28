@@ -184,9 +184,11 @@ def _canon_sim(name):
     return k
 
 
-def sim_records(root):
-    """run_closed.sh rows -> records (+ outcome for D)."""
+def sim_records(root, live_visible=True):
+    """run_closed.sh rows -> records (+ outcome for D).  live_visible: keep only plays the live detector can see (o3_score.visible:
+    bodiless spells never appear in the live public frames), so B-live / C-live compare like with like; False for B-HF."""
     import analyze as AN
+    import o3_score as O3
     import xbow_count as XC
     from pipeline.opp_elixir_count import card_cost
     out = []
@@ -203,14 +205,16 @@ def sim_records(root):
                 continue
             t = int(q[1] if q[1] is not None else q[0]) + 20
             k = _canon_sim(q[2])
+            if live_visible and not O3.visible(k):
+                continue
             x, y = fr(q[8], q[9])
             i = bisect.bisect_left(st, t) - 1
             el = smp[i][2] if i >= 0 else None
             plays.append([t, k, card_cost(k) or 0.0, round(x, 2), round(y, 2), 1, 0, el])
         own = [q for q in h['own'] if q[3]]
         fall = None
-        for s in smp:                                          # our princess falls: first sample with hp <= 0
-            if any(tw[0] == L and tw[1] != 'k' and tw[4] <= 0 for tw in s[5]):
+        for s in smp:                                          # our princess falls: a destroyed tower leaves the board record
+            if sum(tw[0] == L and tw[1] != 'k' and tw[4] > 0 for tw in s[5]) < 2:
                 fall = s[0]
                 break
         o = xb_sim(h)
@@ -435,7 +439,7 @@ def print_b(tag, b):
             + (f'; missing {b["missing"]}' if b['missing'] else ''))
 
 
-def score(name, sim_root, th, sha, a_args, hf_sim=None, do_c=True, out_dir=None):
+def score(name, sim_root, th, sha, a_args, hf_sim=None, do_c=True, out_dir=None, do_d=True):
     out_dir = Path(out_dir or HERE / 'out' / f'card_{name}')
     out_dir.mkdir(parents=True, exist_ok=True)
     eng = json.loads((Path(sim_root) / 'ENGINE.json').read_text()) if (Path(sim_root) / 'ENGINE.json').exists() else None
@@ -464,7 +468,7 @@ def score(name, sim_root, th, sha, a_args, hf_sim=None, do_c=True, out_dir=None)
     # B-HF
     if hf_sim:
         Hs, meta = hf_records(th['_hf_ref'], split=2)
-        bh = level_b(rows(Hs), rows(sim_records(hf_sim)), th, feats=[k for k in STATS if k not in ('opp_el', 'pocket_share')],
+        bh = level_b(rows(Hs), rows(sim_records(hf_sim, live_visible=False)), th, feats=[k for k in STATS if k not in ('opp_el', 'pocket_share')],
                      margin=th['B']['b_hf_per_stat_abs_d_max'])
         need = th['B'].get('b_hf_min_games_per_class', 0)
         bh['enough'] = min(bh['n_live'], bh['n_sim']) >= 2 * need          # records are sides: 2 per match
@@ -505,7 +509,7 @@ def score(name, sim_root, th, sha, a_args, hf_sim=None, do_c=True, out_dir=None)
     rep['H'] = dict(H_B=cov['H'], H_ABC=cov['H'] if abc else 0.0)
     lines.append(f'## H: H_B {cov["H"]:.3f} over {cov["cells"]} cells; H_ABC {rep["H"]["H_ABC"]:.3f} (A, B-HF, C all needed)')
     # D LAST: the sealed block is opened only here
-    d = level_d(S, th)
+    d = level_d(S, th) if do_d else dict(n_sealed=0, need=th['D']['min_sealed_matches'], enough=False, passed=False)
     rep['D'] = d
     lines.append(f'## D (sealed block, read last): n {d["n_sealed"]} (need >= {d["need"]}); ' +
                  (f'live win {100 * d["live_win"]:.1f}% vs predicted {100 * d["mean_pred"]:.1f}% (SIM pooled {100 * d["sim_pooled"]:.1f}%), '
@@ -644,6 +648,7 @@ def main():
     ap.add_argument('--level-a-data', default=None)
     ap.add_argument('--level-a-mem', default=None)
     ap.add_argument('--no-c', action='store_true')
+    ap.add_argument('--no-d', action='store_true', help='debug runs: never open the sealed block')
     ap.add_argument('--out', default=None)
     a = ap.parse_args()
     print(f'THRESHOLDS.json sha256 {sha} (matches HUMANLIKE.md)', flush=True)
@@ -653,7 +658,7 @@ def main():
     elif a.cmd == 'selftest':
         selftest(th, a.hf, out=a.out)
     elif a.cmd == 'score':
-        score(a.name, a.sim, th, sha, (a.ckpt_local or a.ckpt, a.level_a_data, a.level_a_mem), a.hf_sim, not a.no_c, a.out)
+        score(a.name, a.sim, th, sha, (a.ckpt_local or a.ckpt, a.level_a_data, a.level_a_mem), a.hf_sim, not a.no_c, a.out, not a.no_d)
     else:
         card(a, th, sha)
 
