@@ -65,8 +65,10 @@ played rows; reverse it if it measurably hurts the model. KL cap option A (kl_st
 - matches_per_update (to agree with LOOP-INT): the learner is ~43k/h at 512, ~75k/h at 1,024, ~120k/h at 2,048 on a 4090;
   INT's 4090 producer bench is 48.9k/h. So one learner GPU keeps up with ONE producer GPU at 512-1,024; the 8x box (~160k/h
   per inference GPU, b) needs 2,048+ per update or a multi-GPU learner. Proposal: start the pilot at 1,024 and measure.
-- Pod 33920 disk: 684 MB free of 60 GB (99%). My gate run dirs (icebow/data/bench/rl_royale/lrn_*, ~33 MB each) are
-  deletable on the lead's OK.
+- Pod 33920 disk: my 51 gate run dirs (icebow/data/bench/rl_royale/lrn_*, 1.4 GB) deleted on the lead's OK -> 2.1 GB
+  free; /workspace/lrn/id1/keep (512 records) kept. Lead 10-28: matches_per_update starts at 1,024 for the pilot (final
+  after LOOP-INT's bench with the learner alongside). PAUSED until LOOP-INT runs pilot.yaml on fastloop (T_gate 0.1,
+  fe364ceb lib); then: real stop step at T_gate 0.1, paired-guard gate on those records, loop_learner with INT's producers.
 - NEXT: (1) lead: matches_per_update with LOOP-INT; run loop_learner with INT's producers when INT is ready (restart:
   the loop smoke command above, without T_gate / critic_warmup overrides, spool = INT's); (2) re-run final_gate's pair
   part on T_gate-0.1 records once producers write them; (3) DDP only if producers outrun the learner (b: <= 2.2x at 4-way).
