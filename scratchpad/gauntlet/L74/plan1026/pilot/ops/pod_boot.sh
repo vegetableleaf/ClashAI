@@ -83,7 +83,9 @@ cd $CB
 # exactness gate on THIS machine before any rollout (an unseen CPU, e.g. AVX512, must not quietly break byte-exactness):
 # CfAbil + the obsid builders compiled as LOOP-IW's abilcheck.sh, then exact_gate.py (numpy exp / dot, CfAbil.EXACT, self-tests)
 S=$CB/scratchpad/gauntlet/L74/speed/crforge; GB=$W/jbuild_gate; mkdir -p $GB
-javac -nowarn -d $GB -cp "$CRFORGE_LIB/*" $CB/scratchpad/gauntlet/L74/crforge/facade/CfCore.java $S/CfSpeed.java $S/obsid/CfObsBind.java \n  $S/obsid/CfOppElixir.java $S/obsid/CfIdent.java $S/obsid/CfCue.java $S/obsid/CfPubObj.java $S/obsid/CfAbil.java > $W/gate_javac.log 2>&1 \n  || die "javac of the exactness-gate classes (see $W/gate_javac.log)"
+javac -nowarn -d $GB -cp "$CRFORGE_LIB/*" $CB/scratchpad/gauntlet/L74/crforge/facade/CfCore.java $S/CfSpeed.java $S/obsid/CfObsBind.java \
+  $S/obsid/CfOppElixir.java $S/obsid/CfIdent.java $S/obsid/CfCue.java $S/obsid/CfPubObj.java $S/obsid/CfAbil.java > $W/gate_javac.log 2>&1 \
+  || die "javac of the exactness-gate classes (see $W/gate_javac.log)"
 $V/bin/python -B scratchpad/gauntlet/L74/plan1026/pilot/ops/exact_gate.py $CRFORGE_LIB $GB > $W/exact_gate.log 2>&1 || true   # verdict = the grep below
 while read -r l; do log "exact gate: $l"; done < $W/exact_gate.log
 grep -q '^EXACT_GATE PASS' $W/exact_gate.log || die "EXACT GATE FAILED on this machine -- no rollout started (see $W/exact_gate.log)"
