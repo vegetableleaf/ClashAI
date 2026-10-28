@@ -1,0 +1,70 @@
+all 20132
+all_off_eq_on 19969
+evo_answered_logged 49
+evo_answered_off 49
+evo_answered_on 47
+evo_casts 50
+evo_real_logged 29
+evo_real_off 29
+evo_real_on 43
+fidelity_off_eq_logged 19904
+plain_casts 231
+plain_casts_identical 231
+plain_casts_identical_in_no_evo_matches 102
+plain_casts_in_evo_matches 129
+plain_decisions 1572
+plain_first_real_off 209
+plain_first_real_on 209
+plain_off_eq_on 1572
+
+live_play_20261025_090631.jsonl 2833 real R logged ('Skeletons', 'R', 22) off ('Skeletons', 'R', 22) on ('Skeletons', 'R', 22)
+live_play_20261025_101722.jsonl 2542 real R logged ('Tesla', 'L', 18) off ('Tesla', 'L', 18) on ('Tesla', 'L', 18)
+live_play_20261025_101722.jsonl 4257 real R logged ('Log', 'R', 21) off ('Log', 'R', 21) on ('Log', 'R', 21)
+live_play_20261025_101722.jsonl 5845 real R logged ('Log', 'R', 30) off ('Log', 'R', 30) on ('Tesla', 'R', 88)
+live_play_20261025_153922.jsonl 3139 real R logged ('IceWizard', 'L', 29) off ('IceWizard', 'L', 29) on None
+live_play_20261025_200146.jsonl 2589 real L logged ('Log', 'R', 22) off ('Log', 'R', 22) on ('Log', 'L', 22)
+live_play_20261025_200146.jsonl 4172 real L logged ('IceWizard', 'L', 6) off ('IceWizard', 'L', 6) on ('IceWizard', 'L', 6)
+live_play_20261025_200146.jsonl 5588 real L logged ('Log', 'L', 31) off ('Log', 'L', 31) on ('Log', 'L', 31)
+live_play_20261025_204958.jsonl 2956 real R logged ('Knight', 'R', 16) off ('Knight', 'R', 16) on ('Knight', 'R', 16)
+live_play_20261025_233106.jsonl 1880 real R logged ('Log', 'L', 16) off ('Log', 'L', 16) on ('Tesla', 'L', 42)
+live_play_20261025_233106.jsonl 4065 real R logged ('Tesla', 'R', 2) off ('Tesla', 'R', 2) on ('Tesla', 'R', 2)
+live_play_20261026_002910.jsonl 1893 real R logged ('Log', 'R', 30) off ('Log', 'R', 30) on ('Skeletons', 'R', 57)
+live_play_20261026_002910.jsonl 3944 real R logged ('Knight', 'L', 38) off ('Knight', 'L', 38) on ('Knight', 'R', 38)
+live_play_20261026_052316.jsonl 2437 real L logged ('Skeletons', 'L', 9) off ('Skeletons', 'L', 9) on ('Skeletons', 'L', 9)
+live_play_20261026_053016.jsonl 2512 real L logged ('Knight', 'L', 54) off ('Knight', 'L', 54) on ('Knight', 'L', 54)
+live_play_20261026_085317.jsonl 2437 real L logged ('Knight', 'L', 5) off ('Knight', 'L', 5) on ('Knight', 'L', 5)
+live_play_20261026_130453.jsonl 2916 real R logged ('Skeletons', 'R', 9) off ('Skeletons', 'R', 9) on ('Skeletons', 'R', 9)
+live_play_20261026_150458.jsonl 2642 real L logged ('Knight', 'L', 18) off ('Knight', 'L', 18) on ('Knight', 'L', 18)
+live_play_20261026_150458.jsonl 4367 real R logged ('Tesla', 'R', 5) off ('Tesla', 'R', 5) on ('Tesla', 'R', 5)
+live_play_20261026_174710.jsonl 2873 real L logged ('Knight', 'L', 26) off ('Knight', 'L', 26) on ('Knight', 'L', 26)
+live_play_20261026_182725.jsonl 1952 real R logged ('Knight', 'R', 21) off ('Knight', 'R', 21) on ('Tornado', 'R', 47)
+live_play_20261026_182725.jsonl 3342 real R logged ('IceWizard', 'R', 10) off ('IceWizard', 'R', 10) on ('IceWizard', 'R', 10)
+live_play_20261026_225533.jsonl 2468 real R logged ('Log', 'L', 10) off ('Log', 'L', 10) on ('Skeletons', 'R', 36)
+live_play_20261026_225533.jsonl 4202 real L logged ('Tesla', 'L', 8) off ('Tesla', 'L', 8) on ('Tesla', 'L', 8)
+live_play_20261026_225533.jsonl 5563 real R logged ('Knight', 'L', 16) off ('Knight', 'L', 16) on None
+live_play_20261026_231045.jsonl 2462 real L logged ('Tornado', 'R', 28) off ('Tornado', 'R', 28) on ('Tornado', 'L', 28)
+live_play_20261026_231402.jsonl 1777 real R logged ('IceWizard', 'R', 12) off ('IceWizard', 'R', 12) on ('IceWizard', 'R', 12)
+live_play_20261026_231402.jsonl 4814 real R logged ('Log', 'R', 22) off ('Log', 'R', 22) on ('IceWizard', 'L', 85)
+live_play_20261026_231920.jsonl 2547 real R logged ('Skeletons', 'R', 20) off ('Skeletons', 'R', 20) on ('Skeletons', 'R', 20)
+live_play_20261026_231920.jsonl 4117 real R logged ('Skeletons', 'L', 8) off ('Skeletons', 'L', 8) on ('Skeletons', 'R', 8)
+live_play_20261027_012200.jsonl 2554 real R logged ('Knight', 'R', 12) off ('Knight', 'R', 12) on ('Knight', 'R', 12)
+live_play_20261027_035412.jsonl 2465 real R logged ('Skeletons', 'L', 10) off ('Skeletons', 'L', 10) on ('Skeletons', 'R', 10)
+live_play_20261027_041602.jsonl 2276 real L logged ('Skeletons', 'L', 10) off ('Skeletons', 'L', 10) on ('Skeletons', 'L', 10)
+live_play_20261027_071515.jsonl 2587 real R logged None off None on None
+live_play_20261027_102455.jsonl 3289 real R logged ('Tornado', 'R', 6) off ('Tornado', 'R', 6) on ('Tornado', 'R', 6)
+live_play_20261027_122836.jsonl 3415 real L logged ('Log', 'R', 24) off ('Log', 'R', 24) on ('Skeletons', 'L', 60)
+live_play_20261027_144058.jsonl 4030 real R logged ('Skeletons', 'R', 5) off ('Skeletons', 'R', 5) on ('Skeletons', 'R', 5)
+live_play_20261027_151657.jsonl 2589 real R logged ('Log', 'L', 38) off ('Log', 'L', 38) on ('Log', 'R', 38)
+live_play_20261027_172512.jsonl 2877 real R logged ('Tesla', 'R', 6) off ('Tesla', 'R', 6) on ('Tesla', 'R', 6)
+live_play_20261027_174036.jsonl 2724 real L logged ('IceWizard', 'R', 9) off ('IceWizard', 'R', 9) on ('IceWizard', 'L', 9)
+live_play_20261027_174036.jsonl 4233 real R logged ('Knight', 'L', 10) off ('Knight', 'L', 10) on ('Knight', 'R', 10)
+live_play_20261027_175446.jsonl 2086 real L logged ('Knight', 'R', 19) off ('Knight', 'R', 19) on ('Knight', 'L', 19)
+live_play_20261027_175446.jsonl 4146 real R logged ('Skeletons', 'R', 32) off ('Skeletons', 'R', 32) on ('IceWizard', 'L', 60)
+live_play_20261027_175446.jsonl 5497 real L logged ('Log', 'R', 31) off ('Log', 'R', 31) on ('Log', 'L', 31)
+live_play_20261027_213048.jsonl 3533 real R logged ('Log', 'L', 6) off ('Log', 'L', 6) on ('Log', 'R', 6)
+live_play_20261027_213048.jsonl 5193 real R logged ('Log', 'L', 6) off ('Log', 'L', 6) on ('Log', 'R', 6)
+live_play_20261028_015554.jsonl 2600 real R logged ('Knight', 'R', 33) off ('Knight', 'R', 33) on ('Knight', 'R', 33)
+live_play_20261028_090643.jsonl 1859 real R logged ('Log', 'L', 18) off ('Log', 'L', 18) on ('Knight', 'R', 46)
+live_play_20261028_090643.jsonl 4315 real R logged ('IceWizard', 'R', 8) off ('IceWizard', 'R', 8) on ('IceWizard', 'R', 8)
+live_play_20261028_090643.jsonl 5497 real L logged ('Skeletons', 'R', 8) off ('Skeletons', 'R', 8) on ('Skeletons', 'L', 8)
+{('in_evo_window', 'p_play_only'): 99, ('in_evo_window', 'decision'): 64}

@@ -19,6 +19,11 @@
   log. Restart (resumable): `bash /workspace/gbdecoy/run_all.sh`. Summary: `python replay/analyze.py OUT windows.json`.
 - LOOP-INT a9ec050f10f6a04be messaged the interface note (Java obs rename).
 
+- Model replay DONE (a) (`results/model_replay.txt`, outputs `replay/out/`): fidelity replay-off == logged live
+  19,904 / 20,132 decisions (play, card, cell); evo first answer in the real lane: logged 29/50, off 29/50, ON 43/50
+  (answered 47); plain casts 231 (102 in no-evo matches): 1,572 / 1,572 decisions identical off vs on; all 163 off/on
+  differences (99 p_play only, 64 decisions) lie inside evo windows, none elsewhere.
+
 ## Next
 - After PASS: append `--barrel-decoy on` to scratchpad/gauntlet/L70/live/LIVE_OPTIONS; start_live.sh icebow
   --no-fast-plays --ranked --check; stop_live.sh (wait 'done'); no live_play.py left; start_live.sh icebow
