@@ -56,6 +56,9 @@ def src_shas() -> dict:
                                                         HERE / "CfOppElixir.java", HERE / "CfPubObj.java", HERE / "obs_id.py")})
     files.update({f"pipeline/{m}": str(RL / "pipeline" / m) for m in ("sim_unit_state.py", "fast_obs.py", "model_gen.py")}
                  | {"builder/CfCue.java": str(HERE / "CfCue.java")})      # S3b-3f: the cue path
+    files.update({f"pipeline/{m}": str(RL / "pipeline" / m) for m in ("match_memory.py", "habit_terms.py")}
+                 | {"builder/CfMem.java": str(HERE / "CfMem.java"), "builder/CfIdent.java": str(HERE / "CfIdent.java"),
+                    "model": CLXIII})                     # LOOP-MEM: the memory path
     out = {k: hashlib.sha256(Path(v).read_bytes()).hexdigest() for k, v in files.items()}
     fb = os.environ.get("OBSID_FACADE_BUILD")
     if fb:
@@ -250,6 +253,7 @@ class JavaIdent:
         for k, n in self.ID_KEYS:
             out[k] = self.vi[o:o + n].copy() if n else np.int64(self.vi[o])
             o += max(n, 1)
+        self.last = out                                   # LOOP-MEM: JavaMem reads this row's deck_card
         return out
 
 
@@ -459,6 +463,265 @@ class JavaCue:
                 **{f"_n_cue_col{k:02d}": int((prod[:, k] != 0).sum()) for k in range(22)}}   # tokens with column k set
 
 
+class JavaMem:
+    """LOOP-MEM: CfMem (match memory v2, e1_eval.Match._memory) on the facade battle -> a memory model's MEM_KEYS
+    (mem_ev, mem_mask, mem_card, mem_form, mem_summary, mem_answer). One CfMem per production Match (= Match.mem: one
+    seat, one match), fed the seat's CfOppElixir plays (JavaMain's public detector) and its side's own action log
+    (CfMem.Log per core, from a hook on royale_env._Core.act: an accepted play with the form CfMem.Log.playForm read
+    BEFORE it, an accepted press). Tables come from production's own functions (card_key, habit_terms.play_cost,
+    match_memory.ABILITY_COST, public_frame + catalog_card_form + vocab.engine_key, habit_terms._card / BODY_COUNT,
+    v2_lut, lock_head, _regen_table). At SelfPlayMatch.result both seats' event tables are compared (CfMem.table vs
+    MatchMemory.table = rl_royale's mem_tab_*), and the learner's rebuild (rows_features on production's end table) is
+    checked against the rows the rollout saw."""
+    TABLE_DT = (("tick", np.int32), ("vis", np.int32), ("vals", np.float32), ("res", np.int32), ("card", np.int32),
+                ("form", np.int8), ("ans_card", np.int32), ("flag", np.int8), ("xb_dmg", np.float64),
+                ("rk_tl", np.float64), ("swing", np.float64), ("vpe", np.float64))
+    TABLE_FIELD = dict(ans_card="ansCard", xb_dmg="xbDmg", rk_tl="rkTl")
+
+    def __init__(self, main, ident, policy, E):
+        from pipeline import match_memory as MM
+        from pipeline import royale_env as R
+        self.MM, self.main, self.ident, self.gid = MM, main, ident, policy.gid
+        assert getattr(policy.model.mem, "version", "v1") == "v2", "LOOP-MEM ports memory v2"
+        self.C = C = jpype.JClass("CfMem")
+        self.T = T = C.Tables()
+        self.check_constants()
+        D = jpype.JArray(jpype.JDouble)
+        lut, head, (bp, rate, cum) = MM.v2_lut(self.gid), MM.lock_head(), MM._regen_table()
+        T.lutDeck, T.lutAns = D(lut["deck"].tolist()), D(lut["answer"].tolist())
+        T.lockMean, T.lockStd, T.lockW = (D(head[k].tolist()) for k in ("mean", "std", "w"))
+        T.lockB = float(np.asarray(head["b"]).reshape(-1)[0])
+        T.regenBp, T.regenRate, T.regenCum = D(bp.tolist()), D(rate.tolist()), D(cum.tolist())
+        self.slug_of, self.unit_of, self.cid_ready = {}, {}, False
+        BB = jpype.JClass("java.nio.ByteBuffer")
+        self.buf = BB.allocateDirect(int(C.BYTES)).order(jpype.JClass("java.nio.ByteOrder").nativeOrder())
+        mv = memoryview(self.buf)
+        fb = (lambda dt, off, n: np.frombuffer(mv, dt, n, off))
+        self.view = {"mem_ev": fb(np.float32, C.OFF_EV, 128 * 46).reshape(128, 46), "mem_mask": fb(np.uint8, C.OFF_MASK, 128),
+                     "mem_card": fb(np.int64, C.OFF_CARD, 128), "mem_form": fb(np.int64, C.OFF_FORM, 128),
+                     "mem_summary": fb(np.float32, C.OFF_SUM, C.S_V2), "mem_answer": fb(np.int64, C.OFF_ANS, 1)}
+        self.Int = jpype.JArray(jpype.JInt)
+        self.stats = dict(plays=0, presses=0, form_mismatch=0, play_tick_mismatch=0, tables=0, table_rows=0,
+                          rebuild_rows=0, rebuild_equal=0, late=0)
+        self.tab = {}                                     # TABLE_KEY -> [tables, equal, first diffs]
+        self.py_ns = 0
+        orig, mem = R._Core.act, self                     # wraps JavaPub's hook (installed first)
+
+        def act(core_, *, side, deck_index=-1, x=0, y=0, ability_button=None):
+            env = core_.env
+            cf = env.core._cf
+            t, form, cid = int(cf.tick()), None, None
+            if ability_button is None:
+                cid = int(env.deck_ids[side][deck_index])
+                form = int(C.Log.playForm(cf, int(side), cid))   # before the play: public_plays' form rule
+            r = orig(core_, side=side, deck_index=deck_index, x=x, y=y, ability_button=ability_button)
+            if r["accepted"]:
+                mem.slugs(env)
+                lg = mem.log(env)
+                if ability_button is None:
+                    lg.play(int(side), t, cid, form, int(x), int(y))
+                    pp = env.public_plays[-1]                    # production's own entry for this play
+                    mem.stats["plays"] += 1
+                    mem.stats["form_mismatch"] += int(int(pp["form"]) != form)
+                    mem.stats["play_tick_mismatch"] += int(int(pp["tick"]) != t + int(C.DELAY))
+                else:
+                    lg.press(int(side), t, int(ability_button))
+                    mem.stats["presses"] += 1
+            return r
+
+        R._Core.act = act
+        orig_mem = E.Match._memory
+
+        def timed(m, policy, deck):                       # production's call, unchanged, timed
+            t0 = time.perf_counter_ns()
+            out = orig_mem(m, policy, deck)
+            mem.py_ns = time.perf_counter_ns() - t0
+            return out
+
+        E.Match._memory = timed
+        orig_res = E.SelfPlayMatch.result
+
+        def result(m):
+            for side in (m.learner, m.opp):
+                if getattr(side, "mem", None) is not None and "_loopmem" in side.__dict__:
+                    mem.compare_table(side)
+            return orig_res(m)
+
+        E.SelfPlayMatch.result = result
+
+    def check_constants(self):
+        """CfMem's constants = production's (match_memory, habit_terms, obs_contract, dataset_gen)."""
+        from pipeline import habit_terms as H
+        from pipeline import royale_env as R
+        from pipeline.dataset_gen import FORM_PAD
+        from pipeline.obs_contract import TICK_S, TILES_X, TILES_Y
+        MM, C = self.MM, self.C
+        want = dict(W_OUT=MM.W_OUT, DMG_GAP=MM.DMG_GAP, XB_ANSWER_T=MM.XB_ANSWER_T, RK_WIN=MM.RK_WIN, E_MAX=MM.E_MAX,
+                    DECK_N=MM.DECK_N, DOUBLE_T=MM.DOUBLE_T, OT_T=MM.OT_T, XB_WINDOW=H.XB_WINDOW, CYCLE=MM.CYCLE,
+                    SLOT_N=MM.SLOT_N, FORM_PAD=FORM_PAD, S=MM.S, S_V2=MM.S_V2, N_S1C=len(MM.S1C_FIELDS),
+                    N_LOCK=len(MM.LOCK_INPUTS), COMBO_LO=MM.COMBO[0], COMBO_HI=MM.COMBO[1], NEVER=MM.NEVER,
+                    VALUE_R=MM.VALUE_R, DMG_MIN=MM.DMG_MIN, XB_ANSWER_R=MM.XB_ANSWER_R, RK_R=MM.RK_R,
+                    RK_TOWER_R=MM.RK_TOWER_R, XB_REACH=H.XB_REACH, XB_LOCK=H.XB_LOCK, TICK_S=TICK_S,
+                    COUNTER_LIFT=MM.COUNTER_LIFT, CHILD_VALUE=H.CHILD_VALUE, TILES_X=TILES_X, TILES_Y=TILES_Y, F=MM.F)
+        bad = {k: (v, getattr(C, k)) for k, v in want.items() if getattr(C, k) != v}
+        assert not bad, bad
+        assert [str(s) for s in C.FIELDS] == list(MM.FIELDS), "FIELDS order"
+        assert [tuple(float(v) for v in r) for r in C.TOWER_XY] == [tuple(map(float, r)) for r in MM.TOWER_XY]
+        del R                                             # DELAY: play_tick_mismatch checks it on every play
+
+    # ------------------------------------------------------------ tables
+    def slug(self, s) -> int:
+        """A card_key slug -> CfMem's slug index (gid id, play_cost, ABILITY_COST); None / '' -> -1 (_add drops it)."""
+        from pipeline.habit_terms import play_cost
+        if not s:
+            return -1
+        if s not in self.slug_of:
+            self.slug_of[s] = int(self.T.addSlug(s, int(self.gid.get(s, 0)), float(play_cost(s)),
+                                                 float(self.MM.ABILITY_COST.get(s, 0.0))))
+        return self.slug_of[s]
+
+    def slugs(self, env) -> None:
+        """RoyaleSim card id -> slug of env.names (public_plays / own_ability_events name a card so), once."""
+        from pipeline.dataset_gen import card_key
+        if self.cid_ready:
+            return
+        names = env.names
+        tab = [-1] * (max(names) + 3)
+        for cid, nm in names.items():
+            tab[int(cid) + 2] = self.slug(card_key(str(nm or "")))
+        self.T.cidSlug = self.Int(tab)
+        self.cid_ready = True
+
+    def fill_det(self) -> None:
+        """CfOppElixir detector key -> slug (PublicObserver.plays name a card by its detector key)."""
+        from pipeline.dataset_gen import card_key
+        P = jpype.JClass("CfPubObj")
+        have, n = len(self.T.detSlug), int(P.detKeys(self.main.keys))
+        if n > have:
+            self.T.detSlug = self.Int(list(self.T.detSlug) + [self.slug(card_key(str(P.detKey(self.main.keys, i))))
+                                                              for i in range(have, n)])
+
+    def unit(self, key) -> int:
+        """A body key (vocab.engine_key) -> CfMem's unit index with habit_terms._card's facts for match_memory._value."""
+        from pipeline.habit_terms import BODY_COUNT, _card
+        if key in self.unit_of:
+            return self.unit_of[key]
+        k, kind, cost = _card(key)
+        i = self.unit_of[key] = int(self.T.addUnit("tower" in k or kind == "building",
+                                                   kind == "spell" and k not in BODY_COUNT,
+                                                   float(cost / BODY_COUNT.get(k, 1)),
+                                                   kind == "building" and "tower" not in k, float(cost)))
+        self.T.putTop(i, i if k == key else self.unit(k))
+        return i
+
+    def resolve(self, s) -> None:
+        """Each new "card|body row|form#entity id" -> the key MatchMemory gives that body: public_frame (source 'sim') on
+        its raw() entity, catalog_card_form(card_id)[0] -> vocab.engine_key (None / dropped -> -1)."""
+        from pipeline import vocab
+        from pipeline.obs_contract import catalog_card_form
+        from pipeline.public_observation import public_frame
+        ents = {int(e["entity_id"]): e for e in s.state["entities"]}
+        for miss in self.T.takeMissing():
+            k, eid = str(miss).rsplit("#", 1)
+            f = public_frame({"tick": s.state["tick"], "entities": [ents[int(eid)]]}, source="sim")["entities"]
+            name = catalog_card_form(int(f[0]["card_id"]))[0] if f else None
+            key = vocab.engine_key(name) if name else None
+            self.T.putBody(k, self.unit(key) if key else -1)
+
+    def log(self, env):
+        core = env.core
+        lg = core.__dict__.get("_loopmem_log")
+        if lg is None:
+            lg = core._loopmem_log = self.C.Log(core._cf, self.T)
+        return lg
+
+    # ------------------------------------------------------------ the row
+    def __call__(self, s) -> dict:
+        import hashlib
+        seat, env = int(s.side), s.env
+        self.slugs(env)
+        j = s.__dict__.get("_loopmem")
+        if j is None:
+            j = s._loopmem = self.C(env.core._cf, self.T, self.log(env), seat)
+            s._loopmem_rows = []
+        opp = env.core._obsid_match.opp(seat, self.main.keys)
+        n_obs, n_feat = int(j.nanosObserve), int(j.nanosFeatures)
+        tc = time.perf_counter_ns()
+        while not j.observe(opp):
+            self.fill_det()
+            self.resolve(s)
+        deck = self.ident.last["deck_card"]
+        j.features(self.Int([int(c) for c in deck]), self.buf, 0)
+        tc = time.perf_counter_ns() - tc
+        out = {k: v.copy() for k, v in self.view.items()}
+        out["mem_mask"] = out["mem_mask"].astype(bool)
+        out["mem_answer"] = np.int64(out["mem_answer"][0])
+        p = s._gen_row
+        lg = self.log(env)
+        s._loopmem_rows.append((int(s._cur[0]), np.asarray(deck, np.int64).copy(),
+                                hashlib.sha1(b"".join(np.ascontiguousarray(p[k]).tobytes()
+                                                      for k in self.MM.MEM_KEYS)).digest()))
+        ev, m = p["mem_ev"], p["mem_mask"]
+        d = {"_n_mem_py_ns": self.py_ns, "_n_mem_java_obs_ns": int(j.nanosObserve) - n_obs,
+             "_n_mem_java_feat_ns": int(j.nanosFeatures) - n_feat, "_n_mem_jcall_ns": tc,
+             "_n_mem_rows_events": int(m.any()), "_n_mem_events": int(m.sum()),
+             "_n_mem_rows_full": int(m.all()), "_n_mem_answer_nonzero": int(p["mem_answer"] != 0),
+             "_n_mem_ownlog_mismatch": int(int(lg.plays(seat)) + int(lg.presses(seat)) != len(s.public.own_events)),
+             "_n_mem_late": int(j.late) - s.__dict__.get("_loopmem_late", 0)}
+        s._loopmem_late = int(j.late)
+        d.update({f"_n_memev_col{k:02d}": int((ev[:, k] != 0).sum()) for k in range(ev.shape[1])})
+        d.update({f"_n_memsum_i{k:03d}": int(p["mem_summary"][k] != 0) for k in range(len(p["mem_summary"]))})
+        out.update(d)
+        return out
+
+    # ------------------------------------------------------------ the match's event table
+    def java_table(self, j) -> dict:
+        b = j.table()
+        n = int(b.n)
+        out = {}
+        for k, dt in self.TABLE_DT:
+            a = np.array(getattr(b, self.TABLE_FIELD.get(k, k)), dtype=dt)
+            out[k] = a.reshape(n, self.MM.F) if k == "vals" else a.reshape(n, len(self.MM.GROUPS)) if k == "res" else a
+        return out
+
+    def compare_table(self, side) -> None:
+        import hashlib
+        MM = self.MM
+        prod = side.mem.table(side._mem_gid)
+        java = self.java_table(side._loopmem)
+        self.stats["tables"] += 1
+        self.stats["table_rows"] += len(prod["tick"])
+        for k in MM.TABLE_KEYS:
+            r = self.tab.setdefault(k, [0, 0, []])
+            a, b = np.asarray(prod[k]), java[k]
+            r[0] += 1
+            same = a.dtype == b.dtype and a.shape == b.shape and a.tobytes() == b.tobytes()
+            r[1] += int(same)
+            if not same and len(r[2]) < 5:
+                info = dict(tag=side.tag, side=int(side.side), prod=[str(a.dtype), a.shape], java=[str(b.dtype), b.shape])
+                if a.shape == b.shape:
+                    ne = np.argwhere(a.view(f"u{a.itemsize}") != b.view(f"u{b.itemsize}") if a.dtype == b.dtype else a != b)
+                    info.update(index=ne[:6].tolist(), prod_v=[a[tuple(i)].item() for i in ne[:3]],
+                                java_v=[b[tuple(i)].item() for i in ne[:3]])
+                r[2].append(info)
+        # the learner's view: rl_royale collate packs the END table, e1_eval.gen_batch rebuilds each row by rows_features
+        rows = side._loopmem_rows
+        if rows:
+            ticks = np.array([t for t, _, _ in rows], np.int64)
+            decks = np.stack([d for _, d, _ in rows])
+            f = MM.rows_features(MM.pack([prod]), np.zeros(len(rows), np.int64), ticks, decks, np.arange(len(rows)),
+                                 "v2", side._mem_gid)
+            for i, (_, _, h) in enumerate(rows):
+                hi = hashlib.sha1(b"".join(np.ascontiguousarray(f[k][i]).tobytes() for k in MM.MEM_KEYS)).digest()
+                self.stats["rebuild_rows"] += 1
+                self.stats["rebuild_equal"] += int(hi == h)
+        self.stats["late"] += int(side._loopmem.late)
+
+    def table_result(self) -> dict:
+        return {k: dict(status="IDENTICAL" if r[1] == r[0] else "DIFF", tables=r[0], equal=r[1], first_diffs=r[2])
+                for k, r in self.tab.items()}
+
+
 BUILDERS: list = []   # filled in main (they need the JVM); a later ticket appends one builder per ported key
 
 
@@ -558,6 +821,10 @@ def main():
     BUILDERS.append(JavaCue(BUILDERS[0], E))           # S3b-3f: "cue" from JavaMain's tok / mask
     pub = JavaPub(BUILDERS[0], model)                   # S3b-3d: projectiles / effects / own_ability / opp_cycle
     BUILDERS.append(pub)
+    memb = None
+    if getattr(model.model, "mem", None) is not None:   # LOOP-MEM: a memory model (B0) -> its MEM_KEYS
+        memb = JavaMem(BUILDERS[0], ident, model, E)
+        BUILDERS.append(memb)
     cfg = S.live_cfg(0.5, info["grid"])
     cfg.update(action_delay_ticks=26, feature_version=6)
     over = {k: json.loads(v) for k, v in (x.split("=", 1) for x in a.set)}
@@ -661,9 +928,17 @@ def main():
               "compared like every index; no engine truth is read or logged. sc@nospell_opp = sc on the rows whose "
               "opponent deck has no spell card; _opp_plays / _opp_spawns = PublicObserver's play / spawn tallies."))
     out["acceptance"]["cue_identical"] = keys.get("cue", {}).get("status") == "IDENTICAL"     # S3b-3f
+    if memb is not None:                                  # LOOP-MEM
+        from pipeline.match_memory import MEM_KEYS
+        tabs = memb.table_result()
+        out["ticket"] = "LOOP-MEM"
+        out["model"] = CLXIII
+        out["memory"] = dict(stats=memb.stats, tables=tabs)
+        out["acceptance"]["mem_keys_identical"] = {k: keys.get(k, {}).get("status") == "IDENTICAL" for k in MEM_KEYS}
+        out["acceptance"]["mem_tables_identical"] = bool(tabs) and all(v["status"] == "IDENTICAL" for v in tabs.values())
     Path(a.out).write_text(json.dumps(out, indent=1, default=str))
     print(json.dumps({k: out[k] for k in ("seat_rows", "tick_mismatch", "diag", "opp_counter_edges", "acceptance",
-                                          "status_by_key")}, default=str))
+                                          "status_by_key") + (("memory",) if memb is not None else ())}, default=str))
 
 
 if __name__ == "__main__":

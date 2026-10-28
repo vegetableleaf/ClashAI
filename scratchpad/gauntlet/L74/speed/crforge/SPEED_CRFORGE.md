@@ -629,3 +629,25 @@ python -I project.py results/loop_n2048_c2_t24.json --extra-core-s 0.05   # lapt
   OBSID_CLXIII=/workspace/f1c/models/succ48_o_s91_u0075_grafted.pt OBSID_BUILD=/workspace/s3b3d/build_loop
   rl/scratchpad/gauntlet/L74/speed/crforge/obsid/run_loop.sh out/s3b4_all4.json --envs 2048 --cohorts 2 --threads 24
   --warm 90 --seconds 120 [--no-cue | --no-obs]` (`s3b4_chain*.sh` ran them in the order above).
+
+## LOOP-MEM: memory v2 (e1_eval.Match._memory) in Java (`obsid/CfMem.java`, harness `JavaMem` in `obs_id.py`)
+
+- **STATUS (updated each step).** Done: production trace (below), `CfMem.java` (observe / features / table + the CPython
+  sum / hypot arithmetic), `JavaMem` builder + table / learner-rebuild checks in `obs_id.py`, `mem_arith.py` (arithmetic
+  self-check). Next: pod 32657 `/workspace/loopmem` (rl = HEAD pipeline + links to /workspace/f1/rl; B0 =
+  models/mem_best_ze.pt sha 3d75a25d): `mem_arith.py`, then a 2-match smoke, then 56 matches at the live cfg.
+  Restart: `OBSID_RL=/workspace/loopmem/rl OBSID_CLXIII=/workspace/loopmem/models/mem_best_ze.pt
+  OBSID_BUILD=/workspace/loopmem/build /workspace/loopmem/rl/scratchpad/gauntlet/L74/speed/crforge/obsid/run.sh
+  /workspace/loopmem/out/mem_live.json --n 56`.
+- **What production computes (a, code at 70193b9).** B0 = `mem_best_ze.pt` (CLXIII + the S3-aux encoder, memory v2,
+  zero_empty, coupling zero). `gen_row_keys` = the 20 keys + MEM_KEYS; `Match.gen_row` -> `_memory(policy, deck_card)`:
+  `sample_sim(self.state, side)` (UN-extrapolated raw at the decision tick: `tower_reads_engine` on crown towers, own
+  `elixir_exact`, `public_frame(source='sim')` bodies of both sides keyed `engine_key(catalog_card_form(card_id)[0])`),
+  tick = `_cur[0]`; `MatchMemory.observe(..., plays = PublicObserver.plays + own_events)` (own_events = env.public_plays
+  (act + 20, form, x, y) + own_ability_events of my side); `features(tick, gid, deck, 'v2')` = events(t) -> encode
+  (newest 128, [128, 46]) + summary (54) + `_s1c` on `table(gid)` (60: priors, cycle, opp elixir, slots, king, margins,
+  lock head). Record: `result()['memory'] = mem.table(gid)` -> rl_royale collate `mem_tab_*` (pack) + `mem_row_tab` /
+  `mem_row_t`; the learner rebuilds rows by `rows_features` (vectorised, np.cumsum).
+- **Arithmetic traps (a, code).** Python 3.12 (pods) `sum()` of floats is Neumaier-compensated (`_lost`, `_mean`, the
+  Rocket sum): CfMem.pySum mirrors CPython; `math.hypot` = CPython vector_norm (pyHypot); the vectorised learner path
+  uses plain cumsum, so rollout row == learner row is itself checked (`memory.stats.rebuild_*`).
