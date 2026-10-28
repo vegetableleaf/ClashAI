@@ -379,3 +379,18 @@ carry over. Re-dispatch from the docs listed here.
 - Pending owner answers (explained 10-28): the 000420 Zap rule; lazy_refine; the KL cap (the owner asked to loosen it so
   each match teaches as much as possible; the lead explained the learner-time trade-off first). Re-dispatch waits for the
   owner's go.
+### 10.3 Owner decisions 10-28 ~13:20 EDT (answers to 10.2's pending items) + re-dispatch
+- **Zap rule for FRESH1 000420: BUILD IT** (owner: the logic is solid, more examples will confirm it, easily reversed). The
+  rule (extractor input reconstruction, behind a flag): a crown tower at HP <= Zap's tower damage disappears with nothing
+  visible near it, the opponent's deck holds Zap, and no spell play was seen near it -> insert one opponent Zap on that
+  tower 1-2 ticks before the removal (the probe: R 3517 / 3518 makes 3519-3681 exact). Track every firing on new matches;
+  confirm with the battle-log replay (opponent hand / elixir) when one fires.
+- **lazy_refine: ON**, with (1) identity checks run with lazy OFF (bit-identity proof kept) and (2) a unit test that fails if
+  the refine features are read outside played rows. REVERSE it if it measurably hurts the model's performance.
+- **KL cap: option A** - kl_stop_prev 0.02 for the pilot; consider B (every row once) / C (in between) only if A's results
+  point to them.
+- **matches_per_update** is a tuning value (not an owner decision), set from LOOP-INT's bench.
+- Owner: re-dispatch now, as many subagents as needed; every worker hands menial, explicitly defined, usage-heavy,
+  low-risk work to Codex (launcher .foreman/scratch/a2/codex_full.sh, gpt-6-astra, full access = the owner's Codex
+  default; workspace-write cannot run commands here, tested). Tell the owner when the big pod is needed; keep working on the
+  main plan meanwhile. Worker rules: .foreman/scratch/a2/COMMON.md (local).

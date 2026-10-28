@@ -1,3 +1,7 @@
+## 2026-10-28 ~13:20 EDT -- owner: build the Zap rule, lazy_refine ON (+2 fixes), KL cap A (0.02); re-dispatch with Codex
+
+- Details in plan1026/HANDOFF_1028.md 10.3. Workers re-dispatched by the new lead; each hands menial work to Codex.
+
 ## 2026-10-28 ~12:40 EDT -- new account: state checked, owner decisions in HANDOFF_1028.md section 10
 
 - Berserker fields count 100% (D1 stats PASS); crawler stopped for good (HF + live only); Supercell emailed; entropy guard =
