@@ -114,7 +114,7 @@ copy_off() {   # $1 = local checkpoint; its sha = $1.sha256 (written by the loop
 }
 while :; do
   for f in $CK/${RUN}_u[0-9]*.pt; do
-    [ -f "$f.sha256" ] && ! grep -qxF "$(basename $f)" $W/copied.txt && copy_off $f
+    [ -f "$f" ] && ! grep -qxF "$(basename $f)" $W/copied.txt && copy_off $f   # rl_royale writes tmp + os.replace: present = complete
   done
   gpu=$(nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits | tr '\n' ' ')
   printf '%s load %s gpu_util %s mem_used_gb %s copied %s last %s\n' "$(date -u +%FT%TZ)" "$(cut -d' ' -f1 /proc/loadavg)" \

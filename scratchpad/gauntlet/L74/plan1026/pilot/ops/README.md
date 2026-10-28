@@ -17,6 +17,14 @@ Labels: (a) measured, (b) untested, (c) contradicted.
   --enable-native-access=ALL-UNNAMED; before the loop starts, exact_gate.py (numpy exp == glibc on 200,000, numpy dot ==
   sequential on 20,000, CfAbil.EXACT, CfAbil self-tests draw / libm / sum) must print EXACT_GATE PASS, else BOOT FAILED.
   33308 (AMD EPYC 7702, no AVX512): PASS with the flags; without them FAIL (EXACT false, libm 83 mismatches) = the gate works.
+- DONE (a) 10-28 15:53Z: REAL fastloop.py dry run on 33308 (code 3c0719a, loop/ref_v0.yaml, 2 producers x 64 matches x 4
+  threads, cuda:0): boot -> 84 artifacts sha-verified -> EXACT_GATE PASS -> 3 updates (256 matches each; 6.6k -> 11.6k
+  matches/h at this tiny size) -> rc 0, FINAL u0003 -> copied to 33308 + laptop mirror (sha dc1d7d39) -> ack -> pod and laptop
+  'DONE, safe to shut down'. Found + fixed on the way: gate javac line (literal backslash-n), numbered checkpoints have no
+  .sha256 (streamer now copies any present u*.pt: tmp + os.replace = complete; mid-run streaming re-check owed on the next run),
+  a re-used RUN name is refused by rl_royale (rm scratchpad/gauntlet/L68/rl/<run> or pass `-- --resume` semantics via INT).
+- ACCOUNT SWITCH 10-28 ~11:55 EDT: nothing of mine is running. Next: pilot.yaml itself in fastloop once LOOP-MEM / LOOP-IW /
+  LOOP-OPP wiring lands (tables 16.635.3 then), re-check mid-run streaming, then `up` on the rented pod (command below).
 - PENDING: LOOP-INT's FINAL fix -> re-run dry run 2 (restart command below); LOOP-MEM (memory in CfTrain), LOOP-IW (hero presses)
   and LOOP-OPP (opp_style / exploiter decode) before pilot.yaml itself runs in fastloop (NotImplementedError until then, per INT);
   LOOP-LRN tower_phat; CF-MAIN jars (interim lib_cfclone staged); a live sampled-gate option (deploy side) before trial30.
