@@ -481,3 +481,57 @@ def tomb_presses(path, plays, sides, log=None):
         if log is not None:
             log.append(('tomb_press', s, g, tp, t, R))
     return plays if out == plays else out   # no hero Tombstone event: the same plays object (inputs byte-identical)
+
+
+# ENG-FIX (SME_BB_RISE=1): a Boss Bandit ability press whose buff the reader never shows. Casts are dated from the
+# BossBandit_ability_buff (sme_live.buff_casts: R = buff start - 4). The press itself shows as the body's state-10 rise
+# (ents_state) with phase-2 ability cast_timer_ms_raw c, and the buff starts at rise + c: 11 / 11 casts with a buff on
+# dev 138 + FRESH2 + FRESH3 (engfix/bb_census.txt, c = 2 or 3). FRESH2 091720@3517: the rise (c = 2) came one frame
+# before the Boss Bandit died (a tower shot at 3518), so no buff and no cast; crforge, without the press, landed the
+# Boss Bandit's 392 hit on our evo Knight at 3518 that the cast had cancelled in the game (its attack progress reset to
+# 0 at 3517). -> for a rise with no buff instance starting in [t, t + BB_SEEK]: start = t + c, R = start - 4, window
+# [R - 1, R + 1] (buff_casts' window), unit 0. ponytail: Boss Bandit only (the one champion seen this way).
+BB_RISE = int(os.environ.get('SME_BB_RISE', '0'))
+BB_SEEK, BB_LAG = 10, 4   # BB_LAG = sme_live.CHAMP_BUFFS['BossBandit_ability_buff'][2]
+
+
+def bb_rises(path):
+    """[(side, generation, rise tick, cast_timer, buff start or None)] of a raw live log's Boss Bandit state-10 rises."""
+    import json
+    bb, st, rises, buffs = {}, {}, [], {}
+    for line in open(path, 'rb'):
+        if b'"frame"' not in line[:40] or b'BossBandit' not in line:
+            continue
+        d = json.loads(line)
+        t = d['tick']
+        if t is None or t < 0:
+            continue
+        us = {u.get('generation'): u for u in (d.get('phase2') or {}).get('units', []) if u.get('name') == 'BossBandit'}
+        for g, u in us.items():
+            bb[g] = u.get('side')
+            for b in u.get('buffs') or []:
+                if isinstance(b, dict) and b.get('name') == 'BossBandit_ability_buff' and b.get('remaining_ms_raw') is not None:
+                    buffs.setdefault((g, b.get('address')), t - (b['duration_ms_raw'] - b['remaining_ms_raw']) // 50)
+        for row in d.get('ents_state') or []:
+            s, g = row[0], row[-1]
+            if g in bb:
+                if s == 10 and st.get(g) != 10:
+                    rises.append((bb[g], g, t, ((us.get(g) or {}).get('ability') or {}).get('cast_timer_ms_raw')))
+                st[g] = s
+    return [(s, g, t, c, min((v for (gg, _), v in buffs.items() if gg == g and t <= v <= t + BB_SEEK), default=None))
+            for s, g, t, c in rises]
+
+
+def bb_presses(path, plays, sides, log=None):
+    """SME_BB_RISE (above). Adds a cast only for a rise without a buff; the same plays object when none."""
+    add = []
+    for s, g, t, c, b in bb_rises(path):
+        if b is not None or c is None or 'BossBandit' not in sides[s]['deck']:
+            continue
+        R = t + c - BB_LAG
+        add.append(dict(side=s, kind='ability', card='BossBandit', deck_index=sides[s]['deck'].index('BossBandit'),
+                        name='BossBandit', form=0, run_ticks=[R - 1, R + 1], tick=R, source='bb_rise', unit_index=0,
+                        bb_rise=[t, c]))
+        if log is not None:
+            log.append(('bb_rise', s, g, t, c, R))
+    return plays + add if add else plays

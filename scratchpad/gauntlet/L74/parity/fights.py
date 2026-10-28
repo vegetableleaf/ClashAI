@@ -93,6 +93,7 @@ FORM_SYM_FROM = os.environ.get('PARITY_FORM_SYM_FROM', '20261019_0600')         
 # are left alone. ponytail: the icebow deck's one-body cards by name; another own deck adds its cards.
 OWN_SPAWN = os.environ.get('SME_OWN_SPAWN', '0') == '1'
 OWN_NEARDEAD = os.environ.get('SME_OWN_NEARDEAD', '0') == '1'   # ENG-FIX, deployments' H-NEARPARENT (comment there)
+NEAR_BIGGER = os.environ.get('SME_NEAR_BIGGER', '0') == '1'     # ENG-FIX, deployments' near list (comment there)
 OWN_SPAWN_ERR = 0.75
 OWN_SPAWN_CARDS = {'Knight', 'Xbow', 'Tesla', 'IceWizard'}
 DIGGERS = {'Miner', 'GoblinDrill'}  # tunnel in: seen active on their way, deploying where they surface (Knight etc. can show
@@ -692,6 +693,12 @@ def deployments(m, catalog, life=None, own_unit=None, stats=None):
         near = [q for q in tr if q['side'] == r['side'] and q['card_id'] == r['card_id'] and q['first'] < r['first'] - 4
                 and q['first'] <= r['first'] <= q['last'] + 15
                 and math.hypot(at(q, r['first'])[1]-r['x'], at(q, r['first'])[2]-r['y']) < 3000]
+        # ENG-FIX (SME_NEAR_BIGGER=1, off by default): a body is no child of a LIVING smaller body of its card (a child is
+        # smaller than its maker; a larger one born at its maker's death, a Phoenix from its egg, still counts: the maker
+        # is not living). FRESH2 101018@5968: a second Goblinstein (monster 3578 hp, doctor 1153) beside the first play's
+        # living doctor (479 / 1153 hp, 1,394 units away) was dropped as that doctor's child; its doctor as a role-child.
+        if NEAR_BIGGER:
+            near = [q for q in near if not (q['max_hp'] < .95*r['max_hp'] and q['last'] > r['first'] + 2)]
         c = catalog[r['card_id']]
         # H-NEARPARENT (diag_night/r5c): a body of the card's own unit (a level's max_hp) next to a LIVING same-size body of
         # its card is a second play, not that body's child (children are smaller, or born at their parent's death): 40 such

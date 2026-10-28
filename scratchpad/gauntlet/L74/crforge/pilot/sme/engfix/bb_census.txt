@@ -1,0 +1,12 @@
+20261026_144615 5000020 rise 1359 ab {'pending_on_body': 0, 'cast_timer_ms_raw': 2, 'own_action': None} buff_start [1361] bb_last 1566
+20261026_144615 5000020 rise 1473 ab {'pending_on_body': 0, 'cast_timer_ms_raw': 2, 'own_action': None} buff_start [1475] bb_last 1566
+20261026_144615 5000045 rise 2829 ab {'pending_on_body': 0, 'cast_timer_ms_raw': 2, 'own_action': None} buff_start [2831] bb_last 2961
+20261026_172835 5000019 rise 777 ab {'pending_on_body': 0, 'cast_timer_ms_raw': 2, 'own_action': None} buff_start [779] bb_last 943
+20261026_172835 5000049 rise 2809 ab {'pending_on_body': 0, 'cast_timer_ms_raw': 3, 'own_action': None} buff_start [2812] bb_last 2977
+20261026_172835 5000105 rise 4327 ab {'pending_on_body': 0, 'cast_timer_ms_raw': 3, 'own_action': None} buff_start [4330] bb_last 4469
+20261026_200941 5000052 rise 3133 ab {'pending_on_body': 0, 'cast_timer_ms_raw': 3, 'own_action': None} buff_start [3136] bb_last 3139
+20261027_020913 5000025 rise 718 ab {'pending_on_body': 0, 'cast_timer_ms_raw': 2, 'own_action': None} buff_start [720] bb_last 989
+20261028_091720 5000015 rise 807 ab {'pending_on_body': 0, 'cast_timer_ms_raw': 3, 'own_action': None} buff_start [810] bb_last 1043
+20261028_091720 5000056 rise 3517 ab {'pending_on_body': 0, 'cast_timer_ms_raw': 2, 'own_action': None} buff_start [] bb_last 3517
+20261028_101540 5000095 rise 3156 ab {'pending_on_body': 0, 'cast_timer_ms_raw': 2, 'own_action': None} buff_start [3158] bb_last 3276
+20261028_145247 5000055 rise 2649 ab {'pending_on_body': 0, 'cast_timer_ms_raw': 3, 'own_action': None} buff_start [2652] bb_last 2895
