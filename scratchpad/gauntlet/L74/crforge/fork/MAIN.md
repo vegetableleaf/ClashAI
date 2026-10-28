@@ -7,11 +7,9 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
 - **Default for SME: yes.** **Default for facade / training / re-drive: NO, blocked** by the HF gate (below): F1FIX makes
   the Rune Giant enchant, and its enchant reaches unmodelled paths that refuse (a fault = a crashed match).
 - Gates of the m1 head: all done (table; summaries in `main/results/`). Libs on all four pods, sha-checked. `current` is NOT set on any pod (training blocked).
-- Decision (coordinator, 2026-10-28): **F1FIX-3**. Worker abce1b8e724455bae models the Rune Giant enchant cases on
-  branch `clashbot-f1fix3` off 624eeb45, with these gates (HF 20k <= 7 and explained). No training lib without F1FIX.
-  The hold stays until F1FIX-3 passes.
-- Next step: merge `clashbot-f1fix3` into clashbot-main, re-run all gates (`gates30408.sh`, `sme_gate.sh`,
-  `clone_sweep.sh`), `ship_main.sh` the new head, then switch facade / training / re-drive in one step.
+- Next step (owner / foreman decision, not taken here): either model the Rune Giant enchant cases F1FIX now reaches
+  (a ticket "F1FIX-3": attack sequences that launch, the maker-left walk, Berserker step), or give training a lib without
+  F1FIX (= `clashbot-cfclone` 3ebb4115, whose own HF run `/workspace/d1c/f20k_cfclone3` is CF-CLONE-3's).
 
 ## What is on the branch
 | commit | from | what |
@@ -36,9 +34,9 @@ Not merged (instrumentation, applied at build time only): clashbot-bp TickProbe 
 | Clone sweep, Clone refusals (scene + match, both versions) | 0 (scene + match) | 0 (scene, match, cm = Clone after a Mirror, mc = Mirror of a Clone; 8 x ~19,400 scenes) |
 | HF 20k fault sample (d1c/faults.sh, plain lib), gate <= 7 | **FAIL: 328 faults in the 17,000 replays of 68 / 80 shards** (base f20k_cfclone2 on the same 17,000: 7); 321 ran -> fault, 0 fault -> ran. The run hung at 68 / 80 (pod OOM killer: 30408 container 62 GB, oom_kill 28 -> 95 during it) and was stopped by PID | not run (the same F1FIX code; m0 is decisive) |
 
-- **HF faults (a, `main/results/hf_m0_tally.txt`):** of the 328 m0 faults' first messages, 319 are F1FIX's Rune Giant enchant reaching an unmodelled path:
+- **HF faults (a):** of the m0 faults' first messages, 315 are F1FIX's Rune Giant enchant reaching an unmodelled path:
   `giantbuffer_enchanting_buff on <unit>, whose attack sequence replaces its attack` (LittlePrince 117, AngryBarbarian_EV1
-  80 + 50 (two ids), BowlerHero 18, Musketeer_EV1 10, EliteArcherHero 8, ThreeMusketeer 4, GoblinGiant_EV1 2),
+  80, AngryBarbarian 50, BowlerHero 18, Musketeer_EV1 10, EliteArcherHero 8, ThreeMusketeer 4, GoblinGiant_EV1 2),
   `walks back from an object whose maker has left` 23, `sets the Berserker's attack sequence step` 3. Before F1FIX-1 the
   Rune Giant found no friend, so these paths were never reached. Paired check on the first 100 replays, same pod, same
   time: old lib (lib_fix2) 100 ran, new lib 99 ran + 1 fault (034fd0b7, LittlePrince); same speed (395 s vs 390 s).
@@ -91,7 +89,7 @@ m1 `624eeb45` jar sha256 (the four dependency jars are the same in both libs and
 - `fork/upstream_sync.sh` now merges upstream onto clashbot-main (worktree per sync; then these gates).
 - Run dirs: 30408 `/workspace/cfmain/g_m0`, `g_m1`, HF `/workspace/d1c/f20k_main_m0`; 32657
   `/workspace/pilot/f1fix/runs/main_m0_{dev,fresh1}`, `main_m1_*`; 33920 `/workspace/cfmain/cs_m0`, `cs_m1`.
-- The other 9 m0 faults: Mirror 5 (as base), 2 "deflected carrying copies", 1 GiantHero_Slap_Pushback on a clone or
-  rider, 1 target_is_ground with FORCE_IS_GROUND (base: 5 Mirror + 2 engine). `sme_m0.txt` / `sme_m1.txt` count dev
-  "unflagged" by inputs_v30's flags (120); by H2's flag file (`/workspace/pilot/inputs/inputs_rngfree.jsonl`) both are
-  109 / 109 (recomputed; `sme_gate.sh` now uses that file).
+- Open crforge gap reported by RX-X23 (2026-10-28, lib_fix2 = CF-CLONE-2, so it is on clashbot-main too; b, not
+  re-run here): "Deflect_3000018 deflects proj_4000269 from the king tower KingTower_1_0 without a target, which is not
+  modelled" (hold10 vs E4, seed block 741200). Not part of F1FIX-3. RX-X23's 3 intermittent SIGSEGVs are in libtorch
+  oneDNN (`get_max_cpu_isa_mask`) inside the JPype process, not in crforge (b, by the stack frame named).
