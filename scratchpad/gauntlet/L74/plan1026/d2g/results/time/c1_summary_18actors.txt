@@ -1,0 +1,8 @@
+cf: (667s) u0000 wall roll 839s upd 23s u0001 wall roll 910s upd 27s u0002 wall roll 897s upd 22s  batch_sha 0bfed2b7183674f0 batch_sha b2fb284c4958d5e0 batch_sha ba4c4e03f5665dff 
+rs: (681s) u0000 wall roll 846s upd 24s u0001 wall roll 975s upd 23s u0002 wall roll 864s upd 23s  batch_sha 6f83ac2ea95c36d4 batch_sha 283bdc36da346dae batch_sha 5ec35c7221ed6bbc 
+u0001: wall 940 s, actors 15807 core-s (16.8 cores), learner 65 core-s
+u0002: wall 931 s, actors 15397 core-s (16.5 cores), learner 67 core-s
+u0001: wall 1005 s, actors 12732 core-s (12.7 cores), learner 43 core-s
+u0002: wall 893 s, actors 12170 core-s (13.6 cores), learner 39 core-s
+
+[exited with code 0]
