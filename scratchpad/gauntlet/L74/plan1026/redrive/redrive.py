@@ -289,17 +289,22 @@ def npz_to_parquet(npz: Path, out: Path, grades: dict) -> int:
     n = len(z["sc"])
     tags = z["tags"][z["rep"]]
     cols, shapes = {}, {}
+    tok, off = z["tok"], z["off"]
     for k in z.files:
         if k in ("meta", "tags", "off", "tok"):
             continue
         a = z[k]
-        if a.shape[:1] != (n,):
+        if k == "unit_form":                                      # per token: a list per row, like tok
+            assert a.ndim == 1 and len(a) == len(tok), a.shape
+            shapes[k] = [None]
+            cols[k] = pa.LargeListArray.from_arrays(pa.array(off, pa.int64()), pa.array(a))
             continue
+        if a.shape[:1] != (n,):
+            raise ValueError(f"rows array {k} {a.shape}: neither per row ({n}) nor per token ({len(tok)})")
         shapes[k] = list(a.shape[1:])
         flat = a.reshape(n, -1) if a.ndim > 1 else a
         cols[k] = (pa.FixedSizeListArray.from_arrays(pa.array(flat.ravel()), flat.shape[1]) if a.ndim > 1
                    else pa.array(a))
-    tok, off = z["tok"], z["off"]
     shapes["tok"] = [None, int(tok.shape[1])]
     cols["tok"] = pa.LargeListArray.from_arrays(pa.array(off, pa.int64()),
                                                 pa.FixedSizeListArray.from_arrays(pa.array(tok.ravel()), tok.shape[1]))
