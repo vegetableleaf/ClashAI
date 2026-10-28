@@ -1,0 +1,32 @@
+D2-T2 (pod 33308, 2026-10-28; follows D2-T f42674c). Harness: d2g/d2t2/ (hook/, obscheck.sh, obscheck_sum.py, pairs.sh).
+
+Item 2a, first check: the obs_id builders on the ACTOR path (a)
+  What ran: rl_royale, production config succ48_x_s101 (crforge, tree = HEAD f42674c, 12 actors, max_updates 1,
+  learner cuda:0); hook/sitecustomize.py loads hook/actor_obscheck.py in every spawned actor: every Match.gen_row of a
+  feature-version >= 4 GenPolicy with the learner's vocabulary (both seats: learner, league snapshots / init /
+  externals / exploiters) also runs obs_id's 4 builders (JavaMain, JavaIdent, JavaCue, JavaPub; Java sources = HEAD's
+  speed/crforge + the fix below, compiled with the tree's CfCore.java) on the same facade battle and tick and compares
+  every key production built for that row (dtype, shape, bytes). Production rows are returned unchanged.
+  oc1 (HEAD builders), warm start only (128 rule rollouts), 12 actors: tok DIFF on 2 / 47,765 rows (col 5 = y):
+    an enemy body past the board end (sp0000_116, side 1, ticks 820 / 2980: Java y -0.0103 / -0.0059, production 0.0).
+    Cause (a, code): e1_view.live_view (cfg obs "live", noise off too) clips every unit's x / y to [0, 1]
+    (e1_view.rolled np.clip); CfSpeed's unit path did not. The obs_id harness never met such a body (identical there).
+    Fix: CfSpeed.java unit path clips x / y to [0, 1] under fv6 (FacadeMatch = the live-cfg production row) before
+    the sort key; the fv4 (S3) path is unchanged. Also 30,922 rows were not compared in oc1: the hook ran JavaCue on
+    rows whose model has no cue layer (its timing copy needs _cue_memo); oc2 runs JavaCue only where production built cue.
+  oc2 (fixed), warm start + the full u0000 rollout, 12 actors, 24 actor batches (results/d2t2/obscheck_oc2_sum.json):
+    240,119 self-play seat-rows, tick mismatch 0, skipped 0, ALL 20 GenModel keys IDENTICAL on every row
+    (cue on the 150,576 rows whose model has a cue layer; the other 19 on all 240,119).
+    208,623 rows raised in the builders: all RoyalePoolEnv (the held-out ghost screen, run_batch), 'no attribute decks'.
+    The builders cover self-play (RoyaleSelfPlayEnv) only; screens stay on the Python path (b: a screen port untested).
+  oc1 warm-start summary: results/d2t2/obscheck_oc1_warm_sum.json.
+  (b) u0000 batch_sha at 12 actors = f6e5994c29d4e4aa, D2-T's 18-actor runs f18ce1e84acf05dc: the rows depend on
+      n_actors (or the hook changed a row: not separated; the hook only reads, but no hook-free 12-actor run was made).
+      Row-identity comparisons below hold n_actors fixed.
+
+Item 4 baseline (HEAD = unit-type cache, no Java obs) -- in progress
+  pairs.sh: crforge vs fin16 (royalesim), 24 actors, max_updates 4 (timed u0001-u0003), one pair at a time, CPU sets
+  0-25 / 32-57 + cuda:0 / cuda:1 swapped every pair.
+  Seed 101 (the D2-T seed), default CUDA: the crforge run crashed in the u0001 rollout (actor 17 twice, the Clone on
+  evolved Skeletons gap: 'c65_1_0 is cloned carrying SkeletonDuplication_EV1'), so the CF-CLONE gap is not only a
+  deterministic-CUDA case (a). Chain restarted with seed=102 (all runs of the pairs).

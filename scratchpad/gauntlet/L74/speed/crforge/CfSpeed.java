@@ -170,6 +170,9 @@ public class CfSpeed {
         if (h > 0 && !(w instanceof TowerEntity) && ahead(w, seat, h, xy)) { X = xy[0]; Y = xy[1]; }
         if (mirror) { X = 18000.0 - X; Y = 32000.0 - Y; }
         double x = X / 18000.0, y = 1.0 - Y / 32000.0;
+        // fv6 = the live-cfg production row: e1_view.live_view (cfg obs "live", noise off included) clips every unit's
+        // x / y to [0, 1] before to_tokens sorts them (D2-T2: crforge bodies past the board end, y up to 32,328)
+        if (fv6 && !(w instanceof TowerEntity)) { x = Math.min(Math.max(x, 0.0), 1.0); y = Math.min(Math.max(y, 0.0), 1.0); }
         if (w instanceof TowerEntity) {
           int rel = w.side() == seat ? 0 : 1;
           int k = w.getData().king() ? 0 : (x < 0.5 ? 1 : 2);
