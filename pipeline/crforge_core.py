@@ -27,7 +27,10 @@ What it is not (each raises rather than run something else)
     delay), like RustEngine under ``set_command_delay_ticks(20)``: the card stays in hand and the elixir is spent at the
     run. ``command_delay_ticks`` is (20, 20); any other delay is refused.
   * ``ShuffleMode.NONE`` only (the deal is the setup's order: crforge's own shuffle draw is taken, then the hand is put
-    back in that order). No ``start_tick`` / ``elixir_milli`` / ``tower_hp`` / ``spawns`` starts, no tower troops.
+    back in that order). No ``start_tick`` / ``elixir_milli`` / ``tower_hp`` / ``spawns`` starts.
+  * Tower troops (D1-C): ``_battle.set_tower_troops(blue, red)`` with RoyaleSim's names (``TOWER_GROUPS``) -> crforge's
+    spawn group per side; king and princess slots at the side's ``tower_levels``. A troop is a crown tower in
+    ``state()`` (kind 3, its own hp), its shots ``projectiles`` with firer -1.
   * Levels: ``setup.levels`` / ``tower_levels`` when given, else ``level`` (16) everywhere (RoyaleSim's default is 11).
   * Hero abilities (F1c-1): ``PlayerState.abilities`` has one row per button from the deal on, in RoyaleSim's button
     order (heroes, then champions), from crforge's champion slots; a hero body sets STATUS_HERO (16), as RoyaleSim
@@ -76,6 +79,9 @@ _STATUS = dict(zip(REFUSAL, (DeployStatus.OK, DeployStatus.GAME_OVER, DeployStat
                              DeployStatus.NO_DEPLOY, DeployStatus.NO_HERO, DeployStatus.ABILITY_NOT_READY,
                              DeployStatus.ABILITY_SPENT, DeployStatus.NO_HERO, DeployStatus.CARD_PENDING,
                              DeployStatus.NO_HERO, DeployStatus.ABILITY_NOT_READY, DeployStatus.ABILITY_NOT_READY)))
+# tower troop (rl_royale.TOWER_TROOPS, RoyaleSim's names; None = Princess) -> crforge's tower selection spawn group
+TOWER_GROUPS = {None: "King_PrincessTowers", "DaggerDuchess": "King_KnifeTowers", "Cannoneer": "King_CannonTowers",
+                "ChefTower": "King_ChefTowers"}
 _J = {}            # the JVM's classes and shared tables, once per process
 
 
@@ -155,8 +161,12 @@ class _Battle:
                 for e in self.core.state().entities if e.kind == 0 and e.card_id in names]
 
     def set_tower_troops(self, blue=None, red=None) -> None:
-        if blue is not None or red is not None:
-            raise NotImplementedError("crforge facade: tower troops are not wired (Princess towers only)")
+        """[Blue, Red] tower troop (rl_royale.TOWER_TROOPS names, None = Princess) -> crforge spawn group, used by every
+        later ``reset`` until set again (RoyaleSim's Battle.set_tower_troops keeps them the same way)."""
+        bad = [t for t in (blue, red) if t not in TOWER_GROUPS]
+        if bad:
+            raise ValueError(f"unknown tower troop {bad[0]!r}; known: {sorted(k for k in TOWER_GROUPS if k)}")
+        self.core._tower_groups = [TOWER_GROUPS[blue], TOWER_GROUPS[red]]
 
 
 class CrforgeCore:
@@ -196,6 +206,7 @@ class CrforgeCore:
         self._battle = _Battle(self)
         self._decode = msgspec.json.Decoder(BattleState)
         self._reset_called = False
+        self._tower_groups = [TOWER_GROUPS[None]] * 2       # _battle.set_tower_troops
 
     # ------------------------------------------------------------------ catalogue
     def cards(self):
@@ -239,7 +250,8 @@ class CrforgeCore:
             self._cf.reset(int(seed) & 0x7FFFFFFF, J["Str"](decks[0]), J["Int"](list(map(int, forms[0]))),
                            J["Str"](decks[1]), J["Int"](list(map(int, forms[1]))), J["Int"](list(map(int, lv[0]))),
                            J["Int"](list(map(int, lv[1]))), int(tl[0]), int(tl[1]),
-                           J["Int"](list(map(int, setup.decks[0]))), J["Int"](list(map(int, setup.decks[1]))))
+                           J["Int"](list(map(int, setup.decks[0]))), J["Int"](list(map(int, setup.decks[1]))),
+                           *self._tower_groups)
         except J["jpype"].JException as exc:          # an unknown card, or a form its slot cannot hold
             raise ValueError(f"crforge refused the setup: {exc}") from None
         self._reset_called = True

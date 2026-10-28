@@ -142,3 +142,29 @@ def test_royale_env_runs_on_the_facade():
     bs = oc.from_engine(raw, 0, oc.load_deck("icebow"), feature_version=6, unmapped=set())
     tok, mask, sc = oc.to_tokens(bs)
     assert mask.sum() > 0 and env.public_plays
+
+
+def test_tower_troops_place_each_sides_spawn_group():
+    """D1-C: set_tower_troops (RoyaleSim's names) -> crforge's spawn group per side, kept for later resets; a troop is a
+    crown tower (kind 3) in state(), named by its row; an unknown name is refused; None, None = Princess again."""
+    core = C.CrforgeCore()
+    core._battle.set_tower_troops("DaggerDuchess", "ChefTower")
+    for seed in (5, 6):                                   # kept across resets
+        core.reset(seed, _setup(core))
+        st, names = core.state(), core.unit_types()
+        assert sorted((e.team, e.kind, names[e.unit_type]) for e in st.entities if e.kind >= 2) == [
+            (0, 2, "KingTower"), (0, 3, "DaggerDuchess"), (0, 3, "DaggerDuchess"),
+            (1, 2, "ChefTowerKing"), (1, 3, "ChefTower"), (1, 3, "ChefTower")]
+    _play(core, random.Random(4), 1200)
+    assert not [k for k in core.unmapped()["missing"] if any(t in k for t in ("Dagger", "Chef", "Cannon"))]
+    core._battle.set_tower_troops("Cannoneer", None)
+    core.reset(5, _setup(core))
+    names = core.unit_types()
+    assert sorted({(e.team, names[e.unit_type]) for e in core.state().entities if e.kind == 3}) == [
+        (0, "Cannoneer"), (1, "PrincessTower")]
+    with pytest.raises(ValueError):
+        core._battle.set_tower_troops("GoblinQueen", None)
+    core._battle.set_tower_troops(None, None)
+    core.reset(5, _setup(core))
+    names = core.unit_types()
+    assert {names[e.unit_type] for e in core.state().entities if e.kind == 3} == {"PrincessTower"}

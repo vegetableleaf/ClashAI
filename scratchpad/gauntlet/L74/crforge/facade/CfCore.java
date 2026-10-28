@@ -1,4 +1,5 @@
 // F1 (plan1026 Pillar 1 Stage 2): one crforge match behind RoyaleSim's engine-core seam, for pipeline/crforge_core.py.
+// D1-C: tower troops (reset with a spawn group per side).
 // Built against crforge core @ ad8ef3a532ada8dea732bf1ecdeb01beef0fb4b0. Match setup as LadderEnv.reset / CfSpeed.Match
 // (addPlayerData x2, startLadderMatch), plays through PlayerCommands.playCard, ability presses through useAbility.
 // state() writes RoyaleSim's state_json shape (royalegym.protocol.BattleState; entities / spells / projectiles as
@@ -87,9 +88,20 @@ public final class CfCore {
   /** Decks by card row name in deal order (hand = 0..3, queue 4..7: RoyaleSim ShuffleMode.NONE), forms 0/1/2. */
   public void reset(int seed, String[] d0, int[] f0, String[] d1, int[] f1, int[] lv0, int[] lv1, int tl0, int tl1,
       int[] ids0, int[] ids1) {
+    reset(seed, d0, f0, d1, f1, lv0, lv1, tl0, tl1, ids0, ids1, Standard1v1Battle.PRINCESS_TOWERS,
+        Standard1v1Battle.PRINCESS_TOWERS);
+  }
+
+  /**
+   * D1-C: each side's towers from its own spawn group (crforge's tower selections: King_PrincessTowers,
+   * King_CannonTowers, King_KnifeTowers = Dagger Duchess, King_ChefTowers = Royal Chef), king and princess slots at
+   * the side's tower level. A tower troop is a TowerEntity like a princess tower, so state() reports it the same way.
+   */
+  public void reset(int seed, String[] d0, int[] f0, String[] d1, int[] f1, int[] lv0, int[] lv1, int tl0, int tl1,
+      int[] ids0, int[] ids1, String g0, String g1) {
     St n = new St();
-    n.std = new Standard1v1Battle(tables, List.of(new Standard1v1Battle.Towers(Standard1v1Battle.PRINCESS_TOWERS, tl0, tl0),
-        new Standard1v1Battle.Towers(Standard1v1Battle.PRINCESS_TOWERS, tl1, tl1)), true);
+    n.std = new Standard1v1Battle(tables, List.of(new Standard1v1Battle.Towers(g0, tl0, tl0),
+        new Standard1v1Battle.Towers(g1, tl1, tl1)), true);
     n.std.getWorld().seed(seed);
     n.std.addPlayerData(1);
     n.std.addPlayerData(1);

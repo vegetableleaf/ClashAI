@@ -1,0 +1,157 @@
+{
+ "crforge_build": [
+  "client_version=16.635.1",
+  "content_sha=dae6c6cc7e9126338da0c606e47e48a9ef80462c",
+  "data_version=16.635.3",
+  "decoder=1"
+ ],
+ "files": {
+  "version": "16.635.3",
+  "content_sha": "dae6c6cc7e9126338da0c606e47e48a9ef80462c",
+  "table_files": 433,
+  "device_apk": 380,
+  "sha1_match": 433,
+  "device_update": 53,
+  "sha1_bad": []
+ },
+ "tables": {
+  "characters": {
+   "fields": 10349,
+   "match": 10347,
+   "ui_only_not_compared": 120,
+   "rows_in_other_unit_table": 4,
+   "rows_crforge": 248,
+   "rows_device": 244,
+   "match_rate": 0.999807,
+   "mismatches": [
+    [
+     "BerserkerHero",
+     "OnStartingAction",
+     {
+      "ClassType": "ActionBerserk"
+     },
+     null
+    ],
+    [
+     "BerserkerHero_BearForm",
+     "OnStartingAction",
+     {
+      "ClassType": "ActionBerserk"
+     },
+     null
+    ]
+   ],
+   "crforge_only_rows": [],
+   "device_only_rows": []
+  },
+  "buildings": {
+   "fields": 2883,
+   "match": 2883,
+   "ui_only_not_compared": 11,
+   "rows_crforge": 112,
+   "rows_device": 116,
+   "match_rate": 1.0,
+   "mismatches": [],
+   "crforge_only_rows": [],
+   "device_only_rows": []
+  },
+  "projectiles": {
+   "fields": 2719,
+   "match": 2719,
+   "ui_only_not_compared": 41,
+   "rows_crforge": 179,
+   "rows_device": 179,
+   "match_rate": 1.0,
+   "mismatches": [],
+   "crforge_only_rows": [],
+   "device_only_rows": []
+  },
+  "area_effect_objects": {
+   "fields": 1385,
+   "match": 1385,
+   "ui_only_not_compared": 48,
+   "rows_crforge": 170,
+   "rows_device": 170,
+   "match_rate": 1.0,
+   "mismatches": [],
+   "crforge_only_rows": [],
+   "device_only_rows": []
+  },
+  "character_buffs": {
+   "fields": 1152,
+   "match": 1152,
+   "ui_only_not_compared": 28,
+   "rows_crforge": 176,
+   "rows_device": 176,
+   "match_rate": 1.0,
+   "mismatches": [],
+   "crforge_only_rows": [],
+   "device_only_rows": []
+  },
+  "spells_characters": {
+   "fields": 1801,
+   "match": 1801,
+   "ui_only_not_compared": 5,
+   "rows_crforge": 108,
+   "rows_device": 108,
+   "match_rate": 1.0,
+   "mismatches": [],
+   "crforge_only_rows": [],
+   "device_only_rows": []
+  },
+  "spells_buildings": {
+   "fields": 263,
+   "match": 263,
+   "rows_crforge": 18,
+   "rows_device": 18,
+   "match_rate": 1.0,
+   "mismatches": [],
+   "crforge_only_rows": [],
+   "device_only_rows": []
+  },
+  "spells_other": {
+   "fields": 513,
+   "match": 513,
+   "ui_only_not_compared": 1,
+   "rows_crforge": 27,
+   "rows_device": 27,
+   "match_rate": 1.0,
+   "mismatches": [],
+   "crforge_only_rows": [],
+   "device_only_rows": []
+  },
+  "spells_evolved": {
+   "fields": 1845,
+   "match": 1845,
+   "ui_only_not_compared": 5,
+   "rows_crforge": 109,
+   "rows_device": 109,
+   "match_rate": 1.0,
+   "mismatches": [],
+   "crforge_only_rows": [],
+   "device_only_rows": []
+  },
+  "spells_hero_form": {
+   "fields": 1821,
+   "match": 1821,
+   "ui_only_not_compared": 1,
+   "rows_crforge": 113,
+   "rows_device": 113,
+   "match_rate": 1.0,
+   "mismatches": [],
+   "crforge_only_rows": [],
+   "device_only_rows": []
+  }
+ },
+ "selfcheck": {
+  "planted": 7,
+  "caught": 7,
+  "extra": [],
+  "ok": true
+ },
+ "overall": {
+  "fields": 24731,
+  "match": 24729,
+  "match_rate": 0.999919
+ }
+}
