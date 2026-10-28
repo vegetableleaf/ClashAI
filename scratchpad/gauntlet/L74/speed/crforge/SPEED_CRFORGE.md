@@ -634,11 +634,15 @@ python -I project.py results/loop_n2048_c2_t24.json --extra-core-s 0.05   # lapt
 
 - **STATUS (updated each step).** Done: production trace (below), `CfMem.java` (observe / features / table + the CPython
   sum / hypot arithmetic), `JavaMem` builder + table / learner-rebuild checks in `obs_id.py`, `mem_arith.py` (arithmetic
-  self-check). Next: pod 32657 `/workspace/loopmem` (rl = HEAD pipeline + links to /workspace/f1/rl; B0 =
-  models/mem_best_ze.pt sha 3d75a25d): `mem_arith.py`, then a 2-match smoke, then 56 matches at the live cfg.
+  self-check), `mem_par.sh` / `mem_merge.py` (the harness over 14 processes). Measured so far: `mem_arith.py` (400k
+  draws each: hypot 0, sum 0, round 0 bit differences; sigmoid float64 16,206 differ, float32 0); 2-match smoke
+  (`/workspace/loopmem/out/smoke.json`): all 26 keys IDENTICAL on 1,804 seat-rows, 4 / 4 tables identical, learner rebuild
+  1,804 / 1,804. Running (started 14:17Z): 56 matches live + 56 with presses. Pod 32657 `/workspace/loopmem` (rl = HEAD pipeline + links to /workspace/f1/rl; B0 =
+  models/mem_best_ze.pt sha 3d75a25d).
   Restart: `OBSID_RL=/workspace/loopmem/rl OBSID_CLXIII=/workspace/loopmem/models/mem_best_ze.pt
   OBSID_BUILD=/workspace/loopmem/build /workspace/loopmem/rl/scratchpad/gauntlet/L74/speed/crforge/obsid/run.sh
-  /workspace/loopmem/out/mem_live.json --n 56`.
+  /workspace/loopmem/out/mem_live.json --n 56`; parallel: `MEM_CPU0=0 obsid/mem_par.sh /workspace/loopmem/out/live 56 14
+  [--hero-abilities]` (same env), results in OUTDIR/merged.json.
 - **What production computes (a, code at 70193b9).** B0 = `mem_best_ze.pt` (CLXIII + the S3-aux encoder, memory v2,
   zero_empty, coupling zero). `gen_row_keys` = the 20 keys + MEM_KEYS; `Match.gen_row` -> `_memory(policy, deck_card)`:
   `sample_sim(self.state, side)` (UN-extrapolated raw at the decision tick: `tower_reads_engine` on crown towers, own

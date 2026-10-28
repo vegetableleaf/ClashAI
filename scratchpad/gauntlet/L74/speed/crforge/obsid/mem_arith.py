@@ -11,8 +11,9 @@ import os
 import sys
 from pathlib import Path
 
-import jpype
-import numpy as np
+sys.path[:0] = ["/workspace/cfspeed/pylib"]               # jpype on the pods (as obs_id.py)
+import jpype  # noqa: E402
+import numpy as np  # noqa: E402
 
 
 def main():

@@ -41,7 +41,8 @@ public final class CfMem {
       EL10 = 13, ELK = 14, CRM = 15, CRO = 16, MG2 = 17, MGK = 18, COST10 = 19, TK = 20, TLOST = 23, OUT_DONE = 24,
       OUT_EN = 25, OUT_OWN = 26, OUT_TK = 27, OUT_V10 = 28, OUT_VK = 29, XB_REACH_F = 30, XB_DONE = 31, XB_LOCKED = 32,
       XB_FAILED = 33, XB_DMG = 34, XB_ANS_DONE = 35, XB_ANSWERED = 36, XB_ANS_DIST = 37, IS_XB_ANS = 38, RK_TOWER = 39,
-      RK_DONE = 40, RK_TLOST = 41, RK_TK = 42, RK_V10 = 43, RK_VK = 44, RK_COMBO = 45, F = 46;
+      RK_DONE = 40, RK_TLOST = 41, RK_TK = 42, RK_V10 = 43, RK_VK = 44, RK_COMBO = 45;
+  public static final int F = 46;
   /** features() row layout (bytes, native order set by the caller): mem_ev f32 [128, 46], mem_mask u8 [128] (bool),
    *  mem_card i64 [128], mem_form i64 [128], mem_summary f32 [114], mem_answer i64. */
   public static final int OFF_EV = 0, OFF_MASK = E_MAX * F * 4, OFF_CARD = OFF_MASK + E_MAX, OFF_FORM = OFF_CARD + 8 * E_MAX,
