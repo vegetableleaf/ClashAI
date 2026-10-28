@@ -66,7 +66,7 @@ Labels: (a) measured, (b) untested, (c) contradicted.
        tables 32/32, MEM rows 10,209/10,209, v_old max 7.9e-7, wver 0; lp max gate **1.33e-5**, card 5.7e-6, cell
        **1.48e-5** (`cmp_pn_srv.json`). lp_gate is the gate logit's fp32 noise x 1/T_gate (T_gate 0.1 = x10).
      - in-process (cuda, 8 in flight; styled heads moved to CPU for loop_opp): 32/32 identical, tables 32/32, MEM rows
-       10,209/10,209, lp max gate 4.8e-7 / card 1.4e-6 / cell 4.4e-6 () -> the server-mode lp excess is
+       10,209/10,209, lp max gate 4.8e-7 / card 1.4e-6 / cell 4.4e-6 (33308 cmp_pn_b8.json) -> the server-mode lp excess is
        the server's batch composition (fp32), not the wiring. Msg: /workspace/loop/cb/scratchpad/gauntlet/L68/rl/lint_pn2/fast_msg_u0000.pkl.
   2d. NOT DONE: CfAbil / hero presses / the B6 ability head (pilot.yaml: hero_abilities, ability_head, heroiw_press,
      ability_features) -> NotImplementedError. Also needed then: rl_royale's 128-match rule warm start goes through
