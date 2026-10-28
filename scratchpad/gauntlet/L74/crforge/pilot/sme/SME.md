@@ -1909,3 +1909,97 @@ the reader, or the open route-kept class (below).
   `r93_{results.jsonl,cmp.txt}` (results sha256 `eed5f304`).
 - **Pod 32657:** `/workspace/pilot/{sme9,inputs_v25,v26,v27,a2c9}`, runs `sme_live/r90`, `r93`, `r93o`. r91 / r92 / r9id
   were stopped unfinished when the base moved to r9z4.
+
+---
+
+# A2c-9R: same-tick play order, and the route / position singles (worker bp9, pod 32657)
+
+Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
+
+Matches: `164443`@3213, `170912`@745, `180336`@2911, `211239`@1532, `000233`@4599, `014928`@5183; from A2c-9T also `101112`,
+`172835`, `222712`@4742. **No crforge change**: 7 of the 9 trace to the order the game creates the units of two plays that run
+on the same tick, an input fact that the reader shows.
+
+**Base reproduced (a).** `bp9R0` (sme8 code, lib_f635c, inputs_v24, r87's flags, `bp9/run9.sh`) is byte-identical to r87
+(sorted results sha256 `b906fbbe`). The chain was then rebased on **r93** (99 / 109, 276,305 exact frames; sme9 code from
+20ee8a4 = pod `/workspace/pilot/sme9`, inputs_v27 `157e183a`, SME_LATE9 + SME_MADE9).
+
+| run | change | layer | inputs | exact apart from torn (unflagged) | exact frames | regressions | gained |
+|---|---|---|---|---:|---:|---|---|
+| r93 | (9T) | | v27 | 99 / 109 | 276,305 | | |
+| **bp9Y1** | same-tick plays in the reader's creation order (`bp9/order_inputs.py`) | extractor (input post-pass) | **v27o** `ab3c7114` = v27 with 23 records reordered | **106 / 109** | **276,782** (+477) | **0** | `000233`, `164443`, `170912`, `180336`, `101112`, `172835`, `222712` |
+
+- The 115 matches whose inputs line is unchanged are byte-identical to r93 (a). bp9Y1 results sha256 `5893ab91` (sorted).
+- Remaining: `171753`@3293 (9T, untraced opponent hero IW), `211239`@1532, `014928`@5183 (below).
+
+## The mechanism: two plays on one tick, created in the game's order (a)
+- **What crforge does.** Standard1v1Battle runs the commands of one tick in queue order ("within a tick, the run order"), and
+  `plan_from` keeps the inputs' order for plays with equal tick. So of two plays of the two sides that share a run tick, the one
+  listed first gets the lower entity ids and is visited first every tick after, in targeting, route preparation and pushes.
+- **What the game does.** The reader lists bodies in the game's slot order. In the first frame that shows the new bodies of
+  both plays, the play whose bodies sit at lower rows was created first. On every decisive pair this ordering is the game's:
+  - 000233@4556: side-1 Skeletons rows 7-9, side-0 Skeletons rows 10-12;
+  - 164443@3171: side-1 Skeletons rows 11-13, side-0 RamRider rows 14-15;
+  - 212111@381: side-0 Knight row 10, side-1 AxeMan row 11;
+  - 011738@4361: side-0 RamRider rows 14-15, side-1 Knight row 16.
+- **The first, wrong rule tested it the hard way.** `SME_SIDE1_FIRST` (side 1's play queued first, in SmeRun; scratch, reverted)
+  on the r87 base: 96 -> 99 / 109, gained 6 (`000233`, `164443`, `170912`, `180336`, `101112`, `172835`), **lost 3**
+  (`212111`@575, `175456`@5968, `011738`@4384), identity `bp9I0` byte-identical to r87 (`results/live/bp9/bp9{S1,I0}_*`).
+  The 3 losses are exactly the pairs where the reader shows side 0 first; the 6 gains are pairs where it shows side 1 first.
+  "Side 1 first" and "the opponent first" are therefore (c); the reader's order fits 9 / 9 (a).
+- **Rule (`bp9/order_inputs.py`, input post-pass, no flag needed for identity: an unchanged record is copied byte for byte).**
+  For each tick with plays of both sides, a play's reading is (first frame in [tick, tick+10], lowest row) of a body of its side
+  within 1,500 of its point that was not in the frame before the tick. Plays with a reading keep their slots in `rec['plays']`
+  but are sorted by reading. A play with no body (a spell) has no reading and does not move.
+  - Census (`order_v27o.log`): 80 same-tick cross-side pairs in the 138 records; 26 reordered (23 records), 54 kept.
+- **Why it looked like a route bug.** The kept-route events of BP4-BP6 (`000233`@4598 / 4599, `180336`@2910, `101112`@5923) and
+  the new member `170912`@745 (below) are all a unit and its reference created on the same tick from two such plays; in the
+  game's order the reference is visited at a different point of the step, so its point at the unit's route preparation differs
+  and the goal does not flip. `164443`'s "the Skeleton's push pass ran before the Ram moved" (BP4) is the same order. A2c-9T's
+  `172835` (Knight vs WitchMother, run 2702) and `222712`@4742 (pair at 4683) are the same mechanism.
+
+## Census results along the way (all on bp4R0 = r78 plans unless said; rows and logs in `results/live/bp9/`)
+- **Lead 1, deploy end / birth / death as a re-search trigger: (c).** `dep9.py` joins BP6's fr2 rows (a fresh search from the
+  start cell to the held goal would step elsewhere) with per-tick trigger sets. Clean, exact before, game follows the held route
+  vs the fresh one: same-side deploy end in the tick 5,699 / 0, at the next crforge tick (the game one tick early) 5,465 / 0;
+  same-side death 8,673 / 0 and 9,982 / 0; same-side birth 6,038 / 0 and 6,211 / 0; the other side alike (`dep9.log`).
+- **The target-moved trigger (9T's question): (c).** The game re-plans when its reference moves: 5,910 clean goal changes caused
+  by the reference's own route step earlier in the tick follow crforge (refmode9 `ref_route_plain`), 612 with a pushed
+  reference, 220 with a reference in a recoil / pushback flight (`refmode9.log`); BP3's by_ref_move 6,979. The kept events are
+  the creation-order pairs above, not a trigger the game lacks.
+- **Census fix (a): the goal census ignored the avoidance blend.** `reneither.py` re-decides BP5's 29 clean `neither` goal-change
+  events with the unit's real step (blend and push from its `prop`): `170912`@745 (blend -60) is a 5th kept event, the game's
+  point exactly the held route's step ((6250, 17250): (7572, 17094)); the other 28 stay neither (`reneither.log`).
+- **(c) per-tick search budget** (`budget9.log`): 3 of the 5 kept events have 0 searches before the unit's in that tick
+  (17,937 such events follow crforge).
+- **(c) Ram re-appended to the list at landing** (`ramord9.log`): 12 clean events (233957, 011738) of a Ram moving before a body
+  born before its landing follow crforge. **(c) a lander's first visit runs late**: 18 clean k = 1 lander events (HogRider 2,
+  RoyalHog 15, RoyalHog_EV1 1) follow crforge's order. The Ram's single case is the creation order.
+- **Reader rows vs crforge's holder order (`rowcensus9.py`, `rowcensus9.log`):** 2,251,668 row pairs agree; 239,038 disagree
+  for bodies born on different ticks (newer bodies in lower rows: slot reuse, so row order is not the update order in general,
+  (b)); 1,970 for same-tick cross-side pairs; 240 for same-tick same-side pairs (bodies of one play; untested whether the game's
+  visit order follows them, (b)).
+
+## Remaining in this cluster: mechanisms (D1)
+- **`211239`@1532 - target death to first move one tick early (b for the cause).** The opponent hero IW 5000020 stood in state 2
+  (attack timer frozen at 7850, load 150) when its reference (our IW) died to the Pekka's direct hit at 1527. crforge sets the
+  target-lost timer to 1 in the removal notice (`RemovalNotice.retargetLoad`), adds 50 per targeting visit, clears the attack at
+  >= attackFinishTime (251 at 1532) and moves at 1533; the game moves at 1532, i.e. its timer reached the limit one tick sooner.
+  The Pekka (the killer, same side) resumes at crforge's tick exactly, the reader's row order equals crforge's (IW rows 6-7, Pekka
+  11), and the two plays are not on one tick. Census (BP4 / BP5): 5 earlier of 2,052 clean delay-6 direct kills; no separating
+  feature found. The 2-tick frames cannot date the game's kill and move to the tick.
+- **`014928`@5183 - a fresh route search at 5182 with no crforge trigger (b for the trigger).** The game's IW adopts the route
+  searched from its cell (4, 39) to the unchanged goal 871 (aims 1373, then 1337: a node crforge popped at 5177) while crforge
+  keeps the 5146 route (aim 1338). AimRun11 (`bp9/mk_aimrun11.py`): both overlay hashes and change flags are constant over
+  5130-5200, so neither side's occluder set changes; no play shares a tick with the IW's. Contradicted triggers: deploy end /
+  birth / death (above), cell entry off-route (BP6), occluder hash (BP5 VDEP), target change (the IW's reference is our princess
+  tower 5000001 throughout).
+
+## Files (A2c-9R)
+- `bp9/`: `order_inputs.py` (the rule), `run9.sh`, censuses `dep9.py`, `reneither.py`, `refmode9.py`, `budget9.py`,
+  `ramord9.py`, `samerun9.py`, `rowcensus9.py`, `pairs9.py`, `rdorder9.py`; tools `stepsim.py` (Displacement in Python, blend
+  included, self-check), `plan_swap.py`, `firstdiv9.py`, `fdiff9.py`, `born9.py`, `birth9.py`, `pa9.py`, `refmv.py`,
+  `mk_aimrun11.py`.
+- `results/live/bp9/`: `bp9Y1_{results.jsonl,cmp.txt}`, `bp9{S1,I0,R0}_cmp.txt`, `bp9S1_results.jsonl`, `order_v{25o,27o}.log`,
+  `samerun_r87.log`, census logs.
+- Pod 32657: `/workspace/pilot/inputs_v27o` (`ab3c7114`), `/workspace/pilot/bp9`, runs `sme_live/bp9{R0,I0,S1,Y1}`.

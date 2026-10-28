@@ -1,4 +1,15 @@
 
+## Remaining failures of bp9Y1 (3 unflagged; 106 / 109, 276,782 exact frames; A2c-9R on r93)
+bp9Y1 = r93 (sme9 code, SME_LATE9 + SME_MADE9) on inputs_v27o (`ab3c7114`: same-tick plays of the two sides in the reader's
+creation order, `bp9/order_inputs.py`); 0 regressions, 115 unchanged-input matches byte-identical to r93. Fixed by it:
+`000233`, `164443`, `170912`, `180336`, `101112`, `172835`, `222712` (SME.md A2c-9R).
+
+| match | first div | class | mechanism (D1) | evidence |
+|---|---:|---|---|---|
+| `20261026_171753` | 3293 | body position | opponent hero IW + cube 1 unit off in y (untraced, b) | A2c-9T 9.1 |
+| `20261026_211239` | 1532 | body position | target death -> first move: the game's target-lost timer reaches attackFinishTime one tick before crforge's (b for the cause) | A2c-9R; BP4/BP5 death census 5 earlier / 2,052 |
+| `20261027_014928` | 5183 | body position | a fresh route search adopted at 5182 with no crforge trigger (no goal, occluder or target change; b for the trigger) | A2c-9R; BP5 aim fit |
+
 ## Remaining failures of r87 (13 unflagged; 96 / 109, 264,960 exact frames; round 8)
 First divergence from r87's results. Class from cls6 on r78 (`results/live/a2c8_cls_r78.tsv`; the sweep found no
 single-command shift for any onset). Owners follow the ticket.

@@ -1,0 +1,3 @@
+exact apart from torn: 99/109 -> 106/109 | exact frames 276305 -> 276782 | regressions 0 | gained 7
+torn frames after: {'torn_snap': 19, 'torn_cmd': 73, 'torn_step': 67, 'torn_t1': 110, 'torn_mixed': 31, 'torn_late': 1, 'torn_hidden': 46, 'torn_cross': 1}
+   3  body position (movement / collision / targeting)

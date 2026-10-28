@@ -1,0 +1,77 @@
+searches before
+     0  crforge  17937  kept 4
+     1  crforge   4646  kept 1
+     2  crforge   1938  kept 2
+     3  crforge    646  kept 1
+     4  crforge    256  kept 0
+     5  crforge    134  kept 0
+     6  crforge     84  kept 0
+     7  crforge     60  kept 0
+     8  crforge     34  kept 0
+     9  crforge     22  kept 0
+    10  crforge     13  kept 0
+    11  crforge      9  kept 0
+    12  crforge     22  kept 0
+searches in tick
+     1  crforge  13151  kept 3
+     2  crforge   5709  kept 0
+     3  crforge   3644  kept 3
+     4  crforge   1616  kept 2
+     5  crforge    587  kept 0
+     6  crforge    306  kept 0
+     7  crforge    201  kept 0
+     8  crforge    166  kept 0
+     9  crforge    110  kept 0
+    10  crforge    108  kept 0
+    11  crforge     59  kept 0
+    12  crforge    144  kept 0
+route nodes before
+     0  crforge  18157  kept 4
+     1  crforge    449  kept 0
+     2  crforge    757  kept 1
+     3  crforge    512  kept 0
+     4  crforge    620  kept 0
+     5  crforge    500  kept 1
+     6  crforge    459  kept 0
+     7  crforge    476  kept 0
+     8  crforge    425  kept 1
+     9  crforge    384  kept 0
+    10  crforge    373  kept 0
+    11  crforge    343  kept 0
+    12  crforge    224  kept 0
+    13  crforge    149  kept 0
+    14  crforge    178  kept 1
+    15  crforge    142  kept 0
+    16  crforge    126  kept 0
+    17  crforge    108  kept 0
+    18  crforge    120  kept 0
+    19  crforge     98  kept 0
+    20  crforge     86  kept 0
+    21  crforge     74  kept 0
+    22  crforge     76  kept 0
+    23  crforge     62  kept 0
+    24  crforge     58  kept 0
+    25  crforge     35  kept 0
+    26  crforge     57  kept 0
+    27  crforge     42  kept 0
+    28  crforge     45  kept 0
+    29  crforge     42  kept 0
+    30  crforge     35  kept 0
+    31  crforge     38  kept 0
+    32  crforge     37  kept 0
+    33  crforge     28  kept 0
+    34  crforge     19  kept 0
+    35  crforge     27  kept 0
+    36  crforge     22  kept 0
+    37  crforge     20  kept 0
+    38  crforge     16  kept 0
+    39  crforge     26  kept 0
+    40  crforge    356  kept 0
+KEPT ('kept', 0, 1, 0, '20261026_101112', 5923)
+KEPT ('kept', 2, 4, 8, '20261026_170912', 745)
+KEPT ('kept', 3, 4, 14, '20261026_170912', 745)
+KEPT ('kept', 0, 3, 0, '20261026_180336', 2910)
+KEPT ('kept', 1, 3, 2, '20261026_180336', 2910)
+KEPT ('kept', 2, 3, 5, '20261026_180336', 2910)
+KEPT ('kept', 0, 1, 0, '20261027_000233', 4598)
+KEPT ('kept', 0, 1, 0, '20261027_000233', 4599)
