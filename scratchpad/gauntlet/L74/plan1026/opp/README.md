@@ -31,6 +31,8 @@ Running (pod 33308, root@157.157.221.29 -p 33308):
 - v0 rows `/workspace/opp/v0/hf_slot_v0.npz` (+ `_memory.npz`) from the shards finished at launch (log v0/rows_to_npz.log).
   Code copies: `/workspace/opp/cb` (driving, = pass-1 copy), `/workspace/opp/cbt` (training, git archive + opp/ + humanlike/).
   The 33308 container limit is 125 GB (others use ~80 GB): the in-memory converter was OOM-killed once; it now spools to disk.
-Next: v0 pretrain `bash cbt/.../opp/run_pretrain.sh /workspace/opp/v0/hf_slot_v0.npz /workspace/opp/v0/m10 m10 320 7 40000 1`
+Running: v0 pretrain on 33308 GPU1 (log /workspace/opp/v0/m10/train.log, curve v0/m10/curve_m10_s0.jsonl), data = the EXTRACTED dir
+/workspace/opp/v0/hf_slot_v0 (6,754,230 rows, 36,727 replays from 168 shards; the 26.7 GB npz was deleted: disk hit 98%).
+Restart (fresh; no mid-run resume): `bash cbt/.../opp/run_pretrain.sh /workspace/opp/v0/hf_slot_v0 /workspace/opp/v0/m10 m10 320 7 40000 1`
 (11.2 M params, ~1.45k rows/s measured), then the level-A test file + level_a.py on HF split 2.
 Not started (need their own tickets): live slot rows for opponent seats (step 3), SIM timing-head decoder + level B (step 4).

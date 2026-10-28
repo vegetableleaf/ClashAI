@@ -219,6 +219,12 @@ def test_main_opp_trains_writes_curve_and_refuses_stride_rows(tmp_path):
     assert TG.main(["--data", str(good), "--out-dir", str(tmp_path / "r"), "--tag", "t"] + common) == 0
     curve = [json.loads(x) for x in (tmp_path / "r" / "curve_t_s0.jsonl").read_text().splitlines()]
     assert [c["step"] for c in curve] == [0, 2, 4, 5] and all(math.isfinite(c["total"]) for c in curve)
+    import zipfile
+    zipfile.ZipFile(good).extractall(tmp_path / "dir")                 # extracted-npz directory: same curve
+    assert TG.main(["--data", str(tmp_path / "dir"), "--out-dir", str(tmp_path / "rd"), "--tag", "t"] + common) == 0
+    curve_d = [json.loads(x) for x in (tmp_path / "rd" / "curve_t_s0.jsonl").read_text().splitlines()]
+    # CPU training is not bit-reproducible run to run here (two npz runs differ ~1e-7 relative): approx
+    assert [c["total"] for c in curve_d] == pytest.approx([c["total"] for c in curve], rel=1e-5)
     m, st = load_model(tmp_path / "r" / "opp_t_s0.pt", "cpu")
     assert st["opp"]["timing"] and st["opp"]["n_decks"] == 5 and m.opp == st["opp"]
     # fine-tune from it (same options) runs; another option set is refused

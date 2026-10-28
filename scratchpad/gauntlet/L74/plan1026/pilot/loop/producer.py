@@ -1,0 +1,418 @@
+"""LOOP-INT (plan1026 pilot fast loop): one producer = one in-process JVM running CfTrain (N crforge matches on T
+threads, e1_eval.SelfPlayMatch's schedule + the obsid builders in Java) and this Python side, which does what
+rl_royale.actor_main's self-play branch does per decision with PRODUCTION code: the per-side state is a real
+``e1_eval.SelfPlaySide`` (built for each job on a capture-only env: deck slots, costs, RNG streams, cfg), the decide is
+``e1_eval.sample_decide_batch`` (learner) / the opponent's own cfg, the record is ``SelfPlaySide._record`` +
+``_traj_arrays``. What Java replaces: ``SelfPlayMatch.due`` / ``SelfPlaySide.apply`` / ``Match._land`` (CfTrain) and
+``Match.prepare`` + ``gen_row`` (the obsid builders). The forward runs on this process's device (``GenPolicy.heads_t``
+on a batch gathered straight from the JVM's buffers), one forward per policy per round.
+
+Not supported yet (each raises): hero ability presses (LOOP-IW), opp_style, follow-ups, pipelined decisions, tap
+loss / slow, tower troops, mid-match starts, posture / ability heads, memory models (LOOP-MEM), decision rules in the
+sampled decide (LOOP-CTX), record_phi / crown / habit / spell tracking (record fields that need production state).
+"""
+from __future__ import annotations
+
+import os
+import sys
+import time
+from collections import Counter
+from pathlib import Path
+from types import SimpleNamespace
+
+import numpy as np
+
+HERE = Path(__file__).resolve().parent
+REPO = HERE.parents[5]
+OBSID = REPO / "scratchpad/gauntlet/L74/speed/crforge/obsid"
+SPEED = REPO / "scratchpad/gauntlet/L74/speed/crforge"
+CFCORE = REPO / "scratchpad/gauntlet/L74/crforge/facade/CfCore.java"
+JAVA_SRC = [CFCORE, SPEED / "CfSpeed.java"] + [OBSID / f for f in ("CfObsBind.java", "CfOppElixir.java", "CfIdent.java",
+                                                                  "CfCue.java", "CfPubObj.java")] + [HERE / "CfTrain.java"]
+UNSUPPORTED_CFG = ("posture", "ability", "spell_track", "crown_track", "habit_track", "record_phi", "record_ctx",
+                   "record_elixir", "pipeline_decisions", "tap_loss", "tap_slow", "follow_ups", "_opp_style",
+                   "own_effects", "predict_drops", "afford_ticks")
+UNSUPPORTED_SPEC = ("opp_tower", "start")
+
+
+def compile_java(build: Path, lib: Path) -> None:
+    """javac the facade + the obsid builders + CfTrain into ``build`` (skipped when every class is newer than its source)."""
+    import subprocess
+    build.mkdir(parents=True, exist_ok=True)
+    stamp = build / ".src_mtime"
+    newest = max(p.stat().st_mtime for p in JAVA_SRC)
+    if stamp.exists() and float(stamp.read_text()) >= newest:
+        return
+    cp = os.pathsep.join(str(p) for p in sorted(lib.glob("*.jar")))
+    subprocess.run(["javac", "-nowarn", "-d", str(build), "-cp", cp] + [str(p) for p in JAVA_SRC], check=True)
+    stamp.write_text(str(newest))
+
+
+class Rows:
+    """numpy views of CfTrain's direct buffers (no copy; Java writes them during step())."""
+    KEYS = (("tok", "tokB", np.float32, (64, 14)), ("mask", "maskB", np.uint8, (64,)), ("sc", "scB", np.float32, (70,)),
+            ("unit_form", "formB", np.int8, (64,)), ("opp_past", "oppPastB", np.float32, (3, 5)),
+            ("ids", "idsB", np.int64, (48,)), ("past", "pastB", np.float32, (3, 5)),
+            ("projectiles", "projB", np.float32, (64, 8)), ("effects", "effB", np.float32, (32, 6)),
+            ("own_ability", "abilB", np.float32, (8, 7)), ("opp_cycle", "cycB", np.float32, (8, 4)),
+            ("cue", "cueB", np.float32, (64, 22)), ("meta", "metaB", np.int32, (8,)), ("act", "actB", np.int32, (5,)),
+            ("el", "elB", np.float64, ()), ("tal", "talB", np.int32, (6,)))
+
+    def __init__(self, L, n: int):
+        for k, attr, dt, shape in self.KEYS:
+            setattr(self, k, np.frombuffer(memoryview(getattr(L, attr)), dt).reshape((2 * n,) + shape))
+        self.res = np.frombuffer(memoryview(L.resB), np.int32).reshape(n, 8)
+
+
+# ids [48] = hand_slot 4, hand_card 4, hand_form 4, next_card, next_form, deck_card 8, deck_form 8, slot_card 9, slot_form 9
+ID_SPLIT = (("hand_slot", 0, 4), ("hand_card", 4, 8), ("hand_form", 8, 12), ("next_card", 12, None),
+            ("next_form", 13, None), ("deck_card", 14, 22), ("deck_form", 22, 30), ("slot_card", 30, 39),
+            ("slot_form", 39, 48))
+
+
+class Producer:
+    def __init__(self, base: dict, n: int, threads: int, device: str, build: Path, aid: int = 0):
+        import jpype
+        import torch
+        self.base, self.n, self.dev, self.aid = base, int(n), device, int(aid)
+        torch.set_num_threads(int(base.get("actor_threads", 1)))
+        from pipeline import crforge_core as cc
+        compile_java(build, cc.LIB)
+        if not jpype.isJVMStarted():
+            cp = sorted(str(p) for p in cc.LIB.glob("*.jar")) + [str(build)]
+            jpype.startJVM(f"-Xmx{os.environ.get('CRFORGE_XMX', '16g')}", classpath=cp, convertStrings=True)
+        sys.path.insert(0, str(OBSID))
+        import obs_id                                        # noqa: F401  (table fillers; sets ROYALE_ENGINE=crforge)
+        import cf_loop_obs
+        from pipeline import e1_eval as E
+        from pipeline import rl_royale as R
+        from pipeline.royale_env import RoyaleSelfPlayEnv
+        from pipeline.royale_runtime import require_same
+        require_same(base.get("runtime"))
+        self.E, self.R, self.jpype, self.torch, self.obs_id, self.fill_fn = E, R, jpype, torch, obs_id, cf_loop_obs.Cohort.fill
+        g = base["gen"]
+        from pipeline.model_gen import GenModel
+        net = GenModel(d=int(base["d"]), layers=int(base["layers"]), d_c=int(g["d_c"]), n_cards=len(g["card_vocab"]),
+                       feature_version=int(g.get("feature_version", 1))).to(device).eval()
+        self.net, self.model = net, E.GenPolicy(net, g["card_vocab"])
+        self.opp_cache: dict = {}
+        # the capture-only env: SelfPlaySide's deck slots / costs / forms come from a real RoyaleSelfPlayEnv.reset whose
+        # engine calls are stubbed (CfTrain runs the match)
+        env = self.env = RoyaleSelfPlayEnv(decision_ticks=int(base["decide_every"]), forms_mode=base.get("forms_mode", "base"),
+                                           hero_abilities=base.get("hero_abilities", False),
+                                           ability_policy=base.get("ability_policy", "generic"),
+                                           ability_features=base.get("ability_features") or "base")
+        if env.hero_abilities:
+            raise NotImplementedError("hero ability presses are not in CfTrain yet (LOOP-IW)")
+        self._got = []
+        tmpl = env.core
+        self.names = {c.card_id: c.name for c in tmpl.cards()}
+        self.card_names = dict(env.names)
+        tmpl_cf = tmpl._cf
+        real_reset = tmpl.reset                              # kept: _form_loads probes need its ValueError
+
+        def capture(seed, setup):
+            self._got.append((seed, setup))
+            real_reset(seed, setup)
+        tmpl.reset = capture
+        env._advance_to = lambda target: None
+        env.raw = lambda: None
+        J = jpype.JClass
+        self.JStr, self.JInt = jpype.JArray(jpype.JString), jpype.JArray(jpype.JInt)
+        L = self.L = J("CfTrain")(cc._jvm()["tables"], tmpl_cf, self.n, int(threads))
+        L.extrap = int(base.get("extrapolate_ticks") or 0)
+        L.tailCap, L.warmup = int(env.tail_cap), int(env.warmup_ticks)
+        L.cellOff = 0.5 if base["grid"] == "floor" else 0.0
+        if int(env.engine_delay_ticks) != int(L.ENG):
+            raise RuntimeError(f"engine delay {env.engine_delay_ticks} != CfTrain.ENG {L.ENG}")
+        # table fillers (obsid's, pointed at CfTrain's tables), as cf_loop_obs.Cohort
+        main = obs_id.JavaMain()
+        main.names, main.keys, main.gid, main.card_names = L.names, L.keys, self.model.gid, self.card_names
+        shim = SimpleNamespace(env=SimpleNamespace(names=self.card_names, feature_version=6), state={"projectiles": []})
+        main.spell_table(shim)
+        pub = obs_id.JavaPub(main, self.model)
+        pub.T = L.pub
+        pub.tables(shim)
+        self.main, self.pub = main, pub
+        # cue rows for every seat (a policy without a cue layer never reads them; the weights, hence cue_in, arrive later)
+        self.jc = obs_id.JavaCue(main, E)
+        L.cue = self.jc.T
+        L.start()
+        self.v = Rows(L, self.n)
+        self.serial = 0
+        self.stats = Counter()
+
+    # ------------------------------------------------------------------------------------------------ tables
+    def _fill(self) -> int:
+        shim = SimpleNamespace(L=self.L, main=self.main, pub=self.pub, jc=self.jc, names=self.card_names)
+        return self.fill_fn(shim)
+
+    def _resolve_rows(self) -> None:
+        """Rows that met a table key Python had not filled: fill, resume them; until none is left."""
+        for _ in range(20):
+            if not (self.v.meta[:, 0].astype(bool) & (self.v.meta[:, 5] != 6)).any():
+                return
+            self.stats["fills"] += self._fill()
+            if int(self.L.rebuild()) == 0:
+                return
+        raise RuntimeError("rows still missing table keys after 20 fills")
+
+    # ------------------------------------------------------------------------------------------------ jobs
+    def _policy(self, path: str):
+        if path not in self.opp_cache:
+            pol, mi = self.E.load_policy(self.R.REPO / path, self.dev)
+            if not isinstance(pol, self.E.GenPolicy) or pol.gid != self.model.gid:
+                raise NotImplementedError(f"opponent {path}: CfTrain shares one card-id table per match (same vocab only)")
+            if getattr(pol.model, "mem", None) is not None:
+                raise NotImplementedError(f"opponent {path}: inputs the learner's builders do not make")
+            self.opp_cache[path] = (pol, str(mi.get("grid", "floor")))
+        return self.opp_cache[path]
+
+    def _start(self, i: int, job, cfg: dict, opps: dict) -> dict:
+        """SelfPlayMatch.__init__ for job (i, spec, k, over) on match slot ``i``: the two SelfPlaySides on the capture
+        env, then CfTrain.setJob with CfCore.reset's arguments (CrforgeCore.reset's conversion of the setup)."""
+        E, env = self.E, self.env
+        ei, spec, k, over = job
+        for key in UNSUPPORTED_SPEC:
+            if key in spec:
+                raise NotImplementedError(f"spec key {key!r} is not in CfTrain yet")
+        L_ = int(spec["learner_side"])
+        decks = {L_: spec["learner_deck"], 1 - L_: spec["opp_deck"]}
+        opp, ocfg = opps[spec["opp"]["id"]]
+        lcfg = {**cfg, **over, "entry_index": ei}
+        ocfg = {**ocfg, **{x: v for x, v in over.items() if x not in ("obs_seed", "pipeline_decisions", "pipeline_tau_delta")},
+                "entry_index": ei}
+        E.enable_sim_features(env, self.model, opp)
+        kw = {}
+        if "levels" in spec:
+            lv = {L_: spec["levels"]["learner"], 1 - L_: spec["levels"]["opp"]}
+            kw["levels"] = {"cards": [lv[0]["cards"], lv[1]["cards"]], "towers": [lv[0]["tower"], lv[1]["tower"]]}
+        self._got.clear()
+        env.reset(decks[0], decks[1], int(spec["seed"]), **kw)
+        seed, setup = self._got[-1]
+        from pipeline.adaptive_opponents import style_config
+        ocfg = style_config(ocfg, int(spec["seed"]), int(k))
+        tag = str(spec["tag"])
+        ls = E.SelfPlaySide(env, spec["learner_deck"], L_, tag, k, lcfg, self.model)
+        os_ = E.SelfPlaySide(env, spec["opp_deck"], 1 - L_, f"{tag}:opp", k, ocfg, opp)
+        ls.other, os_.other = os_, ls
+        sides = sorted((ls, os_), key=lambda s: s.side)
+        for s in sides:
+            bad = [x for x in UNSUPPORTED_CFG if s.cfg.get(x)]
+            if bad:
+                raise NotImplementedError(f"cfg {bad} is not in CfTrain yet")
+            if s.pipe or s.drops is not None or s.own_fx is not None or s.delay <= 0:
+                raise NotImplementedError("CfTrain ports the delayed-play rollout schedule only")
+        # CrforgeCore.reset's conversion
+        names = self.names
+        d = [[names[int(c)] for c in dk] for dk in setup.decks]
+        forms = setup.forms or [[0] * 8, [0] * 8]
+        lv = getattr(setup, "levels", None) or [[16] * 8, [16] * 8]
+        tl = getattr(setup, "tower_levels", None) or [16, 16]
+        a = []
+        for s in sides:
+            slot_of = {ix: slot for slot, ix in s.deck_index_of_slot.items()}
+            dk, deal = env.decks[s.side], env.deal[s.side]
+            inv = [slot_of.get(list(dk).index(nm), 8) for nm in deal]
+            a.append((self.JStr(d[s.side]), self.JInt([int(x) for x in forms[s.side]]),
+                      self.JInt([int(x) for x in setup.decks[s.side]]), self.JInt([int(x) for x in lv[s.side]]),
+                      self.JInt(inv), int(tl[s.side]), int(s.cfg["decide_every"]), int(s.delay)))
+            from pipeline.dataset_gen import card_key
+            for cid, nm in zip(env.deck_ids[s.side], s.engine_deck):   # JavaIdent.of: the policy's gid of each deck card
+                if card_key(nm) in self.model.gid:
+                    self.L.putGidMatch(i, int(cid), int(self.model.gid[card_key(nm)]))
+        self.serial += 1
+        self.L.setJob(i, self.serial, int(seed) & 0x7FFFFFFF, *a[0], *a[1])
+        for s in sides:                                       # Match.prepare's first-decision clock
+            s.last_play_tick = None
+            s.fl = Counter()                                  # fast-loop tallies (result())
+            s.fl_el = []
+        return {"serial": self.serial, "sides": sides, "learner": ls, "opp": os_, "spec": spec, "k": k,
+                "t0": time.perf_counter(), "form_fallbacks": [list(x) for x in getattr(env, "form_fallbacks", [])]}
+
+    # ------------------------------------------------------------------------------------------------ results
+    def _result(self, i: int, m: dict) -> dict:
+        """SelfPlayMatch.result's record from CfTrain's end state + tallies and the sides' own (production) tallies."""
+        E = self.E
+        res, tal = self.v.res[i], self.v.tal
+        end, over, winner, cr = int(res[1]), bool(res[2]), int(res[3]), (int(res[4]), int(res[5]))
+        out = []
+        for s in m["sides"]:
+            t = tal[2 * i + s.side]
+            s.n_att, s.n_acc, s.n_unlanded = int(t[0]), int(t[1]), int(t[2])
+            s.refuse = Counter({k: v for k, v in (("not_in_hand", int(t[3])), ("refused_engine", int(t[4])),
+                                                  ("match_over_before_landing", int(t[2]))) if v})
+        ls, os_ = m["learner"], m["opp"]
+        side = ls.side
+        crowns = (cr[side], cr[1 - side])
+        w = {0: 0, 1: 1}.get(winner, -1) if over else -1
+        outcome = ("draw" if crowns[0] == crowns[1] else "win" if crowns[0] > crowns[1] else "loss") if w < 0 else \
+            ("win" if w == side else "loss")
+        cfg = ls.cfg
+        minutes = end * E.TICK_S / 60.0
+        pg = np.asarray(ls.p_gates, dtype=np.float64)
+        r = {"tag": ls.tag, "k": int(ls.k), "slot": cfg["slot"], "port": cfg["port"], "split": None,
+             "entry_index": cfg["entry_index"], "policy": cfg["policy"], "obs": cfg["obs"], "tau": cfg["tau"],
+             "afford_mask": cfg["afford_mask"], "stall_elixir": cfg["stall_elixir"], "p_random": cfg["p_random"],
+             "obs_seed": ls.obs_seed_used, "side": side, "outcome": outcome, "crowns_for": crowns[0],
+             "crowns_against": crowns[1], "end_tick": end, "seconds": round(end * E.TICK_S, 1), "terminated": over,
+             "termination_reason": "game_over" if over else None,
+             "last_ghost_tick": 0, "after_script": False, "won_after_script": False, "ghost_plays": os_.n_att,
+             "ghost_delivered": os_.n_acc, "ghost_refused": os_.n_att - os_.n_acc - os_.n_unlanded,
+             "ghost_undelivered": os_.n_unlanded, "ghost_distinct_delivered": None,
+             "ghost_refuse_reasons": dict(os_.refuse),
+             "plays_attempted": ls.n_att, "plays_accepted": ls.n_acc, "plays_refused": ls.n_att - ls.n_acc,
+             "refuse_reasons": dict(ls.refuse), "plays_per_min": round(ls.n_att / minutes, 3) if minutes else None,
+             "accepted_per_min": round(ls.n_acc / minutes, 3) if minutes else None,
+             "card_mix_attempted": dict(ls.fl), "card_mix_accepted": None, "play_elixir": list(ls.fl_el), "plays": None,
+             "stall_fired": ls.n_stall, "no_affordable": ls.n_noaff, "decisions": ls.n_dec, "degraded_obs": ls.n_dec,
+             "degraded_equals_decisions": True if cfg["obs"] == "live" else None,
+             "p_gate_mean": round(float(pg.mean()), 4) if len(pg) else None,
+             "p_gate_p90": round(float(np.percentile(pg, 90)), 4) if len(pg) else None,
+             "frac_gt_tau": round(float((pg > cfg["tau"]).mean()), 4) if len(pg) else None,
+             "real_outcome": None, "s1_split": None, "group": None, "unmapped": [],
+             "wall_s": round(time.perf_counter() - m["t0"], 1),
+             **({"traj": ls._traj_arrays()} if cfg.get("record") else {}),
+             "action_delay_ticks": ls.delay, "plays_unlanded": ls.n_unlanded,
+             "plays_refused_at_landing": ls.n_att - ls.n_acc - ls.n_unlanded,
+             **({"extrapolate_ticks": ls.extrap} if ls.extrap else {}),
+             **({"forms_mode": "deck", "form_fallbacks": m["form_fallbacks"]}
+                if getattr(self.env, "forms_mode", "base") == "deck" else {}),
+             "fastloop": {"crashed": bool(res[7]), "approx": ["card_mix_accepted", "plays", "opp_counter",
+                                                              "refuse_reasons names", "ghost_distinct_delivered"]}}
+        r["league"] = dict(m["spec"])
+        r["opp_side"] = {"side": os_.side, "policy": os_.cfg["policy"], "plays_attempted": os_.n_att,
+                         "plays_accepted": os_.n_acc, "plays_per_min": round(os_.n_att / minutes, 3) if minutes else None,
+                         "stall_fired": os_.n_stall, "decisions": os_.n_dec}
+        if cfg.get("record"):
+            r["rollout_index"], r["update"] = int(r["k"]), int(cfg.get("update", 0))
+        return r
+
+    # ------------------------------------------------------------------------------------------------ one update
+    def run(self, update: int, sd: bytes, jobs: list) -> tuple[list[dict], list[dict], dict]:
+        """actor_main's ('selfplay', update, sd, jobs) -> (results, skipped, stats)."""
+        R, E, base, torch = self.R, self.E, self.base, self.torch
+        t0 = time.perf_counter()
+        msd, psd = R.split_actor_sd(sd, self.dev)
+        if R.pop_prefix(msd, R.ABILITY_SD) or psd:
+            raise NotImplementedError("posture / ability heads are not in the fast loop yet")
+        self.net.load_state_dict(msd)
+        self.net.eval()
+        if getattr(self.net, "mem", None) is not None:
+            raise NotImplementedError("memory models: LOOP-MEM's Java tables are not in CfTrain yet")
+        cfg = R.actor_cfg(base, "rollout", self.aid, self.dev)
+        need = {j[1]["opp"]["path"] for j in jobs}
+        for pth in [x for x in self.opp_cache if x not in need]:
+            del self.opp_cache[pth]
+        ocfg0 = {k: v for k, v in cfg.items() if k not in ("posture", "ability", "tau_phase")}
+        specs = {j[1]["opp"]["id"]: j[1]["opp"] for j in jobs}
+        opps = {}
+        for j in jobs:
+            o = j[1]["opp"]
+            pol, grid = self._policy(o["path"])
+            oc = {**ocfg0, "policy": base["league_opp_policy"], "record": False, "T_gate": None, "T": R.opp_T(base),
+                  **{k: base[k] for k in R.AO.STYLE_KEYS if k in base}, "grid": grid}
+            opps[o["id"]] = (pol, R.live_opp_cfg(R.own_opp_cfg(oc, specs[o["id"]], base), specs[o["id"]], base))
+        todo = list(R.rollout_jobs(jobs, update, base.get("learner_pipeline_frac", 0), base["seed"]))[::-1]
+        live: dict = {}                                       # match slot -> its record
+        results, skipped, st = [], [], Counter()
+        L, v = self.L, self.v
+        for i in range(self.n):
+            if todo:
+                live[i] = self._start(i, todo.pop(), cfg, opps)
+        tm = Counter()
+        while live:
+            a = time.perf_counter()
+            L.step()
+            b = time.perf_counter()
+            self._resolve_rows()
+            tm["java"] += b - a
+            tm["fill"] += time.perf_counter() - b
+            for i in np.flatnonzero(v.res[:, 0]):
+                v.res[i, 0] = 0
+                m = live.pop(int(i))
+                if int(v.res[i, 6]) != m["serial"]:
+                    raise RuntimeError(f"match slot {i}: result serial {v.res[i, 6]} != job {m['serial']}")
+                if v.res[i, 7]:                               # crforge refused a case: production's actor would crash
+                    skipped.append({"tag": m["spec"]["tag"], "why": f"crforge: {L.firstCrash}"})
+                else:
+                    results.append(self._result(int(i), m))
+                if todo:
+                    live[int(i)] = self._start(int(i), todo.pop(), cfg, opps)
+            c = time.perf_counter()
+            self._decide(live)
+            tm["decide"] += time.perf_counter() - c
+            st["rounds"] += 1
+        results.sort(key=R.row_key)
+        stats = {"wall_s": time.perf_counter() - t0, "matches": len(results), "rounds": st["rounds"],
+                 "crashed": len(skipped), "fills": self.stats["fills"], "time": dict(tm),
+                 "java_engine_core_s": int(L.engineNs.get()) / 1e9, "java_obs_core_s": int(L.obsNs.get()) / 1e9,
+                 "rows": int(L.rowsBuilt.get()), "first_crash": None if L.firstCrash is None else str(L.firstCrash)}
+        return results, skipped, stats
+
+    def _decide(self, live: dict) -> None:
+        """The round's forward (one per policy) + decide + record + actions, as run_selfplay_batch's round."""
+        E, torch, v = self.E, self.torch, self.v
+        from pipeline import engine_play as ep
+        from pipeline.dataset_gen import SC_SLOT_COLS
+        from pipeline.royale_env import SCALE
+        rows = np.flatnonzero(v.meta[:, 0])
+        if not len(rows):
+            return
+        groups: dict = {}
+        for r in rows:
+            i, seat = divmod(int(r), 2)
+            m = live[i]
+            if int(v.meta[r, 6]) != m["serial"]:
+                raise RuntimeError(f"row {r}: job serial {v.meta[r, 6]} != {m['serial']}")
+            s = m["sides"][seat]
+            groups.setdefault(id(s.model), []).append((int(r), s))
+        K = 18                                               # crforge_core.K
+        for members in groups.values():
+            idx = np.array([r for r, _ in members])
+            sides = [s for _, s in members]
+            model, c = sides[0].model, sides[0].cfg
+            batch = {"tok": v.tok[idx], "mask": v.mask[idx].astype(bool), "sc": v.sc[idx], "past": v.past[idx],
+                     "unit_form": v.unit_form[idx], "opp_past": v.opp_past[idx], "projectiles": v.projectiles[idx],
+                     "effects": v.effects[idx], "own_ability": v.own_ability[idx], "opp_cycle": v.opp_cycle[idx]}
+            if self.jc is not None:
+                batch["cue"] = v.cue[idx]
+            ids = v.ids[idx]
+            for k, a, b in ID_SPLIT:
+                batch[k] = ids[:, a:b] if b is not None else ids[:, a]
+            batch["sc"][:, SC_SLOT_COLS] = 0.0                # GenPolicy.row's zeroing (batch["sc"] is a copy)
+            keys = E.gen_row_keys(model.model)
+            with torch.no_grad():
+                tb = {k: torch.from_numpy(np.ascontiguousarray(batch[k])).to(c["device"]) for k in keys}
+                enc, heads = model.heads_t(tb)
+                B = heads["card"].shape[0]
+                hand = torch.zeros(B, 9, dtype=torch.bool, device=heads["card"].device)
+                hand = hand.scatter(1, tb["hand_slot"], True)[:, :8].cpu().numpy()
+                p = torch.sigmoid(heads["gate"]).cpu().tolist()
+            for j, s in enumerate(sides):                    # Match.prepare's state the decide / record read
+                r = idx[j]
+                tick, vt = int(v.meta[r, 3]), int(v.meta[r, 4])
+                if s.last_play_tick is None:
+                    s.last_play_tick = tick
+                s._cur = (tick, SimpleNamespace(t_sec=vt * 0.05), SimpleNamespace(my_elixir=float(v.el[r])))
+                s._view_tick = vt
+                s._gen_row = {k: batch[k][j] for k in keys}
+                s._obs = (s._gen_row["tok"], s._gen_row["mask"], s._gen_row["sc"], s._gen_row["past"])
+            pre = [s.pre(hand[j]) for j, s in enumerate(sides)]
+            allowed = np.stack([x[1] for x in pre])
+            stalled = np.array([x[2] for x in pre], dtype=bool)
+            if c["policy"] != "sample":
+                raise NotImplementedError(f"policy {c['policy']!r}: the fast loop samples (learner and league)")
+            decisions = E.sample_decide_batch(model, enc, heads, p, allowed, stalled, sides, c)
+            for j, (s, d) in enumerate(zip(sides, decisions)):
+                r = idx[j]
+                s._record(p[j], d)
+                a = v.act[r]
+                if d["play"]:
+                    X, Y = ep.cell_to_engine(d["cell"], s.mirror, s.cfg["grid"])
+                    a[:] = (1, int(d["slot"]), int(d["cell"]), int(X) * SCALE // K, int(Y) * SCALE // K)
+                    s.fl[s.deck.cards[d["slot"]]] += 1        # card_mix_attempted / play_elixir / stall (Match._land)
+                    s.fl_el.append(float(int(s._cur[2].my_elixir)))
+                    s.n_stall += int(d["why"] == "stall")
+                else:
+                    a[:] = (0, -1, -1, 0, 0)
