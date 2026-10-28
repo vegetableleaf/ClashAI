@@ -1,7 +1,7 @@
 // LOOP-INT (plan1026 pilot fast loop): the env side of the fast crforge training loop. N facade matches (CfCore) on a
 // pool of T threads; each match is driven by e1_eval.SelfPlayMatch's schedule (port of due() / SelfPlaySide.apply /
-// Match._land for the rollout cfg: action delay > 0, no follow-ups, no pipelined decisions, no tap loss, no ability
-// presses yet) and each deciding seat's GenModel row is built by the obsid builders in e1_eval.Match.prepare's order
+// Match._land for the rollout cfg: action delay > 0, no follow-ups, no pipelined decisions, no tap loss; hero ability
+// presses = royale_env's queue / _fire_abilities through LOOP-IW's CfAbil, enableAbilities) and each deciding seat's GenModel row is built by the obsid builders in e1_eval.Match.prepare's order
 // (CfLoop.obs, byte-identical to production: SPEED_CRFORGE.md S3b-3a..S3b-4, D2-T2).
 //
 // Round protocol (loop/producer.py): step() = for every match: a new job -> reset + warm-up; else apply the decisions
@@ -26,7 +26,8 @@ public final class CfTrain implements AutoCloseable {
       CYC = 8 * 4;
   public static final int ENG = 20;                          // crforge's own command delay (CrforgeCore.DELAY)
   // row stage: 0 opp.update 1 main 2 cue 3 past/ids 4 pub.update 5 pub.build 6 memory (CfMem observe + features)
-  public static final int DONE = 7;
+  // 7 abilities (CfAbil commands / options: Match.prepare's hero-ability block)
+  public static final int DONE = 8;
   // row meta ints: valid, match, seat, tick, viewTick, stage, jobSerial, decisionsOfSeat
   public static final int META = 8;
   // per-row action ints Python writes: play (0/1), our deck slot, cell, crforge x, crforge y, engine x, engine y (the
@@ -61,6 +62,24 @@ public final class CfTrain implements AutoCloseable {
   CfMem.Log[] mlog;
   CfMem[][] mem;
   boolean[][] jMem;
+  // LOOP-IW hero abilities (null = hero_abilities off; ability_policy v2): per match a CfAbil = royale_env's press state
+  // (_ability_pending, _ability_uid, _last_play, the IW observers); per seat its mode: 0 RULE (ability_commands: an
+  // opponent), 1 LABEL (the rule + ability_options(side, rule): rl_royale's warm start), 2 HEAD (ability_options(side,
+  // None) only; a learned side: _fire_abilities rechecks _any_gate). Per row at r * AB_CMD ints: {commands to queue at
+  // apply, options, then the commands' (button, cid, uid)}; Java writes the rule's, Python overwrites a HEAD seat's.
+  // Options at r * AB_MAX * abW doubles: {button, cid, uid, q (NaN no rule), features}. abLog: {0 press / 1 hero
+  // deployment, side, cid} per match (result ability_presses / ability_deployments).
+  public static final int AB_MAX = 2, AB_CMD = 2 + 3 * AB_MAX;
+  public CfAbil.Tables abT;
+  public int abW, abDecTicks;
+  public boolean abLiveIW, abIwNever;
+  public ByteBuffer abCmdB, abOptB;
+  IntBuffer abCmd;
+  DoubleBuffer abOpt;
+  CfAbil[] ab;
+  int[][] abMode;
+  long[] jAbSeed;
+  ArrayList<int[]>[] abLog;
 
   final CfCore[] core;
   final TrainMatch[] m;
@@ -155,6 +174,29 @@ public final class CfTrain implements AutoCloseable {
     for (int i = 0; i < n; i++) mlog[i] = new CfMem.Log(core[i], t);   // syncs itself on each new battle
   }
 
+  /** Hero abilities on (once, before the first step): CfAbil per match on its facade; decisionTicks / liveIW / iwNever
+   *  = the env's decision_ticks, _iw_policy is not None, _iw_never (JavaAbil.reset's arguments). */
+  @SuppressWarnings("unchecked")
+  public void enableAbilities(CfAbil.Tables t, boolean freeze, int decisionTicks, boolean liveIW, boolean iwNever) {
+    abT = t; abDecTicks = decisionTicks; abLiveIW = liveIW; abIwNever = iwNever;
+    abW = 4 + 44 + (freeze ? 11 : 0);
+    abCmdB = direct(2L * n * AB_CMD * 4); abOptB = direct(2L * n * AB_MAX * abW * 8);
+    abCmd = abCmdB.asIntBuffer(); abOpt = abOptB.asDoubleBuffer();
+    ab = new CfAbil[n]; abMode = new int[n][2]; jAbSeed = new long[n]; abLog = new ArrayList[n];
+    for (int i = 0; i < n; i++) { ab[i] = new CfAbil(core[i], t, freeze); abLog[i] = new ArrayList<>(); }
+  }
+
+  /** Match i's next job (after setJob): the env seed of the v2 draw (RoyaleSelfPlayEnv.seed, unmasked), seat modes. */
+  public void setAbil(int i, long seed, int mode0, int mode1) { jAbSeed[i] = seed; abMode[i][0] = mode0; abMode[i][1] = mode1; }
+
+  /** Match i's CfAbil (diagnostics) and its {kind, side, cid} log flat. */
+  public CfAbil abilOf(int i) { return ab[i]; }
+  public int[] abLogFlat(int i) {
+    int[] o = new int[abLog[i].size() * 3];
+    for (int k = 0; k < abLog[i].size(); k++) System.arraycopy(abLog[i].get(k), 0, o, 3 * k, 3);
+    return o;
+  }
+
   /** Which seats of match i's next job decide with a memory model (call after setJob). */
   public void setMem(int i, boolean m0, boolean m1) { jMem[i][0] = m0; jMem[i][1] = m1; }
 
@@ -173,6 +215,10 @@ public final class CfTrain implements AutoCloseable {
     po[i].extrap = extrap;
     cueSeat[i][0] = new CfCue.Seat(); cueSeat[i][1] = new CfCue.Seat();   // production: a fresh Match per match
     if (memT != null) for (int s = 0; s < 2; s++) mem[i][s] = jMem[i][s] ? new CfMem(c, memT, mlog[i], s) : null;
+    if (ab != null) {                                     // RoyaleSelfPlayEnv.reset: _reset_abilities before the warm-up
+      ab[i].reset(jAbSeed[i], "", abDecTicks, abLiveIW, abIwNever);   // tag "": a self-play env has no entry
+      abLog[i].clear();
+    }
     for (int s = 0; s < 2; s++) {
       pendLand[i][s] = -1;
       for (int k = 0; k < TAL; k++) tal.put((2 * i + s) * TAL + k, 0);
@@ -181,9 +227,43 @@ public final class CfTrain implements AutoCloseable {
     next[i][0] = next[i][1] = c.tick();                   // SelfPlaySide.next_tick = env.tick at construction
   }
 
-  void advanceTo(int i, int target) {                     // RoyalePoolEnv._advance_to (no ghosts / presses / telemetry)
+  void advanceTo(int i, int target) {                     // RoyalePoolEnv._advance_to (no ghosts / telemetry)
     CfCore c = core[i];
-    if (c.tick() < target && !c.over()) c.step(target - c.tick());
+    if (ab == null) {
+      if (c.tick() < target && !c.over()) c.step(target - c.tick());
+      return;
+    }
+    CfAbil a = ab[i];
+    while (c.tick() < target && !c.over()) {             // hero_abilities: stop on every pending press, fire after a step
+      int stop = target;
+      if (!a.pending.isEmpty()) stop = Math.min(stop, a.pending.get(0)[0]);
+      if (stop < c.tick()) throw new IllegalStateException("ability pending before the current tick");
+      c.step(stop - c.tick());
+      if (c.over()) return;                              // game over: _advance_to returns before _fire_abilities
+      fire(i);
+    }
+  }
+
+  /** RoyalePoolEnv._fire_abilities: pop each due press in order; recheck (_any_gate for a HEAD seat, else _v2_recheck);
+   *  press through the engine (_Core.act ability_button: CfCore.ability, accepted = refusal NONE); an accepted press
+   *  -> _ability_uid (CfAbil.pressed), own_ability_events (CfPubObj.press), the memory's action log (CfMem.Log.press). */
+  void fire(int i) {
+    CfCore c = core[i];
+    CfAbil a = ab[i];
+    int t = c.tick();
+    while (!a.pending.isEmpty() && a.pending.get(0)[0] <= t) {
+      int[] e = a.pending.remove(0);
+      int side = e[1], b = e[2], cid = e[3], uid = e[4];
+      if (c.over()) continue;
+      int[] rc = a.recheck(side, abMode[i][side] == 2);
+      boolean hit = false;
+      for (int k = 0; k + 2 < rc.length && !hit; k += 3) hit = rc[k] == b && rc[k + 1] == cid && rc[k + 2] == uid;
+      if (!hit || c.ability(side, b, false) != 0) continue;
+      a.pressed(side, cid, uid, t);
+      po[i].press(side, t, b);
+      if (memT != null) mlog[i].press(side, t, b);
+      abLog[i].add(new int[] {0, side, cid});
+    }
   }
 
   boolean done(int i) { return core[i].over() || core[i].tick() >= tailCap; }
@@ -227,6 +307,10 @@ public final class CfTrain implements AutoCloseable {
     int[] r = c.play(s, hs, pendX[i][s], pendY[i][s]);
     if (r[0] != 0) { tally(i, s, 4); return; }
     tally(i, s, 1);
+    if (ab != null) {                                     // _Core.act v2: _last_play, ability_deployments; public_plays
+      ab[i].played(s, cid, t, ENG);
+      if (ab[i].heroIds[s].contains(cid)) abLog[i].add(new int[] {1, s, cid});
+    }
     if (memT != null) mlog[i].play(s, t, cid, form, pendPX[i][s], pendPY[i][s]);
     id[i].played(c, s, t, slot, pendCell[i][s]);          // past: the facade tick at the act, slot, decided cell
     po[i].act(s, t, c.s.deckIds[s][k]);                   // public_plays / own events: the act tick (+ DELAY inside)
@@ -235,6 +319,12 @@ public final class CfTrain implements AutoCloseable {
   /** SelfPlaySide.apply's schedule for the decision Python wrote at row r (delay > 0: the play waits in pending). */
   void apply(int i, int s, int r) {
     int t = meta.get(r * META + 3), de = jDe[i][s], delay = jDelay[i][s] + act.get(r * ACT + 7);
+    if (ab != null) {                                     // SelfPlaySide.apply: queue_abilities(side, cmds, self.delay)
+      int cb = r * AB_CMD;
+      for (int k = 0; k < abCmd.get(cb); k++)
+        ab[i].queue(s, abCmd.get(cb + 2 + 3 * k), abCmd.get(cb + 3 + 3 * k), abCmd.get(cb + 4 + 3 * k), t + jDelay[i][s]);
+      fire(i);                                            // queue_abilities ends with _fire_abilities
+    }
     if (act.get(r * ACT) != 0) {
       pendLand[i][s] = t + delay;
       pendSlot[i][s] = act.get(r * ACT + 1); pendCell[i][s] = act.get(r * ACT + 2);
@@ -337,14 +427,35 @@ public final class CfTrain implements AutoCloseable {
       st = 6;
     }
     CfMem mm = mem == null ? null : mem[i][seat];
-    if (mm != null) {                                    // Match.gen_row's last step: _memory(policy, deck_card)
+    if (st == 6 && mm != null) {                         // Match.gen_row's last step: _memory(policy, deck_card)
       if (!mm.observe(opp)) { meta.put(b + 5, 6); misses.incrementAndGet(); return; }
       int[] deck = new int[8];
       for (int k = 0; k < 8; k++) deck[k] = (int) idsL.get(r * IDS + 14 + k);   // the row's deck_card
       mm.features(deck, memB, r * CfMem.BYTES);
     }
+    st = 7;
+    if (ab != null && !abilities(i, seat, r)) { meta.put(b + 5, 7); misses.incrementAndGet(); return; }
     meta.put(b + 5, DONE);
     rowsBuilt.incrementAndGet();
+  }
+
+  /** Match.prepare's hero-ability block for this seat (order-free against the obs builders: CfAbil reads the board and
+   *  its own state only): RULE / LABEL ability_commands, LABEL / HEAD ability_options. false = a table miss (CfAbil's
+   *  calls repeat their side effects identically at the same tick, so the row re-runs this stage after the fill). */
+  boolean abilities(int i, int seat, int r) {
+    CfAbil a = ab[i];
+    int mode = abMode[i][seat], cb = r * AB_CMD;
+    int[] cmd = new int[0];
+    if (mode != 2 && (cmd = a.commands(seat)) == null) return false;
+    double[] opt = new double[0];
+    if (mode != 0 && (opt = a.options(seat, mode == 1 ? cmd : null)) == null) return false;
+    int nc = cmd.length / 3, no = opt.length / abW;
+    if (nc > AB_MAX || no > AB_MAX) throw new IllegalStateException("more than " + AB_MAX + " ability buttons");
+    abCmd.put(cb, nc); abCmd.put(cb + 1, no);
+    for (int k = 0; k < 3 * nc; k++) abCmd.put(cb + 2 + k, cmd[k]);
+    int ob = r * AB_MAX * abW;
+    for (int k = 0; k < opt.length; k++) abOpt.put(ob + k, opt[k]);
+    return true;
   }
 
   /** CfCore.state()'s crown towers in its entity order: alive WorldEntity TowerEntity, hp / max from HitPoints. */

@@ -9,9 +9,11 @@ on a batch gathered straight from the JVM's buffers), one forward per policy per
 
 Memory v2 (LOOP-MEM's CfMem, both seats, learner and frozen opponents) is wired: MEM_KEYS per row, mem_t per recorded
 row, the learner's end-of-match event table in result["memory"].
-Not supported yet (each raises): hero ability presses (LOOP-IW), opp_style, follow-ups, pipelined decisions, tap
-loss / slow, tower troops, mid-match starts, posture / ability heads, decision rules in the
-sampled decide (LOOP-CTX), record_phi / crown / habit / spell tracking (record fields that need production state).
+Hero abilities (ability_policy v2, forms deck) are wired: LOOP-IW's CfAbil per match in CfTrain (commands / options at
+prepare, the pending queue + recheck + press in _advance_to), the rule for opponents, rl_royale's B6 head for the learner
+(production's ability_decide; label mode = the B6 warm start), own_ability_events -> CfPubObj / CfMem.Log.
+Not supported yet (each raises): follow-ups, pipelined decisions, tap loss / slow, tower troops, mid-match starts, the
+posture head, decision rules in the sampled decide (LOOP-CTX), crown / habit / spell tracking.
 """
 from __future__ import annotations
 
@@ -30,8 +32,11 @@ OBSID = REPO / "scratchpad/gauntlet/L74/speed/crforge/obsid"
 SPEED = REPO / "scratchpad/gauntlet/L74/speed/crforge"
 CFCORE = REPO / "scratchpad/gauntlet/L74/crforge/facade/CfCore.java"
 JAVA_SRC = [CFCORE, SPEED / "CfSpeed.java"] + [OBSID / f for f in ("CfObsBind.java", "CfOppElixir.java", "CfIdent.java",
-                                                                  "CfCue.java", "CfPubObj.java", "CfMem.java")] + [HERE / "CfTrain.java"]
-UNSUPPORTED_CFG = ("posture", "ability", "spell_track", "crown_track", "habit_track", "record_ctx",
+                                                                  "CfCue.java", "CfPubObj.java", "CfMem.java",
+                                                                  "CfAbil.java")] + [HERE / "CfTrain.java"]
+# LOOP-IW CfAbil: glibc exp / pow through JDK 17's incubator FFI (byte-exact with production's numpy / math)
+JVM_FLAGS = ("--add-modules=jdk.incubator.foreign", "--enable-native-access=ALL-UNNAMED")
+UNSUPPORTED_CFG = ("posture", "spell_track", "crown_track", "habit_track", "record_ctx",
                    "record_elixir", "pipeline_decisions", "tap_loss", "tap_slow", "follow_ups",
                    "own_effects", "predict_drops", "afford_ticks")
 UNSUPPORTED_SPEC = ("opp_tower", "start")
@@ -78,6 +83,12 @@ class Rows:
         self.mem_summary = mk((int(C.S_V2),), np.float32, C.OFF_SUM, (4,))
         self.mem_answer = mk((), np.int64, C.OFF_ANS, ())
 
+    def abilities(self, L, n: int) -> None:
+        """CfTrain.abCmdB / abOptB views (CfTrain.enableAbilities: per row {n commands, n options, (button, cid, uid)
+        x AB_MAX}; options {button, cid, uid, q, features} x AB_MAX)."""
+        self.ab_cmd = np.frombuffer(memoryview(L.abCmdB), np.int32).reshape(2 * n, int(L.AB_CMD))
+        self.ab_opt = np.frombuffer(memoryview(L.abOptB), np.float64).reshape(2 * n, int(L.AB_MAX), int(L.abW))
+
 
 def has_mem(policy) -> bool:
     return getattr(policy.model, "mem", None) is not None
@@ -123,7 +134,7 @@ class Producer:
         compile_java(build, cc.LIB)
         if not jpype.isJVMStarted():
             cp = sorted(str(p) for p in cc.LIB.glob("*.jar")) + [str(build)]
-            jpype.startJVM(f"-Xmx{os.environ.get('CRFORGE_XMX', '16g')}", classpath=cp, convertStrings=True)
+            jpype.startJVM(f"-Xmx{os.environ.get('CRFORGE_XMX', '16g')}", *JVM_FLAGS, classpath=cp, convertStrings=True)
         sys.path.insert(0, str(OBSID))
         import obs_id                                        # noqa: F401  (table fillers; sets ROYALE_ENGINE=crforge)
         import cf_loop_obs
@@ -145,8 +156,8 @@ class Producer:
                                            hero_abilities=base.get("hero_abilities", False),
                                            ability_policy=base.get("ability_policy", "generic"),
                                            ability_features=base.get("ability_features") or "base")
-        if env.hero_abilities:
-            raise NotImplementedError("hero ability presses are not in CfTrain yet (LOOP-IW)")
+        if env.hero_abilities and (env.ability_policy != "v2" or env.forms_mode != "deck"):
+            raise NotImplementedError("hero abilities: CfAbil ports ability_policy v2 with forms_mode deck only")
         self._got = []
         tmpl = env.core
         self.names = {c.card_id: c.name for c in tmpl.cards()}
@@ -180,8 +191,22 @@ class Producer:
         # cue rows for every seat (a policy without a cue layer never reads them; the weights, hence cue_in, arrive later)
         self.jc = obs_id.JavaCue(main, E)
         L.cue = self.jc.T
+        self.ja = self.ahead = None
+        self.ab_mode = 0                                     # the learner seat's CfTrain ability mode this run()
+        if env.hero_abilities:                               # LOOP-IW CfAbil: tables from production code (ability_id)
+            import ability_id
+            if not bool(J("CfAbil").EXACT):
+                raise RuntimeError(f"CfAbil.EXACT false: start the JVM with {JVM_FLAGS} on JDK 17")
+            ja = self.ja = ability_id.JavaAbil(freeze=env.ability_features == "freeze")
+            ja.setup(env)
+            ja.main.spell_table(shim)                        # the IW observers' spell table (JavaAbil.reset's first fill)
+            ja.main.resolve_opp = lambda s: self._resolve_keys(ja.main.keys, ja.main)   # raw()-free (see _resolve_keys)
+            L.enableAbilities(ja.T, ja.freeze, int(env.decision_ticks), getattr(env, "_iw_policy", None) is not None,
+                              bool(env._iw_never))
         L.start()
         self.v = Rows(L, self.n)
+        if self.ja is not None:
+            self.v.abilities(L, self.n)
         self.serial = 0
         self.stats = Counter()
         self.tm = Counter()                                  # seconds per stage (java / fill / start / decide / forward ...)
@@ -198,13 +223,29 @@ class Producer:
         """cf_loop_obs.Cohort.fill with ONE fix (a, compare.py lint_d1 u0000 job 0: an evolved body's opp_past form 0
         vs production 1): a detector key "card|body row|form" carries CfOppElixir's form, which leaves out
         STATUS_EVOLVED; production resolves the REAL raw() entity, whose status_flags carry CfCore.evolvedBit (an _EV
-        body row). So the entity built for the key gets bit 8 from the body row name, as state() sets it."""
+        body row). So the entity built for the key gets bit 8 from the body row name, as state() sets it.
+        Hero abilities: CfAbil's tables (ability_id.JavaAbil.fill; its IW observers' detector keys the same way)."""
+        L = self.L
+        k = self._resolve_keys(L.keys, self.main)
+        shim = SimpleNamespace(L=L, main=self.main, pub=self.pub, jc=self.jc, names=self.card_names)
+        k += self.fill_fn(shim)                            # the rest (names, pub, cue, cyc) as Cohort.fill does
+        if self.lmem is not None:                          # CfMem: detector slugs, then the bodies observe() missed
+            self.lmem.fill_det()
+            k += self._mem_bodies()
+        if self.ja is not None:
+            k += len(self.ja.T.missing)
+            self.ja.fill(self.env)                         # P: / N: keys, the IW observers' keys, their make_play rows
+        return k
+
+    def _resolve_keys(self, keys, main) -> int:
+        """Each missing detector key "card|body row|form#entity id" of ``keys`` -> main.key_index of the name public_frame
+        gives an entity built from the key (see _fill: the evolved bit from the body row)."""
         from pipeline import royale_heroiw as heroiw, vocab
         from pipeline.obs_contract import catalog_card_form
         from pipeline.opp_elixir_count import _catalog_names
         from pipeline.public_observation import public_frame
-        L, k = self.L, 0
-        for miss in L.keys.takeMissing():
+        k = 0
+        for miss in keys.takeMissing():
             key, _ = str(miss).rsplit("#", 1)
             card, body, form = key.split("|")
             flags = {2: 16, 1: 8}.get(int(form), 0) | (8 if "_EV" in body.upper() else 0)
@@ -214,14 +255,9 @@ class Producer:
                 ent.update(name="IceWizard", public_card_id=heroiw.public_identity(body), public_form=2)
             f = public_frame({"tick": 0, "entities": [ent]}, source="sim")["entities"]
             name = _catalog_names().get(f[0]["card_id"]) if f else None
-            L.keys.putBody(key, self.main.key_index(vocab.engine_key(name) if name else None),
-                           int(catalog_card_form(f[0]["card_id"])[1]) if f else 0)
+            keys.putBody(key, main.key_index(vocab.engine_key(name) if name else None),
+                         int(catalog_card_form(f[0]["card_id"])[1]) if f else 0)
             k += 1
-        shim = SimpleNamespace(L=L, main=self.main, pub=self.pub, jc=self.jc, names=self.card_names)
-        k += self.fill_fn(shim)                            # the rest (names, pub, cue, cyc) as Cohort.fill does
-        if self.lmem is not None:                          # CfMem: detector slugs, then the bodies observe() missed
-            self.lmem.fill_det()
-            k += self._mem_bodies()
         return k
 
     def _mem_bodies(self) -> int:
@@ -339,6 +375,12 @@ class Producer:
         self.L.setJob(i, self.serial, int(seed) & 0x7FFFFFFF, *a[0], *a[1])
         if self.lmem is not None:
             self.L.setMem(i, has_mem(sides[0].model), has_mem(sides[1].model))
+        if self.ja is not None:                               # _reset_abilities (CfTrain.reset): the env seed, seat modes
+            if not self.ja.ranges and hasattr(env, "_hero_ranges"):
+                self.ja.fill_ranges(env)                      # JavaAbil.reset: the first env reset that had heroes
+            self.L.setAbil(i, int(env.seed), *[self.ab_mode if s is ls else 0 for s in sides])
+            for s in sides:
+                s._ability_commands, s._ability_opts = {s.side: []}, None
         for s in sides:                                       # Match.prepare's first-decision clock
             s.last_play_tick = None
             s.fl = Counter()                                  # fast-loop tallies (result())
@@ -397,6 +439,25 @@ class Producer:
                 else {}),
              "fastloop": {"crashed": bool(res[7]), "approx": ["card_mix_accepted", "plays", "opp_counter",
                                                               "refuse_reasons names", "ghost_distinct_delivered"]}}
+        if self.ja is not None:                               # Match.result's hero-ability fields (CfTrain.abLog)
+            from pipeline.royale_env import V2_KEYS
+            pr, dep, fb = {0: Counter(), 1: Counter()}, {0: Counter(), 1: Counter()}, Counter()
+            lg = list(self.L.abLogFlat(i))
+            for kind, sd_, cid in zip(lg[0::3], lg[1::3], lg[2::3]):
+                nm = self.card_names[int(cid)]
+                if kind == 0:
+                    pr[int(sd_)][nm] += 1
+                    if V2_KEYS.get(nm) is None:
+                        fb[nm] += 1
+                else:
+                    dep[int(sd_)][nm] += 1
+            r.update({"hero_abilities": True, "ability_presses": {s: dict(c) for s, c in pr.items()},
+                      "ability_policy": "v2", "ability_fallback_generic": dict(fb),
+                      "ability_deployments": {s: dict(c) for s, c in dep.items()}})
+            if getattr(ls, "ab_stats", None):
+                st_ = ls.ab_stats
+                r["ability_head"] = {"decisions": st_["decisions"], "presses": st_["presses"],
+                                     "p_mean": round(st_["p_sum"] / st_["decisions"], 4)}
         if "_opp_style" in os_.cfg:                          # SelfPlayMatch.result
             r["opp_style"] = dict(os_.cfg["_opp_style"])
         r["league"] = dict(m["spec"])
@@ -413,13 +474,33 @@ class Producer:
         R, base = self.R, self.base
         t0 = time.perf_counter()
         c0 = (int(self.L.engineNs.get()), int(self.L.obsNs.get()), int(self.L.rowsBuilt.get()))   # JVM counters: per run
-        self.want_ver = int(update) if self.cl is not None else None   # the server's learner = this update's weights
         msd, psd = R.split_actor_sd(sd, self.dev)
-        if R.pop_prefix(msd, R.ABILITY_SD) or psd:
-            raise NotImplementedError("posture / ability heads are not in the fast loop yet")
+        asd = R.pop_prefix(msd, R.ABILITY_SD)
+        if psd:
+            raise NotImplementedError("the posture head is not in the fast loop yet")
+        # the server's learner = this update's weights (server_version: a message with the ability head is its own version)
+        self.want_ver = server_version(update, bool(asd)) if self.cl is not None else None
         self.net.load_state_dict(msd)
         self.net.eval()
         cfg = R.actor_cfg(base, "rollout", self.aid, self.dev)
+        self.ab_mode = 0                                      # actor_main.mk_cfg's B6 branch, then the CfTrain seat mode
+        if "ability" in cfg:
+            if self.ja is None:
+                raise NotImplementedError("an ability head without hero_abilities")
+            if asd:                                           # this update's head: the learner's presses (sample)
+                if self.ahead is None:
+                    ab = base["ability"]
+                    self.ahead = R.AbilityHead(int(ab["d_g"]), int(ab.get("hidden", R.ABILITY_HIDDEN)),
+                                               int(ab.get("n_feat", self.E.ABILITY_FEAT_N))).to(self.dev).eval()
+                self.ahead.load_state_dict(asd)
+                cfg["ability"] = {**cfg["ability"], "head": self.ahead}
+                self.ab_mode = 2
+            else:                                             # no head: the rule presses, its labels (B6 warm start)
+                cfg["ability"] = {"mode": "label", "n_feat": cfg["ability"]["n_feat"]}
+                cfg.pop("cf", None)
+                self.ab_mode = 1
+            if cfg["ability"]["mode"] not in ("sample", "label"):
+                raise NotImplementedError(f"ability mode {cfg['ability']['mode']!r} in a rollout")
         need = {j[1]["opp"]["path"] for j in jobs}
         for pth in [x for x in self.opp_cache if x not in need]:
             del self.opp_cache[pth]
@@ -539,6 +620,7 @@ class Producer:
             self.tm["fwd_rows"] += sum(b[2] for b in blocks)
             self.tm["fwd_calls"] += 1
         for idx, sides, model, c, batch, keys, name, srv in work:
+            self._abil_in(idx, sides)
             if srv:
                 f = fs[name]
                 if name == "learner" and self.want_ver is not None and f.ver != self.want_ver:
@@ -561,7 +643,11 @@ class Producer:
                     self.tm["decide_py"] += time.perf_counter() - d0
                     continue
                 d0 = time.perf_counter()
-                self._fast_group(model, c, sides, idx, batch, keys, heads, p, hand, cell_fn, vold, f.ver)
+                abx = None
+                if c.get("ability"):                         # ability_decide's head on the server (the block's g)
+                    head = (lambda f_: lambda gi, ft: torch.from_numpy(cl.ability(f_, gi.numpy(), ft.numpy())))(f)
+                    abx = ({"g": torch.arange(len(idx))}, {**c, "ability": {**c["ability"], "head": head}})
+                self._fast_group(model, c, sides, idx, batch, keys, heads, p, hand, cell_fn, vold, f.ver // 2, abx)
                 self.tm["decide_py"] += time.perf_counter() - d0
                 continue
             f0 = time.perf_counter()
@@ -578,7 +664,7 @@ class Producer:
             d0 = time.perf_counter()
             if FAST_DECIDE and fast_ok(c):
                 self._fast_group(model, c, sides, idx, batch, keys, heads, p, hand,
-                                 model_cell_logits(model, enc, heads["card"].device))
+                                 model_cell_logits(model, enc, heads["card"].device), abx=(enc, c))
                 self.tm["decide_py"] += time.perf_counter() - d0
                 continue
             self._prod_group(model, c, sides, idx, batch, keys, enc, heads, p, hand,
@@ -586,6 +672,37 @@ class Producer:
             self.tm["decide_py"] += time.perf_counter() - d0
         if fs:
             self.cl.done(list(fs.values()))
+        if self.ja is not None:                              # SelfPlaySide.apply's queue_abilities input (CfTrain.apply)
+            for idx, sides, *_ in work:
+                self._abil_out(idx, sides)
+
+    def _abil_in(self, idx, sides) -> None:
+        """Match.prepare's hero-ability results from CfTrain (abilities()): _ability_commands = the rule's presses ([] for a
+        HEAD seat), _ability_opts = ability_options' records (cfg ability: label q, or NaN) for ability_decide."""
+        if self.ja is None:
+            return
+        cmd, opt = self.v.ab_cmd, self.v.ab_opt
+        for j, s in enumerate(sides):
+            r = int(idx[j])
+            a = cmd[r]
+            s._ability_commands = {s.side: [tuple(int(x) for x in a[2 + 3 * k:5 + 3 * k]) for k in range(int(a[0]))]}
+            if s.cfg.get("ability"):
+                s._ability_opts = [{"cmd": (int(o[0]), int(o[1]), int(o[2])), "card": self.card_names[int(o[1])],
+                                    "q": float(o[3]), "feat": o[4:].copy()} for o in opt[r, :int(a[1])]]
+
+    def _abil_out(self, idx, sides) -> None:
+        """The commands apply queues (ability_decide put a HEAD seat's press in _ability_commands) -> CfTrain's row."""
+        cmd = self.v.ab_cmd
+        for j, s in enumerate(sides):
+            if not s.cfg.get("ability"):
+                continue                                     # a RULE seat: CfTrain's own commands stand
+            cs = s._ability_commands[s.side]
+            if len(cs) > int(self.L.AB_MAX):
+                raise RuntimeError(f"{len(cs)} ability commands")
+            r = int(idx[j])
+            cmd[r, 0] = len(cs)
+            for k, x in enumerate(cs):
+                cmd[r, 2 + 3 * k:5 + 3 * k] = [int(v) for v in x]
 
     def _prod_group(self, model, c, sides, idx, batch, keys, enc, heads, p, hand, cell_fn) -> None:
         """PRODUCTION's decide for one policy group (run_selfplay_batch's round): Match.prepare's state, SelfPlaySide.pre,
@@ -641,7 +758,8 @@ class Producer:
                     a[:] = (0, -1, -1, 0, 0, 0, 0, 0)
 
     # ------------------------------------------------------------------------------------------------ fast decide
-    def _fast_group(self, model, c, sides, idx, batch, keys, heads, p, hand, cell_fn, v_old=None, wver=None) -> None:
+    def _fast_group(self, model, c, sides, idx, batch, keys, heads, p, hand, cell_fn, v_old=None, wver=None,
+                    abx=None) -> None:
         """Match.pre + e1_eval.sample_decide_batch + decision_options.decide (decode 'sample', no rules) + _record for one
         policy group, vectorised where the arithmetic allows it and EXACT: the same torch ops on the same batch, every
         draw from the row's own rng in production's order (gate, card, cell), numpy Generator.choice reproduced as its
@@ -692,6 +810,8 @@ class Producer:
             cells[play_idx] = self._choice(cell_probs, [rngs[r] for r in play_idx])
             for j, r in enumerate(play_idx):
                 lp_cell[r] = math.log(cell_probs[j, cells[r]])
+        # sample_decide_batch's last step: PRODUCTION's ability_decide (before _record's n_dec + 1; its own rng_ability)
+        ab = self.E.ability_decide(sides, *abx) if abx is not None and c.get("ability") else None
         K = 18
         for j, s in enumerate(sides):
             r = idx[j]
@@ -723,6 +843,9 @@ class Producer:
                              ("T", T)) + ((("gate_tau", float(tau_r[j])),) if tau_r is not None else ()) + (
                                  (("v_old", float(v_old[j])), ("wver", int(wver))) if v_old is not None else ()):
                     rows.setdefault(k, []).append(x)
+                if ab is not None:                            # _record: the ability_defaults keys of the decision
+                    for k in self.E.ability_defaults():
+                        rows.setdefault(k, []).append(ab[j][k])
             a = v.act[r]
             if playing[j]:
                 X, Y = ep.cell_to_engine(int(cells[j]), s.mirror, s.cfg["grid"])
@@ -787,17 +910,28 @@ class Producer:
         if "v_old" in rows:                                  # LOOP-SRV: the critic of the same batch / version
             out["v_old"] = sc("v_old", np.float64)
             out["wver"] = sc("wver", np.int64)
+        if "ab_sampled" in rows:                             # cfg["ability"] (rl_royale ability_head): per row
+            out.update(ab_sampled=sc("ab_sampled", bool), ab_press=sc("ab_press", bool), ab_lp=sc("ab_lp", np.float64),
+                       ab_feat=st("ab_feat").astype(np.float32), ab_cand=sc("ab_cand", bool), ab_q=sc("ab_q", np.float64))
         return out
 
 
 FAST_DECIDE = os.environ.get("FASTLOOP_DECIDE", "fast") == "fast"
+
+
+def server_version(update: int, ability: bool) -> int:
+    """LOOP-SRV weight version of an update's learner message: 2 u (+ 1 when it carries the ability head). rl_royale's B6
+    warm start (no head) and u0000's rollout (head) are both update 0 with different heads; the server only loads a newer
+    version. Traj wver = version // 2 = the update."""
+    return 2 * int(update) + int(bool(ability))
 MEMHASH = bool(os.environ.get("FASTLOOP_MEMHASH"))           # compare.py only: per-row MEM_KEYS hashes in the traj
 
 
 def fast_ok(c: dict) -> bool:
-    """The cfg the fast decide reproduces: sample decode, all three heads, no decide rules / posture / ability, the
-    afford mask on, no anti-stall clock. Anything else takes production's path."""
+    """The cfg the fast decide reproduces: sample decode, all three heads, no decide rules / posture, the afford mask
+    on, no anti-stall clock (the ability head: production's ability_decide, called by _fast_group). Anything else takes
+    production's path."""
     from pipeline.decision_options import DecisionOptions, options_from_config, sample_rules
-    return (c["policy"] == "sample" and "sample_heads" not in c and not c.get("posture") and not c.get("ability")
+    return (c["policy"] == "sample" and "sample_heads" not in c and not c.get("posture")
             and bool(c["afford_mask"]) and c.get("stall_elixir") is None and c.get("afford_ticks") is None
             and "_opp_style" not in c and sample_rules(options_from_config(c)) == DecisionOptions())

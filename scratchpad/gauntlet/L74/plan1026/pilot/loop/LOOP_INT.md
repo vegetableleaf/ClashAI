@@ -3,6 +3,18 @@
 Labels: (a) measured, (b) untested, (c) contradicted.
 
 ## STATUS (keep current; 2026-10-28 ~18:30 EDT, re-dispatch on account 2)
+- LOOP-INT2 (fresh seat, 10-28 ~20:00 EDT): step (a) hero abilities WIRED (CfTrain stage 7 = CfAbil commands / options;
+  the pending queue + one-at-a-time recheck + CfCore.ability press inside advanceTo (production's _advance_to stops on
+  every pending press); accepted presses -> CfAbil.pressed, CfPubObj.press, CfMem.Log.press; plays -> CfAbil.played +
+  ability_deployments; seat modes RULE (opponents) / LABEL (B6 warm start: no head in the message) / HEAD (learner,
+  production's e1_eval.ability_decide called from the fast decide; server mode: policy_server's ability call); result
+  ability_presses / deployments / fallback / ability_head; server weight version = 2 u + (1 with the head), traj wver =
+  version // 2). pilot.yaml now runs on the fast loop (lint_pa1, 33308: warm start 128 rule rollouts through FastPool
+  = 14,251 IW labels, BCE 0.0771 -> 0.0393).
+  - compare (a) LABEL msg (warm start, 16 of 128 jobs, in-process cuda, 8 in flight; 33308 cmp_pa_label_b8.json):
+    16/16 matches identical (every traj key incl. ab_cand / ab_feat / ab_q: 1,827 labels), ability result fields 16/16,
+    presses 22 / 17 per side both paths; lp max 1.9e-6. OPEN: memory tables 13/16 equal (vals / vpe differ in 3), MEM
+    rows 4,418 / 5,201: under diagnosis (decisions unaffected at B0: mem.out = 0).
 - DONE, correctness (a): compare.py (production actor_main vs producer, same process, cuda, TF32 off) 16/16 matches
   identical at batch 1 and at 8 in flight, with the fast decide too (`33308:/workspace/loop/cmp_*.json`), lp max 2.3e-6.
   rl_royale-vs-fastloop through the learner, 3 updates with PPO policy updates (`lint_c3_rl` / `lint_c3_fast`, 33308):

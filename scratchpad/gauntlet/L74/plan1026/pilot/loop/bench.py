@@ -47,11 +47,12 @@ def start_servers(base, update, sd, jobs, devices, mode, block_max, root="/dev/s
     from pipeline import rl_royale as R
     wd = Path(root) / "weights"
     wd.mkdir(parents=True, exist_ok=True)
-    if push:
+    if push:                                     # the ability head's tensors ride along (policy_server._load)
+        from producer import server_version
         msd, _ = R.split_actor_sd(sd, "cpu")
-        R.pop_prefix(msd, R.ABILITY_SD)
-        torch.save({"version": int(update), "state_dict": msd}, wd / f"learner.v{int(update):08d}.pt")
-        (wd / "learner.latest").write_text(str(int(update)))
+        v = server_version(update, any(k.startswith(R.ABILITY_SD) for k in msd))
+        torch.save({"version": v, "state_dict": msd}, wd / f"learner.v{v:08d}.pt")
+        (wd / "learner.latest").write_text(str(v))
     opps = sorted({j[1]["opp"]["path"] for j in jobs})
     servers = []
     for g, dv in enumerate(devices):

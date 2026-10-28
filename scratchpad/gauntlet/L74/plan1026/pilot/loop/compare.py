@@ -22,7 +22,8 @@ import numpy as np
 HERE = Path(__file__).resolve().parent
 sys.path[:0] = [str(HERE.parents[5]), str(HERE)]
 
-LP = ("lp_gate", "lp_card", "lp_cell", "p_gate")
+LP = ("lp_gate", "lp_card", "lp_cell", "p_gate", "ab_lp")   # float noise of the forward: max |diff| reported
+AB_RESULT = ("ability_presses", "ability_deployments", "ability_fallback_generic", "ability_head")
 
 
 def main():
@@ -103,6 +104,8 @@ def main():
                     "end_tick": [p["end_tick"], f["end_tick"]], "rows": [len(tp["played"]), len(tf["played"])],
                     "plays": [p["plays_attempted"], f["plays_attempted"]], "accepted": [p["plays_accepted"], f["plays_accepted"]],
                     "opp_plays": [p["opp_side"]["plays_attempted"], f["opp_side"]["plays_attempted"]],
+                    "ability": {k: [p.get(k), f.get(k)] for k in AB_RESULT if p.get(k) is not None or f.get(k) is not None},
+                    "ability_equal": all(norm(p.get(k)) == norm(f.get(k)) for k in AB_RESULT),
                     "identical": first is None and len(tp["played"]) == len(tf["played"]), "first_divergence": first})
     vchk = vold_check(base, sd, fast, update, a.device, P.model.gid) if a.server else None
     mchk = mem_check(prod, fast, P.model.gid)
@@ -122,12 +125,33 @@ def main():
         sides.append({"tag": tag, "decisions": [len(P_), len(F_)], "identical": False, "at": j, "prod": x, "fast": y,
                       "prev_prod": P_[j - 1] if j else None})
     out_sides = sorted(sides, key=lambda s: (s["identical"], (s.get("prod") or {}).get("tick", 1e9)))
-    out = {"sides": out_sides, "msg": a.msg, "device": a.device, "in_flight": a.in_flight, "fast_matches": a.matches, "matches": len(rep),
+    ab = abil_summary(prod, fast) if any("ability_presses" in r for r in prod) else None
+    out = {"ability": ab, "heroiw_press": __import__("os").environ.get("ROYALE_HEROIW_PRESS"), "sides": out_sides, "msg": a.msg, "device": a.device, "in_flight": a.in_flight, "fast_matches": a.matches, "matches": len(rep),
            "identical_matches": sum(r["identical"] for r in rep), "first_div_keys": keys_bad,
            "lp_maxdiff_before_divergence": lp_max, "server": a.server, "v_old": vchk, "memory": mchk, "fast_stats": st, "matches_detail": rep}
     Path(a.out).write_text(json.dumps(out, indent=1, default=str))
     print(json.dumps({k: out[k] for k in ("matches", "identical_matches", "first_div_keys", "lp_maxdiff_before_divergence",
-                                          "v_old", "memory")}))
+                                          "v_old", "memory", "ability")}))
+
+
+def norm(x):
+    """A result field with int / str side keys (json round trips) -> comparable."""
+    return json.loads(json.dumps(x, sort_keys=True, default=str)) if x is not None else None
+
+
+def abil_summary(prod, fast):
+    """Hero abilities: matches whose ability result fields are equal, and per path the learner's press decisions
+    (ab_sampled / ab_press), labels (ab_cand) and engine-accepted presses of both sides."""
+    out = {"matches_equal": 0, "matches": len(prod)}
+    for name, rs in (("prod", prod), ("fast", fast)):
+        t = [r["traj"] for r in rs]
+        out[name] = {"ab_sampled": int(sum(int(np.sum(x.get("ab_sampled", 0))) for x in t)),
+                     "ab_press": int(sum(int(np.sum(x.get("ab_press", 0))) for x in t)),
+                     "ab_cand": int(sum(int(np.sum(x.get("ab_cand", 0))) for x in t)),
+                     "presses_side": [int(sum(sum((r.get("ability_presses") or {}).get(k, {}).values()) for r in rs
+                                              for k in (s, str(s)))) for s in (0, 1)]}
+    out["matches_equal"] = sum(all(norm(p.get(k)) == norm(f.get(k)) for k in AB_RESULT) for p, f in zip(prod, fast))
+    return out
 
 
 def mem_check(prod, fast, gid):
@@ -149,6 +173,22 @@ def mem_check(prod, fast, gid):
         out["tables_equal"] += int(not bad)
         for k in bad:
             out["table_diff_keys"][k] = out["table_diff_keys"].get(k, 0) + 1
+        if bad and len(out.setdefault("table_diffs", [])) < 6:   # the first differing event of each bad table
+            P_, F_ = p["memory"], f.get("memory", {})
+            n_ = min(len(P_["tick"]), len(F_.get("tick", [])))
+            d = {"key": str(p.get("tag")), "events": [len(P_["tick"]), len(F_.get("tick", []))], "keys": bad}
+            for i in range(n_):
+                dk = [k for k in bad if np.asarray(P_[k][i]).tobytes() != np.asarray(F_[k][i]).tobytes()]
+                if dk:
+                    cols = (np.flatnonzero(np.asarray(P_["vals"][i]) != np.asarray(F_["vals"][i])).tolist()
+                            if "vals" in dk else [])
+                    d.update(at=i, diff_keys=dk, tick=int(P_["tick"][i]), card=int(P_["card"][i]),
+                             vals_cols=[(MM.FIELDS[c] if c < len(MM.FIELDS) else c, float(P_["vals"][i][c]),
+                                         float(F_["vals"][i][c])) for c in cols][:12],
+                             vpe=[float(P_["vpe"][i]), float(F_["vpe"][i])],
+                             is_ability=float(P_["vals"][i][MM.FIELDS.index("is_ability")]))
+                    break
+            out["table_diffs"].append(d)
         t = f["traj"]
         if "mem_h" not in t:
             out["no_hash"] += 1

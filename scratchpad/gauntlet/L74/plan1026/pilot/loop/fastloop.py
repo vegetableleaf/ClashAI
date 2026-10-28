@@ -102,12 +102,14 @@ class FastPool:
         from pipeline import rl_royale as R
         wd = self.srv_root / "weights"
         wd.mkdir(parents=True, exist_ok=True)
-        msd, _ = R.split_actor_sd(sd, "cpu")
-        R.pop_prefix(msd, R.ABILITY_SD)
-        tmp = wd / f".learner.v{int(update):08d}.pt"
-        torch.save({"version": int(update), "state_dict": msd}, tmp)
-        os.replace(tmp, wd / f"learner.v{int(update):08d}.pt")
-        (wd / "learner.latest").write_text(str(int(update)))
+        sys.path.insert(0, str(HERE))
+        from producer import server_version
+        msd, _ = R.split_actor_sd(sd, "cpu")             # the ability head's tensors ride along (policy_server._load)
+        v = server_version(update, any(k.startswith(R.ABILITY_SD) for k in msd))
+        tmp = wd / f".learner.v{v:08d}.pt"
+        torch.save({"version": v, "state_dict": msd}, tmp)
+        os.replace(tmp, wd / f"learner.v{v:08d}.pt")
+        (wd / "learner.latest").write_text(str(v))
         for old in sorted(wd.glob("learner.v*.pt"))[:-2]:
             old.unlink(missing_ok=True)
 
@@ -158,7 +160,10 @@ class FastPool:
         t0 = time.perf_counter()
         if os.environ.get("FASTLOOP_DUMP"):                   # compare.py's input: the exact actor message
             import pickle
-            Path(self.a.rl_dir, f"fast_msg_u{update:04d}.pkl").write_bytes(pickle.dumps((self.base, update, sd, jobs)))
+            out = Path(self.a.rl_dir, f"fast_msg_u{update:04d}.pkl")
+            if out.exists():                                  # a 2nd message of one update (B6 warm start, then u0000)
+                out = out.with_name(f"fast_msg_u{update:04d}_{time.time_ns()}.pkl")
+            out.write_bytes(pickle.dumps((self.base, update, sd, jobs)))
         if self.a.server:
             self._push(update, sd)
         if not self.started:
