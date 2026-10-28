@@ -1,0 +1,5 @@
+14994 matches with HF aggregate stats
+committed team trace mean 97.61 HF mean 97.25 r 0.967 MAE 4.52
+committed opp trace mean 96.44 HF mean 96.09 r 0.968 MAE 4.46
+leak team trace mean 12.95 HF mean 7.96 r 0.609 MAE 8.05
+leak opp trace mean 13.83 HF mean 8.85 r 0.609 MAE 8.14

@@ -68,3 +68,11 @@ def test_spawned_bodies_are_not_deployed_elixir():
     witch = [(1, KNIGHT, 1000, 1000, "w"), (1, KNIGHT, 100, 100, "s")]          # main body then a spawn, same card id
     fr = [frame(0, witch[:1]), frame(2, witch)] + [frame(t, witch[:1]) for t in range(4, 40, 2)]
     assert last(fr)[1, F.index("elixir")] == 0                                   # a spawn (100 < 0.5 x 1000)
+
+
+def test_public_streams_commits_and_threat_leak():
+    fr = [frame(0, elixir=8.0, opp_e=10.0), frame(2, elixir=5.0, opp_e=10.0)]                 # we played a 3
+    fr += [dict(frame(t, elixir=10.0, opp_e=10.0), threat=(t >= 30, False)) for t in range(4, 60, 2)]
+    _, C, LT = RX.public_streams(fr)
+    assert np.isclose(C[-1, 0], 3.0 + 2 / 56) and C[-1, 1] == 0
+    assert np.isclose(LT[-1, 0], 30 / 56) and LT[-1, 1] == 0                                  # only while threatened

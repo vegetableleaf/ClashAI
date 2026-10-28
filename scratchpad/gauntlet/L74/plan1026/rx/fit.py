@@ -19,7 +19,8 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parents[4]))
 from pipeline import r_exchange as RX  # noqa: E402
 
-SPLIT = json.load(open(HERE / "SPLIT.json"))
+import os  # noqa: E402
+SPLIT = json.load(open(os.environ.get("RX_SPLIT", HERE / "SPLIT.json")))      # RX_SPLIT: SPLIT_HF.json for HF traces
 F = list(RX.FEATURES)
 EXPECT = {"princess": +1, "elixir": +1, "leak": +1}      # x = opp loss - own loss: all three should be > 0
 TRACES = sys.argv[sys.argv.index("--traces") + 1] if "--traces" in sys.argv else "frame"
@@ -84,6 +85,8 @@ def load(path, opp_leak):
 def battlelog(path):
     out = []
     for line in open(path, encoding="utf8"):
+        if not line.strip():
+            continue
         b = json.loads(line)["battle"]
         t = dt.datetime.strptime(b["battleTime"][:15], "%Y%m%dT%H%M%S") - dt.timedelta(hours=4)   # UTC -> EDT
         me, op = b["team"][0], b["opponent"][0]
@@ -95,6 +98,8 @@ def battlelog(path):
 def join(M, BL):
     """one-to-one: a battle whose start (EDT) is 0..6 min after the log file's start time, nearest first."""
     used, pairs = set(), {}
+    if not BL:
+        return pairs
     for i, m in enumerate(M):
         ft = dt.datetime.strptime(m["file"][10:25], "%Y%m%d_%H%M%S")
         c = [(abs((b["t"] - ft).total_seconds() - 60), j) for j, b in enumerate(BL)
@@ -184,7 +189,7 @@ def main():
                   if b["leak_me"] is not None and b["leak_op"] is not None], float).reshape(-1, 4)
     r_own = float(np.corrcoef(v[:, 0], v[:, 2])[0, 1]) if len(v) > 2 else None
     r_opp = float(np.corrcoef(v[:, 1], v[:, 3])[0, 1]) if len(v) > 2 else None
-    use_opp = r_opp is not None and r_opp >= 0.7
+    use_opp = (r_opp is not None and r_opp >= 0.7) or not BL      # no battle log = engine traces: exact elixir
     res["battlelog"] = {"battles": len(BL), "matched": len(pairs), "label_checked": len(agree),
                         "label_agree": int(sum(p == q for p, q in agree)),
                         "leak_n": int(len(v)), "own_leak_r": r_own, "opp_leak_r": r_opp,

@@ -157,3 +157,34 @@ def r_exchange(frames, values, beta, scale=0.5, cap=0.5):
     """Match trace -> (ticks, per-step R_exchange). The pure entry point for the pipeline."""
     ticks, L = running_losses(frames, values)
     return ticks, step_rewards(ticks, features(L), beta, scale, cap)
+
+
+COMMIT_MIN = 0.3    # an elixir drop below this between observations is read noise, not a play
+
+
+def public_streams(frames):
+    """frames -> (ticks [T], committed [T, 2], leak_threat [T, 2]) running totals (0 = observer, 1 = opponent).
+
+    committed: elixir spent (plays incl. spells and ability presses), read as drops in the elixir value between
+    observations net of regen (own: own elixir; opponent: the public counter). leak_threat: leak (as in
+    running_losses) only while the OTHER side has a body on this side's half; needs frame["threat"] =
+    (opponent body on our half, our body on the opponent's half). Candidate inputs for the X1 revision; not in R_exchange.
+    """
+    T = len(frames)
+    C, LT, ticks = np.zeros((T, 2)), np.zeros((T, 2)), np.zeros(T, int)
+    c, lt, prev = np.zeros(2), np.zeros(2), None
+    for i, f in enumerate(frames):
+        t = int(f["tick"])
+        es = (f.get("elixir"), f.get("opp_elixir"))
+        if prev is not None and 0 < t - prev[0] <= MAX_DT:
+            dt = t - prev[0]
+            for s in (0, 1):
+                if es[s] is not None and prev[1][s] is not None:
+                    d = min(10.0, prev[1][s] + regen(t) * dt) - es[s]
+                    if d >= COMMIT_MIN:
+                        c[s] += d
+                    if es[s] >= FULL and f.get("threat", (False, False))[s]:
+                        lt[s] += regen(t) * dt
+        prev = (t, es)
+        C[i], LT[i], ticks[i] = c, lt, t
+    return ticks, C, LT

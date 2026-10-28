@@ -88,6 +88,12 @@ def ents_of(fr):
     return out
 
 
+def threat(E, me):
+    """(opponent body on our half, our body on the opponent's half); side 0's half is y < 16000 (king at y 3000)."""
+    on = lambda e, s: e[3] != -1 and (e[2] < 16000 if s == 0 else e[2] > 16000)
+    return (any(e[0] != me and on(e, me) for e in E), any(e[0] == me and on(e, 1 - me) for e in E))
+
+
 def read(path):
     op = gzip.open if path.suffix == ".gz" else open
     head, end, frames = {}, None, []
@@ -96,7 +102,8 @@ def read(path):
             if line.startswith('{"event": "frame"'):
                 j = json.loads(line)
                 frames.append({"tick": j["tick"], "side": j["my_side"], "elixir": j.get("elixir"),
-                               "opp_elixir": j.get("opp_elixir_est"), "ents": ents_of(j)})
+                               "opp_elixir": j.get("opp_elixir_est"), "ents": ents_of(j),
+                               "threat": threat(j["ents"], j["my_side"])})
             elif line.startswith('{"event": "start"'):
                 j = json.loads(line)
                 head = {"dry_run": bool(j.get("dry_run")), "ckpt": str(j.get("ckpt"))}
@@ -115,6 +122,7 @@ def read(path):
                      for b in p["raw_bodies"]]
                 frames.append({"tick": p["raw_tick"], "side": p["observer_side"], "elixir": p.get("own_elixir_raw"),
                                "opp_elixir": p.get("opponent_elixir_estimate"), "ents": ents_of({"ents": E}),
+                               "threat": threat(E, p["observer_side"]),
                                "src": "decision"})
         frames.sort(key=lambda f: f["tick"])
     return head, end, frames
@@ -153,12 +161,14 @@ def one(path):
         return {"file": path.name, "skip": "clock_reset"}
     y, src, cm, co = label(end, frames)
     ticks, L = RX.running_losses(frames, VALUES)
+    _, C, LT = RX.public_streams(frames)
     known = sum(1 for f in frames for e in f["ents"] if e[1] != -1 and e[1] in VALUES)
     allb = sum(1 for f in frames for e in f["ents"] if e[1] != -1)
     keep = np.r_[np.nonzero(np.diff(ticks // SAMPLE, prepend=-1))[0], len(ticks) - 1]
     own_pr = max((e[3] for e in frames[0]["ents"] if e[1] == -1 and e[0] == frames[0]["side"]), default=0)
     return {"file": path.name, "skip": None, "date": path.name[10:18], "y": y, "label_src": src, "crowns": (cm, co),
-            "ticks": ticks[keep], "L": L[keep].astype(np.float32), "end_tick": int(ticks[-1]),
+            "ticks": ticks[keep], "L": L[keep].astype(np.float32), "C": C[keep].astype(np.float32),
+            "LT": LT[keep].astype(np.float32), "end_tick": int(ticks[-1]),
             "body_known_frac": known / max(1, allb), "own_king_max": own_pr, "ckpt": head.get("ckpt", ""),
             "trace": frames[0].get("src", "frame"), "n_obs": len(frames)}
 
@@ -176,10 +186,11 @@ def main():
     with mp.Pool(workers, initializer=init) as pool:
         res = pool.map(one, files, chunksize=4)
     ok = [r for r in res if r["skip"] is None]
-    np.savez_compressed(a[1], meta=np.array(json.dumps([{k: v for k, v in r.items() if k not in ("ticks", "L")}
+    np.savez_compressed(a[1], meta=np.array(json.dumps([{k: v for k, v in r.items() if k not in ("ticks", "L", "C", "LT")}
                                                          for r in ok])),
                         skipped=np.array(json.dumps([r for r in res if r["skip"]])),
-                        **{f"t_{i}": r["ticks"] for i, r in enumerate(ok)}, **{f"L_{i}": r["L"] for i, r in enumerate(ok)})
+                        **{f"t_{i}": r["ticks"] for i, r in enumerate(ok)}, **{f"L_{i}": r["L"] for i, r in enumerate(ok)},
+                        **{f"C_{i}": r["C"] for i, r in enumerate(ok)}, **{f"LT_{i}": r["LT"] for i, r in enumerate(ok)})
     from collections import Counter
     print(len(files), "files;", len(ok), "kept;", Counter(r["skip"] for r in res if r["skip"]),
           Counter(r["label_src"] for r in ok), Counter(r["y"] for r in ok))
