@@ -148,7 +148,7 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
         self.match_index += 1
         self.match_seed = int(np.random.SeedSequence([self.decision_seed, self.match_index]).generate_state(1)[0])
         self.rng_decisions = np.random.default_rng(self.match_seed)
-        if self.gate_sample > 0:                # its own per-match stream: rng_decisions' draws stay as without it
+        if getattr(self, "gate_sample", 0.0) > 0:                # its own per-match stream: rng_decisions' draws stay as without it
             self.gate_seed = int(np.random.SeedSequence([self.decision_seed, self.match_index, 0x6A7E]).generate_state(1)[0])
             self.rng_gate = np.random.default_rng(self.gate_seed)
         self._public_audit_snapshot = None
@@ -335,11 +335,12 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
         if options.log_air != 'off':                    # the decision board's enemy units / towers (a Log row only)
             ctx['log_air_boards'] = _Lazy(log_air_row)
         trace = []
-        if self.gate_sample > 0:                        # the gate logit + this match's gate stream (decide's gate_sample)
+        gs = getattr(self, "gate_sample", 0.0)    # (a GenPilot built without __init__, e.g. tests: off)
+        if gs > 0:                      # the gate logit + this match's gate stream (decide's gate_sample)
             if self.rng_gate is None:
                 raise ValueError('gate_sample: reset_match() before the first decision (the per-match gate seed)')
-            ctx.update(gate_sample=self.gate_sample, gate_rngs=[self.rng_gate])
-        res = decide({'card': out['card'], **({'gate': out['gate']} if self.gate_sample > 0 else {})}, [p],
+            ctx.update(gate_sample=gs, gate_rngs=[self.rng_gate])
+        res = decide({'card': out['card'], **({'gate': out['gate']} if gs > 0 else {})}, [p],
                      allowed[None], np.array([bool(stalled)]), tau=self.gate_tau,
                      options=options, rngs=[self.rng_decisions], cell_logits=cell_logits, card_names=[names],
                      cell_guard=guard, follow_up=follow_up, trace=trace, choose=choose_cells, **ctx)[0]
