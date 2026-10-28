@@ -88,7 +88,7 @@ class Forward:
     outputs are a graph's static buffers (the next replay overwrites them)."""
 
     def __init__(self, policy, device: str = "cuda", mode: str = "eager", buckets=BUCKETS, pad: Optional[bool] = None,
-                 graph_max: float = float("inf"), precision: str = "fp32"):
+                 graph_max: float = float("inf"), precision: str = "fp32", pool=None):
         from pipeline import e1_eval as E
         self.E, self.policy, self.device, self.mode = E, policy, device, mode
         self.keys = E.gen_row_keys(policy.model)
@@ -96,6 +96,7 @@ class Forward:
         self.buckets, self.pad, self.graph_max = tuple(buckets), mode != "eager" if pad is None else pad, graph_max
         self.amp = (lambda: torch.autocast("cuda", dtype=torch.bfloat16)) if precision == "bf16" else contextlib.nullcontext
         self.last_graph = False
+        self.pool = pool                # a graph memory pool shared with other Forwards (PolicyServer: one per server)
         if mode == "graphs":                                       # the one host copy inside the CLXIII forward
             from pipeline import tower_refine
             _graph_safe_tower_features(torch.zeros(1, 70, device=device))
@@ -169,7 +170,7 @@ class Forward:
                 self.fn(stat)
         torch.cuda.current_stream().wait_stream(s)
         graph = torch.cuda.CUDAGraph()
-        with torch.cuda.graph(graph, capture_error_mode="thread_local"):     # a server's other threads keep running
+        with torch.cuda.graph(graph, pool=self.pool, capture_error_mode="thread_local"):     # a server's other threads keep running
             out = self.fn(stat)
         return {"in": stat, "out": out, "graph": graph}
 
@@ -495,6 +496,7 @@ class _Copy:
 
     def __init__(self, policy, fwd_kw: dict, version):
         self.pol, self.version, self.refs, self.ability = policy, version, 0, None
+        self.dst: dict = {}                     # id(model) -> its state_dict tensors (aliases of the parameters)
         self.fwd = Forward(policy, **fwd_kw)
 
 
@@ -526,8 +528,12 @@ class PolicyServer:
         self.device, self.max_batch, self.wait, self.mode = device, int(max_batch), wait_ms / 1000.0, mode
         if self.max_batch > buckets[-1]:
             raise ValueError(f"max_batch {max_batch} > the largest bucket {buckets[-1]}")
+        # ONE graph memory pool for every graph of the server: replays are serial on one stream and each batch's
+        # outputs are copied / cloned right after its replay, so a later replay may reuse the memory (private pools
+        # per graph filled the 4090's 24 GB with 8 models x 6 buckets)
+        pool = torch.cuda.graph_pool_handle() if mode == "graphs" and device.startswith("cuda") else None
         self.fwd_kw = dict(device=device, mode=mode, buckets=buckets, pad=True, graph_max=graph_max,
-                           precision=precision)
+                           precision=precision, pool=pool)
         self.models = []
         for m in models:
             m = dict(m)
@@ -659,6 +665,8 @@ class PolicyServer:
                 if time.perf_counter() - t0 > timeout:
                     raise TimeoutError(f"{m['name']}: the spare copy is still held by {c.refs} batch(es)")
                 time.sleep(0.001)
+            t1 = time.perf_counter()
+            self.stats["push_wait_s"] = self.stats.get("push_wait_s", 0.0) + t1 - t0
             self._load(c, state_dict)
             if self._cuda:
                 torch.cuda.synchronize(self.device)
@@ -676,15 +684,26 @@ class PolicyServer:
         if any(k.startswith("__ability__.") for k in sd):
             from pipeline.rl_royale import ABILITY_SD, AbilityHead, pop_prefix
             asd = pop_prefix(sd, ABILITY_SD)
+        def copy_in(model, keys):
+            """Strict, in place (graph addresses unchanged), as ONE foreach call on the copy's cached state tensors: a
+            per-tensor load_state_dict took up to 7 s while the server's other threads held the GIL."""
+            dst = c.dst.get(id(model))
+            if dst is None:
+                dst = c.dst[id(model)] = model.state_dict()
+            if set(dst) != set(keys):
+                raise KeyError(f"state dict mismatch: missing {sorted(set(dst) - set(keys))[:5]}, "
+                               f"unexpected {sorted(set(keys) - set(dst))[:5]}")
+            torch._foreach_copy_(list(dst.values()), [sd[k] for k in dst])
+
         with torch.no_grad():
-            c.pol.model.load_state_dict(sd)                              # strict, in place: graph addresses unchanged
+            copy_in(c.pol.model, list(sd))
             fp = getattr(c.pol, "fwd_pol", None)
             if fp is not None:                                           # the split forward copy: no cell_refine
                 fk = list(fp.model.state_dict())
                 extra = set(sd) - set(fk)
                 if any(not k.startswith("cell_refine.") for k in extra):
                     raise KeyError(f"forward copy lacks {sorted(extra)[:5]}")
-                fp.model.load_state_dict({k: sd[k] for k in fk})
+                copy_in(fp.model, fk)
             if asd:
                 if c.ability is None:
                     w = asd["net.0.weight"]
@@ -857,6 +876,8 @@ class PolicyServer:
         pm["pad_rows"] += f["B"] - f["n"]
 
     def _fail(self, take, exc):
+        import traceback
+        traceback.print_exception(exc)
         for i, _ in take:
             with contextlib.suppress(BrokenPipeError, OSError):
                 self.conns[i].send(("err", repr(exc)))

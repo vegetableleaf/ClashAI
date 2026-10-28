@@ -1,0 +1,43 @@
+{
+ "ckpt": "/workspace/exploit/ckpt/mem_best_ze_grafted.pt",
+ "n": 4096,
+ "block": 512,
+ "rows": [
+  {
+   "precision": "default",
+   "mode": "eager",
+   "max_abs_diff": {
+    "lp_gate": 6.32e-06,
+    "lp_card": 9.53e-09,
+    "lp_cell": 2.53
+   },
+   "action_diffs": 1,
+   "rows_lp_over_1e5": 1297,
+   "plays": 1392
+  },
+  {
+   "precision": "fp32",
+   "mode": "eager",
+   "max_abs_diff": {
+    "lp_gate": 6.32e-06,
+    "lp_card": 9.53e-09,
+    "lp_cell": 7.55e-06
+   },
+   "action_diffs": 0,
+   "rows_lp_over_1e5": 0,
+   "plays": 1392
+  },
+  {
+   "precision": "fp32",
+   "mode": "graphs",
+   "max_abs_diff": {
+    "lp_gate": 6.32e-06,
+    "lp_card": 9.53e-09,
+    "lp_cell": 7.55e-06
+   },
+   "action_diffs": 0,
+   "rows_lp_over_1e5": 0,
+   "plays": 1392
+  }
+ ]
+}

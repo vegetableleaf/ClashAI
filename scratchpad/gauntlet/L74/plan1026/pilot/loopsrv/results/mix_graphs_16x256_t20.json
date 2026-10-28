@@ -1,0 +1,108 @@
+{
+ "mode": "graphs",
+ "max_batch": 2048,
+ "wait_ms": 2.0,
+ "pool": [
+  [
+   "learner",
+   1.0
+  ],
+  [
+   "init",
+   0.117
+  ],
+  [
+   "wk_adapt_exp1",
+   0.117
+  ],
+  [
+   "wk_adapt_exp2",
+   0.117
+  ],
+  [
+   "wk_adapt_exp3",
+   0.117
+  ],
+  [
+   "newsim_base_exp1",
+   0.117
+  ],
+  [
+   "newsim_base_exp2",
+   0.117
+  ],
+  [
+   "w14opp_I",
+   0.15
+  ]
+ ],
+ "rows": [
+  {
+   "block": 256,
+   "producers": 16,
+   "rows_per_s": 13611,
+   "learner_rows_per_s": 7351,
+   "play_frac": 0.255,
+   "warm_s": 13.9,
+   "batches_per_s": 29,
+   "server_s": {
+    "stack_s": 1.32,
+    "forward_s": 32.99,
+    "cell_s": 14.13,
+    "idle_s": 2.84,
+    "push_s": 1.03
+   },
+   "pushes": 3,
+   "push_ms": 342.9,
+   "learner_versions_seen": [
+    1,
+    2,
+    3
+   ],
+   "producer_cpu_us_per_row": 87.5,
+   "gpu_mem_gb": 8.12,
+   "per_model": {
+    "learner": {
+     "rows_per_s": 7351,
+     "mean_batch": 1256,
+     "pad_frac": 0.0
+    },
+    "init": {
+     "rows_per_s": 861,
+     "mean_batch": 220,
+     "pad_frac": 0.197
+    },
+    "wk_adapt_exp1": {
+     "rows_per_s": 861,
+     "mean_batch": 248,
+     "pad_frac": 0.19
+    },
+    "wk_adapt_exp2": {
+     "rows_per_s": 861,
+     "mean_batch": 259,
+     "pad_frac": 0.168
+    },
+    "wk_adapt_exp3": {
+     "rows_per_s": 861,
+     "mean_batch": 259,
+     "pad_frac": 0.168
+    },
+    "newsim_base_exp1": {
+     "rows_per_s": 861,
+     "mean_batch": 271,
+     "pad_frac": 0.153
+    },
+    "newsim_base_exp2": {
+     "rows_per_s": 861,
+     "mean_batch": 276,
+     "pad_frac": 0.15
+    },
+    "w14opp_I": {
+     "rows_per_s": 1091,
+     "mean_batch": 393,
+     "pad_frac": 0.248
+    }
+   }
+  }
+ ]
+}

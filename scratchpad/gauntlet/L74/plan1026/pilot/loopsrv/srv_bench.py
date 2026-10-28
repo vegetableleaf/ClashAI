@@ -1,6 +1,6 @@
 """LOOP-SRV bench: policy_server.PolicyServer at the production row mix, one GPU (pod, repo root).
   bare   rows/s of each model's padded forward (eager; graphs up to 512) per bucket
-  mix    P producer PROCESSES; each round sends one block per model at once (learner K rows, opponent j K * share_j)
+  mix    (one config per process: a new server in the same process OOMs on the 4090) P producer PROCESSES; each round sends one block per model at once (learner K rows, opponent j K * share_j)
          and runs the P1 decide on every block itself (every 7th row forced to play: cell calls); a learner weight
          push every --push-every s. rows/s inside a window after every producer is ready.
     python srv_bench.py --part bare|mix --out OUT.json [--mode eager|graphs] [--configs 256x16,...]"""
@@ -110,7 +110,7 @@ def part_mix(a):
     from pipeline import batched_rollout as BR
     from pipeline import e1_eval as E
     from pipeline.policy_server import PolicyServer, row_spec
-    res = {"mode": a.mode, "max_batch": a.max_batch, "wait_ms": a.wait_ms, "pool": [(n, s) for n, _, s in POOL], "rows": []}
+    res = {"mode": a.mode, "precision": a.precision, "max_batch": a.max_batch, "wait_ms": a.wait_ms, "pool": [(n, s) for n, _, s in POOL], "rows": []}
     pols = {name: load(path) for name, path, _ in POOL}
     base = {name: rows_for(pols[name].model, 512, seed=j) for j, (name, _, _) in enumerate(POOL)}
     learner_sd = {k: v.detach().cpu().clone() for k, v in pols["learner"].model.state_dict().items()}
@@ -123,11 +123,13 @@ def part_mix(a):
             al = np.zeros((k, 8), bool)
             al[:, :4] = True
             st = np.zeros(k, bool)
-            st[::7] = True
+            if a.forced_every:
+                st[::a.forced_every] = True      # forced plays (cell calls); 0 = the gate decides alone
             blocks.append((name, (arr, al, st)))
         models = [{"name": name, "policy": BR.LazyRefine(pols[name]), "spec": row_spec(b[0], E.gen_row_keys(pols[name].model)),
                    "cfg": CFG, "block_max": len(b[1]), "swap": name == "learner"} for name, b in blocks]
-        srv = PolicyServer(models, n_clients=P, device="cuda", max_batch=a.max_batch, wait_ms=a.wait_ms, mode=a.mode)
+        srv = PolicyServer(models, n_clients=P, device="cuda", max_batch=a.max_batch, wait_ms=a.wait_ms, mode=a.mode,
+                           precision=a.precision)
         ctx = mp.get_context("spawn")
         q, go = ctx.Queue(), ctx.Event()
         procs = [ctx.Process(target=producer, args=(srv.clients[i], blocks, a.seconds, i, q, go)) for i in range(P)]
@@ -168,6 +170,7 @@ def part_mix(a):
                    play_frac=round(sum(g[1] for g in got) / rows, 3), warm_s=round(warm_s, 1),
                    batches_per_s=round((S["batches"] - s0["batches"]) / wall),
                    server_s={k: round(S[k] - s0[k], 2) for k in ("stack_s", "forward_s", "cell_s", "idle_s", "push_s")},
+                   push_wait_s=round(S.get("push_wait_s", 0) - s0.get("push_wait_s", 0), 2),
                    pushes=S["pushes"] - s0["pushes"], push_ms=round(1000 * (S["push_s"] - s0["push_s"])
                                                                     / max(1, S["pushes"] - s0["pushes"]), 1),
                    learner_versions_seen=sorted({v for g in got for v in g[4]})[-3:],
@@ -188,6 +191,8 @@ def main():
     ap.add_argument("--max-batch", type=int, default=2048)
     ap.add_argument("--wait-ms", type=float, default=2.0)
     ap.add_argument("--push-every", type=float, default=6.0)
+    ap.add_argument("--forced-every", type=int, default=7)
+    ap.add_argument("--precision", default="fp32", choices=("fp32", "tf32", "bf16"))
     a = ap.parse_args()
     res = part_bare(a) if a.part == "bare" else part_mix(a)
     Path(a.out).write_text(json.dumps(res, indent=1))
