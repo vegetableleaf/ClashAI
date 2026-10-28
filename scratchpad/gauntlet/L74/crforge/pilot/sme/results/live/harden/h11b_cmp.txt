@@ -1,0 +1,8 @@
+unflagged (109): exact apart from torn 109/109 -> 109/109 | regressions 0 | gained 0
+unflagged (109): exact frames 250797 -> 250797
+all (138): exact frames 278872 -> 278872
+torn before, unflagged: {'torn_cmd': 65, 'torn_cross': 1, 'torn_hidden': 28, 'torn_late': 1, 'torn_mixed': 18, 'torn_snap': 20, 'torn_step': 63, 'torn_t1': 39}
+torn after,  unflagged: {'torn_cmd': 65, 'torn_cross': 1, 'torn_hidden': 28, 'torn_late': 1, 'torn_mixed': 17, 'torn_snap': 32, 'torn_step': 52, 'torn_t1': 39}
+torn before, all: {'torn_cmd': 73, 'torn_cross': 1, 'torn_hidden': 46, 'torn_late': 1, 'torn_mixed': 31, 'torn_snap': 21, 'torn_step': 70, 'torn_t1': 71}
+torn after,  all: {'torn_cmd': 73, 'torn_cross': 1, 'torn_hidden': 46, 'torn_late': 1, 'torn_mixed': 19, 'torn_snap': 34, 'torn_step': 58, 'torn_t1': 71}
+plant suite (138 matches): {'plants': 65874, 'caught': 65654, 'missed': 0, 'window_mismatch': 0} | legal {'legal_state': 10, 'legal_absent': 124, 'legal_t': 29, 'legal_t1': 15, 'legal_version': 42} | targets {'REPR': 117, 'exact': 411, 'torn_snap': 34, 'torn_cmd': 73, 'torn_step': 58, 'torn_t1': 71, 'torn_mixed': 19, 'placeholder': 51, 'torn_late': 1, 'KIND_T': 18, 'torn_hidden': 46, 'torn_cross': 1}

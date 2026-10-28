@@ -1,0 +1,24 @@
+live_play_20261026_152601 2961 torn_cmd elixir+1whole exact -> exact legal_t
+live_play_20261026_210720 751 torn_cmd elixir+1whole exact -> exact legal_t
+live_play_20261026_210720 1566 exact remove_proj torn_mixed -> torn_mixed legal_absent
+live_play_20261026_233436 6001 torn_snap remove_unit torn_snap -> torn_snap legal_state
+live_play_20261026_233436 2972 exact remove_proj torn_mixed -> torn_mixed legal_absent
+live_play_20261027_000233 6001 torn_snap remove_unit torn_step -> torn_step legal_absent
+live_play_20261027_000233 1625 exact remove_proj torn_mixed -> torn_mixed legal_absent
+live_play_20261027_001141 963 torn_step remove_unit torn_t1 -> torn_t1 legal_t1
+live_play_20261027_001141 963 torn_step dup_unit torn_step -> torn_step legal_version
+live_play_20261027_001141 2869 torn_step remove_proj torn_step -> torn_step legal_absent
+live_play_20261027_001141 5391 torn_snap remove_area torn_step -> torn_step legal_absent
+live_play_20261027_002021 4323 exact remove_proj torn_mixed -> torn_mixed legal_absent
+live_play_20261027_034147 2808 torn_mixed remove_proj torn_mixed -> torn_mixed legal_absent
+live_play_20261027_034147 2808 torn_mixed remove_area exact -> exact legal_t
+4 ('exact', 'remove_proj', 'torn_mixed', 'legal_absent')
+2 ('torn_cmd', 'elixir+1whole', 'exact', 'legal_t')
+1 ('torn_mixed', 'remove_area', 'exact', 'legal_t')
+1 ('torn_mixed', 'remove_proj', 'torn_mixed', 'legal_absent')
+1 ('torn_snap', 'remove_area', 'torn_step', 'legal_absent')
+1 ('torn_snap', 'remove_unit', 'torn_snap', 'legal_state')
+1 ('torn_snap', 'remove_unit', 'torn_step', 'legal_absent')
+1 ('torn_step', 'dup_unit', 'torn_step', 'legal_version')
+1 ('torn_step', 'remove_proj', 'torn_step', 'legal_absent')
+1 ('torn_step', 'remove_unit', 'torn_t1', 'legal_t1')

@@ -1,0 +1,22 @@
+old torn frames not torn now: 1
+   live_play_20261026_101749 flagged [226, 236, 276, 286, 297, 307, 317, 328, 338, 348, 352] first div 246 -> 226
+rules {'snap': 34, 'step': 58, 'mixed': 19, 'late': 1, 'hidden': 46, 'cross': 1}
+   ('cross', 'absent(t1)') 1
+   ('cross', 'player t') 1
+   ('cross', 'pos_t_hp_t1') 1
+   ('cross', 't') 4
+   ('mixed', 'absent(t1)') 1
+   ('mixed', 'player t') 19
+   ('mixed', 't') 84
+   ('mixed', 't1') 36
+   ('step', 'absent(t)') 49
+   ('step', 'absent(t1)') 45
+   ('step', 'dead_at_t') 21
+   ('step', 'dead_in_step#1') 2
+   ('step', 'impact') 5
+   ('step', 'player t') 31
+   ('step', 'player t1') 27
+   ('step', 'pos_t1_hp_t') 8
+   ('step', 't') 31
+   ('step', 't1') 94
+{'snap whole-state': 34, 'hidden point_checked 1/1': 31, 'hidden point_checked 0/1': 15}

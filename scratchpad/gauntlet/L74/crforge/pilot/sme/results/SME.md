@@ -1,5 +1,12 @@
 
-## Remaining failures of a10G1 (0 unflagged; 109 / 109, 278,872 exact frames; A2c-10 on n9P)
+## Remaining failures of h11b (0 unflagged; 109 / 109; exact frames 250,797 on the 109, 278,872 on all 138; SME-HARDEN on a10G1)
+h11b = a10G1's command and inputs (v29) with the hardened comparator (sme11: sound torn rules, plant suite 0 missed of
+65,874 plants). 0 regressions; the only torn frames lost are 11 torn_mixed of the flagged `101749` (SME.md SME-HARDEN).
+
+None.
+
+## Remaining failures of a10G1 (0 unflagged; 109 / 109; exact frames 250,797 on the 109, 278,872 on all 138; A2c-10 on n9P)
+Comparator found unsound by the blind verifier (torn_mixed / torn_cross subset checks); superseded by h11b.
 a10G1 = n9P's command with sme10 code (`plan_from` / `variants_at` ghost hooks) on inputs_v29 (`88ca12a2` = v28 + SME_IWGHOST10:
 22 never-cast opponent hero IW presses in 14 records, plan kind `skip`, enabled by the fitter only where their hero diverges).
 0 regressions; 124 matches byte-identical to n9P, the other 13 ghost-carrying matches with unchanged counts. Fixed by it:

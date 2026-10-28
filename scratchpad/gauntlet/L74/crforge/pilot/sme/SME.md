@@ -2114,12 +2114,14 @@ of the hero's side carrying its Cold / Slow, by `source_side_cached`):
 Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted. **No crforge change and no comparator change.**
 Redirected mid-ticket: A2c-9N's held-press rule took 014928 and 211239's first onsets. This round covers the onsets after it.
 
-| run | change | layer | inputs | exact apart from torn (unflagged) | exact frames | regressions | gained |
+| run | change | layer | inputs | exact apart from torn (unflagged) | exact frames: the 109 / all 138 | regressions | gained |
 |---|---|---|---|---:|---:|---|---|
-| n9P | (9N) | | v28 `65b5e131` | 108 / 109 | 278,863 | | |
-| **a10G1** | an opponent hero IW press that is never cast (SME_IWGHOST10): plan kind `skip`, enabled by the fitter only where its hero diverges | extractor + SME fitter | **v29** `88ca12a2` (LF) = v28 + 22 ghost presses in 14 records | **109 / 109** | **278,872** (+9) | **0** | `211239` |
+| n9P | (9N) | | v28 `65b5e131` | 108 / 109 | 250,788 / 278,863 | | |
+| **a10G1** | an opponent hero IW press that is never cast (SME_IWGHOST10): plan kind `skip`, enabled by the fitter only where its hero diverges | extractor + SME fitter | **v29** `88ca12a2` (LF) = v28 + 22 ghost presses in 14 records | **109 / 109** | **250,797 / 278,872** (+9) | **0** | `211239` |
 
-- Against bp9Y1: 106 -> 109 / 109, 276,782 -> 278,872, 0 regressions (`results/live/a2c10/a10G1.cmp.txt`).
+- SME-HARDEN correction: the "exact frames" column of this and every earlier round table is the total over all 138
+  matches, not the 109 unflagged ones (round_cmp.py summed every result line). a10G1 has 250,797 exact frames on the 109.
+- Against bp9Y1: 106 -> 109 / 109, 276,782 -> 278,872 (138-match totals), 0 regressions (`results/live/a2c10/a10G1.cmp.txt`).
 - 124 matches have byte-identical result lines to n9P. The 13 other ghost-carrying matches keep every count and first div;
   only `commands` (+1), the `repair` log and `refused_plays` command indices differ (a skip command shifts indices).
 - a10G1 = bp9Y1's command (`bp9/run9.sh`, lib_f635c, SME_LATE9 + SME_MADE9, WORKERS=48) with SME_DIR = `/workspace/pilot/sme10`
@@ -2203,3 +2205,156 @@ Redirected mid-ticket: A2c-9N's held-press rule took 014928 and 211239's first o
   - `/workspace/pilot/{sme10, inputs_v29, a2c10}`;
   - runs `sme_live/a10G1`, plus `sme_live/n9P_from33920` (n9P's results.jsonl, `e38bb85e`);
   - AimRun4 trace of 211239 (`a2c10/tr/`).
+
+---
+
+# SME-HARDEN: sound torn rules, a planted-divergence suite, and the 109 / 138 split (pod 32657)
+
+Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted. **No extraction or crforge change.**
+A blind verifier rejected a10G1's 109 / 109 on comparator soundness (scripts and plants: `.foreman/scratch/smever/`, pod
+`/workspace/pilot/vfy10/`). Its findings, all confirmed by the code:
+- torn_mixed (`analyse`) and torn_cross (`mech_torn`) checked only that each recorded object is somewhere in sim t or t+1;
+- they never checked that every sim object was read, ignored multiplicity, and compared only our elixir.
+
+Its plants that stayed torn: removed unit 24/24, tower 24/24, projectile 20/20, area 3/3, duplicated unit 24/24, swapped
+hand 3/3; step_read's 200-unit dying-body tolerance (3 of 14 one-unit moves kept torn_step).
+
+| run | change | layer | inputs | exact apart from torn (unflagged) | exact frames: the 109 / all 138 | regressions | gained |
+|---|---|---|---|---:|---:|---|---|
+| a10G1 | (A2c-10) | | v29 `88ca12a2` | 109 / 109 | 250,797 / 278,872 | | |
+| **h11b** | sound torn rules + plant suite | comparator | v29 | **109 / 109** | **250,797 / 278,872** | **0** | 0 |
+
+## 1. The rules now (sme_live `biject`, `two_line_read`, `step_read`; bp_snap `in_step`; mech_torn `cross_ok`)
+Every torn rule accepts a frame only by a **bijection** between the recorded objects and the sim entities of the states
+it names. This covers every class (towers, units, projectiles, area effects) and multiplicity.
+- Each entity is shown as exactly one of its versions. A version is the entity's exact tuple in one named state, or a
+  field-wise cross that the rule names.
+- An entity may go unshown only when it is absent from one of those states.
+- Our **whole player state** (elixir and, when read, hand) must equal one named state's.
+- A recorded hp -1 (the reader's placeholder, SME_HP_PLACEHOLDER) matches a version at its very (class, side, x, y),
+  exactly as the main comparison fills it.
+- Each torn frame's provenance (`{entity id: version label}`) is written to `result['torn_prov']`.
+
+The rules, one by one:
+- **torn_mixed:** each entity is at its t or its t+1 tuple; the player state is t's or t+1's.
+- **torn_cross:** as mixed, and a body present at both lines may also be at (t position, t+1 hp) or (t+1 position, t hp).
+- **torn_step:** a read inside step t+1.
+  - A body at both lines is at its t+1 point, with its t or t+1 hp.
+  - A body the step removes is at its t tuple, or its t point at hp 0, or at hp 0 at its point in one of crforge's
+    in-step states of step t+1 (SnapRun2, only in the bp_snap pass), or unread.
+  - A body the step makes is at its t+1 tuple, or unread.
+  - Projectiles and areas are at their t or t+1 point. A removed projectile may also be at its aim point (its impact).
+  - The player state is t's or t+1's. The two-mover / elixir-clock condition and isolation are unchanged.
+- **torn_snap:** the whole frame, player included, equals one crforge in-step state by the full multiset comparison.
+  The old rule let our elixir come from an earlier state and never compared the hand. Strict same-state holds for 34 of
+  the 36 h11 snap frames (`results/live/harden/snap_strict_h11.jsonl`). The other 2 (211757@3477, 171753@5773) now pass as
+  step reads (`dead_in_step`).
+- **Unchanged, already sound:** torn_t1, torn_cmd, torn_late and torn_hidden.
+  - torn_t1, torn_cmd and torn_late are full multiset diffs, with elixir and hand, against one state.
+  - torn_hidden is a full diff after removing exactly one named sim row per hidden body.
+
+**Evidence for the step-read versions (a), on a10G1's 70 torn_step frames (`harden/census_step.py`,
+`results/live/harden/step_census.jsonl`, `step_dying_snap.txt`):**
+- **Dying rows.** 15 frames read a dying body away from its t point (offsets up to 182 units). It is never the t point
+  plus its own last step: only some offsets equal it.
+- Every one of those 34 rows sits at that body's exact point in a crforge in-step state of step t+1
+  (`harden/census_snap.py`). So the tolerance became an exact in-step position: **STEP_MOVE retired**.
+- In h11b, 13 of these 15 frames equal a whole in-step state (torn_snap). The other 2 are step reads with
+  `dead_in_step`.
+- **Impact reads.** 5 / 5 projectile reads off every t / t+1 point are at the removed projectile's aim point. The old
+  rule matched any removed projectile of that side when any body stood at the read point.
+
+## 2. Planted-divergence suite (`plant_suite.py`; runs inside every `sme_live.py all` run, SME_PLANTS=0 skips)
+**Targets on each match:**
+- every torn frame;
+- up to 3 non-div frames for each representation rule: KIND_T, placeholder hp, REPR;
+- 3 random exact frames.
+
+**Plants (one change each):**
+- every body row (towers included): x+1, y+1, hp+1, hp-1, removed, duplicated;
+- every projectile / area: removed, x+1, duplicated;
+- a unit added 3,000 units away;
+- our elixir +-1 raw and +-1 whole;
+- our hand's first two cards swapped.
+
+Rows at hp -1 get no hp plant, because their hp is not read. Rows at hp 0 get no hp-1, because that would write the
+placeholder value.
+
+**How a plant is scored.** Each planted frame goes through the full comparator (analyse + reclassify) on t +- 6 frames.
+For every target, the windowed comparator must reproduce the target's own class (0 mismatches).
+
+A plant must come out **div**. The only exception is an independent witness that the planted frame is a real state:
+- **legal_t / legal_t1:** a plain multiset equality with sim t / t+1.
+- **legal_state:** torn_snap or torn_cmd. Each is a plain multiset equality with one crforge state.
+- **legal_version:** the planted object equals, recomputed from the raw sim rows, the version of the entity the new
+  provenance names, and that entity's label changed. Example: a building's decay hp-1 is its t+1 tuple.
+- **legal_absent:** a removal that leaves an entity absent which is absent from one line. Example: removing a body the
+  step kills.
+
+**h11b (a), `results/live/harden/h11b_cmp.txt`:**
+- 65,874 plants on 902 targets; 65,654 caught, **0 missed**.
+- Legal witnesses: legal_absent 124, legal_version 42, legal_t 29, legal_t1 15, legal_state 10.
+- Targets: exact 411, REPR 117, torn_cmd 73, torn_t1 71, torn_step 58, placeholder 51, torn_hidden 46, torn_snap 34,
+  torn_mixed 19, KIND_T 18, torn_cross 1, torn_late 1.
+- First version of the suite, without witnesses (`miss_insp.py`): it flagged 168 non-div outcomes on 49 matches.
+  - Each was one of the witnessed kinds above, or a hp plant onto or off the placeholder value -1.
+  - The hp plants are now not planted.
+- mech_torn_test.py (192935@382): the true frame passes, with the X-Bow bolt `absent(t1)` and the Knight
+  `pos_t_hp_t1`; 13 / 13 plants caught.
+- Verifier's own harness on the hardened comparator (`harden/vplant11.py` = smever/plant.py with the pipeline swapped):
+  1,037 plants on its 12 matches; 1,023 div. All 14 non-div outcomes carry a witness (8 legal_absent, 3 legal_t,
+  1 legal_t1, 1 legal_state, 1 legal_version; `harden/vcheck.py`, `results/live/harden/vcheck.txt`). Against a10G1:
+  removed tower 24/24, duplicated unit 24/24 and swapped hand 3/3 stayed torn. Now removed tower 0, swapped hand 0,
+  duplicated unit 1 (001141@963, a witnessed legal_version).
+
+## 3. Re-run h11b (a10G1's command, sme11 tree, pod 32657; `harden/h11b.sh`)
+- **109 / 109 unflagged exact apart from torn, 0 regressions.** Sorted results sha256 `1e7e893f`.
+- **Exact frames 250,797 on the 109 and 278,872 on all 138**, both unchanged from a10G1.
+- Torn frames, a10G1 -> h11b:
+
+  | class | the 109: a10G1 | the 109: h11b | all 138: a10G1 | all 138: h11b |
+  |---|---:|---:|---:|---:|
+  | torn_cmd | 65 | 65 | 73 | 73 |
+  | torn_t1 | 39 | 39 | 71 | 71 |
+  | torn_step | 63 | 52 | 70 | 58 |
+  | torn_hidden | 28 | 28 | 46 | 46 |
+  | torn_snap | 20 | 32 | 21 | 34 |
+  | torn_mixed | 18 | 17 | 31 | 19 |
+  | torn_cross | 1 | 1 | 1 | 1 |
+  | torn_late | 1 | 1 | 1 | 1 |
+
+- **The only torn frames now div:** 11 torn_mixed of the flagged `101749` (first div 246 -> 226). No unflagged match
+  lost a frame.
+- The other changes are moves between torn classes:
+  - 13 of a10G1's 70 step reads are now whole in-step states (torn_snap); the other 57 stay torn_step;
+  - 1 unflagged mixed frame (`005727`) is now a step read;
+  - every a10G1 snap frame stays torn_snap.
+- First-run attempt h11 died on a full root disk (60 G, 1.4 G free; vfy10/work 10 G, f16 24 G). h11 / h11b run on
+  /dev/shm and are copied back.
+
+## 4. Open
+- **(b) torn_hidden: the hidden body's hp is never read.** The reader drops the body from its entity list, and extraction
+  has only projectile target points for it.
+- **(b) torn_hidden: the point is unchecked on 15 of 46 frames** (6 of 28 on the 109). On those frames the projectiles
+  disagree on the target point (extract.reader_hidden). Checking them needs an extraction change, which is out of scope.
+- **(b) The 109 is defined by `/workspace/pilot/inputs/inputs_rngfree.jsonl` flags** (round_cmp's first argument). The
+  v29 records' own `flags` leave 120 matches unflagged (266,296 exact frames).
+
+## Files (SME-HARDEN)
+- **Code:**
+  - `sme_live.py`: `ents_of`, `rec_objs`, `player_from`, `biject`, `two_line_read`, `step_read` (sound), and the analyse
+    mixed pass; `reclassify` (the passes after analyse, also used by `check`); `torn_prov` and `plants` in result.json;
+  - `bp_snap.py`: `in_step` strict, plus the step-read retry with in-step states;
+  - `mech_torn.py`: `cross_ok` = `two_line_read(cross=True)`;
+  - `plant_suite.py`;
+  - `round_cmp.py`: the 109 and the 138 separately, torn before / after per set, plant totals, exit 1 on a miss;
+  - `mech_torn_test.py`: path fix.
+- **Tools (`harden/`):** `census_step.py`, `census_snap.py`, `snap_strict.py`, `rescore.py` (a fitted plan under the
+  current comparator + suite), `rs_sum.py`, `miss_insp.py`, `trans.py`, `vplant11.py`, `vcheck.py`, `env.sh`, `h11b.sh`.
+- **Results (`results/live/harden/`):** `h11b_results.jsonl`, `h11b_cmp.txt`, `h11b_transitions.txt`,
+  `step_census.jsonl`, `step_dying_snap.txt`, `snap_strict_h11.jsonl`, `unflagged109.txt`.
+- **Pod 32657:** `/workspace/pilot/{sme11, harden}`; runs `sme_live/{h11b, h11}`. sme10 is untouched, so a10G1 still
+  reproduces.
+- **Run command (for any future run):** `SME_DIR=/workspace/pilot/sme11 BASE=<base run> bash bp9/run9.sh RUN
+  /workspace/pilot/lib_f635c INPUTS SME_LATE9=1 SME_MADE9=1`. These are the a10G1 flags; there is no new flag, and the
+  plant suite is on by default.

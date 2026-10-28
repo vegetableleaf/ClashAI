@@ -1,14 +1,14 @@
 """Planted checks for mech_torn.cross_ok (A2c-M). The true frame must pass; every planted change must fail.
 python3 mech_torn_test.py PLAN.json FRAMES.jsonl ME T   (192935: me 1, T 382)"""
 import copy, json, os, sys
-sys.path.insert(0, '/workspace/pilot/sme')
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from sme import run_batch
 from sme_live import load_frames, runnable
 from mech_torn import cross_ok
 
 plan_p, fr_p, me, t = sys.argv[1], sys.argv[2], int(sys.argv[3]), int(sys.argv[4])
 f = load_frames(fr_p)[t]
-o = {s['t']: s for s in run_batch([(runnable(json.load(open(plan_p))), t + 2, t - 1)], '/workspace/mech/work/mt%d' % os.getpid())[0]}
+o = {s['t']: s for s in run_batch([(runnable(json.load(open(plan_p))), t + 2, t - 1)], '/tmp/mech_torn_test_%d' % os.getpid())[0]}
 a, b = o[t], o[t + 1]
 ok = cross_ok(f, a, b, me)
 print('true frame', ok)

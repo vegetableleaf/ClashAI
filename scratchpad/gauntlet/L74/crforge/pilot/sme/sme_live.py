@@ -422,7 +422,7 @@ def late_reclass(plan, frames, me, an, workdir):
     by the full comparison, crforge's state at t with that play run at t instead (its cost and units first on line
     t+1): a read of the game's history before it heard the play, which it then re-ran from the play's run tick (crforge's
     checkDelay: a command heard late is run in a history replayed from before its run tick). Exact, crforge's own state."""
-    cls = dict(an['cls'])
+    cls, prov = dict(an['cls']), dict(an.get('prov', {}))
     jobs = [(i, t) for i, c in enumerate(plan['cmds']) for t in c['_src'].get('late_reads', ())
             if cls.get(t) == 'div']
     if not jobs:
@@ -437,9 +437,10 @@ def late_reclass(plan, frames, me, an, workdir):
             r = fill_placeholder(r, s)
         if not diff(r, s):
             cls[t] = 'torn_late'
+            prov[t] = {'rule': 'late', 'cmd': i, 'run': t}
     ts = sorted(cls)
     first = next((t for t in ts if cls[t] == 'div'), None)
-    return dict(an, cls=cls, first=first, counts=dict(collections.Counter(cls.values())))
+    return dict(an, cls=cls, prov=prov, first=first, counts=dict(collections.Counter(cls.values())))
 
 
 RASCAL7 = int(os.environ.get('SME_RASCAL7', '0'))  # round 7.4
@@ -597,11 +598,13 @@ TORN_CMD3 = int(os.environ.get('SME_TORN_CMD3', '0'))  # round 6.2: the same rea
 
 HP_PH = int(os.environ.get('SME_HP_PLACEHOLDER', '0'))  # round 2.4
 TORN_STEP = int(os.environ.get('SME_TORN_STEP', '0'))  # round 4.1
-STEP_MOVE = 200  # game units: more than one step of the fastest walker read here (~180 per tick)
 STEP_CLOCK = int(os.environ.get('SME_STEP_CLOCK', '0'))  # round 6.1: our elixir as the step clock
 SNAP = int(os.environ.get('SME_BP_SNAP', '0'))  # A2c-BP: in-step reads by crforge's own in-step states
 FITNEXT = int(os.environ.get('SME_BP_FITNEXT', '0'))  # A2c-BP2: the fitter also varies a command just after the onset
 MIX_PH = int(os.environ.get('SME_BP_MIXPH', '0'))  # A2c-BP: torn_mixed reads the hp -1 placeholder as the main comparison does (round 2.4)
+
+
+STEP_MOVE = None  # SME-HARDEN: retired; a body killed after its move is read at its point in crforge's in-step states
 
 
 def _no(why, *msg):
@@ -610,71 +613,168 @@ def _no(why, *msg):
     return False
 
 
-def step_read(f, ot, ot1, me, why=None, min_movers=2):
-    """A read inside step t+1 (SME.md round 4.1): the board has moved but the step's hits, removals, spawns and regen
-    are not all in yet. True when every sim body that moves between t and t+1 is read at its t+1 point (at least two
-    move; analyse also requires the frame to be isolated), every recorded body sits at the t+1 point of a sim body with that body's hp at t or t+1 (or the reader's
-    placeholder -1), or at the t point of a body the step removes (hp 0 / -1 / its hp at t; hp 0 / -1 also within
-    STEP_MOVE of it), every sim t+1 body not read is made in step t+1, every recorded projectile / area effect is at a
-    t or t+1 point (a projectile the step removes also at a body's point, its impact) and every one not read is new in
-    step t+1, and our elixir and hand are those of t or t+1."""
-    rows = lambda o: {e[0]: e for e in repr_rows(o)}  # noqa: E731
-    a, b = rows(ot), rows(ot1)
-    bod = lambda d: {i: e for i, e in d.items() if e[1] in 'TC'}  # noqa: E731
-    ba, bb = bod(a), bod(b)
-    moving = [i for i in ba if i in bb and ba[i][4:6] != bb[i][4:6]]
+# ---------------------------------------------------------------- SME-HARDEN: sound torn rules (bijection)
+# Every torn / in-step rule below accepts a frame only by a bijection between the recorded objects (every class: towers,
+# units, projectiles, area effects; multiplicity included) and the sim entities of the states it names. Each entity is
+# shown as exactly one of its versions (a version = the entity's exact tuple in one named state, or a field-wise cross the
+# rule names), or not at all only when it is absent from one of those states. Our whole player state (elixir and, when
+# read, hand) equals one named state's. The rule's provenance ({entity id: version label}) is kept for every torn frame.
+CLS_K = {'T': 'T', 'C': 'U', 'P': 'P', 'A': 'A'}
+
+
+def ents_of(o):
+    """{id: (k, tuple)} of a state's rows as the reader represents them (k as canon_sim; None = a class canon_sim does
+    not know, which no rule accepts)."""
+    return {e[0]: (CLS_K.get(e[1]), tuple(e[3:7]) if e[1] in 'TC' else tuple(e[3:6])) for e in repr_rows(o)}
+
+
+def rec_objs(f, me):
+    r = canon_live(f, me)
+    return [(k, x) for k in 'TUPA' for x in r[k]]
+
+
+def player_from(f, states, me):
+    """Label of the first (label, state) whose player state equals ours as a whole (elixir; hand when read), or None."""
+    h = tuple(f['hand']) if f['hand'] else None
+    return next((lab for lab, s in states if f['el'] == s['S'][me][0] and (h is None or h == tuple(s['S'][me][1]))),
+                None)
+
+
+def biject(rec, ents):
+    """rec: [(k, tuple)]; ents: [(id, {label: (k, tuple)}, absent_label or None)]. A recorded body at hp -1 (the reader's
+    placeholder, SME_HP_PLACEHOLDER) equals a version at its very (k, side, x, y). Returns {id: label} (labels joined by
+    '/' where several versions fit; an entity present at every line with all versions equal is left out) or None."""
+    nr, ne = len(rec), len(ents)
+    if nr > ne:
+        return None
+    full, pos = collections.defaultdict(set), collections.defaultdict(set)
+    for i, x in enumerate(rec):
+        full[x].add(i)
+        if HP_PH and x[0] in ('T', 'U') and x[1][3] == -1:
+            pos[(x[0], x[1][:3])].add(i)
+    adj = []
+    for _, vs, ab in ents:
+        s = set()
+        for v in vs.values():
+            if v[0] is None:
+                return None
+            s |= full.get(v, set())
+            if v[0] in ('T', 'U'):
+                s |= pos.get((v[0], v[1][:3]), set())
+        if not s and not ab:
+            return None
+        adj.append(s)
+    if nr and len(set().union(*adj)) < nr:
+        return None
+    owner, sink, cap = [-1] * nr, [], ne - nr
+
+    def aug(j, seen):
+        for i in adj[j]:
+            if i not in seen:
+                seen.add(i)
+                if owner[i] < 0 or aug(owner[i], seen):
+                    owner[i] = j
+                    return True
+        if ents[j][2] and 'sink' not in seen:
+            seen.add('sink')
+            if len(sink) < cap:
+                sink.append(j)
+                return True
+            for n, o in enumerate(sink):
+                if aug(o, seen):
+                    sink[n] = j
+                    return True
+        return False
+    if not all(aug(j, set()) for j in range(ne)):
+        return None
+    fits = lambda x, v: x == v or (HP_PH and x[0] == v[0] and x[0] in ('T', 'U') and x[1][3] == -1 and x[1][:3] == v[1][:3])  # noqa: E731
+    by_ent = {j: i for i, j in enumerate(owner)}
+    out = {}
+    for j, (eid, vs, ab) in enumerate(ents):
+        if j not in by_ent:
+            out[eid] = 'absent(%s)' % ab
+        elif ab is not None or len(set(vs.values())) > 1:
+            out[eid] = '/'.join(l for l, v in vs.items() if fits(rec[by_ent[j]], v))
+    return out
+
+
+def two_line_read(f, ot, ot1, me, cross=False):
+    """torn_mixed (cross=False): each entity of sim t / t+1 shown at its t or its t+1 version, or absent where it is
+    absent from t or t+1; player state t's or t+1's. torn_cross (cross=True, A2c-M): a body present at both lines may also
+    be shown at (position of t, hp of t+1) or (position of t+1, hp of t). Returns the provenance or None."""
+    pl = player_from(f, [('t', ot), ('t1', ot1)], me)
+    if pl is None:
+        return None
+    a, b = ents_of(ot), ents_of(ot1)
+    ents = []
+    for i in a.keys() | b.keys():
+        vs = {}
+        if i in a:
+            vs['t'] = a[i]
+        if i in b:
+            vs['t1'] = b[i]
+        if cross and i in a and i in b and a[i][0] in ('T', 'U') and a[i][0] == b[i][0]:
+            (k, va), vb = a[i], b[i][1]
+            vs['pos_t_hp_t1'] = (k, va[:3] + vb[3:])
+            vs['pos_t1_hp_t'] = (k, vb[:3] + va[3:])
+        ents.append((i, vs, None if (i in a and i in b) else ('t1' if i in a else 't')))
+    m = biject(rec_objs(f, me), ents)
+    return None if m is None else {'rule': 'cross' if cross else 'mixed', 'player': pl, 'objects': m}
+
+
+def step_read(f, ot, ot1, me, why=None, min_movers=2, snaps=()):
+    """A read inside step t+1 (SME.md round 4.1; sound form SME-HARDEN): the board has moved but the step's hits,
+    removals, spawns and regen are not all in yet. At least two sim bodies move between t and t+1 (or our elixir is sim
+    t+1's and not sim t's, round 6.1); analyse also requires the frame to be isolated. Bijection (biject) with versions:
+    - a body at both lines: its t+1 point, with its t+1 hp or its t hp;
+    - a body the step removes: its t tuple, or its t point at hp 0, or hp 0 at its point in one of crforge's in-step
+      states of step t+1 (snaps, SnapRun2; given only by bp_snap.reclass), or not read;
+    - a body the step makes: its t+1 tuple, or not read;
+    - a projectile / area effect at both lines: its t or t+1 point; one the step removes: its t point, or (projectile)
+      its aim point (its impact), or not read; one the step makes: its t+1 point, or not read;
+    - our whole player state t's or t+1's."""
+    a, b = ents_of(ot), ents_of(ot1)
+    moving = [i for i in a if i in b and a[i][0] in ('T', 'U') and a[i][1][1:3] != b[i][1][1:3]]
     # round 6.1: our elixir changes every tick (regen), so a frame whose elixir is sim t+1's and not sim t's was read
     # after step t+1's regen. That is direct evidence of a read inside step t+1 and stands in for the mover count.
     clock = STEP_CLOCK and f['el'] == ot1['S'][me][0] != ot['S'][me][0]
     if len(moving) < min_movers and not clock:  # one mover cannot tell a step read from that body's own 1-tick lead (run15 audit, 4.1b)
         return _no(why, 'fewer than 2 bodies move')
-    at1, at0 = collections.defaultdict(list), collections.defaultdict(list)
-    for i, e in bb.items():
-        at1[(e[3], e[4], e[5])].append(i)
-    for i, e in ba.items():
-        if i not in bb:
-            at0[(e[3], e[4], e[5])].append(i)
-    used = set()
-    for side, x, y, card, hp, kind in f['E']:
-        k = (side, x, y)
-        i = next((i for i in at1.get(k, []) if i not in used and
-                  (hp == -1 or hp == bb[i][6] or (i in ba and hp == ba[i][6]))), None)
-        if i is None:
-            i = next((i for i in at0.get(k, []) if i not in used and hp in (0, -1, ba[i][6])), None)
-        if i is None and hp in (0, -1):  # killed in step t+1 after its move: read at hp 0 within a step of its t point
-            i = next((i for i in ba if i not in bb and i not in used and ba[i][3] == side and
-                      abs(ba[i][4] - x) + abs(ba[i][5] - y) <= STEP_MOVE), None)
-        if i is None:
-            return _no(why, 'recorded body unmatched', (side, x, y, hp))
-        used.add(i)
-    left = [bb[i][2:7] for i in bb if i not in used and i in ba]
-    if left:
-        return _no(why, 'sim body not read', left)
-    for cls, key in (('P', 'P'), ('A', 'A')):
-        pa = {i: e for i, e in a.items() if e[1] == cls}
-        pb = {i: e for i, e in b.items() if e[1] == cls}
-        pts = collections.defaultdict(list)
-        for i, e in list(pa.items()) + list(pb.items()):
-            pts[(e[3], e[4], e[5])].append(i)
-        seen = set()
-        gone = [i for i in pa if i not in pb]
-        for r in f[key]:
-            i = next((i for i in pts.get((r[0], r[1], r[2]), []) if i not in seen), None)
-            if i is None and cls == 'P':  # a projectile read at its impact point (a body's point) in the step it hits
-                hit = any((e[4], e[5]) == (r[1], r[2]) for e in list(ba.values()) + list(bb.values()))
-                i = next((i for i in gone if i not in seen and pa[i][3] == r[0]), None) if hit else None
-            if i is None:
-                return _no(why, 'recorded %s unmatched' % cls, r)
-            seen.add(i)
-        left = [pb[i][2:6] for i in pb if i not in seen and i in pa]
-        if left:
-            return _no(why, 'sim %s not read' % cls, left)
-    els = (ot['S'][me][0], ot1['S'][me][0])
-    if f['el'] not in els:
-        return _no(why, 'elixir', (f['el'], els))
-    if f['hand'] and tuple(f['hand']) not in (tuple(ot['S'][me][1]), tuple(ot1['S'][me][1])):
-        return _no(why, 'hand')
-    return True
+    pl = player_from(f, [('t', ot), ('t1', ot1)], me)
+    if pl is None:
+        return _no(why, 'player state', (f['el'], f['hand']), (ot['S'][me][:2], ot1['S'][me][:2]))
+    dead = collections.defaultdict(set)
+    for s in snaps:
+        for e in s['E']:
+            if e[0] in a and e[0] not in b and e[1] in 'TC':
+                dead[e[0]].add((e[4], e[5]))
+    aim = {e[0]: (e[9], e[10]) for e in repr_rows(ot) if e[1] == 'P' and len(e) > 10}
+    ents = []
+    for i in a.keys() | b.keys():
+        k = (a.get(i) or b.get(i))[0]
+        if k in ('T', 'U'):
+            if i in a and i in b:
+                vs = {'t1': b[i], 'pos_t1_hp_t': (k, b[i][1][:3] + a[i][1][3:])}
+            elif i in a:
+                va = a[i][1]
+                vs = {'t': a[i], 'dead_at_t': (k, va[:3] + (0,))}
+                for n, p in enumerate(sorted(dead.get(i, ()))):
+                    vs['dead_in_step%d' % n] = (k, (va[0],) + p + (0,))
+            else:
+                vs = {'t1': b[i]}
+        else:
+            vs = {}
+            if i in a:
+                vs['t'] = a[i]
+            if i in b:
+                vs['t1'] = b[i]
+            if k == 'P' and i in a and i not in b and i in aim:
+                vs['impact'] = (k, (a[i][1][0],) + aim[i])
+        ents.append((i, vs, None if (i in a and i in b) else ('t1' if i in a else 't')))
+    m = biject(rec_objs(f, me), ents)
+    if m is None:
+        return _no(why, 'no bijection between the recorded objects and the step-read versions')
+    return {'rule': 'step', 'player': pl, 'objects': m}
 
 
 def fill_placeholder(r, s):
@@ -725,7 +825,7 @@ def hidden_ok(f, o, me):
 def analyse(obs, frames, me, lo=0, hi=10 ** 9):
     by = {o['t']: o for o in obs}
     ts = [t for t in sorted(frames) if lo <= t <= hi and t in by]
-    cls, ds = {}, {}
+    cls, ds, prov = {}, {}, {}
     for t in ts:
         r = canon_live(frames[t], me)
         if HP_PH:
@@ -738,32 +838,30 @@ def analyse(obs, frames, me, lo=0, hi=10 ** 9):
             cls[t] = 'torn_t1'
         elif TORN_CMD and cmd_pass_read(d, by, t, me):
             cls[t] = 'torn_cmd'
-        elif TORN_STEP and t + 1 in by and step_read(frames[t], by[t], by[t + 1], me):
-            cls[t] = 'torn_step'
+        elif TORN_STEP and t + 1 in by and (p := step_read(frames[t], by[t], by[t + 1], me)):
+            cls[t], prov[t] = 'torn_step', p
         elif frames[t].get('H') and hidden_ok(frames[t], by[t], me):
             cls[t] = 'torn_hidden'
+            prov[t] = {'rule': 'hidden', 'bodies': len(frames[t]['H']),
+                       'point_checked': sum(1 for h in frames[t]['H'] if h[2] is not None)}
         else:
             cls[t] = 'div'
-    for i, t in enumerate(ts):  # isolated frames whose every object is held by sim t or t+1
+    for i, t in enumerate(ts):  # isolated frames that are a sound t / t+1 mix (two_line_read, SME-HARDEN)
         if cls[t] != 'div' or t + 1 not in by:
             continue
         nb = [cls.get(ts[j]) for j in (i - 1, i + 1) if 0 <= j < len(ts)]
         if any(c == 'div' for c in nb):
             continue
-        r, a, b = canon_live(frames[t], me), sim_canon(by[t], me), sim_canon(by[t + 1], me)
-        # A2c-BP (SME_BP_MIXPH): a recorded body at hp -1 is the reader's placeholder (round 2.4), held by a sim body at
-        # its very (side, x, y) at t or t+1, whatever that body's hp; the main comparison already fills it the same way
-        pos = {k: {y[:3] for y in a[k] + b[k]} for k in 'TU'} if MIX_PH else {}
-        if all(x in a[k] or x in b[k] or (k in pos and x[3] == -1 and x[:3] in pos[k]) for k in 'TUPA' for x in r[k]) and \
-                all(r[k] in (a.get(k), b.get(k)) or r[k][0] in (a.get(k, (None,))[0], b.get(k, (None,))[0])
-                    for k in r if k.startswith('S')):
-            cls[t] = 'torn_mixed'
+        p = two_line_read(frames[t], by[t], by[t + 1], me)
+        if p:
+            cls[t], prov[t] = 'torn_mixed', p
     for i, t in enumerate(ts):  # 4.1b: a step read is isolated; a run of them is a persistent lead (run15 audit)
         if cls[t] == 'torn_step' and any(cls.get(ts[j]) in ('div', 'torn_step') for j in (i - 1, i + 1) if 0 <= j < len(ts)):
             cls[t] = 'div'
+            prov.pop(t, None)
     first = next((t for t in ts if cls[t] == 'div'), None)
     cnt = collections.Counter(cls.values())
-    return {'frames': len(ts), 'counts': dict(cnt), 'first': first, 'first_diff': ds.get(first), 'cls': cls,
+    return {'frames': len(ts), 'counts': dict(cnt), 'first': first, 'first_diff': ds.get(first), 'cls': cls, 'prov': prov,
             'missing_in_sim': sum(1 for t in frames if lo <= t <= hi and t not in by)}
 
 
@@ -940,6 +1038,23 @@ def describe_first(o_by, frames, me, t):
     return out
 
 
+PLANTS = int(os.environ.get('SME_PLANTS', '1'))  # SME-HARDEN: planted-divergence suite on every match (0 = skip)
+
+
+def reclassify(plan, frames, me, an, o, workdir):
+    """The passes after analyse (the full comparator = analyse + reclassify): in-step states (bp_snap), crossed bodies
+    (mech_torn), late-heard own plays (late_reclass)."""
+    if SNAP:  # A2c-BP: isolated div frames that are crforge's own in-step states (bp_snap.py)
+        import bp_snap
+        an = bp_snap.reclass(runnable(plan), frames, me, an, o, workdir)
+    if int(os.environ.get('SME_MECH_CROSS', '0')):  # A2c-M: a body crossed between t and t+1 (mech_torn.py)
+        import mech_torn
+        an = mech_torn.reclass(an, o, frames, me)
+    if LATE9:  # round 9: reads of a history without a late-heard own play (late_reclass)
+        an = late_reclass(plan, frames, me, an, workdir)
+    return an
+
+
 def do_match(args):
     rec, frames_path, out = args
     m = rec['match']
@@ -958,14 +1073,7 @@ def do_match(args):
             res = {'match': m, **info}
         else:
             o, an = final
-            if SNAP:  # A2c-BP: isolated div frames that are crforge's own in-step states (bp_snap.py)
-                import bp_snap
-                an = bp_snap.reclass(runnable(plan), frames, me, an, o, os.path.join(mo, 'work'))
-            if int(os.environ.get('SME_MECH_CROSS', '0')):  # A2c-M: a body crossed between t and t+1 (mech_torn.py)
-                import mech_torn
-                an = mech_torn.reclass(an, o, frames, me)
-            if LATE9:  # round 9: reads of a history without a late-heard own play (late_reclass)
-                an = late_reclass(plan, frames, me, an, os.path.join(mo, 'work'))
+            an = reclassify(plan, frames, me, an, o, os.path.join(mo, 'work'))
             by = {x['t']: x for x in o}
             plays = [p for x in o for p in x['plays']]
             moved = [(c.get('card', 'ability'), c['run'] - c['_src']['tick']) for c in plan['cmds'] if c['run'] != c['_src']['tick']]
@@ -979,7 +1087,11 @@ def do_match(args):
                                                                (c['x'], c['y']) != tuple(_orig_xy(rec, c))),
                    'repair': info['log'],
                    'torn_ticks': sorted(t for t, c in an['cls'].items() if c.startswith('torn')),
-                   'torn_t1_ticks': sorted(t for t, c in an['cls'].items() if c == 'torn_t1')}
+                   'torn_t1_ticks': sorted(t for t, c in an['cls'].items() if c == 'torn_t1'),
+                   'torn_prov': {t: p for t, p in sorted(an.get('prov', {}).items()) if an['cls'].get(t, '').startswith('torn')}}
+            if PLANTS:  # SME-HARDEN: the planted-divergence suite runs on every match of every run (plant_suite.py)
+                import plant_suite
+                res['plants'] = plant_suite.run(plan, frames, me, an, o, os.path.join(mo, 'work'))
             eps = episodes(an)
             res['episodes'] = [{'start': a, 'end': b, 'healed': h, 'frames': sum(1 for t in an['cls'] if a <= t <= b),
                                 'detail': describe_first(by, frames, me, a) if k < 12 else None}
@@ -1022,7 +1134,7 @@ def main():
         frames = load_frames(a.frames)
         plan = json.load(open(a.plan))
         o = run_batch([(runnable(plan), max(frames) + 3, 0)], os.path.join(a.out, 'work'))[0]
-        an = analyse(o, frames, a.side)
+        an = reclassify(plan, frames, a.side, analyse(o, frames, a.side), o, os.path.join(a.out, 'work'))
         by = {x['t']: x for x in o}
         print(json.dumps({k: an[k] for k in ('frames', 'counts', 'first', 'missing_in_sim')}))
         print('first', json.dumps(describe_first(by, frames, a.side, an['first']))[:2500])

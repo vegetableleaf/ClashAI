@@ -1,0 +1,70 @@
+{"match": "live_play_20261026_180336", "t": 2252, "plain_rows": 12, "dying": [], "impact": [], "el_t1": true}
+{"match": "live_play_20261026_180336", "t": 2372, "plain_rows": 12, "dying": [], "impact": [], "el_t1": false}
+{"match": "live_play_20261026_162331", "t": 1084, "plain_rows": 11, "dying": [], "impact": [], "el_t1": false}
+{"match": "live_play_20261026_101749", "t": 414, "plain_rows": 13, "dying": [], "impact": [], "el_t1": true}
+{"match": "live_play_20261026_142027", "t": 1990, "plain_rows": 9, "dying": [{"row": [1, 14440, 20967, 0], "name": "Skeleton", "body_t": [14418, 21055, 130], "off": [22, -88], "last_step": [53, -87]}, {"row": [1, 13461, 20936, 0], "name": "Skeleton", "body_t": [13450, 21023, 130], "off": [11, -87], "last_step": [26, -84]}], "impact": [], "el_t1": true}
+{"match": "live_play_20261026_170600", "t": 2157, "plain_rows": 14, "dying": [], "impact": [], "el_t1": true}
+{"match": "live_play_20261026_145247", "t": 357, "plain_rows": 10, "dying": [], "impact": [], "el_t1": true}
+{"match": "live_play_20261026_211757", "t": 3477, "plain_rows": 27, "dying": [{"row": [0, 10705, 21995, 0], "name": "SkeletonArmy_EV1_Soldier", "body_t": [10705, 21989, 130], "off": [0, 6], "last_step": [2, 90]}], "impact": [], "el_t1": false}
+{"match": "live_play_20261026_080929", "t": 3508, "plain_rows": 10, "dying": [], "impact": [], "el_t1": false}
+{"match": "live_play_20261026_100018", "t": 368, "plain_rows": 19, "dying": [], "impact": [], "el_t1": false}
+{"match": "live_play_20261026_180015", "t": 2114, "plain_rows": 14, "dying": [], "impact": [], "el_t1": false}
+{"match": "live_play_20261026_100354", "t": 1056, "plain_rows": 12, "dying": [], "impact": [], "el_t1": false}
+{"match": "live_play_20261026_222240", "t": 3474, "plain_rows": 11, "dying": [], "impact": [], "el_t1": true}
+{"match": "live_play_20261026_202455", "t": 976, "plain_rows": 8, "dying": [], "impact": [], "el_t1": false}
+{"match": "live_play_20261026_220728", "t": 3389, "plain_rows": 12, "dying": [], "impact": [], "el_t1": true}
+{"match": "live_play_20261026_220728", "t": 3561, "plain_rows": 16, "dying": [], "impact": [], "el_t1": false}
+{"match": "live_play_20261026_203752", "t": 4628, "plain_rows": 12, "dying": [], "impact": [], "el_t1": true}
+{"match": "live_play_20261026_141505", "t": 4814, "plain_rows": 12, "dying": [{"row": [1, 8598, 11597, 0], "name": "Skeleton", "body_t": [8602, 11588, 32], "off": [-4, 9], "last_step": [-5, -1]}], "impact": [], "el_t1": false}
+{"match": "live_play_20261026_210249", "t": 3181, "plain_rows": 16, "dying": [], "impact": [{"read": [0, 2499, 17499], "gone": [["MovingCannonProjectile", 3159, 17172, 2499, 17499]]}], "el_t1": false}
+{"match": "live_play_20261026_221406", "t": 396, "plain_rows": 12, "dying": [], "impact": [], "el_t1": false}
+{"match": "live_play_20261026_220317", "t": 2771, "plain_rows": 18, "dying": [], "impact": [], "el_t1": false}
+{"match": "live_play_20261026_175027", "t": 2582, "plain_rows": 18, "dying": [], "impact": [], "el_t1": true}
+{"match": "live_play_20261026_175027", "t": 3613, "plain_rows": 15, "dying": [], "impact": [], "el_t1": false}
+{"match": "live_play_20261026_171232", "t": 2925, "plain_rows": 16, "dying": [], "impact": [], "el_t1": false}
+{"match": "live_play_20261026_171232", "t": 5592, "plain_rows": 15, "dying": [], "impact": [], "el_t1": true}
+{"match": "live_play_20261026_101112", "t": 1308, "plain_rows": 10, "dying": [], "impact": [], "el_t1": true}
+{"match": "live_play_20261026_142345", "t": 3471, "plain_rows": 16, "dying": [{"row": [0, 3263, 14903, 0], "name": "Skeleton", "body_t": [3263, 14858, 130], "off": [0, 45], "last_step": [0, 45]}], "impact": [], "el_t1": true}
+{"match": "live_play_20261026_154319", "t": 3112, "plain_rows": 10, "dying": [], "impact": [{"read": [0, 3500, 25500], "gone": [["xbow_projectile", 3435, 24662, 3500, 25500]]}], "el_t1": false}
+{"match": "live_play_20261026_154319", "t": 4411, "plain_rows": 13, "dying": [], "impact": [], "el_t1": false}
+{"match": "live_play_20261026_152601", "t": 2206, "plain_rows": 15, "dying": [], "impact": [], "el_t1": false}
+{"match": "live_play_20261026_095457", "t": 2804, "plain_rows": 17, "dying": [], "impact": [], "el_t1": false}
+{"match": "live_play_20261027_000233", "t": 6001, "plain_rows": 6, "dying": [{"row": [0, 7298, 13937, 0], "name": "Skeleton", "body_t": [7343, 13859, 130], "off": [-45, 78], "last_step": [0, 0]}], "impact": [], "el_t1": true}
+{"match": "live_play_20261026_212111", "t": 4082, "plain_rows": 13, "dying": [], "impact": [], "el_t1": true}
+{"match": "live_play_20261026_212111", "t": 5056, "plain_rows": 14, "dying": [], "impact": [], "el_t1": false}
+{"match": "live_play_20261026_233436", "t": 6001, "plain_rows": 12, "dying": [{"row": [0, 14110, 16827, 0], "name": "IceGolemite", "body_t": [14107, 16792, 242], "off": [3, 35], "last_step": [5, 35]}, {"row": [0, 5959, 12040, 0], "name": "IceGolemite", "body_t": [5995, 12004, 1963], "off": [-36, 36], "last_step": [-36, 36]}], "impact": [], "el_t1": true}
+{"match": "live_play_20261026_145939", "t": 3187, "plain_rows": 11, "dying": [], "impact": [], "el_t1": true}
+{"match": "live_play_20261026_145939", "t": 3491, "plain_rows": 11, "dying": [], "impact": [], "el_t1": true}
+{"match": "live_play_20261026_212917", "t": 3961, "plain_rows": 11, "dying": [], "impact": [], "el_t1": false}
+{"match": "live_play_20261026_172314", "t": 1789, "plain_rows": 12, "dying": [], "impact": [{"read": [0, 11868, 14924], "gone": [["TowerPrincessProjectile", 11908, 14796, 11868, 14924]]}], "el_t1": false}
+{"match": "live_play_20261026_172314", "t": 3381, "plain_rows": 11, "dying": [], "impact": [], "el_t1": false}
+{"match": "live_play_20261026_192935", "t": 5474, "plain_rows": 14, "dying": [], "impact": [], "el_t1": true}
+{"match": "live_play_20261026_171753", "t": 2504, "plain_rows": 9, "dying": [], "impact": [], "el_t1": false}
+{"match": "live_play_20261026_171753", "t": 5765, "plain_rows": 19, "dying": [], "impact": [], "el_t1": false}
+{"match": "live_play_20261026_171753", "t": 5773, "plain_rows": 24, "dying": [{"row": [1, 4416, 13714, 0], "name": "Skeleton", "body_t": [4390, 13640, 119], "off": [26, 74], "last_step": [104, 28]}], "impact": [], "el_t1": false}
+{"match": "live_play_20261026_171753", "t": 6001, "plain_rows": 7, "dying": [], "impact": [], "el_t1": true}
+{"match": "live_play_20261027_001141", "t": 963, "plain_rows": 10, "dying": [], "impact": [], "el_t1": true}
+{"match": "live_play_20261027_001141", "t": 2869, "plain_rows": 14, "dying": [], "impact": [], "el_t1": false}
+{"match": "live_play_20261027_001141", "t": 5301, "plain_rows": 19, "dying": [], "impact": [], "el_t1": false}
+{"match": "live_play_20261026_185736", "t": 2626, "plain_rows": 15, "dying": [], "impact": [], "el_t1": true}
+{"match": "live_play_20261026_144057", "t": 2792, "plain_rows": 5, "dying": [{"row": [0, 2621, 16628, 0], "name": "DarkPrinceHero", "body_t": [2653, 16745, 1138], "off": [-32, -117], "last_step": [-52, 55]}], "impact": [], "el_t1": true}
+{"match": "live_play_20261026_215757", "t": 3020, "plain_rows": 15, "dying": [], "impact": [], "el_t1": false}
+{"match": "live_play_20261027_002429", "t": 2189, "plain_rows": 11, "dying": [], "impact": [{"read": [0, 13763, 12852], "gone": [["IceWizardHeroProjectile", 13685, 12384, 13763, 12852]]}], "el_t1": true}
+{"match": "live_play_20261027_004031", "t": 5826, "plain_rows": 11, "dying": [{"row": [1, 5078, 20414, -1], "name": "BattleRam", "body_t": [5111, 20294, 133], "off": [-33, 120], "last_step": [-39, 144]}], "impact": [], "el_t1": true}
+{"match": "live_play_20261027_021852", "t": 1523, "plain_rows": 13, "dying": [{"row": [1, 4804, 17139, 0], "name": "Skeleton", "body_t": [4855, 17093, 130], "off": [-51, 46], "last_step": [-58, 45]}], "impact": [], "el_t1": true}
+{"match": "live_play_20261027_022149", "t": 3103, "plain_rows": 8, "dying": [{"row": [1, 1293, 17726, 0], "name": "Skeleton", "body_t": [1213, 17766, 130], "off": [80, -40], "last_step": [76, -48]}, {"row": [1, 1940, 18489, 0], "name": "Skeleton", "body_t": [1924, 18470, 130], "off": [16, 19], "last_step": [17, 17]}], "impact": [], "el_t1": true}
+{"match": "live_play_20261027_022821", "t": 3205, "plain_rows": 16, "dying": [], "impact": [], "el_t1": true}
+{"match": "live_play_20261027_025651", "t": 3521, "plain_rows": 16, "dying": [], "impact": [], "el_t1": true}
+{"match": "live_play_20261027_030951", "t": 1120, "plain_rows": 12, "dying": [{"row": [1, 15182, 15921, 0], "name": "Skeleton", "body_t": [15157, 16031, 130], "off": [25, -110], "last_step": [-31, -82]}, {"row": [1, 15947, 16581, 0], "name": "Skeleton", "body_t": [15956, 16589, 130], "off": [-9, -8], "last_step": [-13, 61]}, {"row": [1, 14197, 16124, 0], "name": "Skeleton", "body_t": [14140, 16174, 130], "off": [57, -50], "last_step": [71, -10]}, {"row": [1, 14322, 14410, 0], "name": "Skeleton", "body_t": [14358, 14556, 130], "off": [-36, -146], "last_step": [-34, -144]}, {"row": [1, 14535, 15244, 0], "name": "Skeleton", "body_t": [14565, 15381, 130], "off": [-30, -137], "last_step": [-26, -148]}], "impact": [], "el_t1": true}
+{"match": "live_play_20261027_023839", "t": 2550, "plain_rows": 15, "dying": [], "impact": [], "el_t1": true}
+{"match": "live_play_20261027_020134", "t": 1518, "plain_rows": 8, "dying": [], "impact": [], "el_t1": true}
+{"match": "live_play_20261027_020134", "t": 2485, "plain_rows": 14, "dying": [], "impact": [], "el_t1": true}
+{"match": "live_play_20261027_041602", "t": 910, "plain_rows": 9, "dying": [], "impact": [], "el_t1": false}
+{"match": "live_play_20261027_041602", "t": 3282, "plain_rows": 11, "dying": [], "impact": [], "el_t1": false}
+{"match": "live_play_20261027_040821", "t": 1187, "plain_rows": 23, "dying": [], "impact": [], "el_t1": false}
+{"match": "live_play_20261027_004901", "t": 3720, "plain_rows": 17, "dying": [], "impact": [{"read": [0, 16500, 17499], "gone": [["xbow_projectile", 16484, 17473, 16500, 17499]]}], "el_t1": true}
+{"match": "live_play_20261027_014928", "t": 3125, "plain_rows": 9, "dying": [], "impact": [], "el_t1": true}
+{"match": "live_play_20261027_005727", "t": 5927, "plain_rows": 14, "dying": [{"row": [0, 11568, 12007, 0], "name": "TombstoneHeroSkeleton", "body_t": [11563, 12063, 130], "off": [5, -56], "last_step": null}, {"row": [0, 11568, 12007, 0], "name": "TombstoneHeroSkeleton", "body_t": [11563, 12063, 130], "off": [5, -56], "last_step": null}, {"row": [0, 11568, 12007, 0], "name": "TombstoneHeroSkeleton", "body_t": [11563, 12063, 130], "off": [5, -56], "last_step": null}, {"row": [0, 11568, 12007, 0], "name": "TombstoneHeroSkeleton", "body_t": [11563, 12063, 130], "off": [5, -56], "last_step": null}, {"row": [0, 11559, 12207, 0], "name": "TombstoneHeroSkeleton", "body_t": [11563, 12063, 130], "off": [-4, 144], "last_step": null}, {"row": [0, 11559, 12207, 0], "name": "TombstoneHeroSkeleton", "body_t": [11563, 12063, 130], "off": [-4, 144], "last_step": null}, {"row": [0, 11559, 12207, 0], "name": "TombstoneHeroSkeleton", "body_t": [11563, 12063, 130], "off": [-4, 144], "last_step": null}, {"row": [0, 11559, 12207, 0], "name": "TombstoneHeroSkeleton", "body_t": [11563, 12063, 130], "off": [-4, 144], "last_step": null}, {"row": [0, 11562, 12207, 0], "name": "TombstoneHeroSkeleton", "body_t": [11563, 12063, 130], "off": [-1, 144], "last_step": null}, {"row": [0, 11562, 12207, 0], "name": "TombstoneHeroSkeleton", "body_t": [11563, 12063, 130], "off": [-1, 144], "last_step": null}, {"row": [0, 11562, 12207, 0], "name": "TombstoneHeroSkeleton", "body_t": [11563, 12063, 130], "off": [-1, 144], "last_step": null}, {"row": [0, 11562, 12207, 0], "name": "TombstoneHeroSkeleton", "body_t": [11563, 12063, 130], "off": [-1, 144], "last_step": null}], "impact": [], "el_t1": true}
+{"match": "live_play_20261027_005727", "t": 6001, "plain_rows": 13, "dying": [], "impact": [], "el_t1": true}
+{"match": "live_play_20261027_040302", "t": 5489, "plain_rows": 21, "dying": [{"row": [1, 3316, 14709, 0], "name": "Skeleton", "body_t": [3320, 14786, 130], "off": [-4, -77], "last_step": [-2, -78]}], "impact": [], "el_t1": true}
+{"match": "live_play_20261027_040302", "t": 5493, "plain_rows": 19, "dying": [{"row": [0, 2435, 10694, 0], "name": "Skeleton", "body_t": [2410, 10608, 130], "off": [25, 86], "last_step": [25, 86]}, {"row": [0, 3184, 11451, 0], "name": "Skeleton", "body_t": [3171, 11354, 130], "off": [13, 97], "last_step": [13, 96]}], "impact": [], "el_t1": true}
