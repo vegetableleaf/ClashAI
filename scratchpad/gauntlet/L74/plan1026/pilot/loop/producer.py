@@ -12,6 +12,12 @@ row, the learner's end-of-match event table in result["memory"].
 Hero abilities (ability_policy v2, forms deck) are wired: LOOP-IW's CfAbil per match in CfTrain (commands / options at
 prepare, the pending queue + recheck + press in _advance_to), the rule for opponents, rl_royale's B6 head for the learner
 (production's ability_decide; label mode = the B6 warm start), own_ability_events -> CfPubObj / CfMem.Log.
+P2 timing-head opponents (OPP-LEARN-A; gate_decode 'timing_head') are wired for FROZEN opponent seats: CfTrain's timing
+schedule (10-tick slots, th_tick re-decide, plays issued at the drawn tick, per-seat extrapolate 0), production's
+timing_decide_batch on a per-seat env view (ThEnv: CfTrain's game-over flag = th_decided, its ready list = th_ability's
+_scan, the press queued back through CfTrain), done_plays from CfTrain's accepted tally (held plays, Mirror's th_costs). An
+opponent whose card_vocab differs from the learner's gets its own card-id universe (CfTrain.addUniverse: keys / pub /
+memory tables + builders filled with ITS gid). A timing-head LEARNER seat (opponent-as-learner) is not here yet (raises).
 Not supported yet (each raises): follow-ups, pipelined decisions, tap loss / slow, tower troops, mid-match starts, the
 posture head, decision rules in the sampled decide (LOOP-CTX), crown / habit / spell tracking.
 """
@@ -69,6 +75,7 @@ class Rows:
         for k, attr, dt, shape in self.KEYS:
             setattr(self, k, np.frombuffer(memoryview(getattr(L, attr)), dt).reshape((2 * n,) + shape))
         self.res = np.frombuffer(memoryview(L.resB), np.int32).reshape(n, 8)
+        self.th = np.frombuffer(memoryview(L.thB), np.int32).reshape(2 * n, int(L.TH))
 
     def memory(self, L, n: int) -> None:
         """MEM_KEYS views of CfTrain.memB (row r at r * CfMem.BYTES, layout CfMem.OFF_*; no copy)."""
@@ -119,6 +126,37 @@ def loop_mem(obs_id, main, gid):
 ID_SPLIT = (("hand_slot", 0, 4), ("hand_card", 4, 8), ("hand_form", 8, 12), ("next_card", 12, None),
             ("next_form", 13, None), ("deck_card", 14, 22), ("deck_form", 22, 30), ("slot_card", 30, 39),
             ("slot_form", 39, 48))
+
+
+class ThEnv:
+    """The env a timing-head seat's PRODUCTION decode reads beyond its row (e1_eval.th_decided / th_ability), answered from
+    CfTrain at this decision: core.check_deploy -> GAME_OVER iff the row's TH flag (CfCore.check of hand slot 0, as
+    CrforgeCore.check_deploy maps it); _scan -> the row's ready list (CfAbil.recheck(side, learned) = _scan(_any_gate));
+    queue_abilities -> kept (``queued``) for CfTrain, which queues + fires it before the round's applies. Every other
+    attribute is the capture env's."""
+
+    def __init__(self, env):
+        self.__dict__.update(_env=env, over=False, ready=[], queued=None)
+        self.__dict__["core"] = self
+
+    def __getattr__(self, k):
+        return getattr(self._env, k)
+
+    def check_deploy(self, cmd):
+        from royalegym.protocol import DeployStatus
+        return DeployStatus.GAME_OVER if self.over else DeployStatus.OK
+
+    def _scan(self, side, gate):
+        return list(self.ready)
+
+    def queue_abilities(self, side, commands, delay) -> None:
+        if self.queued is not None:
+            raise RuntimeError("two th_ability presses in one decision")
+        self.queued = (list(commands), int(delay))
+
+
+def gid_key(gid: dict) -> tuple:
+    return tuple(sorted(gid.items()))
 
 
 class Producer:
@@ -213,6 +251,9 @@ class Producer:
         self.progress = None                                 # bench.py: called after every round with the totals
         self.cl, self.opp_name, self.want_ver = None, {}, None
         self.lmem = None                                     # loop_mem(): CfMem tables once a memory model plays
+        # card-id universes (CfTrain.addUniverse): 0 = the learner's gid tables above; one more per other opponent gid
+        self.univs = [SimpleNamespace(gid=self.model.gid, main=main, pub=pub, keys=L.keys, T=L.pub, lmem=None)]
+        self.univ_of = {gid_key(self.model.gid): 0}
         self._raw = RoyaleSelfPlayEnv.raw                    # production's raw() (the capture env's is stubbed)
         if server:                                           # LOOP-SRV PolicyServer (serve.py) at this address
             from pipeline.policy_server import connect
@@ -235,7 +276,37 @@ class Producer:
         if self.ja is not None:
             k += len(self.ja.T.missing)
             self.ja.fill(self.env)                         # P: / N: keys, the IW observers' keys, their make_play rows
+        for U in self.univs[1:]:                           # an opponent's own card-id tables, filled the same way
+            k += self._resolve_keys(U.keys, U.main)
+            CP = self.jpype.JClass("CfPubObj")
+            Lu = SimpleNamespace(names=L.names, keys=U.keys, pub=U.T, detKeys=lambda U=U, CP=CP: CP.detKeys(U.keys))
+            k += self.fill_fn(SimpleNamespace(L=Lu, main=U.main, pub=U.pub, jc=None, names=self.card_names))
+            if U.lmem is not None:
+                U.lmem.fill_det()
+                k += self._mem_bodies(U.lmem)
         return k
+
+    def _univ(self, pol) -> int:
+        """The card-id universe of a policy: 0 for the learner's gid, else (created on first sight) a JavaMain / JavaPub /
+        CfMem table set with ITS gid (obs_id's fillers without their harness hooks) registered in CfTrain."""
+        gk = gid_key(pol.gid)
+        if gk in self.univ_of:
+            return self.univ_of[gk]
+        obs_id, L = self.obs_id, self.L
+        main = obs_id.JavaMain()
+        main.names, main.gid, main.card_names = L.names, pol.gid, self.card_names
+        shim = SimpleNamespace(env=SimpleNamespace(names=self.card_names, feature_version=6), state={"projectiles": []})
+        main.spell_table(shim)
+        pub = object.__new__(obs_id.JavaPub)                # JavaPub.__init__ hooks royale_env._Core.act: not wanted twice
+        pub.main, pub.gid, pub.C = main, pol.gid, self.jpype.JClass("CfPubObj")
+        pub.T, pub.pub, pub.ready, pub.press_tick_mismatch, pub.presses = pub.C.Tables(), {}, False, 0, 0
+        pub.tables(shim)
+        u = int(L.addUniverse(main.keys, pub.T))
+        if u != len(self.univs):
+            raise RuntimeError(f"CfTrain universe {u} != {len(self.univs)}")
+        self.univs.append(SimpleNamespace(gid=pol.gid, main=main, pub=pub, keys=main.keys, T=pub.T, lmem=None))
+        self.univ_of[gk] = u
+        return u
 
     def _resolve_keys(self, keys, main) -> int:
         """Each missing detector key "card|body row|form#entity id" of ``keys`` -> main.key_index of the name public_frame
@@ -260,14 +331,15 @@ class Producer:
             k += 1
         return k
 
-    def _mem_bodies(self) -> int:
+    def _mem_bodies(self, lmem=None) -> int:
         """obs_id.JavaMem.resolve for the fast loop: each missing "card|body|form#entity id" -> the unit of the key
         MatchMemory gives that body (public_frame source 'sim' on production's raw() entity of the SAME battle, read
         off the facade of a match whose row stopped at the memory stage)."""
         from pipeline import vocab
         from pipeline.obs_contract import catalog_card_form
         from pipeline.public_observation import public_frame
-        miss = [str(m) for m in self.lmem.T.takeMissing()]
+        lmem = self.lmem if lmem is None else lmem          # an opponent universe's CfMem tables (its own slugs / units)
+        miss = [str(m) for m in lmem.T.takeMissing()]
         if not miss:
             return 0
         rows = np.flatnonzero(self.v.meta[:, 0].astype(bool) & (self.v.meta[:, 5] == 6))
@@ -296,10 +368,10 @@ class Producer:
                 f = public_frame({"tick": t, "entities": [e]}, source="sim")["entities"]
                 name = catalog_card_form(int(f[0]["card_id"]))[0] if f else None
                 key = vocab.engine_key(name) if name else None
-                units.add(self.lmem.unit(key) if key else -1)
+                units.add(lmem.unit(key) if key else -1)
             if len(units) != 1:
                 raise RuntimeError(f"CfMem body {m}: candidates in several matches resolve to units {sorted(units)}")
-            self.lmem.T.putBody(k, units.pop())
+            lmem.T.putBody(k, units.pop())
         return len(miss)
 
     def _resolve_rows(self) -> None:
@@ -316,8 +388,9 @@ class Producer:
     def _policy(self, path: str):
         if path not in self.opp_cache:
             pol, mi = self.E.load_policy(self.R.REPO / path, self.dev)
-            if not isinstance(pol, self.E.GenPolicy) or pol.gid != self.model.gid:
-                raise NotImplementedError(f"opponent {path}: CfTrain shares one card-id table per match (same vocab only)")
+            if not isinstance(pol, self.E.GenPolicy):
+                raise NotImplementedError(f"opponent {path}: not a GenPolicy")
+            self._univ(pol)                                  # another card_vocab: its own CfTrain card-id universe
             if has_mem(pol) and getattr(pol.model.mem, "version", "v1") != "v2":
                 raise NotImplementedError(f"opponent {path}: memory {pol.model.mem.version} (CfMem ports v2)")
             self.opp_cache[path] = (pol, str(mi.get("grid", "floor")))
@@ -361,8 +434,10 @@ class Producer:
             bad = [x for x in UNSUPPORTED_CFG if s.cfg.get(x)]
             if bad:
                 raise NotImplementedError(f"cfg {bad} is not in CfTrain yet")
-            if s.pipe or s.drops is not None or s.own_fx is not None or s.delay <= 0:
+            if s.pipe or s.drops is not None or s.own_fx is not None or (s.delay <= 0 and not s.timing):
                 raise NotImplementedError("CfTrain ports the delayed-play rollout schedule only")
+            if s.timing and (s is ls or s.delay or s.extrap):
+                raise NotImplementedError("timing-head seats: frozen opponents only (delay 0, no look-ahead)")
         # CrforgeCore.reset's conversion
         names = self.names
         d = [[names[int(c)] for c in dk] for dk in setup.decks]
@@ -381,6 +456,17 @@ class Producer:
             for cid, nm in zip(env.deck_ids[s.side], s.engine_deck):   # JavaIdent.of: the policy's gid of each deck card
                 if card_key(nm) in self.model.gid:
                     self.L.putGidMatch(i, int(cid), int(self.model.gid[card_key(nm)]))
+            u = self._univ(s.model)
+            if u:                                             # the seat's own universe: ITS gid (slot_ident raises on a miss)
+                for o in sides:
+                    for cid, nm in zip(env.deck_ids[o.side], o.engine_deck):
+                        if card_key(nm) in s.model.gid:
+                            self.L.putGidMatchU(u, i, int(cid), int(s.model.gid[card_key(nm)]))
+                        elif o is s:
+                            raise KeyError(f"card {nm!r} ({card_key(nm)}) not in the generalist's card_vocab")
+            self.L.setSeat(i, int(s.side), bool(s.timing), int(s.extrap), u)
+            if s.timing:                                      # timing_decide_batch's env reads (ThEnv) + done_plays sync
+                s.env, s._th_issue, s._th_nacc = ThEnv(env), None, 0
         self.serial += 1
         self.L.setJob(i, self.serial, int(seed) & 0x7FFFFFFF, *a[0], *a[1])
         if self.lmem is not None:
@@ -388,7 +474,9 @@ class Producer:
         if self.ja is not None:                               # _reset_abilities (CfTrain.reset): the env seed, seat modes
             if not self.ja.ranges and hasattr(env, "_hero_ranges"):
                 self.ja.fill_ranges(env)                      # JavaAbil.reset: the first env reset that had heroes
-            self.L.setAbil(i, int(env.seed), *[self.ab_mode if s is ls else 0 for s in sides])
+            th_ab = getattr(self.E, "th_has_ability", None)   # P2-OPP2: a timing seat's learned ability head (mode 3)
+            self.L.setAbil(i, int(env.seed), *[self.ab_mode if s is ls else 3 if s.timing and th_ab and th_ab(s.model)
+                                               else 0 for s in sides])
             for s in sides:
                 s._ability_commands, s._ability_opts = {s.side: []}, None
         for s in sides:                                       # Match.prepare's first-decision clock
@@ -532,8 +620,12 @@ class Producer:
             self.L.enableMemory(self.lmem.T)
             self.lmem.slugs(self.env)
             self.v.memory(self.L, self.n)
-        if any(m.gid != self.model.gid for m in mem_pols):
-            raise NotImplementedError("memory opponents with another card-id table (CfMem's LUT is per gid)")
+        for m in mem_pols:                                    # a memory opponent of another universe: its own CfMem tables
+            U = self.univs[self._univ(m)]
+            if U.lmem is None and U is not self.univs[0]:
+                U.lmem = loop_mem(self.obs_id, U.main, U.gid)
+                self.L.enableMemoryU(self.univ_of[gid_key(U.gid)], U.lmem.T)
+                U.lmem.slugs(self.env)
         todo = list(R.rollout_jobs(jobs, update, base.get("learner_pipeline_frac", 0), base["seed"]))[::-1]
         live: dict = {}                                       # match slot -> its record
         results, skipped, st = [], [], Counter()
@@ -613,8 +705,13 @@ class Producer:
             for k, a, b in ID_SPLIT:
                 batch[k] = np.ascontiguousarray(ids[:, a:b] if b is not None else ids[:, a])
             batch["sc"][:, SC_SLOT_COLS] = 0.0                # GenPolicy.row's zeroing (batch["sc"] is a copy)
+            if getattr(model, "opp_sim", None) is not None:   # P2 opponents: deck id + context tokens (Match.gen_row)
+                oi = [model.opp_inputs({"deck_card": batch["deck_card"][j], "deck_form": batch["deck_form"][j]})
+                      for j in range(len(idx))]
+                for k in oi[0]:
+                    batch[k] = np.array([o[k] for o in oi], dtype=np.int64)
             name = "learner" if model is self.model else self.opp_name.get(id(model))
-            srv = self.cl is not None and name in self.cl.models
+            srv = self.cl is not None and name in self.cl.models and not E.is_timing(model)   # timing: in-process
             work.append((idx, sides, model, c, batch, E.gen_row_keys(model.model), name, srv))
         self.tm["gather"] += time.perf_counter() - g0
         fs = {}
@@ -668,12 +765,12 @@ class Producer:
                 B = heads["card"].shape[0]
                 hand = torch.zeros(B, 9, dtype=torch.bool, device=heads["card"].device)
                 hand = hand.scatter(1, tb["hand_slot"], True)[:, :8].cpu().numpy()
-                p = torch.sigmoid(heads["gate"]).cpu().tolist()
+                p = torch.sigmoid(heads["gate"] if "gate" in heads else heads["hazard"]).cpu().tolist()   # timing: h_s
             self.tm["forward"] += time.perf_counter() - f0      # incl. H2D / D2H (the .cpu() syncs)
             self.tm["fwd_rows"] += len(idx)
             self.tm["fwd_calls"] += 1
             d0 = time.perf_counter()
-            if FAST_DECIDE and fast_ok(c):
+            if FAST_DECIDE and fast_ok(c) and not E.is_timing(model):
                 self._fast_group(model, c, sides, idx, batch, keys, heads, p, hand,
                                  model_cell_logits(model, enc, heads["card"].device), abx=(enc, c))
                 self.tm["decide_py"] += time.perf_counter() - d0
@@ -697,6 +794,10 @@ class Producer:
             r = int(idx[j])
             a = cmd[r]
             s._ability_commands = {s.side: [tuple(int(x) for x in a[2 + 3 * k:5 + 3 * k]) for k in range(int(a[0]))]}
+            if isinstance(s.env, ThEnv):                       # the timing seat's ready list; its head presses, never the rule
+                s.env.ready, s.env.queued = (s._ability_commands[s.side] if self._th_head(s) else []), None
+                if self._th_head(s):
+                    s._ability_commands = {s.side: []}
             if s.cfg.get("ability"):
                 s._ability_opts = [{"cmd": (int(o[0]), int(o[1]), int(o[2])), "card": self.card_names[int(o[1])],
                                     "q": float(o[3]), "feat": o[4:].copy()} for o in opt[r, :int(a[1])]]
@@ -705,6 +806,13 @@ class Producer:
         """The commands apply queues (ability_decide put a HEAD seat's press in _ability_commands) -> CfTrain's row."""
         cmd = self.v.ab_cmd
         for j, s in enumerate(sides):
+            if isinstance(s.env, ThEnv) and self._th_head(s):   # CfTrain mode 3: {1, j, button, cid, uid} or nothing
+                r, q = int(idx[j]), s.env.queued
+                cmd[r, :] = 0
+                if q is not None and q[0]:
+                    cmd[r, 0], cmd[r, 1] = 1, q[1]
+                    cmd[r, 2:5] = [int(x) for x in q[0][0]]
+                continue
             if not s.cfg.get("ability"):
                 continue                                     # a RULE seat: CfTrain's own commands stand
             cs = s._ability_commands[s.side]
@@ -714,6 +822,10 @@ class Producer:
             cmd[r, 0] = len(cs)
             for k, x in enumerate(cs):
                 cmd[r, 2 + 3 * k:5 + 3 * k] = [int(v) for v in x]
+
+    def _th_head(self, s) -> bool:
+        f = getattr(self.E, "th_has_ability", None)
+        return bool(self.ja is not None and f is not None and f(s.model))
 
     def _prod_group(self, model, c, sides, idx, batch, keys, enc, heads, p, hand, cell_fn) -> None:
         """PRODUCTION's decide for one policy group (run_selfplay_batch's round): Match.prepare's state, SelfPlaySide.pre,
@@ -740,6 +852,13 @@ class Producer:
                     s.mem = "cfmem"                           # _record's mem_t switch (the table is CfMem's)
                 s._gen_row = {k: batch[k][j] for k in keys}
                 s._obs = (s._gen_row["tok"], s._gen_row["mask"], s._gen_row["sc"], s._gen_row["past"])
+                if isinstance(s.env, ThEnv):                   # timing: done_plays from CfTrain's accepted tally, game over
+                    nacc = int(v.tal[r, 1])
+                    if s._th_issue is not None and nacc > s._th_nacc:
+                        s.done_plays.append(s._th_issue)      # Match._land: (land tick = issue tick, slot, x, y)
+                        s.last_play_tick = s._th_issue[0]
+                    s._th_issue, s._th_nacc = None, nacc
+                    s.env.over = bool(v.th[r, 0])
             pre = [s.pre(hand[j]) for j, s in enumerate(sides)]
             allowed = np.stack([x[1] for x in pre])
             stalled = np.array([x[2] for x in pre], dtype=bool)
@@ -757,6 +876,8 @@ class Producer:
             for j, (s, d) in enumerate(zip(sides, decisions)):
                 r = idx[j]
                 s._record(p[j], d)
+                if isinstance(s.env, ThEnv):                  # SelfPlaySide.apply's _th_slot (CfTrain keeps the schedule)
+                    s._th_slot = int(v.meta[r, 3]) if d.get("th_tick") else None
                 a = v.act[r]
                 if d["play"]:
                     X, Y = ep.cell_to_engine(d["cell"], s.mirror, s.cfg["grid"])
@@ -765,8 +886,10 @@ class Producer:
                     s.fl[s.deck.cards[d["slot"]]] += 1        # card_mix_attempted / play_elixir / stall (Match._land)
                     s.fl_el.append(float(int(s._cur[2].my_elixir)))
                     s.n_stall += int(d["why"] == "stall")
+                    if isinstance(s.env, ThEnv):              # issued now: done_plays once CfTrain accepts it
+                        s._th_issue = (int(v.meta[r, 3]), int(d["slot"]), *s.ep.cell_center(d["cell"], s.cfg["grid"]))
                 else:
-                    a[:] = (0, -1, -1, 0, 0, 0, 0, 0)
+                    a[:] = (0, -1, -1, 0, 0, 0, 0, int(d.get("th_tick", 0)) if isinstance(s.env, ThEnv) else 0)
 
     # ------------------------------------------------------------------------------------------------ fast decide
     def _fast_group(self, model, c, sides, idx, batch, keys, heads, p, hand, cell_fn, v_old=None, wver=None,

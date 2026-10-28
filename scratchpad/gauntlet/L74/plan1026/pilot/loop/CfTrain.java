@@ -80,6 +80,34 @@ public final class CfTrain implements AutoCloseable {
   int[][] abMode;
   long[] jAbSeed;
   ArrayList<int[]>[] abLog;
+  // OPP-LEARN-A P2 timing-head seats (e1_eval.SelfPlaySide's timing branch, decision_options 'timing_head'): per seat of a
+  // job (setSeat, then setJob): timing (10-tick slots from engine tick % 10 == 0, a play issued AT its drawn tick = no
+  // action delay of ours, ACT int 7 = th_tick: decide again at slot + j), the seat's extrapolate_ticks (0 for timing), its
+  // card-id universe (u 0 = the learner's tables; a frozen opponent with another card_vocab has its own keys / pub / memory
+  // tables and per-match builders, addUniverse). Ability seat mode 3 = TIMING HEAD (th_ability): no rule, no options; the
+  // row's commands carry _scan(_any_gate) (the ready list) and Python writes back {1, j, button, cid, uid} (queued j on).
+  // Per row TH ints: game over (CfCore.check of hand slot 0 is MATCH_OVER / KING_DEAD = th_decided's GAME_OVER).
+  public static final int TH = 1;
+  public final ByteBuffer thB;
+  final IntBuffer th;
+  final boolean[][] jTim, nTim;
+  final int[][] jExt, jU, nExt, nU, thSlot;
+  final ArrayList<Univ> U = new ArrayList<>();
+
+  /** One card-id table set: the detector keys, public-object tables, memory tables and each match's builders on them. */
+  static final class Univ {
+    final CfOppElixir.Keys keys;
+    final CfPubObj.Tables pub;
+    final TrainMatch[] m;
+    final CfIdent[] id;
+    final CfPubObj[] po;
+    CfMem.Tables memT;
+    CfMem.Log[] mlog;
+
+    Univ(CfOppElixir.Keys keys, CfPubObj.Tables pub, TrainMatch[] m, CfIdent[] id, CfPubObj[] po) {
+      this.keys = keys; this.pub = pub; this.m = m; this.id = id; this.po = po;
+    }
+  }
 
   final CfCore[] core;
   final TrainMatch[] m;
@@ -115,6 +143,9 @@ public final class CfTrain implements AutoCloseable {
     jDelay = new int[n][]; fresh = new boolean[n]; live = new boolean[n];
     next = new int[n][2]; pendLand = new int[n][2]; pendSlot = new int[n][2]; pendCell = new int[n][2]; pendX = new int[n][2];
     pendY = new int[n][2]; pendPX = new int[n][2]; pendPY = new int[n][2];
+    jTim = new boolean[n][2]; nTim = new boolean[n][2]; jExt = new int[n][2]; jU = new int[n][2]; nExt = new int[n][2];
+    nU = new int[n][2]; thSlot = new int[n][2];
+    for (int[] e : nExt) Arrays.fill(e, -1);
     pool = Executors.newFixedThreadPool(threads, r -> { Thread t = new Thread(r, "cftrain"); t.setDaemon(true); return t; });
     long r2 = 2L * n;
     tokB = direct(r2 * MAX_U * F * 4); maskB = direct(r2 * MAX_U); scB = direct(r2 * S * 4); formB = direct(r2 * MAX_U);
@@ -126,6 +157,7 @@ public final class CfTrain implements AutoCloseable {
     proj = projB.asFloatBuffer(); eff = effB.asFloatBuffer(); abil = abilB.asFloatBuffer(); cyc = cycB.asFloatBuffer();
     cueF = cueB.asFloatBuffer(); idsL = idsB.asLongBuffer(); meta = metaB.asIntBuffer(); act = actB.asIntBuffer();
     res = resB.asIntBuffer(); tal = talB.asIntBuffer(); el = elB.asDoubleBuffer(); twr = twrB.asIntBuffer();
+    thB = direct(r2 * TH * 4); th = thB.asIntBuffer();
     for (int i = 0; i < n; i++) {
       CfCore c = core[i] = new CfCore(tables);
       c.cardNames = template.cardNames;                    // the facade's identity tables (read-only), as CfLoop copies them
@@ -135,6 +167,35 @@ public final class CfTrain implements AutoCloseable {
       id[i] = new CfIdent();
       po[i] = new CfPubObj(c, pub);
     }
+    U.add(new Univ(keys, pub, m, id, po));
+  }
+
+  /** A card-id universe for a frozen opponent whose checkpoint gid differs from the learner's (its own JavaMain keys and
+   *  JavaPub tables, filled by Python like universe 0's) -> its index. */
+  public int addUniverse(CfOppElixir.Keys k, CfPubObj.Tables t) {
+    TrainMatch[] um = new TrainMatch[n];
+    CfIdent[] ui = new CfIdent[n];
+    CfPubObj[] up = new CfPubObj[n];
+    for (int i = 0; i < n; i++) { um[i] = new TrainMatch(tables); ui[i] = new CfIdent(); up[i] = new CfPubObj(core[i], t); }
+    U.add(new Univ(k, t, um, ui, up));
+    return U.size() - 1;
+  }
+
+  /** Universe u's memory tables (after enableMemory: a memory opponent of that universe). */
+  public void enableMemoryU(int u, CfMem.Tables t) {
+    Univ x = U.get(u);
+    x.memT = t;
+    x.mlog = new CfMem.Log[n];
+    for (int i = 0; i < n; i++) x.mlog[i] = new CfMem.Log(core[i], t);
+  }
+
+  public CfOppElixir.Keys keysOf(int u) { return U.get(u).keys; }
+
+  /** Seat s of match i's NEXT job (call before setJob; setJob takes it and restores the defaults: not timing, the
+   *  producer's extrap, universe 0). */
+  public void setSeat(int i, int s, boolean timing, int extrapTicks, int u) {
+    if (u < 0 || u >= U.size()) throw new IllegalArgumentException("no card-id universe " + u);
+    nTim[i][s] = timing; nExt[i][s] = extrapTicks; nU[i][s] = u;
   }
 
   static ByteBuffer direct(long bytes) { return ByteBuffer.allocateDirect((int) bytes).order(ByteOrder.nativeOrder()); }
@@ -143,6 +204,7 @@ public final class CfTrain implements AutoCloseable {
 
   /** Match i's CfIdent card id -> checkpoint id (obs_id.JavaIdent.of: the policy's gid of each deck card, per job). */
   public void putGidMatch(int i, int cardId, int g) { id[i].putGid(cardId, g); }
+  public void putGidMatchU(int u, int i, int cardId, int g) { U.get(u).id[i].putGid(cardId, g); }
 
   /** The next job of match {@code i} (deal order: CfCore.reset's arguments; inv = deal index -> our deck slot (8 none);
    *  de / delay = SelfPlaySide's decide_every and e1 wait per seat). Takes effect at the next step(). */
@@ -154,9 +216,13 @@ public final class CfTrain implements AutoCloseable {
     jDe[i] = new int[] {de0, de1}; jDelay[i] = new int[] {delay0, delay1};
     int[][] sd = new int[2][8];
     for (int s = 0; s < 2; s++) {
+      jTim[i][s] = nTim[i][s]; jExt[i][s] = nExt[i][s] < 0 ? extrap : nExt[i][s]; jU[i][s] = nU[i][s];
+      nTim[i][s] = false; nExt[i][s] = -1; nU[i][s] = 0;
       Arrays.fill(sd[s], -1);
       for (int k = 0; k < 8; k++) if (jInv[i][s][k] < 8) sd[s][jInv[i][s][k]] = k;
-      if (jDelay[i][s] <= 0) throw new IllegalArgumentException("CfTrain ports the delayed-play schedule only (delay > 0)");
+      if (jTim[i][s] ? jDelay[i][s] != 0 || jExt[i][s] != 0 : jDelay[i][s] <= 0)
+        throw new IllegalArgumentException("CfTrain ports the delayed-play schedule (delay > 0) and timing seats (delay 0, "
+            + "no look-ahead) only");
     }
     jSlotDeal[i] = sd;
     fresh[i] = true;
@@ -172,6 +238,8 @@ public final class CfTrain implements AutoCloseable {
     memB = direct(2L * n * CfMem.BYTES);
     mlog = new CfMem.Log[n]; mem = new CfMem[n][2]; jMem = new boolean[n][2];
     for (int i = 0; i < n; i++) mlog[i] = new CfMem.Log(core[i], t);   // syncs itself on each new battle
+    U.get(0).memT = t;
+    U.get(0).mlog = mlog;
   }
 
   /** Hero abilities on (once, before the first step): CfAbil per match on its facade; decisionTicks / liveIW / iwNever
@@ -229,21 +297,27 @@ public final class CfTrain implements AutoCloseable {
     CfCore c = core[i];
     c.reset(jSeed[i] & 0x7FFFFFFF, jDeck[i][0], jForm[i][0], jDeck[i][1], jForm[i][1], jLv[i][0], jLv[i][1], jTl[i][0],
         jTl[i][1], jIds[i][0], jIds[i][1]);
-    id[i].extrap = extrap; id[i].cellOff = cellOff;
-    m[i].extrap = extrap;
-    po[i].extrap = extrap;
+    for (Univ u : U) { u.id[i].extrap = extrap; u.id[i].cellOff = cellOff; u.m[i].extrap = extrap; u.po[i].extrap = extrap; }
     cueSeat[i][0] = new CfCue.Seat(); cueSeat[i][1] = new CfCue.Seat();   // production: a fresh Match per match
-    if (memT != null) for (int s = 0; s < 2; s++) mem[i][s] = jMem[i][s] ? new CfMem(c, memT, mlog[i], s) : null;
+    if (memT != null)
+      for (int s = 0; s < 2; s++) {
+        Univ u = U.get(jU[i][s]);
+        if (jMem[i][s] && u.memT == null) throw new IllegalStateException("a memory seat in universe " + jU[i][s] + " without its tables");
+        mem[i][s] = jMem[i][s] ? new CfMem(c, u.memT, u.mlog[i], s) : null;
+      }
     if (ab != null) {                                     // RoyaleSelfPlayEnv.reset: _reset_abilities before the warm-up
       ab[i].reset(jAbSeed[i], "", abDecTicks, abLiveIW, abIwNever);   // tag "": a self-play env has no entry
       abLog[i].clear();
     }
     for (int s = 0; s < 2; s++) {
       pendLand[i][s] = -1;
+      thSlot[i][s] = -1;
       for (int k = 0; k < TAL; k++) tal.put((2 * i + s) * TAL + k, 0);
     }
     advanceTo(i, warmup);                                 // RoyaleSelfPlayEnv.reset: _advance_to(warmup_ticks)
     next[i][0] = next[i][1] = c.tick();                   // SelfPlaySide.next_tick = env.tick at construction
+    for (int s = 0; s < 2; s++)                           // timing: the rows' grid, slots start at tick % decide_every 0
+      if (jTim[i][s]) next[i][s] = -Math.floorDiv(-c.tick(), jDe[i][s]) * jDe[i][s];
   }
 
   void advanceTo(int i, int target) {                     // RoyalePoolEnv._advance_to (no ghosts / telemetry)
@@ -274,13 +348,15 @@ public final class CfTrain implements AutoCloseable {
       int[] e = a.pending.remove(0);
       int side = e[1], b = e[2], cid = e[3], uid = e[4];
       if (c.over()) continue;
-      int[] rc = a.recheck(side, abMode[i][side] == 2);
+      int[] rc = a.recheck(side, abMode[i][side] >= 2);   // HEAD / TIMING HEAD: learned_sides (_any_gate)
       boolean hit = false;
       for (int k = 0; k + 2 < rc.length && !hit; k += 3) hit = rc[k] == b && rc[k + 1] == cid && rc[k + 2] == uid;
       if (!hit || c.ability(side, b, false) != 0) continue;
       a.pressed(side, cid, uid, t);
-      po[i].press(side, t, b);
-      if (memT != null) mlog[i].press(side, t, b);
+      for (Univ u : U) {
+        u.po[i].press(side, t, b);
+        if (u.memT != null) u.mlog[i].press(side, t, b);
+      }
       abLog[i].add(new int[] {0, side, cid});
     }
   }
@@ -330,19 +406,34 @@ public final class CfTrain implements AutoCloseable {
       ab[i].played(s, cid, t, ENG);
       if (ab[i].heroIds[s].contains(cid)) abLog[i].add(new int[] {1, s, cid});
     }
-    if (memT != null) mlog[i].play(s, t, cid, form, pendPX[i][s], pendPY[i][s]);
-    id[i].played(c, s, t, slot, pendCell[i][s]);          // past: the facade tick at the act, slot, decided cell
-    po[i].act(s, t, c.s.deckIds[s][k]);                   // public_plays / own events: the act tick (+ DELAY inside)
+    for (Univ u : U) {                                    // every universe's builders see every play
+      if (u.memT != null) u.mlog[i].play(s, t, cid, form, pendPX[i][s], pendPY[i][s]);
+      u.id[i].played(c, s, t, slot, pendCell[i][s]);      // past: the facade tick at the act, slot, decided cell
+      u.po[i].act(s, t, c.s.deckIds[s][k]);               // public_plays / own events: the act tick (+ DELAY inside)
+    }
   }
 
   /** SelfPlaySide.apply's schedule for the decision Python wrote at row r (delay > 0: the play waits in pending). */
   void apply(int i, int s, int r) {
-    int t = meta.get(r * META + 3), de = jDe[i][s], delay = jDelay[i][s] + act.get(r * ACT + 7);
-    if (ab != null) {                                     // SelfPlaySide.apply: queue_abilities(side, cmds, self.delay)
+    int t = meta.get(r * META + 3), de = jDe[i][s], delay = jDelay[i][s] + (jTim[i][s] ? 0 : act.get(r * ACT + 7));
+    if (ab != null && abMode[i][s] != 3) {                // SelfPlaySide.apply: queue_abilities(side, cmds, self.delay)
       int cb = r * AB_CMD;
       for (int k = 0; k < abCmd.get(cb); k++)
         ab[i].queue(s, abCmd.get(cb + 2 + 3 * k), abCmd.get(cb + 3 + 3 * k), abCmd.get(cb + 4 + 3 * k), t + jDelay[i][s]);
       fire(i);                                            // queue_abilities ends with _fire_abilities
+    }
+    if (jTim[i][s]) {                                     // SelfPlaySide.apply's timing branch
+      int j = act.get(r * ACT + 7);
+      if (j > 0) { thSlot[i][s] = t; next[i][s] = t + j; return; }   // a play drawn for tick j of this slot
+      if (act.get(r * ACT) != 0) {                        // issued now (_land at the decision tick); crforge runs it later
+        pendSlot[i][s] = act.get(r * ACT + 1); pendCell[i][s] = act.get(r * ACT + 2);
+        pendX[i][s] = act.get(r * ACT + 3); pendY[i][s] = act.get(r * ACT + 4);
+        pendPX[i][s] = act.get(r * ACT + 5); pendPY[i][s] = act.get(r * ACT + 6);
+        land(i, s, true);
+      }
+      next[i][s] = (thSlot[i][s] < 0 ? t : thSlot[i][s]) + de;   // the next slot, whatever the engine still holds
+      thSlot[i][s] = -1;
+      return;
     }
     if (act.get(r * ACT) != 0) {
       pendLand[i][s] = t + delay;
@@ -377,6 +468,13 @@ public final class CfTrain implements AutoCloseable {
         live[i] = true;
         reset(i);
       } else if (live[i]) {
+        if (ab != null)                                   // th_ability presses: queued in the DECIDE (before any apply)
+          for (int s = 0; s < 2; s++) {
+            int r = r0 + s, cb = r * AB_CMD;
+            if (meta.get(r * META) == 0 || abMode[i][s] != 3 || abCmd.get(cb) == 0) continue;
+            ab[i].queue(s, abCmd.get(cb + 2), abCmd.get(cb + 3), abCmd.get(cb + 4), meta.get(r * META + 3) + abCmd.get(cb + 1));
+            fire(i);                                      // queue_abilities ends with _fire_abilities
+          }
         for (int s = 0; s < 2; s++) if (meta.get((r0 + s) * META) != 0) apply(i, s, r0 + s);
       }
       meta.put(r0 * META, 0); meta.put((r0 + 1) * META, 0);
@@ -390,6 +488,10 @@ public final class CfTrain implements AutoCloseable {
         int r = r0 + s, b = r * META;
         meta.put(b, 1); meta.put(b + 1, i); meta.put(b + 2, s); meta.put(b + 3, core[i].tick()); meta.put(b + 5, 0);
         meta.put(b + 6, jSerial[i]);
+        if (jTim[i][s]) {                                 // th_decided: check_deploy(side, hand 0) == GAME_OVER
+          int rf = core[i].check(s, 0);
+          th.put(r * TH, rf == 1 || rf == 2 ? 1 : 0);     // REFUSAL MATCH_OVER / KING_DEAD -> DeployStatus.GAME_OVER
+        }
         tally(i, s, 5);
         build(i, s);
       }
@@ -405,11 +507,13 @@ public final class CfTrain implements AutoCloseable {
   /** One seat's row from its current stage on, in e1_eval.Match.prepare's order (CfLoop.obs). */
   void build(int i, int seat) {
     CfCore c = core[i];
-    TrainMatch x = m[i];
+    Univ u = U.get(jU[i][seat]);
+    TrainMatch x = u.m[i];
     int r = 2 * i + seat, b = r * META, st = meta.get(b + 5);
     int[] inv = jInv[i][seat];
+    x.extrap = u.id[i].extrap = u.po[i].extrap = jExt[i][seat];   // the seat's own extrapolate_ticks (timing: 0)
     CfObsBind.bind(x, c, seat, inv);
-    CfOppElixir opp = x.opp(seat, keys);
+    CfOppElixir opp = x.opp(seat, u.keys);
     if (st == 0) {
       if (!opp.update()) { misses.incrementAndGet(); return; }
       st = 1;
@@ -434,15 +538,15 @@ public final class CfTrain implements AutoCloseable {
     }
     if (st == 3) {
       opp.past(oppPast, r * PAST);
-      id[i].build(c, seat, inv, idsL, r * IDS, past, r * PAST);
+      u.id[i].build(c, seat, inv, idsL, r * IDS, past, r * PAST);
       st = 4;
     }
     if (st == 4) {
-      if (!po[i].update(seat)) { meta.put(b + 5, 4); misses.incrementAndGet(); return; }
+      if (!u.po[i].update(seat)) { meta.put(b + 5, 4); misses.incrementAndGet(); return; }
       st = 5;
     }
     if (st == 5) {
-      po[i].build(seat, proj, r * PROJ, eff, r * EFF, abil, r * ABIL, opp, cyc, r * CYC);
+      u.po[i].build(seat, proj, r * PROJ, eff, r * EFF, abil, r * ABIL, opp, cyc, r * CYC);
       st = 6;
     }
     CfMem mm = mem == null ? null : mem[i][seat];
@@ -465,9 +569,10 @@ public final class CfTrain implements AutoCloseable {
     CfAbil a = ab[i];
     int mode = abMode[i][seat], cb = r * AB_CMD;
     int[] cmd = new int[0];
-    if (mode != 2 && (cmd = a.commands(seat)) == null) return false;
+    if (mode == 3) cmd = a.recheck(seat, true);           // TIMING HEAD: the ready list th_ability scans (no rule)
+    else if (mode != 2 && (cmd = a.commands(seat)) == null) return false;
     double[] opt = new double[0];
-    if (mode != 0 && (opt = a.options(seat, mode == 1 ? cmd : null)) == null) return false;
+    if (mode != 0 && mode != 3 && (opt = a.options(seat, mode == 1 ? cmd : null)) == null) return false;
     int nc = cmd.length / 3, no = opt.length / abW;
     if (nc > AB_MAX || no > AB_MAX) throw new IllegalStateException("more than " + AB_MAX + " ability buttons");
     abCmd.put(cb, nc); abCmd.put(cb + 1, no);
