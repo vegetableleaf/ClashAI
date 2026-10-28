@@ -477,6 +477,8 @@ def match(path, bl=None, names=None, cat=None, shims=None, tt=None, uhp=None, by
     if mech_rules.GB or mech_rules.DRILL or mech_rules.HB or mech_rules.ZAP:
         import live_frames
         plays = mech_rules.apply(str(path), plays, sides, {f['t']: f for f in live_frames.convert(path)})
+    if mech_rules.ZAP_ADD or mech_rules.ZAP_POINT:   # A2c-9Z: Zaps from ZapFreeze buff groups (SME_ZAP_ADD / SME_ZAP_POINT)
+        plays = mech_rules.zap_buffs(str(path), plays, sides, stats)
     if os.environ.get('SME_CHARGE8') == '1':   # round 8.7
         plays = own_charge_presses(path, plays, my, sides)
     build = next(((json.loads(r).get('phase2') or {}).get('build') for r in open(path, 'rb') if b'"phase2"' in r), None)

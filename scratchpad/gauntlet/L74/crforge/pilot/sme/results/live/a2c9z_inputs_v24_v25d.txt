@@ -1,0 +1,25 @@
+090406 fields ['opp_fitting_deals', 'opp_deal_fit', 'plays', 'flags'] flags ['0:opp_no_fitting_deal:0'] -> [] fits 0 -> 6144
+   + {"card": "Zap", "deck_index": 7, "form": 0, "inferred": true, "kind": "play", "mech": "zap_add", "n": 0, "name": "Zap", "run_ticks": [4493, 4493], "side": 0, "source": "spell_seen", "tick": 4493, "tile": [5, 24], "x": 5753, "y": 24453}
+   + {"card": "Zap", "deck_index": 7, "form": 0, "inferred": true, "kind": "play", "mech": "zap_add", "n": 0, "name": "Zap", "run_ticks": [2571, 2571], "side": 0, "source": "spell_seen", "tick": 2571, "tile": [14, 17], "x": 14300, "y": 17914}
+161448 fields ['plays'] flags ['1:opp_no_fitting_deal:0'] -> ['1:opp_no_fitting_deal:0'] fits 0 -> 0
+   + {"card": "Zap", "deck_index": 5, "form": 0, "inferred": true, "kind": "play", "mech": "zap_add", "n": 0, "name": "Zap", "run_ticks": [1015, 1015], "side": 1, "source": "spell_seen", "tick": 1015, "tile": [2, 12], "x": 2500, "y": 12500}
+194858 fields ['opp_fitting_deals', 'opp_deal_fit', 'plays', 'flags'] flags ['1:opp_no_fitting_deal:0'] -> [] fits 0 -> 6144
+   + {"card": "Zap", "deck_index": 5, "form": 0, "inferred": true, "kind": "play", "mech": "zap_add", "n": 0, "name": "Zap", "run_ticks": [1832, 1832], "side": 1, "source": "spell_seen", "tick": 1832, "tile": [15, 13], "x": 15386, "y": 13800}
+204518 fields ['opp_deal_fit', 'plays'] flags [] -> [] fits 6144 -> 6144
+   + {"card": "Zap", "deck_index": 4, "form": 0, "inferred": true, "kind": "play", "mech": "zap_add", "n": 0, "name": "Zap", "run_ticks": [721, 721], "side": 1, "source": "spell_seen", "tick": 721, "tile": [2, 12], "x": 2100, "y": 12400}
+   + {"card": "Zap", "deck_index": 4, "form": 0, "inferred": true, "kind": "play", "mech": "zap_add", "n": 0, "name": "Zap", "run_ticks": [1821, 1821], "side": 1, "source": "spell_seen", "tick": 1821, "tile": [14, 8], "x": 14370, "y": 8878}
+204837 fields ['plays'] flags ['0:opp_no_fitting_deal:0'] -> ['0:opp_no_fitting_deal:0'] fits 0 -> 0
+   - {"card": "Zap", "deck_index": 6, "form": 0, "inferred": true, "kind": "play", "n": 0, "name": "Zap", "run_ticks": [3321, 3323], "side": 0, "source": "spell_seen", "tick": 3322, "tile": [14, 19], "x": 14625, "y": 19500}
+   + {"card": "Zap", "deck_index": 6, "form": 0, "inferred": true, "kind": "play", "mech": "zap_point", "n": 0, "name": "Zap", "run_ticks": [3321, 3323], "side": 0, "source": "spell_seen", "tick": 3322, "tile": [17, 19], "x": 17000, "y": 19100}
+   + {"card": "Zap", "deck_index": 6, "form": 0, "inferred": true, "kind": "play", "mech": "zap_add", "n": 0, "name": "Zap", "run_ticks": [3891, 3891], "side": 0, "source": "spell_seen", "tick": 3891, "tile": [11, 19], "x": 11692, "y": 19718}
+213436 fields ['opp_fitting_deals', 'opp_deal_fit', 'plays', 'flags'] flags ['0:opp_no_fitting_deal:0'] -> [] fits 0 -> 6144
+   + {"card": "Zap", "deck_index": 5, "form": 0, "inferred": true, "kind": "play", "mech": "zap_add", "n": 0, "name": "Zap", "run_ticks": [3621, 3621], "side": 0, "source": "spell_seen", "tick": 3621, "tile": [4, 19], "x": 4500, "y": 19500}
+   + {"card": "Zap", "deck_index": 5, "form": 0, "inferred": true, "kind": "play", "mech": "zap_add", "n": 0, "name": "Zap", "run_ticks": [2982, 2982], "side": 0, "source": "spell_seen", "tick": 2982, "tile": [12, 21], "x": 12500, "y": 21500}
+   + {"card": "Zap", "deck_index": 5, "form": 0, "inferred": true, "kind": "play", "mech": "zap_add", "n": 0, "name": "Zap", "run_ticks": [2291, 2291], "side": 0, "source": "spell_seen", "tick": 2291, "tile": [3, 25], "x": 3500, "y": 25500}
+001702 fields ['plays'] flags [] -> [] fits 6144 -> 6144
+   - {"card": "Zap", "deck_index": 4, "form": 0, "inferred": true, "kind": "play", "mech": "zap_buff", "n": 0, "name": "Zap", "run_ticks": [2491, 2491], "side": 0, "source": "spell_seen", "tick": 2491, "tile": [2, 17], "x": 2300, "y": 17836}
+   + {"card": "Zap", "deck_index": 4, "form": 0, "inferred": true, "kind": "play", "mech": "zap_buff+zap_point", "n": 0, "name": "Zap", "run_ticks": [2491, 2491], "side": 0, "source": "spell_seen", "tick": 2491, "tile": [3, 16], "x": 3200, "y": 16797}
+010245 fields ['opp_deal_fit', 'plays'] flags [] -> [] fits 6144 -> 6144
+   + {"card": "Zap", "deck_index": 4, "form": 0, "inferred": true, "kind": "play", "mech": "zap_add", "n": 0, "name": "Zap", "run_ticks": [571, 571], "side": 1, "source": "spell_seen", "tick": 571, "tile": [14, 6], "x": 14500, "y": 6500}
+022149 fields ['opp_fitting_deals', 'opp_deal_fit', 'plays', 'flags'] flags ['0:opp_no_fitting_deal:0'] -> [] fits 0 -> 6144
+   + {"card": "Zap", "deck_index": 6, "form": 0, "inferred": true, "kind": "play", "mech": "zap_add", "n": 0, "name": "Zap", "run_ticks": [1489, 1489], "side": 0, "source": "spell_seen", "tick": 1489, "tile": [9, 29], "x": 9000, "y": 29000}

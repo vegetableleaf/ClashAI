@@ -1698,3 +1698,82 @@ comparator flags plus the extras in each row.
 - Results: `results/live/r8{0..7}_{results.jsonl,cmp.txt}`, `a2c8_{diag_r78.jsonl,cls_r78.tsv,on_first.txt}`, the
   census outputs, and `a2c8_hidden_test.txt`.
 - Pod 33920: `/workspace/pilot/{sme8,lib_f635c,inputs_v20..v24,a2c8}`, runs `sme_live/r8*`.
+
+---
+
+# A2c-9Z: the Zap cluster (worker a2c9z, pod 33920)
+
+Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
+
+**Base reproduced (a).** `r9z0` (r87's command on a copy of sme8, `/workspace/pilot/sme9z`, `sme_live/run9z.sh`) is
+byte-identical to r87 (`results.jsonl` sha256 `b906fbbec39d3c6d`). With both new flags off, `extract.py` regenerates
+inputs_v24 byte for byte (sha256 `1c0e0699`, `a2c9z/regen9z.sh` = v24's flag set).
+
+| run | change | layer | inputs | exact apart from torn (unflagged) | exact frames | regressions | gained |
+|---|---|---|---|---:|---:|---|---|
+| r9z0 = r87 | | | v24 | 96 / 109 | 264,960 | | |
+| **r9z3** | Zaps the reader never shows, added from ZapFreeze buff groups | extractor | `SME_ZAP_ADD` (v25c `da218b6d`, 12 Zaps in 8 matches) | **98 / 109** | **275,425** | 0 | `204518`, `010245` |
+| **r9z4** | an extracted Zap's point re-solved from its buff group | extractor | + `SME_ZAP_POINT` (v25d `59517ff0`, 2 points) | **99 / 109** | **275,509** | 0 | `001702` |
+
+r9z1 / r9z2 were the same two steps before the crown-tower fix below (97 then 98 / 109, 0 regressions); they are kept in
+`results/live/` but are not the chain. **D1 (99 / 109) is reached (a).**
+
+## The discriminator (a; `a2c9z/zap_census.py`, `a2c9z/zap_eval.py`, `results/live/a2c9z_zap_eval.txt`)
+- **What puts ZapFreeze on a body, from the 987 groups (made tick c, source side) in the 138 matches:** Zap; Lightning
+  (decks without Zap or Electro cards: 48 groups, X-Bow -1,697 / tower -423); Electro Spirit (-159); hero Electro Wizard
+  (-376 / -195); and Electro Dragon, Electro Giant (reflect) and Electro Wizard, which at level 16 deal **exactly a
+  Zap's 306 / 307** (205 Zap-sized groups in decks without Zap, all but one with one of these bodies alive near).
+- So damage alone does not separate Zap from three Electro units. **The rule (`mech_rules.zap_is_cast`):**
+  1. the source side's deck (battle log) holds Zap;
+  2. every hit body with a known hp drop took that level's Zap damage (troop / building 305..319 at 16, crown tower 77);
+     a body with no hp of its own (hero IW cube) or a damage-reduction buff (evolved Knight's Fortify) is skipped;
+  3. no Electro body of the source side is alive within 9,000 units of a hit over [c - 4, c + 1]. 9,000 covers the
+     largest reach seen in the negative set (8,035, an Electro Dragon chain).
+- **Precision.** Negative set = the 749 groups of decks without Zap, classified as if they held a level-16 Zap:
+  **1 / 749 pass** (172835@4551, an Electro Dragon deck where no Electro body was read). With the deck test, 0.
+- **Recall.** Positive A = 21 groups of Zap decks with no Electro card: **20 / 21** (235355@5989 is missed: the hero
+  IW took 326, a Zap plus 20). Positive B = the 36 groups matched to an extracted (H-ZAP-inferred) Zap: **30 / 36**.
+  The 6 misses have an Electro Giant / Dragon 2.1-7.4 tiles from the hits (5) or the 326 drop (1). The rule only adds,
+  so these 6 plays stay; whether 161448@559/591 are Zaps or Electro Giant reflects is open (b).
+- **Independent check, the opponent's card cycle (a).** The 12 added Zaps never make a fitting deal unfitting
+  (0 cases); 4 of them turn a flagged `opp_no_fitting_deal` match into a fitting one (090406, 194858, 213436, 022149).
+  All 4 of those matches are then **exact on every frame** in r9z3 (they stay outside the 109 count, which uses the
+  A2b-1 flags).
+
+## SME_ZAP_ADD (a)
+- A buff group passing the rule with no Zap play of its side within 3 ticks of c - 1 becomes a Zap play at
+  R = c - 1 (the round-8 ZapFreeze dating), deck index from the battle-log deck.
+- Point: the 100-unit grid point covering every buff holder, then the most victim-side bodies that died in the hit gap
+  (hp <= the Zap's damage), then the fewest victim-side bodies without the buff, then the widest margin (up to 300) to
+  every reach edge, then nearest the centroid. Reach = 2,500 + the body's collision radius (crforge tables).
+- **Crown-tower fix (a):** 204518@1822's Zap also killed our 33-hp princess tower, which a dead-body list of troops
+  missed (r9z1: 204518 then failed at 1823 with the tower alive in the sim). Dead crown towers count when their hp <=
+  the tower damage (77). Census: it moves 2 points, 204518@1821 and 090406@4493; 090406 stays exact.
+- **All 12 adds (`results/live/a2c9z_zap_changes.txt`):** clean 204518@721 (X-Bow -306, the Electro Dragon 17 tiles off),
+  204518@1821, 010245@571 (princess tower -77, no Electro card in the deck); flagged 090406 x2, 161448, 194858, 204837,
+  213436 x3, 022149.
+
+## SME_ZAP_POINT (a)
+- An extracted Zap matched to a buff group keeps its point when that point covers every holder and every dead body
+  (150 units of slack: a frame is up to 2 ticks from the hit) and no unbuffed body; otherwise it is re-solved as above.
+- Without the slack, 180652 and 235355 (both exact) would have moved: their holders sat 91 and 21 units past the reach.
+- **It moves 2 of 36 points:** 001702@2491 (2300, 17836) -> (3200, 16797), which now covers the 3 Skeletons the game's
+  Zap killed (one was 667 units outside the old reach), and 204837@3322 (flagged).
+
+## Planted checks (a; `a2c9z/zap_test.py`: ok 13)
+The rule rejects an Electro body 7 tiles away, Lightning-sized and Electro Spirit-sized drops, 306 on a crown tower, the
+wrong level and a group of only Fortify hits; the point solver moves a point to cover the dead and away from an
+unbuffed body, and keeps a consistent point. The comparator is unchanged.
+
+## What fails now (r9z4, 10 / 109)
+000233@4599, 014928@5183, 101112@5923, 164443@3213, 170912@745, 171753@1789, 172835@2831, 180336@2911, 211239@1532,
+222712@4183: 9 body position and 1 Earthquake pulse (`r9z4_cmp.txt`); none involves a Zap.
+
+## Files (A2c-9Z)
+- `mech_rules.py`: `zap_groups`, `zap_is_cast`, `zap_point`, `zap_buffs` (SME_ZAP_ADD / SME_ZAP_POINT); `extract.py`:
+  the one call after the A2c-M hook.
+- `a2c9z/`: `zap_census.py` (group census), `zap_eval.py` (precision / recall / cycle check), `zap_dry.py` (every add and
+  re-point on an inputs file), `zap_why.py` (a point against its group), `zap_test.py`, `regen9z.sh`.
+- Results: `results/live/r9z{0..4}_{results.jsonl,cmp.txt}`, `a2c9z_zap_eval.txt`, `a2c9z_zap_changes.txt`,
+  `a2c9z_inputs_v24_v25d.txt`.
+- Pod 33920: `/workspace/pilot/{sme9z,inputs_v25a..v25d}`, runs `sme_live/r9z*`, `run9z.sh`, `chain9z*.sh`.
