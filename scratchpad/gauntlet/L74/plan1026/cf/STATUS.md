@@ -15,7 +15,13 @@ Labels: (a) measured, (b) plausible / untested, (c) contradicted.
 - LESSONS (both cost a restart): CF_DUMP must be an ABSOLUTE path (relative = the run's TREE, which has no logs/); the per-match fork cap
   cf_cap_ticks (default 8000) throttles a high-p audit to ~1 sample/match (cfaud2 u0: 124 samples, ~400 capped, fork 1.64x) -> audit runs set
   cf_cap_ticks=40000. cfaud1 (CRASH: relative CF_DUMP) and cfaud2 (cap) were stopped; cfaud2 u0 kept as data/cfaud2_u0.jsonl (128 matches, tooling test).
-- Current run: cfaud3 (same config as cfaud1 + cf_cap_ticks=40000), started 21:03 UTC, dump /workspace/cf3/logs/cfaud3.jsonl.
+- RESULTS (details P4_AUDIT.md, tables P4_TABLES_cfaud3/4.md, persona P4_PERSONA_cfaud3.md): cfaud3 DONE (1,024 matches, 1,926 samples u>=2); cfaud4 (cf_rocket_lead=drift A/B) died at u5 on a crforge
+  engine exception (Deflect ... king tower without a target, not modelled) after 4 usable updates. Pod 32657: NOTHING of mine is running; trees cfh5 (cfaud1-3), cfh6 (cfaud4 + cf_rocket_lead).
+- Codex: ticket .foreman/scratch/a2/codex/P3FORK2_1.md (collect + tabulate) was written but NOT dispatched: the run ended while I was working on it and the collection took 3 commands (latency); no Codex dispatch this seat.
+- NEXT (lead's 10-28 evening order): macro prefix alternatives, opt-in, starting with (1) rocket_cycle.after2 / Rocket cycling after a failed X-Bow in 2x/OT (horizon 600) and (2) def_xbow_hard (horizon 1200 / end, K 2);
+  executor per MACROS.md "What P3-FORK needs" (our-frame tiles -> cells, abort if the card is not in hand, 'none' prefix = mask the card class for the window, pin LIBRARY.json sha 828cedf7...); candidate rows for EVERY prefix
+  action (P6_DESIGN.md prefix rows); cheapest root for rocket_cycle = the OT/2x states (ot_start_share). NOT built in this seat (the audit consumed it).
+- Current run (superseded): cfaud3 (same config as cfaud1 + cf_cap_ticks=40000), started 21:03 UTC, dump /workspace/cf3/logs/cfaud3.jsonl.
   Command (from /workspace/cf3, ssh to 32657): `CRFORGE_LIB=/workspace/crforge_main/fe364ceb/plain/lib CRFORGE_FACADE_BUILD=/workspace/cf3/build_fe
   CF_DUMP=/workspace/cf3/logs/cfaudN.jsonl TREE=/workspace/cf3/cfh5 GUARD_GB=100 ./guarded.sh crforge cfaudN 0-27 --config
   scratchpad/gauntlet/L74/plan1026/cf/cf_pilot_clxiii.yaml max_updates=8 critic_warmup_updates=8 n_actors=26 E=32 G=4 screen_every=1000 proagree_every=1000

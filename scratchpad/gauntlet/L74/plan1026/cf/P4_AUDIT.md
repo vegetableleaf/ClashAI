@@ -25,7 +25,7 @@ continuing afterwards, pays less for it than for the policy's action.
 ## 1. Verdict per behaviour (P4 expected signs; main horizon dQ vs the policy's action, 90% CI, n samples)
 | behaviour (PLAN P4 expected sign) | SIM (a) | human / live evidence | verdict |
 |---|---|---|---|
-| Rocket on Ram Rider / Balloon / Royal Hogs with Tesla out of cycle: **+** | wincon `rocket_on`: hoglike -0.18 [-0.27, -0.09] (n 38); Tesla not in hand -0.25 [-0.36, -0.15] (n 47); in hand -0.11 | none on the exact cell (pros chip share 0.38 of investment plays; heavy-push Rocket in the answer pros 7.6% vs CLXIII 1.9%) | **WRONG SIGN**; cause candidate = alternative spec (static aim, section 3.D); A/B `cfaud4` |
+| Rocket on Ram Rider / Balloon / Royal Hogs with Tesla out of cycle: **+** | wincon `rocket_on`: hoglike -0.18 [-0.27, -0.09] (n 38); Tesla not in hand -0.25 [-0.36, -0.15] (n 47); in hand -0.11 | none on the exact cell (pros chip share 0.38 of investment plays; heavy-push Rocket in the answer pros 7.6% vs CLXIII 1.9%) | **WRONG SIGN**; static aim explained 0.08 of the -0.19 (section 6); still negative with drift (-0.10) |
 | Rocket on a lone Golem: **-** | heavy -0.25 [-0.41, -0.12] (n 29) | -- | sign agrees, but so does every other target (no discrimination) |
 | troop in front of a locked Mortar / X-Bow: **+** | siege `front` vs chosen -0.02 [-0.06, +0.03] (n 192); vs `troop_on` +0.02; terminal -0.04 [-0.18, +0.08] | macros: `sneaky_lock` win +0.007 [-0.042, +0.055] (not positive either) | **zero, unresolved** (power: +-0.05) |
 | chip Rocket in a close overtime: **+** | OT +0.009 [-0.07, +0.10] (n 29); close-OT subset too small (<20) | pros chip 2.79 per Rocket-opportunity-minute in OT even vs CLXIII 0.44 live | **~0, not positive**; mismatch with pros is of LEVEL |
@@ -58,7 +58,7 @@ C. **Opponent behaviour: contradicted as the primary cause for this effect (a); 
    mistakes 0.7% vs 6-7% live, REPORT_history). No SIM-opponent-only test can separate this without the human-like opponents (planned).
 D. **Badly specified alternative: likely for the wincon `rocket_on` (b -> A/B running).** The alternative aims at the unit's present position; a Hog/Ram walks ~2-3 tiles during the
    Rocket's flight, and the measured static-aim coverage is 38% of a blast's value vs 46% with drift (oracle 79%, decision_options.py lines 1395-1398). `cf_rocket_lead=drift` (landed) aims
-   `rocket_clump` and `rocket_on` where the bodies will be. Result of the A/B (`cfaud4`): see section 6.
+   `rocket_clump` and `rocket_on` where the bodies will be. Result of the A/B (`cfaud4`): section 6 (the aim explains 0.08-0.12 of the deficit; not the sign).
 E. **Engine fidelity (Rocket damage): consistent with the tables (a).** SIM Rocket on a full-HP princess: +0.10..0.11 of a princess (sample: 0.112 of 4,858); tables: RocketSpell Damage 580,
    CrownTowerDamagePercent -77. The real-game number at level 16 is not measured here (b -> ENG-SME): a Rocket worth 11% of a princess for 4 elixir is the quantity the whole sign depends on.
 F. **Engine fidelity (Tornado pull to the king): not observable as a benefit (a); mechanism unknown (b).** `tornado_king` vs `tornado_on` (same cast, no net pull): own princess HP lost +0.013 [-0.01, +0.03], own king HP lost +0.001,
@@ -84,7 +84,23 @@ king_redirect pro -0.085 [-0.147, -0.016] / HF +0.024; def_xbow_hard win +0.162 
 (0 chips 0.392 -> 2+ 0.564) is an association with the confounder "pros chip when safe"; the SIM's 0.696 vs 0.582 is also an association. The fork numbers above are CAUSAL within the SIM, so the correct
 comparison is fork-vs-macro-lift on the same situation cell (done in the table of section 1), not fork-vs-win-rate-by-chip-count.
 
-## 6. cfaud4 (cf_rocket_lead = drift, same triggers rocket / wincon / siege / rocket_tornado, 6 updates): see the end of this file once finished.
+## 6. cfaud4: A/B of the drift-aimed Rocket alternatives (cf_rocket_lead = drift; triggers rocket / wincon / siege / rocket_tornado; updates 1-4 = 512 matches)
+One change vs cfaud3 (same code otherwise, same pool; independent samples; table `P4_TABLES_cfaud4.md`). dQ vs the policy's action, static aim (cfaud3, updates >= 1) -> drift aim (cfaud4):
+| alternative | static | drift | reading |
+|---|---|---|---|
+| wincon `rocket_on` | -0.185 [-0.26, -0.12] (n 85) | **-0.103 [-0.17, -0.04]** (n 77) | aim explains ~0.08; 2x -0.070, OT -0.084 now include 0; still negative (a) |
+| rocket_tornado `rocket_clump` (the lone blast next to the combo) | -0.277 [-0.32, -0.24] | **-0.152 [-0.19, -0.11]** (n 245) | aim explains ~0.12 (a) |
+| rocket `rocket_clump` | -0.205 [-0.26, -0.15] | -0.166 [-0.23, -0.10] (n 100) | small; 2x -0.06, OT -0.08 now include 0 |
+| rocket `rocket_princess` (control, no lead) | -0.236 | -0.230 | unchanged, as it must be (b: the A/B has no hidden drift) |
+| rocket_tornado `combo` (already drift-aimed) | -0.321 | -0.325 | unchanged (control) |
+| siege `rocket_on` | -0.214 (n 87) | -0.259 (n 36) | not improved (n small; siege targets are buildings: no walk) |
+Verdict (a): the static aim was a real specification defect worth 0.08-0.12 on the Rocket-at-a-body alternatives; with it fixed the Rocket on a Hog-like/heavy wincon is -0.10 (was -0.19) and
+the wincon `rocket_on` is no longer resolved negative in 2x / OT - but nothing turns positive. Remaining gap (open): the wincon expected sign is still wrong at 1x (-0.15 [-0.27, -0.04]); the chip cost (section 0.3) is untouched by
+the aim. Next causes in order of cost: (1) the policy-continuation after a Rocket (a Rocket-aware continuation, i.e. the macro prefix with the learned policy masked for the window), (2) the wincon alternative lands in a state where the policy would have
+used Tesla/Knight: the audit compares to the policy's own action, so a good habit is the baseline (this is correct, not a defect), (3) engine fidelity (3.E, 3.F). `cf_rocket_lead` stays opt-in OFF in code; the lead should switch it on for
+production runs (drift is what the live decoder's `rocket_value_lead` uses): that is a one-key decision, hash-neutral until set.
+The run then died at update 5: an ENGINE exception in a fork actor (crforge fe364ceb): `UnsupportedOperationException: Deflect_3000014 deflects proj_4000359 from the king tower KingTower_0_0 without a target, which is not modelled`
+(CfCore.step; seen twice, actor 24; no such crash in cfaud3's 1,024 matches; the drift-aimed Rocket lands elsewhere). For ENG-SME: a projectile deflected by the king tower with no target is unmodelled; `data/cfaud4.log.txt` lines 74-100.
 
 ## 7. Design note: raising fork credit's share of the gradient (for the lead / owner; no code)
 Numbers (a, cfaud3 / pilot4): real rows ~325 per match (41.6k per 128-match update); sd of real GAE advantage 0.174; cf rows (after shrink) |A| 0.36-0.54; cost ~12-14 s of actor wall per
@@ -100,7 +116,7 @@ makes the rollout wall largely free until rollouts become the bottleneck (b: LOO
   triggers at weight 0 (they still log and are audited each update) and raise them as the audit signs turn right.
 
 ## 8. Routing (for the lead)
-- ENG-SME: (i) Rocket tower damage and level-16 scaling vs the real game (SIM 11% of a princess for 4 elixir); (ii) Tornado pull to the king: scripted Hog-at-bridge scenario, does the unit retarget the king / lose princess HP; (iii) OT tiebreak rule value of tower HP.
+- ENG-SME: (0) crforge fe364ceb raises UnsupportedOperationException `Deflect_3000014 deflects proj_4000359 from KingTower_0_0 without a target` in CfCore.step (cfaud4, section 6); (i) Rocket tower damage and level-16 scaling vs the real game (SIM 11% of a princess for 4 elixir); (ii) Tornado pull to the king: scripted Hog-at-bridge scenario, does the unit retarget the king / lose princess HP; (iii) OT tiebreak rule value of tower HP.
 - P2-OPP: SIM opponents do not reproduce the human response to elixir-spending plans (conversion 0.7% vs 6-7%); persona dependence exists only through the deck archetype; a persona-forced run needs opponents that
   differ in X-Bow answers.
 - P6-MACRO / P3-FORK (next): prefix alternatives for rocket_cycle after failed X-Bow in 2x/OT (horizon 600, 'after2') and def_xbow_hard (horizon 1200 / end, K 2); credit on every prefix action; the OT / 2x state roots (`ot_start_share`)
