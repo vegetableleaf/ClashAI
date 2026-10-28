@@ -29,6 +29,6 @@
   chunk is now retried up to 3x inside run_x23.py (commit 2d46cec, swept into a P2-OPP1 commit via the shared index).
 
 ## Next
-- Analysis RUNNING (started ~15:44 UTC on 33308): cd /workspace/rx23s; /workspace/venvf16/bin/python cb/scratchpad/gauntlet/L74/plan1026/rx/x23/analyze.py
+- DONE: analysis -> rx/out/x23_final.{json,out}, trade-term shares rx/out/x23_final_terms.json (term_share.py). Re-run: cd /workspace/rx23s; /workspace/venvf16/bin/python cb/scratchpad/gauntlet/L74/plan1026/rx/x23/analyze.py
   /workspace/rx23/hfE.npz liveE.npz x23_bl.jsonl an_final.json ev ev30 > an_final.out
-- Copy an_final.{json,out} to rx/out/x23_*, commit + push, report the per-variant gate table.
+- Nothing running. Pods 33308 / 30408 hold no RX-X23 processes.

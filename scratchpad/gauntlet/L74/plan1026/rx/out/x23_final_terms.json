@@ -1,0 +1,114 @@
+{
+ "alldef_e4": {
+  "n": 960,
+  "trade_i": 0.2116758774213178,
+  "trade_ii": 0.1026893381845922,
+  "committed_diff_end": 22.95600183022519,
+  "committed_part_i": 0.1225862437320015
+ },
+ "alldef_iu40": {
+  "n": 960,
+  "trade_i": 0.23238806870632617,
+  "trade_ii": 0.13716190586792898,
+  "committed_diff_end": 21.220558962225915,
+  "committed_part_i": 0.11331888855522088
+ },
+ "clxiii_e4": {
+  "n": 960,
+  "trade_i": 0.0031100799881836976,
+  "trade_ii": 0.011913080070079872,
+  "committed_diff_end": -1.0768854409456252,
+  "committed_part_i": -0.00575062426425627
+ },
+ "clxiii_iu40": {
+  "n": 960,
+  "trade_i": 0.052953065456957035,
+  "trade_ii": 0.05966657006480894,
+  "committed_diff_end": 0.43619483908017476,
+  "committed_part_i": 0.0023293031275036687
+ },
+ "hold10_e4": {
+  "n": 959,
+  "trade_i": 0.0647848729807244,
+  "trade_ii": 0.020948052257152957,
+  "committed_diff_end": 9.043662677840471,
+  "committed_part_i": 0.0482936290672391
+ },
+ "hold10_iu40": {
+  "n": 960,
+  "trade_i": 0.10018519926121237,
+  "trade_ii": 0.06084642861189575,
+  "committed_diff_end": 9.154301689068477,
+  "committed_part_i": 0.048884447141613295
+ },
+ "imit_e4": {
+  "n": 960,
+  "trade_i": 0.05659783343288108,
+  "trade_ii": 0.057305833070956456,
+  "committed_diff_end": 0.9919096533209085,
+  "committed_part_i": 0.005296849138686848
+ },
+ "imit_iu40": {
+  "n": 960,
+  "trade_i": 0.08327347530317321,
+  "trade_ii": 0.0930202151267638,
+  "committed_diff_end": 0.3569450416912635,
+  "committed_part_i": 0.001906105087606426
+ },
+ "nospell_e4": {
+  "n": 960,
+  "trade_i": 0.07434722713304483,
+  "trade_ii": 0.006290590528323282,
+  "committed_diff_end": 13.404667925586303,
+  "committed_part_i": 0.07158162390930363
+ },
+ "nospell_iu40": {
+  "n": 960,
+  "trade_i": 0.11554834196123386,
+  "trade_ii": 0.042570093762633404,
+  "committed_diff_end": 15.08704809534053,
+  "committed_part_i": 0.0805656215176256
+ },
+ "rocket_tank_e4": {
+  "n": 960,
+  "trade_i": 0.02424846038062581,
+  "trade_ii": 0.033078826218083106,
+  "committed_diff_end": -0.6109194089968999,
+  "committed_part_i": -0.003262341418412826
+ },
+ "rocket_tank_iu40": {
+  "n": 960,
+  "trade_i": 0.07592802505630306,
+  "trade_ii": 0.0830771939596452,
+  "committed_diff_end": 1.0622885525226593,
+  "committed_part_i": 0.005672676120882691
+ },
+ "rocket_tower_e4": {
+  "n": 960,
+  "trade_i": 0.0599379849112204,
+  "trade_ii": 0.08771368347649867,
+  "committed_diff_end": -2.2714141135414443,
+  "committed_part_i": -0.012129469504235884
+ },
+ "rocket_tower_iu40": {
+  "n": 960,
+  "trade_i": 0.1120346916053579,
+  "trade_ii": 0.12421565495427381,
+  "committed_diff_end": 1.4976944307486215,
+  "committed_part_i": 0.007997766156390428
+ },
+ "xbow_spam_e4": {
+  "n": 960,
+  "trade_i": -0.04187545375276085,
+  "trade_ii": -0.03940930265845896,
+  "committed_diff_end": -0.7889498725533486,
+  "committed_part_i": -0.0042130333533000755
+ },
+ "xbow_spam_iu40": {
+  "n": 960,
+  "trade_i": 0.0028870127237188947,
+  "trade_ii": 0.005028034039125005,
+  "committed_diff_end": 0.16025892893473306,
+  "committed_part_i": 0.0008557910156966553
+ }
+}
