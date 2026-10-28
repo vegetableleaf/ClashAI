@@ -1,0 +1,6 @@
+Preparing worktree (detached HEAD 0a1a18e9)
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /tmp/cfsync_build_0a1a18e9_tp/core/src/main/java/org/crforge/core/util/DeepCopy.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+built /workspace/crforge_main/0a1a18e9/tickprobe core 2204ca3560a4f113

@@ -1,0 +1,2 @@
+ls: cannot access '/dev/shm/s4': No such file or directory
+ls: cannot access '/dev/shm/s4/j7.sh': No such file or directory

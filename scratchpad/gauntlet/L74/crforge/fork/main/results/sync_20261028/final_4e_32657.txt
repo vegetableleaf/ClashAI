@@ -1,0 +1,29 @@
+Wed Oct 28 19:06:10 UTC 2026
+total 4
+drwxr-xr-x 6 root root  109 Oct 28 18:51 .
+drwxr-xr-x 1 root root 4096 Oct 28 18:20 ..
+drwxr-xr-x 4 root root   48 Oct 28 17:59 0a1a18e9
+drwxr-xr-x 4 root root   48 Oct 28 13:44 624eeb45
+drwxr-xr-x 4 root root   48 Oct 28 12:30 a677e080
+lrwxrwxrwx 1 root root    8 Oct 28 18:51 current -> fe364ceb
+drwxr-xr-x 4 root root   48 Oct 28 18:03 fe364ceb
+lrwxrwxrwx 1 root root 8 Oct 28 18:51 /workspace/crforge_main/current -> fe364ceb
+fe364ceb
+2007780       1 2007780 Ss   bash sme_gate12.sh sync_20261028 /workspace/crforge_main/0a1a18e9/tickprobe/lib
+2207077 2007780 2007780 S    bash runH.sh main_sync_20261028_fresh1 /workspace/crforge_cache/tables/16.635.3 /workspace/pilot/f1fix/f1_gen2_rf.jsonl /workspace/pilot/fresh/fresh1/frames SME_LIB=/workspace/crforge_main/0a1a18e9/tickprobe/lib
+2207079 2207077 2007780 Sl   python3 sme_live.py all --workers 12 --inputs /workspace/pilot/f1fix/f1_gen2_rf.jsonl --frames /workspace/pilot/fresh/fresh1/frames --out /dev/shm/f1fix_main_sync_20261028_fresh1
+2207090 2207079 2007780 S    python3 sme_live.py all --workers 12 --inputs /workspace/pilot/f1fix/f1_gen2_rf.jsonl --frames /workspace/pilot/fresh/fresh1/frames --out /dev/shm/f1fix_main_sync_20261028_fresh1
+2207092 2207079 2007780 S    python3 sme_live.py all --workers 12 --inputs /workspace/pilot/f1fix/f1_gen2_rf.jsonl --frames /workspace/pilot/fresh/fresh1/frames --out /dev/shm/f1fix_main_sync_20261028_fresh1
+2207093 2207079 2007780 S    python3 sme_live.py all --workers 12 --inputs /workspace/pilot/f1fix/f1_gen2_rf.jsonl --frames /workspace/pilot/fresh/fresh1/frames --out /dev/shm/f1fix_main_sync_20261028_fresh1
+2207094 2207079 2007780 S    python3 sme_live.py all --workers 12 --inputs /workspace/pilot/f1fix/f1_gen2_rf.jsonl --frames /workspace/pilot/fresh/fresh1/frames --out /dev/shm/f1fix_main_sync_20261028_fresh1
+2207095 2207079 2007780 S    python3 sme_live.py all --workers 12 --inputs /workspace/pilot/f1fix/f1_gen2_rf.jsonl --frames /workspace/pilot/fresh/fresh1/frames --out /dev/shm/f1fix_main_sync_20261028_fresh1
+2207096 2207079 2007780 S    python3 sme_live.py all --workers 12 --inputs /workspace/pilot/f1fix/f1_gen2_rf.jsonl --frames /workspace/pilot/fresh/fresh1/frames --out /dev/shm/f1fix_main_sync_20261028_fresh1
+2207097 2207079 2007780 S    python3 sme_live.py all --workers 12 --inputs /workspace/pilot/f1fix/f1_gen2_rf.jsonl --frames /workspace/pilot/fresh/fresh1/frames --out /dev/shm/f1fix_main_sync_20261028_fresh1
+2207098 2207079 2007780 S    python3 sme_live.py all --workers 12 --inputs /workspace/pilot/f1fix/f1_gen2_rf.jsonl --frames /workspace/pilot/fresh/fresh1/frames --out /dev/shm/f1fix_main_sync_20261028_fresh1
+2207099 2207079 2007780 S    python3 sme_live.py all --workers 12 --inputs /workspace/pilot/f1fix/f1_gen2_rf.jsonl --frames /workspace/pilot/fresh/fresh1/frames --out /dev/shm/f1fix_main_sync_20261028_fresh1
+2207100 2207079 2007780 S    python3 sme_live.py all --workers 12 --inputs /workspace/pilot/f1fix/f1_gen2_rf.jsonl --frames /workspace/pilot/fresh/fresh1/frames --out /dev/shm/f1fix_main_sync_20261028_fresh1
+2207101 2207079 2007780 S    python3 sme_live.py all --workers 12 --inputs /workspace/pilot/f1fix/f1_gen2_rf.jsonl --frames /workspace/pilot/fresh/fresh1/frames --out /dev/shm/f1fix_main_sync_20261028_fresh1
+2207102 2207079 2007780 S    python3 sme_live.py all --workers 12 --inputs /workspace/pilot/f1fix/f1_gen2_rf.jsonl --frames /workspace/pilot/fresh/fresh1/frames --out /dev/shm/f1fix_main_sync_20261028_fresh1
+2214166 2207094 2007780 Sl   java -Xmx16g -cp /workspace/crforge_main/0a1a18e9/tickprobe/lib/*:/workspace/pilot/f1fix/sme11f/build SmeRun /workspace/crforge_cache/tables/16.635.3 /dev/shm/f1fix_main_sync_20261028_fresh1/live_play_20261028_003008/work/jobs.txt 4
+2214261 2207090 2007780 Sl   java -Xmx8g -cp /workspace/crforge_main/0a1a18e9/tickprobe/lib/*:/workspace/pilot/f1fix/sme11f/build_snap SnapRun2 /workspace/crforge_cache/tables/16.635.3 /dev/shm/f1fix_main_sync_20261028_fresh1/live_play_20261028_000420/work/snap_jobs.txt 1
+2214293 2207092 2007780 Sl   java -Xmx16g -cp /workspace/crforge_main/0a1a18e9/tickprobe/lib/*:/workspace/pilot/f1fix/sme11f/build SmeRun /workspace/crforge_cache/tables/16.635.3 /dev/shm/f1fix_main_sync_20261028_fresh1/live_play_20261028_001302/work/jobs.txt 4

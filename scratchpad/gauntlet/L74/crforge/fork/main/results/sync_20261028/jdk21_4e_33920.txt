@@ -1,0 +1,5 @@
+jdk-21.0.13+9
+bash: line 1: /dev/shm/jdk21/jdk-21.0.13+9/bin/java: Permission denied
+java_exit=126
+Filesystem     1M-blocks   Used Available Use% Mounted on
+overlay           61440M 59972M     1469M  98% /

@@ -1,0 +1,158 @@
+upstream commits past clashbot-main: 19 (merge base e5462c8278f537a99361f248444efef53efebe1f)
+== 6523eddd chore(deps): bump astral-sh/setup-uv from 10.3.0 to 10.3.2 (#751)
+
+ .github/workflows/build-and-test.yml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+== 91bccf5f chore(deps): bump actions/download-artifact from 7 to 8 (#752)
+
+ .github/workflows/build-and-test.yml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+== cbfe48de perf: build champion views only for an observer that reads them (#753)
+
+ .../org/crforge/core/battle/unit/BattleWorld.java  |  10 +-
+ .../crforge/core/battle/unit/WorldObserver.java    |  12 ++-
+ .../core/battle/unit/BattleChampionViewsTest.java  | 120 +++++++++++++++++++++
+ 3 files changed, 140 insertions(+), 2 deletions(-)
+== e58bbf29 perf: stop growing announcement lists in movement and state visit (#754)
+
+ .../crforge/core/battle/unit/CharacterEntity.java  | 21 ++++++++--
+ .../org/crforge/core/battle/unit/TowerEntity.java  |  9 ++++-
+ .../core/pathfinding/move/MovementChain.java       | 46 +++++++++++++++++-----
+ 3 files changed, 63 insertions(+), 13 deletions(-)
+== 68bb009e perf: reuse each unit's state visit answers across steps (#755)
+
+ .../crforge/core/battle/unit/CharacterEntity.java  | 43 +++++++++++++++++++++-
+ .../org/crforge/core/battle/unit/TowerEntity.java  | 18 ++++++++-
+ .../core/pathfinding/state/StateVisitGlobals.java  |  6 ++-
+ 3 files changed, 62 insertions(+), 5 deletions(-)
+== 20f080dc perf: drop streams and boxing from buff speed and hit list checks (#756)
+
+ .../crforge/core/battle/unit/BuffComponent.java    | 38 +++++++++++++++++++---
+ .../pathfinding/target/ReferenceValidator.java     | 26 ++++++++++++---
+ 2 files changed, 55 insertions(+), 9 deletions(-)
+== 7cec0492 feat: add role icons and crowd labels to the visualizer (#757)
+
+ .../crforge/core/battle/data/BattleRecords.java    |   8 +
+ .../org/crforge/desktop/battle/BattleAdapter.java  |  83 +++-
+ .../org/crforge/desktop/battle/EntityView.java     |  29 +-
+ .../java/org/crforge/desktop/battle/UnitRole.java  |  87 +++++
+ .../org/crforge/desktop/render/BattleRenderer.java | 426 +++++++++++++++++----
+ .../crforge/desktop/render/BattleWorkspace.java    |  28 +-
+ .../org/crforge/desktop/render/CrowdLayout.java    | 136 +++++++
+ .../crforge/desktop/render/RoleIconRenderer.java   | 227 +++++++++++
+ .../crforge/desktop/screen/DebugGameScreen.java    |   2 +
+ .../crforge/desktop/screen/ReplayGameScreen.java   |   2 +
+ .../core/battle/unit/CrowdSmokeFixture.java        |  60 +++
+ .../java/org/crforge/desktop/WorkspaceSmoke.java   |  46 ++-
+ .../crforge/desktop/battle/BattleAdapterTest.java  |  89 +++++
+ .../org/crforge/desktop/battle/UnitRoleTest.java   | 109 ++++++
+ .../crforge/desktop/render/CrowdLayoutTest.java    | 142 +++++++
+ docs/architecture.md                               |  31 +-
+ 16 files changed, 1396 insertions(+), 109 deletions(-)
+== 8c9480a8 chore: score coverage on main and allow no expectations folder yet (#759)
+
+ .github/workflows/build-and-test.yml | 40 ++++++++++++++++++------------------
+ AGENTS.md                            |  2 +-
+ conformance/README.md                |  8 ++++----
+ conformance/build.gradle.kts         |  5 ++++-
+ 4 files changed, 29 insertions(+), 26 deletions(-)
+== 13cf38a3 docs: bring the visualizer and environment docs up to date (#760)
+
+ docs/architecture.md | 55 +++++++++++++++++++++++++++++++---------------------
+ docs/environment.md  | 12 ++++++------
+ 2 files changed, 39 insertions(+), 28 deletions(-)
+== 1e8354e3 docs: drop refusals and roadmap rows later work replaced (#761)
+
+ CONTRIBUTING.md                                    |  1 +
+ .../crforge/core/battle/data/BattleRecords.java    | 14 ++--
+ docs/battle-core.md                                | 80 +++++++++++++---------
+ docs/game-tables.md                                |  2 +-
+ docs/pathfinding.md                                |  8 +--
+ 5 files changed, 60 insertions(+), 45 deletions(-)
+== 529107a2 perf: share the standard scaling and targeting records (#762)
+
+ .../core/pathfinding/combat/ScalingGlobals.java    | 37 +++++++++++++---------
+ .../core/pathfinding/move/SpeedGlobals.java        |  8 ++++-
+ .../pathfinding/target/AttackSequenceEntry.java    | 10 ++++--
+ .../target/DefaultSelectionQueries.java            | 11 +++++--
+ .../pathfinding/target/DefaultTargetSelection.java | 16 +++++++---
+ .../core/pathfinding/target/TargetingGlobals.java  | 35 ++++++++++++--------
+ 6 files changed, 78 insertions(+), 39 deletions(-)
+== 823b578b perf: walk the hottest per-step lists by index (#763)
+
+ .../java/org/crforge/core/battle/EntityHolder.java  | 21 +++++++++++++++------
+ .../crforge/core/battle/action/ActionHolder.java    |  7 ++++---
+ .../org/crforge/core/battle/unit/BuffComponent.java | 15 ++++++++++-----
+ .../core/battle/unit/ChampionController.java        |  4 +++-
+ .../crforge/core/battle/unit/CharacterEntity.java   |  7 ++++++-
+ .../org/crforge/core/battle/unit/WorldEntity.java   |  4 +++-
+ 6 files changed, 41 insertions(+), 17 deletions(-)
+== ef3a4e2d docs: record the performance baseline of 16.635.3 (#764)
+
+ docs/assets/performance-823b578b-alloc.png | Bin 0 -> 133763 bytes
+ docs/assets/performance-823b578b-cpu.png   | Bin 0 -> 142513 bytes
+ docs/performance-history.md                | 102 +++++++++++++++++++++++++++++
+ docs/performance.md                        |  53 +++++++++------
+ 4 files changed, 134 insertions(+), 21 deletions(-)
+== eb8c7da3 chore: build and test on Java 21 (#765)
+
+ .github/workflows/build-and-test.yml               | 24 +++++++++++-----------
+ CONTRIBUTING.md                                    |  4 ++--
+ README.md                                          |  6 +++---
+ build.gradle.kts                                   |  2 +-
+ .../main/java/org/crforge/core/util/DeepCopy.java  |  2 +-
+ docs/environment.md                                |  2 +-
+ 6 files changed, 20 insertions(+), 20 deletions(-)
+== 06b3eed7 perf: register only the arrivals as candidates at each pre-pass (#766)
+
+ .../org/crforge/core/battle/unit/BattleWorld.java  | 21 +++++++++++--
+ .../org/crforge/core/battle/unit/WorldEntity.java  | 34 +++++++++++++++++++++-
+ 2 files changed, 52 insertions(+), 3 deletions(-)
+== 6e74cf26 perf: test each entity once in a spatial index query (#767)
+
+ .../java/org/crforge/core/pathfinding/index/SpatialIndex.java     | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+== 348d6cf1 perf: search lanes over the map's road cells only (#768)
+
+ .../crforge/core/battle/deploy/CardPlacement.java  |   5 +-
+ .../org/crforge/core/battle/unit/BattleWorld.java  |  26 +----
+ .../crforge/core/battle/unit/CharacterEntity.java  |   4 +-
+ .../org/crforge/core/battle/unit/TowerEntity.java  |   4 +-
+ .../core/pathfinding/grid/LaneAssignment.java      | 123 ++++++++++++++-------
+ .../org/crforge/core/pathfinding/grid/TileMap.java |  15 +++
+ .../core/pathfinding/grid/LaneAssignmentTest.java  |  70 ++++++++++++
+ 7 files changed, 176 insertions(+), 71 deletions(-)
+== d7aaec93 perf: copy the arena lists only for the world's observers (#769)
+
+ .../org/crforge/core/battle/unit/BattleWorld.java    | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
+== c2ecb733 docs: record the performance baseline on Java 21 (#770)
+
+ docs/assets/performance-823b578b-alloc.png | Bin 133763 -> 0 bytes
+ docs/assets/performance-823b578b-cpu.png   | Bin 142513 -> 0 bytes
+ docs/assets/performance-d7aaec93-alloc.png | Bin 0 -> 139239 bytes
+ docs/assets/performance-d7aaec93-cpu.png   | Bin 0 -> 150123 bytes
+ docs/performance-history.md                |  80 ++++++++++++++++++++++++++++-
+ docs/performance.md                        |  40 ++++++++-------
+ 6 files changed, 100 insertions(+), 20 deletions(-)
+paths outside docs/README:
+ .../pathfinding/target/ReferenceValidator.java     |  26 +-
+ .../core/pathfinding/target/TargetingGlobals.java  |  35 +-
+ .../main/java/org/crforge/core/util/DeepCopy.java  |   2 +-
+ .../core/battle/unit/BattleChampionViewsTest.java  | 120 ++++++
+ .../core/pathfinding/grid/LaneAssignmentTest.java  |  70 ++++
+ .../org/crforge/desktop/battle/BattleAdapter.java  |  83 +++-
+ .../org/crforge/desktop/battle/EntityView.java     |  29 +-
+ .../java/org/crforge/desktop/battle/UnitRole.java  |  87 +++++
+ .../org/crforge/desktop/render/BattleRenderer.java | 426 +++++++++++++++++----
+ .../crforge/desktop/render/BattleWorkspace.java    |  28 +-
+ .../org/crforge/desktop/render/CrowdLayout.java    | 136 +++++++
+ .../crforge/desktop/render/RoleIconRenderer.java   | 227 +++++++++++
+ .../crforge/desktop/screen/DebugGameScreen.java    |   2 +
+ .../crforge/desktop/screen/ReplayGameScreen.java   |   2 +
+ .../core/battle/unit/CrowdSmokeFixture.java        |  60 +++
+ .../java/org/crforge/desktop/WorkspaceSmoke.java   |  46 ++-
+ .../crforge/desktop/battle/BattleAdapterTest.java  |  89 +++++
+ .../org/crforge/desktop/battle/UnitRoleTest.java   | 109 ++++++
+ .../crforge/desktop/render/CrowdLayoutTest.java    | 142 +++++++
+ 46 files changed, 2109 insertions(+), 327 deletions(-)

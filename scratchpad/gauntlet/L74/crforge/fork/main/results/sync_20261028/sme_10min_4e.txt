@@ -1,0 +1,20 @@
+Wed Oct 28 18:35:56 UTC 2026
+    PID     ELAPSED COMMAND
+2007780       09:59 bash sme_gate12.sh sync_20261028 /workspace/crforge_main/0a1a18e9/tickprobe/lib
+dev log tail
+live_play_20261026_084110 ({'exact': 111, 'div': 1653}, 373)
+live_play_20261026_084438 ({'exact': 8, 'div': 1758}, 166)
+live_play_20261026_085635 ({'exact': 1765, 'torn_t1': 1}, None)
+live_play_20261026_090406 ({'exact': 2211}, None)
+live_play_20261026_094126 ({'exact': 2536, 'torn_snap': 1}, None)
+live_play_20261026_095134 ({'exact': 1758, 'torn_cmd': 3, 'torn_mixed': 1, 'torn_t1': 1}, None)
+live_play_20261026_095457 ({'exact': 3023, 'torn_t1': 2, 'torn_cmd': 1, 'torn_step': 1}, None)
+live_play_20261026_100018 ({'exact': 1887, 'torn_cmd': 1, 'torn_step': 1, 'div': 53}, 2286)
+live_play_20261026_100354 ({'exact': 2275, 'torn_step': 1, 'torn_cmd': 1}, None)
+live_play_20261026_100756 ({'exact': 1766}, None)
+dev log linkage errors
+result /dev/shm/f1fix_main_sync_20261028_dev/live_play_20261026_080408/result.json
+result /dev/shm/f1fix_main_sync_20261028_dev/live_play_20261026_080929/result.json
+result /dev/shm/f1fix_main_sync_20261028_dev/live_play_20261026_082025/result.json
+result /dev/shm/f1fix_main_sync_20261028_dev/live_play_20261026_083722/result.json
+result /dev/shm/f1fix_main_sync_20261028_dev/live_play_20261026_084110/result.json

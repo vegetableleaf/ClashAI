@@ -1,0 +1,10 @@
+total 4
+drwxr-xr-x 5 root root   70 Oct 28 17:50 .
+drwxr-xr-x 1 root root 4096 Oct 28 17:47 ..
+drwxr-xr-x 4 root root   48 Oct 28 17:59 0a1a18e9
+drwxr-xr-x 4 root root   48 Oct 28 13:44 624eeb45
+drwxr-xr-x 4 root root   48 Oct 28 12:30 a677e080
+624eeb45183e1fe981252dd18f99225877595d2b
+0a1a18e94fdd04139197273f6ec1ff21d6f912ad
+    PID STAT COMMAND
+{"crforge_sha": "0a1a18e94fdd04139197273f6ec1ff21d6f912ad", "ref": "0a1a18e9", "tickprobe": true, "tickprobe_port": "0002 drain after list.remove(i)", "jars": {"aircompressor-2.0.3.jar": "b86bb66f610079e0bf790d62e2ff68853eb0dc4748a6d68ae28bce92b68094aa", "core-1.0-SNAPSHOT.jar": "2204ca3560a4f113b3937c31b9df84d7e1de6de5a66580b0e5eab86194bc355b", "env-1.0-SNAPSHOT.jar": "b97bb05ac10ec886c8e27a5016d489d8d50c65b5c986da7c5729518ebf3d0ece", "jackson-annotations-2.22.jar": "21ddb598807d3a51a876704eb979d9296e1c6a6f47ab1826ff88c6d6a127a2d0", "jackson-core-2.22.2.jar": "ff167a6317be15895706c26668f45b898efe40ab8780970658210fe1393d52a6", "jackson-databind-2.22.2.jar": "d0da14c12b16b5d54719aa172d83b542ff4abeb8b0fb7db476fde8ceece760ca"}}

@@ -1,0 +1,13 @@
+plants {'plants': 22434, 'caught': 22405} missed []
+all: unflagged 28 pass 22 (CP95 0.620) strict 21 (CP95 0.581)
+never scored before (not READER-TORN trial): unflagged 23 pass 17 (CP95 0.549) strict 16 (CP95 0.504)
+trial subset: unflagged 5 pass 5 (CP95 0.549) strict 5 (CP95 0.549)
+first-divergence census (unflagged failures):
+  20261028_091720 first_div 3519 div frames 170 [["U_rec_only", [1, 6499, 23499, 2076], "Knight", [0, 0, -392]], ["U_sim_only", [1, 6499, 23499, 1684], "C:Knight_EV1", [0, 0, 392]]]
+  20261028_100341 first_div 2930 div frames 374 [["U_rec_only", [1, 8500, 23500, -1], "Tombstone", [0, 0, 704]], ["U_rec_only", [1, 8606, 23606, 6748], "Tombstone", [-106, -106, -6045]], ["U_sim_only", [1, 8500, 23500, 703], "C:TombstoneHero_Monster_Passive", [0, 0, -704]], ["U_sim_only", [1, 8500, 23500, 4089995], "C:TombstoneHero_visual_dummy",
+  20261028_101018 first_div 5968 div frames 121 [["U_rec_only", [0, 3499, 14500, 3578], "Goblinstein", null], ["U_rec_only", [0, 4499, 11000, 1153], "Goblinstein", null], ["U_rec_only", [1, 2226, 20256, 998], "IceWizard", [27, -53, 0]], ["U_rec_only", [1, 2226, 20256, 1100], "IceWizard", [27, -53, -102]], ["U_sim_only", [1, 2253, 20203, 998], "C:
+  20261028_110715 first_div 4505 div frames 495 [["U_rec_only", [1, 1500, 19500, 2556], "Xbow", [1000, 0, 0]], ["U_sim_only", [1, 2500, 19500, 2556], "C:Xbow", [-1000, 0, 0]]]
+  20261028_123045 first_div 1768 div frames 1643 [["U_rec_only", [0, 1937, 13256, 130], "Witch", [-2, 0, 0]], ["U_rec_only", [0, 2622, 13578, 130], "Witch", [0, -4, 0]], ["U_rec_only", [0, 2783, 14372, 1341], "Witch", [-2, -2, 0]], ["U_rec_only", [0, 3350, 13317, 130], "Witch", [2, -1, 0]], ["U_rec_only", [0, 3745, 15205, 2875], "GoldenKnight", [-
+  20261028_130148 first_div 3404 div frames 141 [["T_rec_only", [0, 3500, 6500, 563], "tower", [0, 0, -77]], ["T_sim_only", [0, 3500, 6500, 486], "T:PrincessTower", [0, 0, 77]]]
+matches 40 40 identical on counts/first_div/frames/first_detail 40
+sorted results sha256 F2_fe ba810965dd467894 F2_H ba810965dd467894

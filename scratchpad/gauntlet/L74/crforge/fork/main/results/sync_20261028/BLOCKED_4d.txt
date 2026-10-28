@@ -1,0 +1,10 @@
+ENG-SME_4d STATUS: BLOCKED
+Step 1 failed on 32657: /dev/shm is mounted noexec. Extracted /dev/shm/jdk21/jdk-21.0.13+9/bin/java has executable permissions but execution returns Permission denied (exit 126). See jdk21_32657.txt and final_4d_32657.txt. No alternate location or mount change authorized; stopped.
+JDK transfer/extraction on 32657 completed; version check failed. Sequential transfer loop exited before copying JDK to 33920.
+Lead determinism copied from 30408 /dev/shm/s4/det21/det.txt to det.txt without rerunning.
+Both libs copied and SHA256SUMS verified: lib_copy_32657.txt OK32657; lib_copy_33920.txt OK33920.
+sme_gate12.diff contains only the two specified WORKERS replacements. SME gate was not launched.
+j7.sh prepared locally with the specified JDK javac/java substitutions; neither J7 run launched.
+No current entry in precheck_4d_{30408,32657,33920}.txt or final_4d_{30408,32657,33920}.txt. No current mutation, branch change, ship_main invocation, live operation, pod stop, or process kill performed.
+Transfer process exited 126; no started process remains running. Final process checks saved in final_4d_*.txt.
+Missing acceptance artifacts: sme_gate.txt, j7_m1_line.txt, j7_m1_identity.txt, j7_sync_line.txt, j7_sync_identity.txt, j7_cmp.txt.

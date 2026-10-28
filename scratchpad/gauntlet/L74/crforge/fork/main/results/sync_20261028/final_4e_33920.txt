@@ -1,0 +1,10 @@
+Wed Oct 28 19:06:12 UTC 2026
+total 4
+drwxr-xr-x 5 root root   89 Oct 28 18:51 .
+drwxr-xr-x 1 root root 4096 Oct 28 18:26 ..
+drwxr-xr-x 4 root root   36 Oct 28 13:44 624eeb45
+drwxr-xr-x 4 root root   48 Oct 28 12:30 a677e080
+lrwxrwxrwx 1 root root    8 Oct 28 18:51 current -> fe364ceb
+drwxr-xr-x 4 root root   36 Oct 28 18:03 fe364ceb
+lrwxrwxrwx 1 root root 8 Oct 28 18:51 /workspace/crforge_main/current -> fe364ceb
+fe364ceb

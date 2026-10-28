@@ -1,0 +1,43 @@
+openjdk version "17.0.20.1" 2026-08-18
+OpenJDK Runtime Environment (build 17.0.20.1+1-1-24.04-Ubuntu)
+OpenJDK 64-Bit Server VM (build 17.0.20.1+1-1-24.04-Ubuntu, mixed mode, sharing)
+javac 17.0.20.1
+plain GameTables
+Classfile jar:file:///workspace/crforge_main/0a1a18e9/plain/lib/core-1.0-SNAPSHOT.jar!/org/crforge/core/battle/data/GameTables.class
+  Last modified Feb 1, 1980; size 14191 bytes
+  SHA-256 checksum a0b35929cc8b56e02ea93d7a39523115c0e3d19fd303163112bcc4b727bc507a
+  Compiled from "GameTables.java"
+public final class org.crforge.core.battle.data.GameTables
+  minor version: 0
+  major version: 65
+  flags: (0x0031) ACC_PUBLIC, ACC_FINAL, ACC_SUPER
+  this_class: #8                          // org/crforge/core/battle/data/GameTables
+  super_class: #2                         // java/lang/Object
+  interfaces: 0, fields: 13, methods: 29, attributes: 3
+Constant pool:
+tickprobe GameTables
+Classfile jar:file:///workspace/crforge_main/0a1a18e9/tickprobe/lib/core-1.0-SNAPSHOT.jar!/org/crforge/core/battle/data/GameTables.class
+  Last modified Feb 1, 1980; size 14191 bytes
+  SHA-256 checksum a0b35929cc8b56e02ea93d7a39523115c0e3d19fd303163112bcc4b727bc507a
+  Compiled from "GameTables.java"
+public final class org.crforge.core.battle.data.GameTables
+  minor version: 0
+  major version: 65
+  flags: (0x0031) ACC_PUBLIC, ACC_FINAL, ACC_SUPER
+  this_class: #8                          // org/crforge/core/battle/data/GameTables
+  super_class: #2                         // java/lang/Object
+  interfaces: 0, fields: 13, methods: 29, attributes: 3
+Constant pool:
+61999996928
+4263391232
+total 4
+drwxr-xr-x 6 root root   90 Oct 28 18:02 .
+drwxr-xr-x 1 root root 4096 Oct 28 17:47 ..
+drwxr-xr-x 4 root root   48 Oct 28 17:59 0a1a18e9
+drwxr-xr-x 4 root root   48 Oct 28 13:44 624eeb45
+drwxr-xr-x 4 root root   48 Oct 28 12:30 a677e080
+drwxr-xr-x 4 root root   48 Oct 28 18:03 fe364ceb
+624eeb45183e1fe981252dd18f99225877595d2b
+0a1a18e94fdd04139197273f6ec1ff21d6f912ad
+3703230 java -cp /workspace/crforge_main/fe364ceb/plain/lib/*:/workspace/cfmain/g_f1fix3/probe_plain Probe /workspace/f635/crforge_cache/tables/16.402.22 determinism
+3703306 bash -c java -version 2>&1; javac -version 2>&1; for k in plain tickprobe; do echo "$k GameTables"; javap -verbose -classpath /workspace/crforge_main/0a1a18e9/$k/lib/core-1.0-SNAPSHOT.jar org.crforge.core.battle.data.GameTables 2>&1 | head -12; done; cat /sys/fs/cgroup/memory/memory.limit_in_bytes /sys/fs/cgroup/memory/memory.usage_in_bytes 2>/dev/null || cat /sys/fs/cgroup/memory.max /sys/fs/cgroup/memory.current; ls -la /workspace/crforge_main/; git -C /workspace/f635/crforge_fork rev-parse clashbot-main clashbot-upstream-20261028; pgrep -af "[j]ava.*Probe|[j]avac.*Probe" || true

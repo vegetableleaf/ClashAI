@@ -1,0 +1,8 @@
+STATUS: BLOCKED
+Step 2: javac fails for both plain and tickprobe: class file has wrong version 65.0, should be 61.0. The prescribed loop reports 74 compilation errors per library and all four Probe invocations fail with ClassNotFoundException. No determinism hashes produced.
+Verified: java and javac 17.0.20.1; both GameTables classes major version 65 (blocked_4c_java.txt).
+Steps 3-5 not started: no library copies, SME gate, or J7 runs. No build repeated or Java configuration changed.
+current absent on 30408 and 32657 before and after (precheck_4c_30408.txt, precheck_4c_32657.txt, blocked_4c_java.txt, final_4c_32657.txt); 33920 not accessed.
+Branch SHAs unchanged: clashbot-main 624eeb45183e1fe981252dd18f99225877595d2b; clashbot-upstream-20261028 0a1a18e94fdd04139197273f6ec1ff21d6f912ad.
+Minimum observed 30408 memory headroom: 57053315072 bytes = 61999996928 - 4946681856 (precheck_4c_30408.txt); final sample 57736605696 bytes (blocked_4c_java.txt).
+No detached jobs started. Determinism SSH command completed. Local rule-file search PID 1925444 stopped by exact PID. Other worker's fe364ceb Probe PID 3703230 was not started or stopped by this worker.

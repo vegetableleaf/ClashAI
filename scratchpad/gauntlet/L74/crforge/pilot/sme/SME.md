@@ -2436,3 +2436,159 @@ no match after FRESH1's freeze is scored.
 - Pods: 32657 `/workspace/pilot/f1fix/{sme11f, runs, inputs_v30.jsonl, f1_gen*_rf.jsonl}`; 33920
   `/workspace/pilot/fresh/runs/{D0_ctl, D1_rg, X1_hgen, X2_both, X3_idscratch, X4_f1fix2}`; 30408 fork branch
   `clashbot-f1fix` (clashbot-up-e5462c82 untouched).
+
+# ENG-SME: the tower-vanish Zap rule, FRESH2 (first strict fresh gate), D2 tower troops, upstream sync (account 2, 10-28)
+Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
+
+## STATUS (keep current)
+- **FRESH2 (a):** 22/28 unflagged exact apart from torn (95% CP lower 0.620), strictly exact 21/28 (0.581); identical on
+  clashbot-main m1 624eeb45 and fe364ceb (F1FIX-3). D1 (>= 45/50) and D2 (lower bound 0.98) NOT met. FRESH2 is dev now.
+- **Zap rule SME_TOWER_ZAP (16c8a8f):** built, planted 25/25, dev byte-identical, fires only on FRESH1 000420; 0 firings on
+  FRESH2. Firings for the owner: `results/live/tower_zap_firings.tsv` (1: 000420).
+- **Fix 1 SME_ZAP_CHAIN1 (d4c7b44):** 130148 now 1,767/1,767 exact; the 109 unchanged. Open FRESH2 failures (5): 091720
+  (Knight evo count), 100341 (hero Tombstone repr), 101018 (Goblinstein), 110715 (our X-Bow 1 tile off), 123045 (Witch).
+- **Running:** pod 33308 Codex ENG-SME_3d (D2 tower troops; `tail -qn1 /workspace/d2tt/ev/*.out`; restart: ENG-SME_3d.md
+  procedure). Nothing else of mine is running.
+- **Next:** FRESH3 = live matches after 2026-10-28 13:14:56 EDT (FRESH2's battle-log end), freeze with
+  `fresh/freeze.py` (cut 20261028_1315) + `fresh/fresh_prep.sh` (now with SME_ZAP_CHAIN1=1), run on the fe364ceb tickprobe
+  lib; ~150 unflagged-equivalent matches are needed for a 0.98 lower bound (at ~28 unflagged per 76 listed, ~400 listed).
+  Fix loop on the 5 open FRESH2 failures. Sync: lead decision on JDK 21 + re-merge onto fe364ceb.
+
+## 1. SME_TOWER_ZAP (extractor; owner 10-28 "build it", reversible) -- commit 16c8a8f
+- **Rule** (`mech_rules.tower_zaps`, hook in `extract.match` after `fx_made_clock`, before the deal fit; comment block in
+  mech_rules.py has every constant): a princess tower (reader card -1 at a tower point) of side v, last listed at tp with
+  0 < hp <= the opponent's Zap crown-tower damage (ZAP_DMG: 77 at level 16), is absent at the next frame t and the next 3
+  frames, and the opponent's deck holds Zap -> one opponent Zap at the tower's centre, tick R = t - 1, run window
+  [max(tp, t - 2), t - 1]. At 000420 tp = 3517, t = 3519: R 3518, window [3517, 3518]; the probe tied R 3517 / 3518
+  (both 0 div after 3519), so the latest tick (the SME_MECH_ZAP convention R = c - 1) is the default and the fitter may take
+  the other.
+- **Blocks** (each a logged reason): no Zap in the deck; relisted / flicker (reader glitch); cascade (king or another tower
+  of v leaves at t); no frame after t; **t > 6000 (overtime-end tie-break)**; an opponent body <= 12,000, projectile (point
+  or target) <= 3,000 or area <= 8,000 from the tower on a frame of [t - 20, t]; an opponent play <= 8,000 from it, any
+  opponent Zap, or any opponent ability, run in [t - 60, t]; an opponent hidden-body window (reader_hidden) over that span;
+  a body of v within 3,500 of the tower on tp / t (a centre Zap would hit it). Kings are excluded (a king's death ends the match).
+- **Why the tie-break block (a, found while building):** FRESH1 001302@6167 and 003008@6152, both at 1 hp with no Zap in
+  the deck, vanish with nothing visible; the regulation ends at tick 3681 on this build (000420, 011215), so overtime ends
+  ~6081 and these are the tie-break removal. Without the block the premise "nothing visible -> unseen Zap" would be false.
+- **Premise check (a), census of dev 138 + FRESH1 9 (147 matches, 100 low-hp princess removals,
+  `f1fix/tower_zap_census.py`, `results/live/eng_sme/tower_zap_census_dev_fresh1.txt`):** 1 fires (000420). Of the 89
+  removals whose opponent deck has NO Zap, re-judged as if it had one: 0 pass the visibility checks (44 tie-break, 35 body,
+  8 projectile, 2 area). So in this data a low-hp tower never vanished invisibly before the tie-break window without a Zap
+  in the deck; one case with Zap (000420) is still n = 1 for the rule (b for the game's event being a Zap until the replay
+  confirms it).
+- **Byte checks (a, `results/live/eng_sme/tower_zap_bytes.txt`):** dev 138 flag off = v30 `c5b197f5`; flag ON = `c5b197f5`
+  (fires on no dev match); FRESH1 rf 9 flag off = f1_gen2_rf `d365b39c`, flag on changes only 000420 (plays 53 -> 54,
+  `tower_zap` field; deal fit and flags unchanged).
+- **Planted checks (a):** `f1fix/tower_zap_test.py` ok 25 (base fires once with the exact play; no firing returns the same
+  plays object; each block reason planted: no Zap, visible Zap anywhere, Lightning on the tower, opponent ability, projectile
+  aimed / passing, body at 7.5 tiles, area at t, king cascade, second tower cascade, relisted + flicker, match end, tie-break,
+  hidden window, own body in reach; hp 78 / 77 at level 16 and 71 / 70 at 15; four non-blocking cases).
+- **Firings file:** `results/live/tower_zap_firings.tsv` (`f1fix/tower_zap_firings.py INPUTS... --lists FRESH*.tsv`): match,
+  battle time, opponent tag, tower, hp, ticks, game clock -- for the owner to confirm in the battle-log replay. Current:
+  1 firing, FRESH1 000420 (battle 20261028T040719Z, opponent #2C9Y8VYP8, ~0:04 left in regulation). FRESH2: 0 firings.
+- **evo Goblin Barrel decoy flag (a):** key sets of a decoy-off (113342) and decoy-on (115053) log differ only in the start
+  event's `barrel_decoy` key and the play events' optional decision annotations `why` / `lethal_rocket` (not read by
+  extract.py or fights.py: grep); frame rows (ents / proj / fx /
+  phase2 / phase3) have the same fields, so the extractor's inputs are unaffected.
+
+## 2. FRESH2: the first strict fresh gate (frozen 29d5d16 before any run; results d4a4d56)
+- **Set (a):** FRESH2.tsv (03fda54) = 76 Ranked matches whose live log starts at or after 2026-10-28 07:53 EDT (battle log to
+  17:14:56Z), all merged_sf, build 160635001; 76 extracted, 0 skips; 40 RNG-free; 28 unflagged (opp_no_fitting_deal 10,
+  own_cycle_fail 3 among the RNG-free). Extractor 16c8a8f, flags regen_fresh.sh + SME_HIDDEN_GEN + SME_TOWER_ZAP, tables
+  16.635.3 (`1243a2df`); inputs_rngfree `cbee3eb6`, frames `c2ab9529`; SME = sme11f hardened comparator + plant suite;
+  `fresh/FRESH2_FREEZE.txt` has every sha and the command. 10 listed matches were scored once by the READER-TORN trial
+  before the freeze (no fix made from them); 5 of them are in the 28.
+- **Result F2_H (lib clashbot-main m1 624eeb45 tickprobe, MAIN.md's SME default at the freeze), a:**
+
+  | set | unflagged | exact apart from torn | 95% CP lower | strictly exact (no torn frame) | 95% CP lower |
+  |---|---:|---:|---:|---:|---:|
+  | FRESH2 all | 28 | **22** | **0.620** | **21** | **0.581** |
+  | never scored before (no trial match) | 23 | 17 | 0.549 | 16 | 0.504 |
+  | READER-TORN trial subset | 5 | 5 | 0.549 | 5 | 0.549 |
+
+  Unflagged exact frames 67,040 / 70,025. Torn frames on the 28: 41 torn_hidden in 1 match (083923), no other torn class:
+  the merged_sf reader left no torn read (the plan's strict SME: only reader-flagged frames excluded; the reader drops a torn
+  read at the source, so no frame carries a flag and every listed frame is scored). Plant suite 22,434 plants, 0 missed.
+  `results/live/fresh2/F2_H_{results.jsonl,summary.txt}` (sorted sha `ba810965`). D1's bar (>= 45/50) and D2's 0.98 lower
+  bound are both NOT met (a).
+- **Result F2_fe (lead 10-28: clashbot-main fe364ceb = F1FIX-3, the lib that will train; tickprobe core b1615a3f), a:**
+  the same frozen inputs and command with SME_LIB=/workspace/crforge_main/fe364ceb/tickprobe/lib: **byte-identical to
+  F2_H** (40 / 40 equal on counts / first div / frames / first detail; sorted sha `ba810965` both) -> 22/28 (CP 0.620),
+  strict 21/28 (0.581). `results/live/fresh2/F2_fe_{results.jsonl,summary.txt}`.
+- **First-divergence census of the 6 failures (a for the onset rows; causes b unless said):**
+
+  | match | first div | div frames | onset | status |
+  |---|---:|---:|---|---|
+  | 091720 | 3519 | 170 | our Knight: game base (2076 hp), crforge Knight_EV1 (1684) at the same point | b: evolution charge count differs (untraced) |
+  | 100341 | 2930 | 374 | opponent hero Tombstone: reader Tombstone (hp -1, 6748) vs crforge TombstoneHero_Monster_Passive 703 + visual_dummy 4089995 | b: representation of the hero Tombstone (no REPR row) |
+  | 101018 | 5968 | 121 | opponent Goblinstein bodies in the reader only + our IW 27 / 53 off | untraced |
+  | 110715 | 4505 | 495 | our X-Bow: game x 1500, crforge 2500 (= the tap point) | a: 1 of 813 single-body own plays off by >= 500 other than the Knight back-row clamp (`f1fix/own_point_census.py`); cause b |
+  | 123045 | 1768 | 1643 | opponent Witch skeletons / Golden Knight 2-4 units off | b: body-position class |
+  | 130148 | 3404 | 141 | our tower 77 lower in crforge | **FIXED (a), section 3** |
+- **F1FIX-3 watch list (lead 10-28):** `crforge/fork/f1fix3/tools/watch_detect.py` on the 40 RNG-free FRESH2 inputs: 0 flagged
+  (no Rune Giant deck), so FRESH2 adds no evidence for any watch path.
+
+## 3. Fix 1 (FRESH2 is dev from here): SME_ZAP_CHAIN1 (parity/fights.unseen_zaps; d4c7b44)
+- **Cause (a):** 130148's two inferred opponent Zaps (1352, 3402) are false: our princess tower loses 77 every 4-6 ticks
+  (1342 .. 1362, 3384 .. 3408) to a periodic attacker (the opponent's side-1 body 203000011 near it; the hero Valkyrie, b),
+  and in each case our 15-hp hero IW dies in the same gap, which made the H-ZAP shape "one body takes the level-16 crown
+  drop + a body within 2 x radius dies". The old repeat test needs the identical SET of hit bodies within 12 ticks, which a
+  lone tower drop never forms. crforge given the Zap sits exactly 77 below the game from 3404.
+- **Rule:** with SME_ZAP_CHAIN1=1 a body that takes the same drop (+-1) in another frame gap within 12 ticks is no Zap
+  evidence (a periodic attacker).
+- **Evidence (a):** 130148 with the flag: SME 1,767 / 1,767 exact (pod run F2c_130148, m1 lib, plants missed []). Dev 138:
+  the 109's plays unchanged (3 records lose one `unplaced` row; SME never reads `unplaced`); flagged 204837 loses one Zap;
+  FRESH1 unchanged; other FRESH2 records unchanged. Planted `f1fix/zap_chain_test.py` ok 3. `results/live/eng_sme/zap_chain1.txt`.
+- fresh/fresh_prep.sh now sets SME_ZAP_CHAIN1=1 (FRESH3+); no new dev input version was pushed to the pod (the 109 are unchanged).
+
+## 4. D2 leftover: CLXIII re-baseline WITH tower troops (pod 33308, Codex ENG-SME_3 .. 3d; running)
+- Setup (a): `/workspace/d2tt/cb` = `cp -al /workspace/d2/cb` (b24e6b1, the earlier gate's tree) + 3 files from origin/main
+  (pipeline/crforge_core.py with set_tower_troops, its test, CfCore.java); facade rebuilt against the same lib
+  (/workspace/d2/stage/lib, 16.402.22); tower-troop smoke 1 passed (ROYALE_RUNTIME=fin16-linux). gate_tt.sh =
+  /workspace/d2/gate.sh + `--opp-tower-troops DaggerDuchess:0.028,Cannoneer:0.028,ChefTower:0.014` (push_cal gate_eval.sh's
+  flag) with the new cb / facade / output dir.
+- **Control (a): without troops the new tree reproduces the earlier gate row for row:** crforge e4 741200 480 / 480
+  identical (334 wins), fin16 e4 741200 480 / 480 identical (350 wins) on outcome, end tick, crowns, tower hp, plays and
+  decisions. So the troop runs differ from the earlier 70.1 % / 56.0 % (crforge) and 74.6 % / 59.4 % (fin16) by the troops only.
+- Pod 33308's container restarted at ~18:41 UTC mid-run (cause unknown, b; the last check before it showed 166 GB
+  available). Kept: both controls and tt_{cf,rs}_e4_741200 (480 each). Relaunched at W=12 (ENG-SME_3d). Results land in
+  `plan1026/d2g/results/gate_tt/` (score_e4.txt, score_iu40.txt, troop_effect.txt, control_cmp.txt, README.txt).
+
+## 5. crforge upstream sync 2026-10-28 (Codex ENG-SME_4 .. 4e; `crforge/fork/main/results/sync_20261028/SUMMARY.txt`)
+- 19 upstream commits merged conflict-free onto 624eeb45 -> `clashbot-upstream-20261028` = 0a1a18e9 (pod 30408). Core tests
+  2191 / 0 failures on both versions (a).
+- **Upstream moved the build to Java 21 (eb8c7da3, a):** the jars are class version 65 and do not load on the pods' JDK 17.
+  The gates ran with the gradle-provisioned JDK 21.0.13 on PATH only (nothing installed system-wide).
+- TickProbe patch 0002 no longer applies (upstream 823b578b rewrote drainRemovable as an index loop); ported to the same
+  point (the drain tell right after `list.remove(i)`) -> tickprobe core 2204ca35 (`tickprobe_0a1a18e9.diff`, `build_tp_port.sh`).
+- **Gates (a):** determinism hashes = the pin's on both versions and both libs; SME dev 109/109 byte-identical to H2
+  (15371187); FRESH1 6/7 byte-identical to HF2 (e0965a7d); plants 0 missed; J7 crforge_force deck8 0.808 for m1 and sync
+  with identical run hashes.
+- **Not adopted; no lib switched.** Blockers for the lead: (1) a JDK 21 runtime on every pod and pipeline (JPype facade,
+  SME, re-drive) is an environment change; (2) the merge is onto 624eeb45 but clashbot-main is now fe364ceb: redo the merge
+  onto fe364ceb and re-gate. Mid-run the lead moved clashbot-main and `current` to fe364ceb (Codex stopped on it and
+  changed neither).
+
+## Codex dispatches (ENG-SME)
+| ticket | effort | outcome |
+|---|---|---|
+| ENG-SME_3 | medium | BLOCKED: CRLF hash check (my spec: git archive is CRLF here); tree was fine |
+| ENG-SME_3b | medium | BLOCKED: smoke skipped (my spec lacked ROYALE_RUNTIME); facade built, old build reproduced 7ce6ea2b |
+| ENG-SME_3c | medium | ran controls + 4 tt jobs; BLOCKED when 33308 restarted (18:41 UTC) |
+| ENG-SME_3d | medium | running: resume tt jobs W=12, collect, score |
+| ENG-SME_4 | medium | merge + core tests done; BLOCKED: TickProbe 0002 does not apply |
+| ENG-SME_4b | medium | tickprobe port built; BLOCKED on my diff check (untracked file) |
+| ENG-SME_4c | medium | BLOCKED: jars are Java 21 (class 65) |
+| ENG-SME_4d | medium | BLOCKED: 32657 /dev/shm is noexec |
+| ENG-SME_4e | medium | J7 + SME dev done; stopped at the lead's clashbot-main move; FRESH1 leg finished after it (gate.txt read by me) |
+
+## Files (ENG-SME)
+- Code: `extract/extract.py` (SME_TOWER_ZAP hook), `sme/mech_rules.py` (tower_zaps, raw_frames), `parity/fights.py`
+  (SME_ZAP_CHAIN1), `sme/f1fix/{tower_zap_test, tower_zap_census, tower_zap_firings, zap_chain_test, own_point_census}.py`,
+  `sme/fresh/{fresh_prep.sh, fresh2_sum.py}`.
+- Frozen: `sme/fresh/{FRESH2.tsv, FRESH2_FREEZE.txt, FRESH2_inputs_all.jsonl}`.
+- Results: `results/live/fresh2/F2_{H,fe}_{results.jsonl,summary.txt}`, `results/live/eng_sme/*`,
+  `results/live/tower_zap_firings.tsv`.
+- Pods: 32657 `/workspace/pilot/fresh2/{inputs_rngfree.jsonl, inputs_chain.jsonl, frames}`, runs
+  `/workspace/pilot/f1fix/runs/{F2_H, F2_fe, F2c_130148, main_sync_20261028_*}`; 33308 `/workspace/d2tt/`; 30408
+  `/workspace/upstream_sync/20261028/`, `/workspace/crforge_main/0a1a18e9/`.

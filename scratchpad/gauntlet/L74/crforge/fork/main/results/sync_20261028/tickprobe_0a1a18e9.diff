@@ -1,0 +1,62 @@
+diff --git a/core/src/main/java/org/crforge/core/battle/Battle.java b/core/src/main/java/org/crforge/core/battle/Battle.java
+index c93ff46b..36952e12 100644
+--- a/core/src/main/java/org/crforge/core/battle/Battle.java
++++ b/core/src/main/java/org/crforge/core/battle/Battle.java
+@@ -123,6 +123,7 @@ public class Battle {
+       return;
+     }
+     executeDueCommands();
++    TickProbe.tell("commands", -1, -1);
+     boolean ticked = runUpdate();
+     mode.afterTick(this, ticked);
+     tick++;
+diff --git a/core/src/main/java/org/crforge/core/battle/EntityHolder.java b/core/src/main/java/org/crforge/core/battle/EntityHolder.java
+index ff3673f3..9c1f252b 100644
+--- a/core/src/main/java/org/crforge/core/battle/EntityHolder.java
++++ b/core/src/main/java/org/crforge/core/battle/EntityHolder.java
+@@ -399,6 +399,7 @@ public class EntityHolder {
+       BattleEntity entity = list.get(i);
+       if (entity.isRemovable()) {
+         list.remove(i);
++        TickProbe.tell("drain", -1, entity.getId());
+         removed.add(entity);
+       } else {
+         i++;
+@@ -417,8 +418,10 @@ public class EntityHolder {
+     pendingPassesDone = false;
+     try {
+       cleanup();
++      TickProbe.tell("cleanup", -1, -1);
+       List<BattleEntity> snapshot = new ArrayList<>(live);
+       passes.prePass(tick, snapshot);
++      TickProbe.tell("prePass", -1, -1);
+       for (BattleEntity entity : snapshot) {
+         entity.preHook();
+       }
+@@ -432,21 +435,26 @@ public class EntityHolder {
+           component.refresh();
+           if (entity.isActive(slot)) {
+             component.visit();
++            TickProbe.tell("visit", slot, entity.getId());
+           }
+         }
+       }
+       for (BattleEntity entity : snapshot) {
+         entity.actions().runPass(tick);
++        TickProbe.tell("action", -1, entity.getId());
+       }
+       pendingPass(snapshot, EntityActions.PHASE_POST_COMPONENT_TICK);
+       for (BattleEntity entity : snapshot) {
+         entity.postHook();
++        TickProbe.tell("postHook", -1, entity.getId());
+       }
+       passes.afterPostHooks();
+       pendingPass(snapshot, EntityActions.PHASE_POST_GAME_OBJECT_TICK);
+       pendingPassesDone = true;
+       passes.postPass(tick);
++      TickProbe.tell("postPass", -1, -1);
+       cleanup();
++      TickProbe.tell("endCleanup", -1, -1);
+       for (BattleEntity entity : live) {
+         entity.actions().endOfTick();
+       }

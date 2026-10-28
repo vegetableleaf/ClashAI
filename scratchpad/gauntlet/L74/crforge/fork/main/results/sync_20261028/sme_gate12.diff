@@ -1,0 +1,6 @@
+9,10c9,10
+< WORKERS=48 bash runH.sh main_${TAG}_dev /workspace/crforge_cache/tables/16.402.22 $F/inputs_v30.jsonl /workspace/pilot/sme_live/frames2 SME_LIB=$LIB
+< WORKERS=48 bash runH.sh main_${TAG}_fresh1 /workspace/crforge_cache/tables/16.635.3 $F/f1_gen2_rf.jsonl /workspace/pilot/fresh/fresh1/frames SME_LIB=$LIB
+---
+> WORKERS=${WORKERS:-12} bash runH.sh main_${TAG}_dev /workspace/crforge_cache/tables/16.402.22 $F/inputs_v30.jsonl /workspace/pilot/sme_live/frames2 SME_LIB=$LIB
+> WORKERS=${WORKERS:-12} bash runH.sh main_${TAG}_fresh1 /workspace/crforge_cache/tables/16.635.3 $F/f1_gen2_rf.jsonl /workspace/pilot/fresh/fresh1/frames SME_LIB=$LIB

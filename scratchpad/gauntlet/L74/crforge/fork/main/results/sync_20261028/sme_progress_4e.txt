@@ -1,0 +1,5 @@
+Wed Oct 28 19:02:26 UTC 2026
+    PID     ELAPSED COMMAND
+2007780       36:29 bash sme_gate12.sh sync_20261028 /workspace/crforge_main/0a1a18e9/tickprobe/lib
+/dev/shm/f1fix_main_sync_20261028_dev.log
+live_play_20261027_004901 ({'exact': 2871, 'torn_step': 1, 'torn_t1': 1}, None)

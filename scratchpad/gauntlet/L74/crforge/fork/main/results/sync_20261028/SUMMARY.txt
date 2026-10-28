@@ -1,0 +1,10 @@
+# crforge upstream sync 2026-10-28 (ENG-SME step 4; Codex ENG-SME_4 .. 4e, lead checks). NOT adopted, no lib switched.
+merge: 19 upstream commits past clashbot-main 624eeb45, conflict-free -> clashbot-upstream-20261028 = 0a1a18e9 (pod 30408)
+core tests: 16.402.22 2191 / 0 failures / 29 skipped; 16.635.3 2191 / 0 / 6 (ct.txt)
+java: upstream eb8c7da3 moves the build to Java 21; jars are class version 65 and do not load on the pods' JDK 17 (blocked_4c_java.txt)
+tickprobe: patch 0002 ported to the index-loop drainRemovable (tickprobe_0a1a18e9.diff: Battle +1, EntityHolder +8 = 0001's 7 + drain); core 2204ca35
+determinism (JDK 21.0.13): plain + tickprobe, 16.402.22 a0bd88c41f98b46d, 16.635.3 575c99887ba28802 = the pin's (det.txt)
+SME dev (H2 command, tickprobe lib, JDK 21 on PATH): 109/109, 0 regressions, 250,797 exact, results byte-identical to H2 (15371187); plants 65,874, 0 missed (sme_gate.txt)
+SME FRESH1 (HF2 command): 6/7, byte-identical to HF2 (e0965a7d); plants 10,904, 0 missed
+J7 crforge_force deck8 (16.402.22, JDK 21 both): m1 0.808 [0.768, 0.845] = sync 0.808; crforge_force lo/hi run hashes identical m1 vs sync (j7_cmp.txt)
+adoption blockers: (1) every pod / pipeline would need a JDK 21 runtime (JPype facade, SME, re-drive): an environment change for the lead / owner; (2) the merge is onto 624eeb45, but clashbot-main is now fe364ceb (F1FIX-3): redo the merge onto fe364ceb and re-gate before any pin move.

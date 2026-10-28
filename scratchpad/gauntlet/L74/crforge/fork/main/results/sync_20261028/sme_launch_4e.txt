@@ -1,0 +1,4 @@
+gate_pid=2007780
+Wed Oct 28 18:25:56 UTC 2026
+2007778 2007670 2007778 bash -c cd /workspace/pilot/f1fix && (PATH=/workspace/s4_jdk21/jdk-21.0.13+9/bin:$PATH WORKERS=12 setsid nohup taskset -c 41-53 bash sme_gate12.sh sync_20261028 /workspace/crforge_main/0a1a18e9/tickprobe/lib > runs/sync_20261028.nohup 2>&1 < /dev/null & echo gate_pid=$!); date -u; ps -eo pid,ppid,pgid,args | grep "[s]me_gate12.sh sync_20261028"
+2007780       1 2007780 bash sme_gate12.sh sync_20261028 /workspace/crforge_main/0a1a18e9/tickprobe/lib

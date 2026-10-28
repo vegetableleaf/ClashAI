@@ -1,3 +1,15 @@
+## Remaining failures of FRESH2 (ENG-SME; 28 unflagged; F2_H = F2_fe 22/28, strict 21/28; after fix 1 on 130148: 23/28 as dev)
+F2_H = the frozen FRESH2 run (29d5d16, lib 624eeb45 tickprobe); F2_fe = the same on fe364ceb, byte-identical. SME.md ENG-SME.
+
+| match | first div | class | status | evidence |
+|---|---:|---|---|---|
+| `20261028_091720` | 3519 | body form | open: our Knight base in the game, Knight_EV1 in crforge (evolution count, b) | F2_H detail |
+| `20261028_100341` | 2930 | representation | open: opponent hero Tombstone rows (reader Tombstone -1 / 6748 vs TombstoneHero_Monster_Passive + visual_dummy) | F2_H detail |
+| `20261028_101018` | 5968 | body in the reader, none in the sim | open: Goblinstein bodies + our IW 27/53 off | F2_H detail |
+| `20261028_110715` | 4505 | body position | open: our X-Bow 1 tile left of the tap point in the game (1 of 813 own single-body plays) | own_point_census.py |
+| `20261028_123045` | 1768 | body position | open: Witch skeletons / Golden Knight 2-4 units | F2_H detail |
+| `20261028_130148` | 3404 | hp only | fixed by SME_ZAP_CHAIN1 (two false H-ZAP Zaps): 1,767 / 1,767 exact | SME.md ENG-SME 3 |
+
 
 ## Remaining failures of h11b (0 unflagged; 109 / 109; exact frames 250,797 on the 109, 278,872 on all 138; SME-HARDEN on a10G1)
 h11b = a10G1's command and inputs (v29) with the hardened comparator (sme11: sound torn rules, plant suite 0 missed of

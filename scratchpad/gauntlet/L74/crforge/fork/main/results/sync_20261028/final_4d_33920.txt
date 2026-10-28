@@ -1,0 +1,6 @@
+total 4
+drwxr-xr-x 4 root root   50 Oct 28 13:45 .
+drwxr-xr-x 1 root root 4096 Oct 28 17:29 ..
+drwxr-xr-x 4 root root   36 Oct 28 13:44 624eeb45
+drwxr-xr-x 4 root root   48 Oct 28 12:30 a677e080
+/dev/shm rw,nosuid,nodev,noexec,relatime,size=60546876k,uid=100000,gid=100000,inode64

@@ -1,0 +1,6 @@
+Preparing worktree (detached HEAD 0a1a18e9)
+built /workspace/crforge_main/0a1a18e9/plain core b084b7079098f25f
+Preparing worktree (detached HEAD 0a1a18e9)
+error: patch failed: core/src/main/java/org/crforge/core/battle/EntityHolder.java:389
+error: core/src/main/java/org/crforge/core/battle/EntityHolder.java: patch does not apply
+BUILD FAILED

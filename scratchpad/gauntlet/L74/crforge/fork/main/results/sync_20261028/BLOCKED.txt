@@ -1,0 +1,9 @@
+ENG-SME_4b STATUS: BLOCKED
+Build succeeded: /workspace/crforge_main/0a1a18e9/tickprobe, core SHA256 prefix 2204ca3560a4f113 (build_tp_port.out).
+Step 1 diff acceptance failed: tickprobe_0a1a18e9.diff contains Battle.java 1 and EntityHolder.java 8 added lines, but no new TickProbe.java. Literal grep -c '^+' counts, including +++ headers: 2 and 9; TickProbe.java absent (0). The supplied git diff omits untracked new files. Drain tell is immediately after list.remove(i).
+No independent corrective change made. Supplied build script preserved verbatim.
+33920 precheck additionally found /dev/shm/s4 and /dev/shm/s4/j7.sh absent (j7_precheck.txt).
+Determinism, lib copies, SME, J7 not run. det.txt, sme_gate.txt and the five J7 result files do not exist. SUMMARY.txt includes only available measurements, not fabricated missing-gate values.
+current absent on 30408 and 32657; listings saved in final_30408.txt and final_32657.txt. No current path was changed on any pod. No lib switch, branch change, live action, or pod stop.
+Build PID 3699800 exited; no build/Gradle process found by final check. No process started by this run remains running.
+Minimum observed 30408 headroom 55375298560 bytes (memory_checks_port.txt); sampled minimum, not continuous monitoring.

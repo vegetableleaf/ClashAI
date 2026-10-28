@@ -1,0 +1,3 @@
+pid 2007780's current affinity list: 41-53
+PATH=/workspace/s4_jdk21/jdk-21.0.13+9/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+Wed Oct 28 18:26:32 UTC 2026

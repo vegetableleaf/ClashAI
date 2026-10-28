@@ -1,0 +1,6 @@
+Filesystem     1M-blocks   Used Available Use% Mounted on
+overlay           61440M 59972M     1469M  98% /
+jdk-21.0.13+9
+openjdk version "21.0.13" 2026-10-20 LTS
+OpenJDK Runtime Environment Temurin-21.0.13+9 (build 21.0.13+9-LTS)
+OpenJDK 64-Bit Server VM Temurin-21.0.13+9 (build 21.0.13+9-LTS, mixed mode, sharing)

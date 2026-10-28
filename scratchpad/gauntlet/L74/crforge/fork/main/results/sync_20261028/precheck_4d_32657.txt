@@ -1,0 +1,9 @@
+total 4
+drwxr-xr-x 5 root root   70 Oct 28 18:09 .
+drwxr-xr-x 1 root root 4096 Oct 28 15:05 ..
+drwxr-xr-x 4 root root   48 Oct 28 13:44 624eeb45
+drwxr-xr-x 4 root root   48 Oct 28 12:30 a677e080
+drwxr-xr-x 3 root root   31 Oct 28 18:09 fe364ceb
+Filesystem      Size  Used Avail Use% Mounted on
+shm              58G  265M   58G   1% /dev/shm
+ 18:11:58 up 8 days, 19:30,  0 user,  load average: 100.73, 45.56, 37.22

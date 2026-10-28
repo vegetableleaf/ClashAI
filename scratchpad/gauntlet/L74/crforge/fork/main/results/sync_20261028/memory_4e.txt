@@ -1,0 +1,3 @@
+initial_headroom_bytes=46259998720
+final_headroom_bytes=8030982144
+minimum_observed_bytes=8030982144
