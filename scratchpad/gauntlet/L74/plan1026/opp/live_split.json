@@ -1,0 +1,25 @@
+{
+ "frozen_at": "2026-10-28 09:06:29 Eastern Daylight Time",
+ "rule": "P2-OPP1: freeze the live time split BEFORE any opponent training (plan1026 Pillar 2: train / calibration / sealed by\ntime; never train or tune on the sealed block). Writes live_split.json once; refuses to overwrite.",
+ "train_before": "20261025_000000",
+ "sealed_from": "20261028_090648",
+ "blocks": {
+  "train": {
+   "logs": 5174,
+   "first": "20260925_015246",
+   "last": "20261024_152246",
+   "stems_sha256": "1bfc2ed5d722820bc79dfc54e693b5eb3de520216623bed0ad9dd94ada912c2b"
+  },
+  "calibration": {
+   "logs": 886,
+   "first": "20261025_084914",
+   "last": "20261028_090359",
+   "stems_sha256": "cf76913f5b88ac61100790d0c6481f8b7fef87bcbbfbf0b2db5ba0b970cf0577"
+  },
+  "sealed": {
+   "from": "20261028_090648",
+   "logs_at_freeze": 0
+  }
+ },
+ "note": "log counts are ALL live_play logs (any deck / account); the row builder filters matches"
+}

@@ -244,6 +244,8 @@ def main_opp(a, arrs: dict, meta: dict) -> int:
         keep = np.asarray(arrs["card_ok"]) > 0
     tr_idx = np.where((arrs["split"] == 0) & keep)[0]
     va_all = np.where((arrs["split"] == 1) & keep)[0]
+    if not len(tr_idx) or not len(va_all):
+        raise ValueError(f"opp trainer needs train (split 0) and held-out (split 1) rows: {len(tr_idx)} / {len(va_all)}")
     va_idx = np.sort(np.random.default_rng(0).choice(va_all, size=min(a.eval_rows, len(va_all)), replace=False))
     rows = GenRows(arrs, tr_idx, dev)
     va = rows.view(va_idx)
