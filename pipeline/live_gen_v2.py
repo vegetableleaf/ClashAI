@@ -85,8 +85,14 @@ class FollowUpPlanner:
 
 
 class GenPilot(FollowUpPlanner, LegacyGenPilot):
-    def __init__(self, *args, decision_options=None, decision_seed=0, public_audit=False, **kwargs):
+    def __init__(self, *args, decision_options=None, decision_seed=0, public_audit=False, gate_sample=0.0, **kwargs):
         super().__init__(*args, **kwargs)
+        self.gate_sample = float(gate_sample)   # live --gate-sample T (pilot 10-28): > 0 = the trainer's sampled gate at T
+        if not (self.gate_sample >= 0 and np.isfinite(self.gate_sample)):
+            raise ValueError('gate_sample must be finite and >= 0 (0 = off)')
+        self.gate_seed, self.rng_gate, self.last_gate_draw = None, None, None
+        if self.gate_sample > 0 and not self.decision_options.active:
+            raise ValueError('gate_sample needs decision options active (the unified decide; tau_phase as the trainer)')
         self.decision_options = decision_options or DecisionOptions()
         if self.decision_options.rocket_tornado == 'rocket_only':
             raise ValueError('rocket_tornado rocket_only is a SIM measurement ablation, not a live mode')
@@ -142,6 +148,9 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
         self.match_index += 1
         self.match_seed = int(np.random.SeedSequence([self.decision_seed, self.match_index]).generate_state(1)[0])
         self.rng_decisions = np.random.default_rng(self.match_seed)
+        if self.gate_sample > 0:                # its own per-match stream: rng_decisions' draws stay as without it
+            self.gate_seed = int(np.random.SeedSequence([self.decision_seed, self.match_index, 0x6A7E]).generate_state(1)[0])
+            self.rng_gate = np.random.default_rng(self.gate_seed)
         self._public_audit_snapshot = None
         self._hazard_prev = None
         self._threat_state = None
@@ -326,10 +335,16 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
         if options.log_air != 'off':                    # the decision board's enemy units / towers (a Log row only)
             ctx['log_air_boards'] = _Lazy(log_air_row)
         trace = []
-        res = decide({'card': out['card']}, [p], allowed[None], np.array([bool(stalled)]), tau=self.gate_tau,
+        if self.gate_sample > 0:                        # the gate logit + this match's gate stream (decide's gate_sample)
+            if self.rng_gate is None:
+                raise ValueError('gate_sample: reset_match() before the first decision (the per-match gate seed)')
+            ctx.update(gate_sample=self.gate_sample, gate_rngs=[self.rng_gate])
+        res = decide({'card': out['card'], **({'gate': out['gate']} if self.gate_sample > 0 else {})}, [p],
+                     allowed[None], np.array([bool(stalled)]), tau=self.gate_tau,
                      options=options, rngs=[self.rng_decisions], cell_logits=cell_logits, card_names=[names],
                      cell_guard=guard, follow_up=follow_up, trace=trace, choose=choose_cells, **ctx)[0]
         tr = trace[0]
+        self.last_gate_draw = tr.get('gate_sample')     # live_play logs it ('gate_draw' events); None = no draw
         if not allowed.any():
             if hazard_on:
                 self._hazard_prev = (tick, False)

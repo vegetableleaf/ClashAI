@@ -1993,12 +1993,15 @@ def decide(heads, p, allowed, stalled, *, tau, options, rngs, cell_logits, card_
            sampler=None, cell_guard=None, follow_up=None, trace=None, choose=None,
            t_sec=None, enemy_alive=None, grid=None, projectiles=None, barrel_id=None, step_s=None, elixir=None,
            enemy_units=None, lethal=None, threatened=None, rocket_boards=None, tau_threat=None, tau_delta=None,
-           log_air_boards=None, rocket_value=None, barrel_goblins=None):
+           log_air_boards=None, rocket_value=None, barrel_goblins=None, gate_sample=0.0, gate_rngs=None):
     """THE decision (plan1026 Pillar 3 P1). SIM eval / forks (``decide_batch``), live (``live_gen_v2.GenPilot.decide``)
     and training rollouts (``e1_eval.sample_decide_batch``, decode 'sample') all run this one function; the callers only
     build the per-row context. Rows are independent (each draws only from its own rng); per row, in order:
       1. gate. greedy: p > tau (tau_phase / tau_threatened / tau_delta) or stalled, + the hazard draw (gate_decode).
          sample: Bernoulli(sigmoid((z - logit tau) / T_gate)) from ``sampler['rngs'][r]`` (stalled = forced play).
+         greedy + ``gate_sample`` T > 0 (live --gate-sample, pilot 10-28): that same draw at T from ``gate_rngs[r]``, with
+         z = ``heads['gate']`` and tau = the phase tau (+ tau_delta) -- the trainer's tau_r; tau_threatened and the hazard
+         draw do not apply (the trainer has neither). The draw goes to ``trace`` as 'gate_sample'.
       2. the finishers (lethal_rocket / lethal_log, lethal_quiet's skip): gate, card and cell.
       3. greedy only: rocket_value / rocket_tornado (the combo's second card via ``follow_up``).
       4. card: choose_slot (greedy) | categorical at T (sample); cell: choose_cells with every option (greedy) |
@@ -2044,6 +2047,24 @@ def decide(heads, p, allowed, stalled, *, tau, options, rngs, cell_logits, card_
         lp_card = np.zeros(n, dtype=np.float64)
         lp_cell = np.zeros(n, dtype=np.float64)
         base_tau = tau = np.broadcast_to(np.float64(tau) if tau_r is None else tau_r, n)
+    elif gate_sample > 0:                           # live --gate-sample: the trainer's sampled gate (above), its own rng
+        if options.gate_decode != 'threshold' or gate_rngs is None or 'gate' not in heads:
+            raise ValueError('gate_sample needs gate_decode threshold, gate_rngs and the gate logit (heads["gate"])')
+        base_tau = tau = np.broadcast_to(np.asarray(gate_taus(options, tau, t_sec, n), dtype=np.float64), n)
+        if tau_delta is not None:                   # posture / pipeline shift, as the trainer's tau_r + dtau
+            tau = tau + np.asarray(tau_delta, dtype=np.float64)
+        logit_tau = np.log(tau / (1.0 - tau))
+        z_gate = heads['gate'].detach().cpu().numpy().astype(np.float64).reshape(n)
+        with np.errstate(over='ignore'):
+            p_b = 1.0 / (1.0 + np.exp(-(z_gate - logit_tau) / float(gate_sample)))
+        playing = any_allowed & stalled
+        for r in np.flatnonzero(any_allowed & ~stalled):
+            u = float(gate_rngs[r].random())
+            playing[r] = u < p_b[r]
+            if tr is not None:
+                tr[r]['gate_sample'] = dict(u=u, p_b=float(p_b[r]), z=float(z_gate[r]), tau=float(tau[r]),
+                                            T=float(gate_sample), fire=bool(playing[r]))
+        tau, base_tau = np.broadcast_to(tau, n), np.broadcast_to(base_tau, n)
     else:
         base_tau = tau = gate_taus(options, tau, t_sec, n)
         tau = threat_taus(options, tau, tau_threat)
