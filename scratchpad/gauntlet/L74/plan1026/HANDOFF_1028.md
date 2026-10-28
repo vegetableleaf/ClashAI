@@ -334,3 +334,9 @@ carry over. Re-dispatch from the docs listed here.
 - Full training remaining: human-like opponents (no model passes the gate; P2-OPP1 steps 3-4 + P2-SCORE's 4 tickets),
   10M base + curve v1, engine fresh gates (FRESH2 ~150 matches, F1FIX-3 with evidence), one-forward decide (latency
   gate fails today), fork-credit tuning (<= 1x cost), multi-GPU learner.
+- **GB-DECOY final (809f3f0, 37b552d):** live with --barrel-decoy on since 11:45; --check shows barrel_decoy true; first 3
+  matches clean (no evo barrel seen yet). F1 tightened (the two barrels must be created back to back; true for all 52
+  live two-barrel casts), F2/F3/F5 fixed; replay unchanged (29/50 -> 43/50; 1,572 plain decisions identical). Backup
+  scratchpad/gauntlet/L70/live/LIVE_OPTIONS.pre_gbdecoy_20261028; rollback in gb_decoy/STATUS.md. Owed: measure evo
+  answers on post-deploy matches (.foreman/scratch/gb_decoy/newlogs.py). At the stop, every pipeline/ live-path file is
+  committed (live runs committed code). stash@{0}/{1} (autostash) kept as backups - safe to drop after a diff check.
