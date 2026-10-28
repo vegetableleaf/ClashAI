@@ -263,7 +263,6 @@ class Producer:
         E = self.E
         res, tal = self.v.res[i], self.v.tal
         end, over, winner, cr = int(res[1]), bool(res[2]), int(res[3]), (int(res[4]), int(res[5]))
-        out = []
         for s in m["sides"]:
             t = tal[2 * i + s.side]
             s.n_att, s.n_acc, s.n_unlanded = int(t[0]), int(t[1]), int(t[2])
@@ -299,7 +298,7 @@ class Producer:
              "frac_gt_tau": round(float((pg > cfg["tau"]).mean()), 4) if len(pg) else None,
              "real_outcome": None, "s1_split": None, "group": None, "unmapped": [],
              "wall_s": round(time.perf_counter() - m["t0"], 1),
-             **({"traj": ls._traj_arrays()} if cfg.get("record") else {}),
+             **({"traj": self.fast_traj(ls, E)} if cfg.get("record") else {}),
              "action_delay_ticks": ls.delay, "plays_unlanded": ls.n_unlanded,
              "plays_refused_at_landing": ls.n_att - ls.n_acc - ls.n_unlanded,
              **({"extrapolate_ticks": ls.extrap} if ls.extrap else {}),
@@ -318,7 +317,7 @@ class Producer:
     # ------------------------------------------------------------------------------------------------ one update
     def run(self, update: int, sd: bytes, jobs: list) -> tuple[list[dict], list[dict], dict]:
         """actor_main's ('selfplay', update, sd, jobs) -> (results, skipped, stats)."""
-        R, E, base, torch = self.R, self.E, self.base, self.torch
+        R, base = self.R, self.base
         t0 = time.perf_counter()
         msd, psd = R.split_actor_sd(sd, self.dev)
         if R.pop_prefix(msd, R.ABILITY_SD) or psd:
@@ -424,6 +423,13 @@ class Producer:
             self.tm["forward"] += time.perf_counter() - f0      # incl. H2D / D2H (the .cpu() syncs)
             self.tm["fwd_rows"] += len(idx)
             self.tm["fwd_calls"] += 1
+            if c["policy"] != "sample":
+                raise NotImplementedError(f"policy {c['policy']!r}: the fast loop samples (learner and league)")
+            d0 = time.perf_counter()
+            if FAST_DECIDE and fast_ok(c):
+                self._fast_group(model, c, sides, idx, batch, keys, enc, heads, p, hand)
+                self.tm["decide_py"] += time.perf_counter() - d0
+                continue
             for j, s in enumerate(sides):                    # Match.prepare's state the decide / record read
                 r = idx[j]
                 tick, vt = int(v.meta[r, 3]), int(v.meta[r, 4])
@@ -436,8 +442,6 @@ class Producer:
             pre = [s.pre(hand[j]) for j, s in enumerate(sides)]
             allowed = np.stack([x[1] for x in pre])
             stalled = np.array([x[2] for x in pre], dtype=bool)
-            if c["policy"] != "sample":
-                raise NotImplementedError(f"policy {c['policy']!r}: the fast loop samples (learner and league)")
             decisions = E.sample_decide_batch(model, enc, heads, p, allowed, stalled, sides, c)
             for j, (s, d) in enumerate(zip(sides, decisions)):
                 r = idx[j]
@@ -451,3 +455,136 @@ class Producer:
                     s.n_stall += int(d["why"] == "stall")
                 else:
                     a[:] = (0, -1, -1, 0, 0)
+            self.tm["decide_py"] += time.perf_counter() - d0
+
+    # ------------------------------------------------------------------------------------------------ fast decide
+    def _fast_group(self, model, c, sides, idx, batch, keys, enc, heads, p, hand) -> None:
+        """Match.pre + e1_eval.sample_decide_batch + decision_options.decide (decode 'sample', no rules) + _record for one
+        policy group, vectorised where the arithmetic allows it and EXACT: the same torch ops on the same batch, every
+        draw from the row's own rng in production's order (gate, card, cell), numpy Generator.choice reproduced as its
+        own cdf / searchsorted('right') on one uniform. compare.py asserts it against production (actor_main)."""
+        import math
+        import torch
+        from pipeline import engine_play as ep
+        from pipeline.decision_options import model_cell_logits, phase_index
+        from pipeline.royale_env import SCALE
+        v, n = self.v, len(sides)
+        tick = v.meta[idx, 3].astype(np.int64)
+        vt = v.meta[idx, 4].astype(np.int64)
+        el_int = np.floor(v.el[idx])                         # float(int(view.my_elixir)), elixir >= 0
+        costs = np.array([s.costs for s in sides], dtype=np.float64)
+        allowed = hand & (costs <= el_int[:, None] + 1e-6)   # allowed_slots (afford_mask)
+        stalled = np.zeros(n, dtype=bool)                    # anti_stall with stall_elixir None
+        T, tau = float(c.get("T", 0.5)), float(c["tau"])
+        T_gate = float(c.get("T_gate") or T)
+        tau_r = None
+        if c.get("tau_phase") is not None:
+            tau_r = np.asarray(c["tau_phase"], dtype=np.float64)[phase_index([float(t) * 0.05 for t in vt])]
+        any_allowed = allowed.any(axis=1)
+        gate_sampled = any_allowed & ~stalled
+        logit_tau = math.log(tau / (1.0 - tau)) if tau_r is None else np.log(tau_r / (1.0 - tau_r))
+        z_gate = heads["gate"].detach().cpu().numpy().astype(np.float64)
+        with np.errstate(over="ignore"):
+            p_b = 1.0 / (1.0 + np.exp(-(z_gate - logit_tau) / T_gate))
+        rngs = [s.rng_behave for s in sides]
+        g = np.zeros(n, dtype=bool)
+        lp_gate, lp_card, lp_cell = np.zeros(n), np.zeros(n), np.zeros(n)
+        for r in np.flatnonzero(gate_sampled):
+            g[r] = rngs[r].random() < p_b[r]
+            lp_gate[r] = math.log(p_b[r] if g[r] else 1.0 - p_b[r])
+        playing = any_allowed & (stalled | g)
+        slots = np.full(n, -1, dtype=np.int64)
+        cells = np.full(n, -1, dtype=np.int64)
+        play_idx = np.flatnonzero(playing)
+        if len(play_idx):
+            with torch.no_grad():
+                cl = heads["card"].clone().masked_fill(~torch.from_numpy(allowed).to(heads["card"].device), float("-inf"))
+                card_probs = torch.softmax(cl.double() / T, dim=-1).cpu().numpy()
+            slots[play_idx] = self._choice(card_probs[play_idx], [rngs[r] for r in play_idx])
+            for r in play_idx:
+                lp_card[r] = math.log(card_probs[r, slots[r]])
+            with torch.no_grad():
+                cel = model_cell_logits(model, enc, heads["card"].device)(list(map(int, play_idx)),
+                                                                         [int(slots[r]) for r in play_idx])
+                cell_probs = torch.softmax(cel.double() / T, dim=-1).cpu().numpy()
+            cells[play_idx] = self._choice(cell_probs, [rngs[r] for r in play_idx])
+            for j, r in enumerate(play_idx):
+                lp_cell[r] = math.log(cell_probs[j, cells[r]])
+        K = 18
+        for j, s in enumerate(sides):
+            r = idx[j]
+            if s.last_play_tick is None:                     # Match.prepare's first-decision clock
+                s.last_play_tick = int(tick[j])
+            pj = p[j]
+            s.n_dec += 1                                     # SelfPlaySide._record's tallies
+            s.p_gates.append(pj)
+            if not any_allowed[j]:
+                s.n_noaff += 1
+            if s.cfg.get("record"):
+                rows = s.__dict__.setdefault("fl_rows", {})
+                for k in keys:
+                    rows.setdefault(k, []).append(batch[k][j])
+                for k, x in (("tick", int(tick[j])), ("allowed", allowed[j]), ("stalled", bool(stalled[j])),
+                             ("gate_sampled", bool(gate_sampled[j])), ("played", bool(playing[j])),
+                             ("slot", int(slots[j])), ("cell", int(cells[j])), ("lp_gate", float(lp_gate[j])),
+                             ("lp_card", float(lp_card[j])), ("lp_cell", float(lp_cell[j])), ("p_gate", float(pj)),
+                             ("T", T)) + ((("gate_tau", float(tau_r[j])),) if tau_r is not None else ()):
+                    rows.setdefault(k, []).append(x)
+            a = v.act[r]
+            if playing[j]:
+                X, Y = ep.cell_to_engine(int(cells[j]), s.mirror, s.cfg["grid"])
+                a[:] = (1, int(slots[j]), int(cells[j]), int(X) * SCALE // K, int(Y) * SCALE // K)
+                s.fl[s.deck.cards[int(slots[j])]] += 1
+                s.fl_el.append(float(el_int[j]))
+            else:
+                a[:] = (0, -1, -1, 0, 0)
+
+    @staticmethod
+    def _choice(P, rngs):
+        """numpy Generator.choice(len(p), p=p) per row: cdf = p.cumsum(); cdf /= cdf[-1]; one uniform;
+        cdf.searchsorted(u, 'right') (numpy/random/_generator.pyx). Row-wise cumsum adds in the same order."""
+        cdf = np.cumsum(P, axis=1)
+        cdf /= cdf[:, -1:]
+        u = np.array([rg.random() for rg in rngs])
+        return (cdf <= u[:, None]).sum(axis=1)
+
+    @staticmethod
+    def fast_traj(s, E) -> dict:
+        """SelfPlaySide._traj_arrays from the fast record (same keys, dtypes and order of rows)."""
+        rows = s.__dict__.get("fl_rows")
+        if not rows:
+            return s._traj_arrays()
+        st = lambda k: np.stack(rows[k])                       # noqa: E731
+        sc = lambda k, dt: np.array(rows[k], dtype=dt)         # noqa: E731
+        out = {"tok": st("tok").astype(np.float32), "mask": st("mask").astype(bool), "sc": st("sc").astype(np.float32),
+               "past": st("past").astype(np.float32), "allowed": st("allowed").astype(bool),
+               "stalled": sc("stalled", bool), "gate_sampled": sc("gate_sampled", bool), "played": sc("played", bool),
+               "slot": sc("slot", np.int64), "cell": sc("cell", np.int64), "lp_gate": sc("lp_gate", np.float64),
+               "lp_card": sc("lp_card", np.float64), "lp_cell": sc("lp_cell", np.float64),
+               "p_gate": sc("p_gate", np.float64), "T": sc("T", np.float64)}
+        out.update({k: st(k).astype(np.int64) for k in E.GEN_IDENT_KEYS})
+        if "unit_form" in rows:
+            out["unit_form"] = st("unit_form").astype(np.int64)
+            out["opp_past"] = st("opp_past").astype(np.float32)
+        if "opp_cycle" in rows:
+            for k in E.GEN_V31_KEYS:
+                out[k] = st(k).astype(np.float32)
+        if "cue" in rows:
+            out["cue"] = st("cue").astype(np.float32)
+        if s.cfg.get("record_tick"):
+            out["tick"] = sc("tick", np.int64)
+        if "gate_tau" in rows:
+            out["gate_tau"] = sc("gate_tau", np.float64)
+        return out
+
+
+FAST_DECIDE = os.environ.get("FASTLOOP_DECIDE", "fast") == "fast"
+
+
+def fast_ok(c: dict) -> bool:
+    """The cfg the fast decide reproduces: sample decode, all three heads, no decide rules / posture / ability, the
+    afford mask on, no anti-stall clock. Anything else takes production's path."""
+    from pipeline.decision_options import DecisionOptions, options_from_config, sample_rules
+    return (c["policy"] == "sample" and "sample_heads" not in c and not c.get("posture") and not c.get("ability")
+            and bool(c["afford_mask"]) and c.get("stall_elixir") is None and c.get("afford_ticks") is None
+            and "_opp_style" not in c and sample_rules(options_from_config(c)) == DecisionOptions())

@@ -35,6 +35,14 @@ def clone_jobs(jobs, n, k):
 
 
 def worker(k, a, base, update, sd, jobs, q):
+    try:
+        _worker(k, a, base, update, sd, jobs, q)
+    except BaseException:
+        import traceback
+        q.put(("error", k, traceback.format_exc()))
+
+
+def _worker(k, a, base, update, sd, jobs, q):
     from producer import Producer
     P = Producer(base, a.matches, a.threads, a.devices.split(",")[k % len(a.devices.split(","))], Path(a.build), k)
     last = [0.0]
@@ -76,6 +84,8 @@ def main():
     ready = 0
     while ready < a.producers:
         m = q.get(timeout=1800)
+        if m[0] == "error":
+            raise SystemExit(f"producer {m[1]}:\n{m[2]}")
         ready += m[0] == "ready"
     gpu, stop = [], threading.Event()
 
@@ -99,7 +109,7 @@ def main():
             last[m[1]] = m[2]
             if time.time() - t0 >= a.warm and m[1] not in first:
                 first[m[1]] = m[2]
-        elif m[0] == "done":
+        elif m[0] in ("done", "error"):
             raise SystemExit(f"producer {m[1]} ran out of jobs: {m[2]}")
     stop.set()
     ks = [k for k in first if k in last and last[k]["t"] > first[k]["t"]]

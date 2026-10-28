@@ -47,7 +47,7 @@ def main():
         t = orig(self, p, d)
         g = self._gen_row or {}
         h = {k: hashlib.sha1(np.ascontiguousarray(g[k]).tobytes()).hexdigest()[:8] for k in sorted(g)}
-        trace[trace["cur"]].setdefault(self.tag, []).append(
+        trace[trace["cur"]].setdefault(f"{self.tag}#{self.k}", []).append(
             dict(tick=int(t), play=bool(d["play"]), slot=int(d["slot"]), cell=int(d["cell"]), p=float(p),
                  why=d.get("why"), lp=[float(d.get(k, 0.0)) for k in ("lp_gate", "lp_card", "lp_cell")], h=h,
                  opp_past=np.asarray(g.get("opp_past")).tolist(), opp_cycle=np.asarray(g.get("opp_cycle")).tolist()))
