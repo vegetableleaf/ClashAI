@@ -2864,6 +2864,12 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
        (Witch), 142926 (client lag).
 - **ENG-FIX5 (10-29, from ENG-FIX4's 08:40 restart point; pod 32657 `/workspace/pilot/engfix5/`, laptop scratch
   `.foreman/scratch/engfix5/`):**
+  - **r9 DONE, clean (a; Codex ENG-FIX4_3 STATUS DONE, re-tallied by me `engfix/r9/my_tally.{py,txt}`):** OFF vs ON
+    (SME_ZD_BLDG) over all 445 records of dev + FRESH1-6: exactly 1 changed, FRESH4 155749 (plays + zap_dead: a Zap at
+    (3614, 23962), R 4265); SME 2055 + 89 div (first 4266) -> 2144 / 2144; plants 0 missed. (r9's ON extraction of
+    FRESH2-6 ran on the edited extract.py / order_inputs.py / bp_rules.py with the new flags unset, and equals OFF apart
+    from 155749: more flag-off identity evidence for SAMETICK_GEN / GK_WALK.) **fresh_prep.sh now adds SME_ZD_BLDG
+    SME_SAMETICK_GEN SME_GK_WALK (FRESH8+).**
   - **FRESH6 031310@3954 is NOT an engine fault (c for "engine body position"): same-tick play order, extractor (a).** Our
     evolved Knight and the opponent Mega Knight run on one tick (3931). crforge ran MK first (ids MK 5000172, Knight 5000173);
     the game's phase2 'generation' (its entity id, mapped from each ents row's address) is Knight 5000172, MK 5000173. In

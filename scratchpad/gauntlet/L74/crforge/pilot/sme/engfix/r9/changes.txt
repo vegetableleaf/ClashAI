@@ -1,0 +1,10 @@
+dev: OFF=138 ON=138 SHA256={'off': 'd91583504174f5d00381ebdf4d8b952371f35e82536e164ce05ab407025fe0b7', 'on': 'd91583504174f5d00381ebdf4d8b952371f35e82536e164ce05ab407025fe0b7'}
+fresh1: OFF=9 ON=9 SHA256={'off': '564fdb24d3dd4fbed739fee046dbfcec3659c1f4027034b3d7cdff3f6c146a23', 'on': '564fdb24d3dd4fbed739fee046dbfcec3659c1f4027034b3d7cdff3f6c146a23'}
+fresh2: OFF=40 ON=40 SHA256={'off': '7fe6d9dc45306adae1d008ec4bfae32beea6af03e8bf3a73bf382fa0cf02ee24', 'on': '7fe6d9dc45306adae1d008ec4bfae32beea6af03e8bf3a73bf382fa0cf02ee24'}
+fresh3: OFF=17 ON=17 SHA256={'off': 'a450d5a3630c5d96250936b4b20863af3250c1895438c5e522fd584af587a749', 'on': 'a450d5a3630c5d96250936b4b20863af3250c1895438c5e522fd584af587a749'}
+fresh4: OFF=78 ON=78 SHA256={'off': 'ceee8bbe33980b2e63979b346cdfc37d8f61b8a2b84c6dab805d9e762dc46f02', 'on': '9ca0171a68442173889c9bd0129bef36fcb304dd17c396d56cce5287111ee3f1'}
+fresh4 live_play_20261028_155749: fields=['plays', 'zap_dead'], parsed_equal=False, text_equal=False
+  zap_dead: OFF=null ON=[{"side": 1, "tp": 4264, "t": 4266, "victims": [["Skeleton", 3723, 23810, 130], ["Skeleton", 2414, 24232, 130], ["Skeleton", 4722, 23762, 130]], "R": 4265, "run_ticks": [4264, 4265], "x": 3614, "y": 23962}]
+  ON differing play x1: {"card": "Zap", "deck_index": 4, "form": 0, "inferred": true, "kind": "play", "mech": "zap_dead", "n": 0, "name": "Zap", "run_ticks": [4264, 4265], "side": 0, "source": "spell_seen", "tick": 4265, "tile": [3, 23], "x": 3614, "y": 23962}
+fresh5: OFF=15 ON=15 SHA256={'off': '6b81869d889e22424a308f31092ce51f497c73d04cff5699a6262d4b0dac8c75', 'on': '6b81869d889e22424a308f31092ce51f497c73d04cff5699a6262d4b0dac8c75'}
+fresh6: OFF=15 ON=15 SHA256={'off': '1beeb24f1a7698a1c247b696fc0d5a6ea51cffc3bc94848c8b49890ed89c3c0a', 'on': '1beeb24f1a7698a1c247b696fc0d5a6ea51cffc3bc94848c8b49890ed89c3c0a'}
