@@ -1,0 +1,6 @@
+2026-10-29T09:54Z oplc_ftR_l01_a10_u0040 CLXIII W 398 / 480 (82.9%); oplc_ftR_l003_a10_u0040 W 406 / 480 (84.6%); ftR same seed 429 / 480 (89.4%) [lead D3, seed 741200, fe364ceb]
+/workspace/d2/cb/icebow/data/bench/rl_royale/oplc_ftR_l01_a10/oplc_ftR_l01_a10_u0080.pt 4ea63629a1577bca -> /workspace/oplc/strip/oplc_ftR_l01_a10_u0080.pt 4262c6ebea7a6681 ['args', 'card_vocab', 'd_c', 'deck', 'epoch', 'gen', 'memory', 'memory_v2', 'model', 'n_params', 'opp', 'opp_sim', 'val']
+/workspace/d2/cb/icebow/data/bench/rl_royale/oplc_ftR_l003_a10/oplc_ftR_l003_a10_u0080.pt ba36992cab881d77 -> /workspace/oplc/strip/oplc_ftR_l003_a10_u0080.pt d80ddaf761530c8c ['args', 'card_vocab', 'd_c', 'deck', 'epoch', 'gen', 'memory', 'memory_v2', 'model', 'n_params', 'opp', 'opp_sim', 'val']
+2026-10-29T10:30:18Z oplc_ftR_l01_a10_u0080 CLXIII W 413 / 480
+2026-10-29T10:30:24Z oplc_ftR_l003_a10_u0080 CLXIII W 386 / 480
+2026-10-29T10:53:16Z u0080: l01 413/480 (86.0%), l003 386/480 (80.4%); quick B RMS l003 .29 / l01 .31 (ftR .30), lock l003 .73 / l01 .76 (ftR .78). Arm A l01 STOPPED at u100; arm C l001 (beta .01) started GPU1.
