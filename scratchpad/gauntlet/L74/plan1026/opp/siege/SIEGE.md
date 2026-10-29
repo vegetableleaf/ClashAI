@@ -101,14 +101,46 @@ fails on every pod for HEAD too, README). Mask = make_mask.py on mix_train (rows
 steps, bs 128, lr 2e-5 one-cycle, else ftR's recipe; held-out = live split 1 (unweighted). Chain `run_ftx.sh ftx3 3 4000` ->
 attach_sim (band 6, mode 1, era 2) -> siege_a + cardcal on live_cal -> level B (after_ftx3.sh).
 
-## STATUS (2026-10-29 ~07:30 UTC) -- restart point
-- Done: tests 1-2 (above); ftR baseline on 5e8089a4 (33903 `/workspace/opp/siege/rows/ftR5e`, laptop `humanlike/rows/ftR5e`).
-- RUNNING: E4 on 5e8089a4, G2 on, same 4 seeds (30408, `/workspace/siege/score/rows/e45e`, log `/workspace/siege/score/e45e.out`)
-  = the same-environment control for "is the within-class gap the opponent or the environment". Restart (resumable per block):
-  `ssh -p 30408 ... 'cd /workspace/siege/score && (PY=/workspace/siege/venv/bin/python CB=/workspace/siege/opp/cb LIB=/workspace/crforge_main/5e8089a4/plain CRFORGE_TABLES=/workspace/siege/crforge_cache/tables/16.402.22 WORKERS=40 CPUS=0-127 G2_ON=on setsid nohup bash /workspace/siege/opp/cb/scratchpad/gauntlet/L74/opp_model/humanlike/run_closed.sh e45e /workspace/siege/score/rows/e45e 741200 742000 742800 743600 >> /workspace/siege/score/e45e.out 2>&1 < /dev/null &)'`
-- 30408 setup (lead 10-29: use 30408): `/workspace/siege/opp/cb` = 33903's /workspace/opp/cb (code ed890aa + P2-OPP2 files),
-  icebow/data -> `/workspace/siege/icebow_data` (CLXIII 8d328a43), data `/workspace/siege/opp/{live,v1}`, tables
-  `/workspace/siege/crforge_cache/tables/16.402.22` (content sha = 33903's). `/workspace/siege/venv` = private venv: a .pth onto
-  venvf16 + cfspeed/pylib (jpype) and COPIES of royalesim / royalegym (the runtime pin checks the venv's own purelib; 30408's
-  venvf16 lacks jpype and gap.py resets PYTHONPATH for its workers). Nothing in /workspace/p4 touched.
-- Next: read E4-5e within-class rates -> pick ONE learned fix (section below) -> fine-tune from ftR on 30408 -> level B (same seeds).
+### Fix 1 result (a): NO EFFECT -- iterate (NO-DISCARD), do not drop
+ftx3 (30408; held-out live split-1 total 5.161 vs ftR 5.206; ckpt `/workspace/siege/ft/ftx3/opp_ft_s0.pt`, _sim.pt sha d7d2794c):
+| (a) | ftR (5e8089a4) | ftx3 (5e8089a4) | E4 (5e8089a4, reference) | live / bar |
+|---|---|---|---|---|
+| CLXIII SIM win (1,920 games, same seeds, G2 on, T 1) | 88.4% | 87.7% (1,683) | 66.5% (1,276) | 30-50% |
+| lock / zero-lock / P(lock / fail) | .75 / .00 / .68 | .75 / .00 / .66 | .55 / .04 / .49 | .47 / .12 / .36 |
+| B-live RMS d / C-live AUC (v6) | 0.31 / 0.974 | 0.31 / 0.982 | 0.54 / - | <= 0.20 / <= 0.60 |
+| within-class share of the lock gap | +0.241 of +0.284 | +0.235 of +0.283 | +0.107 of +0.087 | |
+| P(earthquake in window / deck) | .32 | .33 | - | .73 |
+| per decision (live_cal): earthquake model-expected / human in windows | 0.55 | 0.60 | - | 1.00 |
+| window card / cell NLL | 1.024 / 3.227 | 1.023 / 3.180 | - | |
+Reading (a): 3x oversampling in a 4k-step, lr 2e-5 fine-tune moves the per-decision X-Bow conditioning only slightly (earthquake
+0.55 -> 0.60; outside over-use grows: electro-giant 1.74 -> 2.19, pekka 1.67 -> 1.98) and nothing closed loop. Cards and
+placements of ftx3's on-time answers are as off as ftR's (cannon dx median 2.5, knight dy 5, tesla dx q75 4.5).
+Contradicted (c): "CLXIII has an elixir lead when it places the X-Bow vs ftR" -- CLXIII elixir at its reach X-Bow 8.52 (ftR) vs
+8.48 (E4); the opponent's TRUE elixir 6.58 (ftR) vs 6.20 (E4) (el_b.py): ftR is not starved and still loses the X-Bow fight.
+Open (b): what makes ftR's same-card, on-time answers fail where E4's work -- placement (measured off-spot for cannon / knight /
+part of tesla), unit follow-up, or the rest of the board; the next measurement = per-answer position of the X-Bow's first target
+and the answer unit's survival (needs the board's body list, `hab` samples s[6]).
+
+## STATUS (2026-10-29 ~09:10 UTC) -- restart point
+- RUNNING (30408): iteration 2 = the same lever, dose only: ftx10 = window rows x10 (K 10), else ftx3's recipe.
+  `/workspace/siege/ft/ftx10.out` (chain run_ftx.sh: train -> attach_sim -> siege_a + cardcal), then `after_ftx10.sh` -> level B
+  rows `/workspace/siege/score/rows/ftx10`, log `/workspace/siege/score/ftx10.out` (~50 min after training; ETA ~10:15 UTC).
+  Restart: `ssh -p 30408 ... 'cd /workspace/siege && (setsid nohup bash opp/cb/scratchpad/gauntlet/L74/plan1026/opp/siege/run_ftx.sh ftx10 10 4000 >> ft/ftx10.out 2>&1 < /dev/null &); (setsid nohup bash after_ftx10.sh > score/ftx10.out 2>&1 < /dev/null &)'`
+  (both resumable: finished stages / 480-game blocks are skipped).
+  Score: fetch `rows/ftx10/{ENGINE.json,*/D3/*/matches.jsonl}` to `humanlike/rows/ftx10`, then
+  `card.py score --name ftx10 --sim .../rows/ftx10 --no-d`, `siege_b.py sim ftx10=...`, `dec_b.py live ftx10`,
+  `sim_cards.py .../rows/ftx10 out/WC_ftx10.json`; per decision: `/workspace/siege/ft/ftx10/cardcal.md`.
+- Done rows: ftR5e (33903 `/workspace/opp/siege/rows/ftR5e`), e45e, ftx3 (30408 `/workspace/siege/score/rows/`); laptop copies
+  `humanlike/rows/{ftR5e,e45e,ftx3}` (not committed, bulk). Test-1 dumps: 33903 `/workspace/opp/siege/D_ftR_live_cal.npz`,
+  30408 `/workspace/siege/ft/ftx3/D_live_cal.npz`.
+- 30408 setup (lead 10-29: use 30408): `/workspace/siege/opp/cb` = 33903's /workspace/opp/cb (code ed890aa + P2-OPP2 files)
+  + this dir + train_gen --opp-oversample; icebow/data -> `/workspace/siege/icebow_data` (CLXIII 8d328a43); data
+  `/workspace/siege/opp/{live,v1}`; tables `/workspace/siege/crforge_cache/tables/16.402.22` (content sha = 33903's);
+  `/workspace/siege/venv` = private venv: .pth onto venvf16 + cfspeed/pylib (jpype) and COPIES of royalesim / royalegym (the
+  runtime pin checks the venv's own purelib; 30408's venvf16 lacks jpype and gap.py resets PYTHONPATH for its workers).
+  Nothing in /workspace/p4 touched. 33903: nothing of mine running (PID 5431 untouched).
+- If ftx10 also leaves lock at ~.75: the lever is exhausted at this data size (b, not counted: live train holds few human earthquake-in-window
+  plays); next single changes, in order: (1) the open (b) measurement above, (2) a feature the model lacks for answer placement
+  (e.g. the X-Bow's current target / lock state per body token -- check the obs first), (3) DAgger-style rows are blocked: no
+  expert labels for SIM states (the humans are not queryable).
+- Codex: none used (all steps were diagnosis or needed checking line by line).
