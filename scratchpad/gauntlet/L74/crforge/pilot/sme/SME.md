@@ -2507,10 +2507,12 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
   7,170 one-body own plays): 8 fire, all whole-tile offsets (1000-2001; 142926 7.6 tiles); the back-row clamp (500) never.
   Probes on 5e8089a4 (`results/live/engfix/EF_t5_{a,d}_results.jsonl`): 220244 3025/3025 and 222707 1766/1766 exact;
   dev 235355 (fires: Tesla 1 tile) stays exact (3031 + 1 torn_snap = baseline). Planted `engfix/bodypt_test.py` ok 4.
-  Owed: the dev / FRESH1-4 no-regression batch (Codex) before fresh_prep.sh takes the flag.
-- **RESTART POINT (10-29):** running = Codex ENG-FIX_5 (`.foreman/scratch/a2/codex/ENG-FIX_5.md`, out
+  No-regression (Codex ENG-FIX_5, lib 5e8089a4, OFF and ON run on the same lib; `results/live/engfix/r5/`): dev /
+  FRESH1-4 records change only in 3 matches: FRESH4 220244 and 222707 fixed, dev 235355 same; FRESH1-3 byte-identical;
+  0 regressions, plants 0 missed. **fresh_prep.sh now sets SME_OWN_BODYPT=1 (FRESH5+).**
+- **RESTART POINT (10-29):** done = Codex ENG-FIX_5 (`.foreman/scratch/a2/codex/ENG-FIX_5.md`, out
   `.foreman/scratch/a2/codex/out/ENG-FIX_5.jsonl`, results `engfix/r5/`): BODYPT OFF vs ON on the changed matches of
-  dev / FRESH1-4, lib 5e8089a4. If 0 regressions: add `SME_OWN_BODYPT=1` to fresh_prep.sh (+ its flags echo line).
+  dev / FRESH1-4, lib 5e8089a4: DONE, 0 regressions, flag added to fresh_prep.sh.
   Queue (lead 10-29, in order): FRESH4 151109@925 Snowball (198 / 775 units: point or dating) and 210016@2068 (a Golemite
   only the SIM makes); a narrower SME_NEAR_BIGGER (the smaller living body from an EARLIER play of the side, not the
   same play's: section 8 lists its dev false plays); the scripted Hog-at-bridge Tornado-to-king check; FRESH5 daily:

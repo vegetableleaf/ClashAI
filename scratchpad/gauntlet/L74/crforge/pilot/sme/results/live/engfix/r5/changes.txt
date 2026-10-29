@@ -1,0 +1,14 @@
+dev: OFF=138 ON=138 SHA256={'off': 'c5b197f5e407a73d239e9805ce7597690691c3021b65180ecc9e0d6538f11f92', 'on': 'e094c402324a63e4d6585f6cd11f841ac7ef7eb920c0196bf5e68465f454f5ab'} OFF prefix equality=True
+dev live_play_20261026_235355: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh1: OFF=9 ON=9 SHA256={'off': 'd365b39c3d1f3fd78a084ef5b14c5fab58d9162466ab287263d0bab68e1f5d96', 'on': 'd365b39c3d1f3fd78a084ef5b14c5fab58d9162466ab287263d0bab68e1f5d96'} OFF prefix equality=True
+fresh2: OFF=40 ON=40 SHA256={'off': '6b34fe7221c47dad29f05f2a8fef75ac4b0bc7f81a6f706e1140c5432119aa90', 'on': '6b34fe7221c47dad29f05f2a8fef75ac4b0bc7f81a6f706e1140c5432119aa90'} OFF prefix equality=True
+fresh3: OFF=17 ON=17 SHA256={'off': '5512160c777db7201d77d12c2a8901d4a470b601d5f3e3cbf5f2d779027f1507', 'on': '5512160c777db7201d77d12c2a8901d4a470b601d5f3e3cbf5f2d779027f1507'} OFF prefix equality=True
+fresh4: OFF=78 ON=78 SHA256={'off': '4ef8ce16efb310184c36990ba407993ab2ad07ff882527d1e7d3235cccfc122d', 'on': '9e16678732fe7bc5e5aec0c92bfeca64e28c30a95cf1b8b492c98faeed747aab'} OFF prefix equality=True
+fresh4 live_play_20261028_220244: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_222707: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
