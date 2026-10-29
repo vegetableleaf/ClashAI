@@ -256,6 +256,12 @@ def main_opp(a, arrs: dict, meta: dict) -> int:
     if a.hand_inferred == "drop" and "card_ok" in arrs:
         keep = np.asarray(arrs["card_ok"]) > 0
     tr_idx = np.where((arrs["split"] == 0) & keep)[0]
+    if a.opp_oversample:                       # OPP-SIEGE (opt-in): train rows in MASK.npy repeat K times per epoch
+        path, k = a.opp_oversample.rsplit(":", 1)
+        sel = np.asarray(np.load(path), bool)
+        if len(sel) != len(arrs["split"]):
+            raise ValueError(f"--opp-oversample mask has {len(sel)} rows, the data {len(arrs['split'])}")
+        tr_idx = np.concatenate([tr_idx] + [tr_idx[sel[tr_idx]]] * (int(k) - 1))
     va_all = np.where((arrs["split"] == 1) & keep)[0]
     if not len(tr_idx) or not len(va_all):
         raise ValueError(f"opp trainer needs train (split 0) and held-out (split 1) rows: {len(tr_idx)} / {len(va_all)}")
@@ -403,6 +409,8 @@ def main(argv=None) -> int:
     ap.add_argument("--memory-tables", type=Path, default=None)
     ap.add_argument("--hand-inferred", default="mask_card", help="mask_card (no card label on hand-inferred rows) | drop")
     ap.add_argument("--init", type=Path, default=None, help="opp trainer: fine-tune from this checkpoint")
+    ap.add_argument("--opp-oversample", default="", help="MASK.npy:K -- opp trainer: train rows where the bool mask (one entry "
+                    "per data row) is set appear K times per epoch (absent = unchanged)")
     ap.add_argument("--max-steps", type=int, default=0)
     ap.add_argument("--eval-every", type=int, default=2000)
     ap.add_argument("--eval-rows", type=int, default=100000)

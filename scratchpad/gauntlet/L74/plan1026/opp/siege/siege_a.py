@@ -142,6 +142,7 @@ def main(argv=None):
     ap.add_argument("--split", type=int, default=2)
     ap.add_argument("--bs", type=int, default=1024)
     ap.add_argument("--out", type=Path, required=True)
+    ap.add_argument("--dump", type=Path, default=None, help="npz of per-row h, hand-slot card probs, labels, window ids")
     a = ap.parse_args(argv)
     dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model, st = load_model(a.ckpt, dev)
@@ -156,7 +157,7 @@ def main(argv=None):
     idx = np.where((np.asarray(arrs["split"]) == a.split) & (grp_all >= 0))[0]
     rows = GenRows(arrs, idx, dev)
     rows.memory, rows.memory_version, rows.memory_gid = (packed, row_tab, arrs["tick"]), st.get("memory"), checkpoint_gid(st["card_vocab"])
-    K = ("h", "card_top", "card_lp", "card_ok", "cell_top", "cell_lp", "play", "tnll", "pred_card")
+    K = ("h", "card_top", "card_lp", "card_ok", "cell_top", "cell_lp", "play", "tnll", "pred_card", "card_p4")
     R = {k: [] for k in K}
     hand = np.asarray(arrs["hand_card"])
     for s0 in range(0, len(idx), a.bs):
@@ -177,6 +178,7 @@ def main(argv=None):
         R["play"].append(play.cpu().numpy())
         R["tnll"].append(torch.where(s, slot_nll(o["hazard"].float(), o["tick"].float(), b["slot_ev"], b["slot_tick"]),
                                      torch.zeros_like(o["hazard"].float())).cpu().numpy())
+        R["card_p4"].append(ck.exp()[:, :hand.shape[1]].cpu().numpy().astype(np.float32))
         R["pred_card"].append(hand[ids, ck.argmax(-1).cpu().numpy().clip(0, hand.shape[1] - 1)])
     R = {k: np.concatenate(v) for k, v in R.items()}
     grp, wid = grp_all[idx], wid_all[idx]
@@ -218,6 +220,10 @@ def main(argv=None):
         cc[voc[int(R["pred_card"][i])]][3] += 1
     res["window_cards"] = {k: {"human_n": v[0], "top1": v[1] / v[0] if v[0] else None, "mean_p": v[2] / v[0] if v[0] else None,
                                "model_top_n": v[3]} for k, v in sorted(cc.items(), key=lambda kv: -kv[1][0])[:20]}
+    if a.dump:
+        np.savez_compressed(a.dump, idx=idx, h=R["h"].astype(np.float32), p4=R["card_p4"], hand=hand[idx], y_card=ycard,
+                            play=R["play"], card_ok=R["card_ok"], slot_ok=slot_ok, slot_ev=slot_ev, grp=grp, wid=wid,
+                            tab=np.asarray(row_tab)[idx], tick=tick[idx], vocab=np.array(voc))
     a.out.parent.mkdir(parents=True, exist_ok=True)
     a.out.write_text(json.dumps(res, indent=1))
     print(json.dumps({k: res[k] for k in ("rows", "windows", "groups", "first_response_4s")}, indent=1))

@@ -59,6 +59,48 @@ Engine build (a): ftR re-run on 5e8089a4 (1,920 games, same seeds, G2 on, 33903)
 88.44%, sum of end ticks 7,681,947 both, lock .75 / zero-lock .00 / P(lock|fail) .68, B-live RMS 0.31, C-live 0.974 (card.py v6,
 `humanlike/out/card_ftR5e/`).
 
+## Same-environment control and the per-card refinement (a)
+E4 on 5e8089a4, G2 on, the same 4 seeds as ftR (1,920 games, 30408, `humanlike/rows/e45e`): lock .553 (gap +0.09 vs live),
+class mix -0.02, within class +0.11; same card on time (live / E4-5e / ftR): tesla .49/.52/.80, knight .36/.46/.72, cannon
+.53/.60/.79, valkyrie .38/.46/.61, mega knight .24/.28/.32. So the environment (engine, instrument, CLXIII's SIM stack, the deck
+census, G2) CAN give near-live answer effectiveness: the ftR within-class gap is the OPPONENT's play, not the engine (a; one
+alternative left (b): E4's strength elsewhere in the match changes the states its answers face).
+Placement (place_b.py, on-time answers, dx = toward the centre, dy = toward the opponent's side, tiles from the X-Bow): cannon
+dx median live 0.0 / E4 0.0 / ftR 5.0; knight dy median live 9 / E4 10 / ftR 5; tesla dx q25-q75 live -0.5..0.5, E4 -0.5..2.5,
+ftR -0.5..3.5. ftR's buildings / knight land off the human spots ("right card, wrong cell") (a).
+Commitment (sup_b.py / com_b.py): opponent elixir in the 10 s after the X-Bow live 7.82 / E4 7.73 / ftR 6.35; re-weighting ftR
+to the live commitment mix only moves its lock .750 -> .726 (a). CLXIII plays more in live (2.48 plays in 10 s vs 1.79 SIM).
+Per-card calibration per decision (cardcal.py on the live_cal dump; slot rows with the card in hand: model expected plays =
+sum h * p(card) vs the humans' actual plays; inside X-Bow windows vs outside):
+
+| card | in window: human / model-expected (ratio) | outside (ratio) | choice rows in window: human P / model p |
+|---|---|---|---|
+| earthquake | 152 / 83 (0.55) | 88 / 113 (1.29) | .454 / .295 (n 313) |
+| electro-giant | 69 / 48 (0.70) | 77 / 134 (1.74) | .463 / .344 |
+| ice-golem | 116 / 82 (0.70) | 163 / 148 (0.91) | .639 / .551 |
+| rocket | 110 / 94 (0.85) | 35 / 83 (2.36) | .371 / .353 |
+| pekka | 78 / 66 (0.85) | 62 / 103 (1.67) | .470 / .412 |
+| knight / valkyrie / mega knight | 0.85 / 0.95 / 1.13 | 1.05 / 1.19 / 1.38 | matched |
+| arrows / tesla / cannon | 1.76 / 1.23 / 1.10 | 1.61 / 1.44 / 1.47 | matched |
+
+So the aggregate test 1 hides a card-specific miss (a): the X-Bow-specific counters (earthquake above all) are under-played in
+X-Bow windows and over-played outside -- the model's use of them is not conditioned on the X-Bow enough. Closed loop it grows:
+P(card played in a window | in deck) live vs ftR: earthquake .73 vs .32, rocket .55 vs .29, pekka .51 vs .23, electro-giant .45 vs
+.18, mega knight .51 vs .28 (win_cards.py live rows / sim_cards.py SIM with bodiless spells; caveat (b): live decks are mostly
+"all 8 seen", which biases every live in-deck rate up a little; the-log .29 vs .30 shows the bias is small).
+Not shown: that more earthquakes would lower the lock rate (SIM X-Bows with an earthquake in 10 s lock .78 vs .75 without,
+n 86 -- selection; the 5% lock happens in the first seconds).
+Revised reading of the hypothesis: per decision the model knows WHEN to answer and mostly WHICH unit (c for "missing answers"),
+but (a) its X-Bow-specific card choice is under-conditioned (earthquake 0.55x) and (a) closed loop its answers land off the human
+spots and commit less elixir; the effective-answer gap, not the answer rate, carries +0.24 of the +0.28.
+
+## Fix 1 (ONE learned change): X-Bow-window rows oversampled in a short fine-tune from ftR
+`train_gen --opp-oversample MASK.npy:K` (opt-in; absent = unchanged; test_opp_model 9 passed on 30408, the legacy fingerprint
+fails on every pod for HEAD too, README). Mask = make_mask.py on mix_train (rows in (t_x, t_x + 200] after an enemy reach X-Bow:
+79,142 of 556,410 rows; 70,627 of 509,475 train rows). Run ftx3 = init ftR's opp_ft_s0.pt, K 3 (train rows 650,729), 4,000
+steps, bs 128, lr 2e-5 one-cycle, else ftR's recipe; held-out = live split 1 (unweighted). Chain `run_ftx.sh ftx3 3 4000` ->
+attach_sim (band 6, mode 1, era 2) -> siege_a + cardcal on live_cal -> level B (after_ftx3.sh).
+
 ## STATUS (2026-10-29 ~07:30 UTC) -- restart point
 - Done: tests 1-2 (above); ftR baseline on 5e8089a4 (33903 `/workspace/opp/siege/rows/ftR5e`, laptop `humanlike/rows/ftR5e`).
 - RUNNING: E4 on 5e8089a4, G2 on, same 4 seeds (30408, `/workspace/siege/score/rows/e45e`, log `/workspace/siege/score/e45e.out`)

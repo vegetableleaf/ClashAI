@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 import sys
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -66,7 +67,7 @@ def live_xbows():
 def sim_xbows(root):
     """run_closed rows: card.sim_records (plays) + the reach X-Bows with their engine position (= card.xb_sim's set)."""
     import xbow_count as XC
-    recs = CD.sim_records(root)
+    recs = CD.sim_records(root, live_visible=not os.environ.get("SIEGE_ALL"))   # SIEGE_ALL=1: keep bodiless spells
     out = []
     for r, (_, h) in zip(recs, XC.rows(str(root))):
         mir = bool(h["mirror"][0])
