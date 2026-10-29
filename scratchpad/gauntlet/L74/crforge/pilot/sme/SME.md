@@ -2608,9 +2608,28 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
     sme11f untouched.
   - **FRESH5 cut:** 00:43 EDT, not the 00:50 the restart point named. FRESH4's last log starts 00:42; with 00:50 the log
     004719 (00:47) would have been in neither set.
-  - **RESTART POINT:** read ENG-FIX2_1's table, then the lead's call on SME_HIDDEN_ASSIGN, then FRESH5 failures
-    004719@2573 (opponent Goblins reader-only) / 021310@1986 (Skeletons SIM-only), then NEAR_BIGGER same-form test.
-    Codex dispatches (ENG-FIX2): ENG-FIX2_1 medium, running.
+  - **OWNER TO RATIFY: SME_HIDDEN_ASSIGN (revised, torn_hidden labelling) is a comparator change.** Lead 10-29: it is
+    accepted as consistent (two hidden bodies are scored like one), but the DEFAULT GATE STAYS OFF until the owner
+    ratifies it. Every gate number is reported both ways (ASSIGN off / on), naming off as the default. So far (a):
+    ASSIGN changes no frame of the 6 hidden-window records except 210016, which moves from fail to pass-apart-from-torn
+    (not strict) only together with the extractor flag HIDDEN_CHILD. No gate set has been rerun with it yet. The
+    numbers already reported (FRESH2-5, 93/114) are all ASSIGN off.
+  - **RESTART POINT (ENG-FIX2 stopped for context, 10-29 ~04:45 EDT), in order:**
+    1. Wait for Codex ENG-FIX2_1 (r6) to finish: final message in `.foreman/scratch/a2/codex/out/ENG-FIX2_1.jsonl`
+       (`STATUS: DONE|BLOCKED`), table in `engfix/r6/`. Check its numbers yourself. If 0 regressions and plants 0 missed:
+       add `SME_SPELL_KING=1 SME_HIDDEN_CHILD=1` to fresh_prep.sh line 11 (the regen env) AND line 25 (the flags echo),
+       update its header comment, commit.
+    2. Only after r6 has freed 32657: wire ASSIGN into the gate code behind its flag by copying the repo's
+       `sme/sme_live.py` (LF; `tr -d '\r'`) over `/workspace/pilot/f1fix/sme11f/sme_live.py`. runH.sh needs no edit:
+       pass `SME_HIDDEN_ASSIGN=1` as a trailing VAR=val argument. First keep a backup `sme_live.py.pre_assign`. Check
+       flag-off byte identity: rerun `EF2_p151` (151109, `/workspace/pilot/engfix2/on151.jsonl`) with flag off -> 3031
+       exact, and 083923 off -> 1814 exact + 41 torn_hidden, as in `engfix/hassign_nr.txt`.
+    3. Then the NEAR_BIGGER2 SME no-regression on its 2 changed records (FRESH2 101018, FRESH4 171948): extract both
+       with fresh_prep's flags +/- `SME_NEAR_BIGGER2=1` (regen_fresh.sh, as `.foreman/scratch/engfix2/p1`), and run OFF then
+       ON with runH.sh on 32657 (frames /workspace/pilot/fresh2/frames, /workspace/pilot/fresh4/frames). Expect 101018
+       OFF first div 5968 -> ON exact; 171948 is flagged (opp_no_fitting_deal), so report its counts only.
+    4. Open: FRESH5 failures 004719@2573 (opponent Goblins reader-only), 021310@1986 (Skeletons SIM-only).
+    Codex dispatches (ENG-FIX2): ENG-FIX2_1 medium, running (pid file `.foreman/scratch/a2/codex/out/ENG-FIX2_1.jsonl.pid`).
 - **(superseded by ENG-FIX2 above) RESTART POINT (10-29):** done = Codex ENG-FIX_5 (`.foreman/scratch/a2/codex/ENG-FIX_5.md`, out
   `.foreman/scratch/a2/codex/out/ENG-FIX_5.jsonl`, results `engfix/r5/`): BODYPT OFF vs ON on the changed matches of
   dev / FRESH1-4, lib 5e8089a4: DONE, 0 regressions, flag added to fresh_prep.sh.
