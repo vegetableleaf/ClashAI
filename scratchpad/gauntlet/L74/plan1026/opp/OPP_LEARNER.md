@@ -38,7 +38,12 @@ unchanged without the opp init. Existing: test_timing_head_decode + test_league 
   actors, ONE lambda run at a time: 0.1 first, then 0.03 / 0.3); never the 33903 GPU; bar scored on D3 + the sampled-decode
   number beside it; dry-run on v0 until P2-OPP2 reports v1.
 - DONE (code; opt-in, absent = unchanged): (1) bot partner decode + icebow pool, (2) th_drift monitor, (3) fast-loop timing
-  LEARNER seat. Calibration run (4) NOT STARTED: waits for v1 (P2-OPP2: seed 0 at step 62.5k of 100k at 00:50 UTC, then
+  LEARNER seat. (4) v0 DRY RUN RUNNING (lead 10-29, settles lr / lambda / stop rule before v1): 33308, run oplc_v0_l01
+  (lambda 0.1, lr 1e-5, 20 actors on CPUs 100-121 = 26 GB tree RSS at start, learner on GPU1, 30 updates, save_every 10), started
+  01:57 UTC, PID 57195, log /workspace/oplc/logs/oplc_v0_l01.log, tree /workspace/oplc/cb (cp -al of /workspace/opl/cb + origin
+  pipeline + learner/); launch: `bash cb/scratchpad/gauntlet/L74/plan1026/opp/learner/run_calib.sh RUN LAMBDA INIT CPUS k=v...`
+  (+ --resume to continue). 33308 disk: 4.6 GB free at 01:50 UTC; a numbered checkpoint is 135 MB (Adam state).
+  v1: (P2-OPP2: seed 0 at step 62.5k of 100k at 00:50 UTC, then
   attach_sim + level A + level B v1s0 by Codex P2OPP2_3).
 - Pod 33903 (CPUs 200-219, <= ~20 GB; GPU = P2-OPP2's): trees /workspace/opplearnc/cbc_base (HEAD c5383b3 pipeline over
   /workspace/opplearn/cb) and /workspace/opplearnc/cbc (+ this change + HEAD loop / speed dirs); chain /workspace/opplearnc/chainc.sh (= learner/chainc.sh);
