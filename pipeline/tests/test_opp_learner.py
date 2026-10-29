@@ -131,6 +131,77 @@ class TestRecord(unittest.TestCase):
         self.assertFalse(torch.equal(sd["card_q.weight"].detach(), self.model.card_q.weight))
 
 
+class TestDrift(unittest.TestCase):
+    """OPP-LEARN-C: th_drift = the frozen heads' outputs, policy vs init, on fixed rows."""
+
+    def test_zero_for_the_init_and_moves_with_the_trunk_only(self):
+        model = _opp_model(5)
+        B = _batch(_rollout(model, 1))
+        rows = E.gen_batch(model, B, torch.arange(min(len(B["A"]), RL.TH_DRIFT_ROWS)))
+        d0 = RL.th_drift(model, model, rows)
+        self.assertEqual(d0["rows"], len(B["A"]))
+        for k in ("hazard", "ab_hazard"):
+            self.assertEqual((d0[k]["mad"], d0[k]["max"], d0[k]["tick_kl"]), (0.0, 0.0, 0.0), k)
+        moved = copy.deepcopy(model)
+        RL.freeze_heads(moved, {"freeze_heads": ["timing", "ability"]})
+        with torch.no_grad():                                 # move the trunk only (what PPO on card / cell does)
+            for n, q in moved.named_parameters():
+                if q.requires_grad and not n.startswith(("card_q", "cell")):
+                    q.add_(0.05 * torch.randn_like(q))
+        d1 = RL.th_drift(moved, model, rows)
+        self.assertTrue(torch.equal(moved.timing_head.weight, model.timing_head.weight))
+        for k in ("hazard", "ab_hazard"):
+            self.assertGreater(d1[k]["mad"], 0.0, k)
+            self.assertGreater(d1[k]["tick_kl"], 0.0, k)
+            self.assertGreaterEqual(d1[k]["max"], d1[k]["mad"])
+            self.assertAlmostEqual(d1[k]["p_init"], d0[k]["p_now"], places=12)
+
+
+class TestBotPartner(unittest.TestCase):
+    """OPP-LEARN-C: a league_exploiters entry = the bot partner on our deck with its own decode (T, T_gate, tau,
+    tau_phase); a frozen human-model partner keeps the run's T (the init / snapshot path, unchanged)."""
+    BASE = {"league": True, "league_deck_alpha": 1.0, "league_deck_floor": 0.0}
+    CK = "pipeline/rl_royale.yaml"                            # any repo file (exploiter_league checks it exists)
+
+    def test_icebow_pool_and_own_decode(self):
+        x = RL.exploiter_league({**self.BASE, "league_exploiters": {
+            "ckpt": self.CK, "decks": "icebow", "share": 0.6, "T": 0.5, "T_gate": 0.1, "tau": 0.35,
+            "tau_phase": [0.35, 0.45, 0.55]}})
+        self.assertEqual(x["decks"], [RL.ICEBOW_DECK])
+        self.assertEqual(list(x["p"]), [1.0])
+        self.assertEqual(x["opp"]["cfg"], {"T": 0.5, "T_gate": 0.1, "tau": 0.35, "tau_phase": [0.35, 0.45, 0.55]})
+        oc = {"T": 1.0, "T_gate": None, "tau": 0.35, "decide_every": 10}
+        got = RL.own_opp_cfg(oc, x["opp"], {})
+        self.assertEqual((got["T"], got["T_gate"], got["tau"], got["tau_phase"]), (0.5, 0.1, 0.35, [0.35, 0.45, 0.55]))
+        # list form: two bots on icebow, matchups draw ICEBOW_DECK for them
+        xl = RL.exploiter_league({**self.BASE, "league_exploiters": [
+            {"ckpt": self.CK, "decks": "icebow", "share": 0.3, "T_gate": 0.1},
+            {"ckpt": "pipeline/rl_royale.py", "decks": "icebow", "share": 0.3}]})
+        self.assertAlmostEqual(xl["share"], 0.6)
+        ms = RL.sample_matchups(np.random.default_rng(0), 200, 0, [], {"league_icebow_share": 0.0, "league_mix":
+                                {"init": 1.0}, "init": "i.pt", "league_specialist": "s.pt"},
+                                [{"name": "r1", "engine": ["Knight"], "sides": 1, "bucket": "head"}], np.ones(1), None, xl)
+        bots = [m for m in ms if m["opp"]["type"] == "exploiter_league"]
+        self.assertTrue(40 < len(bots) < 160)
+        self.assertTrue(all(m["opp_deck_name"] == "icebow" for m in bots))
+        self.assertTrue(all(m["opp"]["type"] == "init" and m["opp_deck_name"] == "r1" for m in ms if m not in bots))
+
+    def test_absent_keys_unchanged_and_refusals(self):
+        x = RL.exploiter_league({**self.BASE, "league_exploiters": {"ckpt": self.CK, "decks": "icebow", "share": 0.5}})
+        self.assertNotIn("cfg", x["opp"])
+        oc = {"T": 1.0, "T_gate": None, "tau": 0.35, "decide_every": 10}
+        self.assertEqual(RL.own_opp_cfg(oc, x["opp"], {}), RL.own_opp_cfg(oc, {"type": "init"}, {}))
+        y = RL.exploiter_league({**self.BASE, "league_exploiters": {"ckpt": self.CK, "decks": "icebow", "share": 0.5,
+                                                                    "T": 0.5}})
+        self.assertNotIn("tau_phase", RL.own_opp_cfg(oc, y["opp"], {}))
+        self.assertIsNone(RL.own_opp_cfg(oc, y["opp"], {})["T_gate"])
+        for bad in ({"T_gate": 0}, {"T_gate": True}, {"tau_phase": [0.3, 0.4]}, {"tau_phase": [0.3, 0.4, 1.0]},
+                    {"tau_phase": 0.3}, {"decks": "icebow2"}):
+            with self.assertRaises(SystemExit, msg=str(bad)):
+                RL.exploiter_league({**self.BASE, "league_exploiters": {"ckpt": self.CK, "decks": "icebow", "share": 0.5,
+                                                                        **bad}})
+
+
 class TestKeys(unittest.TestCase):
     def test_fixed_kl_pull_is_beta0_min_max(self):
         lam = 0.2
