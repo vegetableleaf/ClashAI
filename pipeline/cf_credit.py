@@ -36,6 +36,7 @@ sample; one sample per decision, the first firing trigger in TRIGGERS order that
                   within cf_redirect_dist_tiles of our nearest princess -> tornado_king (centre toward our king), wait,
                   tornado_on (centre on the unit: no net pull)  rocket_played   the policy plays the Rocket           -> wait, second_card (its best other card)
   rocket          Rocket affordable, not played          -> rocket_clump, rocket_princess (weakest enemy princess)
+                                                            [+ rocket_empty with cf_rocket_empty: the Rocket into nothing]
   wincon          an enemy building-targeting troop on our half -> wait, rocket_on, troop_on (its best troop), cheap_on
   siege           an enemy building locked on our tower, or an enemy X-Bow / Mortar in reach of one
                                                          -> wait, rocket_on, front (best troop in front of the princess), troop_on
@@ -68,8 +69,8 @@ from typing import Optional
 
 import numpy as np
 
-TRIGGERS = ("rocket_tornado", "tornado_redirect", "rocket_played", "rocket", "wincon", "siege", "xbow_after_fail", "xbow",
-            "idle_full", "log_bait", "random")
+TRIGGERS = ("rocket_cycle", "def_xbow", "rocket_tornado", "tornado_redirect", "rocket_played", "rocket", "wincon", "siege",
+            "xbow_after_fail", "xbow", "idle_full", "log_bait", "random")
 # L1 pilots (plan1026/cf/data: pilot2 = 512 matches / 2,907 samples after the critic warm-up, pilot3 = the noise study): the
 # pilot's probabilities cost 5.9x the match ticks; these are pilot_report.py's water-filling split of 1.0x match ticks (equal
 # fork ticks per trigger, random half) -> 0.08-0.3 samples per match per trigger (cost to be re-measured at these values).
@@ -80,7 +81,32 @@ P_DEFAULT = {"rocket_played": 0.5, "rocket": 0.0009, "wincon": 0.008, "siege": 0
 # read only while their probability is > 0 (probability 0 = no condition read, no RNG draw, as before). The combo needs the
 # follow_ups play (action_delay_ticks > 0, no pipeline_decisions / tap_loss / tap_slow): a config without it gets rocket_tornado
 # 0.0 unless cf_p sets it (then cf_cfg refuses, naming the keys).
-OPT_IN = ("rocket_tornado", "tornado_redirect")
+OPT_IN = ("rocket_tornado", "tornado_redirect", "rocket_cycle", "def_xbow")
+# P6 macros as fork triggers (P3-FORK3, MACROS.md "What P3-FORK needs"; NOT in P_DEFAULT: absent from cf_p = probability 0 = off,
+# so every older cf-on hash stays). Each is hand-coded from its PINNED library entry (test_cf_credit TestMacros checks the file's
+# sha256 and the entry's prefix / window / horizon against these constants; a new library = a new sha = re-check):
+#   rocket_cycle = rocket_cycle.after2: >= RC_MIN_FAILS failed reach X-Bows, the last one gone at >= RC_MIN_FAIL_TICK (2x / OT),
+#                  Rocket affordable, <= RC_WINDOW ticks after it -> rocket_princess (the lower-HP enemy princess centre), wait
+#                  (when the policy played), rocket_empty (cf_rocket_empty); horizon 600 (the library's measured one)
+#   def_xbow     = def_xbow_hard: the policy plays an X-Bow in a hostile matchup (their deck EQ / HOG / BEATDOWN by
+#                  rocket_slices.archetype, an X-Bow answer of theirs ready or short by rocket_slices.answer_ctx on their public
+#                  cycle + our public elixir estimate) -> xbow_def_tile (the X-Bow on the defensive tile in front of the
+#                  threatened princess, then a PREFIX step: the counter-lock, the X-Bow on the reach cells of that lane at the
+#                  fork learner's first decision <= DX_COUNTER_WITHIN ticks later where it is in hand + affordable), wait,
+#                  xbow_reach_lane (the bridge control, when the policy's own X-Bow is not a reach one); horizon 1200
+# The prefix runs on the fork's own learner side only (P6_DESIGN 4.2: the sampled decision is replaced, "why" = cf_prefix); its
+# outcome per continuation is recorded ("prefix": fired / lapsed / no_cell). NOT built yet: training rows for prefix steps after
+# the root (P6_DESIGN 5; the root step's row is the ordinary alternative row).
+MACRO_LIB_SHA256 = "828cedf71ae30bce2f0903a366c4daf2857a44c1bfa9061cb2053bf63c4d959b"   # plan1026/macros/LIBRARY.json
+MACROS = {"rocket_cycle": "rocket_cycle.after2", "def_xbow": "def_xbow_hard"}          # trigger -> library entry id
+MACRO_HORIZON = {"rocket_cycle": 600, "def_xbow": 1200}  # the entries' horizon_ticks (cf_horizon_by overrides, e.g. 7000 = the end)
+RC_MIN_FAIL_TICK, RC_MIN_FAILS, RC_WINDOW = 2400, 2, 600
+DX_TILE_Y, DX_TILE_R, DX_COUNTER_WITHIN = 22.5, 1.5, 600   # defensive tile (3.5 | 14.5, 22.5), my frame; counter-lock <= 30 s
+XBOW_ANSWERS = frozenset(("earthquake", "electrogiant", "giant", "goblinstein", "hogrider", "musketeer", "pekka", "royalgiant"))
+# ^ rocket_slices.K (investment/counters_raw.json sha256 ec66d239..., cards that cut the X-Bow lock rate >= 0.10 live AND pro)
+TANKS = frozenset(("golem", "giant", "electrogiant", "goblingiant", "lavahound", "elixirgolem", "royalgiant", "pekka",
+                   "megaknight", "goblinstein", "giantskeleton", "bossbandit"))   # rocket_slices.TANKS, names normalised
+HOSTILE_ARCH, HOSTILE_ANS = ("EQ", "HOG", "BEATDOWN"), ("ready", "short")   # rocket_slices.HOSTILE
 # per-trigger fork horizons (ticks) where the 600-tick Q is too noisy (pilot3, K = 2 at 600 vs 300: idle_full SNR 0.29 -> 0.77,
 # log_bait 0.52 -> 0.78, wincon 0.83 -> 1.31, siege 0.68 -> 1.15, random 0.80 -> 1.23; the critic slope of the within-sample
 # differences at 300 is 0.84 +- 0.33, inside [0.7, 1.3]) -- half the cost per sample as well
@@ -90,8 +116,10 @@ DEFAULTS = {"cf_horizon_ticks": 600, "cf_k": 2, "cf_w": 1.0, "cf_clip": 3.0, "cf
             "cf_p": None, "cf_random_alts": 2, "cf_rocket_min_value": 2.0, "cf_siege_radius_tiles": 2.0,
             "cf_front_min_tiles": 5.0, "cf_front_max_tiles": 8.0, "cf_xbow_fail_window_ticks": 600, "cf_full_elixir": 9.9,
             "cf_combo_value": 6.0, "cf_redirect_dist_tiles": 12.0, "cf_k_by": None, "cf_horizon_by": None,
-            "cf_horizon_sweep": None, "cf_adv_scale": 1.0, "cf_diag": False, "cf_rocket_lead": "off"}
-NEW_KEYS = ("cf_combo_value", "cf_redirect_dist_tiles", "cf_k_by", "cf_horizon_by", "cf_horizon_sweep", "cf_adv_scale", "cf_diag", "cf_rocket_lead")   # dropped from the config hash at their
+            "cf_horizon_sweep": None, "cf_adv_scale": 1.0, "cf_diag": False, "cf_rocket_lead": "off",
+            "cf_rocket_empty": False, "cf_diag_plays": False, "cf_redirect_king_tiles": None}
+NEW_KEYS = ("cf_combo_value", "cf_redirect_dist_tiles", "cf_k_by", "cf_horizon_by", "cf_horizon_sweep", "cf_adv_scale", "cf_diag", "cf_rocket_lead",
+            "cf_rocket_empty", "cf_diag_plays", "cf_redirect_king_tiles")   # dropped from the config hash at their
 # defaults (older cf-on hashes stay); cf_k_by / cf_horizon_by = {trigger: K / horizon ticks}, the per-trigger noise controls;
 # cf_horizon_sweep = [ticks, ...] (< the horizon): the SAME forks also record Q read at those earlier stops ("qh"), so one pilot
 # gives the SNR / critic-slope of every candidate horizon (diagnostic, the learner ignores it);
@@ -103,7 +131,15 @@ NEW_KEYS = ("cf_combo_value", "cf_redirect_dist_tiles", "cf_k_by", "cf_horizon_b
 # "off" = the static aim (cfaud3: a Rocket aimed at a wincon's present position is -0.20 vs the policy's action);
 # cf_diag = the P4 audit record (diagnostic, the learner ignores it): per sample the root context ("ctx": elixir, hand, tower
 # snapshot, enemy bodies on our half), per fork the state at each stop ("dg": Phi / critic parts of Q + the tower / elixir
-# snapshot), per match the opponent ("opp": league spec + style), per candidate a "meta" (clump value ...)
+# snapshot), per match the opponent ("opp": league spec + style), per candidate a "meta" (clump value ...);
+# cf_diag_plays (needs cf_diag) = each dg record also lists the cards both sides landed since the root ("pl": [own, foe] of
+# [tick - root, card]): what the continuation and the opponent did after the alternative (P3-FORK3 opponent check);
+# cf_rocket_empty = the rocket / xbow_after_fail triggers also fork "rocket_empty", the Rocket into a point with nothing within
+# EMPTY_CLEAR_TILES (its elixir + card cycle, no damage): rocket_princess - rocket_empty = the chip's own value in the SIM's
+# return, rocket_empty - chosen = the price of spending the Rocket (P4 audit decomposition, diagnostic);
+# cf_redirect_king_tiles (null = off) = tornado_redirect also needs the unit within that many tiles of OUR king (P3-FORK3 on cfaud3:
+# tornado_king - tornado_on is +0.020 [-0.04, +0.08] with our king activated +0.061 at 7.5 s for units < 9 tiles from our king,
+# -0.109 for 9-12 tiles: the pull cannot bring a far unit into the king's reach, so the far samples price a misplaced Tornado)
 KEYS = ("cf_credit",) + tuple(DEFAULTS)
 INTS = ("cf_horizon_ticks", "cf_k", "cf_max_alts", "cf_gap_ticks", "cf_cap_ticks", "cf_end_ticks", "cf_shrink_min",
         "cf_random_alts", "cf_xbow_fail_window_ticks")
@@ -123,7 +159,8 @@ def _num(v) -> bool:
     return isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v)
 
 
-KEEP = ("cf_shrink", "cf_p", "cf_k_by", "cf_horizon_by", "cf_horizon_sweep", "cf_diag", "cf_rocket_lead")   # values kept as they are (not float())
+KEEP = ("cf_shrink", "cf_p", "cf_k_by", "cf_horizon_by", "cf_horizon_sweep", "cf_diag", "cf_rocket_lead", "cf_rocket_empty",
+        "cf_diag_plays", "cf_redirect_king_tiles")   # values kept as they are (not float())
 
 
 def combo_ok(cfg: dict) -> bool:
@@ -168,8 +205,14 @@ def cf_cfg(cfg: dict) -> Optional[dict]:
         bad.append(f"cf_adv_scale must be a finite number in (0, 2], got {c['cf_adv_scale']!r}")
     if c["cf_rocket_lead"] not in ("off", "drift"):
         bad.append(f"cf_rocket_lead must be off or drift, got {c['cf_rocket_lead']!r}")
-    if type(c["cf_diag"]) is not bool:
-        bad.append(f"cf_diag must be a bool, got {c['cf_diag']!r}")
+    for k in ("cf_diag", "cf_rocket_empty", "cf_diag_plays"):
+        if type(c[k]) is not bool:
+            bad.append(f"{k} must be a bool, got {c[k]!r}")
+    rk_t = c["cf_redirect_king_tiles"]
+    if rk_t is not None and not (_num(rk_t) and rk_t > 0):
+        bad.append(f"cf_redirect_king_tiles must be null or a finite number > 0, got {rk_t!r}")
+    if c["cf_diag_plays"] is True and c["cf_diag"] is not True:
+        bad.append("cf_diag_plays needs cf_diag (it extends the cf_diag fork records)")
     if not (_num(c["cf_audit_p"]) and 0 <= c["cf_audit_p"] <= 1):
         bad.append(f"cf_audit_p must be in [0, 1], got {c['cf_audit_p']!r}")
     if type(c["cf_shrink"]) is not bool:
@@ -459,6 +502,22 @@ def cell_at(grid: str, bx: float, by: float) -> int:
     return int(np.argmin(np.hypot(x - bx, y - by)))
 
 
+EMPTY_ROCKET_TILES = ((9.0, 12.0), (9.0, 9.5), (6.0, 12.5), (12.0, 12.5), (9.0, 15.5))   # my frame, enemy half / river
+EMPTY_CLEAR_TILES = 5.5               # Rocket radius 2 + a fast body's walk during the flight (~3) + its own radius
+
+
+def empty_rocket_cell(s, grid: str) -> Optional[int]:
+    """cf_rocket_empty: the cell of the first EMPTY_ROCKET_TILES point with no enemy entity (any kind) and no enemy crown
+    tower within EMPTY_CLEAR_TILES (my frame), i.e. a Rocket that hits nothing -- or None when every point is crowded."""
+    foe = [raw_tiles(e, s.mirror) for e in s.state["entities"] if int(e["side"]) != s.side]
+    foe += [raw_tiles(t, s.mirror) for t in s.state["episode"]["crown_towers"]
+            if int(t["side"]) != s.side and not t.get("destroyed") and t["hp"] > 0]
+    for px, py in EMPTY_ROCKET_TILES:
+        if all(math.hypot(px - x, py - y) > EMPTY_CLEAR_TILES for x, y in foe):
+            return cell_at(grid, px, py)
+    return None
+
+
 def pull_centre(ux: float, uy: float, tx: float, ty: float, reach: float) -> tuple[float, float]:
     """The Tornado centre that drags a unit at (ux, uy) toward (tx, ty): the point toward it ``reach`` tiles from the unit (or
     the target itself when nearer), kept on the board."""
@@ -484,6 +543,8 @@ def redirect_target(s, c: dict) -> Optional[dict]:
         if air.get(int(cls), (False,))[0] or vocab.base_key(vocab.UNIT_VOCAB[int(cls)]) in fixed or by < 15.0:
             continue
         d, p = min((math.hypot(bx - px, by - py), (px, py)) for px, py in pr)
+        if c.get("cf_redirect_king_tiles") is not None and math.hypot(bx - kg[0][0], by - kg[0][1]) > c["cf_redirect_king_tiles"]:
+            continue                                      # too far from our king for the pull to bring it into the king's reach
         if d <= c["cf_redirect_dist_tiles"] and (best is None or d < best["d"]):
             best = {"name": _norm(vocab.UNIT_VOCAB[int(cls)]), "bx": float(bx), "by": float(by), "king": kg[0],
                     "princess": p, "d": float(d)}
@@ -649,7 +710,7 @@ def candidates(m, s, d: dict, trig: str, c: dict) -> list[dict]:
         return [chosen] + sampled_alts(pol, c["cf_random_alts"], m.cf_state["rng"], seen)
     want = []                                             # (kind, slot, where); slot -1 = wait
     if d["play"] and trig in ("rocket_played", "wincon", "siege", "xbow_after_fail", "xbow", "log_bait", "rocket_tornado",
-                              "tornado_redirect"):
+                              "tornado_redirect", "rocket_cycle", "def_xbow"):
         want.append(("wait", -1, None))
     if trig == "rocket_tornado":                          # combo vs the best lone blast (vs the policy's own choice / a wait)
         from pipeline import e1_eval as E
@@ -672,7 +733,7 @@ def candidates(m, s, d: dict, trig: str, c: dict) -> list[dict]:
         sc = pol.best_card(np.arange(len(names)) != int(d["slot"]))
         if sc is not None:
             want.append(("second_card", sc, "argmax"))
-    if trig in ("rocket", "xbow_after_fail") and rk is not None:
+    if trig in ("rocket", "xbow_after_fail", "rocket_cycle") and rk is not None:
         bs = s._cur[1]
         if trig == "rocket":
             value, elig = DO.best_rocket_clump(DO.rocket_bodies(bs, "cost"), grid, "edge", lead, 0.0,
@@ -683,6 +744,10 @@ def candidates(m, s, d: dict, trig: str, c: dict) -> list[dict]:
         if hps:
             weak = min(hps, key=lambda k: (hps[k], k))
             want.append(("rocket_princess", rk, DO.lethal_rocket_cell(weak, grid), meta(hp=float(hps[weak]))))
+        if c.get("cf_rocket_empty"):                      # the P4 decomposition control: the Rocket's elixir + cycle, no hit
+            ec = empty_rocket_cell(s, grid)
+            if ec is not None:
+                want.append(("rocket_empty", rk, ec))
     if trig in ("wincon", "siege"):
         tg = m.cf_state["target"]
         bx, by = tg["bx"], tg["by"]
@@ -709,6 +774,18 @@ def candidates(m, s, d: dict, trig: str, c: dict) -> list[dict]:
             want.append(("xbow_other_lane", xk, reach & ((x < 9.0) != (x[int(d["cell"])] < 9.0))))
         if trig == "xbow_after_fail":
             want.append(("xbow_reach", xk, reach))
+    if trig == "def_xbow" and xk is not None:             # the macro's defensive X-Bow (+ counter-lock prefix) vs the bridge one
+        x, y = DO.cell_centres_tiles(grid)
+        reach = xbow_reach_cells(s, grid)
+        left = threatened_left(s, d, grid)
+        lane = "L" if left else "R"
+        tile = (y >= TERRITORY_Y_TILES) & (np.hypot(x - (3.5 if left else 14.5), y - DX_TILE_Y) <= DX_TILE_R)
+        arch, ans, _ = matchup_ctx(m, s, int(s._cur[0]))
+        want.append(("xbow_def_tile", xk, tile, {"prefix": [{"card": "xbow", "where": "reach_lane", "lane": lane,
+                                                              "within": DX_COUNTER_WITHIN}],
+                                                 **meta(macro=MACROS[trig], lane=lane, arch=arch, ans=ans)}))
+        if d["play"] and not reach[int(d["cell"])]:
+            want.append(("xbow_reach_lane", xk, reach & ((x < 9.0) == left)))
     if trig == "idle_full":
         b = pol.best_card(np.ones(len(names), bool))
         if b is not None:
@@ -728,6 +805,79 @@ def candidates(m, s, d: dict, trig: str, c: dict) -> list[dict]:
     return out
 
 
+def matchup_ctx(m, s, tick: int) -> tuple:
+    """def_xbow's start condition at learner side ``s``'s decision: (archetype of the opponent's deck -- rocket_slices.archetype,
+    from the whole deck the SIM knows --, answer context -- rocket_slices.answer_ctx: their revealed cycle = their plays landed
+    by ``tick`` (a card is in hand iff >= 4 plays since its last one), 'ready' when an answer in hand costs <= our public
+    estimate of their elixir (the counter; their true elixir when the side keeps none), 'short' otherwise, 'cycled' /
+    'unrevealed' --, hostile)."""
+    o = m.opp
+    names = [_norm(o.engine_deck[o.deck_index_of_slot[k]]) for k in range(len(o.deck_index_of_slot))]
+    deck = set(names)
+    arch = ("EQ" if "earthquake" in deck else "SIEGE" if deck & set(SIEGE_NAMES) else "HOG" if "hogrider" in deck
+            else "BEATDOWN" if deck & TANKS else "OTHER")
+    seq = [_norm(n) for t, n in sorted(o.accepted, key=lambda z: z[0]) if int(t) <= tick]
+    cyc = {n: len(seq) - 1 - i for i, n in enumerate(seq)}
+    seen = [n for n in sorted(XBOW_ANSWERS) if n in cyc]
+    if not seen:
+        ans = "unrevealed"
+    else:
+        inhand = [n for n in seen if cyc[n] >= 4]
+        if not inhand:
+            ans = "cycled"
+        else:
+            pub = getattr(s, "public", None)
+            est = float(pub.estimate_at(tick)) if pub is not None else float(
+                next(pl for pl in s.state["players"] if int(pl["side"]) != s.side)["elixir_exact"])
+            cost = dict(zip(names, (float(v) for v in o.costs)))
+            ans = "ready" if any(est >= cost.get(n, 99.0) for n in inhand) else "short"
+    return arch, ans, arch in HOSTILE_ARCH and ans in HOSTILE_ANS
+
+
+def threatened_left(s, d: dict, grid: str) -> bool:
+    """def_xbow: the lane of the threatened princess (True = left, my frame): the deepest enemy body on our half (board
+    y >= 16), else the lane of the policy's own X-Bow cell."""
+    from pipeline import decision_options as DO
+    foe = [raw_tiles(e, s.mirror) for e in s.state["entities"] if int(e["side"]) != s.side]
+    foe = [xy for xy in foe if xy[1] >= 16.0]
+    if foe:
+        return max(foe, key=lambda xy: xy[1])[0] < 9.0
+    x, _ = DO.cell_centres_tiles(grid)
+    return bool(x[int(d["cell"])] < 9.0)
+
+
+def prefix_step(s, d: dict, st: dict, root: int) -> dict:
+    """Mechanism 2 of P6_DESIGN 4: fork learner side ``s``'s decision ``d`` (decided, not applied) -> the due step of the
+    candidate's prefix (``st``: {"steps": pending, "n": outcomes}) in its place, or ``d`` unchanged. A step is due at the first
+    gate-sampled, unforced decision <= root + within where its card is in hand and affordable; past ``within`` it lapses;
+    with no cell of its ``where`` it is spent as no_cell. Outcomes: {"fired": tick - root, "cell"} / {"lapsed": ...} /
+    {"no_cell": ...}. The fired play carries the sampler's log-probs of that action on that row (P6_DESIGN 5)."""
+    from pipeline import decision_options as DO
+    step, tick = st["steps"][0], int(s._cur[0])
+    if tick > root + int(step["within"]):
+        st["steps"].pop(0)
+        st["n"].append({"lapsed": tick - root})
+        return d
+    allowed = np.asarray(d.get("allowed", ()), bool)
+    if d.get("forced") or not d.get("gate_sampled") or not allowed.any():
+        return d
+    slot = _slot_of(slot_names(s), allowed, step["card"])
+    if slot is None:
+        return d
+    if step["where"] != "reach_lane":
+        raise ValueError(f"prefix where {step['where']!r} is not built")
+    grid = s.cfg["grid"]
+    x, _ = DO.cell_centres_tiles(grid)
+    a = _Pol(s, d).cand("cf_prefix", slot, xbow_reach_cells(s, grid) & ((x < 9.0) == (step["lane"] == "L")))
+    st["steps"].pop(0)
+    if a is None:
+        st["n"].append({"no_cell": tick - root})
+        return d
+    st["n"].append({"fired": tick - root, "cell": int(a["cell"])})
+    return {**{k: v for k, v in d.items() if k != "follow_ups"}, "play": True, "slot": a["slot"], "cell": a["cell"],
+            "why": "cf_prefix", "lp_gate": a["lp_gate"], "lp_card": a["lp_card"], "lp_cell": a["lp_cell"]}
+
+
 # ------------------------------------------------------------------------------------------------------
 # triggers + the actor's runner
 # ------------------------------------------------------------------------------------------------------
@@ -741,6 +891,20 @@ def new_state(s) -> dict:
             "cond": Counter(), "cond_ticks": {} if os.environ.get("CF_DUMP") else None}
 
 
+def engine_refusal(exc) -> bool:
+    """An exception thrown INSIDE the engine (a JVM exception through jpype: crforge's deliberate refusals, e.g. fe364ceb /
+    5e8089a4 ``Deflect ... from the king tower ... without a target``, which ENG-SME routes to the caller to catch until a live
+    recording exists). A fork copy that hits one is a counterfactual branch the engine cannot model: Runner.hook drops that
+    sample (match record ``fork_errors``) and the REAL match goes on; any other exception is re-raised."""
+    if getattr(type(exc), "__module__", "").startswith("java."):
+        return True
+    try:
+        import jpype
+    except ImportError:
+        return False
+    return isinstance(exc, jpype.JException)
+
+
 def match_record(st: dict) -> dict:
     """SelfPlayMatch.result()'s ``cf`` entry (picklable, JSON-able). ``cond`` = decisions per trigger whose condition held
     (before the gap / probability draw); ``cond_ticks`` (only with the CF_DUMP env var, the pilot) = those decisions' ticks,
@@ -752,6 +916,8 @@ def match_record(st: dict) -> dict:
         out["cond_ticks"] = st["cond_ticks"]
     if st.get("opp") is not None:
         out["opp"] = st["opp"]
+    if st.get("fork_errors"):
+        out["fork_errors"] = list(st["fork_errors"])
     return out
 
 
@@ -792,9 +958,14 @@ def triggers(m, s, d: dict, c: dict) -> list[str]:
     if c["cf_p"]["tornado_redirect"] > 0 and _slot_of(names, allowed, "tornado") is not None:
         tg = redirect_target(s, c)
     cond["tornado_redirect"] = tg is not None
+    if c["cf_p"].get("rocket_cycle", 0.0) > 0:            # macros: read only when their probability is set
+        cond["rocket_cycle"] = (rk is not None and st["xb_failed"] >= RC_MIN_FAILS and st["xb_fail_tick"] >= RC_MIN_FAIL_TICK
+                                and tick - st["xb_fail_tick"] <= RC_WINDOW)
+    if c["cf_p"].get("def_xbow", 0.0) > 0:
+        cond["def_xbow"] = played == "xbow" and matchup_ctx(m, s, tick)[2]
     out = []
     for t in TRIGGERS:
-        if t in OPT_IN and c["cf_p"][t] <= 0:
+        if t in OPT_IN and c["cf_p"].get(t, 0.0) <= 0:
             continue
         if cond[t]:
             st["cond"][t] += 1
@@ -822,7 +993,7 @@ def trigger_k(c: dict, trig: str) -> int:
 
 def trigger_horizon(c: dict, trig: str) -> int:
     """Fork horizon (ticks) of a sample of trigger ``trig``: cf_horizon_by[trig] else cf_horizon_ticks."""
-    return int((c.get("cf_horizon_by") or {}).get(trig, c["cf_horizon_ticks"]))
+    return int((c.get("cf_horizon_by") or {}).get(trig, MACRO_HORIZON.get(trig, c["cf_horizon_ticks"])))
 
 
 def reward(word: str) -> float:
@@ -889,7 +1060,14 @@ class Runner:
             audit = bool(st["rng"].random() < c["cf_audit_p"]) and not to_end
             entries = [(x, px, dx) for x, px, dx in todo if x is m.learner or x is m.opp]
             seed = zlib.crc32(f"{st['seed']}:{len(st['samples'])}".encode())
-            res = self.rollouts(m, entries, cands, seed, audit, k=kk, horizon=hh)
+            try:
+                res = self.rollouts(m, entries, cands, seed, audit, k=kk, horizon=hh)
+            except Exception as exc:                          # noqa: BLE001 -- re-raised unless the ENGINE refused
+                if not engine_refusal(exc):
+                    raise
+                st.setdefault("fork_errors", []).append(f"{trig}@{tick}: {type(exc).__name__}: {str(exc)[:300]}")
+                st["wall_s"] += time.perf_counter() - t0
+                continue
             for a, r in zip(cands, res["cands"]):
                 a.update(r)
             st["fork_ticks"] += res["fork_ticks"]
@@ -987,11 +1165,16 @@ class Runner:
                                                                  "np": [None] * K})
             slot["phi"][k], slot["v"][k], slot["snap"][k] = float(part[1]), float(part[2]), snap(f.learner)
             slot["np"][k] = [len(f.learner.accepted) - n0[0], len(f.opp.accepted) - n0[1]]   # own, foe plays landed since the root
+            if c.get("cf_diag_plays"):                        # + which cards: [own, foe] lists of [landing tick - root, card slug]
+                slot.setdefault("pl", [None] * K)[k] = [[[int(t) - root, str(n)] for t, n in x.accepted[j:]]
+                                                        for x, j in ((f.learner, n0[0]), (f.opp, n0[1]))]
         sweep = [] if stop >= 10 ** 9 else sorted(h for h in (c.get("cf_horizon_sweep") or ()) if 0 < int(h) < stop - root)
         if sweep:                                             # Q also read at these earlier learner decisions ("qh")
             for o in out:
                 o["qh"] = {str(h): [None] * K for h in sweep}
         seen = [set() for _ in forks]
+        pre = {id(forks[fi].learner): {"fi": fi, "steps": copy.deepcopy(cands[i]["prefix"]), "n": []}
+               for fi, (i, k) in enumerate(meta) if cands[i].get("prefix")}   # macro prefixes (P3-FORK3)
         extend = {fi for fi, (i, k) in enumerate(meta) if audit and k == 0}
         active, done_h = list(range(len(forks))), set()
         while active:
@@ -1045,11 +1228,17 @@ class Runner:
                             put_dg(i, k, str(h), part, forks[fi])
             if due:
                 for s, p, d in E.selfplay_decide(due):
+                    ps = pre.get(id(s))
+                    if ps is not None and ps["steps"]:
+                        d = prefix_step(s, d, ps, root)
                     s.apply(p, d)
         for fi, f in enumerate(forks):                        # a scripted second play: did it fire? (follow_n: fired / cancelled_<why>)
             i, k = meta[fi]
             if cands[i].get("follow_ups"):
                 out[i].setdefault("follow", [None] * K)[k] = dict(getattr(f.learner, "follow_n", None) or {})
+        for ps in pre.values():                               # prefix outcomes per continuation (pending = the fork ended first)
+            i, k = meta[ps["fi"]]
+            out[i].setdefault("prefix", [None] * K)[k] = ps["n"] + [{"pending": True}] * len(ps["steps"])
         self.last_forks = forks
         return {"cands": out, "fork_ticks": int(sum(int(f.env.tick) - root for f in forks))}
 

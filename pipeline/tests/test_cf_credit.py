@@ -820,6 +820,14 @@ class TestNewTriggerGeometry(unittest.TestCase):
         self.assertIsNone(CF.redirect_target(side([hog], dead=(1,)), c))       # one princess down: the redirect is off
         self.assertIsNone(CF.redirect_target(side([hog], dead=(0,)), c))       # no king, no redirect
         self.assertIsNone(CF.redirect_target(side([unit("hog_rider", 14.5, 15.5)]), {**c, "cf_redirect_dist_tiles": 5.0}))
+        ck = CF.cf_cfg({**ON, "cf_redirect_king_tiles": 9.0})                # P3-FORK3: + a distance limit to OUR king (off = above)
+        self.assertIsNone(CF.redirect_target(side([hog]), ck))                # the bridge Hog is 14.1 tiles from our king
+        self.assertEqual(CF.redirect_target(side([hog, near]), ck)["name"], "knight")   # (12, 22) is 7.9 tiles from it
+        self.assertEqual(CF.canonical({**ON, "cf_redirect_king_tiles": None}), CF.canonical(ON))
+        self.assertNotEqual(CF.canonical({**ON, "cf_redirect_king_tiles": 9.0}), CF.canonical(ON))
+        for bad in (0, -1.0, "9"):
+            with self.assertRaises(SystemExit):
+                CF.cf_cfg({**ON, "cf_redirect_king_tiles": bad})
 
 
 class _NoHand(Exception):
@@ -931,6 +939,201 @@ class TestNewTriggerForks(unittest.TestCase):
         self.assertTrue(all(a["slot"] == tk for a in red if a["kind"].startswith("tornado")))
 
 
+class TestRocketEmpty(unittest.TestCase):
+    """P3-FORK3: cf_rocket_empty / cf_diag_plays config (bool, opt-in, absent = the cf-on hash unchanged) + the empty cell."""
+
+    def test_config_and_hash(self):
+        c = CF.cf_cfg(ON)
+        self.assertEqual((c["cf_rocket_empty"], c["cf_diag_plays"]), (False, False))
+        self.assertIs(CF.cf_cfg({**ON, "cf_rocket_empty": True})["cf_rocket_empty"], True)
+        self.assertIs(CF.cf_cfg({**ON, "cf_diag": True, "cf_diag_plays": True})["cf_diag_plays"], True)
+        for bad in ({"cf_rocket_empty": 1}, {"cf_diag_plays": True}, {"cf_diag": True, "cf_diag_plays": "yes"}):
+            with self.assertRaises(SystemExit):
+                CF.cf_cfg({**ON, **bad})
+        can = CF.canonical(ON)
+        self.assertEqual(CF.canonical({**ON, "cf_rocket_empty": False, "cf_diag_plays": False}), can)
+        self.assertNotEqual(CF.canonical({**ON, "cf_rocket_empty": True}), can)
+        with self.assertRaises(SystemExit):                                     # off: a stray key refuses
+            CF.cf_cfg({"cf_rocket_empty": True})
+
+    def test_empty_rocket_cell(self):
+        from pipeline import decision_options as DO
+        grid = "lattice"
+        x, y = DO.cell_centres_tiles(grid)
+
+        def ent(bx, by, side=1):                                               # board tiles (my frame) -> engine units
+            return {"side": side, "x": bx * 1000.0, "y": 32000.0 * (1 - by / 32.0), "name": "knight"}
+
+        tw = [{"side": 1, "type": t, "x": bx * 1000.0, "y": 32000.0 * (1 - by / 32.0), "hp": 1000, "destroyed": False}
+              for t, bx, by in (("king", 9.0, 3.0), ("princess", 3.5, 6.5), ("princess", 14.5, 6.5))]
+
+        def side(ents):
+            return NS(side=0, mirror=False, state={"entities": ents, "episode": {"crown_towers": tw}})
+        c0 = CF.empty_rocket_cell(side([]), grid)
+        self.assertLess(np.hypot(x[c0] - 9.0, y[c0] - 12.0), 0.8)               # the first point, nothing near it
+        self.assertEqual(CF.empty_rocket_cell(side([ent(3.5, 16.0)]), grid), c0)    # a bridge body is 6.8 tiles away
+        self.assertEqual(CF.empty_rocket_cell(side([ent(9.0, 12.0, side=0)]), grid), c0)   # our own body never blocks
+        c1 = CF.empty_rocket_cell(side([ent(9.0, 16.0)]), grid)                 # 4 tiles from (9, 12) -> the next point (9, 9.5)
+        self.assertLess(np.hypot(x[c1] - 9.0, y[c1] - 9.5), 0.8)
+        self.assertIsNone(CF.empty_rocket_cell(side([ent(9.0, 12.0)]), grid))  # every point within 5.5 tiles of it
+        for cx, cy in CF.EMPTY_ROCKET_TILES:                                  # no point is within reach of a crown tower
+            self.assertTrue(all(np.hypot(cx - t["x"] / 1000.0, cy - 32.0 * (1 - t["y"] / 32000.0)) > CF.EMPTY_CLEAR_TILES
+                                for t in tw))
+
+class TestMacros(unittest.TestCase):
+    """P3-FORK3: the P6 macros rocket_cycle (rocket_cycle.after2) / def_xbow (def_xbow_hard) as opt-in fork triggers."""
+
+    def test_library_pin_and_config(self):
+        import hashlib
+        lib = REPO / "scratchpad/gauntlet/L74/plan1026/macros/LIBRARY.json"
+        self.assertEqual(hashlib.sha256(lib.read_bytes()).hexdigest(), CF.MACRO_LIB_SHA256)      # a new library = re-check
+        L = {m["id"]: m for m in json.loads(lib.read_text(encoding="utf-8"))["macros"]}
+        rc, dx = L[CF.MACROS["rocket_cycle"]], L[CF.MACROS["def_xbow"]]
+        self.assertEqual([q["card"] for q in rc["prefix"]], ["rocket"])
+        self.assertEqual((rc["window_ticks"], rc["horizon_ticks"]), (CF.RC_WINDOW, CF.MACRO_HORIZON["rocket_cycle"]))
+        self.assertIn(">= 2 failed", rc["start_condition"])
+        self.assertIn("tick 2400", L[rc["refine_of"]]["start_condition"])
+        self.assertIn("lower-HP", rc["prefix"][0]["place"])
+        self.assertEqual([q["card"] for q in dx["prefix"]], ["x_bow", "x_bow"])
+        self.assertEqual((dx["window_ticks"], dx["horizon_ticks"]), (CF.DX_COUNTER_WITHIN, CF.MACRO_HORIZON["def_xbow"]))
+        self.assertIn("22.5", dx["prefix"][0]["place"])
+        c0 = CF.cf_cfg(ON)                                                       # absent = off, the old hash
+        self.assertNotIn("rocket_cycle", c0["cf_p"])
+        self.assertEqual(CF.canonical({**ON, "cf_p": {"rocket_cycle": 0.0, "def_xbow": 0.0}}), CF.canonical(ON))
+        c = CF.cf_cfg({**ON, "cf_p": {"rocket_cycle": 1.0, "def_xbow": 0.3}, "cf_horizon_by": {"rocket_cycle": 7000}})
+        self.assertEqual((CF.trigger_horizon(c, "rocket_cycle"), CF.trigger_horizon(c, "def_xbow"),
+                          CF.trigger_horizon(c0, "def_xbow"), CF.trigger_horizon(c0, "rocket")), (7000, 1200, 1200, 600))
+        self.assertNotEqual(CF.canonical({**ON, "cf_p": {"def_xbow": 0.3}}), CF.canonical(ON))
+        self.assertEqual(CF.TRIGGERS[-1], "random")
+
+    def test_matchup_ctx(self):
+        deck = ["HogRider", "Earthquake", "Log", "Cannon", "Musketeer", "IceSpirits", "Skeletons", "Valkyrie"]
+        costs = [4, 3, 2, 3, 4, 1, 1, 4]
+
+        def ctx(acc, est, names=deck, tick=100):
+            m = NS(opp=NS(engine_deck=names, deck_index_of_slot=list(range(8)), costs=costs, accepted=acc))
+            return CF.matchup_ctx(m, NS(public=NS(estimate_at=lambda t: est), side=0), tick)
+        self.assertEqual(ctx([], 5.0), ("EQ", "unrevealed", False))
+        five = [(10, "hog_rider"), (20, "log"), (30, "cannon"), (40, "ice_spirits"), (50, "skeletons")]
+        self.assertEqual(ctx(five, 5.0), ("EQ", "ready", True))                 # Hog 4 plays ago: back in hand, affordable
+        self.assertEqual(ctx(five, 2.0), ("EQ", "short", True))
+        self.assertEqual(ctx(five[:2], 5.0), ("EQ", "cycled", False))           # Hog 1 play ago: still cycling
+        self.assertEqual(ctx(five[:4] + [(150, "skeletons")], 5.0)[1], "cycled")   # a play landing after the tick is not seen
+        siege = ["Xbow", "Tesla", "Log", "Knight", "Rocket", "Skeletons", "IceSpirits", "Fireball"]
+        self.assertEqual(ctx(five, 5.0, names=siege)[0], "SIEGE")
+        beat = ["Golem", "NightWitch", "Lumberjack", "BabyDragon", "Tornado", "Lightning", "Barbarians", "Zap"]
+        self.assertEqual(ctx([], 5.0, names=beat)[0], "BEATDOWN")
+        other = ["Miner", "Poison", "Log", "Knight", "Bats", "Tesla", "IceSpirits", "Skeletons"]
+        self.assertEqual(ctx([], 5.0, names=other)[0], "OTHER")
+
+
+@unittest.skipIf(RoyaleSelfPlayEnv is None, "royalegym not importable (run in research/ext/Royale/.venv)")
+class TestMacroPrefixFork(unittest.TestCase):
+    def test_prefix_plays_the_counter_lock_and_leaves_other_candidates_alone(self):
+        """At the first decision with the X-Bow affordable: [chosen, X-Bow now + a prefix step] forked K = 3 over 3,000 ticks.
+        The prefix outcome is recorded per continuation; a fired step put its card into that fork's learner plays, landing
+        after the action delay from ``fired`` ticks after the root, on a reach cell of the step's lane; candidate 0's Q equals
+        a fork set without the prefix candidate (the prefix never touches another candidate's copies); the real match is
+        untouched."""
+        got: dict = {}
+
+        class Spy(CF.Runner):
+            def hook(self, live, todo):
+                if not live or "done" in got:
+                    return
+                m = live[0]
+                for s, p, d in todo:
+                    if s is not m.learner:
+                        continue
+                    al = np.asarray(d["allowed"], bool)
+                    xk = CF._slot_of(CF.slot_names(s), al, "xbow")
+                    hand = {CF._norm(h["name"]) for pl in s.state["players"] if int(pl["side"]) == s.side for h in pl["hand"]}
+                    got.setdefault("seen", []).append((int(s._cur[0]), xk, bool(d["gate_sampled"]), int(al.sum()), "xbow" in hand))
+                    if xk is None or not d["gate_sampled"] or int(s._cur[0]) < 200:
+                        if "xbow" in hand:
+                            d["play"] = False                             # X-Bow in hand: save up for it
+                        continue                                          # else the policy plays on: its hand cycles
+                    pol = CF._Pol(s, d)
+                    a = pol.cand("xbow_def_tile", xk, "argmax")
+                    # the step's card is the 1-elixir Skeletons (this random tiny policy rarely holds 6 elixir with the X-Bow in
+                    # hand: the mechanism under test is the scripted play at the step's first availability, not its economics)
+                    a["prefix"] = [{"card": "skeletons", "where": "reach_lane", "lane": "L", "within": 3000}]
+                    ch = _chosen(d)
+                    entries = [x for x in todo if x[0] is m.learner or x[0] is m.opp]
+                    h0 = (m.env.core.state_hash(), TS.env_digest(m.env), TS.side_digest(m.learner))
+                    got["one"] = self.rollouts(m, entries, [ch], seed=5, k=3, horizon=3000)
+                    got["two"] = self.rollouts(m, entries, [ch, a], seed=5, k=3, horizon=3000)
+                    got["acc"] = [[(int(t), str(n)) for t, n in f.learner.accepted] for f in self.last_forks]
+                    got["n0"] = len(m.learner.accepted)
+                    got["same"] = (m.env.core.state_hash(), TS.env_digest(m.env), TS.side_digest(m.learner)) == h0
+                    got["root"] = int(m.env.tick)
+                    got["reach"] = CF.xbow_reach_cells(s, s.cfg["grid"])
+                    from pipeline import decision_options as DO
+                    got["x"] = DO.cell_centres_tiles(s.cfg["grid"])[0]
+                    got["done"] = True
+                    return
+
+        gen, opp_gen, lcfg, ocfg, spec = _setup()
+        with patch.object(CF, "Runner", Spy):
+            E.run_selfplay_batch(lambda: RoyaleSelfPlayEnv(tail_cap=TAIL), gen, {"gen": (opp_gen, ocfg)}, [(0, spec, 0)],
+                                 lcfg, 1, on_result=lambda r: None)
+        self.assertIn("done", got, got.get("seen", [])[:60])
+        self.assertTrue(got["same"])
+        one, two = got["one"]["cands"][0], got["two"]["cands"][0]
+        self.assertEqual((one["q"], one["end"]), (two["q"], two["end"]))
+        self.assertNotIn("prefix", two)
+        pre = got["two"]["cands"][1]["prefix"]
+        self.assertEqual(len(pre), 3)
+        fired = 0
+        for k, outc in enumerate(pre):
+            self.assertEqual(len(outc), 1)
+            self.assertTrue(set(outc[0]) & {"fired", "lapsed", "no_cell", "pending"}, outc)
+            if "fired" in outc[0]:
+                fired += 1
+                acc = got["acc"][2 * k + 1][got["n0"]:]                         # continuation-major: (k, candidate 1)
+                sk = [t for t, n in acc if n == "skeletons" and t - got["root"] >= outc[0]["fired"]]
+                self.assertTrue(sk and 0 <= sk[0] - got["root"] - outc[0]["fired"] <= 120, (acc, outc))   # landed after its delay(s)
+                self.assertTrue(got["reach"][outc[0]["cell"]] and got["x"][outc[0]["cell"]] < 9.0, outc)   # lane L, in reach
+                self.assertTrue(got["reach"].any())
+        self.assertGreater(fired, 0, pre)
+
+@unittest.skipIf(RoyaleSelfPlayEnv is None, "royalegym not importable (run in research/ext/Royale/.venv)")
+class TestEngineRefusal(unittest.TestCase):
+    def test_a_refused_fork_drops_its_sample_and_the_match_goes_on(self):
+        """An engine (JVM) exception inside a fork set: that sample is dropped and recorded in ``fork_errors``, the real match
+        plays to its end with the other samples; any other exception still propagates."""
+        class UnsupportedOperationException(Exception):
+            pass
+        UnsupportedOperationException.__module__ = "java.lang"           # what jpype gives a JVM exception class
+        calls = {"n": 0}
+
+        def trig(m, s, d, c):
+            al = np.asarray(d["allowed"], bool)
+            if int(s._cur[0]) < 300 or calls["n"] >= 3 or not al.any() or not d["gate_sampled"]:
+                return []
+            calls["n"] += 1
+            return ["random"]
+
+        class Boom(CF.Runner):
+            def rollouts(self, m, *a, **kw):
+                if calls["n"] == 2:
+                    raise UnsupportedOperationException("Deflect_3000014 deflects proj from the king tower without a target")
+                return super().rollouts(m, *a, **kw)
+        with patch.object(CF, "triggers", trig):
+            _, r = _run(Boom)
+        self.assertEqual(len(r["cf"]["samples"]), 2)
+        self.assertEqual(len(r["cf"]["fork_errors"]), 1)
+        self.assertIn("UnsupportedOperationException", r["cf"]["fork_errors"][0])
+        self.assertTrue(r.get("outcome") or r.get("end_tick"))
+        self.assertFalse(CF.engine_refusal(ValueError("ours")))
+
+        class Bug(CF.Runner):
+            def rollouts(self, m, *a, **kw):
+                raise KeyError("a bug of ours")
+        calls["n"] = 0
+        with patch.object(CF, "triggers", trig), self.assertRaises(KeyError):
+            _run(Bug)
+
 @unittest.skipIf(RoyaleSelfPlayEnv is None, "royalegym not importable (run in research/ext/Royale/.venv)")
 class TestDiag(unittest.TestCase):
     def test_diag_records_context_parts_and_changes_no_value(self):
@@ -950,7 +1153,7 @@ class TestDiag(unittest.TestCase):
         for diag in (False, True):
             calls["n"] = 0
             with patch.object(CF, "triggers", trig):
-                _, res[diag] = _run(CF.Runner, cf_diag=diag, cf_horizon_sweep=[60])
+                _, res[diag] = _run(CF.Runner, cf_diag=diag, cf_horizon_sweep=[60], **({"cf_diag_plays": True} if diag else {}))
         off, on = res[False]["cf"], res[True]["cf"]
         self.assertEqual(len(on["samples"]), 3)
         for k in ("ctx",):
@@ -975,6 +1178,9 @@ class TestDiag(unittest.TestCase):
                     self.assertAlmostEqual(cb["q"][k], g * (ph + v), places=12)
                     self.assertEqual(len(cb["dg"]["stop"]["snap"][k]), 10)
                     self.assertTrue(all(x >= 0 for x in cb["dg"]["stop"]["np"][k]) and len(cb["dg"]["stop"]["np"][k]) == 2)
+                    pl = cb["dg"]["stop"]["pl"][k]                               # cf_diag_plays: the cards behind those counts
+                    self.assertEqual([len(z) for z in pl], cb["dg"]["stop"]["np"][k])
+                    self.assertTrue(all(0 <= dt <= cb["end"][k] - a["tick"] + 40 and isinstance(n, str) for z in pl for dt, n in z), pl)
         json.dumps(on)                                                            # JSON-able (the pilot dump)
 
 

@@ -1,3 +1,64 @@
+# P3-FORK3 (account 2, 2026-10-29): STATUS ADDENDUM (read first; P3-FORK2's addendum and P3-FORK's status follow)
+
+Job (owner 10-29 morning): find WHY the SIM prices the Rocket family negative and remove any SIM / opponent / measurement artifact;
+never tune numbers until they turn positive. Labels: (a) measured, (b) plausible / untested, (c) contradicted.
+
+## Built (commit "P3-FORK3: cf_credit opt-in diagnostics + the two P6 macros ..."; smokes f3smoke2 + f3smoke3 SMOKE PASS on 5e8089a4)
+- Also `cf_redirect_king_tiles` (null = off; tornado_redirect also needs the unit within N tiles of OUR king; see Findings) and
+  the fork engine-refusal guard (a JVM exception inside a fork set drops that sample, match record `fork_errors`; ours re-raise).
+- pipeline/cf_credit.py (opt-in, absent = byte-identical + the historical hash): `cf_rocket_empty` (the rocket / xbow_after_fail /
+  rocket_cycle triggers also fork a Rocket into a point with nothing within 5.5 tiles: elixir + card cycle, no damage -> the
+  decomposition rocket_princess - rocket_empty = the chip's own value, rocket_empty - chosen = the price of spending it);
+  `cf_diag_plays` (cf_diag dg records list both sides' cards landed since the root: what the opponent does after our Rocket);
+  the P6 macros as opt-in triggers `rocket_cycle` (= library rocket_cycle.after2) and `def_xbow` (= def_xbow_hard, with the
+  counter-lock PREFIX executor: the fork learner's decision replaced by the scripted step at its first availability), library
+  pinned by sha 828cedf7 (test). NOT built: training rows for prefix steps after the root (P6_DESIGN 5).
+- Tests: pipeline/tests/test_cf_credit.py 38 pass / 3 skip on pod 32657 (crforge 5e8089a4, tree cfh8, logs/f3_test4.log);
+  new: TestRocketEmpty, TestMacros (library pin, config / hash, matchup_ctx), TestMacroPrefixFork (engine: the prefix plays its
+  card in its own fork only; candidate 0's Q identical with / without the prefix candidate; the real match untouched).
+- scratchpad/gauntlet/L74/plan1026/cf/fork3_run.sh (pod launcher, arms base / ftR / oplcB), opp_response.py (human side of the
+  opponent check), sync_tree.sh now also strips CR from .json (the archived LIBRARY.json had CRLF on the pod: sha a023eea5).
+
+## Running (pod 32657, started ~13:50 UTC, tree /workspace/cf3/cfh8, crforge 5e8089a4 + facade build_5e, tables 16.402.22)
+- f3smoke (CPUs 26-27): the real `rl_royale --smoke` with the new keys + macros on (log logs/f3smoke.log; wait for SMOKE PASS).
+- f3base (CPUs 0-8, 9 actors): the cfaud3 pilot league = the 5e8089a4 baseline arm.
+- f3ftR (CPUs 9-17, 9 actors): every matchup vs ftR (/workspace/cf3/opp/opp_ft_s0_R_sim.pt, sha 28ef721b, from 33903).
+- f3oplcB (CPUs 18-25, 8 actors): every matchup vs arm B u0120 (/workspace/cf3/opp/oplc_ftR_l003_a10_u0120.pt, sha 7aefe312;
+  the strongest arm-B checkpoint at launch: CLXIII W 383/480 in the lead's D3).
+- All: 5 updates x 128 matches, policy fixed (critic warm-up = max_updates), cf_diag + plays, rocket_empty, macros (rocket_cycle
+  p 1 to the end, def_xbow p 0.3 horizon 1200), Rocket family as cfaud3 (rocket 0.006, rocket_tornado 0.5, tornado_redirect
+  0.004, xbow_after_fail 0.05, rocket_played 1), horizon 900 + sweep 150..1200, audit_p 0.3. Dumps logs/<run>.jsonl.
+- Restart (only if dead; not resumable, use a new name): `ssh -p 32657 ... 'cd /workspace/cf3 && ./fork3_run.sh RUN CPUS N ARM'`.
+- Stop: exact PIDs (pgrep -n -f "^/workspace/venvf16/bin/python -u -m pipeline.rl_royale --run RUN"), then the PIDs in
+  cfh8/icebow/data/bench/rl_royale/RUN/actors.pid.
+
+## Findings so far (cfaud3 re-reads are fe364ceb; the 5e8089a4 arms above replace them when done)
+- (a) Human side (opp_response.py -> data/opp_response_human.json; association with selection: people chip when it looks safe).
+  45 s after a chip Rocket vs "Rocket in hand, >= 4 elixir, no Rocket" moments, OWN princess HP lost (princess units):
+  pros 1x -0.005 [-0.023, +0.016] (n 327 Rockets), 2x +0.020 [+0.003, +0.038] (446), OT +0.049 [+0.031, +0.064] (580);
+  live CLXIII vs humans 1x +0.004 [-0.043, +0.056] (29), 2x -0.064 (16), OT -0.095 (11). Their opponents' plays in the window:
+  pros 1x +0.10 [-0.11, +0.32], live 1x -0.49 [-1.01, +0.01]. SIM forced chip Rocket (cfaud3): own princess lost +0.21 1x / +0.16 2x.
+- (a) The SIM does NOT price the policy's OWN Rockets negative: rocket_played wait - chosen = -0.035 [-0.072, +0.001] (n 159, i.e.
+  its Rockets are worth +0.035 vs waiting), own princess lost +0.017 [-0.02, +0.05] (no defence cost), foe princess lost -0.035.
+  The -0.24 is the price of a Rocket FORCED at a random affordable decision vs the policy's own action there; humans' lifts are at
+  moments they chose. Estimand mismatch (measurement), not by itself a SIM defect. At selected moments SIM and humans agree:
+  no defence cost, chip ~ +0.03..0.06 net.
+- (a) Time profile of the forced chip Rocket (cfaud3, rocket_princess - chosen, 150 / 300 / 450 / 600 / 750 / 900 ticks): foe
+  princess lost +0.087 / +0.062 / +0.020 / -0.020 / -0.059 / -0.078 (the chip lands, then the policy's own line out-damages it by
+  ~0.165); own princess lost +0.011 / +0.063 / +0.119 / +0.149 / +0.183 / +0.198; own crowns lost +0.121 at 900; FOE plays -0.42 at
+  450, foe elixir +0.68 at 450 (the opponent, no longer answering our line, banks and then pushes). Reading (b): the cost is the
+  displaced pressure of the policy's own line, collected by the SIM opponent; the opponent arms test whether a human-like
+  opponent collects it the same way.
+- (a) Tornado to our king is NOT an engine gap; the trigger's target rule is too wide. tornado_king - tornado_on (cfaud3) by the
+  unit's distance to OUR king: < 9 tiles (n 53) our king activated +0.061 [+0.019, +0.122] at 150 ticks, own princess lost -0.038
+  [-0.086, +0.007] at 900, dQ +0.020 [-0.038, +0.080]; 9-12 tiles (n 103) dQ -0.109 [-0.169, -0.052], own princess lost +0.047;
+  12+ (n 96) dQ -0.022. crforge does activate the king when the pull brings the unit near it; redirect_target accepts units within
+  12 tiles of our princess, mostly too far for the pull to reach the king (candidate fix, opt-in, not built: a king-distance limit).
+- (a) Engine on the Rocket path (ENG's SME.md, not re-measured here): elixir regen exact (178 / 357 per tick, both sides to 1e-4),
+  Rocket crown-tower damage 546 = live 7/7, overtime tiebreak = the game (15 FRESH2/3 OT matches exact to the end). Pooled strict
+  fresh battles exact 109/132 (CP lower 0.762): fights given the same inputs match live, so the forced-Rocket defence cost comes from
+  the two policies, not the engine (b: the inexact 17% are not split by phase of play).
+
 # P3-FORK2 (fresh seat, account 2) -- 2026-10-28 evening: STATUS ADDENDUM (read first; the P3-FORK status below it is the predecessor's)
 
 Labels: (a) measured, (b) plausible / untested, (c) contradicted.
