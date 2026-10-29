@@ -2546,7 +2546,15 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
     matches and the narrow rule 6. The narrow rule removes only the Little Prince extras (dev 221406, FRESH2 134922). It
     keeps every Dark Prince / Musketeer false play (dev 144057, 154839, 203752, 232438, 010613, 020550; FRESH2 081253,
     082643, 085837, 093648) and keeps 101018's fix. So those extras sit next to a smaller living same-card body of an
-    EARLIER play, not the same play. Next test (b, untested): require q and r to have the same FORM (hero / evo vs base).
+    EARLIER play, not the same play. A same-FORM test is vacuous: near already requires the same card id, and the hero
+    form has its own id (203000027 hero Dark Prince, 203000014 hero Musketeer). **Second variant (also not committed):
+    NEAR_BIGGER only when r looks like a play** (its max hp is the card's own unit at some level, and it is deploying when
+    first seen). On the 7 dev firing logs it removes every Dark Prince extra (5 logs; those 2167-hp hero Dark Prince
+    bodies are active on their first frame). Two extras remain: hero Musketeer 154839 (a 2454-hp body deploying 20 ticks
+    at (14838, 11863), in the opponent's NON-own half) and Little Prince 221406 (guardian 2556). The first variant
+    removed the Little Prince extras, so the combination leaves only 154839. Its candidate separator (b, untested): the
+    deploy point lies outside the side's legal half. The FRESH census of this variant was stopped (dev decides).
+    101018's second monster deploys 20 ticks inside its own half (a).
   - **Running:** Codex ENG-FIX2_1 (pid file `.foreman/scratch/a2/codex/out/ENG-FIX2_1.jsonl.pid` = 2047381, ticket
     `.foreman/scratch/a2/codex/ENG-FIX2_1.md`, results `engfix/r6/`): SPELL_KING + HIDDEN_CHILD OFF vs ON on dev /
     FRESH1-5, lib 5e8089a4. If 0 regressions and plants 0 missed: add both flags to fresh_prep.sh (+ its flags echo) for
