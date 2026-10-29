@@ -1,0 +1,7 @@
+plants {'plants': 4508, 'caught': 4498} missed []
+all: unflagged 12 pass 10 (CP95 0.562) strict 10 (CP95 0.562)
+never scored before (not READER-TORN trial): unflagged 12 pass 10 (CP95 0.562) strict 10 (CP95 0.562)
+trial subset: unflagged 0 pass 0 (CP95 0.000) strict 0 (CP95 0.000)
+first-divergence census (unflagged failures):
+  20261029_004719 first_div 2573 div frames 570 [["U_rec_only", [1, 4211, 8960, 323], "Goblins", null]]
+  20261029_021310 first_div 1986 div frames 105 [["U_sim_only", [1, 12301, 16825, 130], "C:Skeleton", null], ["U_sim_only", [1, 13230, 16855, 130], "C:Skeleton", null], ["U_sim_only", [1, 13236, 18013, 130], "C:Skeleton", null]]
