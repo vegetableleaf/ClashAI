@@ -121,3 +121,108 @@ makes the rollout wall largely free until rollouts become the bottleneck (b: LOO
   differ in X-Bow answers.
 - P6-MACRO / P3-FORK (next): prefix alternatives for rocket_cycle after failed X-Bow in 2x/OT (horizon 600, 'after2') and def_xbow_hard (horizon 1200 / end, K 2); credit on every prefix action; the OT / 2x state roots (`ot_start_share`)
   are the cheapest place to test whether the SIM pays the humans' Rocket lift.
+
+## 9. P3-FORK3 (2026-10-29): why the SIM prices the Rocket family negative -- artifact checks (owner 10-29)
+Job: find the cause; remove it if it is a SIM / opponent / measurement artifact; never tune numbers. Runs on pod 32657, crforge
+**5e8089a4** (facade c003fc74 -> build_5e, tables 16.402.22), tree cfh9 = commit 8743a53 (minus the opt-in redirect key), CLXIII
+init fixed (critic warm-up only), K 2, horizon 900 + sweep 150..1200, audit 30% to the end, cf_diag + plays, rocket_empty, macros on.
+Arms: **base** f3base2 = the cfaud3 pilot league (5 x 128 matches, updates 1-4 used = 512 matches, 1,820 samples; CLXIII wins 68%
+of the real matches); **ftR** f3ftR3 + f3ftR4 = every matchup vs ftR (opp_ft_s0_R_sim.pt 28ef721b, T 1, live training census);
+**oplcB** f3oplcB3 = vs arm B u0120 (7aefe312); f3redir = base + cf_redirect_king_tiles 9 (tornado_redirect only). Tables: `P4_TABLES_f3base2.md` (p4_audit), `P4_F3_ARMS.md` (fork3_tables.py, all updates).
+Numbers: dQ in the return (+-1 = a win: win probability = dQ / 2), alternative minus the policy's own action unless named,
+90% match-cluster bootstrap CI; "terminal" = the audited match-end return; HP in princess units (sum of the two princesses).
+
+### 9.1 Decomposition: the chip is priced POSITIVE; spending the Rocket is what costs (a, base)
+| contrast | 45 s | terminal |
+|---|---|---|
+| rocket_princess - chosen (chip Rocket) | -0.230 [-0.264, -0.196] (n 349); 1x -0.298, 2x -0.129, OT -0.071 | -0.087 [-0.236, +0.055] (n 112) |
+| rocket_empty - chosen (Rocket into nothing: 4 elixir + the card) | -0.321 [-0.363, -0.280] (n 317); 1x -0.401, 2x -0.219, OT -0.087 | -0.243 [-0.387, -0.097] (n 103) |
+| rocket_princess - rocket_empty (the chip itself) | **+0.089 [+0.064, +0.113]** (1x +0.106) | **+0.181 [+0.070, +0.293]** |
+At idle, safe moments (the policy waited, no enemy body on our half, 1x) the empty Rocket costs -0.378 [-0.453, -0.307] and +0.229
+own princess HP over 45 s; the cost grows steadily (own princess +0.014 / +0.044 / +0.107 / +0.170 / +0.205 at 150 / 300 / 450 /
+600 / 750 ticks) while the policy's own line out-damages the foe by 0.125 more. So the SIM pays for the chip (+0.18 at the end);
+the negative total is the price of 4 elixir + the Rocket card spent at a moment the policy did not choose.
+
+### 9.2 Estimand: on the SAME estimand the SIM reproduces the human / live numbers (a)
+The human lifts are associations at moments people CHOSE; the fork prices a Rocket FORCED at a random affordable decision. The
+association computed inside the SIM (`sim_assoc.py`: CLXIII's own chip Rockets, rocket_played samples aimed within 3 tiles of a
+princess, vs "Rocket affordable, not played" moments; own princess HP lost over the next 45 s of the policy's own continuation):
+| own princess HP lost, chip Rocket - control, 1x | value |
+|---|---|
+| SIM base (5e8089a4) | -0.033 [-0.077, +0.013] (46 vs 283) |
+| SIM cfaud3 (fe364ceb) | +0.008 [-0.042, +0.061] (69 vs 221) |
+| live CLXIII vs humans (opp_response.py, 858 matches) | +0.004 [-0.043, +0.056] (29 vs 50,361) |
+| pros vs humans (1,606 matches) | -0.005 [-0.023, +0.016] (327 vs 91,572) |
+All four agree: no defence cost at chosen moments. The forced Rocket: +0.192 [+0.160, +0.223] (base). The policy's own Rockets vs
+waiting: cfaud3 -0.035 [-0.072, +0.001], base +0.040 [-0.029, +0.110] (wait - chosen; both include 0). Reading: the "SIM negative /
+humans positive" contrast compared two estimands; the SIM is not shown to misprice the moments humans use. No human data price a
+Rocket at a random moment, so the forced price can be neither confirmed nor refuted by them.
+
+### 9.3 Opponent (ticket item 1)
+Arms on 5e8089a4, ALL updates pooled (u0 included: the Q columns carry the un-adapted critic for ftR / oplcB; the HP columns are raw
+tower HP and critic-free). base 640 matches, ftR 384 (f3ftR3 2 updates + f3ftR4 1, seeds 101 / 202), oplcB 128 (u0 only: the
+arms were stopped at the lead's 10-29 wrap-up). CLXIII wins 66% / 87% / 72% of the real matches.
+| forced chip Rocket (rocket - chosen) | base | ftR | oplcB |
+|---|---|---|---|
+| dQ 45 s | -0.227 [-0.258, -0.195] | -0.235 [-0.277, -0.196] | -0.208 [-0.283, -0.128] |
+| dQ terminal (audited) | -0.089 [-0.214, +0.044] (146) | -0.468 [-0.673, -0.261] (66) | -0.126 [-0.445, +0.205] (23) |
+| Rocket into nothing dQ 45 s | -0.315 [-0.351, -0.278] | -0.302 [-0.344, -0.260] | -0.337 [-0.416, -0.265] |
+| chip itself (princess - empty) | +0.086 [+0.065, +0.108] | +0.069 [+0.041, +0.096] | +0.141 [+0.086, +0.208] |
+| OWN princess lost 45 s (their punishment) | +0.171 [+0.146, +0.197] | **+0.115 [+0.090, +0.142]** | +0.110 [+0.051, +0.169] |
+| FOE princess lost 45 s (our displaced line) | -0.048 [-0.069, -0.029] | **-0.117 [-0.149, -0.084]** | -0.157 [-0.227, -0.089] |
+| foe plays landed | -0.112 | -0.142 | -0.217 |
+| rocket_cycle (after2) to the end | -0.051 [-0.090, -0.014] (775) | -0.049 [-0.130, +0.023] (178) | +0.017 [-0.076, +0.106] (73) |
+| def_xbow def - bridge 1200 ticks | -0.081 [-0.138, -0.025] | -0.101 [-0.171, -0.032] | -0.076 [-0.175, -0.005] |
+Reading (a): with the human-imitation opponents the opponent's punishment of the spend is ~1/3 smaller (own princess +0.115 vs
++0.171), but CLXIII's own displaced line is worth 2-3x more against them (they let X-Bows lock: lock .73-.78 vs live .47), so
+the total price does not move (-0.235 / -0.208 vs -0.227) and no contrast changes sign. The opponent model is relevant in BOTH
+directions and neither available model is calibrated on X-Bow defence (P2-OPP / OPP-SIEGE2 business); with a human-calibrated
+lock rate (.47) the displaced-line term would shrink (b, untested). Comparison with humans: section 9.2 (association, which the
+SIM matches).
+
+### 9.4 Horizon / value (item 2)
+(a) The terminal agrees in sign with the 45-s read for the spend (-0.243 vs -0.321) and the chip's value is larger at the end
+(+0.181 vs +0.089); the net chip Rocket is -0.087 [-0.236, +0.055] at the end (cfaud3: -0.22 [-0.36, -0.09]): smaller than at 45 s
+(the horizon Q exaggerates, slope ~0.6 as in section 3.B) but not positive. The macros below run to the end.
+
+### 9.5 Macros vs CLXIII's own continuation (item 4; library 828cedf7)
+| | SIM base | human (MACROS.md) |
+|---|---|---|
+| rocket_cycle.after2: Rocket the lower princess now - policy (2x / OT, >= 2 failed X-Bows; the policy itself Rockets within 600 ticks in 1% of continuations) | end -0.062 [-0.103, -0.021] (n 619: OT 489 -0.057, 2x 130 -0.079); 600 ticks -0.066 [-0.096, -0.036]; 30-s margin -0.041 [-0.065, -0.018] | win +0.091 [+0.033, +0.153]; 30-s margin +0.082 [+0.058, +0.108] |
+| def_xbow_hard: defensive X-Bow (+ counter-lock, fired in 77% of continuations) - bridge X-Bow (vs EQ / HOG / BEATDOWN, answer ready / short) | 1200 ticks -0.066 [-0.121, -0.010] (n 126); 600 -0.130 [-0.171, -0.090]; 30-s margin -0.147 [-0.187, -0.107]; end +0.044 [-0.174, +0.258] (n 35) | win +0.117 [+0.070, +0.166]; 30-s margin -0.058 [-0.081, -0.034] |
+| def_xbow: wait - the policy's X-Bow (hostile matchups) | 1200 ticks +0.042 [-0.009, +0.094] | -- |
+Reading: rocket_cycle: a MISMATCH remains (SIM -0.03 win prob vs human +0.09), smaller than for the generic chip Rocket (-0.12);
+association vs causal applies (humans pick the moment inside the 30-s window; the fork picks a random affordable one). def_xbow:
+the SIM shows the human time profile (it gives up chip early: 30-s margin negative in both) and is ~0 at the end (n 35, CI +-0.2):
+not resolved; no contradiction.
+
+### 9.6 Engine on the Rocket path (item 3; SME.md, ENG's measurements, not re-run here)
+(a) Elixir regen exact (178 / 357 per tick, both sides to 1e-4); Rocket crown-tower damage 546 = live 7/7; overtime tiebreak = the
+game (15 FRESH2/3 OT matches exact to the end); strict fresh battles exact 109/132 (CP lower 0.762): given the same plays, fights
+and tower HP match live, so the forced-Rocket defence cost comes from the two policies' choices, not the engine (b: the inexact
+battles are not split by play phase). (a) Tornado to our king: crforge DOES activate our king when the pull brings the unit near
+it (cfaud3 tornado_king - tornado_on, units < 9 tiles from our king: king activated +0.061 [+0.019, +0.122] at 150 ticks, own
+princess lost -0.038 [-0.086, +0.007], dQ +0.020 [-0.038, +0.080] (n 53)); the negative average came from far units (9-12 tiles:
+-0.109 [-0.169, -0.052], n 103): a badly specified alternative (the trigger accepts units within 12 tiles of our PRINCESS). Fix
+built opt-in: `cf_redirect_king_tiles` (null = off). Base arm: tornado_king - tornado_on -0.013 [-0.048, +0.020] at 45 s, terminal
++0.104 [-0.093, +0.314] (n 54).
+
+### 9.7 Verdict per candidate cause (graded)
+| cause (PLAN P4) | grade | evidence |
+|---|---|---|
+| engine fidelity (Rocket damage, elixir, tiebreak) | (c) not the cause | ENG SME: 546 = live, regen exact, OT tiebreak exact (9.6) |
+| engine fidelity (Tornado to king) | (c) not an engine gap | king activates +0.061..+0.069 when the unit is near; spec fix below |
+| badly specified alternative: tornado_redirect target | (a) artifact, FIXED opt-in | cf_redirect_king_tiles 9 (f3redir, 256 matches): tornado_king - tornado_on +0.003 [-0.026, +0.031] (n 234; was -0.013 base / -0.048 cfaud3), our king activated +0.069 [+0.042, +0.098] at 7.5 s, own princess lost +0.015 [-0.007, +0.036] (no princess saved), terminal -0.081 [-0.257, +0.088]: the negative price was the far units; the pull itself is ~0, not positive |
+| badly specified alternative: static Rocket aim | (a) partial artifact (P3-FORK2, cfaud4) | drift aim recovers 0.08-0.12 on rocket_on / rocket_clump |
+| measurement / estimand (forced vs chosen moments) | (a) explains the SIM-vs-human contrast | 9.2: same estimand -> SIM = live = pros (no defence cost at chosen moments) |
+| opponent punishment | (a) moves the parts, not the total | 9.3 |
+| horizon too short | (c) for the price; partly for the size | terminal -0.087 base (smaller than 45 s, not positive); rocket_cycle to the end -0.05 |
+| critic bias | (a) magnitude only | slope ~0.6 (section 3.B); terminal signs agree |
+**Verdict for the owner: (a) the negative price of a chip Rocket FORCED at a random affordable moment is real in this SIM after every
+artifact check above** (engine exact, opponent model swapped twice, horizon to the end, spec defects fixed): it is the price of
+4 elixir + the card at a moment the policy did not choose (-0.30 at 45 s, -0.24 at the end), while the chip itself is paid +0.09 /
++0.18. It does NOT contradict the human data: on the human estimand (chosen moments) the SIM gives the human answer (9.2). What the
+SIM does not show anywhere is a state class where a forced Rocket is positive: OT -0.07..-0.11, rocket_cycle after2 -0.05 (humans'
+association +0.09). Open (b): (i) a human-calibrated X-Bow defence in the opponent (lock .47) would cut the displaced-line part;
+(ii) "chosen-like" moments: a Rocket alternative restricted to states where the policy's own Rocket probability is high (the
+estimand humans and CLXIII's own Rockets share) is the next measurement; (iii) the Rocket weight-0 decision stays with the owner.

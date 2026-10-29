@@ -1,5 +1,29 @@
 # P3-FORK3 (account 2, 2026-10-29): STATUS ADDENDUM (read first; P3-FORK2's addendum and P3-FORK's status follow)
 
+## PAUSED 2026-10-29 ~18:25 UTC (lead wrap-up, owner usage 80%) -- RESTART POINT
+- Pod 32657: NOTHING of mine runs (f3oplcB3, f3ftR4, f3redir stopped by exact PIDs at ~18:15; 0 rl_royale / spawn_main left; GPU 1 MiB).
+  f3base2 (5 upd), f3ftR3 (2 upd), f3redir (2 upd) finished their data; f3oplcB3 / f3ftR4 have u0 only (128 matches each).
+- Data on the laptop (gitignored) `cf/data/`: f3base2.jsonl 1ece94c8, f3ftR3.jsonl 73853351, f3ftR4.jsonl 600124fb, f3oplcB3.jsonl
+  f7e8a944, f3redir.jsonl e11447ce (pod copies /workspace/cf3/logs/, sha equal), opp_response_human.json; f3_arms.md = P4_F3_ARMS.md.
+- RESULTS + verdict: P4_AUDIT.md section 9 (read it). One line: the forced-Rocket negative price is (a) real in the SIM after every
+  artifact check (engine, two human-like opponents, horizon to the end, spec fixes); the chip itself is paid +0.09 / +0.18; on the
+  human estimand (chosen moments) the SIM equals live and pros; Tornado-redirect's negative price was a target-rule artifact
+  (fixed opt-in cf_redirect_king_tiles: -> +0.003, ~0).
+- NEXT artifact check (in order): (1) "chosen-like moments": a Rocket alternative only where the policy's own P(Rocket) is high
+  (opt-in key, not built), compare with rocket_played; (2) rerun ftR / oplcB to >= 3 updates (critic adapted) and with an
+  opponent calibrated on X-Bow defence once P2-OPP has one (lock .47), since the displaced-line term depends on it;
+  (3) training rows for prefix steps (P6_DESIGN 5) before any macro gets weight; (4) lead: switch on cf_redirect_king_tiles 9.0
+  and cf_rocket_lead drift in production configs (both opt-in, hash-neutral off).
+- Commands (from /workspace/cf3 on 32657; tree cfh10 = commit 8743a53 code incl. the redirect key; cfh9 = the same minus it):
+  arms `TREE=/workspace/cf3/cfh10 TIMEOUT_S=25200 MAXU=3 ./fork3_run.sh RUN CPUS N ftR|oplcB|base actor_timeout_s=14400 in_flight=2`
+  (timing-head opponents: ~250-400 s per match per actor -> keep actor_timeout_s 14400 + in_flight 2, else the actors time out at
+  3600 s in a loop); redirect `CFP="{tornado_redirect: 0.05, rocket_tornado: 0.0, rocket: 0.0, rocket_played: 0.0, xbow_after_fail:
+  0.0, wincon: 0.0, siege: 0.0, xbow: 0.0, idle_full: 0.0, log_bait: 0.0, random: 0.0}" ... base cf_redirect_king_tiles=9.0`.
+  Tables: `python fork3_tables.py base=data/f3base2.jsonl ftR=data/f3ftR_all.jsonl oplcB=data/f3oplcB3.jsonl --from-update 0`,
+  `p4_audit.py DUMP --from-update 1`, `sim_assoc.py DUMP`, `python -B opp_response.py both` (laptop).
+- Codex: P3FORK3_1 (babysit + collect, low) x2 -> BLOCKED both times (own watcher bug; then the stopped f3ftR2 run had no dump);
+  collection done by me. Ticket .foreman/scratch/a2/codex/P3FORK3_1.md.
+
 Job (owner 10-29 morning): find WHY the SIM prices the Rocket family negative and remove any SIM / opponent / measurement artifact;
 never tune numbers until they turn positive. Labels: (a) measured, (b) plausible / untested, (c) contradicted.
 
