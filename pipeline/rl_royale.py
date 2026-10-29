@@ -2795,7 +2795,7 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
                    n_total: int, vf: Optional[dict] = None, T_gate: Optional[float] = None,
                    posture: Optional[dict] = None, ability: Optional[dict] = None,
                    ent_ref=None, decoupled: Optional[float] = None, gate_bl=None,
-                   th_anchor: Optional[tuple] = None) -> tuple[torch.Tensor, dict]:
+                   th_anchor: Optional[tuple] = None, kl_w: Optional[dict] = None) -> tuple[torch.Tensor, dict]:
     """PPO-clip on the joint log pi = lp_gate + g (lp_card + lp_cell) (E1 3.3) with per-match weights, scaled by
     n_total / |mb| so each minibatch estimates the full-batch loss; + beta (mean KL_gate + mean KL_card + mean KL_cell).
     ``vf`` (gae mode: {coef, clip, policy}): + coef x the PPO-clipped value loss 0.5 max((V - ret)^2, (V_old +
@@ -2863,10 +2863,14 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
     gs = B["gate_sampled"][idx] if real is None else B["gate_sampled"][idx] & real   # the entropy monitor below
     kl_c = cat_kl(t["card_lp"][pl], R["card_lp"][idx][pl]).mean() if pl.any() else zero
     kl_x = cat_kl(cl, R["cell_lp"][R["play_pos"][idx[pl]]]).mean() if pl.any() else zero
-    if "kl_heads" in R:                                       # K1: only the leashed heads' KL enters the loss
-        loss = l_pg + beta * sum({"gate": kl_g, "card": kl_c, "cell": kl_x}[h] for h in R["kl_heads"])
+    if kl_w is not None:                                      # micro_batch (accum_backward): this micro-batch's share of
+        kg, kc, kx = kl_w["g"] * kl_g, kl_w["p"] * kl_c, kl_w["p"] * kl_x   # the minibatch's mean KLs (OPP-LEARN-D fix)
     else:
-        loss = l_pg + beta * (kl_g + kl_c + kl_x)
+        kg, kc, kx = kl_g, kl_c, kl_x
+    if "kl_heads" in R:                                       # K1: only the leashed heads' KL enters the loss
+        loss = l_pg + beta * sum({"gate": kg, "card": kc, "cell": kx}[h] for h in R["kl_heads"])
+    else:
+        loss = l_pg + beta * (kg + kc + kx)
     if kl_gi is not None:
         loss = loss + float(R["beta_g"]) * kl_gi
     kl_th = None
@@ -2874,7 +2878,7 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
         with torch.no_grad():                                 # the heads are frozen, so its gradient reaches the trunk only
             th0 = policy_terms(th_anchor[1], B, idx, tau, T, T_gate=T_gate)["th"]
         kl_th = th_anchor_kl(t["th"], th0)
-        loss = loss + float(th_anchor[0]) * kl_th
+        loss = loss + float(th_anchor[0]) * (kl_th if kl_w is None else kl_w["n"] * kl_th)
     pst = None
     if posture is not None:
         ch = B["posture_new"][idx]
@@ -3026,13 +3030,17 @@ def accum_backward(model, B: dict, R: dict, idx, micro: int, n_total: int, kw: d
     """LEARNER-SCALE ``micro_batch``: minibatch_loss of the minibatch ``idx`` computed in micro-batches of ``micro`` rows,
     each backpropagated at once (memory: one micro-batch's graph). Micro-batch j runs with n_total x |j| / |idx|, so its
     loss is |j| / |idx| x its own full-batch estimate and the micro losses (and gradients) SUM to the minibatch's
-    (fp32 summation order aside). The caller zeroes the gradients first. -> (summed loss, detached; the minibatch's
+    (fp32 summation order aside); the KL / th_anchor means enter each micro-batch's loss x its share of the minibatch's
+    rows of that mask (``kl_w``; before 10-29 they were summed per micro-batch, i.e. x the micro-batch count when beta > 0
+    or th_anchor is on). The caller zeroes the gradients first. -> (summed loss, detached; the minibatch's
     monitors: sums for the scaled losses / counts, max for the max-deviations, row-count-weighted means for the rest
     with minibatch_loss's own masks: gate-sampled rows for the gate KL / entropy, played rows for card / cell)."""
     sts, wts, total = [], [], None
+    gt, pt = max(1, int(B["gate_sampled"][idx].sum())), max(1, int(B["played"][idx].sum()))
     for s in range(0, len(idx), micro):
         ii = idx[s:s + micro]
-        loss, st = minibatch_loss(model, B, R, ii, n_total=n_total * len(ii) / len(idx), **kw)
+        kw_ = {"g": int(B["gate_sampled"][ii].sum()) / gt, "p": int(B["played"][ii].sum()) / pt, "n": len(ii) / len(idx)}
+        loss, st = minibatch_loss(model, B, R, ii, n_total=n_total * len(ii) / len(idx), kl_w=kw_, **kw)
         if torch.isfinite(loss):
             loss.backward()
         total = loss.detach() if total is None else total + loss.detach()

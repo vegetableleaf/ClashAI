@@ -110,6 +110,27 @@ class TestMicroBatch(unittest.TestCase):
         for h in s0["lp_maxdiff"]:
             self.assertAlmostEqual(s1["lp_maxdiff"][h], s0["lp_maxdiff"][h], delta=1e-9)
 
+    def test_one_minibatch_gradient_with_kl_pull(self):
+        """beta > 0 (OPP-LEARN-D fix): each micro-batch's KL means count by its row share, so the KL term's gradient is
+        the whole minibatch's (before the fix it was summed per micro-batch = x the micro-batch count)."""
+        m0 = copy.deepcopy(self.model)
+        with torch.no_grad():                                 # off the ref: the KL term has a gradient
+            for q in m0.parameters():
+                q.add_(0.02 * torch.randn(q.shape, generator=torch.Generator().manual_seed(q.numel())))
+        idx = torch.arange(0, 48)
+        kw = dict(tau=TAU, T=T, clip=0.2, beta=0.5, vf=None, T_gate=None)
+        grads = []
+        for mi in (None, 5):
+            m = copy.deepcopy(m0)
+            if mi is None:
+                loss, _ = RL.minibatch_loss(m, self.B, self.R, idx, n_total=len(self.B["A"]), **kw)
+                loss.backward()
+            else:
+                loss, _ = RL.accum_backward(m, self.B, self.R, idx, mi, len(self.B["A"]), kw)
+            grads.append([torch.zeros_like(p) if p.grad is None else p.grad.clone() for p in m.parameters()])
+        for a, b in zip(*grads):
+            torch.testing.assert_close(b, a, rtol=1e-5, atol=1e-7)
+
     def test_kl_stop_same_minibatch(self):
         cfg = {**BASE, "minibatch": 32}
         free, _ = self.run_update(cfg)
