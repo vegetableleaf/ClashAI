@@ -22,7 +22,7 @@ per wall-clock hour x50-100+, fp32 only (TF32 off), kl_stop_prev 0.02. Rent only
 - RUNNING:
   - (done) 33920 prof_mod --prefill -> 7e (prof3/prof_mod_prefill2.json).
 
-  - 33920: test_learner_fast_gate MC at 3,000 draws with the default ridge (logs/gate_mc3000_r.log).
+  - (done) 33920: MC at 3,000 draws, default ridge: PASS (on 1.50, in-sample 33.5, x0.225; 7a).
     - Why: the ridge-0 3,000-draw run failed the variance check (on 5.25 vs off 3.02). z stayed fine (on 1.66,
       in-sample 36.2).
     - Cause (b): rare near-singular score-weighted fits on ~50 rows per half.
@@ -480,7 +480,10 @@ is the historical one.
       detect a baseline that leaks the row's own A.
     - Variance: tr(Sigma) 3.02 -> 0.61 (x0.20). Expected, because c(s) is linear in g by construction.
     - 100 draws: on 1.85, in-sample 11.3.
-    - A 3,000-draw run: /workspace/lrn/logs/gate_mc3000.log (RESULT PENDING).
+    - 3,000 draws, default ridge 1e-3 (logs/gate_mc3000_r.log): on 1.50, in-sample 33.5, variance x0.225. PASS.
+    - 3,000 draws at ridge 0 (logs/gate_mc3000.log): z fine (on 1.66, in-sample 36.2), but the variance went UP
+      x1.74. Cause (b): rare near-singular score-weighted fits on ~50 rows per half. The test (and the key's default)
+      use ridge 1e-3.
 - Smokes (a; 33920, tree /dev/shm/cbg, ls3_smoke_off / ls3_smoke_gbl2):
   - Absent: PASS; b5e2a2bbafef, e816a6a4 / 3e07cff4, f060b678 / 5c61ac04 = the reference.
   - On, with critic_warmup_updates=1 (config sha 774e54ed1590): PASS.
