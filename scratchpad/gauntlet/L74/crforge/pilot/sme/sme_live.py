@@ -822,6 +822,50 @@ def hidden_ok(f, o, me):
     return not diff(r, s)
 
 
+# ENG-FIX2 (SME_HIDDEN_ASSIGN=1, off by default; lead 10-29, instead of the probe-only SME_HIDDEN_UNIQ): a frame with
+# reader-hidden bodies is scored exact or div, never torn_hidden. Per (side, crforge name) the k hidden bodies (k <= 3)
+# are assigned one-to-one to k of the sim's rows of that name by minimum total distance to each body's reference point (the
+# frame's projectile target point, else the latest earlier one; a tie or no reference with a choice -> div); an assigned
+# row must sit exactly on the frame's target point when the frame has one; the assigned rows are taken out and the rest of
+# the frame goes through the unchanged diff. FRESH4 210016: two sim Golemites, one hidden (hidden_ok needs exactly one).
+HIDDEN_ASSIGN = int(os.environ.get('SME_HIDDEN_ASSIGN', '0'))
+
+
+def hidden_ref(track, t):
+    """The latest track point at or before t ([x, y]) or None."""
+    ks = [int(k) for k in (track or {}) if int(k) <= t]
+    return list(track[str(max(ks))]) if ks else None
+
+
+def hidden_assign(f, o, me):
+    es = list(repr_rows(o))
+    groups = collections.defaultdict(list)
+    for h in f['H']:
+        groups[h[0], h[1]].append(h)
+    drop = set()
+    for (side, name), hs in groups.items():
+        cand = [i for i, e in enumerate(es) if e[1] == 'C' and e[2] == name and e[3] == side and i not in drop]
+        if len(hs) > 3 or len(cand) < len(hs):
+            return False
+        if any(h[3] is None for h in hs) and len(cand) > len(hs):
+            return False                              # no reference point and a choice: unassignable
+        cost = lambda perm: sum(0 if h[3] is None else abs(es[i][4] - h[3][0]) + abs(es[i][5] - h[3][1])
+                                for h, i in zip(hs, perm))
+        perms = sorted(itertools.permutations(cand, len(hs)), key=cost)
+        if len(perms) > 1 and cost(perms[0]) == cost(perms[1]):
+            return False                              # a tie: no unique assignment
+        for h, i in zip(hs, perms[0]):
+            if h[2] is not None and [es[i][4], es[i][5]] != list(h[2]):
+                return False                          # the frame's own target point, unchanged tolerance (exact)
+            drop.add(i)
+    rest = [e for i, e in enumerate(es) if i not in drop]
+    r, s = canon_live(f, me), canon_sim(dict(o, E=rest))
+    s.pop('S%d' % (1 - me))
+    if HP_PH:
+        r = fill_placeholder(r, s)
+    return not diff(r, s)
+
+
 def analyse(obs, frames, me, lo=0, hi=10 ** 9):
     by = {o['t']: o for o in obs}
     ts = [t for t in sorted(frames) if lo <= t <= hi and t in by]
@@ -840,6 +884,8 @@ def analyse(obs, frames, me, lo=0, hi=10 ** 9):
             cls[t] = 'torn_cmd'
         elif TORN_STEP and t + 1 in by and (p := step_read(frames[t], by[t], by[t + 1], me)):
             cls[t], prov[t] = 'torn_step', p
+        elif HIDDEN_ASSIGN and frames[t].get('H'):
+            cls[t] = 'exact' if hidden_assign(frames[t], by[t], me) else 'div'
         elif frames[t].get('H') and hidden_ok(frames[t], by[t], me):
             cls[t] = 'torn_hidden'
             prov[t] = {'rule': 'hidden', 'bodies': len(frames[t]['H']),
@@ -1066,7 +1112,8 @@ def do_match(args):
             for h in rec.get('reader_hidden') or ():
                 for t in frames:
                     if h['last'] < t <= h['end']:
-                        frames[t].setdefault('H', []).append([h['side'], h['name'], (h['track'] or {}).get(str(t))])
+                        frames[t].setdefault('H', []).append([h['side'], h['name'], (h['track'] or {}).get(str(t))]
+                                                             + ([hidden_ref(h['track'], t)] if HIDDEN_ASSIGN else []))
         me, end = rec['my_side'], max(frames)
         info, plan, final = fit_match(rec, frames, mo)
         if final is None:

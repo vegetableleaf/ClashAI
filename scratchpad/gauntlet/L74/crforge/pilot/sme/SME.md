@@ -2551,7 +2551,27 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
     `.foreman/scratch/a2/codex/ENG-FIX2_1.md`, results `engfix/r6/`): SPELL_KING + HIDDEN_CHILD OFF vs ON on dev /
     FRESH1-5, lib 5e8089a4. If 0 regressions and plants 0 missed: add both flags to fresh_prep.sh (+ its flags echo) for
     FRESH6+. Restart: the same launcher with a fresh OUT name.
-  - **RESTART POINT:** read ENG-FIX2_1's table, then the lead's call on SME_HIDDEN_UNIQ, then FRESH5 failures
+  - **Lead 10-29: SME_HIDDEN_UNIQ rejected (it turned ambiguous frames into torn_hidden). Built instead: SME_HIDDEN_ASSIGN
+    (sme_live.hidden_assign, off by default):** a frame with reader-hidden bodies scores exact or div, never torn. Per
+    (side, name), the k hidden bodies (k <= 3) are assigned one-to-one to sim rows of that name by minimum total distance
+    to a reference point: the frame's projectile target point, else the latest earlier one. A tie, or no reference
+    point while there is a choice, gives div. An assigned row must sit exactly on the frame's own target point; the rest
+    of the frame goes through the unchanged diff. Planted `engfix/hassign_test.py` ok 10 on 210016 (pod, sme11g):
+    assigned body 1 unit off the point -> div; listed body moved 1 unit -> div (point frame and reference-only frame);
+    no reference point -> div; hidden body missing in the sim -> div; equidistant reference (tie) -> div.
+    **210016 with HIDDEN_CHILD + HIDDEN_ASSIGN: 1997 / 1997 exact, plants 0 missed** (pod run
+    `/workspace/pilot/engfix2/runs/EF2_p210a`). Of its 44 hidden frames, 6 have their own target point and 38 rely only on
+    the reference-point assignment. No-regression on all 6 records with a hidden window (dev 181217, 213436; FRESH1
+    000420; FRESH2 083923; FRESH4 173440, 210016; `engfix/hassign_nr.txt`, ASSIGN 0 vs 1, same lib): 0 new div, plants
+    0 missed. All 222 torn_hidden frames become exact, so 083923 and 173440 turn STRICTLY exact. (210016 stays at 44 div
+    there because those inputs lack HIDDEN_CHILD.) **Concern for the lead:** a torn_hidden frame already counted as a pass
+    for "exact apart from torn" and failed only the strict count. ASSIGN labels such frames exact even though the hidden
+    body's hp is never read, and on 38 of 210016's frames its position isn't read either. That raises the strict count
+    (+2 already-scored matches). Code `sme/sme_live.py`; pod copy `/workspace/pilot/engfix2/sme11g` + `runG.sh`;
+    sme11f untouched.
+  - **FRESH5 cut:** 00:43 EDT, not the 00:50 the restart point named. FRESH4's last log starts 00:42; with 00:50 the log
+    004719 (00:47) would have been in neither set.
+  - **RESTART POINT:** read ENG-FIX2_1's table, then the lead's call on SME_HIDDEN_ASSIGN, then FRESH5 failures
     004719@2573 (opponent Goblins reader-only) / 021310@1986 (Skeletons SIM-only), then NEAR_BIGGER same-form test.
     Codex dispatches (ENG-FIX2): ENG-FIX2_1 medium, running.
 - **(superseded by ENG-FIX2 above) RESTART POINT (10-29):** done = Codex ENG-FIX_5 (`.foreman/scratch/a2/codex/ENG-FIX_5.md`, out
