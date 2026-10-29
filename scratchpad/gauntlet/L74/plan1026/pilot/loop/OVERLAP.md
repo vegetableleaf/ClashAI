@@ -12,11 +12,56 @@ Labels: (a) measured, (b) plausible / untested, (c) contradicted.
   - outcomes 32/32 at u0000-u0002;
   - 47 of 51 W16 batch keys identical at every update; only lp_card / lp_cell / lp_gate / lp_old differ;
   - weights_sha identical at u0000 (e7323eda) and u0001 (b606e6f8); u0002 differs (4baf4c74 vs 0aeda3ed) via lp_old.
-  - This is the pattern LOOP_INT.md records for the in-process lp float noise. Old-vs-old noise floor: OWED (a repeat
-    of the old tree; GPU0 on hold for LEARNER-SCALE).
-- A/B (modes 0 / 1 x seeds 1028, 2029; `async/ab_queue.sh v1`, eval `async/ab_eval.py`): queued, not started (GPU0 hold).
-- Codex dispatches: LOOP-ASYNC_1 (written, .foreman/scratch/a2/codex/LOOP-ASYNC_1.md: run + watch the A/B queue,
-  tables). Not dispatched yet.
+  - Noise floor (a): the old tree against ITSELF (async_id_old2) shows the same pattern: the same 4 lp keys differ at
+    every update, outcomes 32/32, weights equal at u0/u1, and u0002 differs again (a473cf05). VERDICT: overlap-absent
+    = the old code up to the existing run-to-run in-process lp float noise.
+- A/B v1 DONE (a). Setup: 33308 GPU0; ref_pilot_noiw + E 32 x G 4 = 128 matches / update, 8 updates, critic warm-up 1,
+  2 producers x 64, serve.py eager. Tables: .foreman/scratch/a2/async/ab_v1/TABLE.md (Codex). Held-out = the other
+  seed's B0 u0 batch (128 matches, ~40k rows); eval_s{1028,2029}.json on the pod.
+  | | s1028 m0 | s1028 m1 | s2029 m0 | s2029 m1 |
+  |---|---|---|---|---|
+  | update period s (median, u>=2) | 161.4 | 135.9 | 160.2 | 139.1 |
+  | updates/h, matches/h | 22.3, 2,854 | 26.5, 3,390 | 22.5, 2,876 | 25.9, 3,313 |
+  | speedup m1/m0 | | **1.19x** | | **1.15x** |
+  | wave s / learner s per update (u>=2) | 127-140 / 12-30 | 122-149 hidden / 4-6 | 135-146 / 14-29 | 124-142 hidden / 4-5 |
+  | PPO steps before kl_stop (u2-u7) | 40-100 | **9-16** | 42-90 | **10-12** |
+  | first-minibatch max abs(ratio-1) (u2-u7) | ~1e-5 | **0.83-2.5** | ~1e-5 | **0.83-4.1** |
+  | clip_frac (u2-u7) | 0.034-0.040 | 0.050-0.083 | 0.029-0.039 | 0.046-0.096 |
+  | held-out J at u8 (+- se) | +0.0020 +- 0.0111 | +0.0010 +- 0.0029 | +0.0008 +- 0.0022 | -0.0002 +- 0.0014 |
+  | held KL(B0 to theta) cell at u8 | 0.0157 | **0.0064** | 0.0186 | **0.0079** |
+  | held KL gate u2..u8 | .010 .040 .074 .083 .101 .150 .200 | .013 .006 .030 .006 .031 .009 .034 | .009 .029 .060 .105 .057 .028 .023 | .010 .009 .012 .010 .019 .013 .029 |
+  | prefetch_miss / staleness | 0 / 0 | 0 / 1 (u>=1) | 0 / 0 | 0 / 1 |
+  - Mechanics (a): every mode-1 row was trained at staleness exactly 1, and there were 0 prefetch misses. At u1,
+    mode 1 has the same outcomes and rows as mode 0 (W1 = W0 in policy after the critic warm-up).
+  - Speed (a): mode 1's period is the wave, and the learner time is hidden. At this size, T_roll (~130 s) >> T_learn,
+    so the gain is only 1.15-1.19x. The ceiling is 2x at T_roll = T_learn.
+  - Per-update progress (owner bar: "not worse"):
+    - J cannot tell the arms apart (b): every arm is within ~1 se of 0 at 128 held matches. SCALE.md predicted this
+      resolution limit.
+    - The steps and the movement are measured (a). Mode 1 stops after ~1/5 of the steps, and after 7 policy updates
+      its cell policy is ~0.4x as far from B0 as mode 0's.
+    - Its gate KL to B0 SAW-TOOTHS on s1028 (.013 .006 .030 .006 .031 .009 .034): one update moves the gate, the next
+      undoes it.
+    - So the bar is NOT met (c, for "not worse" on movement per update).
+  - Diagnosis (b, consistent with the table): the ratio pi_theta / pi_behaviour starts far from 1 (max abs(r-1) up to
+    4 at step 0). For A < 0 rows the clipped objective min(rA, clip(r)A) does not bound r A, so a few stale rows with
+    large r drive the gradient. The policy then hits the 0.02 KL-to-update-start cap after ~10 steps, mostly along
+    directions that correct the previous update.
+  - Proposed fix (NOT built; it changes rl_royale's PPO loss: lead / owner decision; opt-in key, absent = today):
+    decoupled PPO (Hilton et al. 2021, "batch size-invariance for policy optimization").
+    - Clip on pi_theta / pi_prox with pi_prox = the update-start policy W_u. LazyRef already computes W_u's lps on
+      every minibatch row for the KL stop.
+    - Multiply by the importance weight pi_prox / pi_behaviour (from the stored lp_old), truncated at c (e.g. 1-2).
+    - With overlap absent, pi_prox = pi_behaviour, so the loss is exactly today's.
+    - The KL stop is unchanged (it is already to W_u).
+    - Then rerun the A/B (same queue, tag v2).
+- A/B v1 restart: `cd /workspace/async && setsid nohup bash ab_queue.sh v1 "1028 2029" > ab_v1.out 2>&1 < /dev/null &`
+  (finished runs skipped via ab_v1/RUN.done).
+- Codex dispatches: LOOP-ASYNC_1 (medium; .foreman/scratch/a2/codex/LOOP-ASYNC_1.md): ran + watched the queue, built
+  TABLE.md / table.json. Outcome: BLOCKED on my eval bug (B0's init file lacks the cell_refine.cfg buffer). Fixed:
+  ab_eval uses the run's u0000 checkpoint, max diff 0.0 vs the init. I reran the eval myself and checked Table A / B
+  against the train logs.
+- Nothing of mine is running on 33308.
 
 ## What it does
 - Absent: today's alternating loop. `FastPool.run` = `collect(submit(update, sd, jobs, ver=update))` (same messages,

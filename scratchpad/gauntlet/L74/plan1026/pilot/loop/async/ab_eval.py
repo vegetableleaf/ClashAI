@@ -84,9 +84,13 @@ def main():
                 from pipeline import e1_eval as E
                 pol, _ = E.load_policy(ck, str(dev))
                 base_model = pol.model.eval()
-                b0 = init["model"]
-                ref_model = __import__("copy").deepcopy(base_model)
-                ref_model.load_state_dict(b0)
+                ref_model = __import__("copy").deepcopy(base_model)   # B0 = the run's u0000 (saved before any
+                ref_model.load_state_dict(torch.load(cks[0], map_location="cpu", weights_only=False)["model"])  # update;
+                assert cks[0].stem.endswith("_u0000")        # the init file lacks the cell_refine.cfg buffer)
+                rsd = ref_model.state_dict()
+                d = {k: (rsd[k].float().cpu() - init["model"][k].float()).abs().max().item() for k in init["model"]
+                     if k in rsd and init["model"][k].is_floating_point()}
+                out["u0000_vs_init_maxdiff"] = max(d.values())
                 R.gae_batch(ref_model, Bh, cfg)              # A, w from B0's stored V (v_shared)
                 out["J_B0"] = surrogate(ref_model, Bh, cfg)
             m = base_model
