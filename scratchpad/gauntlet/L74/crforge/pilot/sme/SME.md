@@ -2951,9 +2951,21 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
     5000064 and the same 2378 hp at 3008). Census (`engfix/late_census.{py,txt}`, FRESH2-7): bodies of a play first listed
     >= 4 ticks after run + 1 are rare outside spells and the match's first frames (Miner, Bats, a Cannon, this GK).
     Scoring those SIM-only frames as a torn class would be a comparator rule: not built.
-  - **RESTART POINT (ENG-FIX5, 10-29 ~11:30 EDT):** fresh_prep.sh = 20 flags (FRESH9+: + SME_ZD_SINGLE). Open, most
-    tractable first: FRESH8 063025@153 (SuspiciousBush listed from 153 at (2499, 14500) deploying; the extractor's play is
-    run 201 at (3432, 15469)), 075729@2917 (Skeletons ~10,700 off), 074143@1572 (evolved Witch SIM-only at the back edge),
+  - **FRESH8 075729@2917 = our Skeletons placed ~11.6 tiles from the tap (a); SME_OWN_BODYPT3 (fights.deployments, off,
+    NOT in fresh_prep: census + planted checks owed).** The tap says (500, 13500); the game's three Skeletons are first
+    listed deploying at (10001, 7212) / (10500, 8079) / (11002, 7212), centre (10500, 7500). SME_OWN_BODYPT covers one-body
+    plays only; BODYPT3 gives our 3-body Skeletons group the formation's point when it is >= 750 from the tap.
+    Re-extraction: OFF = the frozen record; ON moves only that play. SME (X5_b3_on): 1460 + 251 div (first 2917) -> 1556 +
+    155 div (first 3272: our Knight at (3499, 18500) live-only, the SIM keeps its 3 elixir; untraced). Owed: a census of
+    every own Skeletons play (tap vs first group centre) on dev + FRESH1-8 and an OFF / ON batch on the changed records.
+  - **FRESH8 063025@153 traced (a):** the opponent's SuspiciousBush (130 hp, reader card 26000097) is listed deploying from
+    153 at (2499, 14500), walks, dies to our Log ~190; at 205 its two Bush Goblins (539 hp, the SAME reader card id) are
+    listed at (2431, 15469) / (3432, 15469). The extractor took the goblins for the bush play (run 201 at (3432, 15469))
+    and has no play for the real bush (run ~132, before the first frame 151). Fix owed in fights.deployments: a play
+    seen in the first frames still deploying is a play (run from its deploy progress), and a death spawn of a same-id
+    card is not a play.
+  - **RESTART POINT (ENG-FIX5, 10-29 ~11:45 EDT):** fresh_prep.sh = 20 flags (FRESH9+: + SME_ZD_SINGLE). Open, most
+    tractable first: BODYPT3 census + no-regression (above); FRESH8 063025@153 (above), 074143@1572 (evolved Witch SIM-only at the back edge),
     071306@5473 (our Skeletons SIM-only), 073232@3312 (Knight body position); FRESH4 230352@3002 (listing lag: lead call);
     FRESH2 123045@1768 (b); FRESH3 142926 (client lag); FRESH4 165155 (no rule). FRESH9 freeze when >= ~20 Ranked
     battles exist after FRESH8's last log (082745, 08:27 EDT): `icebow/.venv/Scripts/python.exe -I fresh/freeze.py

@@ -95,6 +95,7 @@ OWN_SPAWN = os.environ.get('SME_OWN_SPAWN', '0') == '1'
 OWN_NEARDEAD = os.environ.get('SME_OWN_NEARDEAD', '0') == '1'   # ENG-FIX, deployments' H-NEARPARENT (comment there)
 OWN_BODYPT = os.environ.get('SME_OWN_BODYPT', '0') == '1'       # ENG-FIX, deployments' own-tap pairing (comment there)
 OWN_BODYPT_D = 750                                               # units: the Knight back-row clamp moves 500
+OWN_BODYPT3 = os.environ.get('SME_OWN_BODYPT3', '0') == '1'     # ENG-FIX5, deployments' own-tap pairing (comment there)
 NEAR_BIGGER = os.environ.get('SME_NEAR_BIGGER', '0') == '1'     # ENG-FIX, deployments' near list (comment there)
 NEAR_BIGGER2 = os.environ.get('SME_NEAR_BIGGER2', '0') == '1'   # ENG-FIX2, the narrower NEAR_BIGGER (comment there)
 # ENG-FIX2 (SME_SPELL_KING=1, off by default): a king-thrown projectile spell is dated by how far it flew. Its first two
@@ -843,6 +844,11 @@ def deployments(m, catalog, life=None, own_unit=None, stats=None):
                 # bot's confirmation, which is empty when the bot never saw the body: FRESH4 220244@3374 and 222707@1653
                 # (confirmation spawn [], latency 42 / 46 ticks; the game's Knight 1 / 2 tiles off the tap).
                 if OWN_BODYPT and ev['name'] in OWN_SPAWN_CARDS and len(g['members']) == 1                         and math.hypot(g['x'] - p['x'], g['y'] - p['y']) >= OWN_BODYPT_D:
+                    ev.update(x=round(g['x']), y=round(g['y']), body_moved=[p['x'], p['y']])
+                # ENG-FIX5 (SME_OWN_BODYPT3=1, off by default): the same for our Skeletons (3 bodies; the group point is the
+                # formation's, as for the opponent's first_seen plays). FRESH8 075729@2917: tap (500, 13500), the game's three
+                # Skeletons at (10001, 7212) / (10500, 8079) / (11002, 7212), deploying, centre (10500, 7500).
+                elif OWN_BODYPT3 and ev['name'] == 'Skeletons' and len(g['members']) == 3 and math.hypot(g['x'] - p['x'], g['y'] - p['y']) >= OWN_BODYPT_D:
                     ev.update(x=round(g['x']), y=round(g['y']), body_moved=[p['x'], p['y']])
                 if ev['name'] == 'GoblinDrill' and os.environ.get('PARITY_DRILL_TAP') != '1':   # H-DRILL-SURFACE
                     s = drill_surface(tr, g['side'], g['card_id'], p['tick'])
