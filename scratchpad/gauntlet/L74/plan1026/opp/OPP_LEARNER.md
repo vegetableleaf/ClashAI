@@ -38,11 +38,18 @@ unchanged without the opp init. Existing: test_timing_head_decode + test_league 
   actors, ONE lambda run at a time: 0.1 first, then 0.03 / 0.3); never the 33903 GPU; bar scored on D3 + the sampled-decode
   number beside it; dry-run on v0 until P2-OPP2 reports v1.
 - DONE (code; opt-in, absent = unchanged): (1) bot partner decode + icebow pool, (2) th_drift monitor, (3) fast-loop timing
-  LEARNER seat. (4) v0 DRY RUN RUNNING (lead 10-29, settles lr / lambda / stop rule before v1): 33308, run oplc_v0_l01
-  (lambda 0.1, lr 1e-5, 20 actors on CPUs 100-121 = 26 GB tree RSS at start, learner on GPU1, 30 updates, save_every 10), started
-  01:57 UTC, PID 57195, log /workspace/oplc/logs/oplc_v0_l01.log, tree /workspace/oplc/cb (cp -al of /workspace/opl/cb + origin
-  pipeline + learner/); launch: `bash cb/scratchpad/gauntlet/L74/plan1026/opp/learner/run_calib.sh RUN LAMBDA INIT CPUS k=v...`
-  (+ --resume to continue). 33308 disk: 4.6 GB free at 01:50 UTC; a numbered checkpoint is 135 MB (Adam state).
+  LEARNER seat. (4) v0 DRY RUN RUNNING in the FAST LOOP (lead 10-29; settles lr / lambda / stop rule before v1): 33308, run
+  oplc_flv0_l01 (lambda 0.1, lr 1e-5, E 64 x G 4, 30 updates, save_every 10; 2 producers x 64 matches x 6 Java threads +
+  learner on GPU1, CPUs 100-121, n_actors=1 (else rl_royale idles 48 actor processes = +30 GB), XMX 3g): PSS 12.7 GB, GPU1
+  13.7 GB; started 02:22 UTC; log /workspace/oplc/logs/oplc_flv0_l01.log. Restart (fresh name; or --resume):
+  `cd /workspace/oplc && CB=/workspace/oplc/cb TABLES=/workspace/crforge_cache/tables/16.635.3 GPU=1 LOGS=/workspace/oplc/logs XMX=3g TMO=36000 FAST_ARGS="--producers 2 --matches 64 --threads 6 --devices cuda:0" setsid nohup bash fl_pod.sh fast RUN 100-121 scratchpad/gauntlet/L74/plan1026/opp/learner/opp_learner_calib.yaml init=opp_ckpt/opp_m10_s0_sim.pt beta0=L beta_min=L beta_max=L max_updates=30 save_every=10 learner_device=cuda n_actors=1 < /dev/null > logs/RUN.out 2>&1 &`
+  (a) speed: production (run_calib.sh, 20 CPU actors, oplc_v0_l01) u0000 = 1,173 s rollout for 256 matches (PSS 30.6 GB =
+  over the 30 GB cap: stopped by PID after u0000); fast loop on GPU1 = 180 s (6.5x), learner 20 s for 7,084 play rows.
+  Same u0000 batch twice on GPU (70/186, 7,084 rows: repeatable); fast-on-cuda vs production-on-cuda compare is (b) owed.
+  (a) u0000 (v0, sampled-decode bot): learner wins 16% vs CLXIII (156 games, so CLXIII ~84%), 45% vs the init (100);
+  th_drift after ONE update: hazard mad 8.3e-3, max 4.2e-2, mean p .1886 -> .1967 (+4% relative: more plays) = the trunk moves
+  the frozen hazard visibly; watch it per update.
+  33308 disk: 2.9 GB free at 02:25 UTC (98%); a numbered checkpoint is 135 MB (Adam state).
   v1: (P2-OPP2: seed 0 at step 62.5k of 100k at 00:50 UTC, then
   attach_sim + level A + level B v1s0 by Codex P2OPP2_3).
 - Pod 33903 (CPUs 200-219, <= ~20 GB; GPU = P2-OPP2's): trees /workspace/opplearnc/cbc_base (HEAD c5383b3 pipeline over
