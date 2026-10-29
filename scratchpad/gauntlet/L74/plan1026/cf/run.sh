@@ -9,4 +9,4 @@ export PYTHONPATH=$TREE:/workspace/cfspeed/pylib ROYALE_RUNTIME=fin16-linux ROYA
   CRFORGE_LIB=${CRFORGE_LIB:-/workspace/pilot/lib_cfclone3} CRFORGE_TABLES=${CRFORGE_TABLES:-/workspace/crforge_cache/tables/16.402.22} \
   CRFORGE_FACADE_BUILD=${CRFORGE_FACADE_BUILD:-/workspace/cf3/build}
 mkdir -p /workspace/cf3/logs
-exec taskset -c $CPUS timeout 14400 /workspace/venvf16/bin/python -u -m pipeline.rl_royale --run $RUN "$@" > /workspace/cf3/logs/$RUN.log 2>&1
+exec taskset -c $CPUS timeout ${TIMEOUT_S:-14400} /workspace/venvf16/bin/python -u -m pipeline.rl_royale --run $RUN "$@" > /workspace/cf3/logs/$RUN.log 2>&1

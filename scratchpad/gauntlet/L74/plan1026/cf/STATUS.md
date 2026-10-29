@@ -25,12 +25,31 @@ never tune numbers until they turn positive. Labels: (a) measured, (b) plausible
 - f3ftR (CPUs 9-17, 9 actors): every matchup vs ftR (/workspace/cf3/opp/opp_ft_s0_R_sim.pt, sha 28ef721b, from 33903).
 - f3oplcB (CPUs 18-25, 8 actors): every matchup vs arm B u0120 (/workspace/cf3/opp/oplc_ftR_l003_a10_u0120.pt, sha 7aefe312;
   the strongest arm-B checkpoint at launch: CLXIII W 383/480 in the lead's D3).
+- NAMES (actual): f3base2 (base), f3smoke2 / f3smoke3 (SMOKE PASS). f3ftR2 / f3oplcB2 were STOPPED at 15:42 (exact PIDs): a match
+  vs the timing-head opponents with forks takes ~250-400 s per actor (smoke f3smk_ftR3: 8 matches / 4 actors in 505 s), so an
+  actor's 8 in-flight matches passed actor_timeout_s 3600 and every actor was killed + restarted in a loop (log "ACTOR n CRASH
+  (process timed out)", JVM hs_err files in cfh9/). Relaunched 15:43 as f3ftR3 (CPUs 9-18, 10 actors) and f3oplcB3 (19-27, 9)
+  with actor_timeout_s=14400 in_flight=2 MAXU=2 TIMEOUT_S=25200 (run.sh now takes TIMEOUT_S; default 14400 unchanged):
+  `TIMEOUT_S=25200 MAXU=2 ./fork3_run.sh f3ftR3 9-18 10 ftR actor_timeout_s=14400 in_flight=2`.
 - All: 5 updates x 128 matches, policy fixed (critic warm-up = max_updates), cf_diag + plays, rocket_empty, macros (rocket_cycle
   p 1 to the end, def_xbow p 0.3 horizon 1200), Rocket family as cfaud3 (rocket 0.006, rocket_tornado 0.5, tornado_redirect
   0.004, xbow_after_fail 0.05, rocket_played 1), horizon 900 + sweep 150..1200, audit_p 0.3. Dumps logs/<run>.jsonl.
 - Restart (only if dead; not resumable, use a new name): `ssh -p 32657 ... 'cd /workspace/cf3 && ./fork3_run.sh RUN CPUS N ARM'`.
 - Stop: exact PIDs (pgrep -n -f "^/workspace/venvf16/bin/python -u -m pipeline.rl_royale --run RUN"), then the PIDs in
   cfh8/icebow/data/bench/rl_royale/RUN/actors.pid.
+
+## Results 5e8089a4 (f3base2 DONE 16:10, collected data/f3base2.jsonl sha 1ece94c8, tables data/f3base2_tables.md + _fork3.md;
+## opponent arms f3ftR3 / f3ftR4 / f3oplcB3 MAXU 2, u1 due ~18:00-18:45 UTC; draft section 9 for P4_AUDIT in progress)
+- (a, base u1-4, 512 matches) chip Rocket - policy -0.230 [-0.264, -0.196] (terminal -0.087 [-0.236, +0.055]); Rocket into nothing
+  - policy -0.321 [-0.363, -0.280] (terminal -0.243 [-0.387, -0.097]); chip itself (princess - empty) +0.089 [+0.064, +0.113]
+  (terminal +0.181 [+0.070, +0.293]). The SIM pays for the chip; the price is the spend at an unchosen moment.
+- (a) sim_assoc.py: the live-style association inside the SIM (CLXIII's own chip Rockets vs could-but-did-not, own princess HP lost
+  over 45 s, 1x) base -0.033 [-0.077, +0.013], cfaud3 +0.008 = live +0.004 = pros -0.005: the SIM reproduces the human estimand.
+- (a, u0 only, critic not adapted) opponents: Rocket into nothing base -0.315 / ftR -0.363 / oplcB -0.337; own princess lost after a
+  forced chip +0.171 / +0.156 / +0.110; foe princess lost -0.048 / -0.169 / -0.157 (vs the human-like opponents the displaced
+  X-Bow line is worth more: they let it lock). rocket_cycle to the end -0.051 / +0.015 / +0.017 (n 775 / 56 / 73).
+- (a) macros base: rocket_cycle end -0.062 [-0.103, -0.021] (human win +0.091); def_xbow def - bridge 1200 -0.066, end +0.044
+  [-0.174, +0.258] (n 35; human +0.117); the policy's own continuation Rockets within 600 ticks in 1% (control = no Rocket).
 
 ## Findings so far (cfaud3 re-reads are fe364ceb; the 5e8089a4 arms above replace them when done)
 - (a) Human side (opp_response.py -> data/opp_response_human.json; association with selection: people chip when it looks safe).
