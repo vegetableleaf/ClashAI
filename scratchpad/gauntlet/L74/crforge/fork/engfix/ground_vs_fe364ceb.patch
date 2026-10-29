@@ -1,0 +1,83 @@
+From 5e8089a47ec9bdf7b8f04cebccd7a7a4e5ea4a9b Mon Sep 17 00:00:00 2001
+From: vegetableleaf <benpecan106@gmail.com>
+Date: Thu, 29 Oct 2026 04:57:46 +0000
+Subject: [PATCH] ENG-FIX: target_is_ground answers 1 for FORCE_IS_GROUND alone
+ on a non-character at flying height 0 (a princess tower a Vines hold keeps);
+ FORCE_IS_AIR stays refused. Closed-loop crash P2-OPP2 v1s0 seed 742811.
+
+---
+ .../unit/BattleExpressionEnvironment.java     | 12 ++++++++-
+ .../unit/BattleThreeMusketeersTest.java       | 27 +++++++++++++++++++
+ 2 files changed, 38 insertions(+), 1 deletion(-)
+
+diff --git a/core/src/main/java/org/crforge/core/battle/unit/BattleExpressionEnvironment.java b/core/src/main/java/org/crforge/core/battle/unit/BattleExpressionEnvironment.java
+index e68b90cf..bd3f02cc 100644
+--- a/core/src/main/java/org/crforge/core/battle/unit/BattleExpressionEnvironment.java
++++ b/core/src/main/java/org/crforge/core/battle/unit/BattleExpressionEnvironment.java
+@@ -97,7 +97,8 @@ import org.crforge.core.pathfinding.target.TargetView;
+             + " not know naming one of the battle's variables, read from the context entity, 0"
+             + " for one never written, and then one of its game tags, true when the context"
+             + " entity carries every bit of it. Not modelled: a force-layer tag on a"
+-            + " target_is_ground reference that is not a character, refused; target_max_hp on a"
++            + " target_is_ground reference that is not a character, refused, but FORCE_IS_GROUND"
++            + " alone on one at flying height 0 (a princess tower a Vines hold keeps) answers 1; target_max_hp on a"
+             + " tower or on a reference that has left the battle, refused;"
+             + " has_crown_tower_in_range on an object that is not a"
+             + " character or of the neutral side, refused; the other 20 functions, which fail"
+@@ -640,6 +641,15 @@ final class BattleExpressionEnvironment implements ExpressionEnvironment {
+     if (entity instanceof CharacterEntity) {
+       return entity.layerGround() ? 1 : 0;
+     }
++    // ENG-FIX: FORCE_IS_GROUND alone on an object at flying height 0 - a crown tower or building a
++    // Vines hold keeps (AirToGround, held by card_Vines) - answers ground by either reading, its row's
++    // height 0 and the tag's ground, as a character's FORCE_IS_GROUND does: no refusal for it. Any
++    // other force tag on a non-character stays refused.
++    if (entity.getData().flyingHeight() == 0
++        && (entity.getView().getFlags() & (world.forceIsAir() | world.forceIsGround()))
++            == world.forceIsGround()) {
++      return 1;
++    }
+     for (String tag : FORCE_LAYER_TAGS) {
+       Integer index = world.gameTagIndex(tag);
+       if (index != null && (entity.getView().getFlags() & world.gameTagMask(index)) != 0) {
+diff --git a/core/src/test/java/org/crforge/core/battle/unit/BattleThreeMusketeersTest.java b/core/src/test/java/org/crforge/core/battle/unit/BattleThreeMusketeersTest.java
+index 3dad9ee5..eeb6538e 100644
+--- a/core/src/test/java/org/crforge/core/battle/unit/BattleThreeMusketeersTest.java
++++ b/core/src/test/java/org/crforge/core/battle/unit/BattleThreeMusketeersTest.java
+@@ -213,6 +213,33 @@ class BattleThreeMusketeersTest {
+     assertThat(ground.ownLaunches).as("the musketeer's shots").isNotEmpty();
+   }
+ 
++  @Test
++  @DisplayName(
++      "a princess tower a Vines hold keeps under FORCE_IS_GROUND is ground to target_is_ground:"
++          + " its row stands at height 0 and the tag forces the ground, both readings 1")
++  void aTowerHeldOnTheGroundIsGround() {
++    // ENG-FIX (closed-loop crash 10-29, P2-OPP2 v1s0 seed 742811): Vines holds a princess tower
++    // (AirToGround, held by card_Vines), raising FORCE_IS_GROUND on it; a musketeer whose target it is
++    // then read target_is_ground and was refused.
++    Scene scene = new Scene(GameData.tables());
++    TowerEntity tower = scene.match.getWorld().princessTowers(1).get(0);
++    CharacterEntity musketeer =
++        scene.still(0, MUSKETEER, tower.getView().getX(), tower.getView().getY() - 4000, "N");
++    int ticks = 0;
++    while (musketeer.getTargeting().getReference() != tower.getTargetView() && ticks++ < 100) {
++      scene.step(1);
++    }
++    assertThat(musketeer.getTargeting().getReference()).isSameAs(tower.getTargetView());
++    BattleWorld world = scene.match.getWorld();
++    for (int i = 0; i < 40; i++) {
++      tower.raiseForceIsGround();
++      scene.step(1);
++    }
++    assertThat(tower.getView().getFlags() & world.forceIsGround()).as("the hold's tag").isNotZero();
++    BattleExpressionEnvironment environment = new BattleExpressionEnvironment(musketeer, world);
++    assertThat(evaluate("target_is_ground", environment)).isEqualTo(1);
++  }
++
+   @Test
+   @DisplayName(
+       "target_is_ground on a target that is not a character and carries a force tag is refused")
+-- 
+2.43.0
+

@@ -2463,7 +2463,20 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
   opp_no_fitting_deal. It stays OFF and FRESH2 101018 stays open (the mechanism (a) holds; the rule needs a narrower
   test, e.g. the smaller body from an earlier PLAY of the side, not one of the same play's bodies). The same run shows
   SME_OWN_NEARDEAD clearing own_cycle_fail on dev 160930 (Tesla) and 230512 (IceWizard) (a: the cycle now fits).
-- **Running:** Codex ENG-FIX_2b = ENG-FIX_2 without NEAR_BIGGER and with the field gate relaxed (deal-fit fields may
+- **Lead queue 10-29: `target_is_ground on PrincessTower_1_2 ... FORCE_IS_GROUND` (P2-OPP2 v1s0 seed 742811, 33903
+  `/workspace/opp/score/rows/v1s0/v1s0_742800/D3/00000.log`) (a):** no table row sets FORCE_IS_GROUND; crforge raises it
+  only in AirToGroundRun, i.e. Vines' hold, which holds princess towers (traced: card_Vines). A Three Musketeers
+  musketeer targeting that tower reads target_is_ground (card_ThreeMusketeers / bayonet), and crforge refused any force
+  tag on a non-character (BattleExpressionEnvironment.targetIsGround). Both readings give 1 (the tower row is at height 0
+  and the tag forces ground, as for a character), so the answer is clear. **Fork branch `clashbot-engfix-ground` =
+  5e8089a4** (one commit on fe364ceb, pod 30408 `/workspace/engfix/crforge_fork`, patch
+  `crforge/fork/engfix/ground_vs_fe364ceb.patch`): FORCE_IS_GROUND alone on a height-0 non-character -> 1; FORCE_IS_AIR
+  stays refused. New test `aTowerHeldOnTheGroundIsGround` raises the tag on a princess tower over 40 steps: RED before
+  (the exact crash message), GREEN after on 16.635.3 and 16.402.22; the old refusal test (FORCE_IS_AIR) stays green.
+  Gates (Codex ENG-FIX_3, running): full core tests both tables, libs, determinism vs g_f1fix3, SME dev / FRESH1/2/3 vs
+  the fe364ceb baselines on 32657 -> `crforge/fork/engfix/GATES_ground.txt`. Owed after that: Clone sweep and HF 20k
+  faults on a pod other than 30408. NOT merged or shipped: REPORT to the lead first.
+- **Running:** Codex ENG-FIX_3 (gates above), Codex ENG-FIX_2b = ENG-FIX_2 without NEAR_BIGGER and with the field gate relaxed (deal-fit fields may
   change), pid file `.foreman/scratch/a2/codex/out/ENG-FIX_2b.jsonl.pid`, outputs `engfix/r2b/`. Earlier: ENG-FIX_2 (all
   five flags, `engfix/r2/`, ticket `.foreman/scratch/a2/codex/ENG-FIX_2.md`). Restart: `sh .foreman/scratch/a2/codex_full.sh
   .foreman/scratch/a2/codex/ENG-FIX_2.md medium .foreman/scratch/a2/codex/out/ENG-FIX_2.jsonl` (fresh OUT name).
