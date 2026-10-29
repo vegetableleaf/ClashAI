@@ -870,6 +870,7 @@ def hidden_ok(f, o, me):
 # row must sit exactly on the frame's target point when the frame has one; the assigned rows are taken out and the rest of
 # the frame goes through the unchanged diff. FRESH4 210016: two sim Golemites, one hidden (hidden_ok needs exactly one).
 HIDDEN_ASSIGN = int(os.environ.get('SME_HIDDEN_ASSIGN', '0'))
+CLS_TICKS = int(os.environ.get('SME_CLS_TICKS', '0'))   # ENG-FIX4: res['cls_ticks'] (the gate guard, f1fix/assign_guard.py)
 
 
 def hidden_ref(track, t):
@@ -1180,6 +1181,8 @@ def do_match(args):
                    'torn_ticks': sorted(t for t, c in an['cls'].items() if c.startswith('torn')),
                    'torn_t1_ticks': sorted(t for t, c in an['cls'].items() if c == 'torn_t1'),
                    'torn_prov': {t: p for t, p in sorted(an.get('prov', {}).items()) if an['cls'].get(t, '').startswith('torn')}}
+            if CLS_TICKS:   # ENG-FIX4 (SME_CLS_TICKS=1): every non-exact frame by class, for the ASSIGN off / on frame guard
+                res['cls_ticks'] = {c: sorted(t for t, x in an['cls'].items() if x == c) for c in sorted(set(an['cls'].values()) - {'exact'})}
             if PLANTS:  # SME-HARDEN: the planted-divergence suite runs on every match of every run (plant_suite.py)
                 import plant_suite
                 res['plants'] = plant_suite.run(plan, frames, me, an, o, os.path.join(mo, 'work'))

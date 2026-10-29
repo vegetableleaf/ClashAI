@@ -1,0 +1,8 @@
+match	set	baseline_counts	baseline_first_div	new_counts	new_first_div	new_flags_empty	plants_missed	refused_plays	ability_nonzero_offset	classification	exact_delta	new_flags	added_flags
+live_play_20261026_182050	dev	{"exact":1766}	null	{"exact":1766}	null	true	[]	[]	[["ability",1],["ability",1]]	same_class	0	[]	[]
+live_play_20261028_103056	fresh2	{"div":1644,"exact":116}	386	{"div":1644,"exact":116}	386	false	[]	[["cmd3",384,false,0,9],["cmd10",772,false,0,9],["cmd13",1271,false,0,9],["cmd39",2850,false,0,9]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]
+live_play_20261028_155749	fresh4	{"div":67,"exact":1697}	3549	{"div":89,"exact":2055}	4266	true	[]	[]	[]	improved	358	[]	[]
+live_play_20261028_201103	fresh4	{"div":967,"exact":735}	1606	{"exact":1702}	null	true	[]	[]	[["ability",-34]]	fixed	967	[]	[]
+live_play_20261028_235834	fresh4	{"div":41,"exact":2230}	4612	{"exact":2271}	null	true	[]	[]	[]	fixed	41	[]	[]
+live_play_20261029_001856	fresh4	{"div":126,"exact":1503}	3159	{"exact":1629}	null	true	[]	[]	[]	fixed	126	[]	[]
+live_play_20261029_024716	fresh6	{"div":1141,"exact":623}	1399	{"exact":1764}	null	true	[]	[]	[]	fixed	1141	[]	[]

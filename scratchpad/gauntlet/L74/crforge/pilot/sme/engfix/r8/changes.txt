@@ -1,0 +1,30 @@
+dev: OFF=138 ON=138 SHA256={'off': 'd91583504174f5d00381ebdf4d8b952371f35e82536e164ce05ab407025fe0b7', 'on': '539b8b406adf43ebe878abbed25675bf0c4093fb90d58e73528d47961447baf1'} OFF prefix equality=True
+dev live_play_20261026_182050: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF differing play x1: {"card": "IceWizard", "dated": "own_elixir", "deck_index": 1, "form": 0, "kind": "ability", "name": "IceWizard", "run_ticks": [3462, 3463], "side": 0, "source": "cast_seen", "tick": 3463}
+  ON differing play x1: {"card": "IceWizard", "deck_index": 1, "form": 0, "kind": "ability", "name": "IceWizard", "run_ticks": [3462, 3463], "side": 0, "source": "charge_drop", "tick": 3463}
+fresh1: OFF=9 ON=9 SHA256={'off': '564fdb24d3dd4fbed739fee046dbfcec3659c1f4027034b3d7cdff3f6c146a23', 'on': '564fdb24d3dd4fbed739fee046dbfcec3659c1f4027034b3d7cdff3f6c146a23'} OFF prefix equality=True
+fresh2: OFF=40 ON=40 SHA256={'off': '4296f565bb48a5c6ecfc87394a9554a4248db39ac0bcfea9d45f8b60deca6fa6', 'on': '7fe6d9dc45306adae1d008ec4bfae32beea6af03e8bf3a73bf382fa0cf02ee24'} OFF prefix equality=True
+fresh2 live_play_20261028_103056: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF differing play x1: {"card": "Rascals", "deck_index": 6, "form": 0, "kind": "play", "n": 1, "name": "Rascals", "run_ticks": [384, 384], "side": 0, "source": "first_seen", "tick": 384, "tile": [8, 1], "x": 8337, "y": 1981}
+  ON differing play x1: {"card": "Rascals", "dated": "rascals_back", "deck_index": 6, "form": 0, "kind": "play", "n": 1, "name": "Rascals", "run_ticks": [384, 384], "side": 0, "source": "first_seen", "tick": 384, "tile": [8, 1], "x": 8337, "y": 1000}
+fresh3: OFF=17 ON=17 SHA256={'off': 'a450d5a3630c5d96250936b4b20863af3250c1895438c5e522fd584af587a749', 'on': 'a450d5a3630c5d96250936b4b20863af3250c1895438c5e522fd584af587a749'} OFF prefix equality=True
+fresh4: OFF=78 ON=78 SHA256={'off': '8f695c580c42b6ed435e0135ae52973572b5054ca579ea88d2798ec98e291bdc', 'on': 'ceee8bbe33980b2e63979b346cdfc37d8f61b8a2b84c6dab805d9e762dc46f02'} OFF prefix equality=True
+fresh4 live_play_20261028_155749: fields=['flags', 'opp_deal_fit', 'opp_fitting_deals', 'plays', 'tower_zap'], parsed_equal=False, text_equal=False
+  flags: OFF=["0:opp_no_fitting_deal:0"] ON=[]
+  opp_deal_fit: OFF=null ON=[1, 4, 5, 6, 2, 0, 3, 7]
+  opp_fitting_deals: OFF=0 ON=6144
+  tower_zap: OFF=null ON=[{"tower": [1, 14500, 25500], "hp": 77, "tp": 3547, "t": 3549, "zap_level": 16, "R": 3548, "run_ticks": [3547, 3548]}]
+  ON differing play x1: {"card": "Zap", "deck_index": 4, "form": 0, "inferred": true, "kind": "play", "mech": "tower_zap", "n": 0, "name": "Zap", "run_ticks": [3547, 3548], "side": 0, "source": "spell_seen", "tick": 3548, "tile": [14, 25], "x": 14500, "y": 25500}
+fresh4 live_play_20261028_201103: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF differing play x1: {"card": "Rascals", "deck_index": 3, "form": 0, "kind": "play", "n": 1, "name": "Rascals", "run_ticks": [1605, 1605], "side": 1, "source": "first_seen", "tick": 1605, "tile": [9, 29], "x": 9581, "y": 29893}
+  ON differing play x1: {"card": "Rascals", "dated": "rascals_back", "deck_index": 3, "form": 0, "kind": "play", "n": 1, "name": "Rascals", "run_ticks": [1605, 1605], "side": 1, "source": "first_seen", "tick": 1605, "tile": [9, 29], "x": 9581, "y": 31000}
+fresh4 live_play_20261028_235834: fields=['plays', 'tower_zap'], parsed_equal=False, text_equal=False
+  tower_zap: OFF=null ON=[{"tower": [1, 14500, 25500], "hp": 19, "tp": 4610, "t": 4612, "zap_level": 16, "R": 4611, "run_ticks": [4610, 4611]}]
+  ON differing play x1: {"card": "Zap", "deck_index": 5, "form": 0, "inferred": true, "kind": "play", "mech": "tower_zap", "n": 0, "name": "Zap", "run_ticks": [4610, 4611], "side": 0, "source": "spell_seen", "tick": 4611, "tile": [14, 25], "x": 14500, "y": 25500}
+fresh4 live_play_20261029_001856: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF differing play x1: {"card": "IceWizard", "deck_index": 1, "form": 0, "kind": "ability", "name": "IceWizard", "run_ticks": [3157, 3157], "side": 0, "source": "cast_seen", "tick": 3157}
+fresh5: OFF=15 ON=15 SHA256={'off': '8f4cb92d6d3c6f715235d6e9bf7b38374412b7da9caf08726f1656a2a288f049', 'on': '8f4cb92d6d3c6f715235d6e9bf7b38374412b7da9caf08726f1656a2a288f049'} OFF prefix equality=True
+fresh6: OFF=15 ON=15 SHA256={'off': '20ac8e69384bec9534d7d6e14fb11ca0edfab3390122fa0baa04eb00d2b141e4', 'on': '1beeb24f1a7698a1c247b696fc0d5a6ea51cffc3bc94848c8b49890ed89c3c0a'} OFF prefix equality=True
+fresh6 live_play_20261029_024716: fields=['opp_deal_fit', 'plays'], parsed_equal=False, text_equal=False
+  opp_deal_fit: OFF=[7, 0, 1, 5, 4, 3, 6, 2] ON=[7, 0, 1, 5, 4, 3, 2, 6]
+  ON differing play x1: {"card": "Zap", "deck_index": 2, "form": 0, "inferred": true, "kind": "play", "mech": "zap_add", "n": 0, "name": "Zap", "run_ticks": [1397, 1397], "side": 0, "source": "spell_seen", "tick": 1397, "tile": [14, 24], "x": 14459, "y": 24779}

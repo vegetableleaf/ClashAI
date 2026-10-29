@@ -2441,6 +2441,7 @@ no match after FRESH1's freeze is scored.
 Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
 
 ## STATUS (keep current)
+- **GATE DEFAULT (owner 10-29): SME_HIDDEN_ASSIGN ON; every gate run also runs ASSIGN off and passes `f1fix/assign_guard.py` (FAIL-to-report otherwise). Pooled strict-fresh FRESH2-7: 109 / 132 (0.826, CP lower 0.762), ASSIGN on = off. D1 / D2 NOT met.**
 - **FRESH2 (a):** 22/28 unflagged exact apart from torn (95% CP lower 0.620), strictly exact 21/28 (0.581); identical on
   clashbot-main m1 624eeb45 and fe364ceb (F1FIX-3). D1 (>= 45/50) and D2 (lower bound 0.98) NOT met. FRESH2 is dev now.
 - **Zap rule SME_TOWER_ZAP (16c8a8f):** built, planted 25/25, dev byte-identical, fires only on FRESH1 000420; 0 firings on
@@ -2808,7 +2809,43 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
     SME_ZAP_DEAD (0 firings), SME_BANNER_GIVEN=1, SME_HIDDEN_ASSIGN off (no hidden window on FRESH7: on = off). Ran on
     CPUs 52-53, WORKERS=2, beside Codex r7 on 28-53. 5 flagged (4 opp_no_fitting_deal, 1 own_cycle_fail) not scored.
     **Pooled strict-fresh FRESH2-7: 109 / 132 (0.826, CP lower 0.762).** D1 / D2 NOT met. FRESH7 is dev data from here.
-  - **RESTART POINT (ENG-FIX4, 10-29 ~07:20 EDT), in order:**
+  - **OWNER 10-29 (morning) RATIFIED SME_HIDDEN_ASSIGN "for now, but make sure it doesn't hurt our results" (via the
+    lead). Done (a):** `f1fix/runH.sh` (repo + pod `/workspace/pilot/f1fix/runH.sh`, backup `runH.sh.pre_assign_default`)
+    now sets `SME_HIDDEN_ASSIGN=1 SME_CLS_TICKS=1` before `"$@"`, so ASSIGN is the gate default and a trailing
+    `SME_HIDDEN_ASSIGN=0` still turns it off. SME_CLS_TICKS (sme_live, opt-in) writes every non-exact frame by class into
+    results.jsonl (`cls_ticks`); gate copy `sme11f/sme_live.py` = the repo's (LF md5 86cd7fab; backup `sme_live.py.pre_guard`).
+    **GUARD (every gate run from now on):** run the set twice (default = ASSIGN on, and `SME_HIDDEN_ASSIGN=0`), then
+    `python3 /workspace/pilot/f1fix/assign_guard.py OFF/results.jsonl ON/results.jsonl` (selftest `--selftest` ok). The run
+    is a **FAIL-to-report** (flag it here in STATUS) if any frame exact with ASSIGN off is not exact with it on, the frame
+    count changes, or any match's class gets worse (strict > exact apart from torn > fail; flagged matches too). Report
+    both numbers; the default from now on is ON. By the code, ASSIGN only relabels non-exact frames with reader-hidden
+    bodies (sme_live.analyse) and adds a reference point to those bodies (run_one), so a set with no hidden window is
+    identical by construction.
+  - **Pooled strict-fresh FRESH2-7 both ways (a; `/workspace/pilot/engfix4/bothways.sh` -> `bothways.out`, runs
+    `EF4_bw{2,4,6}_{0,1}`, each set's frozen inputs (shas = freeze files) and own lib):** the hidden-window records of the
+    frozen gate inputs are FRESH2 083923, FRESH4 173440 + 210016, FRESH6 042050 (FRESH3, 5, 7: none). ASSIGN off = on on
+    all 4 (083923 1814 + 41 torn_hidden; 173440 1741 + 25 torn_hidden; 210016 1953 + 44 div, those inputs lack
+    HIDDEN_CHILD; 042050 1136 + 93 torn_hidden), guard PASS on all 3 sets, plants 0 missed, and the OFF runs repeat the
+    frozen scores. **So pooled FRESH2-7 = 109 / 132 (0.826, CP lower 0.762) with ASSIGN ON (the default) and OFF alike;**
+    strictly exact counts are unchanged too (ASSIGN never makes a frame exact).
+  - **r8 no-regression DONE (a; Codex ENG-FIX4_2 STATUS DONE; re-tallied by me from `engfix/r8/EF8_*_results.jsonl`):**
+    7 changed records of 312: fixed 201103 (735 + 967 -> 1702 / 1702), 235834 (2230 + 41 -> 2271 / 2271), 001856 (1503 +
+    126 -> 1629 / 1629), 024716 (623 + 1141 -> 1764 / 1764); improved 155749 (flagged 1697 + 67, first 3549 -> unflagged
+    2055 + 89, first 4266); same 103056 (flagged, unchanged) and dev 182050 (v1 finding, 1766 exact both ways); 0
+    regressed, plants 0 missed. OWN_PENDCAST v2 (committed) fires on a subset of v1's records by construction (it adds a
+    condition; undated casts keep their tick), and its re-extraction changes only 001856. **fresh_prep.sh now adds
+    SME_TZ_REACH SME_ZAP_DOT SME_RASCAL_EDGE2 SME_OWN_PENDCAST for FRESH8+.**
+  - **Running: Codex ENG-FIX4_3 (r9, SME_ZD_BLDG)**, ticket `.foreman/scratch/a2/codex/ENG-FIX4_3.md`, pid file
+    `.foreman/scratch/a2/codex/out/ENG-FIX4_3.jsonl.pid`, out `engfix/r9/`. Expected: only 155749 changes, 2055 + 89 ->
+    2144 / 2144. Clean -> SME_ZD_BLDG into fresh_prep.sh.
+  - **RESTART POINT (ENG-FIX4, 10-29 ~08:40 EDT; supersedes the 07:20 one below):** (1) r9: read the final message, re-tally
+    `engfix/r9/EF9_*` yourself, clean -> fresh_prep.sh + SME_ZD_BLDG=1. (2) FRESH8 when >= ~20 Ranked battles after FRESH7's
+    last log (061315): `freeze.py 20261029_0614 FRESH8.tsv`, commit, `fresh_prep.sh FRESH8.tsv engfix/fresh8`, freeze file
+    with BOTH run commands (default = ASSIGN on, plus `SME_HIDDEN_ASSIGN=0`), commit, upload to `/workspace/pilot/fresh8`,
+    run F8_main (on) and F8_off on 32657 CPUs 28-53 (`SME_BANNER_GIVEN=1`, lib 5e8089a4), then `assign_guard.py` and report
+    both. (3) Open: 031310 MoveProbe; 165155 per-frame diff (`cls_ticks` now gives the div frames); 230352@914, 123045,
+    142926.
+  - **(superseded, above) RESTART POINT (ENG-FIX4, 10-29 ~07:20 EDT), in order:**
     1. DONE (r7 clean, above). Codex ENG-FIX4_1 (r7, pid file `.foreman/scratch/a2/codex/out/ENG-FIX4_1.jsonl.pid`): read the final message and
        re-tally `engfix/r7/table_banner.txt` (A vs B) and `table_zapdead.txt` (A vs C): fixed / same / regressed, exact
        deltas, plants missed. Expected: B differs from A only on 004719 (1210 + 570 -> 1780 / 1780); C 021310 1660 + 105 ->
