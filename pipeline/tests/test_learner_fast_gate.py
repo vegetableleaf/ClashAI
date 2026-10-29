@@ -28,7 +28,7 @@ from pipeline.tests import test_learner_fast_accum as ACC       # noqa: E402
 from pipeline.tests.test_rl_royale import TAU, T               # noqa: E402
 
 BASE, VF = ACC.BASE, ACC.VF
-GB = {"weight": "score", "ridge": 0.0}
+GB = {"weight": "score"}                      # ridge default 1e-3 (ridge 0: rare near-singular score-weighted fits on ~50 rows per half blew the variance up x1.7 over 3,000 draws)
 DRAWS = int(os.environ.get("GATE_MC_DRAWS", "300"))
 
 
