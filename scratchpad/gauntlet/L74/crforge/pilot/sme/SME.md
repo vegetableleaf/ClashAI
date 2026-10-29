@@ -2480,7 +2480,9 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
   changed (6 fixed: 160930, 230512 by OWN_NEARDEAD; 164130, 185736, 023839, 031722 by TOMB_HERO; 2 improved), FRESH1 1
   (004256, flagged, same), FRESH2 5 (fixed 091720, 100341, 101857, 110715; 080427 flagged, same), FRESH3 4 (fixed 141254,
   142334, 145600; 142926 254 -> 581); 0 regressions, plants 0 missed. **fresh_prep.sh now sets the four flags (FRESH4+).**
-- **Ground fix 5e8089a4: ALL GATES GREEN (a) -- awaiting the lead's merge / ship window.** Core 2204 / 0 both tables;
+- **2026-10-29: 5e8089a4 SHIPPED (lead accepted): clashbot-main fast-forwarded, `current` -> 5e8089a4 on all six pods
+  (fork/MAIN.md). SME runs from now on use `/workspace/crforge_main/5e8089a4/tickprobe/lib`.**
+- **Ground fix 5e8089a4: ALL GATES GREEN (a).** Core 2204 / 0 both tables;
   determinism 16 / 16 lines identical to F1FIX-3; SME dev 138/138, FRESH1 9/9, FRESH2 40/40, FRESH3 17/17 byte-identical
   to the fe364ceb baselines (plants 0 missed); Clone sweep 0 refusals, counts identical; HF 20k 21 faults (0.105%), the
   only change vs fe364ceb is the FORCE_IS_GROUND fault -> ran. Libs on 30408 / 32657 `/workspace/crforge_main/5e8089a4/`

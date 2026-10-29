@@ -2,7 +2,21 @@
 Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
 
 ## STATUS (keep current)
-- **Branch `clashbot-main` = `fe364ceb2e988d84e726beaf7e45e9ecd147dfec`** (2026-10-28, fast-forward from 624eeb45 =
+- **2026-10-29 SHIPPED (lead's window): `clashbot-main` = `5e8089a4`** (fast-forward from fe364ceb = + ENG-FIX ground:
+  `target_is_ground` answers 1 for FORCE_IS_GROUND alone on a height-0 non-character, a princess tower a Vines hold
+  keeps; FORCE_IS_AIR stays refused; patch `fork/engfix/ground_vs_fe364ceb.patch`). It fixes the closed-loop crash
+  `target_is_ground on PrincessTower_1_2 ... FORCE_IS_GROUND` (P2-OPP2 v1s0 seed 742811).
+  - Gates (a; `fork/engfix/GATES_ground*.txt`): core 2204 / 0 both tables; determinism 16/16 identical; SME dev 138/138,
+    FRESH1 9/9, FRESH2 40/40, FRESH3 17/17 byte-identical to fe364ceb; Clone sweep 0 refusals (counts identical); HF 20k
+    21 faults (0.105%), the only change vs fe364ceb the FORCE_IS_GROUND fault -> ran.
+  - **Default now `5e8089a4`** for SME and for facade / training / re-drive. `ship_main.sh 5e8089a4` to 30408, 32657,
+    33920, 33308, 33553, 33903: sha-checked OK on all six, `current` -> 5e8089a4 on all six; libs
+    `/workspace/crforge_main/5e8089a4/plain/lib` (core `bd1be8f10f00344e`) and `.../tickprobe/lib` (core
+    `a95626e6c6de9c27`). `/workspace/crforge_main/fe364ceb/` stays on every pod.
+  - **Consumer switch:** running jobs pin explicit lib paths and keep fe364ceb until their NEXT start (calibration arms,
+    evals). Same-lib pairing: never compare a fe364ceb run against a 5e8089a4 run (the outcomes differ only where
+    fe364ceb faulted, but the rule holds).
+- Previous: **Branch `clashbot-main` = `fe364ceb2e988d84e726beaf7e45e9ecd147dfec`** (2026-10-28, fast-forward from 624eeb45 =
   + F1FIX-3, one commit; pod 30408, fork `/workspace/f635/crforge_fork`, worktree `/workspace/cfmain/crforge_fork`).
 - **Default for SME AND for facade / training / re-drive: `fe364ceb`.** The HF gate now passes: 22 / 20,000 = 0.11%
   (D1 bar 0.5%): 7 base + 11 Three Musketeers + 4 Monk-deflected enchant copies, both refused by design. All gates pass
