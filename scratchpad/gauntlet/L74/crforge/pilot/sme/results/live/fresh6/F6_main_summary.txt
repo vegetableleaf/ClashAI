@@ -1,0 +1,9 @@
+F6_main (ENG-FIX3, 2026-10-29): strict fresh gate, FRESH6 (list 23af1b7, freeze db4ceb6), pod 32657 gate sme11f, lib 5e8089a4 tickprobe,
+tables 16.635.3, SME_BANNER_GIVEN=1, SME_HIDDEN_ASSIGN off (default). No fix on these matches before this run.
+RNG-free 15, unflagged 12. Exact apart from torn 10 / 12 (one-sided 95% CP lower 0.562); strictly exact 9 / 12 (0.473; 042050 has 93 torn_hidden).
+SME_HIDDEN_ASSIGN=1 on 042050 (the one record with a hidden window): identical (1136 exact + 93 torn_hidden) -> same numbers both ways.
+Plants: 0 missed on all 15.
+Failures (first divergence): 024716@1399 (our princess tower 77 below the SIM = a level-16 Zap's crown-tower damage; untraced),
+031310@3954 (our Knight 1 unit off the SIM's Knight_EV1: body position, untraced).
+Pooled strict-fresh FRESH2-6 (each set scored before any fix on it): 22/28 + 9/13 + 52/61 + 10/12 + 10/12 = 103 / 126 (0.817, one-sided CP lower 0.751).
+D1 (>= 90%) and D2 (lower bound 0.98) NOT met. FRESH6 is dev data from here.

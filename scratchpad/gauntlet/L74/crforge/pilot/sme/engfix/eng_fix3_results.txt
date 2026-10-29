@@ -35,3 +35,9 @@ GW_DONE
 EF3_zd_0 20261029_021310 {'exact': 1660, 'div': 105} 1986 [] missed []
 EF3_zd_1 20261029_021310 {'exact': 1765} None [] missed []
 ZDR_DONE
+## tzp.out (FRESH6 042050 with SME_HIDDEN_ASSIGN=1; FRESH4 235834 control + hand-added opponent Zap on our 19-hp princess tower at R 4610 / 4611)
+EF3_a042 20261029_042050 {'exact': 1136, 'torn_hidden': 93} None [] missed []
+EF3_t235834 20261028_235834 {'exact': 2230, 'div': 41} 4612 [] missed []
+EF3_tz_4610 20261028_235834 {'exact': 2230, 'div': 40} 4612 [] missed []
+EF3_tz_4611 20261028_235834 {'exact': 2271} None [] missed []
+TZP_DONE

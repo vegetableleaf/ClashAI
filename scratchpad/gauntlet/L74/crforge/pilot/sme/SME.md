@@ -2678,7 +2678,47 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
     and the extraction agree (b, untested by a full re-extraction)).
   - **FRESH6 list frozen (23af1b7) before any run:** `fresh/FRESH6.tsv`, 34 Ranked battles, live logs from 02:31 EDT
     10-29 (after FRESH5's last log 02:30; 023025 excluded), battle log to 08:45:47Z, build 160635001.
-  - Codex dispatches (ENG-FIX3): none so far (every run was a 1-2-record job).
+  - **FRESH6 RESULT F6_main (a; strict fresh gate on 5e8089a4 tickprobe, no fix on these matches; list 23af1b7, freeze
+    db4ceb6, `results/live/fresh6/F6_main_*`):** 34 Ranked battles, 0 skips, 15 RNG-free, 12 unflagged: **10 / 12 exact
+    apart from torn (one-sided 95% CP lower 0.562)**, strict 9 / 12 (0.473; 042050 has 93 torn_hidden); plants 0 missed.
+    Run with SME_BANNER_GIVEN=1 (FRESH6 has no hero Goblins press, so it changes nothing here) and SME_HIDDEN_ASSIGN off
+    (default); **ASSIGN on gives the same numbers** (042050, the one hidden-window record: 1136 exact + 93 torn_hidden
+    both ways). SME_ZAP_DEAD would fire 0 times on FRESH6 (census). Failures: 024716@1399 (our princess tower 77 below
+    the SIM = exactly a level-16 Zap's crown-tower damage; untraced), 031310@3954 (our Knight 1 unit off the SIM's
+    Knight_EV1; body position, untraced). **Pooled strict-fresh FRESH2-6: 103 / 126 (0.817, CP lower 0.751).** D1 / D2
+    NOT met. FRESH6 is dev data from here.
+  - **FRESH4 235834@4612 = an unseen opponent Zap on our 19-hp princess tower (a, probe).** The tower leaves the list
+    between 4610 and 4612 with no opponent projectile / area / play near; every opponent body (Witch, Skeletons) targets
+    it from >= ~10,900 units and loses its target at 4612. SME_TOWER_ZAP saw it and blocked it as `enemy_body`
+    (TZ_BODY = 12000, sized for X-Bow / Mortar reach; this deck has neither). Hand-added side-0 Zap at the tower's centre:
+    R 4611 -> 2271 / 2271 exact (control 2230 + 41 div; R 4610 -> 40 div). Fix (not built): replace the flat TZ_BODY
+    by each opponent body's own reach (table Range + its CollisionRadius + the tower's + slack; a projectile is already
+    the `enemy_projectile` check), behind a new off-by-default flag, then census every TOWER_ZAP `enemy_body` block on
+    dev + FRESH1-6 (`.foreman/scratch/engfix3/tz_look.py` prints one record's fired / blocked rows).
+  - **FRESH4 165155@4811 = a reader double-labelled tick (a).** Two raw samples carry tick 4811 (t_dev .6406 and .7408,
+    100 ms apart): the first has no Skeletons and elixir 10.0, the second has our 3 Skeletons at the SIM's points (2 of 3
+    exact, 1 off by 2 / 3 units) and elixir 9.31 (SIM 9.05). live_frames keeps the first sample, the fitter gives up at
+    4811 (round 8) and the rest of the match is unrepaired (706 div to 6232). Census (`.foreman/scratch/engfix3/
+    dup_census.py`, dev + FRESH1-5 scored logs): 1,062 repeated tick labels, only 4 with different content (this one and
+    142926@582 / 584 / 587, the client-lag match). Neither sample equals the SIM, so this needs a comparator decision (e.g.
+    a `torn_dup` class for a tick whose two reads differ: fails strict, passes apart-from-torn, lets the fitter go on):
+    a comparator rule, FOR THE LEAD / OWNER, not built.
+  - **RESTART POINT (ENG-FIX3, 10-29 ~05:35 EDT), in order:**
+    1. 235834: build the per-body TOWER_ZAP reach (above) as SME_TZ_REACH (mech_rules.tower_zaps, off by default),
+       planted checks in the style of `engfix/zd_test.py`, census of every TOWER_ZAP block on dev + FRESH1-6, then the
+       no-regression on the changed records (pod 32657, gate `/workspace/pilot/f1fix/runH.sh`, lib 5e8089a4; regen as
+       `.foreman/scratch/engfix3/zd/regen.sh` with the FRESH6 flags).
+    2. SME_ZAP_DEAD into fresh_prep.sh (FRESH7+) after the re-extraction field check (dev / FRESH1-5 inputs with and
+       without it: only 021310 may change). Codex-sized (laptop re-extraction of 6 sets x 2).
+    3. FRESH6 failures 024716@1399 (a Zap-sized tower drop: check unseen_zaps / ZAP_ADD / TOWER_ZAP rows) and 031310@3954.
+    4. FRESH4 open (most tractable first): 201103@1606 (our Rascals reader-only), 001856@3159 (opponent elixir 2.0
+       off), 230352@914 (Golden Knight 118 / 124 off), 123045 (Witch, body position), 142926 residue (client lag);
+       165155 waits on the lead's double-label decision.
+    5. FRESH7 when >= ~20 Ranked battles exist after FRESH6's last log (044249 starts 04:42 EDT 10-29: cut 20261029_0443),
+       same procedure (freeze.py, commit, fresh_prep.sh, freeze file + commit, `runH.sh F7_main ... SME_LIB=...5e8089a4
+       ... SME_BANNER_GIVEN=1` on 32657 CPUs 28-53, ASSIGN both ways on hidden-window records).
+    Pod state: nothing of mine running on 32657. Gate sme11f backups: `sme_live.py.pre_assign`, `*.pre_banner`.
+  - Codex dispatches (ENG-FIX3): none (every run was a 1-2-record job or a 15-record gate).
 - **(superseded by ENG-FIX2 above) RESTART POINT (10-29):** done = Codex ENG-FIX_5 (`.foreman/scratch/a2/codex/ENG-FIX_5.md`, out
   `.foreman/scratch/a2/codex/out/ENG-FIX_5.jsonl`, results `engfix/r5/`): BODYPT OFF vs ON on the changed matches of
   dev / FRESH1-4, lib 5e8089a4: DONE, 0 regressions, flag added to fresh_prep.sh.
