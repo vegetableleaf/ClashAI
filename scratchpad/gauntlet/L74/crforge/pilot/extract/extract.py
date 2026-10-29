@@ -294,6 +294,28 @@ def crforge_casts(path, plays, sides, my=None, fx=None):
     return out
 
 
+# ENG-FIX2 (SME_HIDDEN_CHILD=1, off by default): the reader lists a death-spawned body under its parent's card id (FRESH4
+# 210016: two Golemites as card 26000009 Golem, max hp 1827; the Golem row's own unit is far bigger), so reader_hidden
+# named a hidden Golemite 'Golem' and SME's hidden_ok, which takes out of the sim one row of that exact name, found none:
+# 2068-2154 scored div although our tower's shot kept homing on the body at the SIM Golemite's points (2070 5470,8831,
+# 2072 5424,8791). With the flag, a hidden body whose max hp is no level's own unit of its card row (unit_hp.tsv) takes the
+# row's DeathSpawnCharacter (characters table). ponytail: one generation of death spawn (ElixirGolem1 -> 2 only).
+HIDDEN_CHILD = os.environ.get('SME_HIDDEN_CHILD') == '1'
+_UHP, _DEATH = None, None
+
+
+def hidden_child(name, max_hp):
+    global _UHP, _DEATH
+    if _UHP is None:
+        _UHP = unit_hp_table()
+        _DEATH = {n: r['columns'].get('DeathSpawnCharacter')
+                  for n, r in json.load(open(TABLES / 'characters.json', encoding='utf-8'))['rows'].items()}
+    own = _UHP.get(name)
+    if own is None or any(max_hp in hs for hs in own.values()):
+        return name
+    return _DEATH.get(name) or name
+
+
 def reader_hidden(path, cat):
     """A2c round 8 (SME_HIDDEN=1): bodies that leave the reader's ents list while a reader projectile still targets their
     address, i.e. the game object lives on unlisted. Census on the 138 matches (round 8): exactly 2, both a hero Mini
@@ -346,6 +368,8 @@ def reader_hidden(path, cat):
             continue
         c = cat.get(e[3]) or {}
         name = c.get('hero_character') if e[3] == c.get('hero_form_id') else c.get('summon_character')
+        if HIDDEN_CHILD and name:
+            name = hidden_child(name, e[5])
         track, kept, pt0 = {}, [], (lt, e[1], e[2])
         for t in ticks:
             pts = {(x, y) for o, x, y in by_t[t] if o} or {(x, y) for o, x, y in by_t[t]}

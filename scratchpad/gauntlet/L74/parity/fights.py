@@ -96,6 +96,15 @@ OWN_NEARDEAD = os.environ.get('SME_OWN_NEARDEAD', '0') == '1'   # ENG-FIX, deplo
 OWN_BODYPT = os.environ.get('SME_OWN_BODYPT', '0') == '1'       # ENG-FIX, deployments' own-tap pairing (comment there)
 OWN_BODYPT_D = 750                                               # units: the Knight back-row clamp moves 500
 NEAR_BIGGER = os.environ.get('SME_NEAR_BIGGER', '0') == '1'     # ENG-FIX, deployments' near list (comment there)
+# ENG-FIX2 (SME_SPELL_KING=1, off by default): a king-thrown projectile spell is dated by how far it flew. Its first two
+# sightings give the speed v per tick; if the first lies on the line king -> aim (<= 50 units off) and k = |P1 - king| / v
+# is whole (+-0.05), crforge's run tick is first - k (the SIM's shot is k steps from the king on frame first). The window
+# [lo, hi] is kept; only the default tick moves, and only inside it. Census FRESH4 (engfix/spellk_*.tsv): Fireball,
+# Rocket, Snowball, Goblin Barrel 285 / 285 king-sourced shots on the line with k whole; 138 / 138 exactness-validated
+# fitted runs equal first - k, the mid-gap default was wrong on 72. 151109@925: a Snowball and our Log first seen on one
+# frame, both one tick early; the repair moves one command at a time, so neither move alone moved the first div.
+SPELL_KING = os.environ.get('SME_SPELL_KING', '0') == '1'
+SPELL_KING_OFF, SPELL_KING_FRAC = 50, .05
 OWN_SPAWN_ERR = 0.75
 OWN_SPAWN_CARDS = {'Knight', 'Xbow', 'Tesla', 'IceWizard'}
 DIGGERS = {'Miner', 'GoblinDrill'}  # tunnel in: seen active on their way, deploying where they surface (Knight etc. can show
@@ -420,6 +429,21 @@ def elixir_wait(tick, elixir, cost):
     return (cost - elixir) * TICKS_PER_ELIXIR / (1 if tick < 2400 else 2 if tick < 4800 else 3)
 
 
+def king_flight(r):
+    """SME_SPELL_KING: whole ticks a projectile flew from its side's king (first sighting r['pos'], second r['pos2']),
+    or None: not king-sourced, no second sighting, off the king -> aim line, or not a whole number of steps."""
+    if not str(r.get('src') or '').endswith('K') or 'pos2' not in r:
+        return None
+    (x1, y1), (t2, x2, y2) = r['pos'], r['pos2']
+    v = math.hypot(x2 - x1, y2 - y1) / (t2 - r['first'])
+    kx, ky = min((TOWER_SLOTS[0], TOWER_SLOTS[3]), key=lambda K: math.hypot(x1 - K[0], y1 - K[1]))  # <= 3 steps out
+    ax, ay = r['x'] - kx, r['y'] - ky
+    if v <= 0 or abs(ax * (y1 - ky) - ay * (x1 - kx)) > SPELL_KING_OFF * (math.hypot(ax, ay) or 1):
+        return None
+    k = math.hypot(x1 - kx, y1 - ky) / v
+    return round(k) if abs(k - round(k)) <= SPELL_KING_FRAC else None
+
+
 def seen_casts(m, catalog, life=None):
     """Ext logs: spells (both sides) from projectile / effect rows, and hero ability casts (both sides) from state-10
     bursts or, for an instant-cast hero, its ability effect row. Every tick is the SIM's play/press tick: the SIM
@@ -438,7 +462,9 @@ def seen_casts(m, catalog, life=None):
     for t in ticks:
         for p in m['proj'].get(t, ()):
             if kind(p[3]) == 'spell':
-                r = shots.setdefault(p[6], dict(first=t, side=p[0], cid=p[3], x=p[4], y=p[5]))
+                r = shots.setdefault(p[6], dict(first=t, side=p[0], cid=p[3], x=p[4], y=p[5], pos=(p[1], p[2]), src=p[7]))
+                if t > r['first'] and 'pos2' not in r:
+                    r['pos2'] = (t, p[1], p[2])
                 r['last'] = t
         for e in m['fx'].get(t, ()):
             r = fxs.setdefault(e[6], dict(first=t, side=e[0], cid=e[3], x=e[1], y=e[2], rem=e[4]))
@@ -459,6 +485,12 @@ def seen_casts(m, catalog, life=None):
         out.append(dict(gap(r['first']), kind='play', side=r['side'], cid=r['cid'], name=name(r['cid']), form=0,
                         x=r['x'], y=r['y'], n=0, source='spell_seen', spell_spawned=False, seen=r['first'], end=r['last'],
                         aims=[(r['x'], r['y'])]))
+        if SPELL_KING:
+            out[-1]['king_k'] = king_flight(r)
+    for c in out:                                  # SME_SPELL_KING: one-shot casts only (Arrows' shots fly off the line)
+        k = c.pop('king_k', None)
+        if k is not None and len(c['aims']) == 1 and c['lo'] <= c['seen'] - k <= c['hi']:
+            c['tick'], c['king_dated'] = c['seen'] - k, k
     for r in sorted(fxs.values(), key=lambda r: r['first']):
         if kind(r['cid']) != 'spell' or any(c['side'] == r['side'] and c['cid'] == r['cid'] and c['seen'] <= r['first'] <= c['end'] + 20
                                             for c in out):
