@@ -1,0 +1,30 @@
+# ENG-FIX4 pod 32657 results (gate /workspace/pilot/f1fix/runH.sh = sme11f, lib /workspace/crforge_main/5e8089a4/tickprobe/lib,
+# tables 16.635.3; counts, first div, plants missed; probe inputs and scripts in .foreman/scratch/engfix4/ (local), pod /workspace/pilot/engfix4/)
+## FRESH6 024716@1399: hand-added side-0 Zap at (14480, 24740), R = tick (SME_BANNER_GIVEN=1)
+EF4_z716_ctl  {'exact': 623, 'div': 1141} 1399 missed []   (tower 77 / Knight 306 below the SIM)
+EF4_z716_1396 {'exact': 1367, 'div': 397} 1397 missed []   (one tick early)
+EF4_z716_1397 {'exact': 1764} None missed []
+EF4_z716_1398 {'exact': 1764} None missed []
+## FRESH4 201103@1606: the opponent Rascals play (1605) moved from the boy's first point (9581, 29893) (SME_BANNER_GIVEN=1)
+EF4_r103_9500_31000 {'exact': 1702} None missed []
+EF4_r103_9500_31500 {'exact': 1702} None missed []
+EF4_r103_9500_31750 {'exact': 1702} None missed []
+EF4_r103b_9581_31000 {'exact': 1702} None missed []
+## FRESH4 001856@3159 (our elixir 2.0 above the SIM): our cast_seen IceWizard ability at 3157 dropped
+EF4_d856_ctl  {'exact': 1503, 'div': 126} 3159 missed []
+EF4_d856_noab {'exact': 1629} None missed []
+EF4_on_856 (extracted with SME_OWN_PENDCAST=1, FRESH6 prep flags; flag off = r7 OFF byte for byte) [] {"exact": 1629} None missed []
+## Extracted with the new flags (FRESH6 prep flags + SME_TZ_REACH=1 SME_ZAP_DOT=1 SME_RASCAL_EDGE2=1; .foreman/scratch/engfix4/ex/;
+## flags off: all 6 records byte-identical to engfix/r7/<set>_off_all.jsonl), no driver flag
+EF4_on_f2 103056 ['0:opp_no_fitting_deal:0'] {'exact': 116, 'div': 1644} 386 missed []   (point (8337, 1000) still refused, cmd3)
+EF4_on_f4 155749 [] {'exact': 2055, 'div': 89} 4266 missed []   (was flagged, 1697 + 67, first 3549; the inferred Zap makes the deal fit)
+EF4_on_f4 201103 [] {'exact': 1702} None missed []                (was 735 + 967, first 1606)
+EF4_on_f4 235834 [] {'exact': 2271} None missed []                (was 2230 + 41, first 4612)
+EF4_on_f6 024716 [] {"exact": 1764} None missed []                (was 623 + 1141, first 1399; zap_add at (14459, 24779) R 1397)
+## FRESH4 165155@4811: our Skeletons play (own_tap 4810) re-dated (no driver flag)
+EF4_t155_ctl  {'exact': 2319, 'div': 706} 4811 missed []
+EF4_t155_4805 {'exact': 2317, 'div': 708} 4807 missed []
+EF4_t155_4806 {'exact': 2317, 'div': 708} 4807 missed []
+## FRESH2 103056@386 (flagged opp_no_fitting_deal): side-0 Rascals play (384) at other points: refused (code 9) at every one
+EF4_r056_8337_500 / 8337_999 / 8500_500: {'exact': 116, 'div': 1644} 386, refused cmd3 384 code 9
+EF4_t155_4808 {'exact': 2318, 'div': 707} 4809 missed []

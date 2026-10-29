@@ -2703,7 +2703,7 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
     142926@582 / 584 / 587, the client-lag match). Neither sample equals the SIM, so this needs a comparator decision (e.g.
     a `torn_dup` class for a tick whose two reads differ: fails strict, passes apart-from-torn, lets the fitter go on):
     a comparator rule, FOR THE LEAD / OWNER, not built.
-  - **RESTART POINT (ENG-FIX3, 10-29 ~05:35 EDT), in order:**
+  - **(taken over by ENG-FIX4, below) RESTART POINT (ENG-FIX3, 10-29 ~05:35 EDT), in order:**
     1. 235834: build the per-body TOWER_ZAP reach (above) as SME_TZ_REACH (mech_rules.tower_zaps, off by default),
        planted checks in the style of `engfix/zd_test.py`, census of every TOWER_ZAP block on dev + FRESH1-6, then the
        no-regression on the changed records (pod 32657, gate `/workspace/pilot/f1fix/runH.sh`, lib 5e8089a4; regen as
@@ -2719,6 +2719,81 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
        ... SME_BANNER_GIVEN=1` on 32657 CPUs 28-53, ASSIGN both ways on hidden-window records).
     Pod state: nothing of mine running on 32657. Gate sme11f backups: `sme_live.py.pre_assign`, `*.pre_banner`.
   - Codex dispatches (ENG-FIX3): none (every run was a 1-2-record job or a 15-record gate).
+- **ENG-FIX4 (10-29, from ENG-FIX3's restart point; evidence `engfix/eng_fix4_results.txt`, pod 32657 `/workspace/pilot/engfix4/`,
+  laptop scratch `.foreman/scratch/engfix4/`):** lead decisions: 165155 gets NO scoring-rule change (traced as an ordinary
+  divergence, below); SME_BANNER_GIVEN accepted pending the full no-regression batch. Four new extractor rules, all OFF by
+  default, each with planted checks, flag-off byte identity on the re-extracted records (= `engfix/r7/<set>_off_all.jsonl`),
+  pyflakes 0 warnings (laptop venv `.foreman/scratch/engfix4/pfvenv`):
+  - **SME_TZ_REACH (mech_rules.tower_zaps names= / tables=, tz_reach, tz_own_reach; hook extract.match) -> FRESH4 235834 (a).**
+    enemy_body uses each opponent body's own reach (table Range + AreaDamageRadius + its CollisionRadius + 1000 tower +
+    1000 slack; no row / no Range / MultipleTargets / MultipleProjectiles keep the flat 12,000), and own_body_in_reach uses
+    crforge's Zap circle test (AreaEffectEntity.filterListed: centre strictly within ZAP_R + CollisionRadius; buildings /
+    unknown keep TZ_OWN). With only the enemy_body change 235834 was still blocked (our hero IW 3,150 / 3,032 from the
+    tower's centre, inside the flat TZ_OWN 3,500, outside 2,500 + 500). Census (`engfix/tzr_census.py` ->
+    `engfix/tzr_census.txt`, 312 scored records dev + FRESH1-6): 4 candidates change: 235834 -> fired R 4611; FRESH4 155749
+    -> fired R 3548 (a 77-hp tower, the Hog Rider 7,955 away hitting our Tesla); dev 090406 and FRESH5 022148 change only
+    their block reason. Planted `engfix/tzr_test.py` ok 10 (must-not-fire: Skeleton at 2,900, a Mortar row at 13,500, an
+    unknown row and a MultipleTargets row at 11,000, our IW at 2,990, our building at 3,400). SME: 235834 2230 + 41 div
+    (first 4612) -> **2271 / 2271 exact**; 155749 was flagged (1697 + 67, first 3549 = the tower) -> **unflagged** (the
+    inferred Zap makes the opponent cycle fit) 2055 + 89 div, first 4266 (a Witch / Skeletons divergence, not traced).
+  - **SME_ZAP_DOT (mech_rules.zap_is_cast curse_level=, CURSE_DMG) -> FRESH6 024716@1399 = an unseen Zap (a, extractor).**
+    The opponent's ZapFreeze group c 1398 holds our Knight (drop 363 = 306 + 57) and our tower (93 = 77 + 16), both with
+    GoblinCurseDamage (one level-16 curse hit: 57 / 16, the SIM's own drop there without a Zap). zap_is_cast rejected the
+    group; unseen_zaps needs exact drops. Probe (Zap at (14480, 24740)): R 1397 / 1398 -> 1764 / 1764 exact, R 1396 ->
+    first div 1397, control 623 + 1141. Rule: a holder with GoblinCurseDamage may take the Zap + exactly one curse hit
+    (level 16 only). Census (`engfix/zg_census.txt`): 422 rejected unexplained groups, 8 with no Electro near, 1 with the
+    curse buff (024716). Planted `engfix/zdot_test.py` ok 14 (incl. FRESH3 133528@3060 and FRESH4 235834@4393 real groups
+    must stay rejected; window edges 304 / 320 / tower 79 / 59; no buff; Electro near). SME (extracted): **1764 / 1764**.
+  - **SME_RASCAL_EDGE2 (sme_live.rascals_back) -> FRESH4 201103@1606 (a, extractor).** The girls first stand at the outer
+    clamp (y 31750), not the back edge 31000 that SME_RASCAL7 tests, so the play kept the boy's first point (9581, 29893),
+    inside the king's tiles; crforge refused it (cmd17 code 0) and the 3 Rascals were reader-only. Probe: y 31000 / 31500 /
+    31750 (x 9500) and (9581, 31000) -> 1702 / 1702 exact. Census (`engfix/rascal_census.txt`, 95 Rascals plays): girls at
+    the clamp in 2 plays, 201103 and FRESH2 103056@384 (side 0, flagged; crforge refuses that play with code 9 at every
+    point tried, so the side-0 mirror is untested in the SIM, b). SME (extracted): 735 + 967 div -> **1702 / 1702**.
+  - **SME_OWN_PENDCAST (sme_live.own_pend_cast, filter in extract.crforge_casts) -> FRESH4 001856@3159 (a, extractor).** Our
+    elixir 2.0 above the SIM from 3159: we pressed our hero IW at 2916 (own_press, paid, no cast seen after it), played a
+    second hero IW at 3145, and the reader's cast at 3157 (the match's only IceWizardHero_IceCube at 3163) has no elixir
+    drop; the extracted cast_seen press was a second paid command. Dropping it: 1503 + 126 -> 1629 / 1629 exact (crforge
+    makes the same cube itself). Rule: our cast_seen after an unresolved own_press of the card, with a play of the card
+    between them and no drop >= 1.5 in [t-6, t+6]. Census (`engfix/pend_census.txt`): 30 of 247 own casts follow an
+    unresolved press, 6 with a play between, 5 of those with a ~1.93 drop (kept), 1 fires (001856). Planted
+    `engfix/own_rules_test.py` ok 11 (both rules). SME (extracted): **1629 / 1629**.
+  - **FRESH6 031310@3954 (our evolved Knight 1 unit off in x) = engine body position (b; not fixed).** Deploy and the first
+    walking step are exact through 3952 (Knight and the opponent Mega Knight start moving the same tick); the 1 unit
+    appears on the second step (3953-3954) while the Mega Knight walks; the fitter tried 24 variants at 3954 and none moved
+    it (a). Plausible cause (b): the order of per-entity updates when the Knight's aim is read (the Knight's step has a
+    +15 / tick sideways part, so it aims at a path point, not straight at the Mega Knight). Next: a MoveProbe trace (fork
+    patch 0003) of the Knight at 3952-3954; any fork change goes red -> green on a branch and is REPORTED before merge.
+  - **FRESH4 165155@4811 (lead: no scoring change) traced (a unless marked):** the two reads labelled 4811 differ; the
+    second (and every later read) carries our elixir 9.3076, the SIM 9.0537 (+0.2539). 9.3076 = e(4800) 9.7169 + 11 x the
+    3x rate 0.0537 - 1 (the Skeletons): the game paid from a bank of 10.3076, above the 10 cap, while the reader showed
+    10.0 at 4807 / 4809 / 4811a. Census (`.foreman/scratch/engfix4/cap_census.txt`): of 329 plays made at a displayed
+    10.0, only this one fits an uncapped bank; the two other plays soon after a 2x -> 3x switch (dev 141505@4832, 230512
+    @4844) are capped. Re-dating the play does not help (4805 / 4806 -> first div 4807, 4808 -> 4809: the game's
+    Skeletons first appear on the 4811 second read). Open (b): a game-side cap exception or a reader artefact in that
+    stretch; next measurement = the per-frame diff of the control (KEEP=1) to see whether, from 4813 on, only the +0.25
+    elixir differs until the next cap.
+  - **Running: Codex ENG-FIX4_1** (ticket `.foreman/scratch/a2/codex/ENG-FIX4_1.md`, medium, pid file
+    `.foreman/scratch/a2/codex/out/ENG-FIX4_1.jsonl.pid`, out `engfix/r7/`): ZAP_DEAD + BANNER_GIVEN no-regression on
+    dev + FRESH1-6, lib 5e8089a4: A = OFF inputs, B = OFF + SME_BANNER_GIVEN=1 (all 312 records), C = ZAP_DEAD ON changed
+    records. Done so far (a, Codex claims checked): OFF rebuilds = r6 ON except exactly 101018 / 171948 (NEAR_BIGGER2),
+    fresh6 OFF = frozen 20ac8e69; ON field gate: exactly 1 changed record (021310, plays + zap_dead). Pod runs on 32657
+    CPUs 28-53 (dev A done; ~2-3 h total).
+  - **RESTART POINT (ENG-FIX4, 10-29 ~07:00 EDT), in order:**
+    1. Read Codex ENG-FIX4_1's final message (`.foreman/scratch/a2/codex/out/ENG-FIX4_1.jsonl`) and re-tally
+       `engfix/r7/table_banner.txt` (A vs B) and `table_zapdead.txt` (A vs C) yourself: fixed / same / regressed, exact
+       deltas, plants missed. Expected: B differs from A only on 004719 (1210 + 570 -> 1780 / 1780); C 021310 1660 + 105 ->
+       1765 / 1765. If clean: SME_ZAP_DEAD=1 joins fresh_prep.sh (both flag lines) for FRESH7+, BANNER_GIVEN stays.
+    2. A second no-regression batch (Codex, same machinery, r8) for SME_TZ_REACH SME_ZAP_DOT SME_RASCAL_EDGE2
+       SME_OWN_PENDCAST on dev + FRESH1-6 (TZ_REACH acts only with TOWER_ZAP, i.e. fresh2-6). Expected changed records:
+       235834, 155749 (TZ_REACH), 024716 (ZAP_DOT), 201103 + 103056 (RASCAL_EDGE2), 001856 (OWN_PENDCAST); any other
+       change is a finding. Clean -> fresh_prep.sh for FRESH8+ (not FRESH7 if FRESH7 is prepped first).
+    3. FRESH7: 18 battles after the 04:43 cut at 06:15 EDT (battle log to 10:02Z); freeze when >= 20:
+       `icebow/.venv/Scripts/python.exe -I fresh/freeze.py 20261029_0443 FRESH7.tsv`, commit, fresh_prep.sh (with
+       ZAP_DEAD if step 1 is clean), FRESH7_FREEZE.txt + commit, then `runH.sh F7_main ... SME_LIB=.../5e8089a4/tickprobe/lib
+       SME_BANNER_GIVEN=1` on 32657 CPUs 28-53 AFTER Codex's runs end; hidden-window records both ways (ASSIGN off default).
+    4. Open: 031310 MoveProbe; 165155 per-frame diff; 155749@4266; FRESH4 230352@914 (Golden Knight 118 / 124), 123045
+       (Witch), 142926 (client lag).
 - **(superseded by ENG-FIX2 above) RESTART POINT (10-29):** done = Codex ENG-FIX_5 (`.foreman/scratch/a2/codex/ENG-FIX_5.md`, out
   `.foreman/scratch/a2/codex/out/ENG-FIX_5.jsonl`, results `engfix/r5/`): BODYPT OFF vs ON on the changed matches of
   dev / FRESH1-4, lib 5e8089a4: DONE, 0 regressions, flag added to fresh_prep.sh.

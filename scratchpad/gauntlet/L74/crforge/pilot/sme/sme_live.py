@@ -445,6 +445,15 @@ def late_reclass(plan, frames, me, an, workdir):
 
 RASCAL7 = int(os.environ.get('SME_RASCAL7', '0'))  # round 7.4
 RASCALS_CARD = 26000053
+# ENG-FIX4 (SME_RASCAL_EDGE2=1, off by default): rascals_back also takes girls at the arena's outer clamp (y 31750 for
+#   side 1, 250 for side 0), not only at the back edge. FRESH4 201103@1605: the girls first stand at (8277 / 10723, 31750),
+#   the boy at (9581, 29893) inside the king tower's tiles; fights' point is the boy's, crforge refuses it (cmd17) and the
+#   three Rascals are reader-only from 1606 (first div). Probe (pod 32657, 5e8089a4): the point at y 31000, 31500 or 31750
+#   (x 9500, and the rule's x 9581 at 31000) makes the match 1702 / 1702 exact. Census (dev + FRESH1-6, 95 Rascals plays,
+#   `engfix/rascal_census.txt`): girls at the clamp in 2 plays, 201103@1605 and FRESH2 103056@384
+#   (side 0, girls at y 250; flagged opp_no_fitting_deal: crforge refuses that play with code 9 at every point tried,
+#   (8337, 1981 / 1000 / 999 / 500) and (8500, 500), so the side-0 clamp is untested in the SIM).
+RASCAL_EDGE2 = int(os.environ.get('SME_RASCAL_EDGE2', '0'))
 
 
 def rascals_back(p, frames):
@@ -456,10 +465,37 @@ def rascals_back(p, frames):
         return p
     edge = 31000 if p['side'] == 1 else 1000
     for t in sorted(t for t in frames if p['tick'] < t <= p['tick'] + 8):
-        es = [e for e in frames[t]['E'] if e[0] == p['side'] and e[3] == RASCALS_CARD and e[2] == edge]
+        es = [e for e in frames[t]['E'] if e[0] == p['side'] and e[3] == RASCALS_CARD and (e[2] == edge or RASCAL_EDGE2 and e[2] == (31750 if p['side'] == 1 else 250))]
         if any(abs(abs(a[1] - b[1]) - 2446) <= 4 and abs((a[1] + b[1]) / 2 - p['x']) <= 600 for a in es for b in es):
             return p if p['y'] == edge else dict(p, y=edge, dated=(p.get('dated') or '') + 'rascals_back')
     return p
+
+
+OWN_PENDCAST = int(os.environ.get('SME_OWN_PENDCAST', '0'))   # ENG-FIX4
+
+
+def own_pend_cast(p, plays, my, frames):
+    """ENG-FIX4 (SME_OWN_PENDCAST=1, off by default): our cast_seen ability that is the delayed cast of an earlier logged
+    press, with a newer hero of the card on the field. FRESH4 001856: we press our hero Ice Wizard at 2916 (own_press,
+    paid; no cast seen after it), play a second hero Ice Wizard at 3145, and the reader shows a cast at 3157 (the only
+    IceWizardHero_IceCube of the match appears at 3163) with no elixir drop (our elixir rises 4.39 -> 5.03 over 3147-3165,
+    3x rate). The extracted cast_seen press at 3157 is a second paid command: crforge charges it to the new hero (our elixir
+    2.0 below the game from 3159, first div). Without it crforge makes the same cube itself and the match is 1629 / 1629
+    exact (probe; with it 1503 + 126 div). Rule: drop our cast_seen ability when the last earlier ability of that card on
+    our side is an own_press with no cast since, we played that card between the press and the cast, and our elixir
+    drops < 1.5 on every frame pair in [t - 6, t + 6]. Census (`engfix/pend_census.txt`, dev + FRESH1-6 r7 OFF inputs):
+    30 of 247 own cast_seen abilities follow an unresolved press; 6 of those have a play of the card between them, 5 with
+    a ~1.93 drop (a press missing from the tap log, kept) and 1 without: 001856@3157."""
+    if not OWN_PENDCAST or p['kind'] != 'ability' or p.get('source') != 'cast_seen' or p['side'] != my:
+        return False
+    ab = [q for q in plays if q['kind'] == 'ability' and q['side'] == my and q['card'] == p['card'] and q['tick'] < p['tick']]
+    if not ab or max(ab, key=lambda q: q['tick']).get('source') != 'own_press':
+        return False
+    t0 = max(q['tick'] for q in ab)
+    if not any(q['kind'] == 'play' and q['side'] == my and q['card'] == p['card'] and t0 < q['tick'] < p['tick'] for q in plays):
+        return False
+    el = [frames[t]['el'] for t in sorted(frames) if p['tick'] - 6 <= t <= p['tick'] + 6]
+    return all(a - b < 15000 for a, b in zip(el, el[1:]))
 
 
 GOLEM7 = int(os.environ.get('SME_GOLEM7', '0'))  # round 7.2

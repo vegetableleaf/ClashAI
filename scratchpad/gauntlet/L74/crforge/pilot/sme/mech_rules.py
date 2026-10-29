@@ -244,17 +244,38 @@ def zap_groups(path):
     return out
 
 
-def zap_is_cast(g, level):
-    """True when the group's evidence is a Zap of this level (SME_ZAP_ADD)."""
+# ENG-FIX4 (SME_ZAP_DOT=1, off by default): a ZapFreeze holder that also holds the Goblin Curse's damage buff may take one
+#   curse hit in the same frame gap as the Zap. FRESH6 024716@1399: the opponent's group (c 1398, no Electro near) holds
+#   our Knight (drop 363 = 306 + 57) and our princess tower (93 = 77 + 16), both with GoblinCurseDamage (character_buffs:
+#   DamagePerSecond 14 / CrownTowerDamagePerHit 4 at base, HitFrequency 1000; 57 / 16 at level 16, the SIM's own curse
+#   hit at 1399 without a Zap: Knight -57, tower -16); zap_is_cast rejected it and no Zap was replayed (first div 1399).
+#   A hand-added Zap at (14480, 24740), R 1397 or 1398, makes the match 1764 / 1764 exact (R 1396: first div 1397).
+#   Rule: such a holder's drop may be the Zap's (as below) plus exactly one curse hit of CURSE_DMG at the opponent's
+#   Goblin Curse level (troop / crown tower); a level not in CURSE_DMG gets no allowance. Census (dev + FRESH1-6 scored
+#   logs, `engfix/zg_census.txt`): of 422 rejected groups no extracted Zap explains, 8 have no Electro
+#   body near and 1 holds GoblinCurseDamage (024716). ponytail: one curse hit, level 16 only; stacked curses or another
+#   damage-over-time buff would need their own allowance.
+ZAP_DOT = int(os.environ.get('SME_ZAP_DOT', '0'))
+CURSE_DMG = {16: (57, 16)}   # (troop, crown tower) per Goblin Curse hit
+
+
+def zap_is_cast(g, level, curse_level=None):
+    """True when the group's evidence is a Zap of this level (SME_ZAP_ADD). curse_level: the caster's Goblin Curse level
+    (SME_ZAP_DOT), None = no curse allowance."""
     import math
     zt, zc = ZAP_DMG.get(level, (None, None))
     if zt is None or not g['hits']:
         return False
     ok = 0
+    ct, cc = CURSE_DMG.get(curse_level, (None, None)) if ZAP_DOT else (None, None)
     for h in g['hits'].values():
         if h['drop'] is None or h['name'].endswith('FloatingCube') or any('Fortify' in b for b in h['buffs']):
             continue   # no hp of its own (hero IW cube) / damage reduced (evolved Knight)
-        if not (abs(h['drop'] - zc) <= 1 if h['name'] in ('KingTower', 'PrincessTower') else zt - 1 <= h['drop'] <= zt + 13):
+        tower = h['name'] in ('KingTower', 'PrincessTower')
+        d = h['drop']
+        if ct is not None and 'GoblinCurseDamage' in h['buffs']:   # SME_ZAP_DOT: one curse hit in the same gap is allowed
+            d -= (cc if tower else ct) if not (abs(d - zc) <= 1 if tower else zt - 1 <= d <= zt + 13) else 0
+        if not (abs(d - zc) <= 1 if tower else zt - 1 <= d <= zt + 13):
             return False
         ok += 1
     return ok > 0 and not any(math.hypot(x - h['x'], y - h['y']) <= ELECTRO_D for x, y in g['electro'] for h in g['hits'].values())
@@ -312,7 +333,7 @@ def zap_buffs(path, plays, sides, stats, log=None):
                     log.append(('zap_point', s, p['tick'], (p['x'], p['y']), xy))
                 plays[i] = dict(p, x=xy[0], y=xy[1], tile=[xy[0] // 1000, xy[1] // 1000],
                                 mech=(p.get('mech') + '+' if p.get('mech') else '') + 'zap_point')
-        elif not near and ZAP_ADD and zap_is_cast(g, level):
+        elif not near and ZAP_ADD and zap_is_cast(g, level, sides[s]['levels'][deck[s].index('GoblinCurse')] if 'GoblinCurse' in deck[s] else None):
             xy = zap_point(g, level, stats)
             if xy is None:
                 continue
@@ -349,6 +370,42 @@ TOWER_PTS = set(KINGS) | {(x, y) for x in (3500, 14500) for y in (6500, 25500)} 
 TZ_TIEBREAK = 6000   # after 5:00 of game time: the overtime-end tie-break removes the lowest tower with nothing near
 #   (FRESH1 001302@6167 and 003008@6152, both 1 hp, no Zap in the deck; regulation ends at tick 3681 on this build, so
 #   overtime ends ~6081). ponytail: a fixed tick, not the match clock; a 3-minute overtime mode would need its end tick
+# ENG-FIX4 (SME_TZ_REACH=1, off by default; needs SME_TOWER_ZAP=1): the enemy_body block uses each opponent body's own
+#   reach instead of the flat TZ_BODY. FRESH4 235834@4612: our 19-hp princess tower leaves with nothing near; the opponent's
+#   Witch (Range 5500) and Skeletons (500) all target it from >= ~10,900 units and lose their target at 4612; a hand-added
+#   Zap at the tower, R 4611, makes the match 2271 / 2271 exact (control 2230 + 41 div), but TZ_BODY = 12000 (sized for
+#   X-Bow / Mortar reach) blocked it. Reach of a body (its phase-2 name's table row, characters or buildings) = Range +
+#   AreaDamageRadius + its CollisionRadius + the princess tower's (TZ_TOWER_R) + TZ_SLACK; a body with no row, no Range,
+#   or a MultipleTargets / MultipleProjectiles row (chains, multi-shot) keeps TZ_BODY. A projectile in flight is the
+#   enemy_projectile check; an area is enemy_area; a body that walks or dashes in is near on some frame of the span.
+#   The same flag gives own_body_in_reach the Zap's own hit test (tz_own_reach) instead of TZ_OWN: at 235834 our hero Ice
+#   Wizard (CollisionRadius 500) stands 3,150 / 3,032 units from the tower's centre at tp / t, outside ZAP_R + 500, and
+#   the probe Zap at the centre leaves its hp at 1100 as the game does.
+TZ_REACH = int(os.environ.get('SME_TZ_REACH', '0'))
+TZ_TOWER_R, TZ_SLACK = 1000, 1000
+
+
+def tz_reach(tables, name):
+    """SME_TZ_REACH: the opponent body's reach on a princess tower (Euclid units), TZ_BODY when the row cannot say."""
+    c = zd_cols(tables, name) if name else {}
+    if not c.get('Range') or c.get('MultipleTargets') or c.get('MultipleProjectiles'):
+        return TZ_BODY
+    return c['Range'] + (c.get('AreaDamageRadius') or 0) + (c.get('CollisionRadius') or 0) + TZ_TOWER_R + TZ_SLACK
+
+
+def tz_own_reach(tables, name):
+    """SME_TZ_REACH: how near the tower's centre a body of the tower's side is hit by a Zap there: crforge's circle test
+    (AreaEffectEntity.filterListed: a non-building is hit when its centre is strictly within ZapArea's radius + its
+    CollisionRadius); a building (a square test) or a body with no characters row keeps the flat TZ_OWN."""
+    c = zd_cols(tables, name) if name else {}
+    if not c.get('CollisionRadius') or name not in _ZD_ROWS[tables][0]:
+        return TZ_OWN
+    return ZAP_R + c['CollisionRadius']
+
+
+def tz_names(path):
+    """SME_TZ_REACH: {tick: {address: phase-2 name}} of a raw live log (zd_frames' first sample per tick)."""
+    return {t: {a: b['name'] for a, b in B.items()} for t, B, _, _ in zd_frames(path)}
 
 
 def raw_frames(path):
@@ -367,8 +424,9 @@ def raw_frames(path):
     return out
 
 
-def tower_zaps(fr, plays, sides, hidden=()):
-    """SME_TOWER_ZAP (above). fr: raw_frames; sides: {side: side_info}; hidden: extract.reader_hidden rows.
+def tower_zaps(fr, plays, sides, hidden=(), names=None, tables=None):
+    """SME_TOWER_ZAP (above). fr: raw_frames; sides: {side: side_info}; hidden: extract.reader_hidden rows; names /
+    tables (SME_TZ_REACH): tz_names of the log and the crforge tables dir, None = the flat TZ_BODY.
     -> (plays, fired, blocked): fired / blocked = evidence dicts (blocked: low-hp removals with the reason)."""
     import math
     tw = lambda f: {(e[0], e[1], e[2]): e for e in f[1] if e[3] == -1 and (e[1], e[2]) in TOWER_PTS}   # noqa: E731
@@ -390,13 +448,21 @@ def tower_zaps(fr, plays, sides, hidden=()):
             ev = dict(tower=[v, x, y], hp=h, tp=tp, t=t, zap_level=lv)
             span = [f for f in fr if t - TZ_LOOK <= f[0] <= t]
             near = lambda rows, r: [q for f in span for q in f[rows] if q[0] == o and dist(x, y, q[1], q[2]) <= r]   # noqa: E731
-            bodies = [q for q in near(1, TZ_BODY) if q[3] != -1]
+            if names is None:
+                bodies = [q for q in near(1, TZ_BODY) if q[3] != -1]
+            else:   # SME_TZ_REACH: each body's own reach (tz_reach)
+                bodies = [q for f in span for q in f[1] if q[0] == o and q[3] != -1 and dist(x, y, q[1], q[2]) <= tz_reach(
+                    tables, names.get(f[0], {}).get(q[7] if len(q) > 7 else None))]
             proj = [q for f in span for q in f[2] if q[0] == o and min(dist(x, y, q[1], q[2]),
                                                                           dist(x, y, *(q[4:6] if len(q) > 5 else (None, None)))) <= TZ_PROJ]
             ops = [p for p in plays if p['side'] == o and t - TZ_PLAY_LOOK <= p['tick'] <= t and (
                 p['kind'] == 'ability' or p.get('card') == 'Zap'
                 or (p['kind'] == 'play' and dist(x, y, p.get('x'), p.get('y')) <= TZ_PLAY))]
-            own = [q for f in fr[i:i + 2] for q in f[1] if q[0] == v and q[3] != -1 and dist(x, y, q[1], q[2]) <= TZ_OWN]
+            if names is None:
+                own = [q for f in fr[i:i + 2] for q in f[1] if q[0] == v and q[3] != -1 and dist(x, y, q[1], q[2]) <= TZ_OWN]
+            else:   # SME_TZ_REACH: the Zap's own circle test on each body (tz_own_reach)
+                own = [q for f in fr[i:i + 2] for q in f[1] if q[0] == v and q[3] != -1 and dist(x, y, q[1], q[2]) < tz_own_reach(
+                    tables, names.get(f[0], {}).get(q[7] if len(q) > 7 else None))]
             why = ('no_zap_in_deck' if 'Zap' not in deck else
                    'relisted' if any(key in tw(f) for f in fr[i + 2:i + 2 + TZ_GONE]) else
                    'flicker' if any(key not in tw(f) for f in fr[:i]) else

@@ -1,0 +1,7 @@
+dev live_play_20261026_090406 tower (1, 3500, 25500) t 4494 flat enemy_body -> reach opp_play
+fresh4 live_play_20261028_155749 tower (1, 14500, 25500) t 3549 flat enemy_body -> reach FIRED R 3548
+fresh4 live_play_20261028_235834 tower (1, 14500, 25500) t 4612 flat enemy_body -> reach FIRED R 4611
+fresh5 live_play_20261029_022148 tower (1, 14500, 25500) t 1093 flat enemy_projectile -> reach enemy_body
+records 312 changed candidates 4
+flat {'no_zap_in_deck': 170, 'tiebreak_window': 12, 'enemy_body': 9, 'enemy_projectile': 2, 'opp_play': 1, 'FIRED': 1, 'enemy_area': 1}
+reach {'no_zap_in_deck': 170, 'tiebreak_window': 12, 'opp_play': 2, 'enemy_projectile': 1, 'enemy_body': 7, 'FIRED': 3, 'enemy_area': 1}

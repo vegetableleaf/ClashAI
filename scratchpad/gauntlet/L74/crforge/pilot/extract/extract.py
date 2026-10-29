@@ -283,6 +283,7 @@ def crforge_casts(path, plays, sides, my=None, fx=None):
         own_ticks, own_plays),
         fx, my), frames, rises, my) for p in plays
            if not sme_live.golem_death_cast(p, frames) and not sme_live.iw_deploy_cast(p, frames, plays)
+           and not sme_live.own_pend_cast(p, plays, my, frames)   # ENG-FIX4 (SME_OWN_PENDCAST)
            and not sme_live.golem_death_fx(p, fx)]
     if sme_live.IWPEND9:   # A2c-9N: an opponent hero Ice Wizard press held pending, window back to its last valid target
         vt = sme_live.iw_valid_ticks(path)
@@ -540,7 +541,8 @@ def match(path, bl=None, names=None, cat=None, shims=None, tt=None, uhp=None, by
     plays = sme_live.fx_made_clock(path, plays)
     tz = []   # ENG-SME (SME_TOWER_ZAP): an unseen opponent Zap on a princess tower that vanishes at <= Zap damage
     if mech_rules.TOWER_ZAP:
-        plays, tz, _ = mech_rules.tower_zaps(mech_rules.raw_frames(path), plays, sides, reader_hidden(path, cat))
+        plays, tz, _ = mech_rules.tower_zaps(mech_rules.raw_frames(path), plays, sides, reader_hidden(path, cat),
+                                             **(dict(names=mech_rules.tz_names(path), tables=TABLES) if mech_rules.TZ_REACH else {}))  # ENG-FIX4
     zd = []   # ENG-FIX3 (SME_ZAP_DEAD): an unseen opponent Zap whose every victim dies (mech_rules.zap_dead)
     if mech_rules.ZAP_DEAD:
         plays, zd, _ = mech_rules.zap_dead(mech_rules.zd_frames(path), plays, sides, TABLES, reader_hidden(path, cat))
