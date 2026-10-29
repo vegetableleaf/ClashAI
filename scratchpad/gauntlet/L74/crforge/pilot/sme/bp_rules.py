@@ -104,7 +104,39 @@ def not_a_dash(p, frames):
     return False
 
 
+# ENG-FIX5 (SME_GK_WALK=1 with SME_BP_GK, off by default): gk_dashes calls any burst over 100 units a tick (Manhattan) a dash.
+# A raged Golden Knight walking diagonally does 77 (Euclidean; 109 Manhattan): FRESH4 230352@912, a Rage bottle from a
+# RageBarbarian at 900 -- the knight walked on and attacked (our Knight 491 -> 246 at 920), and the cast made crforge dash
+# at 914 (first div). A dash runs 119+ a tick after its first frame. So an undated gk_dash cast (no GoldenKnightCharge
+# start re-dated it) whose knight moves <= GK_WALK a tick (Euclidean, nearest-body pairing as _gk_move) on its burst
+# pair AND on the next pair is no dash and is dropped. Census (engfix/gkwalk_census.txt, 104 casts): buff-less dashes 107+ on
+# the burst pair; the 8 drops are walks of 77-94 (and FRESH2 123045@4773: a second knight arriving, no movement).
+GK_WALK = 100
+GK_WALK_ON = int(os.environ.get('SME_GK_WALK', '0'))
+
+
+def gk_walk(p, frames):
+    a, b = p['run_ticks'][0] + 1, p['run_ticks'][1] + 2
+    c = min((t for t in frames if t >= b + 2), default=None)
+    if a not in frames or b not in frames or c is None:
+        return False
+    sp = []
+    for u, v in ((a, b), (b, c)):
+        e0, mv = _gk_move(p, frames, u, v)
+        if e0 is None:
+            return False
+        sp.append((mv[0] ** 2 + mv[1] ** 2) ** 0.5 / (v - u))
+    return max(sp) <= GK_WALK
+
+
 def gk_from_buff(plays, starts, frames, sides):
+    out = _gk_from_buff(plays, starts, frames, sides)
+    if GK_WALK_ON:
+        out = [p for p in out if not (p.get('source') == 'gk_dash' and not p.get('dated') and gk_walk(p, frames))]
+    return out
+
+
+def _gk_from_buff(plays, starts, frames, sides):
     out = [p for p in plays if not (p.get('source') == 'gk_dash' and not_a_dash(p, frames))]
     last = {}
     for s, c in sorted(starts, key=lambda x: x[1]):

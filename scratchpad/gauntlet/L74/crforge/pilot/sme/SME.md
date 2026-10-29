@@ -2898,6 +2898,22 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
     tap -> run window. The arithmetic fits exactly "the cost was taken at the tap (9.7169 -> 8.7169) and the display showed
     bank + pending cost, clamped at 10" (4803 9.878, 4805 9.9854, 4807+ 10.0) - or an uncapped bank; the two are
     indistinguishable here (b). One case: no rule; watch short-lag plays in each new FRESH set with lag_census.py.
+  - **FRESH4 230352@914 (Golden Knight 118 / 124 off) = a false dash cast (a, extractor). SME_GK_WALK (bp_rules.gk_walk,
+    filter at the end of gk_from_buff; off by default, needs SME_BP_GK).** gk_dashes calls a burst over 100 a tick
+    (Manhattan) a dash; this knight was raged (RageBarbarian bottle at 900) and walked 77 a tick (Euclidean; 109 Manhattan),
+    attacked and died at ~920 (our Knight 491 -> 246) without dashing; the cast at 912 made crforge dash at 914. Rule: an
+    undated gk_dash cast (no GoldenKnightCharge start re-dated it) whose knight moves <= 100 a tick (Euclidean,
+    _gk_move pairing) on its burst pair and the next pair is dropped. Census (`engfix/gkwalk_census.{py,txt}`, all 104 GK
+    abilities of r9 OFF dev + FRESH1-6 + FRESH7): 8 drops (walks 77-94, and FRESH2 123045@4773 = a second knight's
+    arrival with no movement); kept buff-less dashes run 107+ on the burst pair. Re-extraction (fresh_prep's 16 flags):
+    OFF = r9 OFF byte for byte on the 5 records; ON differs only by the dropped casts. Planted `engfix/gkwalk_test.py` ok
+    11. **SME (X5_gk_{off,on}): 230352 379 + 1383 div (first 914) -> 1429 + 710 div (first 3002, an opponent GK play the
+    reader lists 7 ticks late, already damaged: untraced); 123045 exact 809 and first div 1768 unchanged (its refused
+    cmd81 is gone and the SIM ends 5221 not 5055, live 5261: +83 compared frames, all after the first div); FRESH4 003649
+    flagged, same counts; 0 regressed, plants 0 missed.** -> fresh_prep.sh adds SME_GK_WALK=1 for FRESH8+.
+  - **FRESH2 123045@1768 (Witch / Golden Knight) stays open (b):** the GK's real dash (1767: replan to our princess tower,
+    budget 60 -> 120) runs beside the Witch, whose pushes on it grow to 53-74 a tick; live 1766 -> 1768 (-84, +288) vs the
+    SIM (-95, +348). A push / dash-blend question; not traced further.
 - **(superseded by ENG-FIX2 above) RESTART POINT (10-29):** done = Codex ENG-FIX_5 (`.foreman/scratch/a2/codex/ENG-FIX_5.md`, out
   `.foreman/scratch/a2/codex/out/ENG-FIX_5.jsonl`, results `engfix/r5/`): BODYPT OFF vs ON on the changed matches of
   dev / FRESH1-4, lib 5e8089a4: DONE, 0 regressions, flag added to fresh_prep.sh.
