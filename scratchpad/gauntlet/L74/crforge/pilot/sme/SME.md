@@ -2441,6 +2441,7 @@ no match after FRESH1's freeze is scored.
 Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
 
 ## STATUS (keep current)
+- **LEAD 10-29 ~11:00: ENGINE CHAIN PAUSED for usage (owner priority = pilot live, then close-out); restart from the ENG-FIX5 restart point below. Decisions: 230352 reader listing lag (play listed 7 ticks late) gets NO comparator rule (owner: never loosen the comparator) -- it stays a failure; 063025 bush-goblins fix stays owed. FRESH8 13/19 torn-excl (LB .470), pooled FRESH2-8 122/151 (.808, LB .748).**
 - **GATE DEFAULT (owner 10-29): SME_HIDDEN_ASSIGN ON; every gate run also runs ASSIGN off and passes `f1fix/assign_guard.py` (FAIL-to-report otherwise). Pooled strict-fresh FRESH2-8: 122 / 151 (0.808, CP lower 0.748), ASSIGN on = off (FRESH8 13 / 19, guard PASS). D1 / D2 NOT met.**
 - **FRESH2 (a):** 22/28 unflagged exact apart from torn (95% CP lower 0.620), strictly exact 21/28 (0.581); identical on
   clashbot-main m1 624eeb45 and fe364ceb (F1FIX-3). D1 (>= 45/50) and D2 (lower bound 0.98) NOT met. FRESH2 is dev now.
