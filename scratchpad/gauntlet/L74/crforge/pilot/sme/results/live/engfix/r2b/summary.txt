@@ -1,0 +1,32 @@
+dev: records=138 changed=8 equality=True classes={'fixed': 6, 'same_class': 2} exact_delta=6488
+off sha256=c5b197f5e407a73d239e9805ce7597690691c3021b65180ecc9e0d6538f11f92
+all sha256=05336daa9434c43810ca6b72c9996dcce3126ac89ebbc325ec391d4a398e6533
+live_play_20261026_160930 flags=OWN_NEARDEAD fixed exact_delta=495 new_flags_empty=True plants_missed=[]
+live_play_20261026_164130 flags=TOMB_HERO fixed exact_delta=1371 new_flags_empty=True plants_missed=[]
+live_play_20261026_185736 flags=TOMB_HERO fixed exact_delta=1095 new_flags_empty=True plants_missed=[]
+live_play_20261026_201258 flags=TOMB_HERO same_class exact_delta=110 new_flags_empty=True plants_missed=[]
+live_play_20261026_230512 flags=OWN_NEARDEAD fixed exact_delta=644 new_flags_empty=True plants_missed=[]
+live_play_20261027_003506 flags=TOMB_HERO same_class exact_delta=1162 new_flags_empty=True plants_missed=[]
+live_play_20261027_023839 flags=TOMB_HERO fixed exact_delta=397 new_flags_empty=True plants_missed=[]
+live_play_20261027_031722 flags=TOMB_HERO fixed exact_delta=1214 new_flags_empty=True plants_missed=[]
+fresh1: records=9 changed=1 equality=True classes={'same_class': 1} exact_delta=0
+off sha256=d365b39c3d1f3fd78a084ef5b14c5fab58d9162466ab287263d0bab68e1f5d96
+all sha256=54bad62fd75038d4ecad41ade4ea87d0581fafcf5dd2cd84d2f28f01860529ec
+live_play_20261028_004256 flags=TOMB_HERO same_class exact_delta=0 new_flags_empty=False plants_missed=[]
+fresh2: records=40 changed=5 equality=True classes={'same_class': 1, 'fixed': 4} exact_delta=1482
+off sha256=f8bf661165ada144167bf9669f5b755af4d193709a9b5cbf2636821f3554a263
+all sha256=6b34fe7221c47dad29f05f2a8fef75ac4b0bc7f81a6f706e1140c5432119aa90
+live_play_20261028_080427 flags=OWN_NEARDEAD same_class exact_delta=0 new_flags_empty=False plants_missed=[]
+live_play_20261028_091720 flags=BB_RISE fixed exact_delta=170 new_flags_empty=True plants_missed=[]
+live_play_20261028_100341 flags=TOMB_HERO fixed exact_delta=374 new_flags_empty=True plants_missed=[]
+live_play_20261028_101857 flags=OWN_NEARDEAD fixed exact_delta=443 new_flags_empty=True plants_missed=[]
+live_play_20261028_110715 flags=OWN_SPAWN fixed exact_delta=495 new_flags_empty=True plants_missed=[]
+fresh3: records=17 changed=4 equality=True classes={'fixed': 3, 'same_class': 1} exact_delta=6680
+off sha256=13efec704045c250ee32ed95b03e79af68f997b800fedf5b5efca7dccc6a0423
+all sha256=5512160c777db7201d77d12c2a8901d4a470b601d5f3e3cbf5f2d779027f1507
+live_play_20261028_141254 flags=OWN_SPAWN fixed exact_delta=1586 new_flags_empty=True plants_missed=[]
+live_play_20261028_142334 flags=OWN_NEARDEAD fixed exact_delta=996 new_flags_empty=True plants_missed=[]
+live_play_20261028_142926 flags=OWN_SPAWN same_class exact_delta=1982 new_flags_empty=True plants_missed=[]
+live_play_20261028_145600 flags=TOMB_HERO fixed exact_delta=2116 new_flags_empty=True plants_missed=[]
+TOTAL 18 {'fixed': 13, 'same_class': 5}
+plants_missed={}
