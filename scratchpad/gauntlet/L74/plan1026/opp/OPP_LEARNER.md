@@ -32,7 +32,7 @@ unchanged without the opp init. Existing: test_timing_head_decode + test_league 
 
 ## STATUS (OPP-LEARN-B, 2026-10-28)
 - Code: private worktree, rebased onto 4dd9911 (LEARNER-SCALE MemRowCache landed; one conflict in policy_terms resolved: my GenPolicy line + their gen_rows), committed as hunks only; the merged tree re-smoked (opplearn_opp3: SMOKE PASS, W16 shas = opp2's). Others'
-  uncommitted MemRowCache hunks in the shared rl_royale.py are not mine and stay uncommitted).
+  uncommitted rl_royale hunks of another worker in the shared tree stay theirs; my patch was applied on top of them).
 - Pod smoke (33903 CPUs 200-203, lead OK; crforge fe364ceb + tables 16.635.3 copied from 32657; trees /workspace/opplearn/cb_base
   + cb; script learner/pod_smoke.sh TREE RUN CONFIG; logs /workspace/opplearn/logs/RUN.log): see the Smoke section below.
 - Pod smoke RESULTS (a, 33903 CPUs 200-203, fe364ceb + 16.635.3, laptop copies .foreman/scratch/a2/opplearn/logs/):
