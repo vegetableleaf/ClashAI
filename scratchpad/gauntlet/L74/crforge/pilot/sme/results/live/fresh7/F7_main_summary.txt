@@ -1,0 +1,9 @@
+F7_main (ENG-FIX4, 2026-10-29): strict fresh gate, FRESH7 (list d978ab3, freeze file committed before the run), pod 32657 gate sme11f,
+lib 5e8089a4 tickprobe, tables 16.635.3, SME_BANNER_GIVEN=1, SME_HIDDEN_ASSIGN off (default; FRESH7 has no reader-hidden window, so on = off).
+Extractor flags = FRESH6's + SME_ZAP_DEAD (0 firings on FRESH7). No fix on these matches before this run.
+22 Ranked battles, 0 skips, RNG-free 11, unflagged 6. Exact apart from torn 6 / 6, strictly exact 6 / 6 (no torn frame);
+one-sided 95% CP lower 0.607 both ways. Plants: 0 missed of 3,362 on all 11. Unflagged exact frames 13,682 / 13,682.
+Flagged (not scored): opp_no_fitting_deal 050136@580, 051010@3336, 054032@456, 055656@1597; own_cycle_fail 060537@2754.
+Pooled strict-fresh FRESH2-7 (each set scored before any fix on it), exact apart from torn:
+22/28 + 9/13 + 52/61 + 10/12 + 10/12 + 6/6 = 109 / 132 (0.826, one-sided CP lower 0.762). D1 (>= 90%) and D2 (lower 0.98) NOT met.
+FRESH7 is dev data from here.

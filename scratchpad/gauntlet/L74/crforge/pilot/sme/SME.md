@@ -2796,17 +2796,23 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
     must-not-fire). **r8 (running) tests v1; its 182050 row is expected to differ, and v2 + ZD_BLDG need their own batch.**
   - **FRESH7 list frozen (d978ab3) before any run:** `fresh/FRESH7.tsv`, 22 Ranked battles, logs from 04:43 EDT 10-29
     (044249 excluded: FRESH6), battle log to 10:16:13Z, build 160635001, 0 overlap with FRESH1-6.
+  - **FRESH7 RESULT F7_main (a; strict fresh gate on 5e8089a4, no fix on these matches; list d978ab3, freeze file before
+    the run, `results/live/fresh7/F7_main_*`):** 22 Ranked battles, 0 skips, 11 RNG-free, 6 unflagged: **6 / 6 exact apart
+    from torn and 6 / 6 strictly exact (one-sided 95% CP lower 0.607)**; plants 0 missed of 3,362. Flags FRESH6's +
+    SME_ZAP_DEAD (0 firings), SME_BANNER_GIVEN=1, SME_HIDDEN_ASSIGN off (no hidden window on FRESH7: on = off). Ran on
+    CPUs 52-53, WORKERS=2, beside Codex r7 on 28-53. 5 flagged (4 opp_no_fitting_deal, 1 own_cycle_fail) not scored.
+    **Pooled strict-fresh FRESH2-7: 109 / 132 (0.826, CP lower 0.762).** D1 / D2 NOT met. FRESH7 is dev data from here.
   - **RESTART POINT (ENG-FIX4, 10-29 ~07:20 EDT), in order:**
     1. Codex ENG-FIX4_1 (r7, pid file `.foreman/scratch/a2/codex/out/ENG-FIX4_1.jsonl.pid`): read the final message and
        re-tally `engfix/r7/table_banner.txt` (A vs B) and `table_zapdead.txt` (A vs C): fixed / same / regressed, exact
        deltas, plants missed. Expected: B differs from A only on 004719 (1210 + 570 -> 1780 / 1780); C 021310 1660 + 105 ->
-       1765 / 1765. Clean -> SME_ZAP_DEAD=1 into fresh_prep.sh (both flag lines), BANNER_GIVEN stays.
+       1765 / 1765. SME_ZAP_DEAD is already in fresh_prep.sh (1e8f59a, on the r7 field gate + the byte-identical EF3_zd_1 run); a regression in the tables reverts it. BANNER_GIVEN stays if B = A apart from 004719.
     2. Codex ENG-FIX4_2 (r8, ticket `.foreman/scratch/a2/codex/ENG-FIX4_2.md`, waits for r7's pod runs): TZ_REACH,
        ZAP_DOT, RASCAL_EDGE2, OWN_PENDCAST v1. Expected changed: 235834, 155749, 024716, 201103, 103056, 001856 + dev 182050
        (v1 finding above). Then one more batch (r9) for OWN_PENDCAST v2 + ZD_BLDG (with ZAP_DEAD) before either joins
        fresh_prep.
-    3. FRESH7 prep: `bash fresh/fresh_prep.sh FRESH7.tsv engfix/fresh7` with the flags that are clean by then (ZAP_DEAD if
-       step 1 is clean; the r8 flags only if r8 is clean too, else FRESH8), FRESH7_FREEZE.txt as FRESH6's + commit, then
+    3. DONE (FRESH7 6 / 6, above; fresh_prep.sh has SME_ZAP_DEAD since 1e8f59a). FRESH8 = the same procedure
+       (cut after FRESH7's last log 061315: `freeze.py 20261029_0614 FRESH8.tsv`), with the r8 / r9 flags if clean:
        `cd /workspace/pilot/f1fix && WORKERS=12 taskset -c 28-53 bash runH.sh F7_main /workspace/crforge_cache/tables/16.635.3
        /workspace/pilot/fresh7/inputs_rngfree.jsonl /workspace/pilot/fresh7/frames
        SME_LIB=/workspace/crforge_main/5e8089a4/tickprobe/lib SME_BANNER_GIVEN=1` after Codex's pod runs end (upload inputs +
