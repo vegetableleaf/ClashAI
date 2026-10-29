@@ -1,5 +1,5 @@
 """LEARNER-SCALE ``kl_lr_target`` (rl_royale._ppo_steps): the policy step's lr is steered toward a per-step KL target
-(lr x clamp(sqrt(target / KL added by the last step), 0.5, 2), bounded to [lr / 16, 16 lr]); absent / null = byte-identical;
+(lr x clamp(sqrt(min(target, cap - KL) / KL added by the last step), 0.5, 1.25), bounded to [lr / 16, 16 lr]); absent / null = byte-identical;
 no effect in the critic warm-up (vf policy False).
 
     icebow/.venv/Scripts/python.exe -m unittest pipeline.tests.test_learner_fast_kllr -v
@@ -63,7 +63,7 @@ class TestKlLr(unittest.TestCase):
         self.assertNotIn("lr_end", on)
 
     def test_steers_and_bounds(self):
-        # the rule, replayed from the KLs the run measured: lr_t = clamp(lr_{t-1} x clamp(sqrt(ka / dKL), .5, 2))
+        # the rule, replayed from the KLs the run measured: lr_t = clamp(lr_{t-1} x clamp(sqrt(ka / dKL), .5, 1.25))
         kls = []
         real = RL.minibatch_loss
 
@@ -79,7 +79,7 @@ class TestKlLr(unittest.TestCase):
                 lr, want = LR0, []
                 for t, kn in enumerate(kls):
                     if t:
-                        g = min(2.0, max(0.5, math.sqrt(ka / max(kn - kls[t - 1], ka * 1e-2))))
+                        g = min(1.25, max(0.5, math.sqrt(ka / max(kn - kls[t - 1], ka * 1e-2))))
                         lr = min(max(lr * g, LR0 / 16), LR0 * 16)
                     want.append(lr)
                 self.assertEqual(seen, want, msg=f"ka {ka}")
@@ -92,6 +92,33 @@ class TestKlLr(unittest.TestCase):
         self.assertTrue(all(LR0 / 16 <= x <= LR0 * 16 for x in lo + hi))
         self.assertAlmostEqual(min(lo), LR0 / 16)                # (a falling KL reads as a tiny step -> x2: lo oscillates)
         self.assertAlmostEqual(hi[-1], LR0 * 16)
+
+    def test_cap_aware(self):
+        # with kl_stop_prev ks: each step aims at min(ka, ks - KL) (floor ka / 10), so the last step does not overshoot
+        kls, real = [], RL.minibatch_loss
+
+        def spy(*a, **k):
+            loss, st = real(*a, **k)
+            kls.append(float(st["kl_gate"] + st["kl_card"] + st["kl_cell"]))
+            return loss, st
+        RL.minibatch_loss = spy
+        try:
+            self.run_update({**BASE, "kl_lr_target": 1.0}, None)        # the first step's KL sets the scale
+            ka = kls[1]
+            ks = 4 * ka
+            kls.clear()
+            out, _, _, seen = self.run_update({**BASE, "kl_lr_target": ka, "kl_stop_prev": ks, "ppo_epochs": 30}, None,
+                                              record=True)
+        finally:
+            RL.minibatch_loss = real
+        lr, want = LR0, []
+        for t, kn in enumerate(kls[:len(seen)]):
+            if t:
+                tgt = min(ka, max(ks - kn, ka * 0.1))
+                lr = min(max(lr * min(1.25, max(0.5, math.sqrt(tgt / max(kn - kls[t - 1], ka * 1e-2)))), LR0 / 16), LR0 * 16)
+            want.append(lr)
+        self.assertEqual(seen, want)
+        self.assertGreater(len(seen), 1)
 
     def test_config_validation_and_hash(self):
         import yaml
