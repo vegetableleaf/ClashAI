@@ -33,6 +33,27 @@ unchanged without the opp init. Existing: test_timing_head_decode + test_league 
 ## OPP-LEARN-C (2026-10-29): bot-partner decode, frozen-head drift monitor, fast-loop learner seat, calibration
 
 ### STATUS (keep current)
+- NOW (05:45 UTC 10-29): ftR CALIBRATION RUNNING, 33308 GPU1: run oplc_ftR_l01_a10 (init /workspace/oplc/opp_ft_s0_R_sim.pt sha
+  28ef721b = 33903 /workspace/opp/live/ft_s0/opp_ft_s0_R_sim.pt; lambda 0.1, lr 3e-5, th_anchor 10, E 64 x G 4, 200-update cap,
+  checkpoint every 10; tree /workspace/oplc/cb2; log /workspace/oplc/logs/oplc_ftR_l01_a10.log; config sha 31c972199a93; started
+  05:38). D3 evals: Codex OPP-LEARN-C_4 (33903 CPUs 220-251, 15 workers; baseline = P2-OPP2's ftR level B block 741200; appends
+  learner/out/v1_evals.log, rebuilds learner/out/TABLE.md). Stop rule (lead): first checkpoint with CLXIII D3 in 30-50% and quick
+  stats at least as human as ftR's start. Restart: the fl_pod.sh line below with CB=/workspace/oplc/cb2, RUN oplc_ftR_l01_a10,
+  init=/workspace/oplc/opp_ft_s0_R_sim.pt lr=3.0e-5 th_anchor=10.0 max_updates=200, + --resume.
+- v1s0 run oplc_v1s0_l01_a10 (same settings, init /workspace/oplc/opp_v1_s0_sim.pt sha cd070e65): STOPPED by PID after u0010 (05:36,
+  lead: switch to ftR); curve learner/out/curve_oplc_v1s0_l01_a10.md (a): vs the bot (sampled decode) 26% at u0 -> 24% at u9 (n
+  ~150, flat within noise); vs the init 58% -> 42-55%; KL card / cell .002 / .004 -> .012 / .032; plays/min 8.63 -> 9.20; WITH the
+  pull the frozen hazard stays put: mean p .2063 -> .2053, mean |dp| 3.6e-3 -> 6.7e-3 (flat after u3), max .04-.08. Its u0010 D3 =
+  OPP-LEARN-C_4 item 1. D3 baseline v1s0 block 741200 (a): CLXIII 83.1% [79.5, 86.2], RMS 0.338, 14 z-fails, lock .71.
+- th_anchor on vs off, v0, lr 3e-5 (a; learner/out/curve_oplc_flv0_lr3_a10.md vs curve_oplc_flv0_l01_lr3.md): u0-u2 hazard mean
+  |dp| 4.3e-3 / 5.1e-3 / 5.8e-3 ON vs 1.7e-2 / 2.0e-2 / 1.8e-2 OFF; mean p .187-.191 ON vs .200-.205 OFF; KL card / cell at u2 .0068 /
+  .0114 ON vs .0076 / .0138 OFF. The ON run was stopped by PID after u2 to free GPU1 for v1 (lead: start v1 now); the v1s0 run
+  above is the longer ON curve (different init). OFF at 20 updates: mean |dp| 3-5.7e-2, max .46.
+- v0 D3 trend (a; learner/out/TABLE.md, 480 games each, paired seeds): lr 1e-5: u0 87.7%, u10 87.1%, u20 85.2%, u30 83.1%
+  [79.5, 86.2] (RMS .325 / .316 / .352 / .335); lr 3e-5 u10 86.0% (RMS .369, 15 z-fails).
+- fast loop vs production on CUDA, same device (a; 33308 GPU1, /workspace/oplc/cmp_cuda1.json, 16 jobs of the v0 dry run's u0000
+  msg): 16/16 matches identical, lp max card 6.7e-7 / cell 6.1e-7 / p_gate 8.8e-8 (float noise of batched GPU forwards), memory
+  tables 16/16, ability 16/16.
 - th_anchor BUILT (lead 10-29 approved the proposal below): `th_anchor: lambda_t` (> 0; absent / null = off, historical hash;
   refused on a gate learner) adds lambda_t x th_anchor_kl = mean over the minibatch rows of KL(init || policy) of the slot hazard
   (Bernoulli) + p_init x KL of the tick softmax, and the same for the ability head; the init = ref_init (one no-grad forward per
@@ -149,6 +170,9 @@ test_timing_head_decode: 51 passed, 1 skipped, 2 failed = the 2 pre-existing Tes
   {0.03, 0.1, 0.3}; `calib_eval.sh CKPT_DIR RUN OUTROOT` beside each.
 
 ### Codex dispatches
+- OPP-LEARN-C_3 (medium): lr3 u0010 + v1s0 baseline scored (checked: 480 rows each); stopped by PID when the v1s0 run was
+  stopped (its gate waited for a u0010 log line that never came). OPP-LEARN-C_4 (medium): v1s0 u0010 + ftR baseline + ftR
+  checkpoints, RUNNING. OPP-LEARN-C_2b: u0020 / u0030 scored (checked against TABLE.md), stopped by PID before lr3 u0020.
 - OPP-LEARN-C_1 (medium; .foreman/scratch/a2/codex/OPP-LEARN-C_1.md): baseline + u0010 relayed (sha equal), run, fetched,
   scored, TABLE.md; BLOCKED before u0020 because P2-OPP2's v1s0 block was running (the ticket said one block at a time; a
   concurrent other job is allowed). Checked by me: 480 / 480 outcome rows each, ENGINE opp_ckpt = the stripped u0010, table

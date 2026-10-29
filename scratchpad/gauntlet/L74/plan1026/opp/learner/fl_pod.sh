@@ -1,5 +1,5 @@
 #!/bin/bash
-# OPP-LEARN-C part C (33903 defaults: CPU only; on 33308: CB=/workspace/oplc/cb TABLES=/workspace/crforge_cache/tables/16.635.3 GPU=1 LOGS=/workspace/oplc/logs). usage: fl.sh fast RUN CPUS CONFIG [rl args]   (FASTLOOP_DUMP=1 fastloop)
+# OPP-LEARN-C part C (33903 defaults: CPU only; on 33308: CB=/workspace/oplc/cb TABLES=/workspace/crforge_cache/tables/16.635.3 GPU=1 LOGS=/workspace/oplc/logs). usage: fl.sh fast RUN CPUS CONFIG [rl args]   (DUMP=1: FASTLOOP_DUMP every update = compare msgs, 45 MB each)
 #                                                                      fl.sh cmp MSG OUT CPUS [compare args]
 MODE=$1; shift
 CB=${CB:-/workspace/opplearnc/cbc}; LOGS=${LOGS:-/workspace/opplearnc/logs}; cd $CB || exit 1
@@ -14,7 +14,7 @@ mkdir -p $LOGS
 $PY -c "import sys; sys.path.insert(0, '$L'); import producer, pathlib, os; producer.compile_java(pathlib.Path(os.environ['CRFORGE_FACADE_BUILD']), pathlib.Path(os.environ['CRFORGE_LIB']))" || exit 1
 if [ "$MODE" = fast ]; then
   RUN=$1; CPUS=$2; CFG=$3; shift 3
-  FASTLOOP_DUMP=1 exec timeout ${TMO:-7200} taskset -c $CPUS $PY -u $L/fastloop.py ${FAST_ARGS:---producers 1 --matches 8 --threads 2 --devices cpu} \
+  FASTLOOP_DUMP=${DUMP:-} exec timeout ${TMO:-7200} taskset -c $CPUS $PY -u $L/fastloop.py ${FAST_ARGS:---producers 1 --matches 8 --threads 2 --devices cpu} \
     -- --run $RUN --config $CFG actor_device=cpu learner_device=cpu "$@" > $LOGS/$RUN.log 2>&1
 else
   MSG=$1; OUT=$2; CPUS=$3; shift 3
