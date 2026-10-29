@@ -485,8 +485,12 @@ def own_pend_cast(p, plays, my, frames):
     our side is an own_press with no cast since, we played that card between the press and the cast, and our elixir
     drops < 1.5 on every frame pair in [t - 6, t + 6]. Census (`engfix/pend_census.txt`, dev + FRESH1-6 r7 OFF inputs):
     30 of 247 own cast_seen abilities follow an unresolved press; 6 of those have a play of the card between them, 5 with
-    a ~1.93 drop (a press missing from the tap log, kept) and 1 without: 001856@3157."""
-    if not OWN_PENDCAST or p['kind'] != 'ability' or p.get('source') != 'cast_seen' or p['side'] != my:
+    a ~1.93 drop (a press missing from the tap log, kept) and 1 without: 001856@3157. v2 (r8 finding, dev 182050@3463):
+    the rule runs on the dated play (extract.crforge_casts applies it after own_press_elixir) and never drops a cast that
+    own_press_elixir dated by an elixir drop ('own_elixir'): v1 looked at the raw cast tick and dropped 182050's paid,
+    drop-dated cast (SME_CHARGE8 then re-added it as a charge_drop press on the same ticks)."""
+    if (not OWN_PENDCAST or p['kind'] != 'ability' or p.get('source') != 'cast_seen' or p['side'] != my
+            or 'own_elixir' in (p.get('dated') or '')):   # v2: a cast own_press_elixir dated by a drop is a paid press
         return False
     ab = [q for q in plays if q['kind'] == 'ability' and q['side'] == my and q['card'] == p['card'] and q['tick'] < p['tick']]
     if not ab or max(ab, key=lambda q: q['tick']).get('source') != 'own_press':

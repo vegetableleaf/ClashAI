@@ -515,6 +515,18 @@ def tower_zaps(fr, plays, sides, hidden=(), names=None, tables=None):
 #   that point (widest margin up to ZAP_MARGIN, then nearest the victims' centroid), tick t - 1, run window
 #   [max(tp, t - 2), t - 1] (as SME_TOWER_ZAP). Every firing goes to the record's `zap_dead` (blocked ones are returned).
 ZAP_DEAD = int(os.environ.get('SME_ZAP_DEAD', '0'))
+# ENG-FIX4 (SME_ZD_BLDG=1, off by default; with SME_ZAP_DEAD): enemy_body_near leaves out an opponent body that cannot
+#   hurt a troop: its row has TargetOnlyBuildings and none of AreaDamageRadius / DeathDamage / DeathAreaEffect /
+#   DeathSpawnProjectile / OnDeathAction / DeathSpawnCharacter / Ability / ChargeRange / OnStartChargingAction / Kamikaze /
+#   AttackPushBack (census v1 without the last six fired on FRESH4 192245@3249, an evolved Battle Ram's charge that is
+#   exact without a Zap, and on FRESH6 040050@752, a hero Giant). FRESH4 155749@4266: our three Skeletons (130 hp) leave the list together, the
+#   only opponent body near is a running Hog Rider (TargetOnlyBuildings) 1,180 units from our destroyed tower's spot, and
+#   the rule blocked on it; a hand-added side-0 Zap at (3620, 23935), R 4264 or 4265 (with SME_TZ_REACH's Zap at 3548),
+#   makes the match 2144 / 2144 exact.
+ZD_BLDG = int(os.environ.get('SME_ZD_BLDG', '0'))
+ZD_HARMLESS = lambda c: c.get('TargetOnlyBuildings') and not any(c.get(k) for k in (   # noqa: E731
+    'AreaDamageRadius', 'DeathDamage', 'DeathAreaEffect', 'DeathSpawnProjectile', 'OnDeathAction', 'DeathSpawnCharacter',
+    'Ability', 'ChargeRange', 'OnStartChargingAction', 'Kamikaze', 'AttackPushBack'))
 ZD_MIN, ZD_GONE, ZD_LOOK, ZD_ZAP = 2, 3, 20, 30
 ZD_PROJ, ZD_FX, ZD_SLACK, ZD_STILL = 3000, 4000, 300, 100
 _ZD_ROWS = {}
@@ -599,6 +611,8 @@ def zap_dead(fr, plays, sides, tables, hidden=()):
             busy = []
             for a_, b in A.items():
                 if b['side'] != o or b['tower'] or not near((b['x'], b['y']), ZD_PROJ):
+                    continue
+                if ZD_BLDG and b['name'] and ZD_HARMLESS(zd_cols(tables, b['name'])):   # SME_ZD_BLDG
                     continue
                 c = zd_cols(tables, b['name']) if b['name'] else {}
                 q = B.get(a_) or b

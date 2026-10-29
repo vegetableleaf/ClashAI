@@ -1,0 +1,5 @@
+fresh2 20261028_124640 (0, 213) off: enemy_body_near ['HogRider'] | on: opp_play [('Zap', 211)]
+fresh4 20261028_155749 (1, 332) off: enemy_body_near ['HogRider'] | on: opp_play [('Zap', 331)]
+fresh4 20261028_155749 (1, 4266) off: enemy_body_near ['HogRider'] | on: FIRED R 4265 at (3614, 23962)
+ZD_BLDG 0 {'enemy_body_near': 13, 'enemy_area': 33, 'enemy_targets_victim': 35, 'enemy_projectile': 114, 'electro': 3, 'enemy_splash': 49, 'no_point': 1, 'opp_play': 15, 'self_leaving_victim': 2, 'FIRED': 1}
+ZD_BLDG 1 {'enemy_body_near': 10, 'enemy_area': 33, 'enemy_targets_victim': 35, 'enemy_projectile': 114, 'electro': 3, 'enemy_splash': 49, 'no_point': 1, 'opp_play': 17, 'self_leaving_victim': 2, 'FIRED': 2}

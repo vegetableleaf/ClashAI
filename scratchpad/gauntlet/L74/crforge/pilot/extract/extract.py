@@ -283,8 +283,8 @@ def crforge_casts(path, plays, sides, my=None, fx=None):
         own_ticks, own_plays),
         fx, my), frames, rises, my) for p in plays
            if not sme_live.golem_death_cast(p, frames) and not sme_live.iw_deploy_cast(p, frames, plays)
-           and not sme_live.own_pend_cast(p, plays, my, frames)   # ENG-FIX4 (SME_OWN_PENDCAST)
            and not sme_live.golem_death_fx(p, fx)]
+    out = [p for p in out if not sme_live.own_pend_cast(p, plays, my, frames)]   # ENG-FIX4 (SME_OWN_PENDCAST), on dated plays
     if sme_live.IWPEND9:   # A2c-9N: an opponent hero Ice Wizard press held pending, window back to its last valid target
         vt = sme_live.iw_valid_ticks(path)
         out = [sme_live.iw_pending(p, vt, plays, my) for p in out]

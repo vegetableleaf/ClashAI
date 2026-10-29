@@ -2779,20 +2779,39 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
     records. Done so far (a, Codex claims checked): OFF rebuilds = r6 ON except exactly 101018 / 171948 (NEAR_BIGGER2),
     fresh6 OFF = frozen 20ac8e69; ON field gate: exactly 1 changed record (021310, plays + zap_dead). Pod runs on 32657
     CPUs 28-53 (dev A done; ~2-3 h total).
-  - **RESTART POINT (ENG-FIX4, 10-29 ~07:00 EDT), in order:**
-    1. Read Codex ENG-FIX4_1's final message (`.foreman/scratch/a2/codex/out/ENG-FIX4_1.jsonl`) and re-tally
-       `engfix/r7/table_banner.txt` (A vs B) and `table_zapdead.txt` (A vs C) yourself: fixed / same / regressed, exact
+  - **SME_ZD_BLDG (mech_rules.zap_dead, ZD_HARMLESS; with SME_ZAP_DEAD) -> FRESH4 155749@4266 (a, extractor).** Our three
+    Skeletons (130 hp) leave the list together; the only opponent body near is a running Hog Rider (TargetOnlyBuildings),
+    and ZAP_DEAD blocked on it (enemy_body_near). Probe (Zap at (3620, 23935), on the TZ_REACH record): R 4264 / 4265 ->
+    2144 / 2144 exact. Rule: enemy_body_near leaves out a TargetOnlyBuildings row with none of AreaDamageRadius /
+    DeathDamage / DeathAreaEffect / DeathSpawnProjectile / OnDeathAction / DeathSpawnCharacter / Ability / ChargeRange /
+    OnStartChargingAction / Kamikaze / AttackPushBack. Census (`engfix/zdb_census.py` -> `zdb_census.txt`, dev + FRESH1-6):
+    v1 (first five keys only) fired falsely on FRESH4 192245@3249 (evolved Battle Ram charge, exact without a Zap) and
+    FRESH6 040050@752 (hero Giant); v2 (the list above): **1 new firing, 155749@4266** (2 others change only their block
+    reason). The list was shaped on these 2 dev cases, so FRESH7+ is its first fresh test. Planted `engfix/zdb_test.py`
+    ok 8. SME (extracted with TZ_REACH + ZAP_DEAD + ZD_BLDG): 155749 **2144 / 2144** (first div 3549 -> 4266 -> none).
+  - **SME_OWN_PENDCAST v2 (r8 finding, a):** Codex r8 found dev 182050 changed: v1 looked at the raw cast tick and dropped
+    a paid cast that own_press_elixir dates by a ~1.93 drop (CHARGE8 re-added it as a charge_drop press on the same ticks).
+    v2 runs on the dated plays (extract.crforge_casts filters after own_press_elixir) and never drops an 'own_elixir'-dated
+    cast. Re-extraction: 182050 = r7 OFF (no field change), 001856 still drops 3157. own_rules_test ok 12 (+ the 182050
+    must-not-fire). **r8 (running) tests v1; its 182050 row is expected to differ, and v2 + ZD_BLDG need their own batch.**
+  - **FRESH7 list frozen (d978ab3) before any run:** `fresh/FRESH7.tsv`, 22 Ranked battles, logs from 04:43 EDT 10-29
+    (044249 excluded: FRESH6), battle log to 10:16:13Z, build 160635001, 0 overlap with FRESH1-6.
+  - **RESTART POINT (ENG-FIX4, 10-29 ~07:20 EDT), in order:**
+    1. Codex ENG-FIX4_1 (r7, pid file `.foreman/scratch/a2/codex/out/ENG-FIX4_1.jsonl.pid`): read the final message and
+       re-tally `engfix/r7/table_banner.txt` (A vs B) and `table_zapdead.txt` (A vs C): fixed / same / regressed, exact
        deltas, plants missed. Expected: B differs from A only on 004719 (1210 + 570 -> 1780 / 1780); C 021310 1660 + 105 ->
-       1765 / 1765. If clean: SME_ZAP_DEAD=1 joins fresh_prep.sh (both flag lines) for FRESH7+, BANNER_GIVEN stays.
-    2. A second no-regression batch (Codex, same machinery, r8) for SME_TZ_REACH SME_ZAP_DOT SME_RASCAL_EDGE2
-       SME_OWN_PENDCAST on dev + FRESH1-6 (TZ_REACH acts only with TOWER_ZAP, i.e. fresh2-6). Expected changed records:
-       235834, 155749 (TZ_REACH), 024716 (ZAP_DOT), 201103 + 103056 (RASCAL_EDGE2), 001856 (OWN_PENDCAST); any other
-       change is a finding. Clean -> fresh_prep.sh for FRESH8+ (not FRESH7 if FRESH7 is prepped first).
-    3. FRESH7: 18 battles after the 04:43 cut at 06:15 EDT (battle log to 10:02Z); freeze when >= 20:
-       `icebow/.venv/Scripts/python.exe -I fresh/freeze.py 20261029_0443 FRESH7.tsv`, commit, fresh_prep.sh (with
-       ZAP_DEAD if step 1 is clean), FRESH7_FREEZE.txt + commit, then `runH.sh F7_main ... SME_LIB=.../5e8089a4/tickprobe/lib
-       SME_BANNER_GIVEN=1` on 32657 CPUs 28-53 AFTER Codex's runs end; hidden-window records both ways (ASSIGN off default).
-    4. Open: 031310 MoveProbe; 165155 per-frame diff; 155749@4266; FRESH4 230352@914 (Golden Knight 118 / 124), 123045
+       1765 / 1765. Clean -> SME_ZAP_DEAD=1 into fresh_prep.sh (both flag lines), BANNER_GIVEN stays.
+    2. Codex ENG-FIX4_2 (r8, ticket `.foreman/scratch/a2/codex/ENG-FIX4_2.md`, waits for r7's pod runs): TZ_REACH,
+       ZAP_DOT, RASCAL_EDGE2, OWN_PENDCAST v1. Expected changed: 235834, 155749, 024716, 201103, 103056, 001856 + dev 182050
+       (v1 finding above). Then one more batch (r9) for OWN_PENDCAST v2 + ZD_BLDG (with ZAP_DEAD) before either joins
+       fresh_prep.
+    3. FRESH7 prep: `bash fresh/fresh_prep.sh FRESH7.tsv engfix/fresh7` with the flags that are clean by then (ZAP_DEAD if
+       step 1 is clean; the r8 flags only if r8 is clean too, else FRESH8), FRESH7_FREEZE.txt as FRESH6's + commit, then
+       `cd /workspace/pilot/f1fix && WORKERS=12 taskset -c 28-53 bash runH.sh F7_main /workspace/crforge_cache/tables/16.635.3
+       /workspace/pilot/fresh7/inputs_rngfree.jsonl /workspace/pilot/fresh7/frames
+       SME_LIB=/workspace/crforge_main/5e8089a4/tickprobe/lib SME_BANNER_GIVEN=1` after Codex's pod runs end (upload inputs +
+       frames to /workspace/pilot/fresh7 first); hidden-window records both ways (SME_HIDDEN_ASSIGN=1 as a trailing VAR).
+    4. Open: 031310 MoveProbe; 165155 per-frame diff (KEEP=1); FRESH4 230352@914 (Golden Knight 118 / 124), 123045
        (Witch), 142926 (client lag).
 - **(superseded by ENG-FIX2 above) RESTART POINT (10-29):** done = Codex ENG-FIX_5 (`.foreman/scratch/a2/codex/ENG-FIX_5.md`, out
   `.foreman/scratch/a2/codex/out/ENG-FIX_5.jsonl`, results `engfix/r5/`): BODYPT OFF vs ON on the changed matches of

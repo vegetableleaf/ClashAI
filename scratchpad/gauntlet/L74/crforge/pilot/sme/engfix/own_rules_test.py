@@ -35,6 +35,12 @@ check('no newer hero keeps the cast', not sme_live.own_pend_cast(cast, [p for p 
 # MUST NOT FIRE: the earlier press already resolved (its cast seen before)
 P3 = P + [dict(cast, tick=2920, run_ticks=[2920, 2920])]
 check('resolved press keeps the cast', not sme_live.own_pend_cast(cast, P3, 0, F))
+# MUST NOT FIRE (v2, r8 finding): dev 182050@3463, a cast own_press_elixir dated by a ~1.93 drop ('own_elixir'), after an
+# unresolved press (2932) and a play of the card (3213)
+y = next(json.loads(s) for s in open(H + '/r7/dev_off.jsonl') if '182050' in s)
+c2 = next(p for p in y['plays'] if p['kind'] == 'ability' and p['tick'] == 3463)
+check('drop-dated cast kept (182050)', c2.get('dated') == 'own_elixir' and not sme_live.own_pend_cast(
+    c2, y['plays'], y['my_side'], {f['t']: f for f in live_frames.convert(L % '1026_182050')}))
 # flag off: never
 sme_live.OWN_PENDCAST = 0
 check('flag off', not sme_live.own_pend_cast(cast, P, 0, F))
