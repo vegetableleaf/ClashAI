@@ -2614,7 +2614,7 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
     ASSIGN changes no frame of the 6 hidden-window records except 210016, which moves from fail to pass-apart-from-torn
     (not strict) only together with the extractor flag HIDDEN_CHILD. No gate set has been rerun with it yet. The
     numbers already reported (FRESH2-5, 93/114) are all ASSIGN off.
-  - **RESTART POINT (ENG-FIX2 stopped for context, 10-29 ~04:45 EDT), in order:**
+  - **(done by ENG-FIX3, below) RESTART POINT (ENG-FIX2 stopped for context, 10-29 ~04:45 EDT), in order:**
     1. DONE: Codex ENG-FIX2_1 (r6) STATUS DONE. My own tally of `engfix/r6/table.txt` (a): 134 changed matches (dev
        60, FRESH1 3, FRESH2 18, FRESH3 7, FRESH4 40, FRESH5 6); 1 fixed (151109, 3031/3031), 133 same class, 0 regressed.
        No match lost exact frames, no first div moved earlier, plants 0 missed, 0 new flags. 210016: 44 div -> 28 div +
@@ -2631,6 +2631,54 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
        OFF first div 5968 -> ON exact; 171948 is flagged (opp_no_fitting_deal), so report its counts only.
     4. Open: FRESH5 failures 004719@2573 (opponent Goblins reader-only), 021310@1986 (Skeletons SIM-only).
     Codex dispatches (ENG-FIX2): ENG-FIX2_1 medium, running (pid file `.foreman/scratch/a2/codex/out/ENG-FIX2_1.jsonl.pid`).
+- **ENG-FIX3 (10-29, after ENG-FIX2 ran out of context; evidence `engfix/eng_fix3_results.txt`):**
+  - **SME_HIDDEN_ASSIGN wired into the gate (a):** pod 32657 `/workspace/pilot/f1fix/sme11f/sme_live.py` = the repo's
+    (md5 d5312748), backup `sme_live.py.pre_assign` (cddbab97). runH.sh unchanged: `SME_HIDDEN_ASSIGN=1` is a trailing
+    VAR=val. Flag OFF on the gate: 151109 3031 exact, 083923 1814 exact + 41 torn_hidden (= `engfix/hassign_nr.txt`);
+    flag ON: identical on both. **Default stays OFF (owner to ratify); gate numbers are reported both ways.**
+  - **SME_NEAR_BIGGER2 no-regression (a):** its 2 changed records, FRESH6 extractor flags +/- the flag, gate sme11f:
+    FRESH2 101018 OFF 2905 exact + 121 div (first 5968) -> ON 3026 / 3026 exact; FRESH4 171948 OFF = ON (77 exact,
+    1689 div, first 305, opp_no_fitting_deal); plants 0 missed. Dev: 0 firings (the census; the rule is NEAR_BIGGER's
+    filter under an extra condition, so it can fire only where NEAR_BIGGER does). **fresh_prep.sh now sets
+    SME_NEAR_BIGGER2=1 (FRESH6+).** 171948's firing (a 5908-hp Giant Skeleton play) is still unverified (b); its first
+    divergence (305) is long before it (5848).
+  - **FRESH5 004719@2573 = SME driver, not engine (a). SME_BANNER_GIVEN (SmeRun.java + bp/SnapRun2.java queueBanners,
+    off by default).** The opponent's hero Goblins were played twice (1111, 2282). The first banner stood 1353-1481 (reader).
+    queueBanners queued the 2563 press (given 2543) by id on the FIRST live banner it saw, at 1353, so at 2563 the
+    command named a dead banner and no second wave came (the game's wave: goblins at banner x +- 1000, y + 500 from 2573).
+    Fix: look for the banner only from the press's given tick on. Red -> green on 5e8089a4 (private copy
+    `/workspace/pilot/engfix3/sme11b`, runB.sh): OFF 1210 exact + 570 div (first 2573, = F5_main) -> ON 1780 / 1780 exact,
+    plants 0 missed. Census (`engfix/banner_census.py`, dev + FRESH1-5 scored records): 3 records hold a hero Goblins press:
+    004719, dev 224856 (1 earlier play) and FRESH4 193007 (flagged); 224856 OFF = ON 1766 / 1766, 193007 OFF = ON
+    (97 exact, 1665 div, flagged); plants 0 missed. **Wired into the gate sme11f** (classes rebuilt against the 5e8089a4
+    lib; backups `build.pre_banner`, `build_snap.pre_banner`, `SmeRun.java.pre_banner`, `SnapRun2.java.pre_banner`):
+    gate flag OFF 151109 3031 exact and 004719 1210 + 570 (unchanged), ON 004719 1780 / 1780. It is an input-delivery
+    fix (commands into the SIM), not a comparator rule: FRESH6+ runs pass `SME_BANNER_GIVEN=1` (as extractor flags
+    join fresh_prep after a clean no-regression).
+  - **FRESH5 021310@1986 = extractor, an unseen opponent Zap whose every victim died (a). SME_ZAP_DEAD
+    (mech_rules.zap_dead, hook in extract.match after TOWER_ZAP, off by default; comment block in mech_rules.py).**
+    Our three full-hp Skeletons (130 <= the level-16 Zap's 306) left the list together between 1984 and 1986; the SIM kept
+    them to ~2194. The only opponent troop, a Mega Knight (AreaDamageRadius 1300 around its target, no SelfAsAoeCenter),
+    stood still hitting our X-Bow 2,700+ units from them, and its hp shows no Skeleton hits after 1986 (the game's bodies
+    really died: not a reader drop). No opponent projectile / area / play was near. The opponent's battle-log deck holds
+    Zap, and its 8-card cycle puts the Zap exactly there (MegaKnight 1847, BarbLog 1875, [Zap], MiniPekka 2447, Miner,
+    Bats, Wallbreakers, Musketeer, MegaKnight 2808, BarbLog 2865, Zap 2958). Neither unseen_zaps (needs a hit survivor)
+    nor ZAP_ADD (a killed body holds no ZapFreeze buff) can see it. Probe (hand-added Zap at (12800, 17300)): run 1984 or
+    1985 -> 1765 / 1765 exact; 1983 -> 1 div. Rule census on all scored records of dev + FRESH1-5 (`engfix/zd_census.txt`,
+    `zd_census.py`), iterated: v1 fired 21 times, false on exact matches (FRESH2 120406 x2 = an Electro Wizard
+    two-target hit; FRESH5 011004); v2 adds "an opponent body targets a victim" (6 left: dev 090406 hero Electro Wizard,
+    FRESH4 192245 evolved Battle Ram charge, both exact without a Zap); v3 adds the Electro and "opponent body near and
+    not plainly busy elsewhere" blocks -> **1 firing in 297 records: 021310 itself**; 253 candidates blocked (projectile
+    108, splash 48, targets victim 32, area 32, opp play 15, body near 12, electro 3, self-leaving 2, no point 1).
+    Extracted (FRESH6 flags +/- SME_ZAP_DEAD): OFF 1660 exact + 105 div (first 1986, = F5_main) -> ON 1765 / 1765 exact,
+    plants 0 missed (Zap at (12864, 17261), R 1985, window [1984, 1985]). Planted `engfix/zd_test.py` ok 15.
+    The rule was shaped on dev data (v1-v3), so FRESH6 is its first fresh test. NOT in fresh_prep.sh yet: owed = the
+    re-extraction field check (every dev / FRESH1-5 input byte-identical except 021310; the census equals the rule on
+    the final plays, and none of the 15 opp_play blocks is a later-added Tombstone / Boss Bandit press, so the census
+    and the extraction agree (b, untested by a full re-extraction)).
+  - **FRESH6 list frozen (23af1b7) before any run:** `fresh/FRESH6.tsv`, 34 Ranked battles, live logs from 02:31 EDT
+    10-29 (after FRESH5's last log 02:30; 023025 excluded), battle log to 08:45:47Z, build 160635001.
+  - Codex dispatches (ENG-FIX3): none so far (every run was a 1-2-record job).
 - **(superseded by ENG-FIX2 above) RESTART POINT (10-29):** done = Codex ENG-FIX_5 (`.foreman/scratch/a2/codex/ENG-FIX_5.md`, out
   `.foreman/scratch/a2/codex/out/ENG-FIX_5.jsonl`, results `engfix/r5/`): BODYPT OFF vs ON on the changed matches of
   dev / FRESH1-4, lib 5e8089a4: DONE, 0 regressions, flag added to fresh_prep.sh.

@@ -1,0 +1,37 @@
+# ENG-FIX3 pod 32657 results (runH.sh / runB.sh, lib /workspace/crforge_main/5e8089a4/tickprobe/lib; counts, first div, flags, plants missed)
+## wire.out
+EF3_w151_0 20261028_151109 {'exact': 3031} None missed []
+EF3_w151_1 20261028_151109 {'exact': 3031} None missed []
+EF3_w839_0 20261028_083923 {'exact': 1814, 'torn_hidden': 41} None missed []
+EF3_w839_1 20261028_083923 {'exact': 1814, 'torn_hidden': 41} None missed []
+WIRE_DONE
+## nb2.out
+EF3_nb2_0 20261028_101018 {'exact': 2905, 'div': 121} 5968 [] missed []
+EF3_nb2_1 20261028_101018 {'exact': 3026} None [] missed []
+EF3_nb4_0 20261028_171948 {'exact': 77, 'div': 1689} 305 ['0:opp_no_fitting_deal:0'] missed []
+EF3_nb4_1 20261028_171948 {'exact': 77, 'div': 1689} 305 ['0:opp_no_fitting_deal:0'] missed []
+NB2_DONE
+## banner.out
+EF3_b047_0 20261029_004719 {'exact': 1210, 'div': 570} 2573 [] missed []
+EF3_b047_1 20261029_004719 {'exact': 1780} None [] missed []
+BANNER_DONE
+## zap.out
+EF3_z1983 20261029_021310 {'exact': 1764, 'div': 1} 1984 [] [] missed [] [['U_rec_only', [1, 12164, 16941, 130], 'Skeletons', None], ['U_rec_only', [1, 13098, 16861, 130], 'Skeletons', None], ['U_rec_only', [1, 13236, 18013, 130], 'Skeletons', None]]
+EF3_z1984 20261029_021310 {'exact': 1765} None [] [] missed [] None
+EF3_z1985 20261029_021310 {'exact': 1765} None [] [] missed [] None
+ZAP_DONE
+## bnr.out
+EF3_b224_0 20261026_224856 {'exact': 1766} None [] missed []
+EF3_b224_1 20261026_224856 {'exact': 1766} None [] missed []
+EF3_b193_0 20261028_193007 {'exact': 97, 'div': 1665} 344 ['1:opp_no_fitting_deal:0'] missed []
+EF3_b193_1 20261028_193007 {'exact': 97, 'div': 1665} 344 ['1:opp_no_fitting_deal:0'] missed []
+BNR_DONE
+## gw.out
+EF3_g151 20261028_151109 {'exact': 3031} None missed []
+EF3_g047_0 20261029_004719 {'exact': 1210, 'div': 570} 2573 missed []
+EF3_g047_1 20261029_004719 {'exact': 1780} None missed []
+GW_DONE
+## zdr.out
+EF3_zd_0 20261029_021310 {'exact': 1660, 'div': 105} 1986 [] missed []
+EF3_zd_1 20261029_021310 {'exact': 1765} None [] missed []
+ZDR_DONE

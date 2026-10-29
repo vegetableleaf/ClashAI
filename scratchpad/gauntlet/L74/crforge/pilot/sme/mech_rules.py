@@ -420,6 +420,171 @@ def tower_zaps(fr, plays, sides, hidden=()):
     return (sorted(list(plays) + add, key=lambda p: p['tick']) if add else plays), fired, blocked
 
 
+# ENG-FIX3 (SME_ZAP_DEAD=1, off by default): an unseen opponent Zap that kills every body it reaches. The reader shows no
+#   Zap (fights.unseen_zaps); a body the Zap kills holds no ZapFreeze buff (SME_ZAP_ADD) and shows no hp drop (unseen_zaps
+#   needs one hit survivor), so a Zap whose every victim dies is seen by no rule. FRESH5 021310@1986: our three full-hp
+#   Skeletons (130 <= the level-16 Zap's 306), up to 1,100 units apart, leave the list together between 1984 and 1986;
+#   the only opponent troop (Mega Knight, AreaDamageRadius 1300 around its target) is hitting our X-Bow 2,700+ away, no
+#   opponent projectile / area / play is near, and the opponent's deck (battle log) holds Zap, its 8-card cycle placing
+#   the Zap exactly there (MegaKnight 1847, BarbLog 1875, [Zap], MiniPekka 2447 ... MegaKnight 2808, BarbLog 2865, Zap
+#   2958). One side-0 Zap at (12800, 17300), run 1984 or 1985, makes the match 1765 / 1765 exact (1983: 1 div).
+#   Rule: in one frame gap (tp, t] with t - tp <= 3, >= ZD_MIN non-tower bodies of side v listed at tp with
+#   0 < hp <= the opponent's Zap troop damage (ZAP_DMG) are absent at t and the next ZD_GONE frames, the opponent's deck
+#   holds Zap, and none of these holds (each a reason in `blocked`): a victim is kamikaze or spawns on death (Kamikaze /
+#   DeathSpawnCharacter: it may leave by itself); an opponent projectile (point or target) within ZD_PROJ or an opponent
+#   area within ZD_FX of a victim on a frame of [t - ZD_LOOK, t]; an opponent splash body (AreaDamageRadius) at tp whose
+#   splash centre (itself under SelfAsAoeCenter, else its phase-3 target; itself when the target is unknown, then with its
+#   Range added) is within the radius + the victim's radius + ZD_SLACK of a victim; an opponent body (a tower too) whose
+#   phase-3 target is a victim on one of the 3 frames up to tp (census: an Electro Wizard's two-target hit killed two
+#   Skeletons in FRESH2 120406, exact without a Zap); an opponent Electro body within ELECTRO_D of a victim on the frames
+#   tp - 2 .. t + 1 (as SME_ZAP_ADD; dev 090406: a hero Electro Wizard); an opponent body within ZD_PROJ of a victim at
+#   tp that is not plainly busy elsewhere: busy = a known phase-3 target, moved <= ZD_STILL over the 2 frames before tp
+#   and over (tp, t], and a table row with no SelfAsAoeCenter / Kamikaze / Ability / MultipleTargets / charge (FRESH4
+#   192245: an evolved Battle Ram's charge push killed two Skeletons, exact without a Zap; 021310's Mega Knight stands
+#   still hitting our X-Bow); an opponent kamikaze body within
+#   ZD_PROJ of a victim at tp, or an opponent body within ZD_PROJ of a victim that leaves at t (death damage); an
+#   opponent play or ability run in [t - ZD_LOOK, t], or an opponent Zap within ZD_ZAP ticks; an opponent hidden-body
+#   window (extract.reader_hidden) over [t - ZD_LOOK, t]; the match ends within ZD_GONE frames; no grid point (100 units)
+#   reaches every victim (ZAP_R + its radius) while reaching no body of v listed at t (towers too). -> one opponent Zap at
+#   that point (widest margin up to ZAP_MARGIN, then nearest the victims' centroid), tick t - 1, run window
+#   [max(tp, t - 2), t - 1] (as SME_TOWER_ZAP). Every firing goes to the record's `zap_dead` (blocked ones are returned).
+ZAP_DEAD = int(os.environ.get('SME_ZAP_DEAD', '0'))
+ZD_MIN, ZD_GONE, ZD_LOOK, ZD_ZAP = 2, 3, 20, 30
+ZD_PROJ, ZD_FX, ZD_SLACK, ZD_STILL = 3000, 4000, 300, 100
+_ZD_ROWS = {}
+
+
+def zd_cols(tables, name):
+    """The crforge table columns of a character / building by name ({} if none)."""
+    import json
+    from pathlib import Path
+    if tables not in _ZD_ROWS:
+        _ZD_ROWS[tables] = [json.load(open(Path(tables) / f'{f}.json'))['rows'] for f in ('characters', 'buildings')]
+    for rows in _ZD_ROWS[tables]:
+        if name in rows:
+            return rows[name].get('columns', {})
+    return {}
+
+
+def zd_frames(path):
+    """[(tick, {addr: body}, proj, fx)] of a raw live log, the first sample of each tick >= 0; a body is
+    dict(side, x, y, hp, tower, name, gen, tgt) (name / gen from phase 2, tgt = phase-3 attack target generation)."""
+    import json
+    out, seen = [], set()
+    for line in open(path, 'rb'):
+        if b'"frame"' not in line[:40]:
+            continue
+        d = json.loads(line)
+        t = d['tick']
+        if t is None or t < 0 or t in seen:
+            continue
+        seen.add(t)
+        p2 = {u['address']: u for u in (d.get('phase2') or {}).get('units', [])}
+        p3 = {b['generation']: ((b.get('attack') or {}).get('target_gen')) for b in (d.get('phase3') or {}).get('bodies', [])}
+        bodies = {}
+        for e in d.get('ents') or []:
+            u = p2.get(e[7]) or {}
+            bodies[e[7]] = dict(side=e[0], x=e[1], y=e[2], hp=e[4], tower=e[3] == -1, name=u.get('name'),
+                                gen=u.get('generation'), tgt=p3.get(u.get('generation')))
+        out.append((t, bodies, d.get('proj') or [], d.get('fx') or []))
+    return out
+
+
+def zap_dead(fr, plays, sides, tables, hidden=()):
+    """SME_ZAP_DEAD (above). fr: zd_frames; sides: {side: side_info}; tables: the crforge tables dir; hidden:
+    extract.reader_hidden rows. -> (plays, fired, blocked): evidence dicts."""
+    import math
+    dist = lambda a, b: math.hypot(a['x'] - b['x'], a['y'] - b['y'])   # noqa: E731
+    rad = lambda b: zd_cols(tables, 'PrincessTower' if b['tower'] and not b['name'] else b['name']).get('CollisionRadius') or 500   # noqa: E731
+    fired, blocked, add = [], [], []
+    for i in range(len(fr) - 1):
+        (tp, A, _, _), (t, B, _, _) = fr[i], fr[i + 1]
+        if t - tp > 3:
+            continue
+        for v in (0, 1):
+            o = 1 - v
+            deck = (sides.get(o) or {}).get('deck') or []
+            if 'Zap' not in deck:
+                continue
+            zt = ZAP_DMG.get(sides[o]['levels'][deck.index('Zap')], (None, None))[0]
+            vic = [b for a, b in A.items() if b['side'] == v and not b['tower'] and b['hp'] is not None and 0 < b['hp'] <= zt
+                   and a not in B and all(a not in f[1] for f in fr[i + 2:i + 2 + ZD_GONE])]
+            if len(vic) < ZD_MIN:
+                continue
+            ev = dict(side=v, tp=tp, t=t, victims=[[b['name'], b['x'], b['y'], b['hp']] for b in vic])
+            span = [f for f in fr if t - ZD_LOOK <= f[0] <= t]
+            near = lambda q, r: any(math.hypot(q[0] - b['x'], q[1] - b['y']) <= r for b in vic)   # noqa: E731
+            proj = [q for f in span for q in f[2] if q[0] == o and (near(q[1:3], ZD_PROJ) or len(q) > 5 and near(q[4:6], ZD_PROJ))]
+            fx = [q for f in span for q in f[3] if q[0] == o and near(q[1:3], ZD_FX)]
+            byg = {b['gen']: b for b in A.values() if b['gen'] is not None}
+            splash = []
+            for b in A.values():
+                c = zd_cols(tables, b['name']) if b['side'] == o and not b['tower'] and b['name'] else {}
+                if not c.get('AreaDamageRadius'):
+                    continue
+                ctr, r = (b, c['AreaDamageRadius']) if c.get('SelfAsAoeCenter') else \
+                    (byg[b['tgt']], c['AreaDamageRadius']) if b['tgt'] in byg else (b, c['AreaDamageRadius'] + (c.get('Range') or 0))
+                if any(dist(ctr, w) <= r + rad(w) + ZD_SLACK for w in vic):
+                    splash.append(b['name'])
+            vg = {w['gen'] for w in vic}
+            el = [b['name'] for f in fr[max(0, i - 2):i + 2] for b in f[1].values() if b['side'] == o and 'Electro' in (b['name'] or '')
+                  and near((b['x'], b['y']), ELECTRO_D)]
+            past = {a: b for f in fr[max(0, i - 2):i] for a, b in f[1].items()}
+            busy = []
+            for a_, b in A.items():
+                if b['side'] != o or b['tower'] or not near((b['x'], b['y']), ZD_PROJ):
+                    continue
+                c = zd_cols(tables, b['name']) if b['name'] else {}
+                q = B.get(a_) or b
+                moved = max(dist(b, q), dist(past.get(a_, b), b))
+                if b['tgt'] not in byg or moved > ZD_STILL or c.get('SelfAsAoeCenter') or c.get('Kamikaze') or c.get('Ability') \
+                        or c.get('MultipleTargets') or c.get('OnStartChargingAction') or c.get('ChargeRange') or not c:
+                    busy.append(b['name'])
+            att = [b['name'] or 'tower' for f in fr[max(0, i - 2):i + 1] for b in f[1].values() if b['side'] == o and b['tgt'] in vg]
+            kam = [b['name'] for b in A.values() if b['side'] == o and not b['tower'] and b['name']
+                   and zd_cols(tables, b['name']).get('Kamikaze') and near((b['x'], b['y']), ZD_PROJ)]
+            gone = [b['name'] for a, b in A.items() if b['side'] == o and not b['tower'] and a not in B and near((b['x'], b['y']), ZD_PROJ)]
+            ops = [p for p in plays if p['side'] == o and (t - ZD_LOOK <= p['tick'] <= t or p.get('card') == 'Zap' and abs(p['tick'] - t) <= ZD_ZAP)]
+            vc = [zd_cols(tables, b['name']) for b in vic]
+            why = ('self_leaving_victim' if any(c.get('Kamikaze') or c.get('DeathSpawnCharacter') for c in vc) or any(not b['name'] for b in vic) else
+                   'match_end' if i + 2 + ZD_GONE > len(fr) else
+                   'enemy_projectile' if proj else
+                   'enemy_area' if fx else
+                   'enemy_splash' if splash else
+                   'enemy_targets_victim' if att else
+                   'electro' if el else
+                   'enemy_body_near' if busy else
+                   'enemy_kamikaze' if kam else
+                   'enemy_death' if gone else
+                   'opp_play' if ops else
+                   'hidden_body' if any(hb['side'] == o and hb['last'] <= t and hb['end'] >= t - ZD_LOOK for hb in hidden) else None)
+            xy = None
+            if not why:
+                rest = [b for b in B.values() if b['side'] == v]
+                cx, cy = sum(b['x'] for b in vic) / len(vic), sum(b['y'] for b in vic) / len(vic)
+                best = None
+                for gx in range(min(b['x'] for b in vic) - ZAP_R, max(b['x'] for b in vic) + ZAP_R + 1, 100):
+                    for gy in range(min(b['y'] for b in vic) - ZAP_R, max(b['y'] for b in vic) + ZAP_R + 1, 100):
+                        m = min([ZAP_R + rad(b) - math.hypot(b['x'] - gx, b['y'] - gy) for b in vic] +
+                                [math.hypot(b['x'] - gx, b['y'] - gy) - ZAP_R - rad(b) for b in rest] + [ZAP_MARGIN])
+                        if m < 0:
+                            continue
+                        k = (m, -math.hypot(gx - cx, gy - cy))
+                        if best is None or k > best[0]:
+                            best = (k, gx, gy)
+                why = None if best else 'no_point'
+                xy = (best[1], best[2]) if best else None
+            if why:
+                blocked.append(dict(ev, why=why, detail=(proj or fx or splash or att or el or busy or kam or gone or [(p.get('card') or p['name'], p['tick']) for p in ops])[:4]))
+                continue
+            R = t - 1
+            fired.append(dict(ev, R=R, run_ticks=[max(tp, t - 2), R], x=xy[0], y=xy[1]))
+            add.append(dict(side=o, kind='play', card='Zap', deck_index=deck.index('Zap'), name='Zap', form=0,
+                            run_ticks=[max(tp, t - 2), R], tick=R, source='spell_seen', x=xy[0], y=xy[1],
+                            tile=[xy[0] // 1000, xy[1] // 1000], n=0, inferred=True, mech='zap_dead'))
+    return (sorted(list(plays) + add, key=lambda p: p['tick']) if add else plays), fired, blocked
+
+
 # ENG-FIX (SME_TOMB_HERO=1): the hero Tombstone's ability press. The press has no cast state, no pending flag and no
 # ability area in the reader (FRESH2 100341@2930, FRESH3 145600@1308: phase-2 ability {pending_on_body 0,
 # cast_timer_ms_raw 0} on every frame before it). Its one public effect is the row swap crforge also makes on the press

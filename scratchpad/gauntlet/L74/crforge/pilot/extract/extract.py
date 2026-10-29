@@ -541,6 +541,9 @@ def match(path, bl=None, names=None, cat=None, shims=None, tt=None, uhp=None, by
     tz = []   # ENG-SME (SME_TOWER_ZAP): an unseen opponent Zap on a princess tower that vanishes at <= Zap damage
     if mech_rules.TOWER_ZAP:
         plays, tz, _ = mech_rules.tower_zaps(mech_rules.raw_frames(path), plays, sides, reader_hidden(path, cat))
+    zd = []   # ENG-FIX3 (SME_ZAP_DEAD): an unseen opponent Zap whose every victim dies (mech_rules.zap_dead)
+    if mech_rules.ZAP_DEAD:
+        plays, zd, _ = mech_rules.zap_dead(mech_rules.zd_frames(path), plays, sides, TABLES, reader_hidden(path, cat))
     if mech_rules.TOMB_HERO:   # ENG-FIX (SME_TOMB_HERO): the hero Tombstone press from its monster's row swap
         plays = mech_rules.tomb_presses(str(path), plays, sides)
     if mech_rules.BB_RISE:   # ENG-FIX (SME_BB_RISE): a Boss Bandit press whose buff never shows, from its state-10 rise
@@ -570,7 +573,7 @@ def match(path, bl=None, names=None, cat=None, shims=None, tt=None, uhp=None, by
                 drawers=drawers, crowns_api=api, plays=plays, unplaced=unplaced, flags=flags,
                 own_taps=[dict(tick=p['tick'], name=p['name'], x=p['x'], y=p['y']) for p in m['plays']],
                 **(dict(reader_hidden=reader_hidden(path, cat)) if os.environ.get('SME_HIDDEN') == '1' else {}),
-                **(dict(tower_zap=tz) if tz else {}))
+                **(dict(tower_zap=tz) if tz else {}), **(dict(zap_dead=zd) if zd else {}))
     if os.environ.get('SME_SAMETICK_ORDER') == '1':   # A2c-9R: same-tick plays of both sides in the reader's creation order
         sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'sme' / 'bp9'))
         import live_frames

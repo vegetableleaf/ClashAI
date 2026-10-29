@@ -32,6 +32,10 @@ import org.crforge.core.battle.spawn.SpawnHost;
 public class SnapRun2 {
   static GameTables tables;
   static final boolean TGT = "1".equals(System.getenv("SME_TGT"));
+  // ENG-FIX3 (SME_BANNER_GIVEN=1, off by default): queueBanners looks for the banner only from the press's given tick on.
+  // FRESH5 004719: the side's first hero Goblins banner (live 1353-1481) took the second banner's press (given 2543,
+  // run 2563) by id at 1353, so the press named a dead banner and no second wave came (the game's came at 2573).
+  static final boolean BANNER_GIVEN = "1".equals(System.getenv("SME_BANNER_GIVEN"));
 
   public static void main(String[] a) throws Exception {
     tables = GameTables.load(Path.of(a[0]));
@@ -151,6 +155,7 @@ public class SnapRun2 {
       if (c == null) continue;
       int g = c.get("given").asInt(), r = c.get("run").asInt(), s = c.get("side").asInt();
       if (now >= r) { cs.set(k, null); continue; }
+      if (BANNER_GIVEN && now < g) continue;  // ENG-FIX3: the banner standing when the press was given (above)
       int id = -1;
       for (BattleEntity e : b.getBattle().getHolder().entities())
         if (e instanceof WorldEntity we && !(we instanceof TowerEntity) && we.side() == s
