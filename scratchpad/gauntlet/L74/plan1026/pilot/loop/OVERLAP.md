@@ -55,6 +55,34 @@ Labels: (a) measured, (b) plausible / untested, (c) contradicted.
     - With overlap absent, pi_prox = pi_behaviour, so the loss is exactly today's.
     - The KL stop is unchanged (it is already to W_u).
     - Then rerun the A/B (same queue, tag v2).
+- DECOUPLED PPO BUILT (lead-approved 10-28): rl_royale key `ppo_decoupled: c` (absent / null = today's loss).
+  - Loss: pg = -min(pi_prox / pi_behaviour, c) x min(r A, clip(r) A), with r = pi_theta / pi_prox.
+  - pi_prox = the KL anchor = the update-start policy. Its taken-action lp (`prox_lp`) is rebuilt from the anchor terms
+    LazyRef / ref_terms already compute: no extra forward.
+  - pi_behaviour = the stored lp_old. Truncation constant **c = 2.0** (v1 saw step-0 ratios up to ~5).
+  - The u0 on-policy assert also checks `is_maxdev` = max abs(pi_prox / pi_behaviour - 1), i.e. stored vs recompute.
+  - Monitors (train_log `decoupled`): `is_maxdev_first`, `is_trunc_frac_ep0`. The KL stop is unchanged.
+  - Requires kl_ref_refresh_every 1 and no kl_ref_gate / kl_ref_card / kl_ref_gate_max_elixir. The posture / ability
+    terms keep their behaviour ratios.
+  - Landed on origin inside LEARNER-SCALE2's daaecbf: a sweep of my uncommitted hunks, content = what I tested.
+  - Verification (a):
+    - `pipeline/tests/test_loop_overlap_decoupled.py` 6/6:
+      - absent / null: byte-identical;
+      - on-policy rows: today's loss bitwise, weights + monitors, at c 1 and 2;
+      - prox_lp == policy_terms bit for bit;
+      - stale formula + truncation;
+      - micro_batch merge;
+      - validation + hash.
+    - On 33308: 19/19 with test_loop_overlap + test_learner_fast_accum. On the laptop, accum's
+      test_one_minibatch_gradient fails identically with the pre-edit code (pre-existing, not this key).
+    - pyflakes clean.
+    - Historical hashes unchanged (succ48_x_s101 32192ba00a43, ref_pilot_noiw f692d08823da).
+    - rl_royale --smoke on 33308 (`async/smoke_dc.sh`): key absent PASS (b5e2a2bbafef); key on PASS (is_maxdev_first
+      3.0e-6 / 3.7e-6).
+- A/B v2 RUNNING (33308 GPU0): `cd /workspace/async && XO="ppo_decoupled=2.0" setsid nohup bash ab_queue.sh v2 "1028 2029"
+  > ab_v2.out 2>&1 < /dev/null &` (resumable: finished runs skipped via ab_v2/RUN.done).
+  - The key is on in both modes. m0 is a live check that the key reproduces today's loss on-policy (compare v1 m0);
+    m1 is the overlap arm.
 - A/B v1 restart: `cd /workspace/async && setsid nohup bash ab_queue.sh v1 "1028 2029" > ab_v1.out 2>&1 < /dev/null &`
   (finished runs skipped via ab_v1/RUN.done).
 - Codex dispatches: LOOP-ASYNC_1 (medium; .foreman/scratch/a2/codex/LOOP-ASYNC_1.md): ran + watched the queue, built

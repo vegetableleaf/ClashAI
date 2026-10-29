@@ -1,12 +1,12 @@
 #!/bin/bash
 # LOOP-ASYNC A/B queue on 33308 (/workspace/async/cb): overlap 0 vs 1 x seeds, one run at a time, then ab_eval.
-# usage: setsid nohup bash ab_queue.sh TAG "SEEDS" > /workspace/async/ab_TAG.out 2>&1 &
+# usage: [XO="k=v ..."] setsid nohup bash ab_queue.sh TAG "SEEDS" > /workspace/async/ab_TAG.out 2>&1 &
 # Each run: ref_pilot_noiw + E 32 x G 4 (128 matches / update), 8 updates, critic warm-up 1, save_every 1, server eager,
 # 2 producers x 64 in flight. Records: only records_u0000.pkl kept (the held-out B0 batch for the OTHER seed).
 TAG=$1; SEEDS=${2:-"1028 2029"}
 CB=/workspace/async/cb; L=scratchpad/gauntlet/L74/plan1026/pilot/loop; OUT=/workspace/async/ab_$TAG
 CFG=$L/ref_pilot_noiw.yaml
-O="E=32 G=4 max_updates=8 critic_warmup_updates=1 n_actors=2 save_every=1 proagree_every=1000 screen_entries=2"
+O="E=32 G=4 max_updates=8 critic_warmup_updates=1 n_actors=2 save_every=1 proagree_every=1000 screen_entries=2 ${XO:-}"   # XO: extra k=v (v2: ppo_decoupled=2.0)
 mkdir -p $OUT; cd $CB || exit 1
 for S in $SEEDS; do for M in 0 1; do
   RUN=async_${TAG}_s${S}_m$M; REC=$OUT/rec_$RUN
