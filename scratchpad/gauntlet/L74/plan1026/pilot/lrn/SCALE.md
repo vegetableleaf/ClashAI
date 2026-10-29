@@ -223,27 +223,31 @@ once per update, then served from the cache.
 ## 6. LEARNER-SCALE2 (10-28 night)
 
 ### 6a. kl_lr_target: the KL-adaptive lr (opt-in, lead-approved)
-Key `kl_lr_target: x` (a finite float > 0; absent / null = off; the hash is unchanged when absent).
-- What it does: on policy steps only (a no-op in the critic warm-up), before each step the lr is multiplied by
-  clamp(sqrt(x / dKL), 0.5, 2).
-  - dKL = this minibatch's KL to the anchor minus the previous minibatch's: the KL the last step added. The rule
-    assumes KL ~ lr^2.
-  - The lr is bounded to [lr / 16, 16 lr] of the config lr.
-  - It lives in opt.param_groups, so it carries across updates and checkpoints.
-  - The update record gets `lr_end`.
-- Use: x ~ kl_stop_prev / 4 (0.005) with large minibatches, so the cap is reached in ~4 steps instead of one overshooting
-  step (3b: one 32k step at 1.13e-4 = 5x the cap).
-- Known ceiling: dKL comes from two different minibatches, so it is noisy. This matters at mb 256, not at 8k+ rows.
-  A negative dKL reads as a tiny step and doubles the lr.
-- Tests (a): pipeline/tests/test_learner_fast_kllr.py, 4/4 on 33920:
-  - off / null are byte-identical (with and without the value loss);
-  - the warm-up leaves the weights and lr untouched;
-  - the lr sequence equals the rule replayed from the measured KLs, for 3 targets;
-  - the bounds hold;
+Key `kl_lr_target: x` (finite > 0; absent / null = off; the hash is unchanged when absent).
+- When it acts: on policy steps only (a no-op in the critic warm-up), once per step, before the step.
+- The rule, v2 (current): lr x clamp(sqrt(t / dKL), 0.5, 1.25), with
+  - dKL = this minibatch's KL to the anchor minus the previous minibatch's (the KL the last step added; KL ~ lr^2);
+  - t = min(x, max(kl_stop_prev - KL, x / 10)), so a step is never aimed past the cap.
+  - Bounds: [lr / 16, 16 lr] of the config lr.
+  - The lr lives in opt.param_groups, so it carries across updates and checkpoints. The update record gets `lr_end`.
+- v1 (x [0.5, 2] per step, aimed at x only) OVERSHOT on real records (6d): the lr ramped x2 per step, then one step
+  landed at 2-5x the cap.
+  - 8k rows: stop KL 0.076 / 0.077.
+  - 32k: 0.043 / 0.052.
+  - 65k: 0.094 / 0.093.
+- Use: x ~ kl_stop_prev / 4 (0.005) with large minibatches.
+- Known ceiling: dKL comes from two different minibatches, so it is noisy at mb 256, not at 8k+ rows. A negative dKL
+  reads as a tiny step (growth x1.25).
+- Tests (a): pipeline/tests/test_learner_fast_kllr.py, 5 tests:
+  - off / null byte-identical, with and without the value loss;
+  - the warm-up leaves the weights and the lr untouched;
+  - the lr sequence equals the rule replayed from the measured KLs, for 3 targets, and with a binding cap;
+  - the bounds;
   - config validation and hash.
-  With test_learner_fast_accum and test_kl_stop_prev: 7 passed. pyflakes clean.
-- The no-grad KL check before the backward is NOT built. 3b's cost model says it pays only at <= 2 steps per update, and
-  kl_lr_target aims at ~4. Build it if the sweep shows 1-2 step updates.
+  With test_learner_fast_accum + test_kl_stop_prev: 13 passed on 33920. pyflakes clean.
+- Smoke with v2 (ls2_smoke_v2, 33920, absent key): b5e2a2bbafef, e816a6a4 / 3e07cff4, f060b678 / 5c61ac04 = the
+  reference. SMOKE PASS.
+- The no-grad KL check before the backward is NOT built. By 3b's cost model it pays only at <= 2 steps per update.
 
 ### 6b. Where a step's GPU time goes now (prof_mod.py; 33920 4090; pilot.yaml + mem_row_cache; id1 T 0.3; prof2/)
 | mb | fwd ms | bwd ms | clip + Adam ms | total ms | ms / row | kernels / step |
@@ -281,3 +285,25 @@ rest is glue outside nn.Module forwards: indexing, masks, cat, loss terms, and t
   - Even a perfect fusion is bounded by the attention and conv kernels, ~35-40% of the step.
 - CUDA graphs: they need static shapes. The played-row subsets and the token counts change per minibatch, so they need
   padding to fixed buckets first. Not built.
+
+### 6d. Equal-KL lr sweep at T_gate 0.1, v1 rule (a; 33920; lr_sweep.py; sweep2/sweep_t01.json)
+Records: 4 consecutive warmed updates (u5-u8) on 4 disjoint 512-match T 0.1 batches (s2101, s2102, s2105, s2106).
+Held-out: 1,024 never-trained matches (s2103 + s2104). ppo_epochs 4 for every arm. dJ is paired vs base on the same
+held-out matches.
+
+| arm | steps u5-u8 | stop KL u5-u8 | PPO s per update | lr_end | dJ vs base after u8 (+- se) |
+|---|---|---|---|---|---|
+| base mb 256, lr 1e-5 | 59 / 15 / 43 / 12 | 0.023 / 0.020 / 0.022 / 0.024 | 16.8 / 4.3 / 11.7 / 3.5 | 1e-5 | 0 (J +0.00016 +- 0.00028) |
+| 8k, kl_lr_target 0.005 (v1) | 7 / 2 / 1 / 2 | 0.076 / 0.077 / 0.028 / 0.026 | 65 / 24 / 17 / 24 | 1.1e-4 | -0.0001 +- 0.0007 |
+| 32k, v1 | 6 / 3 / 5 / 4 | 0.043 / 0.052 / 0.024 / 0.029 | 169 / 106 / 147 / 139 | 9.5e-5 | +0.00003 +- 0.0004 |
+| 65k, v1 | 9 / 2 / 2 / 2 | 0.094 / 0.093 / 0.027 / 0.042 | 314 / 139 / 135 / 140 | 4.1e-5 | +0.00004 +- 0.0008 |
+
+- (a) At T 0.1 the pilot's learner stops after 12-59 steps (3-15k of ~160k rows) and pays 3.5-17 s of PPO per update.
+- (a) v1 overshoots the cap 2-5x in the first two updates; fixed in v2 (6a).
+- (a) After 4 updates, no arm is resolvably better than base. The mid-run dJ at u6-u7 (+0.0010 +- 0.0007-0.0008 for 8k /
+  65k, ~1.3 se) is gone at u8.
+- (a) The large arms cost 5-40x the PPO seconds of base per update.
+- (b) Per-update policy improvement is below what 1,024 held-out matches resolve, even paired: the paired se (0.0004-0.0008)
+  is set by the larger-moving arm's own variance.
+- Comparing learner settings therefore needs the SIM A/B (win rate over many updates), not J.
+- Consistent with section 1: no policy-gradient signal resolved over 512 matches.

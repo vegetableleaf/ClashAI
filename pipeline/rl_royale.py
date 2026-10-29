@@ -1685,11 +1685,14 @@ def sample_opponent(rng: np.random.Generator, snaps: list[dict], mix: dict, init
 def exploiter_league(cfg: dict) -> Optional[dict]:
     """``league_exploiters`` (O2, owner 10-16; optional, absent / null = None = sample_matchups unchanged):
     {ckpt, decks, share} -> {share, opp, decks, p}: a ``share`` of matchups is against the frozen ``ckpt`` playing
-    ``decks`` (a league_decks file, drawn with ``deck_weights`` under the run's alpha / floor). SystemExit on a bad value.
+    ``decks`` (a league_decks file, drawn with ``deck_weights`` under the run's alpha / floor; or the literal "icebow" =
+    OPP-LEARN-C's bot partner pool on OUR deck: league_decks drops icebow by design). SystemExit on a bad value.
     L74 O6 (lead 10-20; OPTIONAL keys, each absent = the run's own setting, all absent = the dict and opp spec above
     unchanged): ``T`` (> 0, that opponent's sampling temperature instead of ``league_opp_T``), ``decide_every`` (int >= 1)
     and ``reaction_ticks`` (int >= 0) (that opponent's tempo instead of ``opp_decide_every`` / ``opp_reaction_ticks``) ->
-    opp["cfg"]; ``own_opp_cfg`` applies them to THAT opponent only."""
+    opp["cfg"]; ``own_opp_cfg`` applies them to THAT opponent only. OPP-LEARN-C (optional, absent = unchanged): ``T_gate``
+    (> 0, its sampled gate temperature; league opponents otherwise sample the gate at T) and ``tau_phase`` (three numbers
+    in (0, 1) [1x, 2x, OT], its gate threshold by phase) = the pilot's / deployed bot decode for a bot partner."""
     x = cfg.get("league_exploiters")
     if x is None:
         return None
@@ -1707,28 +1710,34 @@ def exploiter_league(cfg: dict) -> Optional[dict]:
     own = {k: x[k] for k in EXPLOITER_OWN if k in x}
     for k, v in own.items():
         ok = ((not isinstance(v, bool) and isinstance(v, (int, float)) and 0 < v < 1) if k == "tau" else
-              (not isinstance(v, bool) and isinstance(v, (int, float)) and v > 0) if k == "T" else
+              (isinstance(v, list) and len(v) == 3 and all(not isinstance(t, bool) and isinstance(t, (int, float))
+                                                           and 0 < t < 1 for t in v)) if k == "tau_phase" else
+              (not isinstance(v, bool) and isinstance(v, (int, float)) and v > 0) if k in ("T", "T_gate") else
               (type(v) is int and v >= (1 if k == "decide_every" else 0)))
         if not ok:
-            raise SystemExit(f"league_exploiters.{k} must be {'a number in (0, 1)' if k == 'tau' else 'a number > 0' if k == 'T' else 'an int >= ' + ('1' if k == 'decide_every' else '0')}, got {v!r}")
+            raise SystemExit(f"league_exploiters.{k} must be {'a number in (0, 1)' if k == 'tau' else 'three numbers in (0, 1)' if k == 'tau_phase' else 'a number > 0' if k in ('T', 'T_gate') else 'an int >= ' + ('1' if k == 'decide_every' else '0')}, got {v!r}")
     sh = x["share"]
     if isinstance(sh, bool) or not isinstance(sh, (int, float)) or not 0 < sh <= 1:
         raise SystemExit(f"league_exploiters.share must be a number in (0, 1], got {sh!r}")
-    for k in ("ckpt", "decks"):
+    for k in ("ckpt",) if x["decks"] == "icebow" else ("ckpt", "decks"):   # OPP-LEARN-C: "icebow" = our deck only
         if not isinstance(x[k], str) or not (REPO / x[k]).is_file():
             raise SystemExit(f"league_exploiters.{k} {x[k]!r} not found")
     if not cfg.get("league") or cfg.get("league_frozen_opponent"):
         raise SystemExit("league_exploiters needs league true and no league_frozen_opponent (that is the exploiter run)")
-    decks = league_decks(REPO / x["decks"])
-    return {"share": float(sh), "decks": decks,
-            "p": opp_deck_p(deck_weights([d["sides"] for d in decks], cfg["league_deck_alpha"], cfg["league_deck_floor"]),
-                            decks, cfg.get("league_deck_weights")),
+    if x["decks"] == "icebow":                                # OPP-LEARN-C: the bot partner pool on our deck
+        decks, p = [ICEBOW_DECK], np.ones(1)
+    else:
+        decks = league_decks(REPO / x["decks"])
+        p = opp_deck_p(deck_weights([d["sides"] for d in decks], cfg["league_deck_alpha"], cfg["league_deck_floor"]),
+                       decks, cfg.get("league_deck_weights"))
+    return {"share": float(sh), "decks": decks, "p": p,
             "opp": {"id": "exploiter_league:" + x["ckpt"], "cat": "exploiter_league", "type": "exploiter_league",
                     "path": x["ckpt"], **({"cfg": own} if own else {})}}
 
 
-EXPLOITER_OWN = ("T", "decide_every", "reaction_ticks", "tau")   # league_exploiters' optional per-opponent keys (L74 O6;
-                                                                  # tau 10-23: PUSH_CAL calibrated decode, absent = the run's tau)
+EXPLOITER_OWN = ("T", "decide_every", "reaction_ticks", "tau",    # league_exploiters' optional per-opponent keys (L74 O6;
+                 "T_gate", "tau_phase")                           # tau 10-23: PUSH_CAL calibrated decode, absent = the run's
+                                                                  # tau; T_gate / tau_phase OPP-LEARN-C: the bot partner)
 
 
 def own_opp_cfg(oc: dict, opp: dict, base: dict) -> dict:
@@ -1742,6 +1751,10 @@ def own_opp_cfg(oc: dict, opp: dict, base: dict) -> dict:
         oc = {**oc, "T": float(c["T"])}
     if c.get("tau") is not None:
         oc = {**oc, "tau": float(c["tau"])}
+    if c.get("T_gate") is not None:                           # OPP-LEARN-C: the bot partner's own gate temperature
+        oc = {**oc, "T_gate": float(c["T_gate"])}
+    if c.get("tau_phase") is not None:                        # OPP-LEARN-C: and its phase thresholds
+        oc = {**oc, "tau_phase": [float(t) for t in c["tau_phase"]]}
     return E.opp_tempo(oc, c.get("decide_every", base.get("opp_decide_every")),
                        c.get("reaction_ticks", base.get("opp_reaction_ticks")))
 
@@ -2741,10 +2754,27 @@ def ent_init_rows(B: dict, cfg: dict, u: int):
     return torch.from_numpy(np.sort(rng.choice(N, int(n), replace=False))).to(B["A"].device)
 
 
+@torch.no_grad()
+def prox_lp(R: dict, B: dict, idx) -> torch.Tensor:
+    """LOOP-ASYNC ``ppo_decoupled``: the anchor's (R = ref_terms / LazyRef, filled for ``idx``) joint log-prob of each row's
+    recorded action, built exactly as ``policy_terms`` builds lp_gate + lp_card + lp_cell from x / card_lp / cell_lp (same
+    ops, same summation order: bit-equal to policy_terms of the anchor net)."""
+    x, gs, pl = R["x"][idx], B["gate_sampled"][idx], B["played"][idx]
+    lp_gate = torch.where(gs, torch.where(pl, Fn.logsigmoid(x), Fn.logsigmoid(-x)), torch.zeros_like(x))
+    lp_card, lp_cell = torch.zeros_like(x), torch.zeros_like(x)
+    pi = pl.nonzero().squeeze(-1)
+    if len(pi):
+        rows = idx[pi]
+        lp_card = lp_card.index_put((pi,), R["card_lp"][rows].gather(1, B["slot"][rows].unsqueeze(1)).squeeze(1))
+        lp_cell = lp_cell.index_put((pi,), R["cell_lp"][R["play_pos"][rows]].gather(
+            1, B["cell"][rows].unsqueeze(1)).squeeze(1))
+    return lp_gate + lp_card + lp_cell
+
+
 def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: float, beta: float,
                    n_total: int, vf: Optional[dict] = None, T_gate: Optional[float] = None,
                    posture: Optional[dict] = None, ability: Optional[dict] = None,
-                   ent_ref=None) -> tuple[torch.Tensor, dict]:
+                   ent_ref=None, decoupled: Optional[float] = None) -> tuple[torch.Tensor, dict]:
     """PPO-clip on the joint log pi = lp_gate + g (lp_card + lp_cell) (E1 3.3) with per-match weights, scaled by
     n_total / |mb| so each minibatch estimates the full-batch loss; + beta (mean KL_gate + mean KL_card + mean KL_cell).
     ``vf`` (gae mode: {coef, clip, policy}): + coef x the PPO-clipped value loss 0.5 max((V - ret)^2, (V_old +
@@ -2763,16 +2793,28 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
     r = pi_new(a) / pi_old(a) of the Bernoulli press (``B["ab_lp"]``), the row's A, weights ``B["w_ab"]``, minus
     ent_coef x the head's weighted Bernoulli entropy; reaches the AbilityHead only (g detached).
     ``ent_ref`` (LOOP-LRN ent_pair_every): + st ``ent0_*`` = that frozen net's entropy on these rows, with the masks of the
-    policy's ``ent_*`` monitors (no_grad; the loss is unchanged)."""
+    policy's ``ent_*`` monitors (no_grad; the loss is unchanged).
+    ``decoupled`` c (LOOP-ASYNC ``ppo_decoupled``; Hilton et al. 2021 decoupled PPO; None = the loss above, unchanged):
+    pg = -min(pi_prox / pi_behaviour, c) x min(r A, clip(r) A) with r = pi_theta / pi_prox, pi_prox = R's anchor =
+    the update-start policy (``prox_lp``), pi_behaviour = the stored ``lp_old``. The ratio monitors are then r's.
+    Rows played by the update-start policy itself give a weight of exactly 1 and r = today's ratio. The posture /
+    ability terms keep their behaviour ratios."""
     if hasattr(R, "fill"):                                    # LOOP-LRN stored_values: the anchor's terms of these rows
         R.fill(idx)
     t = policy_terms(model, B, idx, tau, T, value=vf is not None,
                      value_trunk=True if vf is None else bool(vf.get("trunk_grad", True)), T_gate=T_gate,
                      ctx_head=None if vf is None else vf.get("ctx_head"))
     lp_new = t["lp_gate"] + t["lp_card"] + t["lp_cell"]
-    ratio = torch.exp(lp_new - B["lp_old"][idx])
     A, w = B["A"][idx], B["w"][idx]
-    pg = -torch.min(ratio * A, ratio.clamp(1 - clip, 1 + clip) * A)
+    if decoupled is None:
+        ratio = torch.exp(lp_new - B["lp_old"][idx])
+        pg = -torch.min(ratio * A, ratio.clamp(1 - clip, 1 + clip) * A)
+    else:
+        lpp = prox_lp(R, B, idx)
+        is_raw = torch.exp(lpp - B["lp_old"][idx])
+        is_w = is_raw.clamp(max=float(decoupled))
+        ratio = torch.exp(lp_new - lpp)
+        pg = -is_w * torch.min(ratio * A, ratio.clamp(1 - clip, 1 + clip) * A)
     l_pg = (w * pg).sum() * (n_total / len(idx))
     gs, pl = B["gate_sampled"][idx], B["played"][idx]
     cl = t["cell_lp"]
@@ -2851,6 +2893,8 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
             st.update(ent0_gate=float(bern_ent(t0["x"][gs]).mean()) if gs.any() else None,
                       ent0_card=float(cat_ent(t0["card_lp"][pl]).mean()) if pl.any() else None,
                       ent0_cell=float(cat_ent(c0).mean()) if pl.any() else None)
+        if decoupled is not None:                             # LOOP-ASYNC: how stale / truncated these rows were
+            st.update(is_maxdev=float((is_raw - 1).abs().max()), is_trunc_frac=float((is_raw > float(decoupled)).double().mean()))
         if "low" in R:
             st["kl_gate_imit_low"] = None if kl_gi is None else float(kl_gi)
         if vf is not None:
@@ -2872,7 +2916,8 @@ def vf_grad_share(model, B: dict, R: dict, cfg: dict, beta: float, vf: dict) -> 
     N = len(B["A"])
     m = min(int(cfg["minibatch"]), int(cfg.get("micro_batch") or cfg["minibatch"]))   # micro_batch: a micro-batch's rows
     idx = torch.arange(0, N, max(1, N // m), device=B["A"].device)[:m]
-    kw = dict(tau=cfg["tau"], T=cfg["T"], clip=cfg["clip"], beta=beta, n_total=N, T_gate=cfg.get("T_gate"))
+    kw = dict(tau=cfg["tau"], T=cfg["T"], clip=cfg["clip"], beta=beta, n_total=N, T_gate=cfg.get("T_gate"),
+              **({"decoupled": cfg["ppo_decoupled"]} if cfg.get("ppo_decoupled") is not None else {}))
     params = [p for n, p in model.named_parameters() if p.requires_grad and not n.startswith("value_head.")]
     l_v, _ = minibatch_loss(model, B, R, idx, vf={**vf, "policy": False, "trunk_grad": True}, **kw)
     g_reach = torch.autograd.grad(l_v, params, allow_unused=True)
@@ -2887,10 +2932,10 @@ def vf_grad_share(model, B: dict, R: dict, cfg: dict, beta: float, vf: dict) -> 
 
 
 _ST_SUM = ("l_pg", "l_v", "l_post", "l_ab", "n", "post_n", "ab_n")
-_ST_MAX = ("ratio_maxdev", "post_ratio_maxdev", "ab_ratio_maxdev")
+_ST_MAX = ("ratio_maxdev", "post_ratio_maxdev", "ab_ratio_maxdev", "is_maxdev")
 _ST_W = {"kl_gate": "g", "ent_gate": "g", "ent0_gate": "g", "kl_card": "p", "kl_cell": "p", "ent_card": "p",
          "ent_cell": "p", "ent0_card": "p", "ent0_cell": "p", "ratio_mean": "n", "clip_frac": "n",
-         "ent_posture": "post_n", "ent_ability": "ab_n"}
+         "ent_posture": "post_n", "ent_ability": "ab_n", "is_trunc_frac": "n"}
 
 
 def accum_backward(model, B: dict, R: dict, idx, micro: int, n_total: int, kw: dict) -> tuple[torch.Tensor, dict]:
@@ -2998,6 +3043,9 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
                     "ent_pair_rows": sum(x["n"] for x in pr)}
                    if pe else {}),
                 "ratio_mean": avg(ratios), "clip_frac": avg(clips), "grad_norm_mean": avg(gnorms),
+                **({"decoupled": {"c": cfg["ppo_decoupled"], "is_maxdev_first": first.get("is_maxdev") if first else None,
+                                  "is_trunc_frac_ep0": mean(ep0, "is_trunc_frac")}}
+                   if cfg.get("ppo_decoupled") is not None else {}),
                 **({"l_v": mean(last_ep, "l_v"), "l_v_first": first["l_v"] if first else None} if vf is not None else {}),
                 **({"lr_end": opt.param_groups[0]["lr"]} if ka is not None else {})}
 
@@ -3009,7 +3057,8 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
             kw = dict(tau=cfg["tau"], T=cfg["T"], clip=cfg["clip"], beta=beta, vf=vf, T_gate=cfg.get("T_gate"),
                       **({"posture": posture} if posture is not None else {}),
                       **({"ability": ability} if ability is not None else {}),
-                      **({"ent_ref": ent_ref} if pe and ep == 0 and (s // mb) % pe == 0 else {}))
+                      **({"ent_ref": ent_ref} if pe and ep == 0 and (s // mb) % pe == 0 else {}),
+                      **({"decoupled": cfg["ppo_decoupled"]} if cfg.get("ppo_decoupled") is not None else {}))
             if micro and micro < len(idx):                    # LEARNER-SCALE micro_batch: the same minibatch loss and
                 for o in (opt, ctx_opt, post_opt, ab_opt):    # gradient, accumulated over micro-batches (backward per
                     if o is not None:                         # micro-batch; the KL check below sees the whole minibatch)
@@ -3058,9 +3107,10 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
                 ab_opt.step()
             if ka is not None:                                # kl_lr_target: the KL the previous step added (this
                 kn = float(st["kl_gate"] + st["kl_card"] + st["kl_cell"])   # minibatch's KL to the anchor minus the last
-                if kl_last is not None:                       # one's; KL ~ lr^2) steers this step's lr toward ka per step
-                    g = min(2.0, max(0.5, math.sqrt(ka / max(kn - kl_last, ka * 1e-2))))
-                    for pg in opt.param_groups:               # ponytail: x[0.5, 2] per step, [lr/16, 16 lr] overall
+                if kl_last is not None:                       # one's; KL ~ lr^2) steers this step's lr toward ka per step,
+                    tgt = ka if ks is None else min(ka, max(float(ks) - kn, ka * 0.1))   # never aimed past the cap
+                    g = min(1.25, max(0.5, math.sqrt(tgt / max(kn - kl_last, ka * 1e-2))))
+                    for pg in opt.param_groups:               # ponytail: x[0.5, 1.25] per step, [lr/16, 16 lr] overall
                         pg["lr"] = min(max(pg["lr"] * g, lr0 / 16), lr0 * 16)
                 kl_last = kn
             opt.step()
@@ -3628,6 +3678,29 @@ def freeze_heads(model, cfg: dict, log=None) -> Optional[dict]:
     return out
 
 
+TH_DRIFT_ROWS = 1024                 # OPP-LEARN-C: the drift monitor's fixed rows (the first batch's first rows)
+
+
+def th_drift(model, ref, rows: dict) -> dict:
+    """OPP-LEARN-C frozen-head drift monitor: freeze_heads keeps the timing / ability head WEIGHTS fixed, but the shared
+    trunk trains, so their OUTPUTS can move. -> per head pair present (hazard / tick, ab_hazard / ab_tick), ``model`` vs
+    ``ref`` (the init) on the same fixed ``rows`` (e1_eval.gen_batch tensors): mean / max |sigmoid(hazard) diff|, mean
+    sigmoid(hazard) of both, and the mean KL(ref || model) of the tick-in-slot softmax. No grad; float64."""
+    with torch.no_grad():
+        h = [E.GenPolicy(m, (), {"ctx": dict.fromkeys(m.opp["ctx_tokens"], 0)} if E.opp_ctx_keys(m) else None
+                         ).heads_t(rows)[1] for m in (ref, model)]
+    out = {"rows": int(h[0]["hazard"].shape[0])}
+    for hz, tk in (("hazard", "tick"), ("ab_hazard", "ab_tick")):
+        if hz not in h[0]:
+            continue
+        p0, p1 = (torch.sigmoid(x[hz].double()) for x in h)
+        l0, l1 = (torch.log_softmax(x[tk].double(), dim=-1) for x in h)
+        d = (p1 - p0).abs()
+        out[hz] = {"mad": float(d.mean()), "max": float(d.max()), "p_init": float(p0.mean()), "p_now": float(p1.mean()),
+                   "tick_kl": float((l0.exp() * (l0 - l1)).sum(-1).mean())}
+    return out
+
+
 def opp_learner_meta(ick: dict, cfg: dict) -> dict:
     """OPP-LEARN: a timing-head (P2 opponent) init as the learner. -> the checkpoint keys its saves / snapshots must carry
     (model_gen.load_model rebuilds the architecture from ``opp`` + ``memory``; e1_eval.GenPolicy needs ``opp_sim``).
@@ -3699,7 +3772,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                               "tau_phase", "memory", "memory_aux", "memory_encoder_frozen",
                               "memory_zero_empty", "learner_deterministic", "kl_stop_prev", "stored_values",
                               "ent_init_rows", "lazy_refine", "ent_pair_every", "matches_per_update", "micro_batch", "mem_row_cache",
-                              "barrel_decoy_sim", "kl_lr_target") + OPP_TEMPO_KEYS
+                              "barrel_decoy_sim", "kl_lr_target", "ppo_decoupled") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS and k not in CROWN_KEYS
                 and k not in HT.KEYS and k not in CF.KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
@@ -3751,6 +3824,13 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
         if rr != 1:                                           # the anchor must BE the previous update's policy
             raise SystemExit(f"kl_stop_prev needs kl_ref_refresh_every: 1 (the KL anchor = the previous update's "
                              f"policy), got {rr!r}")
+    dc = cfg.get("ppo_decoupled")                            # LOOP-ASYNC decoupled PPO: absent / null = off
+    if dc is not None:
+        if isinstance(dc, bool) or not isinstance(dc, (int, float)) or not (math.isfinite(dc) and dc >= 1):
+            raise SystemExit(f"ppo_decoupled (the importance-weight cap c) must be null or a finite number >= 1, got {dc!r}")
+        if rr != 1 or any(cfg.get(k) is not None for k in ("kl_ref_gate", "kl_ref_card", "kl_ref_gate_max_elixir")):
+            raise SystemExit("ppo_decoupled needs kl_ref_refresh_every: 1 and no kl_ref_gate / kl_ref_card / "
+                             "kl_ref_gate_max_elixir (pi_prox = the KL anchor's terms = the update-start policy)")
     if cfg.get("lazy_refine") is not None and type(cfg["lazy_refine"]) is not bool:   # LOOP-LRN: absent / null / false = off
         raise SystemExit(f"lazy_refine must be a bool or null, got {cfg['lazy_refine']!r}")
     pe = cfg.get("ent_pair_every")                           # LOOP-LRN paired entropy-floor baseline: absent / null = off
@@ -3825,6 +3905,8 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "ent_pair_every"}
     if cfg.get("micro_batch") is None:                       # LEARNER-SCALE accumulation off = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "micro_batch"}
+    if cfg.get("ppo_decoupled") is None:                     # LOOP-ASYNC decoupled PPO off = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "ppo_decoupled"}
     if not cfg.get("mem_row_cache"):                         # LEARNER-SCALE MEM row cache off = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "mem_row_cache"}
     if cfg.get("kl_lr_target") is None:                      # LEARNER-SCALE KL-adaptive lr off = the historical hash
@@ -4846,6 +4928,15 @@ class Learner:
                          **({"ent_ref": getattr(self, "ref_init", self.ref)} if pe else {}))
         if pe:                                                # the guard compares policy and init on the SAME rows
             ent_init = upd["ent_pair_init"]
+        th_dr = None
+        if getattr(self, "th", False):                        # OPP-LEARN-C: frozen-head output drift vs the init
+            if getattr(self, "th_rows", None) is None:        # ponytail: rows fixed per PROCESS (a resume re-picks them
+                n = min(len(B["A"]), TH_DRIFT_ROWS)           # from its first batch; the reference stays the init)
+                self.th_rows = E.gen_batch(self.model, B, torch.arange(n, device=B["A"].device))
+            th_dr = th_drift(self.model, getattr(self, "ref_init", self.ref), self.th_rows)
+            self.log(f"[rl] th_drift u{u:04d} rows {th_dr['rows']} " + " ".join(
+                f"{k} mad {v['mad']:.2e} max {v['max']:.2e} p {v['p_init']:.4f}->{v['p_now']:.4f} tick_kl {v['tick_kl']:.2e}"
+                for k, v in th_dr.items() if k != "rows"))
         mark("ppo_update")
         t_upd = time.perf_counter() - t1
         if prof is not None:
@@ -4866,7 +4957,8 @@ class Learner:
                          f"{cfg.get('kl_heads')}")
             bad = first["ratio_maxdev"] >= ASSERT_RATIO or max(kl0) >= ASSERT_KL or (
                 (first.get("post_ratio_maxdev") or 0.0) >= ASSERT_RATIO) or (     # C1: the posture's own ratio
-                (first.get("ab_ratio_maxdev") or 0.0) >= ASSERT_RATIO)            # B6: the press's own ratio
+                (first.get("ab_ratio_maxdev") or 0.0) >= ASSERT_RATIO) or (       # B6: the press's own ratio
+                (first.get("is_maxdev") or 0.0) >= ASSERT_RATIO)                  # ppo_decoupled: stored vs recompute
             if glo is not None:
                 self.log(f"[rl] kl_ref_gate_max_elixir {glo['max_elixir']}: update-0 KL_gate_imit_low to "
                          f"{cfg['kl_ref_gate']} = {R['kl_lo_init']:.4f} (full batch) -> beta_g target "
@@ -4941,6 +5033,7 @@ class Learner:
                "entropy": upd["ent"], "entropy_init": ent_init, "clip_frac": upd["clip_frac"],
                **({"entropy_pair": upd["ent_pair"], "ent_pair_rows": upd["ent_pair_rows"]} if pe else {}),
                "ratio_mean": upd["ratio_mean"], "grad_norm_mean": upd["grad_norm_mean"],
+               **({"decoupled": upd["decoupled"]} if "decoupled" in upd else {}),
                "first_minibatch": {k: first[k] for k in ("ratio_maxdev", "kl_gate", "kl_card", "kl_cell", "lp_maxdiff")},
                "picked": rinfo["picked"], "skipped": rinfo["skipped"],
                **({"matchups": rinfo["league"]} if league else {}), "visits_distinct": sum(v > 0 for v in self.visits),
@@ -4948,6 +5041,8 @@ class Learner:
                "wall_rollout_s": t_roll, "wall_update_s": t_upd,
                "actor_s_per_match": {a: s["wall_s"] / max(s["matches"], 1) for a, s in rinfo["actors"].items()},
                "actor_gpu_peak_mb": {a: s["gpu_peak_mb"] for a, s in rinfo["actors"].items()}}
+        if th_dr is not None:                                  # OPP-LEARN-C frozen-head drift (timing-head learner only)
+            rec["th_drift"] = th_dr
         if gae_on:
             rec["gae"] = {**gst, "l_v": upd["l_v"], "l_v_first": upd["l_v_first"], "critic_warmup": warm,
                           "gamma": ac["gae_gamma"], "lambda": ac["gae_lambda"], "vf_coef": ac["vf_coef"],

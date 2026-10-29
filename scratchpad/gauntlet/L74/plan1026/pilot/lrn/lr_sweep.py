@@ -63,9 +63,10 @@ def main():
     ap.add_argument("--arms", default=ARMS, help="name:minibatch:lr,...")
     ap.add_argument("--micro", type=int, default=1024)
     ap.add_argument("--out", type=Path, required=True)
+    ap.add_argument("overrides", nargs="*", help="config key=value overrides for every arm (e.g. mem_row_cache=true)")
     a = ap.parse_args()
     a.out.parent.mkdir(parents=True, exist_ok=True)
-    base = {**R.load_config(SG.REPO / a.config, [], smoke=False), "T_gate": a.T_gate, "stored_values": True}
+    base = {**R.load_config(SG.REPO / a.config, a.overrides, smoke=False), "T_gate": a.T_gate, "stored_values": True}
     load = (lambda ds: [LR.to_result(LR.decode(p.read_bytes())) for d in ds for p in sorted(Path(d).glob("*.rec"))])
     if a.train:
         tr, held = load(a.train.split(",")), load(a.held.split(","))
