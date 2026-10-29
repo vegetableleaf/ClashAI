@@ -1,0 +1,48 @@
+# FRESH7 FREEZE (ENG-FIX4, 2026-10-29), list committed (d978ab3) BEFORE any SME run on FRESH7. No fix on these matches before the run below is scored.
+# List: fresh/FRESH7.tsv (22 Ranked battles; live logs starting at or after 2026-10-29 04:43 EDT, after FRESH6's last log 044249 (excluded); battle log to 2026-10-29T10:16:13Z); build 160635001. None scored before.
+## extraction (laptop, fresh/fresh_prep.sh FRESH7.tsv engfix/fresh7; flags = FRESH6's + SME_ZAP_DEAD (ENG-FIX4 r7 field gate); SME_TZ_REACH / SME_ZAP_DOT / SME_RASCAL_EDGE2 / SME_OWN_PENDCAST / SME_ZD_BLDG NOT set (no-regression owed))
+list efce94193d645eaaef9d5e7daed5c9bef4b9ce0510dd935577735360034cf465 22 matches
+repo HEAD 1e8f59a056584cb070b4f321e71a4d8652033e08
+file scratchpad/gauntlet/L74/crforge/pilot/extract/extract.py fc1b160240f75f5df13d73dd575bed2df3738c45 committed
+file scratchpad/gauntlet/L74/crforge/pilot/sme/mech_rules.py f75de9c867cde5ba517e9aba103796bc4d7fb77c committed
+file scratchpad/gauntlet/L74/crforge/pilot/sme/bp_rules.py 1a3c64db492716d37410c118a3718b57dca49209 committed
+file scratchpad/gauntlet/L74/crforge/pilot/sme/live_frames.py 221b0f005009dccc17834724d152ee5b17777612 committed
+file scratchpad/gauntlet/L74/crforge/pilot/sme/regen_inputs.py 946d1fa987df5aa75bb23de3e697090d3c348fce committed
+file scratchpad/gauntlet/L74/crforge/pilot/sme/fresh/regen_fresh.py d9df2d94d7c300eaf63e287576f56e3632a7414a committed
+file scratchpad/gauntlet/L74/crforge/pilot/sme/fresh/regen_fresh.sh 43624ae69888a2cd42ad3c7209ce9d341e4962fa committed
+file scratchpad/gauntlet/L74/crforge/pilot/sme/bp9/order_inputs.py f13de48e7390cac3f23a46fb417e236674e4a95a committed
+file scratchpad/gauntlet/L74/crforge/pilot/sme/sme_live.py 5fb9a3f7c1a9ef2391e287f3115fd3063438f41a committed
+file scratchpad/gauntlet/L74/parity/fights.py b5d270b4f21b504652bb2989a0ec7e5b7d09d58d committed
+file scratchpad/gauntlet/L74/parity/core.py 0527f5292980c6d02ed57916bbf812778404c835 committed
+tables C:/Users/benpe/ClashBot/.foreman/scratch/reader_torn/sme/tables/16.635.3 1243a2df37db1ea4963521c31a06448d184df22a63bd3d1ddebacc29e568d3e8
+flags regen_fresh.sh + SME_HIDDEN_GEN=1 SME_TOWER_ZAP=1 SME_ZAP_CHAIN1=1 SME_TOMB_HERO=1 SME_BB_RISE=1 SME_OWN_SPAWN=1 SME_OWN_NEARDEAD=1 SME_OWN_BODYPT=1 SME_SPELL_KING=1 SME_HIDDEN_CHILD=1 SME_NEAR_BIGGER2=1 SME_ZAP_DEAD=1
+inputs_all ab8f99fe8601d6283b2a56dd5f834bb3878e7c96d0231e2c902d68515710f84f 22
+inputs_rngfree 7f81ffe5416c00ab502edbc0396df3a4a786f913fe6cd781d7556e16d3332902 11
+frames bed6b2c87d0e177764ca1be3ccd19b4cd2d1e6be171ef50e2c4f0e64b78a975e 11 files
+skips 0
+## RNG-free 11, unflagged 6 (opp_no_fitting_deal 050136 051010 054032 055656; own_cycle_fail 060537); tower_zap firings 0; zap_dead firings 0; reader_hidden windows 0 (so SME_HIDDEN_ASSIGN on = off by construction)
+## SME (pod 32657, CPUs 52-53, WORKERS=2: Codex ENG-FIX4_1 holds 28-53 with WORKERS=12): code /workspace/pilot/f1fix/sme11f (as FRESH6), lib /workspace/crforge_main/5e8089a4/tickprobe/lib, tables 16.635.3; driver flag SME_BANNER_GIVEN=1; comparator SME_HIDDEN_ASSIGN off (default; owner to ratify)
+command: cd /workspace/pilot/f1fix && WORKERS=2 taskset -c 52-53 bash runH.sh F7_main /workspace/crforge_cache/tables/16.635.3 /workspace/pilot/fresh7/inputs_rngfree.jsonl /workspace/pilot/fresh7/frames SME_LIB=/workspace/crforge_main/5e8089a4/tickprobe/lib SME_BANNER_GIVEN=1
+## live log sha256 (22)
+391c314c8b47777be9bef48640b80daaca358e2a450a804d465df892b85a33d5  scratchpad/gauntlet/L68/live_reader/live_play_20261029_044601.jsonl
+10fa5a11f4af422193a06605f71eb28c5c7e470e3b46a9a78d243e72fdeba992  scratchpad/gauntlet/L68/live_reader/live_play_20261029_045042.jsonl
+f1fcc5744a923b380823d6975c11e7cc87604d111da32c1c58daeae719f5dfa2  scratchpad/gauntlet/L68/live_reader/live_play_20261029_045357.jsonl
+078260d81e8a6e0366bb92db8b22e8f55e31b39809872aebb4f128ac944a67d4  scratchpad/gauntlet/L68/live_reader/live_play_20261029_045759.jsonl
+d7e0c438cc7ca11e90c66070d19528ca33bfe9c2624586710fac261b01750ba8  scratchpad/gauntlet/L68/live_reader/live_play_20261029_050136.jsonl
+a4ff5b6d22530fd7dd1b2d732a7b95cf9541842eb9af2812f1572d08686c0e43  scratchpad/gauntlet/L68/live_reader/live_play_20261029_050656.jsonl
+3f9ad33b5f1f7f430bdac716027334bc634a5ce14e35f92fd49ce00eb2368c54  scratchpad/gauntlet/L68/live_reader/live_play_20261029_051010.jsonl
+78238fb531482398df60062238ee7f2e80ab0ed55a9ae1fde0f4b5ff21b4a645  scratchpad/gauntlet/L68/live_reader/live_play_20261029_051529.jsonl
+62e999091d1c208447c9e3c6f7bfab82d528a5719c6d4d05307e2c5438171504  scratchpad/gauntlet/L68/live_reader/live_play_20261029_051848.jsonl
+109982833e761326aa882997c82faf09b11cc41ec2a0d616d3421aa751b2edc3  scratchpad/gauntlet/L68/live_reader/live_play_20261029_052206.jsonl
+4bbcd025673069a410e641b6a01b17381db2ad20400cb4daea41e925ed0cf03c  scratchpad/gauntlet/L68/live_reader/live_play_20261029_052724.jsonl
+d843d5fee79e0db0c6d22b5194b683dbe872bdd23b19c45035e69e36078f45b2  scratchpad/gauntlet/L68/live_reader/live_play_20261029_053154.jsonl
+11521cf4013f9c830412ca32cf15023ef4cb342af1903bd343ed75d416eba3a0  scratchpad/gauntlet/L68/live_reader/live_play_20261029_053530.jsonl
+a1413851f1bdd6832ad2c3e9792f7b66b3c974257f2da7df564a67d2b90d9aa2  scratchpad/gauntlet/L68/live_reader/live_play_20261029_054032.jsonl
+0c1abfe4b14f626ac80083cac9b97e701feaea24a337d838133c6f53c26bc78e  scratchpad/gauntlet/L68/live_reader/live_play_20261029_054352.jsonl
+9809d3d225c8551f4289fcc3ee1482cbd03bfb8b80d021571e4adb3cfa9c8e1f  scratchpad/gauntlet/L68/live_reader/live_play_20261029_054913.jsonl
+43b0ef587fe7debb6a2c26e15a4a8958a24bb72d369c6216b1c70c99d6a2eb62  scratchpad/gauntlet/L68/live_reader/live_play_20261029_055437.jsonl
+0d22acf72afbc1448577d906448d59047b2f9719564690027ac03a6a6be45dc2  scratchpad/gauntlet/L68/live_reader/live_play_20261029_055656.jsonl
+2527fd5a9dfd7594bf236c1f196dd674da5eb6139854ebc0b2983cac02887bf2  scratchpad/gauntlet/L68/live_reader/live_play_20261029_060218.jsonl
+af62395e6174338e27dd516af0083f1e1ec65870b00f73043cbd24df5bd2b066  scratchpad/gauntlet/L68/live_reader/live_play_20261029_060537.jsonl
+722de91bd13471f91bf97283b1f158530c7ebdf91a702e18cd60f21516f007f9  scratchpad/gauntlet/L68/live_reader/live_play_20261029_061003.jsonl
+063d16ff4c598b68f0f4094384d6937264584c4c80135f32e0a794bee21a1327  scratchpad/gauntlet/L68/live_reader/live_play_20261029_061315.jsonl
