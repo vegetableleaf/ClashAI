@@ -2558,7 +2558,14 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
   - **Running:** Codex ENG-FIX2_1 (pid file `.foreman/scratch/a2/codex/out/ENG-FIX2_1.jsonl.pid` = 2047381, ticket
     `.foreman/scratch/a2/codex/ENG-FIX2_1.md`, results `engfix/r6/`): SPELL_KING + HIDDEN_CHILD OFF vs ON on dev /
     FRESH1-5, lib 5e8089a4. If 0 regressions and plants 0 missed: add both flags to fresh_prep.sh (+ its flags echo) for
-    FRESH6+. Restart: the same launcher with a fresh OUT name.
+    FRESH6+. Restart: the same launcher with a fresh OUT name. State at 04:00 EDT 10-29 (a, Codex messages): the
+    fresh5 OFF rebuild equals the frozen inputs byte for byte; every set passed the field gate; 134 matches changed (dev
+    60, FRESH1 3, FRESH2 18, FRESH3 7, FRESH4 40, FRESH5 6; SPELL_KING re-dates about half of all king-thrown spells, so
+    most changes are tick moves the fitter used to make). Pod runs EF6_* are going on 32657 CPUs 28-53 (dev OFF at 4 / 60
+    after ~20 min, so the batch needs several hours). Take the table from `engfix/r6/` and the final message from
+    `.foreman/scratch/a2/codex/out/ENG-FIX2_1.jsonl`. HIDDEN_ASSIGN is a comparator flag: its batch was run separately
+    (`engfix/hassign_nr.txt`) and it is NOT for fresh_prep.sh (extractor flags only); it goes into runH.sh only if the
+    lead accepts it.
   - **Lead 10-29: SME_HIDDEN_UNIQ rejected (it turned ambiguous frames into torn_hidden). Built instead: SME_HIDDEN_ASSIGN
     (sme_live.hidden_assign, off by default):** a frame with reader-hidden bodies scores exact or div, never torn. Per
     (side, name), the k hidden bodies (k <= 3) are assigned one-to-one to sim rows of that name by minimum total distance
