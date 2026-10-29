@@ -2615,10 +2615,11 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
     (not strict) only together with the extractor flag HIDDEN_CHILD. No gate set has been rerun with it yet. The
     numbers already reported (FRESH2-5, 93/114) are all ASSIGN off.
   - **RESTART POINT (ENG-FIX2 stopped for context, 10-29 ~04:45 EDT), in order:**
-    1. Wait for Codex ENG-FIX2_1 (r6) to finish: final message in `.foreman/scratch/a2/codex/out/ENG-FIX2_1.jsonl`
-       (`STATUS: DONE|BLOCKED`), table in `engfix/r6/`. Check its numbers yourself. If 0 regressions and plants 0 missed:
-       add `SME_SPELL_KING=1 SME_HIDDEN_CHILD=1` to fresh_prep.sh line 11 (the regen env) AND line 25 (the flags echo),
-       update its header comment, commit.
+    1. DONE: Codex ENG-FIX2_1 (r6) STATUS DONE. My own tally of `engfix/r6/table.txt` (a): 134 changed matches (dev
+       60, FRESH1 3, FRESH2 18, FRESH3 7, FRESH4 40, FRESH5 6); 1 fixed (151109, 3031/3031), 133 same class, 0 regressed.
+       No match lost exact frames, no first div moved earlier, plants 0 missed, 0 new flags. 210016: 44 div -> 28 div +
+       16 torn_hidden (ASSIGN off). The launcher's exit code 1 was a cp1252 print error after the final message.
+       **fresh_prep.sh now sets SME_SPELL_KING=1 SME_HIDDEN_CHILD=1 (FRESH6+).**
     2. Only after r6 has freed 32657: wire ASSIGN into the gate code behind its flag by copying the repo's
        `sme/sme_live.py` (LF; `tr -d '\r'`) over `/workspace/pilot/f1fix/sme11f/sme_live.py`. runH.sh needs no edit:
        pass `SME_HIDDEN_ASSIGN=1` as a trailing VAR=val argument. First keep a backup `sme_live.py.pre_assign`. Check

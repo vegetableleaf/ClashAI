@@ -1,0 +1,410 @@
+fresh5 OFF byte equality PASS (LF)
+dev: OFF=138 ON=138 SHA256={'off': 'e094c402324a63e4d6585f6cd11f841ac7ef7eb920c0196bf5e68465f454f5ab', 'on': 'd91583504174f5d00381ebdf4d8b952371f35e82536e164ce05ab407025fe0b7'} OFF prefix equality=True
+dev live_play_20261026_082025: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_094126: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_100018: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_100354: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_101112: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_101749: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_141505: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_144057: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_144615: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_145247: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_154839: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_155201: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_160930: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_161448: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_162012: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_165839: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_170912: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_171753: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_172835: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_174147: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_181217: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_194213: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_194858: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_202455: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_203752: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_204837: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_205934: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_210249: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_210720: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_211757: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_212111: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_214710: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_215757: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_221926: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_222240: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_223723: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_225213: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_230512: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_233436: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_233957: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_234837: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_235355: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261026_235915: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261027_000233: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261027_001702: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261027_002021: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261027_002429: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261027_004550: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261027_004901: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261027_014151: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261027_020134: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261027_021852: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261027_022149: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261027_023451: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261027_023839: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: [{"side": 0, "tick": 3429, "run_ticks": [3429, 3430], "source": "cast_seen", "unit_index": null, "tomb_swap": null}]
+  ON Tombstone ability rows: [{"side": 0, "tick": 3429, "run_ticks": [3429, 3430], "source": "cast_seen", "unit_index": null, "tomb_swap": null}]
+dev live_play_20261027_030951: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261027_032352: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261027_033729: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261027_041141: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+dev live_play_20261027_041602: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh1: OFF=9 ON=9 SHA256={'off': 'd365b39c3d1f3fd78a084ef5b14c5fab58d9162466ab287263d0bab68e1f5d96', 'on': '564fdb24d3dd4fbed739fee046dbfcec3659c1f4027034b3d7cdff3f6c146a23'} OFF prefix equality=True
+fresh1 live_play_20261028_003008: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh1 live_play_20261028_010318: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh1 live_play_20261028_010824: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh2: OFF=40 ON=40 SHA256={'off': '6b34fe7221c47dad29f05f2a8fef75ac4b0bc7f81a6f706e1140c5432119aa90', 'on': '17b48c1caceee0950fb2369e11ffa58d9d97ffeac67e46edee6d0594a98333c3'} OFF prefix equality=True
+fresh2 live_play_20261028_080427: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh2 live_play_20261028_081253: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh2 live_play_20261028_083923: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh2 live_play_20261028_084638: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh2 live_play_20261028_085416: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh2 live_play_20261028_095125: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh2 live_play_20261028_095444: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh2 live_play_20261028_100341: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: [{"side": 1, "tick": 2928, "run_ticks": [2928, 2929], "source": "tomb_active", "unit_index": 2, "tomb_swap": [2928, 2930, 1]}]
+  ON Tombstone ability rows: [{"side": 1, "tick": 2928, "run_ticks": [2928, 2929], "source": "tomb_active", "unit_index": 2, "tomb_swap": [2928, 2930, 1]}]
+fresh2 live_play_20261028_101018: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh2 live_play_20261028_103056: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh2 live_play_20261028_103409: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh2 live_play_20261028_110715: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh2 live_play_20261028_111523: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh2 live_play_20261028_120054: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh2 live_play_20261028_120406: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh2 live_play_20261028_120902: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh2 live_play_20261028_125629: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh2 live_play_20261028_130522: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh3: OFF=17 ON=17 SHA256={'off': '5512160c777db7201d77d12c2a8901d4a470b601d5f3e3cbf5f2d779027f1507', 'on': 'a450d5a3630c5d96250936b4b20863af3250c1895438c5e522fd584af587a749'} OFF prefix equality=True
+fresh3 live_play_20261028_131923: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh3 live_play_20261028_132440: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh3 live_play_20261028_133211: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh3 live_play_20261028_141254: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh3 live_play_20261028_143825: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh3 live_play_20261028_144727: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh3 live_play_20261028_145247: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4: OFF=78 ON=78 SHA256={'off': '9e16678732fe7bc5e5aec0c92bfeca64e28c30a95cf1b8b492c98faeed747aab', 'on': 'e9d5789a25b1d1e2a7858997b4523477f0e09acc2477cb53b3a10653a566353d'} OFF prefix equality=True
+fresh4 live_play_20261028_151109: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_152022: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_152540: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_153755: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_160144: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_162534: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_163354: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_165724: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: [{"side": 1, "tick": 547, "run_ticks": [547, 548], "source": "tomb_active", "unit_index": 2, "tomb_swap": [547, 549, 0]}, {"side": 1, "tick": 1996, "run_ticks": [1996, 1997], "source": "tomb_active", "unit_index": 2, "tomb_swap": [1996, 1998, 0]}, {"side": 1, "tick": 4077, "run_ticks": [4077, 4078], "source": "tomb_active", "unit_index": 2, "tomb_swap": [4077, 4079, 0]}]
+  ON Tombstone ability rows: [{"side": 1, "tick": 547, "run_ticks": [547, 548], "source": "tomb_active", "unit_index": 2, "tomb_swap": [547, 549, 0]}, {"side": 1, "tick": 1996, "run_ticks": [1996, 1997], "source": "tomb_active", "unit_index": 2, "tomb_swap": [1996, 1998, 0]}, {"side": 1, "tick": 4077, "run_ticks": [4077, 4078], "source": "tomb_active", "unit_index": 2, "tomb_swap": [4077, 4079, 0]}]
+fresh4 live_play_20261028_171948: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_172508: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_172955: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_174806: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_180343: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_181209: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_184534: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_194024: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_194921: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_200424: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_203126: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_203444: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_204439: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_210016: fields=['plays', 'reader_hidden'], parsed_equal=False, text_equal=False
+  reader_hidden: OFF=[{"side": 1, "name": "Golem", "last": 2066, "end": 2154, "track": {"2068": [5516, 8871], "2070": [5470, 8831], "2072": [5424, 8791], "2100": [5070, 8090], "2134": [4698, 7770], "2136": [4698, 7770]}}] ON=[{"side": 1, "name": "Golemite", "last": 2066, "end": 2154, "track": {"2068": [5516, 8871], "2070": [5470, 8831], "2072": [5424, 8791], "2100": [5070, 8090], "2134": [4698, 7770], "2136": [4698, 7770]}}]
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_213421: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_220244: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_222707: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_223022: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_223547: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_224625: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_225340: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_230352: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_232157: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_232834: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261028_235834: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261029_000242: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261029_000804: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261029_001538: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261029_001856: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261029_002202: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261029_002515: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh4 live_play_20261029_003649: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh5: OFF=15 ON=15 SHA256={'off': '00ea1059a358f8c12c2a3b8c29ffacfe9f937f49bf1bf752ed9da15d17d80068', 'on': '8f4cb92d6d3c6f715235d6e9bf7b38374412b7da9caf08726f1656a2a288f049'} OFF prefix equality=True
+fresh5 live_play_20261029_004719: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh5 live_play_20261029_011004: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh5 live_play_20261029_011517: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh5 live_play_20261029_014019: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh5 live_play_20261029_015549: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
+fresh5 live_play_20261029_021629: fields=['plays'], parsed_equal=False, text_equal=False
+  OFF Tombstone ability rows: []
+  ON Tombstone ability rows: []
