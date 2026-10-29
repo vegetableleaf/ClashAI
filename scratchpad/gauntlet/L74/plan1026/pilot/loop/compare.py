@@ -89,18 +89,19 @@ def main():
         assert R.row_key(p) == R.row_key(f)
         tp, tf = p["traj"], f["traj"]
         n = min(len(tp["played"]), len(tf["played"]))
+        lpk = [k for k in LP if k in tp and k in tf]          # OPP-LEARN-C: a timing learner has no ab_lp
         first = None
         for r in range(n):
             bad = [k for k in tp if k not in LP and k in tf and np.asarray(tp[k][r]).tobytes() != np.asarray(tf[k][r]).tobytes()]
             if bad:
                 first = {"row": r, "keys": bad, "tick": int(tp["tick"][r]) if "tick" in tp else None,
-                         **{f"{k}_prod": float(tp[k][r]) for k in LP}, **{f"{k}_fast": float(tf[k][r]) for k in LP},
+                         **{f"{k}_prod": float(tp[k][r]) for k in lpk}, **{f"{k}_fast": float(tf[k][r]) for k in lpk},
                          "prod": {k: np.asarray(tp[k][r]).tolist() for k in ("played", "slot", "cell", "allowed")},
                          "fast": {k: np.asarray(tf[k][r]).tolist() for k in ("played", "slot", "cell", "allowed")}}
                 for k in bad:
                     keys_bad[k] = keys_bad.get(k, 0) + 1
                 break
-            for k in LP:
+            for k in lpk:
                 lp_max[k] = max(lp_max[k], abs(float(tp[k][r]) - float(tf[k][r])))
         rep.append({"key": list(map(str, R.row_key(p))), "outcome": [p["outcome"], f["outcome"]],
                     "end_tick": [p["end_tick"], f["end_tick"]], "rows": [len(tp["played"]), len(tf["played"])],

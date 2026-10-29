@@ -30,6 +30,75 @@ adapt_beta fixed at lambda; freeze_heads absent / refusals; config_sha(absent) =
 unchanged without the opp init. Existing: test_timing_head_decode + test_league 42 passed, 1 skipped, 2 failed -- the same
 2 (TestSelfPlayCounters, x_bow vs x-bow names) fail on the unchanged tree too (a: pre-existing).
 
+## OPP-LEARN-C (2026-10-29): bot-partner decode, frozen-head drift monitor, fast-loop learner seat, calibration
+
+### STATUS (keep current)
+- The rl_royale.py hunks were swept into LEARNER-SCALE2 daaecbf (identical to this patch; checked by diff); tests, producer /
+  compare and the learner/ files are this commit. Lead 10-29: calibration learner on 33308 GPU1 only (RAM <= 30 GB, <= 40
+  actors, ONE lambda run at a time: 0.1 first, then 0.03 / 0.3); never the 33903 GPU; bar scored on D3 + the sampled-decode
+  number beside it; dry-run on v0 until P2-OPP2 reports v1.
+- DONE (code; opt-in, absent = unchanged): (1) bot partner decode + icebow pool, (2) th_drift monitor, (3) fast-loop timing
+  LEARNER seat. Calibration run (4) NOT STARTED: waits for v1 (P2-OPP2: seed 0 at step 62.5k of 100k at 00:50 UTC, then
+  attach_sim + level A + level B v1s0 by Codex P2OPP2_3).
+- Pod 33903 (CPUs 200-219, <= ~20 GB; GPU = P2-OPP2's): trees /workspace/opplearnc/cbc_base (HEAD c5383b3 pipeline over
+  /workspace/opplearn/cb) and /workspace/opplearnc/cbc (+ this change + HEAD loop / speed dirs); chain /workspace/opplearnc/chainc.sh (= learner/chainc.sh);
+  fast loop / compare wrapper /workspace/opplearnc/fl.sh (= learner/fl_pod.sh) (`fl.sh fast RUN CPUS CONFIG [rl args]`, `fl.sh cmp MSG OUT CPUS [compare
+  args]`, CPU only); rl logs /workspace/opplearn/logs/oplc_*.log, fast-loop logs /workspace/opplearnc/logs/.
+- Pod smokes (a, 33903 CPUs 200-219, crforge fe364ceb + tables 16.635.3, CPU learner):
+  | run | tree / path | config (sha) | W16 u0000 batch / weights | W16 u0001 batch / weights | result |
+  |---|---|---|---|---|---|
+  | oplc_base1 | HEAD c5383b3, rl_royale | succ48_x_s101 (b5e2a2bbafef) | b43dd869 / 3e07cff4 | 70b4b263 / d9fd3a96 | SMOKE PASS |
+  | oplc_new1 | + this change, rl_royale | succ48_x_s101 (b5e2a2bbafef) | b43dd869 / 3e07cff4 | 70b4b263 / d9fd3a96 | SMOKE PASS; w16_batch / w16_matches u0000-u0001 byte-identical to base1 (cmp) |
+  | oplc_bot1 | + this change, rl_royale | opp_learner_bot_smoke (d7d470c17283), v0 init | cb89adf5 / b3eaf2ad | c3eee81d / 10d4a5ed | SMOKE PASS (freeze 7,062 params unmoved, resume all True) |
+  | oplc_fl2 | + this change, FAST LOOP (1 producer x 8 matches, CPU) | same | cb89adf5 / b3eaf2ad | c3eee81d / 10d4a5ed | SMOKE PASS = production's shas on both updates |
+  th_drift (a, bot1 = fl2): u0000 hazard mad 1.85e-3 max 7.3e-3 p .1851 -> .1869 tick_kl 7.5e-7, ab mad 8.1e-5; u0001 hazard mad 2.0e-3
+  max 8.0e-3 p .1851 -> .1871 tick_kl 1.2e-6, ab mad 1.2e-4 (182 rows = the first batch's rows).
+- compare.py (a, CPU, fast_msg_u0000 of oplc_fl1 = 6 init + 2 CLXIII-bot jobs, /workspace/opplearnc/cmp1.json): 8/8 matches
+  identical, learner rows 3,192 / 3,192 (every traj key incl. th_j / th_ab / deck_gid / ctx_*), learner decisions 3,192 and
+  init-opponent (frozen timing seat) decisions 2,367 identical (row shas), lp max 0, memory tables 8/8, ability presses 9 / 9 per
+  side, bot opponent plays equal per match (the bot seats take the fast decide: no _record trace on that path, as before).
+- (b) learner vs the identical-weight init won 0/6 at u0000 and 3/6 at u0001 (groups of G 4 repeats are correlated; n too small to
+  call). Watch by_opp init ~0.5 in the first calibration updates.
+
+### What was built
+| piece | where | switch |
+|---|---|---|
+| (1) bot partner decode | rl_royale `EXPLOITER_OWN` + `T_gate` (> 0) and `tau_phase` (3 numbers in (0, 1)); `own_opp_cfg` puts them on THAT opponent's cfg (e1_eval.sample_decide_batch reads cfg T_gate / tau_phase). League opponents otherwise keep T_gate None (= their T) and no tau_phase, as before | a league_exploiters entry's keys; absent = cfg unchanged |
+| (1) icebow bot pool | `league_exploiters.decks: icebow` = [ICEBOW_DECK], p [1] (league_decks drops icebow by design); the list form takes several bots | the literal "icebow" |
+| partners | `learner/opp_learner_bot_smoke.yaml`: bot = CLXIII NOLEAK on icebow, T .5, T_gate .1, tau .35, tau_phase [.35, .45, .55], decide_every 10 (the run's), share .6 + heroiw_press live; human-model partner = league_mix init 1.0 (the frozen imitation init at the run's T 1) for the other .4 | config |
+| (2) th_drift | rl_royale `th_drift(model, ref, rows)` + Learner.one_update (timing-head learner only): the first batch's first `TH_DRIFT_ROWS` = 1,024 rows fixed (e1_eval.gen_batch tensors), after every update: hazard / ab_hazard mean + max \|sigmoid diff\| vs ref_init (the init), mean p init -> now, mean KL(init \|\| now) of the tick softmax; log line `[rl] th_drift uNNNN` + rec["th_drift"] in train_log.jsonl | automatic for a timing-head init (no key; a gate model never runs it) |
+| (3) fast-loop learner seat | producer.py: learner = model_gen.load_model(base["opp_init"]) + GenPolicy(opp_sim) (actor_main's branch); a timing LEARNER seat allowed when its cfg has th_learner (production's timing_decide_batch -> th_record, _record, _traj_arrays); CfTrain ability mode 3 for a timing seat with the learned ability head, learner or opponent. compare.py: log-prob keys a traj lacks (ab_lp) are skipped | rl base opp_init (set by Learner for a timing-head init) |
+| (4) calibration | `learner/opp_learner_calib.yaml` (E 64, G 4, 48 actors, 200 updates, save_every 5, kl_cell_stop 5.0, lambda by override) + `learner/calib_eval.sh` (every saved checkpoint -> one 480-game run_closed block, CLXIII D3 vs it at T 1, G2 on; score on the laptop with card.py --no-c --no-d) | not run yet |
+
+Tests (laptop, a): `pipeline/tests/test_opp_learner.py` 9 passed (6 old + TestDrift 1 + TestBotPartner 2: icebow pool + own
+decode, list form draws icebow for every bot matchup, absent keys = own_opp_cfg unchanged, refusals); with test_league +
+test_timing_head_decode: 51 passed, 1 skipped, 2 failed = the 2 pre-existing TestSelfPlayCounters failures.
+
+### Findings / concerns
+- (b, untested) Partner decode vs eval decode: the bot partner trains at the PILOT's sampled decode (lead's ticket: T_gate .1
+  sampled); the calibration bar's "CLXIII SIM win rate" is level B's gap.py D3 = live's greedy LIVE_OPTIONS stack. A snapshot
+  can sit inside 30-50% for one and not the other. calib_eval scores D3 (the bar as defined); the in-training
+  `exploiter_league` win rate is the sampled-decode number. Lead: say which decode the 30-50% bar means if they differ.
+- (b) th_drift rows are fixed per PROCESS (a resume re-picks them from its first batch); the reference stays the init.
+- (a) An rl_royale opp-learner checkpoint loads as a timing opponent (e1_eval.load_policy: GenPolicy, timing, opp_sim,
+  ability head, memory; oplc_bot1_u0002.pt). gap.py --opp-ckpt on it is (b) untested until the first calib_eval block.
+- (a) Fast loop speed at smoke size is NOT faster: 8 matches 392.5 s (1 producer, 2 Java threads, CPU) vs production
+  407 s (1 actor, in-flight 8). A timing seat forwards in-process (never on serve.py: TIMING_SEAT.md limits), so the
+  11 M-param forward on CPU dominates (b: not profiled). Lever: producers on a GPU device (in-process cuda forward), or
+  serve timing models on the server.
+
+### Restart
+- Smokes: `ssh -p 33903 ... 'cd /workspace/opplearnc && (setsid nohup bash chainc.sh < /dev/null > chainc.out 2>&1 &)'` (rename the
+  RUN names first: rl_royale refuses an existing run dir).
+- Fast loop: `bash /workspace/opplearnc/fl.sh (= learner/fl_pod.sh) fast RUN 204-211 scratchpad/gauntlet/L74/plan1026/opp/learner/opp_learner_bot_smoke.yaml --smoke`
+  (FASTLOOP_DUMP=1: the msg lands in cbc/scratchpad/gauntlet/L68/rl/RUN/fast_msg_u0000.pkl);
+  compare: `bash /workspace/opplearnc/fl.sh (= learner/fl_pod.sh) cmp MSG /workspace/opplearnc/OUT.json 212-219 --in-flight 8 --matches 8 --threads 2`.
+- Calibration (after v1): `init=V1_SIM.pt beta0=L beta_min=L beta_max=L` on opp_learner_calib.yaml, one run per L in
+  {0.03, 0.1, 0.3}; `calib_eval.sh CKPT_DIR RUN OUTROOT` beside each.
+
+### Codex dispatches
+- none yet (the smokes, compare and checks were short; done by hand).
+
 ## STATUS (OPP-LEARN-B, 2026-10-28)
 - Code: private worktree, rebased onto 4dd9911 (LEARNER-SCALE MemRowCache landed; one conflict in policy_terms resolved: my GenPolicy line + their gen_rows), committed as hunks only; the merged tree re-smoked (opplearn_opp3: SMOKE PASS, W16 shas = opp2's). Others'
   uncommitted rl_royale hunks of another worker in the shared tree stay theirs; my patch was applied on top of them).

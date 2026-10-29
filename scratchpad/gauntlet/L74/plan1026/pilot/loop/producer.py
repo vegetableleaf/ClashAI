@@ -17,7 +17,9 @@ schedule (10-tick slots, th_tick re-decide, plays issued at the drawn tick, per-
 timing_decide_batch on a per-seat env view (ThEnv: CfTrain's game-over flag = th_decided, its ready list = th_ability's
 _scan, the press queued back through CfTrain), done_plays from CfTrain's accepted tally (held plays, Mirror's th_costs). An
 opponent whose card_vocab differs from the learner's gets its own card-id universe (CfTrain.addUniverse: keys / pub /
-memory tables + builders filled with ITS gid). A timing-head LEARNER seat (opponent-as-learner) is not here yet (raises).
+memory tables + builders filled with ITS gid). A timing-head LEARNER seat (OPP-LEARN-C, opponent-as-learner: rl_royale's
+base["opp_init"]) is the same seat with cfg th_learner: production's timing_decide_batch -> th_record rows + _record /
+_traj_arrays, its own universe 0 (its card_vocab), ability mode 3 when it has the learned ability head.
 Not supported yet (each raises): follow-ups, pipelined decisions, tap loss / slow, tower troops, mid-match starts, the
 posture head, decision rules in the sampled decide (LOOP-CTX), crown / habit / spell tracking.
 """
@@ -183,10 +185,16 @@ class Producer:
         require_same(base.get("runtime"))
         self.E, self.R, self.jpype, self.torch, self.obs_id, self.fill_fn = E, R, jpype, torch, obs_id, cf_loop_obs.Cohort.fill
         g = base["gen"]
-        from pipeline.model_gen import GenModel
-        net = GenModel(d=int(base["d"]), layers=int(base["layers"]), d_c=int(g["d_c"]), n_cards=len(g["card_vocab"]),
-                       feature_version=int(g.get("feature_version", 1))).to(device).eval()
-        self.net, self.model = net, E.GenPolicy(net, g["card_vocab"])
+        if base.get("opp_init"):                              # OPP-LEARN-C: the timing-head learner (actor_main's branch)
+            from pipeline.model_gen import load_model as load_gen
+            net, st = load_gen(base["opp_init"], torch.device(device))
+            net = net.eval()
+            self.net, self.model = net, E.GenPolicy(net, st["card_vocab"], st.get("opp_sim"))
+        else:
+            from pipeline.model_gen import GenModel
+            net = GenModel(d=int(base["d"]), layers=int(base["layers"]), d_c=int(g["d_c"]), n_cards=len(g["card_vocab"]),
+                           feature_version=int(g.get("feature_version", 1))).to(device).eval()
+            self.net, self.model = net, E.GenPolicy(net, g["card_vocab"])
         self.opp_cache: dict = {}
         # the capture-only env: SelfPlaySide's deck slots / costs / forms come from a real RoyaleSelfPlayEnv.reset whose
         # engine calls are stubbed (CfTrain runs the match)
@@ -436,8 +444,8 @@ class Producer:
                 raise NotImplementedError(f"cfg {bad} is not in CfTrain yet")
             if s.pipe or s.drops is not None or s.own_fx is not None or (s.delay <= 0 and not s.timing):
                 raise NotImplementedError("CfTrain ports the delayed-play rollout schedule only")
-            if s.timing and (s is ls or s.delay or s.extrap):
-                raise NotImplementedError("timing-head seats: frozen opponents only (delay 0, no look-ahead)")
+            if s.timing and (s.delay or s.extrap or (s is ls and not s.cfg.get("th_learner"))):
+                raise NotImplementedError("timing-head seats: delay 0, no look-ahead; a learner seat needs th_learner")
         # CrforgeCore.reset's conversion
         names = self.names
         d = [[names[int(c)] for c in dk] for dk in setup.decks]
@@ -475,8 +483,8 @@ class Producer:
             if not self.ja.ranges and hasattr(env, "_hero_ranges"):
                 self.ja.fill_ranges(env)                      # JavaAbil.reset: the first env reset that had heroes
             th_ab = getattr(self.E, "th_has_ability", None)   # P2-OPP2: a timing seat's learned ability head (mode 3)
-            self.L.setAbil(i, int(env.seed), *[self.ab_mode if s is ls else 3 if s.timing and th_ab and th_ab(s.model)
-                                               else 0 for s in sides])
+            self.L.setAbil(i, int(env.seed), *[3 if s.timing and th_ab and th_ab(s.model) else self.ab_mode if s is ls
+                                               else 0 for s in sides])   # OPP-LEARN-C: a timing learner = mode 3 too
             for s in sides:
                 s._ability_commands, s._ability_opts = {s.side: []}, None
         for s in sides:                                       # Match.prepare's first-decision clock
