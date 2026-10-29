@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ClashBot Lesson</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+<style>
+:root { --bg:#f7f7f5; --card:#fff; --ink:#1d1d1f; --mute:#6b6b70; --line:#e2e2e0; --acc:#2a6df4; --ok:#1f9d55; --bad:#c62828; --code:#f0f0ee; }
+@media (prefers-color-scheme: dark) { :root { --bg:#141416; --card:#1d1d20; --ink:#ececee; --mute:#9a9aa2; --line:#2c2c31; --acc:#6e9bff; --ok:#3ccf7f; --bad:#ff6b6b; --code:#26262b; } }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.6 system-ui, -apple-system, Segoe UI, sans-serif; }
+main { max-width:860px; margin:0 auto; padding:20px 16px 80px; }
+a { color:var(--acc); } nav { display:flex; justify-content:space-between; gap:8px; font-size:14px; margin-bottom:12px; }
+article { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:8px 20px 16px; overflow-wrap:anywhere; }
+pre, code { font-family:ui-monospace, Consolas, monospace; font-size:14px; } code { background:var(--code); padding:1px 4px; border-radius:4px; }
+pre { background:var(--code); padding:12px; border-radius:8px; overflow-x:auto; } pre code { padding:0; background:none; }
+table { border-collapse:collapse; display:block; overflow-x:auto; } td, th { border:1px solid var(--line); padding:4px 8px; }
+.ex { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 16px; margin:18px 0; }
+.ex h3 { margin:4px 0 6px; font-size:17px; display:flex; gap:8px; align-items:center; }
+.badge { font-size:12px; padding:1px 8px; border-radius:10px; border:1px solid var(--line); color:var(--mute); }
+.badge.ok { color:var(--ok); border-color:var(--ok); }
+textarea { width:100%; min-height:180px; font:14px/1.5 ui-monospace, Consolas, monospace; background:var(--code); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; padding:10px; tab-size:4; resize:vertical; }
+.btns { display:flex; gap:8px; flex-wrap:wrap; margin:8px 0; }
+button { font:inherit; font-size:14px; padding:6px 14px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer; }
+button.primary { background:var(--acc); color:#fff; border-color:var(--acc); }
+.out { white-space:pre-wrap; font:13px/1.45 ui-monospace, Consolas, monospace; background:var(--code); border-radius:8px; padding:10px; margin:0; max-height:320px; overflow:auto; }
+.out.ok { outline:2px solid var(--ok); } .out.bad { outline:2px solid var(--bad); }
+.hint { color:var(--mute); font-size:14px; }
+.status { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 16px; margin-top:20px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+.status textarea { min-height:60px; }
+</style>
+</head>
+<body><main>
+<nav><a href="/">← All lessons</a><span id="pn"></span></nav>
+<article id="lesson"><p>Loading…</p></article>
+<div id="exs"></div>
+<div class="status">
+  <strong>Your status:</strong>
+  <button data-s="in_progress">In progress</button><button data-s="done" class="primary">Mark lesson done</button>
+  <span id="saved" class="hint"></span>
+  <textarea id="note" placeholder="Notes or questions for Claude (saved with your progress)"></textarea>
+</div>
+</main>
+<script>
+const lid = location.pathname.split('/').pop();
+const esc = s => s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+async function post(url, body) { return fetch(url, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)}).then(r => r.json()); }
+(async () => {
+  const [L, pr, syl] = await Promise.all([fetch('/api/lesson/' + lid).then(r => r.json()), fetch('/api/progress').then(r => r.json()),
+    fetch('/api/syllabus').then(r => r.json())]);
+  const all = syl.parts.flatMap(p => p.lessons), i = all.findIndex(l => l.id === lid), meta = all[i];
+  document.title = lid + ' · ' + meta.title;
+  document.getElementById('pn').innerHTML = (i > 0 ? `<a href="/lesson/${all[i-1].id}">← ${all[i-1].id}</a> ` : '') +
+    (i < all.length - 1 ? ` <a href="/lesson/${all[i+1].id}">${all[i+1].id} →</a>` : '');
+  document.getElementById('lesson').innerHTML = L.md ? marked.parse(L.md)
+    : `<h1>${lid} · ${esc(meta.title)}</h1><p>${esc(meta.summary)}</p><p class="hint">This lesson's text is still being written.</p>`;
+  const lp = pr.lessons[lid] || {}; document.getElementById('note').value = lp.note || '';
+  const box = document.getElementById('exs');
+  for (const ex of L.exercises) {
+    const key = lid + '/' + ex.id, ep = pr.exercises[key] || {};
+    const d = document.createElement('section'); d.className = 'ex';
+    d.innerHTML = `<h3>${esc(ex.title || ex.id)} <span class="badge">${ex.lang || 'python'}</span>
+        <span class="badge ${ep.passed ? 'ok' : ''}">${ep.passed ? 'passed' : 'not passed yet'}</span></h3>
+      <div>${marked.parse(ex.prompt || '')}</div>
+      <textarea spellcheck="false"></textarea>
+      <div class="btns"><button class="primary" data-a="run">Run and check</button><button data-a="reset">Reset code</button>
+        ${ex.hint ? '<button data-a="hint">Hint</button>' : ''}${ex.has_solution ? '<button data-a="sol">Show solution</button>' : ''}</div>
+      <p class="hint" hidden></p><pre class="out" hidden></pre>`;
+    const ta = d.querySelector('textarea'), out = d.querySelector('.out'), hint = d.querySelector('p.hint'), badge = d.querySelectorAll('.badge')[1];
+    ta.value = ep.last_code || ex.starter || '';
+    ta.addEventListener('keydown', e => { if (e.key === 'Tab') { e.preventDefault(); const s = ta.selectionStart;
+      ta.value = ta.value.slice(0, s) + '    ' + ta.value.slice(ta.selectionEnd); ta.selectionStart = ta.selectionEnd = s + 4; } });
+    d.querySelector('[data-a=run]').onclick = async () => {
+      out.hidden = false; out.className = 'out'; out.textContent = 'Running…';
+      const r = await post('/api/run', {lesson: lid, ex: ex.id, code: ta.value});
+      out.className = 'out ' + (r.passed ? 'ok' : 'bad');
+      out.textContent = (r.passed ? '✔ Passed!\n\n' : '✘ Not yet. Read the output below, fix, and run again.\n\n') + (r.output || '(no output)');
+      if (r.passed) { badge.textContent = 'passed'; badge.classList.add('ok'); }
+    };
+    d.querySelector('[data-a=reset]').onclick = () => { if (confirm('Replace your code with the starter code?')) ta.value = ex.starter || ''; };
+    const hb = d.querySelector('[data-a=hint]'); if (hb) hb.onclick = () => { hint.hidden = false; hint.textContent = 'Hint: ' + ex.hint; };
+    const sb = d.querySelector('[data-a=sol]'); if (sb) sb.onclick = async () => {
+      if (!confirm('Try for a while first. Show the solution anyway?')) return;
+      const r = await fetch(`/api/solution/${lid}/${ex.id}`).then(r => r.json());
+      out.hidden = false; out.className = 'out'; out.textContent = 'One possible solution:\n\n' + r.solution; };
+    box.appendChild(d);
+  }
+  const saved = document.getElementById('saved');
+  for (const b of document.querySelectorAll('.status button')) b.onclick = async () => {
+    await post('/api/progress', {lesson: lid, status: b.dataset.s, note: document.getElementById('note').value});
+    saved.textContent = 'Saved: ' + (b.dataset.s === 'done' ? 'done ✔' : 'in progress'); };
+  document.getElementById('note').addEventListener('change', e => post('/api/progress', {lesson: lid, note: e.target.value}));
+})();
+</script>
+</body></html>

@@ -126,3 +126,5 @@ scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/qualify.py
 scratchpad/gauntlet/L72/improvement_loop/void_identity/probe.json
 scratchpad/gauntlet/L74/reader_purge/UNTRACK.txt
 scratchpad/gauntlet/L74/reader_purge/UNTRACK_REASONS.md
+course/.venv/
+course/**/__pycache__/

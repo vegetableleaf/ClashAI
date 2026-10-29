@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ClashBot Course</title>
+<style>
+:root { --bg:#f7f7f5; --card:#fff; --ink:#1d1d1f; --mute:#6b6b70; --line:#e2e2e0; --acc:#2a6df4; --ok:#1f9d55; --mid:#d68a00; }
+@media (prefers-color-scheme: dark) { :root { --bg:#141416; --card:#1d1d20; --ink:#ececee; --mute:#9a9aa2; --line:#2c2c31; --acc:#6e9bff; --ok:#3ccf7f; --mid:#f0b03c; } }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 system-ui, -apple-system, Segoe UI, sans-serif; }
+main { max-width:900px; margin:0 auto; padding:24px 16px 64px; }
+h1 { font-size:28px; margin:0 0 4px; } .sub { color:var(--mute); margin:0 0 20px; }
+.bar { height:10px; background:var(--line); border-radius:6px; overflow:hidden; } .bar > i { display:block; height:100%; background:var(--ok); }
+.stats { display:flex; gap:16px; flex-wrap:wrap; margin:10px 0 24px; color:var(--mute); font-size:14px; }
+.part { background:var(--card); border:1px solid var(--line); border-radius:10px; margin:0 0 16px; }
+.part h2 { font-size:17px; margin:0; padding:14px 16px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; gap:8px; }
+.part h2 small { color:var(--mute); font-weight:400; }
+a.row { display:flex; gap:12px; align-items:flex-start; padding:10px 16px; border-bottom:1px solid var(--line); color:inherit; text-decoration:none; }
+a.row:last-child { border-bottom:0; } a.row:hover { background:color-mix(in srgb, var(--acc) 7%, transparent); }
+.dot { flex:0 0 12px; height:12px; margin-top:6px; border-radius:50%; border:2px solid var(--line); }
+.dot.in_progress { border-color:var(--mid); background:var(--mid); } .dot.done { border-color:var(--ok); background:var(--ok); }
+.t { font-weight:600; } .t .proj { color:var(--acc); font-size:12px; font-weight:700; margin-left:6px; }
+.s { color:var(--mute); font-size:14px; } .meta { margin-left:auto; color:var(--mute); font-size:13px; white-space:nowrap; text-align:right; }
+.next { background:var(--card); border:1px solid var(--acc); border-radius:10px; padding:12px 16px; margin:0 0 20px; }
+.next a { color:var(--acc); font-weight:600; }
+</style>
+</head>
+<body><main>
+<h1 id="title">ClashBot Course</h1>
+<p class="sub" id="pace"></p>
+<div class="bar"><i id="fill" style="width:0"></i></div>
+<div class="stats" id="stats"></div>
+<div class="next" id="next" hidden></div>
+<div id="parts"></div>
+</main>
+<script>
+(async () => {
+  const [syl, pr] = await Promise.all([fetch('/api/syllabus').then(r => r.json()), fetch('/api/progress').then(r => r.json())]);
+  document.getElementById('title').textContent = syl.title;
+  document.getElementById('pace').textContent = syl.pace;
+  const all = syl.parts.flatMap(p => p.lessons);
+  const st = id => (pr.lessons[id] || {}).status || 'not_started';
+  const done = all.filter(l => st(l.id) === 'done');
+  const hrs = all.reduce((a, l) => a + l.hours, 0), hrsDone = done.reduce((a, l) => a + l.hours, 0);
+  const exPassed = Object.values(pr.exercises).filter(e => e.passed).length;
+  document.getElementById('fill').style.width = (100 * hrsDone / hrs).toFixed(1) + '%';
+  document.getElementById('stats').innerHTML =
+    `<span>${done.length} / ${all.length} lessons done</span><span>${hrsDone} / ${hrs} hours</span><span>${exPassed} exercises passed</span>`;
+  const nxt = all.find(l => st(l.id) !== 'done');
+  if (nxt) { const n = document.getElementById('next'); n.hidden = false;
+    n.innerHTML = `Next up: <a href="/lesson/${nxt.id}">${nxt.id} · ${nxt.title}</a>`; }
+  const box = document.getElementById('parts');
+  for (const part of syl.parts) {
+    const d = part.lessons.filter(l => st(l.id) === 'done').length;
+    const el = document.createElement('section'); el.className = 'part';
+    el.innerHTML = `<h2>${part.title}<small>${d} / ${part.lessons.length}</small></h2>`;
+    for (const l of part.lessons) {
+      const a = document.createElement('a'); a.className = 'row'; a.href = '/lesson/' + l.id;
+      a.innerHTML = `<span class="dot ${st(l.id)}"></span><span><span class="t">${l.id} · ${l.title}${l.project ? '<span class="proj">PROJECT</span>' : ''}</span>
+        <br><span class="s">${l.summary}</span></span><span class="meta">${l.hours} h</span>`;
+      el.appendChild(a);
+    }
+    box.appendChild(el);
+  }
+})();
+</script>
+</body></html>

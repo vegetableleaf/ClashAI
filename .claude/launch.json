@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "course",
+      "runtimeExecutable": "C:\\Users\\benpe\\ClashBot\\course\\.venv\\Scripts\\python.exe",
+      "runtimeArgs": ["course/server.py", "--port", "8765"],
+      "port": 8765
+    }
+  ]
+}
