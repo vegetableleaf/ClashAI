@@ -2508,6 +2508,15 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
   Probes on 5e8089a4 (`results/live/engfix/EF_t5_{a,d}_results.jsonl`): 220244 3025/3025 and 222707 1766/1766 exact;
   dev 235355 (fires: Tesla 1 tile) stays exact (3031 + 1 torn_snap = baseline). Planted `engfix/bodypt_test.py` ok 4.
   Owed: the dev / FRESH1-4 no-regression batch (Codex) before fresh_prep.sh takes the flag.
+- **RESTART POINT (10-29):** running = Codex ENG-FIX_5 (`.foreman/scratch/a2/codex/ENG-FIX_5.md`, out
+  `.foreman/scratch/a2/codex/out/ENG-FIX_5.jsonl`, results `engfix/r5/`): BODYPT OFF vs ON on the changed matches of
+  dev / FRESH1-4, lib 5e8089a4. If 0 regressions: add `SME_OWN_BODYPT=1` to fresh_prep.sh (+ its flags echo line).
+  Queue (lead 10-29, in order): FRESH4 151109@925 Snowball (198 / 775 units: point or dating) and 210016@2068 (a Golemite
+  only the SIM makes); a narrower SME_NEAR_BIGGER (the smaller living body from an EARLIER play of the side, not the
+  same play's: section 8 lists its dev false plays); the scripted Hog-at-bridge Tornado-to-king check; FRESH5 daily:
+  `icebow/.venv/Scripts/python.exe -I fresh/freeze.py 20261029_0050 FRESH5.tsv` (FRESH4's last log starts 00:42 EDT
+  10-29), commit, `bash fresh/fresh_prep.sh FRESH5.tsv engfix/fresh5`, FRESH5_FREEZE.txt as FRESH4's, commit, then
+  `runH.sh F5_main ... SME_LIB=/workspace/crforge_main/5e8089a4/tickprobe/lib` on 32657 CPUs 28-53.
 - **FRESH4 (list frozen + committed before any run):** `fresh/FRESH4.tsv`, 138 Ranked battles (logs from 2026-10-28
   15:00 EDT; battle log to 2026-10-29T04:46:56Z), build 160635001; prep running (`engfix/fresh4/`), then freeze file +
   F4_fe run on fe364ceb, no fixes.
