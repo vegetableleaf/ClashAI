@@ -2441,7 +2441,7 @@ no match after FRESH1's freeze is scored.
 Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
 
 ## STATUS (keep current)
-- **GATE DEFAULT (owner 10-29): SME_HIDDEN_ASSIGN ON; every gate run also runs ASSIGN off and passes `f1fix/assign_guard.py` (FAIL-to-report otherwise). Pooled strict-fresh FRESH2-7: 109 / 132 (0.826, CP lower 0.762), ASSIGN on = off. D1 / D2 NOT met.**
+- **GATE DEFAULT (owner 10-29): SME_HIDDEN_ASSIGN ON; every gate run also runs ASSIGN off and passes `f1fix/assign_guard.py` (FAIL-to-report otherwise). Pooled strict-fresh FRESH2-8: 122 / 151 (0.808, CP lower 0.748), ASSIGN on = off (FRESH8 13 / 19, guard PASS). D1 / D2 NOT met.**
 - **FRESH2 (a):** 22/28 unflagged exact apart from torn (95% CP lower 0.620), strictly exact 21/28 (0.581); identical on
   clashbot-main m1 624eeb45 and fe364ceb (F1FIX-3). D1 (>= 45/50) and D2 (lower bound 0.98) NOT met. FRESH2 is dev now.
 - **Zap rule SME_TOWER_ZAP (16c8a8f):** built, planted 25/25, dev byte-identical, fires only on FRESH1 000420; 0 firings on
@@ -2917,6 +2917,51 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
     reader lists 7 ticks late, already damaged: untraced); 123045 exact 809 and first div 1768 unchanged (its refused
     cmd81 is gone and the SIM ends 5221 not 5055, live 5261: +83 compared frames, all after the first div); FRESH4 003649
     flagged, same counts; 0 regressed, plants 0 missed.** -> fresh_prep.sh adds SME_GK_WALK=1 for FRESH8+.
+  - **FRESH8 RESULT F8_main (a; strict fresh gate on 5e8089a4, no fix on these matches; list f447908, freeze b8383ae,
+    `results/live/fresh8/`):** 33 Ranked battles, 0 skips, 20 RNG-free, 19 unflagged: **13 / 19 exact apart from torn
+    (one-sided 95% CP lower 0.470)**, strict 11 / 19 (0.368); plants 0 missed. ASSIGN on (default) = off (F8_off) on every
+    record (062715, the one hidden-window record: 1519 + 92 torn_hidden both ways); **guard PASS** (`F8_guard.txt`).
+    **Pooled strict-fresh FRESH2-8: 122 / 151 (0.808, CP lower 0.748).** D1 (>= 90%) / D2 (LB 0.98) NOT met. FRESH8 is dev
+    data from here. Failures (first div): 063025@153 (opponent SuspiciousBush reader-only from the first frames),
+    071306@5473 (our Skeletons SIM-only), 073232@3312 (opponent Knight 33 / 49 off), 074143@1572 (an evolved Witch SIM-only
+    at (9500, 31000)), 075729@2917 (opponent Skeletons ~10,700 units off: wrong point), 080149@516 (fixed below).
+  - **FRESH8 firings of the seven new flags (a; each flag removed in turn and FRESH8 re-extracted, `F8_flag_firings.txt`;
+    the without-flag record run on the gate, X5_t_*):** TZ_REACH 0, ZAP_DOT 0, ZD_BLDG 0, GK_WALK 0 (no candidate).
+    RASCAL_EDGE2 1: 063025 opponent Rascals at 856 (9581, 1000) instead of (9581, 2106); without it crforge refuses the play
+    (cmd9 code 0) and 4 later opponent plays (code 9), 69 exact; with it no refusal, 188 exact; both fail at 153 first, so
+    right only as far as the frames before the onset show (b). OWN_PENDCAST 1: 080510 drops our cast_seen hero IW press
+    at 2808; 1766 / 1766 exact both ways (neutral: the press changes nothing in the SIM). SAMETICK_GEN 3: 071306 (same
+    counts both ways, 2799 + 233, first 5473: neutral), 071831 and 081917 (not RNG-free, unscored).
+  - **FRESH8 080149@516 = an unseen opponent Zap that ZAP_DEAD blocked on a single-target attacker (a). SME_ZD_SINGLE
+    (mech_rules.zd_single + a test in zap_dead; off by default, with SME_ZAP_DEAD):** our X-Bow (178 hp) and three
+    Skeletons (130) leave the list together at 516; the opponent's deck holds Zap; its only body near, a 103-hp Hog
+    Rider, targets the X-Bow, so the rule blocked (enemy_targets_victim). Rule: the block is lifted when every attacker
+    targeting a victim is a tower or a single-target troop (no AreaDamageRadius / MultipleTargets / MultipleProjectiles /
+    SelfAsAoeCenter / Kamikaze / DeathDamage / Ability / chain row, no projectile Radius / AreaDamageRadius) and >= 2
+    victims are targeted by none of them; every other block still runs. Census (`engfix/zds_census.{py,txt}`, all scored
+    records dev + FRESH1-8, ZD_BLDG on): v1 (no Ability exclusion) fired twice, falsely on FRESH5 022148@458 (exact without
+    a Zap; a goblinstein_doctor with an Ability targets a victim); v2: **1 firing, 080149 itself**; 4 of the blocks it
+    lifts land on a real, seen opponent Zap 1-3 ticks earlier (dev 001702@2492, FRESH2 120902@3856, FRESH4 160144@1544,
+    194024@3013: "an attacker targets a victim" coexists with a real Zap). Re-extraction (19 flags +/- ZD_SINGLE): OFF =
+    the frozen record; ON adds one Zap (2987, 13400) R 515, window [514, 515]. **SME: 184 + 1582 div (first 516) -> 1766 /
+    1766 exact**, plants 0 missed. Planted `engfix/zds_test.py` ok 12; zd_test 15, zdb_test 8 unchanged. Shaped on FRESH8 +
+    FRESH5 data, so FRESH9 is its first fresh test. -> fresh_prep.sh adds SME_ZD_SINGLE=1 for FRESH9+.
+  - **FRESH4 230352@3002 (after GK_WALK) = a reader listing lag (a), comparator question for the lead:** the opponent GK
+    play (run 3000) is listed by the reader only from 3008 (ents and phase2 both; the SIM's body has the game's generation
+    5000064 and the same 2378 hp at 3008). Census (`engfix/late_census.{py,txt}`, FRESH2-7): bodies of a play first listed
+    >= 4 ticks after run + 1 are rare outside spells and the match's first frames (Miner, Bats, a Cannon, this GK).
+    Scoring those SIM-only frames as a torn class would be a comparator rule: not built.
+  - **RESTART POINT (ENG-FIX5, 10-29 ~11:30 EDT):** fresh_prep.sh = 20 flags (FRESH9+: + SME_ZD_SINGLE). Open, most
+    tractable first: FRESH8 063025@153 (SuspiciousBush listed from 153 at (2499, 14500) deploying; the extractor's play is
+    run 201 at (3432, 15469)), 075729@2917 (Skeletons ~10,700 off), 074143@1572 (evolved Witch SIM-only at the back edge),
+    071306@5473 (our Skeletons SIM-only), 073232@3312 (Knight body position); FRESH4 230352@3002 (listing lag: lead call);
+    FRESH2 123045@1768 (b); FRESH3 142926 (client lag); FRESH4 165155 (no rule). FRESH9 freeze when >= ~20 Ranked
+    battles exist after FRESH8's last log (082745, 08:27 EDT): `icebow/.venv/Scripts/python.exe -I fresh/freeze.py
+    20261029_0828 FRESH9.tsv`, commit, `bash fresh/fresh_prep.sh fresh/FRESH9.tsv engfix/fresh9`, freeze file as
+    FRESH8_FREEZE.txt, commit, upload to /workspace/pilot/fresh9, run `.foreman/scratch/engfix5/f8.sh` with F9 names (ASSIGN
+    on + off + assign_guard.py), score with fresh/fresh_summary.py. Pod 32657: nothing of mine running. Tools:
+    `engfix/x5/` (pdump.py / ProbeRun = MoveProbe traces on lib `/workspace/pilot/engfix5/lib_mp`, build_probe; gate_sum.py,
+    f8_firings.py, zd_one.py). Codex dispatches (ENG-FIX5): none (r9 = ENG-FIX4_3, read and re-tallied).
   - **FRESH2 123045@1768 (Witch / Golden Knight) stays open (b):** the GK's real dash (1767: replan to our princess tower,
     budget 60 -> 120) runs beside the Witch, whose pushes on it grow to 53-74 a tick; live 1766 -> 1768 (-84, +288) vs the
     SIM (-95, +348). A push / dash-blend question; not traced further.

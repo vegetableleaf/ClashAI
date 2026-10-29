@@ -1,0 +1,27 @@
+== SME_TZ_REACH firings (records changed): 0
+== SME_ZAP_DOT firings (records changed): 0
+== SME_RASCAL_EDGE2 firings (records changed): 1
+   20261029_063025 rng_free True flags [] fields ['plays']
+     with flag only: [('play', 'Rascals', 0, 856, 'first_seen', 9581, 1000)]
+     without only  : [('play', 'Rascals', 0, 856, 'first_seen', 9581, 2106)]
+     F8_main: ({'exact': 188, 'div': 1577}, 153)
+== SME_OWN_PENDCAST firings (records changed): 1
+   20261029_080510 rng_free True flags [] fields ['plays']
+     with flag only: []
+     without only  : [('ability', 'IceWizard', 1, 2808, 'cast_seen', None, None)]
+     F8_main: ({'exact': 1766}, None)
+== SME_ZD_BLDG firings (records changed): 0
+== SME_SAMETICK_GEN firings (records changed): 3
+   20261029_071306 rng_free True flags [] fields ['plays']
+     with flag only: []
+     without only  : []
+     F8_main: ({'exact': 2799, 'div': 233}, 5473)
+   20261029_071831 rng_free False flags [] fields ['plays']
+     with flag only: []
+     without only  : []
+     F8_main: not scored (not RNG-free)
+   20261029_081917 rng_free False flags ['0:own_cycle_fail:43'] fields ['plays']
+     with flag only: []
+     without only  : []
+     F8_main: not scored (not RNG-free)
+== SME_GK_WALK firings (records changed): 0

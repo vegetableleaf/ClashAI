@@ -527,6 +527,34 @@ ZD_BLDG = int(os.environ.get('SME_ZD_BLDG', '0'))
 ZD_HARMLESS = lambda c: c.get('TargetOnlyBuildings') and not any(c.get(k) for k in (   # noqa: E731
     'AreaDamageRadius', 'DeathDamage', 'DeathAreaEffect', 'DeathSpawnProjectile', 'OnDeathAction', 'DeathSpawnCharacter',
     'Ability', 'ChargeRange', 'OnStartChargingAction', 'Kamikaze', 'AttackPushBack'))
+# ENG-FIX5 (SME_ZD_SINGLE=1, off by default; with SME_ZAP_DEAD): enemy_targets_victim blocks only when its attackers could
+#   have made the deaths: when every opponent body targeting a victim is a tower or a single-target troop (zd_single: no
+#   AreaDamageRadius / MultipleTargets / MultipleProjectiles / SelfAsAoeCenter / Kamikaze / DeathDamage / Ability / chain, no
+#   projectile Radius / AreaDamageRadius) and at least ZD_MIN victims are targeted by none of them, the block is lifted
+#   (the other checks still run). FRESH8 080149@516: our X-Bow (178 hp) and three Skeletons (130) leave the list together;
+#   the opponent's only body near, a 103-hp Hog Rider, targets the X-Bow, and the deck holds Zap.
+ZD_SINGLE = int(os.environ.get('SME_ZD_SINGLE', '0'))
+ZD_MULTI = ('AreaDamageRadius', 'MultipleTargets', 'MultipleProjectiles', 'SelfAsAoeCenter', 'Kamikaze', 'DeathDamage', 'Ability',
+            'ChainedHitRadius', 'ChainedHitCount')
+
+
+def zd_single(tables, name):
+    """True when the named opponent body hits one target at a time (its row and its projectile's row hold no splash)."""
+    import json
+    from pathlib import Path
+    c = zd_cols(tables, name) if name else {}
+    if not c or any(c.get(k) for k in ZD_MULTI):
+        return False
+    if c.get('Projectile'):
+        key = (tables, 'projectiles')
+        if key not in _ZD_ROWS:
+            _ZD_ROWS[key] = json.load(open(Path(tables) / 'projectiles.json'))['rows']
+        p = (_ZD_ROWS[key].get(c['Projectile']) or {}).get('columns')
+        if p is None or p.get('Radius') or p.get('AreaDamageRadius') or p.get('SpawnCharacter') or p.get('ChainedHitRadius'):
+            return False
+    return True
+
+
 ZD_MIN, ZD_GONE, ZD_LOOK, ZD_ZAP = 2, 3, 20, 30
 ZD_PROJ, ZD_FX, ZD_SLACK, ZD_STILL = 3000, 4000, 300, 100
 _ZD_ROWS = {}
@@ -621,7 +649,12 @@ def zap_dead(fr, plays, sides, tables, hidden=()):
                         or c.get('MultipleTargets') or c.get('OnStartChargingAction') or c.get('ChargeRange') or not c:
                     busy.append(b['name'])
             att = [b['name'] or 'tower' for f in fr[max(0, i - 2):i + 1] for b in f[1].values() if b['side'] == o and b['tgt'] in vg]
-            kam = [b['name'] for b in A.values() if b['side'] == o and not b['tower'] and b['name']
+            if att and ZD_SINGLE:   # SME_ZD_SINGLE (above): single-target attackers explain one victim each
+                ab = {(b['gen'], b['name']): b for f in fr[max(0, i - 2):i + 1] for b in f[1].values() if b['side'] == o and b['tgt'] in vg}
+                if all(b['tower'] or zd_single(tables, b['name']) for b in ab.values()) \
+                        and len(vic) - len({b['tgt'] for b in ab.values()}) >= ZD_MIN:
+                    att = []
+            kam =[b['name'] for b in A.values() if b['side'] == o and not b['tower'] and b['name']
                    and zd_cols(tables, b['name']).get('Kamikaze') and near((b['x'], b['y']), ZD_PROJ)]
             gone = [b['name'] for a, b in A.items() if b['side'] == o and not b['tower'] and a not in B and near((b['x'], b['y']), ZD_PROJ)]
             ops = [p for p in plays if p['side'] == o and (t - ZD_LOOK <= p['tick'] <= t or p.get('card') == 'Zap' and abs(p['tick'] - t) <= ZD_ZAP)]

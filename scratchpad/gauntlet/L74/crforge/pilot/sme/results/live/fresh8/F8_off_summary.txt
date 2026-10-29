@@ -1,0 +1,28 @@
+matches 33 | RNG-free 20 | not RNG-free 13 {'SkeletonKing': 2, 'Arrows': 9, 'Princess': 2}
+flags (all): {'opp_no_fitting_deal': 2, 'own_cycle_fail': 1} | flags (RNG-free): {'opp_no_fitting_deal': 1}
+unflagged 19 | exact apart from torn 13 | strictly exact (no torn frame) 11
+exact frames (all RNG-free) 34787 | frames 40301 | unflagged exact frames 34774 of 38604
+torn frames (unflagged): {'torn_hidden': 92, 'torn_late': 9} | matches with each: {'torn_hidden': 1, 'torn_late': 3}
+fitter moves kept (unflagged): 79 | of them FITNEXT (run after the onset): 0 | ghost presses enabled: 0
+  20261029_062715 unflagged                    first_div None  counts {'exact': 1519, 'torn_hidden': 92} detail null
+  20261029_063025 unflagged                    first_div 153   counts {'exact': 188, 'div': 1577} detail [["U_rec_only", [0, 2499, 14500, 130], "SuspiciousBush", null]]
+  20261029_064121 opp_no_fitting_deal          first_div 177   counts {'exact': 13, 'div': 1684} detail [["U_rec_only", [0, 7996, 246, 130], "Skeletons", null], ["U_rec_only", [0, 8499, 1107, 130], "Skeletons", null], ["U_rec_only", [0, 9003, 242, 130], "Skeletons
+  20261029_064443 unflagged                    first_div None  counts {'exact': 3015} detail null
+  20261029_065350 unflagged                    first_div None  counts {'exact': 1765} detail null
+  20261029_065705 unflagged                    first_div None  counts {'exact': 1922, 'torn_late': 1} detail null
+  20261029_070039 unflagged                    first_div None  counts {'exact': 3030} detail null
+  20261029_070558 unflagged                    first_div None  counts {'exact': 1765} detail null
+  20261029_071306 unflagged                    first_div 5473  counts {'exact': 2799, 'div': 233} detail [["U_sim_only", [1, 10820, 17960, 130], "C:Skeleton", null], ["U_sim_only", [1, 11500, 17226, 130], "C:Skeleton", null], ["U_sim_only", [1, 12181, 17960, 130], 
+  20261029_072135 unflagged                    first_div None  counts {'exact': 3030} detail null
+  20261029_073232 unflagged                    first_div 3312  counts {'exact': 2037, 'div': 3, 'torn_late': 7} detail [["U_rec_only", [0, 14041, 15449, 614], "Knight", [-33, -49, 0]], ["U_sim_only", [0, 14008, 15400, 614], "C:Knight", [33, 49, 0]], ["U_sim_only", [1, 12053, 174
+  20261029_074143 unflagged                    first_div 1572  counts {'exact': 1680, 'div': 83, 'torn_late': 1} detail [["U_sim_only", [1, 9500, 31000, 1341], "C:Witch_EV1", null]]
+  20261029_074515 unflagged                    first_div None  counts {'exact': 1227} detail null
+  20261029_074809 unflagged                    first_div None  counts {'exact': 1095} detail null
+  20261029_075016 unflagged                    first_div None  counts {'exact': 1830} detail null
+  20261029_075348 unflagged                    first_div None  counts {'exact': 1973} detail null
+  20261029_075729 unflagged                    first_div 2917  counts {'exact': 1460, 'div': 251} detail [["U_rec_only", [0, 10001, 7212, 130], "Skeletons", [-8883, 6003, 0]], ["U_rec_only", [0, 10500, 8079, 130], "Skeletons", [-9382, 5136, 0]], ["U_rec_only", [0, 
+  20261029_080149 unflagged                    first_div 516   counts {'exact': 184, 'div': 1582} detail [["U_sim_only", [0, 2487, 13628, 130], "C:Skeleton", null], ["U_sim_only", [0, 2500, 12500, 170], "C:Xbow", null], ["U_sim_only", [0, 2768, 14600, 130], "C:Skel
+  20261029_080510 unflagged                    first_div None  counts {'exact': 1766} detail null
+  20261029_082745 unflagged                    first_div None  counts {'exact': 2489} detail null
+95% one-sided CP lower bound, exact apart from torn: 13/19 -> 0.4700
+95% one-sided CP lower bound, strictly exact: 11/19 -> 0.3681

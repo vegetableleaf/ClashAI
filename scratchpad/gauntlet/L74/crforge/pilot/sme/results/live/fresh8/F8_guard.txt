@@ -1,0 +1,22 @@
+live_play_20261029_062715 unflagged {'exact': 1519, 'torn_hidden': 92} -> {'exact': 1519, 'torn_hidden': 92} OK
+live_play_20261029_063025 unflagged {'exact': 188, 'div': 1577} -> {'exact': 188, 'div': 1577} OK
+live_play_20261029_064121 flags {'exact': 13, 'div': 1684} -> {'exact': 13, 'div': 1684} OK
+live_play_20261029_064443 unflagged {'exact': 3015} -> {'exact': 3015} OK
+live_play_20261029_065350 unflagged {'exact': 1765} -> {'exact': 1765} OK
+live_play_20261029_065705 unflagged {'exact': 1922, 'torn_late': 1} -> {'exact': 1922, 'torn_late': 1} OK
+live_play_20261029_070039 unflagged {'exact': 3030} -> {'exact': 3030} OK
+live_play_20261029_070558 unflagged {'exact': 1765} -> {'exact': 1765} OK
+live_play_20261029_071306 unflagged {'exact': 2799, 'div': 233} -> {'exact': 2799, 'div': 233} OK
+live_play_20261029_072135 unflagged {'exact': 3030} -> {'exact': 3030} OK
+live_play_20261029_073232 unflagged {'exact': 2037, 'div': 3, 'torn_late': 7} -> {'exact': 2037, 'div': 3, 'torn_late': 7} OK
+live_play_20261029_074143 unflagged {'exact': 1680, 'div': 83, 'torn_late': 1} -> {'exact': 1680, 'div': 83, 'torn_late': 1} OK
+live_play_20261029_074515 unflagged {'exact': 1227} -> {'exact': 1227} OK
+live_play_20261029_074809 unflagged {'exact': 1095} -> {'exact': 1095} OK
+live_play_20261029_075016 unflagged {'exact': 1830} -> {'exact': 1830} OK
+live_play_20261029_075348 unflagged {'exact': 1973} -> {'exact': 1973} OK
+live_play_20261029_075729 unflagged {'exact': 1460, 'div': 251} -> {'exact': 1460, 'div': 251} OK
+live_play_20261029_080149 unflagged {'exact': 184, 'div': 1582} -> {'exact': 184, 'div': 1582} OK
+live_play_20261029_080510 unflagged {'exact': 1766} -> {'exact': 1766} OK
+live_play_20261029_082745 unflagged {'exact': 2489} -> {'exact': 2489} OK
+PASS
+guard rc=0
