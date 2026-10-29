@@ -1,0 +1,84 @@
+ENG-FIX_3: gate evidence (complete)
+
+head 5e8089a47ec9bdf7b8f04cebccd7a7a4e5ea4a9b
+
+ct.txt:
+16.402.22 core tests 2204 failures 0 errors 0 skipped 29 rc=0
+16.635.3 core tests 2204 failures 0 errors 0 skipped 6 rc=0
+
+build.txt:
+Preparing worktree (detached HEAD 5e8089a4)
+built /workspace/crforge_main/5e8089a4/plain core bd1be8f10f00344e
+Preparing worktree (detached HEAD 5e8089a4)
+Note: /tmp/cfmain_build_5e8089a4_tp/core/src/main/java/org/crforge/core/battle/data/GameTables.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /tmp/cfmain_build_5e8089a4_tp/core/src/main/java/org/crforge/core/util/DeepCopy.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+built /workspace/crforge_main/5e8089a4/tickprobe core a95626e6c6de9c27
+
+Libraries copied to pod 32657; SHA256SUMS: 6/6 OK per lib (12/12 total).
+det.txt versus /workspace/cfmain/g_f1fix3/det.txt:
+line 1: identical=yes | == plain 16.402.22
+line 2: identical=yes | run 0 (1 threads): obs sha256 a0bd88c41f98b46d  winners -1 -1 -1 -1 -1 -1 -1 -1 
+line 3: identical=yes | run 1 (4 threads): obs sha256 a0bd88c41f98b46d  winners -1 -1 -1 -1 -1 -1 -1 -1 
+line 4: identical=yes | determinism: IDENTICAL
+line 5: identical=yes | == plain 16.635.3
+line 6: identical=yes | run 0 (1 threads): obs sha256 575c99887ba28802  winners -1 -1 -1 -1 -1 -1 -1 -1 
+line 7: identical=yes | run 1 (4 threads): obs sha256 575c99887ba28802  winners -1 -1 -1 -1 -1 -1 -1 -1 
+line 8: identical=yes | determinism: IDENTICAL
+line 9: identical=yes | == tickprobe 16.402.22
+line 10: identical=yes | run 0 (1 threads): obs sha256 a0bd88c41f98b46d  winners -1 -1 -1 -1 -1 -1 -1 -1 
+line 11: identical=yes | run 1 (4 threads): obs sha256 a0bd88c41f98b46d  winners -1 -1 -1 -1 -1 -1 -1 -1 
+line 12: identical=yes | determinism: IDENTICAL
+line 13: identical=yes | == tickprobe 16.635.3
+line 14: identical=yes | run 0 (1 threads): obs sha256 575c99887ba28802  winners -1 -1 -1 -1 -1 -1 -1 -1 
+line 15: identical=yes | run 1 (4 threads): obs sha256 575c99887ba28802  winners -1 -1 -1 -1 -1 -1 -1 -1 
+line 16: identical=yes | determinism: IDENTICAL
+
+SME comparison: counts, first_div, frames, first_detail (per match).
+Pod 32657; WORKERS=12; taskset -c 28-53; SME_LIB=/workspace/crforge_main/5e8089a4/tickprobe/lib
+
+EG_dev: identical 138 / 138; baseline matches=138; new matches=138
+baseline: /workspace/pilot/f1fix/runs/f1fix3_dev/results.jsonl
+new: /workspace/pilot/f1fix/runs/EG_dev/results.jsonl
+log: /workspace/pilot/f1fix/runs/EG_dev.log; done marker=yes; traceback=no
+differences:
+none
+plants missed (baseline): [] for all 138 matches
+plants missed (new): [] for all 138 matches
+local results: GATES_ground_EG_dev_results.jsonl; bytes=242008; sha256=15371187ad0150c0a4736f2a36557d9c6abae911e02a9f80b3060bdc30173ff5
+
+EG_fresh1: identical 9 / 9; baseline matches=9; new matches=9
+baseline: /workspace/pilot/f1fix/runs/f1fix3_fresh1/results.jsonl
+new: /workspace/pilot/f1fix/runs/EG_fresh1/results.jsonl
+log: /workspace/pilot/f1fix/runs/EG_fresh1.log; done marker=yes; traceback=no
+differences:
+none
+plants missed (baseline): [] for all 9 matches
+plants missed (new): [] for all 9 matches
+local results: GATES_ground_EG_fresh1_results.jsonl; bytes=22081; sha256=e0965a7d1d2925c275a65bd038699d70cb4b76baf850baf0c7038f36baae00f8
+
+EG_fresh2: identical 40 / 40; baseline matches=40; new matches=40
+baseline: /workspace/pilot/f1fix/runs/F2_fe/results.jsonl
+new: /workspace/pilot/f1fix/runs/EG_fresh2/results.jsonl
+log: /workspace/pilot/f1fix/runs/EG_fresh2.log; done marker=yes; traceback=no
+differences:
+none
+plants missed (baseline): [] for all 40 matches
+plants missed (new): [] for all 40 matches
+local results: GATES_ground_EG_fresh2_results.jsonl; bytes=70377; sha256=ba810965dd467894d57fe7b7def05ac9011b1e7ecc4f1ed6613d6511a733a6c2
+
+EG_fresh3: identical 17 / 17; baseline matches=17; new matches=17
+baseline: /workspace/pilot/f1fix/runs/F3_fe/results.jsonl
+new: /workspace/pilot/f1fix/runs/EG_fresh3/results.jsonl
+log: /workspace/pilot/f1fix/runs/EG_fresh3.log; done marker=yes; traceback=no
+differences:
+none
+plants missed (baseline): [] for all 17 matches
+plants missed (new): [] for all 17 matches
+local results: GATES_ground_EG_fresh3_results.jsonl; bytes=28488; sha256=9d54236c4a391c79af119f14b6e5c5ba476ae3c58e8a8265924138b92c84a968
+
+All SME comparisons identical: True
+All plants missed lists empty (baseline and new): True
+No merge, ship, current-link change, incumbent fe364ceb change, commit, push, stash, reset, live-play action, or pod stop performed.
+STATUS: DONE

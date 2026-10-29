@@ -2480,6 +2480,12 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
   changed (6 fixed: 160930, 230512 by OWN_NEARDEAD; 164130, 185736, 023839, 031722 by TOMB_HERO; 2 improved), FRESH1 1
   (004256, flagged, same), FRESH2 5 (fixed 091720, 100341, 101857, 110715; 080427 flagged, same), FRESH3 4 (fixed 141254,
   142334, 145600; 142926 254 -> 581); 0 regressions, plants 0 missed. **fresh_prep.sh now sets the four flags (FRESH4+).**
+- **Ground fix 5e8089a4: ALL GATES GREEN (a) -- awaiting the lead's merge / ship window.** Core 2204 / 0 both tables;
+  determinism 16 / 16 lines identical to F1FIX-3; SME dev 138/138, FRESH1 9/9, FRESH2 40/40, FRESH3 17/17 byte-identical
+  to the fe364ceb baselines (plants 0 missed); Clone sweep 0 refusals, counts identical; HF 20k 21 faults (0.105%), the
+  only change vs fe364ceb is the FORCE_IS_GROUND fault -> ran. Libs on 30408 / 32657 `/workspace/crforge_main/5e8089a4/`
+  (plain core bd1be8f10f00344e, tickprobe a95626e6c6de9c27), 33920 `/dev/shm/engfix/lib_plain`. Evidence
+  `crforge/fork/engfix/GATES_ground*.txt`. Not merged, `current` untouched.
 - **Ground fix gates so far (a):** core tests 2204 / 0 on 16.402.22 and 16.635.3 (2203 + the new test); libs
   `/workspace/crforge_main/5e8089a4/{plain,tickprobe}` built on 30408 (not shipped). The F1FIX-3 HF sample (f20k_w4) had
   exactly 1 `target_is_ground ... FORCE_IS_GROUND` fault in 20,000: this fix's case. Clone sweep + HF 20k: Codex
