@@ -2476,7 +2476,18 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
   Gates (Codex ENG-FIX_3, running): full core tests both tables, libs, determinism vs g_f1fix3, SME dev / FRESH1/2/3 vs
   the fe364ceb baselines on 32657 -> `crforge/fork/engfix/GATES_ground.txt`. Owed after that: Clone sweep and HF 20k
   faults on a pod other than 30408. NOT merged or shipped: REPORT to the lead first.
-- **Running:** Codex ENG-FIX_3 (gates above), Codex ENG-FIX_2b = ENG-FIX_2 without NEAR_BIGGER and with the field gate relaxed (deal-fit fields may
+- **Four-flag no-regression (Codex ENG-FIX_2b, a; `results/live/engfix/r2b/`):** flag-off = pod inputs on all sets; dev 8
+  changed (6 fixed: 160930, 230512 by OWN_NEARDEAD; 164130, 185736, 023839, 031722 by TOMB_HERO; 2 improved), FRESH1 1
+  (004256, flagged, same), FRESH2 5 (fixed 091720, 100341, 101857, 110715; 080427 flagged, same), FRESH3 4 (fixed 141254,
+  142334, 145600; 142926 254 -> 581); 0 regressions, plants 0 missed. **fresh_prep.sh now sets the four flags (FRESH4+).**
+- **Ground fix gates so far (a):** core tests 2204 / 0 on 16.402.22 and 16.635.3 (2203 + the new test); libs
+  `/workspace/crforge_main/5e8089a4/{plain,tickprobe}` built on 30408 (not shipped). The F1FIX-3 HF sample (f20k_w4) had
+  exactly 1 `target_is_ground ... FORCE_IS_GROUND` fault in 20,000: this fix's case. Clone sweep + HF 20k: Codex
+  ENG-FIX_4b on 33920 (`/dev/shm/engfix/`, 32 threads, CPUs only; ENG-FIX_4 blocked on my 48-thread spec).
+- **FRESH4 (list frozen + committed before any run):** `fresh/FRESH4.tsv`, 138 Ranked battles (logs from 2026-10-28
+  15:00 EDT; battle log to 2026-10-29T04:46:56Z), build 160635001; prep running (`engfix/fresh4/`), then freeze file +
+  F4_fe run on fe364ceb, no fixes.
+- **Running:** Codex ENG-FIX_3 (gates above), Codex ENG-FIX_4b, FRESH4 prep. Done: Codex ENG-FIX_2b = ENG-FIX_2 without NEAR_BIGGER and with the field gate relaxed (deal-fit fields may
   change), pid file `.foreman/scratch/a2/codex/out/ENG-FIX_2b.jsonl.pid`, outputs `engfix/r2b/`. Earlier: ENG-FIX_2 (all
   five flags, `engfix/r2/`, ticket `.foreman/scratch/a2/codex/ENG-FIX_2.md`). Restart: `sh .foreman/scratch/a2/codex_full.sh
   .foreman/scratch/a2/codex/ENG-FIX_2.md medium .foreman/scratch/a2/codex/out/ENG-FIX_2.jsonl` (fresh OUT name).
