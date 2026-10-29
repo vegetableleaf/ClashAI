@@ -20,5 +20,5 @@ cd $CB
 $PY $O/siege/cardcal.py $OUT/D_live_cal.npz > $OUT/cardcal.md
 echo FTX_DONE $NAME
 cd $S/score && PY=$PY CB=$CB LIB=/workspace/crforge_main/5e8089a4/plain CRFORGE_TABLES=$S/crforge_cache/tables/16.402.22 \
-  OPP_CKPT=$OUT/opp_ft_R_sim.pt OPP_T=1.0 WORKERS=44 CPUS=0-255 G2_ON=on \
+  OPP_CKPT=$OUT/opp_ft_R_sim.pt OPP_T=1.0 WORKERS=${WORKERS:-25} CPUS=${CPUS:-0-199} G2_ON=on \
   bash $CB/scratchpad/gauntlet/L74/opp_model/humanlike/run_closed.sh $NAME $S/score/rows/$NAME 741200 742000 742800 743600

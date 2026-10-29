@@ -178,28 +178,61 @@ No live counterpart for targets (the reader has no target field).
 ### 2c. Probe (NOT a fix): cell sampling temperature, whole match (SIEGE_CELL_T, pod copy only; card stays T 1)
 Quick block, seed 741200, 480 games (a): ftR (same seed) CLXIII win 89.4%, lock .776; cell T .25 (ct25): 85.2%, lock .732
 (-0.044; on-time troop answers .29 -> .34 share, "elsewhere" .13 -> .08, answers ON the human spot 158 -> 257 but still lock
-.54 there). Full 1,920 of ct25 and the T .5 block: see STATUS.
+.54 there).
 
-## STATUS (OPP-SIEGE2, 2026-10-29 12:10 UTC) -- restart point
-- RUNNING on 30408 (`ssh -o BatchMode=yes -i ~/.ssh/runpod_clashbot -p 30408 root@157.157.221.29`), one job at a time, 44 workers:
-  1. `lanes.sh quick` (PID 3777297, /workspace/siege/queue.out): tgtR, ct25, tgtE4 DONE (480 each); ct50 (cell T .5) running.
-  2. then `lanes.sh full ct25 0.25` (waiter PID 3781621, /workspace/siege/queue_full.out): ct25 seeds 742000 742800 743600.
-  3. then fix 2 `run_ftd.sh ftd3 3 4000` (waiter PID 3784059, /workspace/siege/ftd3.out; script in
-     /workspace/siege/opp/cb/scratchpad/gauntlet/L74/plan1026/opp/siege/): train (GPU, ~11 min) -> _sim.pt -> level A + cardcal ->
-     level B 4 x 480 (rows /workspace/siege/score/rows/ftd3). Mask built: /workspace/siege/ft/mask_fail600.npy (63,105 train rows).
-  Restart any step by re-running its command (each stage / 480-block skips if done): `cd /workspace/siege && setsid nohup bash
-  lanes.sh quick > queue.out 2>&1 < /dev/null &`, `... bash lanes.sh full ct25 0.25 > queue_full.out ...`, `... bash
-  /workspace/siege/opp/cb/scratchpad/gauntlet/L74/plan1026/opp/siege/run_ftd.sh ftd3 3 4000 > ftd3.out ...`. NEVER two at once.
-- Code: probes use the POD-ONLY copy `/workspace/siege/opp/cb2` (= cb + `probe/patch_pod.py`: SIEGE_CELL_T = cell temperature
-  of timing-head seats, SIEGE_TGT=1 = hab sample s[8] [[uid, team, kind, target_uid]]; unset = unchanged; NOT in pipeline/).
-  Fix 2 and its level B use the unpatched cb (as ftx3 / ftx10). crforge 5e8089a4, G2 on, CLXIII 8d328a43, seeds as P2-OPP2.
+| level B, crforge 5e8089a4, G2 on, CLXIII 8d328a43, card.py v6 (a) | ftR (T 1) | ct50 (cell T .5) | ct25 (cell T .25) | live / bar |
+|---|---|---|---|---|
+| games | 1,920 | 480 (seed 741200) | 1,920 | |
+| CLXIII SIM win | 88.4% (seed 741200: 89.4%) | 88.3% | 82.9% (seed 741200: 85.2%) | 30-50% |
+| lock (seed-741200 block) | .750 (.776) | (.747) | .732 (.732) | .47 |
+| zero-lock / P(lock / fail) | .00 / .68 | - | .01 / .65 | .12 / .36 |
+| B-live RMS d / C-live AUC | 0.31 / 0.974 | - | 0.39 / 0.982 | <= 0.20 / <= 0.60 |
+| on-time unit answers ON the human spot (n, lock) | 683, .55 | - | 970, .56 | 738, .40 |
+
+Reading (a): lowering the cell temperature makes ftR STRONGER overall (CLXIII win -5.6 pp at T .25) and puts more answers on the
+human spot (683 -> 970) and in lane ("elsewhere" .122 -> .092), but moves lock only -0.018 of the +0.28 gap, and B-live RMS gets
+WORSE (0.31 -> 0.39: own_half d -1.13, bridge +0.93 -- T .25 concentrates plays on the modal cells). Cell spread is NOT the
+siege problem; the learned cell-head fixes (resolution / CellRefine in windows / a precise-placement fine-tune) are not
+indicated. Results: `results/card_ct25.txt`.
+
+### Fix 2 (ONE learned change vs ftR): successful-defence rows oversampled x3 -- NO EFFECT (a); iterate, do not drop
+Change: ftR fine-tuned with the rows in (t_x, t_x + 600] after an enemy reach X-Bow that did NOT lock (the human's defence held:
+1,372 of 3,811 windows, 63,105 train rows = 12.4%; make_mask.py MASK_WALL=600 MASK_FAILED=1) oversampled x3; else ftx3's recipe
+(init ftR, 4,000 steps, bs 128, lr 2e-5; held-out live split-1 total 5.149 vs ftR 5.206 / ftx3 5.161). run_ftd.sh ftd3 3 4000
+on 30408; ckpt /workspace/siege/ft/ftd3/opp_ft_s0.pt, _R_sim.pt sha 0db73fda. Rationale (b): 2b says the defence that works is
+the stream of play over the X-Bow's life, not the first answer, and successful human defences hold that stream.
+
+| level B, 1,920 games, same seeds, crforge 5e8089a4, G2 on, v6 (a) | ftR | ftx3 (fix 1) | ftd3 (fix 2) | live / bar |
+|---|---|---|---|---|
+| CLXIII SIM win | 88.4% | 87.7% | 86.6% (1,663) | 30-50% |
+| lock / zero-lock / P(lock / fail) | .75 / .00 / .68 | .75 / .00 / .66 | .74 / .00 / .66 | .47 / .12 / .36 |
+| B-live RMS d / C-live AUC | 0.31 / 0.974 | 0.31 / 0.982 | 0.28 / 0.984 | <= 0.20 / <= 0.60 |
+| per decision (live_cal) earthquake model / human in windows | 0.55 | 0.60 | 0.60 | 1.00 |
+| on-time troop / building answers (share, lock) | .336 .64 / .044 .68 | .312 .63 / .046 .70 | .336 .64 / .047 .65 | .543 .39 / .094 .45 |
+Reading (a): re-weighting the imitation targets toward successful human defences (like oversampling all window rows, x3 / x10)
+leaves the siege facts unchanged; only style moves a little (RMS 0.31 -> 0.28). Results: `results/card_ftd3.txt`.
+Three reweighting experiments (ftx3, ftx10, ftd3) are flat: (b) the imitation data (at this size / this recipe) does not carry
+the signal, or the gap is a closed-loop strength property that per-row likelihood does not see. Next single changes (STATUS).
+
+## STATUS (OPP-SIEGE2, 2026-10-29 14:30 UTC) -- restart point
+- Nothing of mine is running (30408: queue, ct25 full, ftd3 chain all finished; pgrep empty at 14:25 UTC). The LEAD runs an
+  arm on 30408 since ~13:55 UTC (GPU + CPUs 200-221, ~25-30 GB, /workspace/oplm): any new run of mine there = <= 25 workers on
+  CPUs 0-199, no GPU without asking the lead (lanes.sh / run_ftd.sh defaults now WORKERS 25, CPUS 0-199).
+- Rows (30408 /workspace/siege/score/rows/; laptop copies opp_model/humanlike/rows/, bulk, not committed): tgtR, tgtE4 (480,
+  with targets), ct25 (1,920), ct50 (480), ftd3 (1,920). Checkpoint /workspace/siege/ft/ftd3/. Probe code: POD-ONLY copy
+  /workspace/siege/opp/cb2 (= cb + probe/patch_pod.py; SIEGE_CELL_T, SIEGE_TGT; unset = unchanged; NOT in pipeline/).
+- Next single changes, in order (one per experiment): (1) the (b) of 2b: is the X-Bow's tower time decided by the opponent's
+  whole-board presence? Measure live opponent bodies on board at our X-Bow (live_dump samples' units; caveat: reader bodies vs
+  engine entities, spawn counting) vs ftR 1.52 / E4 1.94; (2) if yes, the lever is closed-loop strength, i.e. the lead's
+  opponent calibration RL (OPP-LEARN-C) -- score its arms with siege_t (targets) + fol_b, not only lock; (3) a feature the model
+  lacks (the X-Bow's current target per body token -- check the obs first) is still untested; (4) DAgger-style rows stay
+  blocked (no expert labels for SIM states).
+- Codex: none used (all steps were diagnosis, or launches needing CPU/memory judgment on 30408).
 - 30408 limits (a): cgroup 54.4 CPUs (cpu.max) and 62 GB RAM (memory.limit_in_bytes; `free` shows the host's 251 GB): two lanes
   of 80 + 60 workers hit the memory limit at ~11:15 UTC and stalled the pod (sshd timed out); stopped by PID, relaunched as one
   44-worker queue. Never more than ~45 workers on 30408.
-- Recorder control (a): the first 170 tgtR games are outcome-identical to ftR5e (170/170 end tick + outcome). 30408's cgroup
-  CPU quota is 54.4 CPUs (cpu.max 5440000/100000; nproc 256 is misleading): 80+60 workers share it, so wall per match is ~3x
-  ftx10's (40 workers); the recorder's own cost is ~1.3x (tgtR 101 games / 80 workers vs ct25 104 / 60 in the same 12 min).
-  The target arms stay at one seed block (480).
+- Recorder control (a): tgtR 480/480 and tgtE4 480/480 games outcome-identical to ftR5e / e45e (end tick + outcome); its wall
+  cost on a full block is 1.13x (median 55.6 vs 49.3 s per match).
 - Score: fetch rows to opp_model/humanlike/rows/NAME, `win_b.py DIR`, `siege_b.py sim NAME=DIR` (+ `SIEGE_ALL` unset),
   `siege_t.py NAME=DIR` (target arms), `card.py score --name NAME --sim DIR --no-d` (icebow/.venv python).
 

@@ -1,0 +1,31 @@
+# Opponent scorecard: ftd3
+THRESHOLDS.json sha256 265681678b39907533182e9d9f499b267b97bc067635807ed2044dc45c20b309
+engine build: {"engine": "crforge", "build": {"crforge_sha": "5e8089a47ec9bdf7b8f04cebccd7a7a4e5ea4a9b", "ref": "5e8089a47ec9bdf7b8f04cebccd7a7a4e5ea4a9b", "tickprobe": false, "jars": {"aircompressor-2.0.3.jar": "b86bb66f610079e0bf790d62e2ff68853eb0dc4748a6d68ae28bce92b68094aa", "core-1.0-SNAPSHOT.jar": "bd1be8f10f00344e123589518ae341c6193bb546645f0da189cdb3553b66fb78", "env-1.0-SNAPSHOT.jar": "fdb9fe83ee6edd18e225019cc96d0383b54151157cc0d9611c33b82558ca3b10", "jackson-annotations-2.22.jar": "21ddb598807d3a51a876704eb979d9296e1c6a6f47ab1826ff88c6d6a127a2d0", "jackson-core-2.22.2.jar": "ff167a6317be15895706c26668f45b898efe40ab8780970658210fe1393d52a6", "jackson-databind-2.22.2.jar": "d0da14c12b16b5d54719aa172d83b542ff4abeb8b0fb7db476fde8ceece760ca"}}, "lib": "/workspace/crforge_main/5e8089a4/plain", "tables": "/workspace/siege/crforge_cache/tables/16.402.22", "facade_sha256": "e063889a5a147a052c6b24133771a110fab804cef675abc2ecff2d136d2a0975", "code_head": "ed890aa", "learner_sha256": "8d328a43bf09fb7e389d41f01524fbb50955e15b64fdb72e28488a123eabad42", "opp_ckpt": "/workspace/siege/ft/ftd3/opp_ft_R_sim.pt", "opp_T": "1.0", "opp_extra": "", "g2": "--tap-loss 1x:0.0180,2x:0.0363,ot2x:0.0388,ot3x:0.0890 --tap-slow 0.151:17"}
+NOTE: closed-loop numbers before D2 can be engine-limited (the build above is the one that produced them).
+## A (per decision): FAIL -- not scored: no checkpoint given
+## B-live (vs live humans: v5 all-matches reference, 4752 matches, recency-weighted; model games >= 1900: True)
+B-live pooled: n model 1920 / human 4752; RMS d over 25 stats 0.28 (pass False); TOST all False (17 fail); B3 False => FAIL; worst |d|: spell_depth +0.55, gap_p10 -0.50, react_lift +0.47, own_half -0.44, push_mean -0.43
+  arch golem: n model 123 / human 185; RMS d over 25 stats 0.74 (pass False); TOST all False (8 fail); B3 True => FAIL; worst |d|: spell_depth +2.45, react_s -0.98, ppm_2x +0.94, card_entropy +0.89, gap_p10 -0.89
+  arch hog: n model 310 / human 838; RMS d over 25 stats 0.35 (pass False); TOST all False (12 fail); B3 False => FAIL; worst |d|: react_lift +0.67, gap_p10 -0.61, card_entropy +0.57, push_mean -0.47, ppm_ot -0.47
+  arch hyperbait: n model 164 / human 313; RMS d over 25 stats 0.47 (pass False); TOST all False (10 fail); B3 False => FAIL; worst |d|: ans_spell_3s -1.33, lane_left +0.69, spell_depth +0.64, opp_el +0.62, gap_p10 -0.60
+  arch lava_hound: n model 45 / human 80; RMS d over 23 stats 0.69 (pass False); TOST all False (2 fail); B3 False => FAIL; worst |d|: ppm_1x -1.86, push_mean -1.32, gap_p50 +1.12, react_lift +1.06, push_max -0.93; missing ['ppm_ot', 'spell_depth']
+  arch other: n model 726 / human 1383; RMS d over 25 stats 0.31 (pass False); TOST all False (12 fail); B3 False => FAIL; worst |d|: spell_depth +0.57, own_half -0.56, gap_p10 -0.53, react_lift +0.48, card_entropy +0.48
+  arch pekka_bridge: n model 41 / human 94; RMS d over 24 stats 0.43 (pass False); TOST all False (1 fail); B3 True => FAIL; worst |d|: ppm_1x -0.94, react_lift +0.73, push_mean -0.64, spell_share -0.61, lane_left +0.58; missing ['spell_depth']
+  arch royal_giant: n model 47 / human 146; RMS d over 24 stats 0.63 (pass False); TOST all False (1 fail); B3 True => FAIL; worst |d|: spell_depth +2.33, opp_el -0.79, push_mean -0.77, card_entropy +0.73, troop_depth +0.61; missing ['pocket_share']
+  arch royal_giant_monk: n 23/43 too few => FAIL (sufficiency)
+  arch weak_other: n model 441 / human 1670; RMS d over 25 stats 0.31 (pass False); TOST all False (11 fail); B3 False => FAIL; worst |d|: spell_depth +0.58, push_mean -0.53, own_half -0.52, ppm_1x -0.51, push_max -0.42
+signature stats d (model - live): hog: sig_per_min -0.44 sig_first_s 0.23 (n 310/838); hyperbait: sig_per_min -0.05 sig_first_s -0.12 (n 164/313); golem: sig_per_min -1.00 sig_first_s 0.84 (n 123/185); lava_hound: sig_per_min -0.50 sig_first_s 0.41 (n 45/80); pekka_bridge: sig_per_min -0.02 sig_first_s 0.37 (n 41/94); royal_giant: sig_per_min -0.01 sig_first_s -0.19 (n 47/146); royal_giant_monk: sig_per_min -0.72 sig_first_s 0.45 (n 23/43)
+## B-HF: FAIL -- not scored: no --hf-sim rows (build: hf_ref.py --jobs N, then pairs.py run --mvm; see HUMANLIKE section 10)
+## Siege facts + adaptation-value audit => FAIL
+  lock_rate: live 0.47 model 0.74 diff +0.277 90% CI [+0.256, +0.295] margin +-0.05 => FAIL
+  zero_lock: live 0.12 model 0.00 diff -0.115 90% CI [-0.136, -0.095] margin +-0.06 => FAIL
+  p_lock_after_fail: live 0.36 model 0.66 diff +0.303 90% CI [+0.268, +0.333] margin +-0.07 => FAIL
+  cond_gap: live 0.16 model 0.06 diff -0.096 90% CI [-0.141, -0.054] margin +-0.1 => FAIL
+  live: matches 856 reach X-Bows 3108 | P(lock|prev failed) 0.36 (n 1267) vs P(lock|prev locked) 0.51 (n 1007) | zero-lock share 0.12 (n 754) | X-Bow again in 30 s after fail 0.65 / after lock 0.56 = persistence 1.16
+  model: matches 1920 reach X-Bows 7026 | P(lock|prev failed) 0.66 (n 1263) vs P(lock|prev locked) 0.72 (n 3847) | zero-lock share 0.00 (n 1859) | X-Bow again in 30 s after fail 0.49 / after lock 0.49 = persistence 1.01
+  lock rate by archetype: golem live - model - (n 66/383) ; hog live 0.48 model 0.75 (n 644/1173) FAIL; hyperbait live - model - (n 256/618) ; lava_hound live - model - (n 21/161) ; other live 0.50 model 0.74 (n 846/2709) FAIL; pekka_bridge live - model - (n 66/136) ; royal_giant live - model - (n 80/186) ; royal_giant_monk live - model - (n 19/86) ; weak_other live 0.41 model 0.72 (n 1110/1574) FAIL
+## C-live: AUC 0.984 90% CI [0.976, 0.990] vs upper limit 0.6 (human 856 matches, n_eff 787; model 1920; sample size enough: True) per arch (held-out n, AUC): golem 47 1.00, hog 153 0.97, hyperbait 75 0.96, other 265 0.99, weak_other 233 0.99 => FAIL
+   C-HF: FAIL -- not scored (no --hf-sim rows: hf_ref.py --jobs N, then pairs.py run --mvm)
+## H: H_B 0.000 over 21 cells; H_ABC 0.000 (A, B-HF, C all needed)
+## D (sealed block, read last): n 0 (need >= 1500); no sealed matches => FAIL (sufficiency rule)
+## VERDICT ftd3: FAIL (A False, B-live False, B-HF False, siege False, C False, D False)
