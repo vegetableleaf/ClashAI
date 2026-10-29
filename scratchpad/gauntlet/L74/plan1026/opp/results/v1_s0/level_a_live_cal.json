@@ -1,0 +1,56 @@
+{
+ "ckpt": "/workspace/opp/v1/run_s0/opp_v1_s0.pt",
+ "data": "/workspace/opp/live/live_cal",
+ "split": 2,
+ "rows": 323649,
+ "thresholds_sha256": "265681678b39907533182e9d9f499b267b97bc067635807ed2044dc45c20b309",
+ "card": {
+  "n": 21363,
+  "agreement": 0.5461311613537424,
+  "nll": 1.0623499155044556,
+  "ece_pp": 5.184590544324743
+ },
+ "cell": {
+  "n": 24100,
+  "agreement": 0.2154356846473029,
+  "nll": 4.724202632904053,
+  "ece_pp": 6.519255217713502
+ },
+ "timing": {
+  "slots": 299549,
+  "events": 24039,
+  "nll_per_slot": 0.438275545835495,
+  "hazard_mean": 0.10697008669376373,
+  "event_rate": 0.08025064346734591,
+  "ece_slot_pp": 2.6721353035540734,
+  "gaps": 23768,
+  "ks_rescaled": 0.11741515967373428,
+  "rescaled_mean": 1.4238592719635264
+ },
+ "memory_used": {
+  "late_rows": 165618,
+  "matches": 679,
+  "nll_gain_real_vs_other_match": 0.10279238969087601,
+  "match_mean_gain_ci90": [
+   0.10332000255584717,
+   0.11734326928853989
+  ],
+  "seed_gap": null,
+  "note": "THRESHOLDS asks gain > seed gap; one seed trained -> seed gap not measured"
+ },
+ "pass": {
+  "card_agreement": true,
+  "cell_agreement": false,
+  "ece_card": false,
+  "ece_top_cell": false,
+  "ece_timing_slot": false,
+  "timing_ks": false,
+  "ability_ks": false,
+  "memory_used": null
+ },
+ "notes": [
+  "timing KS pooled over archetypes (THRESHOLDS asks >= 5000 gaps PER archetype: not split here)",
+  "ability KS pooled over heroes (per-hero n not split)",
+  "nll_vs_per_deck_finetune: not run (no per-deck fine-tunes)"
+ ]
+}

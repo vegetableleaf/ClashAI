@@ -1,0 +1,1 @@
+{"rows": 1919, "outcomes": {"loss": 341, "win": 1578}, "learner_win": 0.8223, "mean_end_tick": 4101.2, "ot_share": 0.43, "opp_plays_per_row": 28.9, "opp_refused_share": 0.0022, "opp_ppm": 8.52, "crowns_against": 0.356, "crowns_for": 1.061}
