@@ -128,7 +128,37 @@ zero-lock .01, P(lock|fail) .65, B-live RMS 0.31, C-live 0.983. Per decision ear
 rows of the current data does not move the siege facts. The lever is exhausted at this data size; the next change must be a
 different one (STATUS).
 
-## STATUS (2026-10-29 ~10:10 UTC) -- restart point
+## OPP-SIEGE2 (account 2, from 2026-10-29 10:10 UTC): placement vs follow-up
+### 2a. Lock by offset from the HUMAN spot (place_off.py; on-time unit/building answers; human spot = live median dx, dy per card,
+cards with >= 20 live answers; offset = tiles from that spot) (a):
+
+| source (lib) | 0-1.5 tiles | 1.5-3 | > 3 |
+|---|---|---|---|
+| live (CLXIII calibration block) | .40 (n 738) | .35 (222) | .36 (522) |
+| E4 (5e8089a4, e45e) | .41 (1,919) | .51 (390) | .48 (1,336) |
+| ftR (5e8089a4, ftR5e) | .55 (683) | .65 (190) | .63 (654) |
+| ftx3 (5e8089a4) | .56 (618) | .64 (185) | .61 (581) |
+
+Per card ON the human spot (live / E4 / ftR): tesla .53/.53/.90 (n 59/146/29), cannon .58/.52/.95 (50/106/22), valkyrie
+.35/.44/.59, mega knight .28/.28/.25. Re-weighting ftR to the live offset mix gives ~.59 vs its own ~.60 (from the 2-decimal bin rates; offset mix explains
+~0.00). Reading: (c) CONTRADICTED -- "ftR's answers fail because they land off the human spot": an ftR answer ON the human spot
+locks .55 vs .40 live / .41 E4, the gap is the same at every offset. Placement relative to the X-Bow is not the cause; what
+happens after the answer lands is (next: 2b, board targets).
+
+## STATUS (OPP-SIEGE2, 2026-10-29 11:00 UTC) -- restart point
+- RUNNING on 30408 (`ssh -o BatchMode=yes -i ~/.ssh/runpod_clashbot -p 30408 root@157.157.221.29`), code = POD-ONLY copy
+  `/workspace/siege/opp/cb2` (= cb + `probe/patch_pod.py`: SIEGE_CELL_T = cell temperature of timing-head seats, SIEGE_TGT=1 =
+  hab sample s[8] [[uid, team, kind, target_uid]]; unset = unchanged; NOT in pipeline/ on main). `probe/lanes.sh` (copy at
+  /workspace/siege/lanes.sh): lane 1 (PID 3774642, log /workspace/siege/lane1.out, CPUs 0-127) tgtR = ftR + targets, seed
+  741200 (480), then tgtE4; lane 2 (PID 3774644, lane2.out, CPUs 128-255) ct25 then ct50 = ftR with cell T .25 / .5, 4 x 480.
+  Rows /workspace/siege/score/rows/{tgtR,tgtE4,ct25,ct50}. Restart: `cd /workspace/siege && setsid nohup bash lanes.sh N >
+  laneN.out 2>&1 < /dev/null &` (run_closed skips finished 480-blocks). All on crforge 5e8089a4, G2 on, CLXIII 8d328a43.
+- Recorder control (a): the first 170 tgtR games are outcome-identical to ftR5e (170/170 end tick + outcome); SIEGE_TGT costs
+  ~5x wall per match (median 259 s vs 49 s), hence one seed block for the target arms.
+- Score: fetch rows to opp_model/humanlike/rows/NAME, `win_b.py DIR`, `siege_b.py sim NAME=DIR` (+ `SIEGE_ALL` unset),
+  `siege_t.py NAME=DIR` (target arms), `card.py score --name NAME --sim DIR --no-d` (icebow/.venv python).
+
+## STATUS history (OPP-SIEGE, 2026-10-29 ~10:10 UTC)
 - Nothing of mine is running (30408 idle GPU; 33903 untouched beyond the finished ftR5e / siege_a runs; PID 5431 untouched).
 - Next single changes, in order (one per experiment): (1) the open (b) measurement: per on-time answer, the X-Bow's first
   target and the answer unit's survival from the board bodies (`hab` samples s[6] / s[7]), ftR vs E4 vs (live: reader bodies)
