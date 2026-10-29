@@ -2540,8 +2540,20 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
     never retargets to the king: king hp lost 0, no king-tower projectile. Our left princess loses 3549 (no Tornado), 2535
     (Tornado on the Hog), 3042 / 3042 / 1521 (centre 2000 / 3500 / 5000 units toward our king); at 5000 the Hog stops at
     (5745, 7341) and dies 80 ticks sooner. Whether the real game retargets: untested (b, needs a recording).
-  - **RESTART POINT:** open = SME_NEAR_BIGGER2 census (see next bullet), the no-regression batch for SPELL_KING +
-    HIDDEN_CHILD (dev / FRESH1-5, Codex, as ENG-FIX_5), the lead's call on SME_HIDDEN_UNIQ, FRESH5 failures 004719 / 021310.
+  - **SME_NEAR_BIGGER2 (narrower NEAR_BIGGER: the smaller living body born with an EARLIER play's group) is
+    contradicted (c) and was not committed:** census `engfix/nearbig2_census.py` (`nearbig2_dev.txt`,
+    `nearbig2_fresh_partial.txt`; FRESH1-2 only, stopped once the answer was clear). On dev 138 the old rule changes 7
+    matches and the narrow rule 6. The narrow rule removes only the Little Prince extras (dev 221406, FRESH2 134922). It
+    keeps every Dark Prince / Musketeer false play (dev 144057, 154839, 203752, 232438, 010613, 020550; FRESH2 081253,
+    082643, 085837, 093648) and keeps 101018's fix. So those extras sit next to a smaller living same-card body of an
+    EARLIER play, not the same play. Next test (b, untested): require q and r to have the same FORM (hero / evo vs base).
+  - **Running:** Codex ENG-FIX2_1 (pid file `.foreman/scratch/a2/codex/out/ENG-FIX2_1.jsonl.pid` = 2047381, ticket
+    `.foreman/scratch/a2/codex/ENG-FIX2_1.md`, results `engfix/r6/`): SPELL_KING + HIDDEN_CHILD OFF vs ON on dev /
+    FRESH1-5, lib 5e8089a4. If 0 regressions and plants 0 missed: add both flags to fresh_prep.sh (+ its flags echo) for
+    FRESH6+. Restart: the same launcher with a fresh OUT name.
+  - **RESTART POINT:** read ENG-FIX2_1's table, then the lead's call on SME_HIDDEN_UNIQ, then FRESH5 failures
+    004719@2573 (opponent Goblins reader-only) / 021310@1986 (Skeletons SIM-only), then NEAR_BIGGER same-form test.
+    Codex dispatches (ENG-FIX2): ENG-FIX2_1 medium, running.
 - **(superseded by ENG-FIX2 above) RESTART POINT (10-29):** done = Codex ENG-FIX_5 (`.foreman/scratch/a2/codex/ENG-FIX_5.md`, out
   `.foreman/scratch/a2/codex/out/ENG-FIX_5.jsonl`, results `engfix/r5/`): BODYPT OFF vs ON on the changed matches of
   dev / FRESH1-4, lib 5e8089a4: DONE, 0 regressions, flag added to fresh_prep.sh.
