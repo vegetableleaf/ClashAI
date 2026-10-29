@@ -3,28 +3,29 @@
 Labels: (a) measured (number + source), (b) plausible, untested, (c) contradicted. Owner mandate 10-28: learning progress
 per wall-clock hour x50-100+, fp32 only (TF32 off), kl_stop_prev 0.02. Rent only on a measured >= ~50x projection.
 
-## STATUS (keep current; LEARNER-SCALE2, 10-28 ~23:45 EDT)
-- Previous seat's commits: 335f151, 3866761, e09c4cd, e8da717. This seat: kl_lr_target + T 0.1 records + section 6
-  (this commit).
-- Opt-in keys landed (absent = byte-identical, hash unchanged):
-  - `micro_batch`, `mem_row_cache` (previous seat).
-  - `kl_lr_target` (this seat): the KL-adaptive lr, section 6a. Smoke ls2_smoke_off on 33920 with this code: config
-    b5e2a2bbafef, u0000 e816a6a4 / 3e07cff4, u0001 f060b678 / 5c61ac04 = the reference. SMOKE PASS.
-- Records (a): 6 x 512 B0 matches at T_gate 0.1 (pilot.yaml at HEAD e8222884), each with LOOP-REC byte-identity PASS.
-  - Engine: 33920's crforge lib d2/stage, NOT the pilot's fe364ceb lib (b: the engine difference is not measured).
-  - Location: 33920:/dev/shm/lscale/t01_s{2101..2106}/keep, ~2.5 GB each, in RAM: a pod restart loses them.
-  - Rebuild: /workspace/lrn/cap_t01.sh (Codex LEARNER-SCALE_3), and chain_ls2.sh for 2105 / 2106.
-- RUNNING on 33920: /workspace/lrn/chain_ls2.sh (log /workspace/lrn/logs/chain_ls2.log). Steps, in order:
-  1. capture 2105 and 2106;
-  2. lr_sweep at equal KL (log sweep2.log, out /workspace/lrn/sweep2/sweep_t01.json);
-  3. the noise scale on 1,024 T 0.1 matches (noise2.log, /workspace/lrn/noise2/ns_t01_1024.json).
-  Restart: `cd /workspace/lrn && setsid nohup bash chain_ls2.sh > logs/chain_ls2.log 2>&1 &`. It skips the captures
-  already done; the sweep and the noise run start over.
-- Codex dispatches:
-  - Previous seat: LEARNER-SCALE_1 (profiler) DONE; _2 BLOCKED; _2b (2-GPU probe) DONE.
-  - This seat: LEARNER-SCALE_3 (low), the T 0.1 capture (4 x 512): DONE in 27 min, 4/4 PASS. I checked its numbers
-    against the log.
-- NEXT: read the sweep and the noise results into section 6, then the projection (section 6d).
+## STATUS (keep current; LEARNER-SCALE2, 10-29 ~01:35 EDT)
+- Commits this seat:
+  - 9bdc04f: kl_lr_target v1, prof_mod, compile probe.
+  - daaecbf: kl_lr_target v2 + sweep v1.
+    - CAUTION: daaecbf also carried LOOP-ASYNC's uncommitted ppo_decoupled hunks in pipeline/rl_royale.py (my whole
+      working file). The lead says they equal what LOOP-ASYNC tested. From now on: hunk-only commits of shared files.
+  - This commit: noise scale T 0.1, steady-state cadence, projection (6e-6g).
+- Opt-in keys (absent = byte-identical, hash unchanged, smokes PASS):
+  - micro_batch, mem_row_cache (previous seat);
+  - kl_lr_target v2 (6a).
+- Records: 6 x 512 B0 matches at T_gate 0.1 in 33920:/dev/shm/lscale/t01_s{2101..2106}/keep. They are RAM-only: a pod
+  restart loses them. Rebuild: /workspace/lrn/cap_t01.sh, plus chain_ls2.sh for 2105 / 2106.
+- RUNNING on 33920: chain_ls2b.sh, the equal-KL sweep with kl_lr_target v2.
+  - Arms: base, 8k, 32k; started 01:27; ~45-60 min.
+  - Log: /workspace/lrn/logs/sweep2v2.log; out: /workspace/lrn/sweep2/sweep_t01_v2.json. Tabulate: `python3
+    /workspace/lrn/tab.py /workspace/lrn/logs/sweep2v2.log`.
+  - Restart: the last command in /workspace/lrn/chain_ls2b.sh.
+- Codex: LEARNER-SCALE_3 (low), the T 0.1 capture: DONE, 4/4 PASS, checked against the log. No other dispatch.
+- NEXT:
+  1. Read the v2 sweep into 6d. The question: does any arm reach the cap without overshoot, and with what paired dJ?
+  2. Lead / owner decision on 6g lever 1 (gate-gradient variance reduction; it changes the loss).
+  3. SIM A/B for M 128 vs 1,024 per update at equal updates; it needs producers (LOOP-INT / ASYNC tooling).
+  4. Per-step latency: CUDA graphs on fixed 256-row buckets + glue removal (6b), identity-tested.
 
 Previous seat's STATUS (10-29 ~00:30, superseded): `git show e8da717:scratchpad/gauntlet/L74/plan1026/pilot/lrn/SCALE.md`.
 
@@ -307,3 +308,71 @@ held-out matches.
   is set by the larger-moving arm's own variance.
 - Comparing learner settings therefore needs the SIM A/B (win rate over many updates), not J.
 - Consistent with section 1: no policy-gradient signal resolved over 512 matches.
+
+### 6e. Noise scale at T_gate 0.1 on 1,024 matches (a; noise_scale.py; noise/ns_t01_1024.json)
+Setup:
+- Records: s2101 + s2102, 1,024 matches.
+- The critic was warmed 3 updates on s2105 first (explained variance 0.92).
+- Sanity: rel diff 8.3e-6, ratio maxdev 2.0e-5.
+- The 256-row gradient norm is 17.6, against grad_clip 0.5 (~35x clipped).
+
+| component | tr(Sigma_match) | G^2_U (+- se) | B_match: point [2 sigma lo, hi] | B_row via 256-row mbs |
+|---|---:|---:|---|---:|
+| gate | 85.7 | 0.040 +- 0.13 | 2,158 [279, inf] | 782k |
+| card | 4.6 | 0.0007 +- 0.0024 | 6,554 [835, inf] | 1.38M |
+| cell | 3.1 | -0.0002 +- 0.0004 | - [4,714, inf] | - |
+| value | 0.069 | 0.0052 +- 0.0010 | 13.2 [9.6, 20.9] (~4.2k rows) | 138 |
+| policy | 92.0 | 0.077 +- 0.16 | 1,202 [234, inf] (~380k rows) | 418k |
+
+- (a) The gate head carries 93% of the policy gradient noise at T 0.1. It is 85.7 here vs 22.9 at T 0.3 (1b): its
+  log-prob scales with 1 / T_gate.
+- (a) Policy critical batch: >= ~230 matches (2 sigma), point estimate ~1,200 matches (~380-420k rows), no upper bound.
+  The critic's is ~13 matches.
+- (b) Today's update uses 3-15k rows. That is ~1-4% of B_row, so each update's KL-0.02 move is mostly noise. With the
+  crude model of section 4, the signal fraction is sqrt(R / (R + B_row)) ~ 0.08-0.19.
+
+### 6f. Steady-state learner time per update (a; lr_sweep base arm, mem_row_cache on, T 0.1; sweep2/cad_m*.json)
+| matches per update | steps per update (warmed Adam) | rows used | PPO s | whole update s |
+|---:|---|---|---|---|
+| 128 (u5-u12) | 54 / 29 / 14 / 36 / 38 / 35 / 13 / 24 | 3.3-13.8k | 2.9-12.6 | 3.3-13.9 (mean 7.0) |
+| 512 (u5-u8) | 59 / 15 / 43 / 12 | 3.1-15.1k | 2.8-13.2 | 3.7-14.7 (mean 8.2) |
+
+- (a) Under the cap, one update's learner time is set by the steps until the cap (12-59 x ~0.2 s). It hardly depends on
+  matches per update (128 vs 512: 7.0 vs 8.2 s mean).
+- (a) mem_row_cache at M 512: 3.7-14.7 s per update, vs 5.3-18.4 s without (6d base). Same steps.
+
+### 6g. Projection for the 8x RTX PRO 6000 (b unless marked; learning per hour vs today)
+progress / h = U (updates / h) x I (improvement per update).
+
+Today: the synchronous pilot.
+- M 1,024 per update.
+- One 4090 producer: 48.9k matches/h (a, LOOP-INT) -> ~75 s per wave.
+- Learner ~8-10 s.
+- So U_today ~ 3600 / 85 ~ 42 updates/h.
+
+Box inputs:
+- Rollouts ~400-580k matches/h (PROJECTION.md, b).
+- Rollouts overlapped with the update (LOOP-ASYNC, approved; its A/B is running).
+- A PRO 6000 at ~1.7x a 4090 (untested).
+- Encoder compile 1.3x (6c; not exact, so not adoptable as is).
+
+| option | U on the box | I vs today | learning / h vs today |
+|---|---|---|---|
+| A. M 1,024, base learner | wave 6-9 s binds: ~390-560 / h | 1 (same rows used) | ~9-13x |
+| B. M 128, base learner | learner binds: 7 s / 1.7 = ~4 s: ~900 / h (~1,200 with compile) | ~1 if M 128 keeps the 3-15k rows' signal (untested: fewer matches, more correlated rows) | ~21-29x |
+| C. M 1,024, all 318k rows in ~5-10 large steps (kl_lr_target v2), DDP on 7 GPUs | ~14 s per update: ~250 / h | sqrt(318 / 736) / sqrt(8 / 426) ~ 4.8 by the section 4 model (NOT resolved by the 6d sweep, which neither confirms nor contradicts it) | ~28x |
+
+- HONEST VERDICT: ~10-30x, short of the ~50x rent bar.
+  - Option C's I gain is a model estimate that the held-out J could not resolve.
+  - Option B's I is untested.
+  - The per-row work cannot give the 15-20x the mandate assumed: 6b-6c measured ~1.3x for compile, with ~1.5-2x
+    plausible including glue removal.
+- What could close the gap (b, ranked):
+  1. Gate-gradient variance reduction. The gate is 93% of the policy noise (6e).
+     - Options: a Rao-Blackwellised gate term (the expectation over the gate's two outcomes instead of the sampled one,
+       where the counterfactual advantage is available), or a gate-specific baseline.
+     - Effect: cutting the policy's B_row ~5-10x raises I per update for every option, up to ~2-3x at today's R.
+     - It changes the loss: a lead / owner decision.
+  2. Per-step latency for options B / C: CUDA graphs on fixed row buckets + glue removal (42% of a step, 6b), ~1.5-2x.
+  3. Measure, don't assume: the SIM A/B of M 128 vs 1,024 (option B's I), and LOOP-ASYNC's staleness result.
+- No rent case yet on these numbers.
