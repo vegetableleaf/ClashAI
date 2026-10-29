@@ -157,6 +157,50 @@ class TestDrift(unittest.TestCase):
             self.assertAlmostEqual(d1[k]["p_init"], d0[k]["p_now"], places=12)
 
 
+class TestAnchor(unittest.TestCase):
+    """OPP-LEARN-C th_anchor: lambda_t x KL(init || policy) of the frozen heads' outputs, gradient into the trunk only."""
+
+    def test_pull_is_zero_at_the_init_and_reaches_only_the_trunk(self):
+        model = _opp_model(7)
+        B = _batch(_rollout(model, 1))
+        idx = torch.arange(len(B["A"]))
+        ref = copy.deepcopy(model).eval()
+        frozen = RL.freeze_heads(model, {"freeze_heads": ["timing", "ability"]})
+        with torch.no_grad():
+            t0 = RL.policy_terms(ref, B, idx, 0.3, 1.0)
+            self.assertEqual(float(RL.th_anchor_kl(RL.policy_terms(model, B, idx, 0.3, 1.0)["th"], t0["th"])), 0.0)
+            for n, q in model.named_parameters():             # move the trunk off the init
+                if q.requires_grad:
+                    q.add_(0.05 * torch.randn_like(q))
+        R = RL.ref_terms(ref, B, 0.3, 1.0)
+        kw = dict(tau=0.3, T=1.0, clip=0.2, beta=0.1, n_total=len(idx))
+        l0, st0 = RL.minibatch_loss(model, B, R, idx, **kw)
+        l1, st1 = RL.minibatch_loss(model, B, R, idx, th_anchor=(2.0, ref), **kw)
+        self.assertNotIn("kl_th", st0)
+        self.assertGreater(st1["kl_th"], 0.0)
+        self.assertAlmostEqual(float(l1 - l0), 2.0 * st1["kl_th"], places=6)
+        model.zero_grad()
+        (l1 - l0).backward()                                  # the pull's own gradient
+        g = dict(model.named_parameters())
+        for n in frozen:
+            self.assertIsNone(g[n].grad, n)
+        self.assertTrue(any(q.grad is not None and float(q.grad.abs().sum()) > 0 for n, q in g.items() if n not in frozen))
+        cq = g["card_q.weight"].grad                          # the card head is not on the pull's path
+        self.assertTrue(cq is None or float(cq.abs().sum()) == 0.0)
+
+    def test_absent_hash_and_gate_models_unchanged(self):
+        cfg = RL.load_config(REPO / "pipeline" / "rl_royale.yaml", [], False)
+        self.assertEqual(RL.config_sha(cfg), RL.config_sha({**cfg, "th_anchor": None}))
+        self.assertNotEqual(RL.config_sha(cfg), RL.config_sha({**cfg, "th_anchor": 1.0}))
+        gm = _tiny_gen(3)
+        B = _batch(_rollout(_opp_model(2), 1))
+        self.assertIn("th", RL.policy_terms(_opp_model(2), B, torch.arange(4), 0.3, 1.0))
+        res, _ = _run([(0, _spec(0, "o", 0), 0, {"rollout_index": 0, "update": 0})], E.GenPolicy(gm, VOCAB),
+                      {"o": (E.GenPolicy(_tiny_gen(12), VOCAB), _cfg("sample", record=False))}, _cfg(T=1.0), n=1)
+        with torch.no_grad():
+            self.assertNotIn("th", RL.policy_terms(gm, _batch(res), torch.arange(4), 0.3, 1.0))
+
+
 class TestBotPartner(unittest.TestCase):
     """OPP-LEARN-C: a league_exploiters entry = the bot partner on our deck with its own decode (T, T_gate, tau,
     tau_phase); a frozen human-model partner keeps the run's T (the init / snapshot path, unchanged)."""

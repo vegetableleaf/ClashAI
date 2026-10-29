@@ -33,6 +33,18 @@ unchanged without the opp init. Existing: test_timing_head_decode + test_league 
 ## OPP-LEARN-C (2026-10-29): bot-partner decode, frozen-head drift monitor, fast-loop learner seat, calibration
 
 ### STATUS (keep current)
+- th_anchor BUILT (lead 10-29 approved the proposal below): `th_anchor: lambda_t` (> 0; absent / null = off, historical hash;
+  refused on a gate learner) adds lambda_t x th_anchor_kl = mean over the minibatch rows of KL(init || policy) of the slot hazard
+  (Bernoulli) + p_init x KL of the tick softmax, and the same for the ability head; the init = ref_init (one no-grad forward per
+  minibatch); the heads stay frozen, so the gradient reaches the trunk only (test: frozen grads None, card_q grad 0, loss
+  difference = lambda_t x kl_th). Monitors: st / upd / rec `kl_th`. Tests (a): test_opp_learner 11 passed; with test_league +
+  test_timing_head_decode 53 passed, 1 skipped, the 2 pre-existing failures. Pod smokes (a, 33903, trees
+  /workspace/opplearnc/cbd_base = origin 063261d, cbd = + th_anchor): succ48 base / new both b5e2a2bbafef, u0 b43dd869/3e07cff4,
+  u1 70b4b263/d9fd3a96, SMOKE PASS; learner/opp_learner_anchor_smoke.yaml (bot smoke + th_anchor 1.0) config 094d06414628, u0
+  batch cb89adf5 (= the off smoke's), SMOKE PASS. (a) In that 2-update smoke the drift after u0 was LARGER with the pull on
+  (hazard mad 5.9e-3 vs 1.85e-3 off): at the init the pull's gradient is ~0, and Adam normalises per parameter, so a small
+  pull can redirect steps on parameters with small PPO gradients (b: cause untested; on the tiny test model no parameter gets
+  an anchor-only gradient). The on-vs-off dry run at the same lr decides.
 - The rl_royale.py hunks were swept into LEARNER-SCALE2 daaecbf (identical to this patch; checked by diff); tests, producer /
   compare and the learner/ files are this commit. Lead 10-29: calibration learner on 33308 GPU1 only (RAM <= 30 GB, <= 40
   actors, ONE lambda run at a time: 0.1 first, then 0.03 / 0.3); never the 33903 GPU; bar scored on D3 + the sampled-decode
