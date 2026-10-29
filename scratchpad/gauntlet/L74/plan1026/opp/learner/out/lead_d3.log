@@ -4,3 +4,26 @@
 2026-10-29T10:30:18Z oplc_ftR_l01_a10_u0080 CLXIII W 413 / 480
 2026-10-29T10:30:24Z oplc_ftR_l003_a10_u0080 CLXIII W 386 / 480
 2026-10-29T10:53:16Z u0080: l01 413/480 (86.0%), l003 386/480 (80.4%); quick B RMS l003 .29 / l01 .31 (ftR .30), lock l003 .73 / l01 .76 (ftR .78). Arm A l01 STOPPED at u100; arm C l001 (beta .01) started GPU1.
+/workspace/d2/cb/icebow/data/bench/rl_royale/oplc_ftR_l003_a10/oplc_ftR_l003_a10_u0120.pt 9b5ac643791f5bf5 -> /workspace/oplc/strip/oplc_ftR_l003_a10_u0120.pt 7aefe312a72e72c6 ['args', 'card_vocab', 'd_c', 'deck', 'epoch', 'gen', 'memory', 'memory_v2', 'model', 'n_params', 'opp', 'opp_sim', 'val']
+2026-10-29T12:06:01Z oplc_ftR_l003_a10_u0120 CLXIII W 383 / 480
+2026-10-29T12:50:29Z u0120: l003 383/480 (79.8%). Arm B training opp-win vs CLXIII T.5 partner per 20 updates .173 .214 .248 .255 .252 .250 .249 (flat since u60) -> plateau (a). PPO covers card+cell only (KL g 0.0000): timing untrained.
+/workspace/d2/cb/icebow/data/bench/rl_royale/oplc_ftR_l001_a10/oplc_ftR_l001_a10_u0040.pt 354c86f388b4f219 -> /workspace/oplc/strip/oplc_ftR_l001_a10_u0040.pt 236dfe1baa8718f3 ['args', 'card_vocab', 'd_c', 'deck', 'epoch', 'gen', 'memory', 'memory_v2', 'model', 'n_params', 'opp', 'opp_sim', 'val']
+2026-10-29T13:16:13Z oplc_ftR_l001_a10_u0040 CLXIII W 399 / 480
+2026-10-29T13:50:22Z u0040 C(l001): 399/480 (83.1%) = A/B at u40. C training opp-win vs CLXIII partner per 10: .150 .171 .203 .237 .261 (B per 20: .173 .214 .248).
+/workspace/d2/cb/icebow/data/bench/rl_royale/oplc_ftR_l003_a10/oplc_ftR_l003_a10_u0160.pt 28ee4d28407bd8b7 -> /workspace/oplc/strip/oplc_ftR_l003_a10_u0160.pt 9a82e33c26326236 ['args', 'card_vocab', 'd_c', 'deck', 'epoch', 'gen', 'memory', 'memory_v2', 'model', 'n_params', 'opp', 'opp_sim', 'val']
+Connection timed out during banner exchange
+Connection to 157.157.221.29 port 33308 timed out
+2026-10-29T14:18:54Z oplc_ftR_l003_a10_u0160 CLXIII W 392 / 480
+2026-10-29T14:31:33Z u0160 B(l003): 392/480 (81.7%) [16.402.22]. FROM HERE: D3 on LIVE tables 16.635.3 (all earlier rows = 16.402.22 = old client); per-arm loops arm_d3.sh; baseline reruns ftR + B u160 on 16.635.3.
+grep: rows/ftR_635/ftR_635_741200/D3/matches.jsonl: No such file or directory
+2026-10-29T14:31:35Z ftR_635 [16.635.3] CLXIII W  / 
+grep: rows/ftR_635/ftR_635_741200/D3/matches.jsonl: No such file or directory
+2026-10-29T14:31:39Z oplc_ftR_l003_a10_u0160_635 [16.635.3] CLXIII W  / 
+grep: rows/oplc_ftR_l003_a10_u0160_635/oplc_ftR_l003_a10_u0160_635_741200/D3/matches.jsonl: No such file or directory
+grep: rows/oplc_ftR_l003_a10_u0160_635/oplc_ftR_l003_a10_u0160_635_741200/D3/matches.jsonl: No such file or directory
+grep: rows/ftR_635/ftR_635_741200/D3/matches.jsonl: No such file or directory
+2026-10-29T14:34:04Z ftR_635 [16.635.3] CLXIII W  / 
+grep: rows/ftR_635/ftR_635_741200/D3/matches.jsonl: No such file or directory
+2026-10-29T14:34:12Z oplc_ftR_l003_a10_u0160_635 [16.635.3] CLXIII W  / 
+grep: rows/oplc_ftR_l003_a10_u0160_635/oplc_ftR_l003_a10_u0160_635_741200/D3/matches.jsonl: No such file or directory
+grep: rows/oplc_ftR_l003_a10_u0160_635/oplc_ftR_l003_a10_u0160_635_741200/D3/matches.jsonl: No such file or directory
