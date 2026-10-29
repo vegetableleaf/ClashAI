@@ -33,6 +33,12 @@ unchanged without the opp init. Existing: test_timing_head_decode + test_league 
 ## OPP-LEARN-C (2026-10-29): bot-partner decode, frozen-head drift monitor, fast-loop learner seat, calibration
 
 ### STATUS (keep current)
+- TWO ARMS (lead 10-29 ~05:45 UTC), both ftR init, lr 3e-5, th_anchor 10, checkpoint every 10, tree /workspace/oplc/cb2, 33308:
+  A oplc_ftR_l01_a10 = lambda 0.1, GPU1, CPUs 100-121, cap 200 (raise: stop by PID after a checkpoint, then the same command +
+  max_updates=400 --resume); B oplc_ftR_l003_a10 = lambda 0.03, GPU0, CPUs 124-145, cap 400, config sha 7342fd393177, started 05:43.
+  33308 cgroup 44.7 GB with both (cap 70). Evals: Codex OPP-LEARN-C_5 (alternates the arms, newest checkpoint first, one block at a
+  time on 33903; flags "BAR CANDIDATE" in learner/out/v1_evals.log). Curves: `python learner/curve.py <run train_log.jsonl>`
+  (logs at /workspace/oplc/cb2/scratchpad/gauntlet/L68/rl/RUN/train_log.jsonl). Stop all evals: touch /workspace/oplc/STOP_EVAL (33308).
 - NOW (05:45 UTC 10-29): ftR CALIBRATION RUNNING, 33308 GPU1: run oplc_ftR_l01_a10 (init /workspace/oplc/opp_ft_s0_R_sim.pt sha
   28ef721b = 33903 /workspace/opp/live/ft_s0/opp_ft_s0_R_sim.pt; lambda 0.1, lr 3e-5, th_anchor 10, E 64 x G 4, 200-update cap,
   checkpoint every 10; tree /workspace/oplc/cb2; log /workspace/oplc/logs/oplc_ftR_l01_a10.log; config sha 31c972199a93; started
@@ -171,8 +177,8 @@ test_timing_head_decode: 51 passed, 1 skipped, 2 failed = the 2 pre-existing Tes
 
 ### Codex dispatches
 - OPP-LEARN-C_3 (medium): lr3 u0010 + v1s0 baseline scored (checked: 480 rows each); stopped by PID when the v1s0 run was
-  stopped (its gate waited for a u0010 log line that never came). OPP-LEARN-C_4 (medium): v1s0 u0010 + ftR baseline + ftR
-  checkpoints, RUNNING. OPP-LEARN-C_2b: u0020 / u0030 scored (checked against TABLE.md), stopped by PID before lr3 u0020.
+  stopped (its gate waited for a u0010 log line that never came). OPP-LEARN-C_4 (medium): started v1s0 u0010; stopped by PID for C_5 (two arms).
+  OPP-LEARN-C_5 (medium): RUNNING. OPP-LEARN-C_2b: u0020 / u0030 scored (checked against TABLE.md), stopped by PID before lr3 u0020.
 - OPP-LEARN-C_1 (medium; .foreman/scratch/a2/codex/OPP-LEARN-C_1.md): baseline + u0010 relayed (sha equal), run, fetched,
   scored, TABLE.md; BLOCKED before u0020 because P2-OPP2's v1s0 block was running (the ticket said one block at a time; a
   concurrent other job is allowed). Checked by me: 480 / 480 outcome rows each, ENGINE opp_ckpt = the stripped u0010, table
