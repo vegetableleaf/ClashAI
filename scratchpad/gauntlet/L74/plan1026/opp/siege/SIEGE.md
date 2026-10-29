@@ -121,15 +121,21 @@ Open (b): what makes ftR's same-card, on-time answers fail where E4's work -- pl
 part of tesla), unit follow-up, or the rest of the board; the next measurement = per-answer position of the X-Bow's first target
 and the answer unit's survival (needs the board's body list, `hab` samples s[6]).
 
-## STATUS (2026-10-29 ~09:10 UTC) -- restart point
-- RUNNING (30408): iteration 2 = the same lever, dose only: ftx10 = window rows x10 (K 10), else ftx3's recipe.
-  `/workspace/siege/ft/ftx10.out` (chain run_ftx.sh: train -> attach_sim -> siege_a + cardcal), then `after_ftx10.sh` -> level B
-  rows `/workspace/siege/score/rows/ftx10`, log `/workspace/siege/score/ftx10.out` (~50 min after training; ETA ~10:15 UTC).
-  Restart: `ssh -p 30408 ... 'cd /workspace/siege && (setsid nohup bash opp/cb/scratchpad/gauntlet/L74/plan1026/opp/siege/run_ftx.sh ftx10 10 4000 >> ft/ftx10.out 2>&1 < /dev/null &); (setsid nohup bash after_ftx10.sh > score/ftx10.out 2>&1 < /dev/null &)'`
-  (both resumable: finished stages / 480-game blocks are skipped).
-  Score: fetch `rows/ftx10/{ENGINE.json,*/D3/*/matches.jsonl}` to `humanlike/rows/ftx10`, then
-  `card.py score --name ftx10 --sim .../rows/ftx10 --no-d`, `siege_b.py sim ftx10=...`, `dec_b.py live ftx10`,
-  `sim_cards.py .../rows/ftx10 out/WC_ftx10.json`; per decision: `/workspace/siege/ft/ftx10/cardcal.md`.
+### Iteration 2 (dose only): ftx10 = window rows x10 -- also NO EFFECT (a)
+ftx10 (1,145,118 train rows; 4,000 steps; else ftx3's recipe), 1,920 games, same env: CLXIII win 86.7% (1,665), lock .75,
+zero-lock .01, P(lock|fail) .65, B-live RMS 0.31, C-live 0.983. Per decision earthquake in windows 0.63 of the human rate (ftR
+0.55, ftx3 0.60); closed loop P(earthquake in window | deck) .29 (ftR .32). Dose response flat: oversampling the X-Bow-window
+rows of the current data does not move the siege facts. The lever is exhausted at this data size; the next change must be a
+different one (STATUS).
+
+## STATUS (2026-10-29 ~10:10 UTC) -- restart point
+- Nothing of mine is running (30408 idle GPU; 33903 untouched beyond the finished ftR5e / siege_a runs; PID 5431 untouched).
+- Next single changes, in order (one per experiment): (1) the open (b) measurement: per on-time answer, the X-Bow's first
+  target and the answer unit's survival from the board bodies (`hab` samples s[6] / s[7]), ftR vs E4 vs (live: reader bodies)
+  -- it decides between "answer placed off the pull spot" and "answer fine, follow-up wrong"; (2) if placement: a learned cell
+  fix (e.g. cell-head fine-tune on window play rows only, or a feature the model lacks: the X-Bow's current target per body
+  token -- check the obs first); (3) DAgger-style rows stay blocked (no expert labels for SIM states).
+  ftx3 / ftx10 checkpoints: `/workspace/siege/ft/{ftx3,ftx10}/opp_ft_s0.pt` + `_R_sim.pt` (30408); rows `rows/{ftx3,ftx10}`.
 - Done rows: ftR5e (33903 `/workspace/opp/siege/rows/ftR5e`), e45e, ftx3 (30408 `/workspace/siege/score/rows/`); laptop copies
   `humanlike/rows/{ftR5e,e45e,ftx3}` (not committed, bulk). Test-1 dumps: 33903 `/workspace/opp/siege/D_ftR_live_cal.npz`,
   30408 `/workspace/siege/ft/ftx3/D_live_cal.npz`.
