@@ -1,0 +1,396 @@
+match	set	baseline_counts	baseline_first_div	new_counts	new_first_div	new_flags_empty	plants_missed	refused_plays	ability_nonzero_offset	classification	exact_delta	new_flags	added_flags	identical
+live_play_20261026_080408	dev	{"exact":3024}	null	{"exact":3024}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_080929	dev	{"exact":2313,"torn_cmd":1,"torn_snap":2,"torn_step":1}	null	{"exact":2313,"torn_cmd":1,"torn_snap":2,"torn_step":1}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261026_082025	dev	{"div":2715,"exact":53}	256	{"div":2715,"exact":53}	256	false	[]	[["cmd0",255,false,0,9],["cmd5",567,false,0,9],["cmd8",915,false,0,9],["cmd12",1157,false,0,9],["cmd15",1215,false,0,9],["cmd17",1252,false,0,9],["cmd18",1478,false,0,9],["cmd97",5611,false,0,4],["cmd98",5612,false,0,4],["cmd99",5663,false,0,4],["cmd100",5676,false,0,4]]	[]	same_class	0	["1:opp_no_fitting_deal:0"]	[]	true
+live_play_20261026_083722	dev	{"exact":2061}	null	{"exact":2061}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_084110	dev	{"div":1653,"exact":111}	373	{"div":1653,"exact":111}	373	false	[]	[["cmd4",371,false,0,9],["cmd7",495,false,0,9],["cmd10",601,false,0,9],["cmd11",701,false,0,9],["cmd14",1033,false,0,9],["cmd17",1235,false,0,9],["cmd19",1305,false,0,9],["cmd26",2022,false,0,9],["cmd32",2221,false,0,9],["cmd35",2292,false,0,9],["cmd39",2521,false,0,9],["cmd48",2917,false,0,9],["cmd54",3171,false,0,9],["cmd56",3261,false,0,9],["cmd58",3301,false,0,9],["cmd61",3352,false,0,9],["cmd67",3616,false,0,4],["cmd68",3651,false,0,4]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261026_084438	dev	{"div":1758,"exact":8}	166	{"div":1758,"exact":8}	166	false	[]	[["cmd0",165,false,0,9],["cmd8",661,false,0,9],["cmd11",1009,false,0,9],["cmd13",1371,false,0,9],["cmd23",2234,false,0,9],["cmd33",2767,false,0,9],["cmd40",3291,false,0,9],["cmd49",3658,false,0,4]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261026_085635	dev	{"exact":1765,"torn_t1":1}	null	{"exact":1765,"torn_t1":1}	null	true	[]	[]	[["ability",-1]]	same_class	0	[]	[]	true
+live_play_20261026_090406	dev	{"exact":2211}	null	{"exact":2211}	null	true	[]	[]	[["ability",1],["ability",-1]]	same_class	0	[]	[]	true
+live_play_20261026_094126	dev	{"exact":2536,"torn_snap":1}	null	{"exact":2536,"torn_snap":1}	null	true	[]	[]	[["ability",-1]]	same_class	0	[]	[]	true
+live_play_20261026_095134	dev	{"exact":1758,"torn_cmd":3,"torn_mixed":1,"torn_t1":1}	null	{"exact":1758,"torn_cmd":3,"torn_mixed":1,"torn_t1":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_095457	dev	{"exact":3023,"torn_cmd":1,"torn_step":1,"torn_t1":2}	null	{"exact":3023,"torn_cmd":1,"torn_step":1,"torn_t1":2}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_100018	dev	{"div":53,"exact":1887,"torn_cmd":1,"torn_step":1}	2286	{"div":53,"exact":1887,"torn_cmd":1,"torn_step":1}	2286	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_100354	dev	{"exact":2275,"torn_cmd":1,"torn_step":1}	null	{"exact":2275,"torn_cmd":1,"torn_step":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_100756	dev	{"exact":1766}	null	{"exact":1766}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_101112	dev	{"exact":2925,"torn_cmd":3,"torn_snap":1,"torn_step":1,"torn_t1":1}	null	{"exact":2925,"torn_cmd":3,"torn_snap":1,"torn_step":1,"torn_t1":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_101749	dev	{"div":13,"exact":1657,"torn_cmd":1,"torn_step":1}	226	{"div":13,"exact":1657,"torn_cmd":1,"torn_step":1}	226	false	[]	[]	[]	same_class	0	["1:own_cycle_fail:6"]	[]	true
+live_play_20261026_141505	dev	{"exact":3000,"torn_cmd":2,"torn_mixed":1,"torn_snap":2,"torn_t1":2}	null	{"exact":3000,"torn_cmd":2,"torn_mixed":1,"torn_snap":2,"torn_t1":2}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_142027	dev	{"exact":1764,"torn_mixed":1,"torn_snap":1}	null	{"exact":1764,"torn_mixed":1,"torn_snap":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_142345	dev	{"exact":2755,"torn_cmd":1,"torn_snap":1}	null	{"exact":2755,"torn_cmd":1,"torn_snap":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_143116	dev	{"exact":1766}	null	{"exact":1766}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_144057	dev	{"exact":3029,"torn_cmd":1,"torn_mixed":1,"torn_snap":1,"torn_t1":1}	null	{"exact":3029,"torn_cmd":1,"torn_mixed":1,"torn_snap":1,"torn_t1":1}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261026_144615	dev	{"exact":2806,"torn_cmd":1,"torn_snap":1}	null	{"exact":2806,"torn_cmd":1,"torn_snap":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_145118	dev	{"exact":699}	null	{"exact":699}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_145247	dev	{"exact":1803,"torn_cmd":1,"torn_snap":1,"torn_step":1}	null	{"exact":1803,"torn_cmd":1,"torn_snap":1,"torn_step":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_145939	dev	{"exact":3030,"torn_step":2,"torn_t1":1}	null	{"exact":3030,"torn_step":2,"torn_t1":1}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261026_152601	dev	{"exact":3026,"torn_cmd":1,"torn_step":1,"torn_t1":3}	null	{"exact":3026,"torn_cmd":1,"torn_step":1,"torn_t1":3}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_153442	dev	{"exact":1736,"torn_cmd":1,"torn_t1":29}	null	{"exact":1736,"torn_cmd":1,"torn_t1":29}	null	false	[]	[["cmd26",2676,false,0,9],["cmd36",3161,false,0,9]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261026_154319	dev	{"exact":3035,"torn_cmd":3,"torn_snap":1,"torn_step":2,"torn_t1":1}	null	{"exact":3035,"torn_cmd":3,"torn_snap":1,"torn_step":2,"torn_t1":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_154839	dev	{"exact":1807,"torn_cmd":1}	null	{"exact":1807,"torn_cmd":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_155201	dev	{"exact":2154}	null	{"exact":2154}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_155552	dev	{"exact":2323}	null	{"exact":2323}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261026_160930	dev	{"div":274,"exact":2525,"torn_mixed":1,"torn_snap":1,"torn_t1":1}	5211	{"div":274,"exact":2525,"torn_mixed":1,"torn_snap":1,"torn_t1":1}	5211	false	[]	[["cmd81",5279,false,0,9],["cmd84",5451,false,0,9],["cmd85",5523,false,0,9],["cmd91",5665,false,0,9]]	[]	same_class	0	["1:own_cycle_fail:43"]	[]	true
+live_play_20261026_161448	dev	{"div":1635,"exact":130}	372	{"div":1635,"exact":130}	372	false	[]	[["cmd2",371,false,0,9],["cmd6",558,false,0,9],["cmd7",590,false,0,9],["cmd11",954,false,0,9],["cmd17",1419,false,0,9],["cmd56",3638,false,0,4]]	[]	same_class	0	["1:opp_no_fitting_deal:0"]	[]	true
+live_play_20261026_162012	dev	{"exact":1739,"torn_cmd":1}	null	{"exact":1739,"torn_cmd":1}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261026_162331	dev	{"exact":2234,"torn_step":1}	null	{"exact":2234,"torn_step":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_164130	dev	{"div":1372,"exact":394}	939	{"div":1372,"exact":394}	939	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_164443	dev	{"exact":1765}	null	{"exact":1765}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_165839	dev	{"exact":1966,"torn_cmd":1}	null	{"exact":1966,"torn_cmd":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_170600	dev	{"exact":1717,"torn_cmd":1,"torn_step":1}	null	{"exact":1717,"torn_cmd":1,"torn_step":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_170912	dev	{"exact":1821,"torn_cmd":2}	null	{"exact":1821,"torn_cmd":2}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_171232	dev	{"exact":3029,"torn_cmd":1,"torn_mixed":2,"torn_snap":1,"torn_step":2,"torn_t1":2}	null	{"exact":3029,"torn_cmd":1,"torn_mixed":2,"torn_snap":1,"torn_step":2,"torn_t1":2}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_171753	dev	{"exact":3033,"torn_late":1,"torn_snap":2,"torn_step":4}	null	{"exact":3033,"torn_late":1,"torn_snap":2,"torn_step":4}	null	true	[]	[]	[["ability",-42]]	same_class	0	[]	[]	true
+live_play_20261026_172314	dev	{"exact":3043,"torn_step":2}	null	{"exact":3043,"torn_step":2}	null	true	[]	[]	[["ability",1],["ability",1]]	same_class	0	[]	[]	true
+live_play_20261026_172835	dev	{"exact":2734,"torn_mixed":1}	null	{"exact":2734,"torn_mixed":1}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261026_174147	dev	{"div":2777,"exact":149}	192	{"div":2777,"exact":149}	192	false	[]	[["cmd0",191,false,0,9],["cmd5",484,false,0,9],["cmd10",691,false,0,9],["cmd125",5725,false,0,9],["cmd126",5757,false,0,9],["cmd129",5841,false,0,9],["cmd132",5925,false,0,4],["cmd133",5941,false,0,4],["cmd134",5976,false,0,4]]	[]	same_class	0	["1:opp_no_fitting_deal:0"]	[]	true
+live_play_20261026_175027	dev	{"exact":2471,"torn_mixed":1,"torn_step":2}	null	{"exact":2471,"torn_mixed":1,"torn_step":2}	null	true	[]	[]	[["ability",1],["ability",1]]	same_class	0	[]	[]	true
+live_play_20261026_175456	dev	{"exact":3031,"torn_cmd":1}	null	{"exact":3031,"torn_cmd":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_180015	dev	{"exact":1777,"torn_cmd":3,"torn_step":1}	null	{"exact":1777,"torn_cmd":3,"torn_step":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_180336	dev	{"exact":1763,"torn_step":2,"torn_t1":1}	null	{"exact":1763,"torn_step":2,"torn_t1":1}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261026_180652	dev	{"exact":3030,"torn_t1":1}	null	{"exact":3030,"torn_t1":1}	null	true	[]	[]	[["ability",-1]]	same_class	0	[]	[]	true
+live_play_20261026_181217	dev	{"exact":2993,"torn_cmd":2,"torn_hidden":28}	null	{"exact":2993,"torn_cmd":2,"torn_hidden":28}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_182050	dev	{"exact":1766}	null	{"exact":1766}	null	true	[]	[]	[["ability",1],["ability",1]]	same_class	0	[]	[]	true
+live_play_20261026_183044	dev	{"exact":1941}	null	{"exact":1941}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261026_183750	dev	{"exact":2260,"torn_mixed":1}	null	{"exact":2260,"torn_mixed":1}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261026_184912	dev	{"exact":2700,"torn_t1":1}	null	{"exact":2700,"torn_t1":1}	null	true	[]	[]	[["ability",-1],["ability",-1]]	same_class	0	[]	[]	true
+live_play_20261026_185736	dev	{"div":1096,"exact":1928,"torn_step":1,"torn_t1":1}	4012	{"div":1096,"exact":1928,"torn_step":1,"torn_t1":1}	4012	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_190255	dev	{"div":1736,"exact":29}	209	{"div":1736,"exact":29}	209	false	[]	[["cmd2",297,false,0,9],["cmd3",341,false,0,9],["cmd7",687,false,0,9],["cmd17",1397,false,0,9],["cmd22",2067,false,0,9],["cmd31",2594,false,0,9],["cmd38",3035,false,0,9],["cmd42",3108,false,0,9],["cmd52",3637,false,0,4]]	[]	same_class	0	["1:opp_no_fitting_deal:0"]	[]	true
+live_play_20261026_192935	dev	{"exact":3022,"torn_cross":1,"torn_step":1}	null	{"exact":3022,"torn_cross":1,"torn_step":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_194213	dev	{"div":1666,"exact":100}	351	{"div":1666,"exact":100}	351	false	[]	[["cmd2",349,false,0,9],["cmd4",435,false,0,9]]	[]	same_class	0	["1:opp_no_fitting_deal:0"]	[]	true
+live_play_20261026_194858	dev	{"exact":1766}	null	{"exact":1766}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_200616	dev	{"exact":1826}	null	{"exact":1826}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261026_200941	dev	{"exact":1765,"torn_mixed":1}	null	{"exact":1765,"torn_mixed":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_201258	dev	{"div":1788,"exact":343,"torn_cmd":2}	827	{"div":1788,"exact":343,"torn_cmd":2}	827	true	[]	[["cmd64",4354,false,0,4],["cmd65",4381,false,0,4],["cmd66",4408,false,0,4]]	[]	same_class	0	[]	[]	true
+live_play_20261026_201701	dev	{"exact":1771,"torn_t1":1}	null	{"exact":1771,"torn_t1":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_202455	dev	{"div":483,"exact":1710,"torn_step":1}	3573	{"div":483,"exact":1710,"torn_step":1}	3573	false	[]	[["cmd58",3571,false,0,9],["cmd59",3678,false,0,9],["cmd64",3958,false,0,9],["cmd66",4007,false,0,9],["cmd73",4174,false,0,9],["cmd80",4461,false,0,4],["cmd81",4481,false,0,4],["cmd82",4535,false,0,4]]	[]	same_class	0	["1:opp_no_fitting_deal:0"]	[]	true
+live_play_20261026_203234	dev	{"div":1766}	150	{"div":1766}	150	false	[]	[["cmd1",323,false,0,9],["cmd4",531,false,0,9],["cmd14",1479,false,0,9],["cmd16",1729,false,0,9],["cmd21",1893,false,0,9],["cmd23",1934,false,0,9],["cmd31",2679,false,0,9],["cmd36",2801,false,0,9],["cmd39",2871,false,0,9],["cmd56",3644,false,0,4],["cmd57",3651,false,0,4]]	[]	same_class	0	["1:opp_no_fitting_deal:0"]	[]	true
+live_play_20261026_203752	dev	{"exact":2328,"torn_step":1}	null	{"exact":2328,"torn_step":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_204202	dev	{"exact":1764,"torn_cmd":2}	null	{"exact":1764,"torn_cmd":2}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_204518	dev	{"exact":1765}	null	{"exact":1765}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_204837	dev	{"div":1510,"exact":255}	660	{"div":1510,"exact":255}	660	false	[]	[["cmd5",658,false,0,9],["cmd9",1087,false,0,9],["cmd11",1177,false,0,9],["cmd14",1416,false,0,9],["cmd19",1816,false,0,9],["cmd24",1948,false,0,9],["cmd26",1996,false,0,9],["cmd31",2645,false,0,9],["cmd50",3618,false,0,4]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261026_205934	dev	{"exact":1766}	null	{"exact":1766}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_210249	dev	{"exact":2495,"torn_step":1}	null	{"exact":2495,"torn_step":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_210720	dev	{"exact":3015,"torn_cmd":4}	null	{"exact":3015,"torn_cmd":4}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_211239	dev	{"exact":3021,"torn_cmd":1}	null	{"exact":3021,"torn_cmd":1}	null	true	[]	[]	[["ability",-40],["ability",129]]	same_class	0	[]	[]	true
+live_play_20261026_211757	dev	{"exact":1764,"torn_step":1}	null	{"exact":1764,"torn_step":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_212111	dev	{"exact":2741,"torn_cmd":1,"torn_mixed":1,"torn_step":2,"torn_t1":2}	null	{"exact":2741,"torn_cmd":1,"torn_mixed":1,"torn_step":2,"torn_t1":2}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261026_212917	dev	{"exact":3031,"torn_cmd":1,"torn_step":1}	null	{"exact":3031,"torn_cmd":1,"torn_step":1}	null	true	[]	[]	[["ability",-1]]	same_class	0	[]	[]	true
+live_play_20261026_213436	dev	{"exact":3036,"torn_hidden":18,"torn_mixed":1}	null	{"exact":3036,"torn_hidden":18,"torn_mixed":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_214710	dev	{"exact":1765}	null	{"exact":1765}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_215757	dev	{"exact":3021,"torn_step":1,"torn_t1":1}	null	{"exact":3021,"torn_step":1,"torn_t1":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_220317	dev	{"exact":2173,"torn_cmd":1,"torn_step":1,"torn_t1":2}	null	{"exact":2173,"torn_cmd":1,"torn_step":1,"torn_t1":2}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_220728	dev	{"exact":1763,"torn_snap":1,"torn_step":2}	null	{"exact":1763,"torn_snap":1,"torn_step":2}	null	true	[]	[]	[["ability",1],["ability",1]]	same_class	0	[]	[]	true
+live_play_20261026_221406	dev	{"div":1604,"exact":160,"torn_step":1}	472	{"div":1604,"exact":160,"torn_step":1}	472	false	[]	[["cmd10",864,false,0,9],["cmd14",1475,false,0,9],["cmd17",1763,false,0,9],["cmd26",2584,false,0,9],["cmd30",2778,false,0,9],["cmd34",3051,false,0,9],["cmd45",3601,false,0,4],["cmd46",3625,false,0,4],["cmd47",3641,false,0,4],["cmd48",3651,false,0,4]]	[]	same_class	0	["1:opp_no_fitting_deal:0"]	[]	true
+live_play_20261026_221926	dev	{"exact":1764,"torn_cmd":1}	null	{"exact":1764,"torn_cmd":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_222240	dev	{"exact":1761,"torn_cmd":2,"torn_step":1,"torn_t1":1}	null	{"exact":1761,"torn_cmd":2,"torn_step":1,"torn_t1":1}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261026_222712	dev	{"exact":3022,"torn_cmd":1,"torn_mixed":1,"torn_snap":1}	null	{"exact":3022,"torn_cmd":1,"torn_mixed":1,"torn_snap":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_223723	dev	{"exact":1765,"torn_cmd":1}	null	{"exact":1765,"torn_cmd":1}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261026_224041	dev	{"exact":1765}	null	{"exact":1765}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_224856	dev	{"exact":1766}	null	{"exact":1766}	null	true	[]	[]	[["ability",1],["ability",-1]]	same_class	0	[]	[]	true
+live_play_20261026_225213	dev	{"exact":1766}	null	{"exact":1766}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_230512	dev	{"div":252,"exact":2391,"torn_cmd":2,"torn_t1":1}	4942	{"div":252,"exact":2391,"torn_cmd":2,"torn_t1":1}	4942	false	[]	[["cmd90",4973,false,0,9],["cmd92",5000,false,0,9],["cmd95",5075,false,0,9],["cmd98",5155,false,0,9]]	[["ability",-1],["ability",1]]	same_class	0	["1:own_cycle_fail:41"]	[]	true
+live_play_20261026_232438	dev	{"div":1194,"exact":570}	1292	{"div":1194,"exact":570}	1292	false	[]	[["cmd15",1325,false,0,9],["cmd18",1622,false,0,9],["cmd20",1747,false,0,9],["cmd27",2365,false,0,9],["cmd56",3643,false,0,4]]	[]	same_class	0	["0:own_cycle_fail:8"]	[]	true
+live_play_20261026_232957	dev	{"div":1619,"exact":145}	442	{"div":1619,"exact":145}	442	false	[]	[["cmd4",441,false,0,9],["cmd7",746,false,0,9],["cmd11",978,false,0,9],["cmd14",1465,false,0,9],["cmd16",1924,false,0,9],["cmd21",2066,false,0,9],["cmd27",2724,false,0,9],["cmd32",2998,false,0,9],["cmd39",3257,false,0,9],["cmd41",3354,false,0,9],["cmd46",3524,false,0,9]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261026_233436	dev	{"exact":3041,"torn_cmd":3,"torn_mixed":1,"torn_snap":2}	null	{"exact":3041,"torn_cmd":3,"torn_mixed":1,"torn_snap":2}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_233957	dev	{"exact":3034,"torn_cmd":2,"torn_snap":1,"torn_t1":1}	null	{"exact":3034,"torn_cmd":2,"torn_snap":1,"torn_t1":1}	null	true	[]	[]	[["ability",1],["ability",1],["ability",1],["ability",1],["ability",1],["ability",1]]	same_class	0	[]	[]	true
+live_play_20261026_234517	dev	{"exact":1766}	null	{"exact":1766}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261026_234837	dev	{"exact":3029,"torn_cmd":1,"torn_mixed":1,"torn_t1":4}	null	{"exact":3029,"torn_cmd":1,"torn_mixed":1,"torn_t1":4}	null	true	[]	[]	[["ability",1],["ability",1]]	same_class	0	[]	[]	true
+live_play_20261026_235355	dev	{"exact":3031,"torn_snap":1}	null	{"exact":3031,"torn_snap":1}	null	true	[]	[]	[["ability",-1]]	same_class	0	[]	[]	true
+live_play_20261026_235915	dev	{"exact":1766}	null	{"exact":1766}	null	true	[]	[]	[["ability",-1]]	same_class	0	[]	[]	true
+live_play_20261027_000233	dev	{"exact":3038,"torn_snap":3}	null	{"exact":3038,"torn_snap":3}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261027_001141	dev	{"exact":3038,"torn_cmd":1,"torn_snap":1,"torn_step":3,"torn_t1":1}	null	{"exact":3038,"torn_cmd":1,"torn_snap":1,"torn_step":3,"torn_t1":1}	null	true	[]	[]	[["ability",1],["ability",-1],["ability",1],["ability",-1]]	same_class	0	[]	[]	true
+live_play_20261027_001702	dev	{"exact":1765,"torn_mixed":1}	null	{"exact":1765,"torn_mixed":1}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261027_002021	dev	{"exact":2160,"torn_snap":1}	null	{"exact":2160,"torn_snap":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261027_002429	dev	{"exact":3041,"torn_step":1}	null	{"exact":3041,"torn_step":1}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261027_002948	dev	{"exact":3028,"torn_cmd":2,"torn_t1":2}	null	{"exact":3028,"torn_cmd":2,"torn_t1":2}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261027_003506	dev	{"div":1565,"exact":200}	550	{"div":1565,"exact":200}	550	true	[]	[["cmd49",3632,false,0,4],["cmd50",3668,false,0,4]]	[]	same_class	0	[]	[]	true
+live_play_20261027_004031	dev	{"exact":3030,"torn_cmd":1,"torn_snap":1,"torn_t1":1}	null	{"exact":3030,"torn_cmd":1,"torn_snap":1,"torn_t1":1}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261027_004550	dev	{"exact":1765}	null	{"exact":1765}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261027_004901	dev	{"exact":2871,"torn_step":1,"torn_t1":1}	null	{"exact":2871,"torn_step":1,"torn_t1":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261027_005727	dev	{"exact":3032,"torn_cmd":1,"torn_snap":1,"torn_step":2}	null	{"exact":3032,"torn_cmd":1,"torn_snap":1,"torn_step":2}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261027_010245	dev	{"exact":1909,"torn_t1":1}	null	{"exact":1909,"torn_t1":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261027_010613	dev	{"exact":2315,"torn_t1":1}	null	{"exact":2315,"torn_t1":1}	null	true	[]	[]	[["ability",1],["ability",1]]	same_class	0	[]	[]	true
+live_play_20261027_011738	dev	{"exact":2391}	null	{"exact":2391}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261027_014151	dev	{"exact":2146}	null	{"exact":2146}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261027_014928	dev	{"exact":3033,"torn_step":1}	null	{"exact":3033,"torn_step":1}	null	true	[]	[]	[["ability",-34]]	same_class	0	[]	[]	true
+live_play_20261027_015759	dev	{"exact":1924}	null	{"exact":1924}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261027_020134	dev	{"exact":2360,"torn_cmd":1,"torn_step":2}	null	{"exact":2360,"torn_cmd":1,"torn_step":2}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261027_020550	dev	{"exact":1766}	null	{"exact":1766}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261027_020913	dev	{"exact":2399}	null	{"exact":2399}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261027_021852	dev	{"exact":1545,"torn_cmd":2,"torn_snap":1}	null	{"exact":1545,"torn_cmd":2,"torn_snap":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261027_022149	dev	{"exact":1815,"torn_cmd":1,"torn_snap":1}	null	{"exact":1815,"torn_cmd":1,"torn_snap":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261027_022507	dev	{"exact":1766}	null	{"exact":1766}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261027_022821	dev	{"exact":1764,"torn_step":1,"torn_t1":1}	null	{"exact":1764,"torn_step":1,"torn_t1":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261027_023451	dev	{"div":1086,"exact":847}	1372	{"div":1086,"exact":847}	1372	false	[]	[["cmd26",2301,false,0,9]]	[]	same_class	0	["1:opp_no_fitting_deal:0"]	[]	true
+live_play_20261027_023839	dev	{"div":397,"exact":1368,"torn_step":1}	2889	{"div":397,"exact":1368,"torn_step":1}	2889	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261027_024155	dev	{"exact":1764,"torn_t1":1}	null	{"exact":1764,"torn_t1":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261027_025339	dev	{"exact":1766}	null	{"exact":1766}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261027_025651	dev	{"exact":1765,"torn_step":1}	null	{"exact":1765,"torn_step":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261027_030315	dev	{"exact":1766}	null	{"exact":1766}	null	true	[]	[]	[["ability",-1],["ability",-1]]	same_class	0	[]	[]	true
+live_play_20261027_030951	dev	{"exact":1764,"torn_snap":1}	null	{"exact":1764,"torn_snap":1}	null	true	[]	[]	[["ability",1],["ability",1]]	same_class	0	[]	[]	true
+live_play_20261027_031722	dev	{"div":1215,"exact":551}	1252	{"div":1215,"exact":551}	1252	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261027_032352	dev	{"exact":3037,"torn_cmd":1}	null	{"exact":3037,"torn_cmd":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261027_033729	dev	{"exact":2379}	null	{"exact":2379}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261027_034147	dev	{"exact":1906,"torn_mixed":1}	null	{"exact":1906,"torn_mixed":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261027_040302	dev	{"exact":3026,"torn_cmd":1,"torn_snap":2}	null	{"exact":3026,"torn_cmd":1,"torn_snap":2}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261027_040821	dev	{"exact":1779,"torn_cmd":1,"torn_step":1}	null	{"exact":1779,"torn_cmd":1,"torn_step":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261027_041141	dev	{"exact":2379}	null	{"exact":2379}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261027_041602	dev	{"exact":2052,"torn_cmd":1,"torn_mixed":1,"torn_step":2}	null	{"exact":2052,"torn_cmd":1,"torn_mixed":1,"torn_step":2}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_000420	fresh1	{"div":82,"exact":1570,"torn_hidden":110,"torn_mixed":1,"torn_step":1,"torn_t1":1}	3519	{"div":82,"exact":1570,"torn_hidden":110,"torn_mixed":1,"torn_step":1,"torn_t1":1}	3519	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_001302	fresh1	{"exact":3033,"torn_cmd":1,"torn_snap":2,"torn_step":1,"torn_t1":3}	null	{"exact":3033,"torn_cmd":1,"torn_snap":2,"torn_step":1,"torn_t1":3}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_002146	fresh1	{"exact":1804}	null	{"exact":1804}	null	true	[]	[]	[["ability",1],["ability",1]]	same_class	0	[]	[]	true
+live_play_20261028_003008	fresh1	{"exact":3031,"torn_cmd":2,"torn_t1":2}	null	{"exact":3031,"torn_cmd":2,"torn_t1":2}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_004256	fresh1	{"div":1517,"exact":43}	237	{"div":1517,"exact":43}	237	false	[]	[["cmd3",462,false,0,9],["cmd17",2101,false,0,9],["cmd20",2316,false,0,9],["cmd22",2485,false,0,9]]	[]	same_class	0	["1:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_005912	fresh1	{"exact":2215,"torn_cmd":2,"torn_step":1}	null	{"exact":2215,"torn_cmd":2,"torn_step":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_010318	fresh1	{"div":2330,"exact":46}	242	{"div":2330,"exact":46}	242	false	[]	[["cmd1",241,false,0,9],["cmd16",1665,false,0,9],["cmd20",1956,false,0,9],["cmd26",2534,false,0,9],["cmd65",4287,false,0,9],["cmd69",4537,false,0,9],["cmd71",4631,false,0,9],["cmd76",4821,false,0,9],["cmd77",4857,false,0,4]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_010824	fresh1	{"exact":2091,"torn_step":1}	null	{"exact":2091,"torn_step":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_011215	fresh1	{"exact":1765}	null	{"exact":1765}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_075553	fresh2	{"exact":1804}	null	{"exact":1804}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_075911	fresh2	{"exact":2999}	null	{"exact":2999}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_080427	fresh2	{"div":1271,"exact":495}	1139	{"div":1271,"exact":495}	1139	false	[]	[["cmd10",1137,false,0,9],["cmd20",1931,false,0,9],["cmd50",3632,false,0,4],["cmd51",3651,false,0,4]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_081253	fresh2	{"exact":3038}	null	{"exact":3038}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261028_082325	fresh2	{"exact":1765}	null	{"exact":1765}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_083011	fresh2	{"exact":3027}	null	{"exact":3027}	null	true	[]	[]	[["ability",1],["ability",1],["ability",1]]	same_class	0	[]	[]	true
+live_play_20261028_083923	fresh2	{"exact":1814,"torn_hidden":41}	null	{"exact":1814,"torn_hidden":41}	null	true	[]	[]	[["ability",-1],["ability",1]]	same_class	0	[]	[]	true
+live_play_20261028_084244	fresh2	{"exact":2121}	null	{"exact":2121}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_084638	fresh2	{"div":412,"exact":2065}	4285	{"div":412,"exact":2065}	4285	false	[]	[["cmd75",4311,false,0,9],["cmd78",4418,false,0,9],["cmd81",4497,false,0,9],["cmd84",4651,false,0,9]]	[]	same_class	0	["0:own_cycle_fail:31"]	[]	true
+live_play_20261028_085416	fresh2	{"exact":2359}	null	{"exact":2359}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_091720	fresh2	{"exact":3030}	null	{"exact":3030}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_092800	fresh2	{"exact":1899}	null	{"exact":1899}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_093127	fresh2	{"div":1754}	151	{"div":1754}	151	false	[]	[["cmd0",129,false,0,9],["cmd6",528,false,0,9],["cmd13",1335,false,0,9],["cmd49",3363,false,0,9],["cmd53",3604,false,0,4],["cmd54",3631,false,0,4]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_093648	fresh2	{"exact":3029}	null	{"exact":3029}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261028_094226	fresh2	{"exact":1943}	null	{"exact":1943}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_095125	fresh2	{"exact":1761}	null	{"exact":1761}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_095444	fresh2	{"exact":2268}	null	{"exact":2268}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_100341	fresh2	{"exact":1758}	null	{"exact":1758}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_101018	fresh2	{"exact":3026}	null	{"exact":3026}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_101540	fresh2	{"div":1727,"exact":36}	223	{"div":1727,"exact":36}	223	false	[]	[["cmd1",222,false,0,9],["cmd4",426,false,0,9],["cmd43",3329,false,0,9],["cmd45",3432,false,0,9]]	[]	same_class	0	["1:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_101857	fresh2	{"exact":1763,"torn_late":2}	null	{"exact":1763,"torn_late":2}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_103056	fresh2	{"div":1644,"exact":116}	386	{"div":1644,"exact":116}	386	false	[]	[["cmd3",384,false,0,9],["cmd10",772,false,0,9],["cmd13",1271,false,0,9],["cmd39",2850,false,0,9]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_103409	fresh2	{"exact":2839}	null	{"exact":2839}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_105639	fresh2	{"exact":3012}	null	{"exact":3012}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261028_110156	fresh2	{"exact":3018}	null	{"exact":3018}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_110715	fresh2	{"exact":2660}	null	{"exact":2660}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_111523	fresh2	{"exact":1763}	null	{"exact":1763}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_112825	fresh2	{"div":1279,"exact":486}	1123	{"div":1279,"exact":486}	1123	false	[]	[["cmd11",1121,false,0,9],["cmd21",1802,false,0,9],["cmd26",2043,false,0,9],["cmd36",2674,false,0,9],["cmd50",3355,false,0,9],["cmd59",3632,false,0,4]]	[]	same_class	0	["1:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_114527	fresh2	{"exact":3004}	null	{"exact":3004}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_120054	fresh2	{"div":1092,"exact":478,"torn_step":1,"torn_t1":192}	289	{"div":1092,"exact":478,"torn_step":1,"torn_t1":192}	289	false	[]	[["cmd0",288,false,0,9],["cmd42",3131,false,0,9],["cmd50",3393,false,0,9]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_120406	fresh2	{"exact":2744}	null	{"exact":2744}	null	true	[]	[]	[["ability",-1]]	same_class	0	[]	[]	true
+live_play_20261028_120902	fresh2	{"div":2285,"exact":751}	1653	{"div":2285,"exact":751}	1653	false	[]	[["cmd21",2257,false,0,9]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_121643	fresh2	{"exact":3020}	null	{"exact":3020}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261028_122525	fresh2	{"exact":3042}	null	{"exact":3042}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_123045	fresh2	{"div":1643,"exact":809}	1768	{"div":1643,"exact":809}	1768	true	[]	[["cmd81",4774,false,0,13],["cmd87",5005,false,0,4],["cmd88",5045,false,0,4]]	[]	same_class	0	[]	[]	true
+live_play_20261028_124309	fresh2	{"div":1479,"exact":286}	513	{"div":1479,"exact":286}	513	false	[]	[["cmd23",1836,false,0,9],["cmd29",2444,false,0,9],["cmd31",2593,false,0,9],["cmd38",2774,false,0,9],["cmd48",3298,false,0,9],["cmd56",3607,false,0,4]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_124640	fresh2	{"div":1765}	151	{"div":1765}	151	false	[]	[["cmd0",145,false,0,9],["cmd6",461,false,0,9],["cmd33",2264,false,0,9]]	[]	same_class	0	["1:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_125629	fresh2	{"exact":3022}	null	{"exact":3022}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_130148	fresh2	{"exact":1767}	null	{"exact":1767}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_130522	fresh2	{"div":1642,"exact":123}	397	{"div":1642,"exact":123}	397	false	[]	[["cmd3",395,false,0,9],["cmd8",722,false,0,9],["cmd11",837,false,0,9],["cmd16",1747,false,0,9],["cmd22",2104,false,0,9],["cmd30",2592,false,0,9],["cmd33",2795,false,0,9],["cmd36",3077,false,0,9],["cmd41",3357,false,0,9]]	[]	same_class	0	["1:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_131515	fresh3	{"exact":2264}	null	{"exact":2264}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_131923	fresh3	{"exact":3011}	null	{"exact":3011}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_132440	fresh3	{"exact":2276}	null	{"exact":2276}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_133211	fresh3	{"exact":1765}	null	{"exact":1765}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_133528	fresh3	{"exact":1763}	null	{"exact":1763}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_134922	fresh3	{"div":1713,"exact":50}	252	{"div":1713,"exact":50}	252	false	[]	[["cmd3",251,false,0,9],["cmd5",320,false,0,9],["cmd7",415,false,0,9],["cmd15",1291,false,0,9],["cmd23",2215,false,0,9],["cmd29",2581,false,0,9],["cmd31",2635,false,0,9],["cmd34",2708,false,0,9],["cmd37",2961,false,0,9],["cmd43",3112,false,0,9],["cmd49",3475,false,0,9],["cmd53",3562,false,0,9],["cmd55",3641,false,0,4]]	[]	same_class	0	["1:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_135920	fresh3	{"exact":3023}	null	{"exact":3023}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_140444	fresh3	{"exact":2601}	null	{"exact":2601}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261028_141254	fresh3	{"exact":3028,"torn_late":8}	null	{"exact":3028,"torn_late":8}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_141816	fresh3	{"div":549,"exact":1751}	226	{"div":549,"exact":1751}	226	false	[]	[["cmd1",224,false,0,9],["cmd3",428,false,0,9],["cmd77",4347,false,0,9],["cmd81",4478,false,0,9],["cmd82",4531,false,0,9],["cmd86",4680,false,0,4]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_142334	fresh3	{"exact":1763}	null	{"exact":1763}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_142926	fresh3	{"div":8,"exact":2038,"torn_late":5}	581	{"div":8,"exact":2038,"torn_late":5}	581	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_143825	fresh3	{"div":1677,"exact":89}	328	{"div":1677,"exact":89}	328	false	[]	[["cmd2",326,false,0,9],["cmd4",417,false,0,9],["cmd10",851,false,0,9],["cmd12",1017,false,0,9],["cmd14",1081,false,0,9],["cmd21",2002,false,0,9],["cmd29",2445,false,0,9],["cmd34",2741,false,0,9],["cmd39",2862,false,0,9],["cmd46",3180,false,0,9],["cmd51",3446,false,0,9],["cmd54",3601,false,0,4],["cmd55",3621,false,0,4],["cmd56",3654,false,0,4],["cmd57",3657,false,0,4]]	[]	same_class	0	["1:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_144227	fresh3	{"exact":2815}	null	{"exact":2815}	null	true	[]	[]	[["ability",1],["ability",1]]	same_class	0	[]	[]	true
+live_play_20261028_144727	fresh3	{"div":1643,"exact":121}	393	{"div":1643,"exact":121}	393	false	[]	[["cmd3",391,false,0,9],["cmd10",740,false,0,9],["cmd12",1114,false,0,9],["cmd15",1251,false,0,9],["cmd19",1397,false,0,9],["cmd21",1842,false,0,9],["cmd24",1957,false,0,9],["cmd25",2012,false,0,9],["cmd35",2645,false,0,9],["cmd38",2741,false,0,9],["cmd40",2861,false,0,9],["cmd42",2893,false,0,9],["cmd60",3613,false,0,4]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_145247	fresh3	{"exact":1765}	null	{"exact":1765}	null	true	[]	[]	[["ability",-1]]	same_class	0	[]	[]	true
+live_play_20261028_145600	fresh3	{"exact":2695}	null	{"exact":2695}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_150053	fresh4	{"exact":2715}	null	{"exact":2715}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_151109	fresh4	{"exact":3031}	null	{"exact":3031}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261028_151631	fresh4	{"exact":1961}	null	{"exact":1961}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_152022	fresh4	{"exact":3029}	null	{"exact":3029}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261028_152540	fresh4	{"exact":1765}	null	{"exact":1765}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_153413	fresh4	{"div":1993,"exact":16}	182	{"div":1993,"exact":16}	182	false	[]	[["cmd1",181,false,0,9],["cmd2",285,false,0,9],["cmd34",2703,false,0,9],["cmd35",2757,false,0,9],["cmd37",2828,false,0,9],["cmd40",2862,false,0,9]]	[]	same_class	0	["1:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_153755	fresh4	{"exact":2401}	null	{"exact":2401}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261028_155011	fresh4	{"exact":1377,"torn_late":2}	null	{"exact":1377,"torn_late":2}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_155249	fresh4	{"exact":2786}	null	{"exact":2786}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_155749	fresh4	{"div":67,"exact":1697}	3549	{"div":67,"exact":1697}	3549	false	[]	[]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_160144	fresh4	{"exact":2130}	null	{"exact":2130}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_160541	fresh4	{"exact":3026}	null	{"exact":3026}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261028_162245	fresh4	{"div":658,"exact":796}	919	{"div":658,"exact":796}	919	false	[]	[["cmd3",436,false,0,9],["cmd5",917,false,0,9],["cmd14",1290,false,0,9]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_162534	fresh4	{"exact":2763}	null	{"exact":2763}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_163354	fresh4	{"exact":2387}	null	{"exact":2387}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261028_163818	fresh4	{"div":105,"exact":635}	399	{"div":105,"exact":635}	399	false	[]	[["cmd2",397,false,0,9],["cmd14",1272,false,0,9]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_164306	fresh4	{"exact":3022}	null	{"exact":3022}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_164829	fresh4	{"exact":1849}	null	{"exact":1849}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_165155	fresh4	{"div":706,"exact":2319}	4811	{"div":706,"exact":2319}	4811	true	[]	[["cmd90",4790,false,0,0],["cmd96",4945,false,0,9],["cmd101",5096,false,0,9],["cmd107",5251,false,0,9],["cmd110",5328,false,0,9]]	[]	same_class	0	[]	[]	true
+live_play_20261028_165724	fresh4	{"exact":2209}	null	{"exact":2209}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_170122	fresh4	{"exact":1765}	null	{"exact":1765}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261028_171948	fresh4	{"div":1689,"exact":77}	305	{"div":1689,"exact":77}	305	false	[]	[["cmd1",303,false,0,9],["cmd7",966,false,0,9],["cmd9",1298,false,0,9],["cmd30",2941,false,0,9],["cmd35",3135,false,0,9],["cmd41",3486,false,0,9],["cmd42",3517,false,0,13],["cmd45",3671,false,0,4]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_172508	fresh4	{"exact":2628}	null	{"exact":2628}	null	true	[]	[]	[["ability",1],["ability",-1]]	same_class	0	[]	[]	true
+live_play_20261028_172955	fresh4	{"exact":2630}	null	{"exact":2630}	null	true	[]	[]	[["ability",1],["ability",1]]	same_class	0	[]	[]	true
+live_play_20261028_173440	fresh4	{"exact":1741,"torn_hidden":25}	null	{"exact":1741,"torn_hidden":25}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261028_174451	fresh4	{"exact":1766,"torn_late":1}	null	{"exact":1766,"torn_late":1}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_174806	fresh4	{"exact":1765}	null	{"exact":1765}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_175120	fresh4	{"exact":1926}	null	{"exact":1926}	null	true	[]	[]	[["ability",-1]]	same_class	0	[]	[]	true
+live_play_20261028_180343	fresh4	{"exact":2809}	null	{"exact":2809}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_180849	fresh4	{"div":1711,"exact":54}	260	{"div":1711,"exact":54}	260	false	[]	[["cmd0",258,false,0,9],["cmd4",384,false,0,9],["cmd7",587,false,0,9]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_181209	fresh4	{"div":2634,"exact":155,"torn_late":3}	458	{"div":2634,"exact":155,"torn_late":3}	458	false	[]	[["cmd3",455,false,0,9],["cmd8",714,false,0,9],["cmd11",874,false,0,9],["cmd88",5005,false,0,9],["cmd93",5124,false,0,9],["cmd95",5204,false,0,9],["cmd97",5298,false,0,9],["cmd105",5478,false,0,9],["cmd107",5538,false,0,9],["cmd111",5663,false,0,4],["cmd112",5678,false,0,4],["cmd113",5687,false,0,4],["cmd114",5704,false,0,4],["cmd115",5731,false,0,4],["cmd116",5735,false,0,4]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_181730	fresh4	{"exact":1762,"torn_late":3}	null	{"exact":1762,"torn_late":3}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_182053	fresh4	{"exact":2938}	null	{"exact":2938}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_184534	fresh4	{"exact":2643}	null	{"exact":2643}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_190040	fresh4	{"exact":3023}	null	{"exact":3023}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_192245	fresh4	{"exact":2227}	null	{"exact":2227}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_193007	fresh4	{"div":1665,"exact":97}	344	{"div":1665,"exact":97}	344	false	[]	[["cmd4",446,false,0,9],["cmd13",1131,false,0,9],["cmd16",1422,false,0,9],["cmd18",1466,false,0,9],["cmd21",1715,false,0,9],["cmd34",2575,false,0,9],["cmd40",2917,false,0,9],["cmd42",3061,false,0,9],["cmd51",3443,false,0,9],["cmd56",3534,false,0,9],["cmd58",3623,false,0,4]]	[]	same_class	0	["1:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_194024	fresh4	{"div":1489,"exact":257}	663	{"div":1489,"exact":257}	663	false	[]	[["cmd9",661,false,0,9],["cmd13",1385,false,0,9],["cmd16",1541,false,0,9],["cmd18",1584,false,0,9],["cmd23",2111,false,0,9],["cmd37",2953,false,0,9],["cmd42",3065,false,0,9],["cmd46",3438,false,0,9],["cmd49",3518,false,0,9],["cmd52",3588,false,0,4],["cmd53",3607,false,0,4],["cmd54",3617,false,0,4]]	[]	same_class	0	["1:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_194921	fresh4	{"exact":1763}	null	{"exact":1763}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_200424	fresh4	{"div":441,"exact":1325}	2802	{"div":441,"exact":1325}	2802	false	[]	[["cmd35",2801,false,0,9]]	[["ability",1]]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_201103	fresh4	{"div":967,"exact":735}	1606	{"div":967,"exact":735}	1606	true	[]	[["cmd17",1605,false,0,0],["cmd19",1695,false,0,9],["cmd26",2297,false,0,9],["cmd30",2641,false,0,9],["cmd35",2811,false,0,9],["cmd42",3172,false,0,9]]	[["ability",-34]]	same_class	0	[]	[]	true
+live_play_20261028_201412	fresh4	{"exact":1766}	null	{"exact":1766}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_203126	fresh4	{"exact":1764}	null	{"exact":1764}	null	true	[]	[]	[["ability",-1]]	same_class	0	[]	[]	true
+live_play_20261028_203444	fresh4	{"exact":1765}	null	{"exact":1765}	null	true	[]	[]	[["ability",-1]]	same_class	0	[]	[]	true
+live_play_20261028_203800	fresh4	{"exact":1765}	null	{"exact":1765}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_204121	fresh4	{"exact":1765}	null	{"exact":1765}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_204439	fresh4	{"exact":2547}	null	{"exact":2547}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_205336	fresh4	{"exact":1760}	null	{"exact":1760}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_210016	fresh4	{"div":28,"exact":1953,"torn_hidden":16}	2068	{"div":28,"exact":1953,"torn_hidden":16}	2068	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261028_210911	fresh4	{"exact":1766}	null	{"exact":1766}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_211745	fresh4	{"div":1730,"exact":34}	218	{"div":1730,"exact":34}	218	false	[]	[["cmd0",216,false,0,9],["cmd8",953,false,0,9],["cmd9",975,false,0,9],["cmd14",1342,false,0,9],["cmd15",1448,false,0,9],["cmd22",1706,false,0,9],["cmd35",2625,false,0,9]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_212102	fresh4	{"exact":2551}	null	{"exact":2551}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261028_213421	fresh4	{"div":1631,"exact":134}	419	{"div":1631,"exact":134}	419	false	[]	[["cmd2",417,false,0,9],["cmd9",1107,false,0,9],["cmd14",1405,false,0,9],["cmd16",1564,false,0,9],["cmd23",2202,false,0,9],["cmd31",2503,false,0,9],["cmd33",2703,false,0,9],["cmd37",2931,false,0,9],["cmd38",2954,false,0,9],["cmd44",3185,false,0,9],["cmd46",3235,false,0,9],["cmd55",3605,false,0,4],["cmd56",3611,false,0,4],["cmd57",3655,false,0,4],["cmd58",3657,false,0,4]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_214831	fresh4	{"div":1618,"exact":146}	213	{"div":1618,"exact":146}	213	false	[]	[["cmd0",211,false,0,9],["cmd10",1011,false,0,9],["cmd12",1191,false,0,9],["cmd15",1318,false,0,9],["cmd21",1868,false,0,9],["cmd23",1922,false,0,9],["cmd26",2119,false,0,9],["cmd28",2224,false,0,9],["cmd32",2568,false,0,9],["cmd40",2892,false,0,9]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_220244	fresh4	{"exact":3025}	null	{"exact":3025}	null	true	[]	[]	[["ability",-1],["ability",-1],["ability",-1]]	same_class	0	[]	[]	true
+live_play_20261028_220803	fresh4	{"exact":1766}	null	{"exact":1766}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_222707	fresh4	{"exact":1766}	null	{"exact":1766}	null	true	[]	[]	[["ability",1],["ability",1]]	same_class	0	[]	[]	true
+live_play_20261028_223022	fresh4	{"exact":3028}	null	{"exact":3028}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_223547	fresh4	{"exact":3014}	null	{"exact":3014}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_224625	fresh4	{"exact":2222}	null	{"exact":2222}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261028_225340	fresh4	{"exact":1797}	null	{"exact":1797}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_225656	fresh4	{"exact":1766}	null	{"exact":1766}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261028_230352	fresh4	{"div":1383,"exact":379}	914	{"div":1383,"exact":379}	914	true	[]	[["cmd11",1003,false,0,13],["cmd16",1637,false,0,9],["cmd18",1724,false,0,9],["cmd27",2586,false,0,9],["cmd32",2807,false,0,9],["cmd50",3611,false,0,4],["cmd51",3648,false,0,4]]	[]	same_class	0	[]	[]	true
+live_play_20261028_232157	fresh4	{"exact":1766}	null	{"exact":1766}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_232834	fresh4	{"exact":3041}	null	{"exact":3041}	null	true	[]	[]	[["ability",1],["ability",1],["ability",1]]	same_class	0	[]	[]	true
+live_play_20261028_233355	fresh4	{"exact":1559}	null	{"exact":1559}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_234051	fresh4	{"exact":1519}	null	{"exact":1519}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261028_234343	fresh4	{"div":802,"exact":1043}	344	{"div":802,"exact":1043}	344	false	[]	[["cmd4",342,false,0,9],["cmd11",1061,false,0,9],["cmd50",3575,false,0,9],["cmd54",3784,false,0,4],["cmd55",3841,false,0,4]]	[["ability",1]]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_235316	fresh4	{"div":1642,"exact":41}	233	{"div":1642,"exact":41}	233	false	[]	[["cmd0",231,false,0,9],["cmd6",571,false,0,9],["cmd12",1235,false,0,9],["cmd16",1551,false,0,9],["cmd18",1745,false,0,9],["cmd24",2224,false,0,9],["cmd25",2373,false,0,9],["cmd28",2534,false,0,9],["cmd32",2711,false,0,9],["cmd34",2777,false,0,9],["cmd43",3182,false,0,9],["cmd47",3453,false,0,4],["cmd48",3481,false,0,4]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261028_235834	fresh4	{"div":41,"exact":2230}	4612	{"div":41,"exact":2230}	4612	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261029_000242	fresh4	{"exact":3028}	null	{"exact":3028}	null	true	[]	[]	[["ability",1],["ability",1],["ability",1],["ability",1]]	same_class	0	[]	[]	true
+live_play_20261029_000804	fresh4	{"exact":1763}	null	{"exact":1763}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261029_001538	fresh4	{"div":1709,"exact":56}	263	{"div":1709,"exact":56}	263	false	[]	[["cmd2",261,false,0,9],["cmd7",910,false,0,9],["cmd8",911,false,0,9],["cmd17",1904,false,0,9],["cmd26",2596,false,0,9],["cmd29",2679,false,0,9],["cmd35",3097,false,0,9],["cmd39",3235,false,0,9],["cmd42",3482,false,0,9]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261029_001856	fresh4	{"div":126,"exact":1503}	3159	{"div":126,"exact":1503}	3159	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261029_002202	fresh4	{"exact":1766}	null	{"exact":1766}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261029_002515	fresh4	{"exact":1767}	null	{"exact":1767}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261029_003155	fresh4	{"exact":2721}	null	{"exact":2721}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261029_003649	fresh4	{"div":1624,"exact":190}	528	{"div":1624,"exact":190}	528	false	[]	[["cmd5",526,false,0,9],["cmd13",1451,false,0,9],["cmd23",2313,false,0,9],["cmd29",2531,false,0,9],["cmd31",2736,false,0,9],["cmd47",3451,false,0,9],["cmd50",3661,false,0,9],["cmd52",3721,false,0,4]]	[]	same_class	0	["1:opp_no_fitting_deal:0"]	[]	true
+live_play_20261029_004719	fresh5	{"div":570,"exact":1210}	2573	{"exact":1780}	null	true	[]	[]	[]	fixed	570	[]	[]	false
+live_play_20261029_005039	fresh5	{"exact":3028}	null	{"exact":3028}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261029_005558	fresh5	{"div":1123,"exact":642}	1436	{"div":1123,"exact":642}	1436	false	[]	[["cmd21",1831,false,0,9],["cmd25",2316,false,0,9],["cmd29",2631,false,0,9],["cmd31",2671,false,0,9],["cmd38",2906,false,0,9],["cmd46",3276,false,0,9],["cmd52",3578,false,0,9],["cmd53",3606,false,0,4],["cmd54",3634,false,0,4]]	[]	same_class	0	["1:opp_no_fitting_deal:0"]	[]	true
+live_play_20261029_011004	fresh5	{"exact":2948}	null	{"exact":2948}	null	true	[]	[]	[["ability",1],["ability",1]]	same_class	0	[]	[]	true
+live_play_20261029_011517	fresh5	{"exact":1865}	null	{"exact":1865}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261029_012620	fresh5	{"exact":3028}	null	{"exact":3028}	null	true	[]	[]	[["ability",1],["ability",1]]	same_class	0	[]	[]	true
+live_play_20261029_013624	fresh5	{"exact":2172}	null	{"exact":2172}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261029_014019	fresh5	{"exact":2537}	null	{"exact":2537}	null	true	[]	[]	[["ability",1]]	same_class	0	[]	[]	true
+live_play_20261029_015549	fresh5	{"exact":1834}	null	{"exact":1834}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261029_015916	fresh5	{"div":1731,"exact":34}	219	{"div":1731,"exact":34}	219	false	[]	[["cmd0",217,false,0,9],["cmd3",483,false,0,9],["cmd9",751,false,0,9],["cmd11",843,false,0,9],["cmd62",3621,false,0,4],["cmd63",3648,false,0,4],["cmd64",3671,false,0,4],["cmd65",3674,false,0,4]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261029_020436	fresh5	{"div":1654,"exact":108}	367	{"div":1654,"exact":108}	367	false	[]	[["cmd3",366,false,0,9],["cmd6",477,false,0,9],["cmd10",916,false,0,9],["cmd17",1388,false,0,9],["cmd27",2357,false,0,9],["cmd34",2651,false,0,9],["cmd35",2725,false,0,9],["cmd40",2907,false,0,9],["cmd44",2987,false,0,9],["cmd50",3355,false,0,9],["cmd58",3637,false,0,4],["cmd59",3646,false,0,4],["cmd60",3676,false,0,4]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261029_021310	fresh5	{"div":105,"exact":1660}	1986	{"div":105,"exact":1660}	1986	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261029_021629	fresh5	{"exact":3029}	null	{"exact":3029}	null	true	[]	[]	[["ability",1],["ability",-1],["ability",1]]	same_class	0	[]	[]	true
+live_play_20261029_022148	fresh5	{"exact":1760}	null	{"exact":1760}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261029_023025	fresh5	{"exact":2149}	null	{"exact":2149}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261029_023843	fresh6	{"exact":1765}	null	{"exact":1765}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261029_024716	fresh6	{"div":1141,"exact":623}	1399	{"div":1141,"exact":623}	1399	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261029_025423	fresh6	{"exact":1951}	null	{"exact":1951}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261029_030932	fresh6	{"exact":1958}	null	{"exact":1958}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261029_031310	fresh6	{"div":40,"exact":2102}	3954	{"div":40,"exact":2102}	3954	true	[]	[]	[["ability",-1]]	same_class	0	[]	[]	true
+live_play_20261029_031702	fresh6	{"exact":3055}	null	{"exact":3055}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261029_032745	fresh6	{"exact":2012}	null	{"exact":2012}	null	true	[]	[]	[["ability",1],["ability",1]]	same_class	0	[]	[]	true
+live_play_20261029_033149	fresh6	{"exact":636}	null	{"exact":636}	null	false	[]	[]	[]	same_class	0	["crowns_mismatch:live(0, 0)_api(0, 3)"]	[]	true
+live_play_20261029_034208	fresh6	{"exact":1766}	null	{"exact":1766}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261029_034529	fresh6	{"div":109,"exact":1657}	3466	{"div":109,"exact":1657}	3466	false	[]	[["cmd51",3548,false,0,9]]	[["ability",1]]	same_class	0	["1:own_cycle_fail:25"]	[]	true
+live_play_20261029_035159	fresh6	{"exact":3046}	null	{"exact":3046}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261029_040050	fresh6	{"div":1201,"exact":211}	572	{"div":1201,"exact":211}	572	false	[]	[["cmd7",570,false,0,9],["cmd14",1364,false,0,9],["cmd16",1708,false,0,9],["cmd18",1741,false,0,9],["cmd22",1821,false,0,9],["cmd24",1991,false,0,9],["cmd26",2492,false,0,9],["cmd29",2571,false,0,9],["cmd30",2616,false,0,9],["cmd31",2648,false,0,9],["cmd32",2755,false,0,9]]	[]	same_class	0	["0:opp_no_fitting_deal:0"]	[]	true
+live_play_20261029_042050	fresh6	{"exact":1136,"torn_hidden":93}	null	{"exact":1136,"torn_hidden":93}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261029_042312	fresh6	{"exact":1763}	null	{"exact":1763}	null	true	[]	[]	[]	same_class	0	[]	[]	true
+live_play_20261029_044249	fresh6	{"exact":1766}	null	{"exact":1766}	null	true	[]	[]	[["ability",-35]]	same_class	0	[]	[]	true
+
+SUMMARIES
+{
+  "dev": {
+    "rows": 138,
+    "identical": 138,
+    "classes": {
+      "fixed": 0,
+      "regressed": 0,
+      "improved": 0,
+      "same_class": 138
+    },
+    "not_identical": []
+  },
+  "fresh1": {
+    "rows": 9,
+    "identical": 9,
+    "classes": {
+      "fixed": 0,
+      "regressed": 0,
+      "improved": 0,
+      "same_class": 9
+    },
+    "not_identical": []
+  },
+  "fresh2": {
+    "rows": 40,
+    "identical": 40,
+    "classes": {
+      "fixed": 0,
+      "regressed": 0,
+      "improved": 0,
+      "same_class": 40
+    },
+    "not_identical": []
+  },
+  "fresh3": {
+    "rows": 17,
+    "identical": 17,
+    "classes": {
+      "fixed": 0,
+      "regressed": 0,
+      "improved": 0,
+      "same_class": 17
+    },
+    "not_identical": []
+  },
+  "fresh4": {
+    "rows": 78,
+    "identical": 78,
+    "classes": {
+      "fixed": 0,
+      "regressed": 0,
+      "improved": 0,
+      "same_class": 78
+    },
+    "not_identical": []
+  },
+  "fresh5": {
+    "rows": 15,
+    "identical": 14,
+    "classes": {
+      "fixed": 1,
+      "regressed": 0,
+      "improved": 0,
+      "same_class": 14
+    },
+    "not_identical": [
+      "live_play_20261029_004719"
+    ]
+  },
+  "fresh6": {
+    "rows": 15,
+    "identical": 15,
+    "classes": {
+      "fixed": 0,
+      "regressed": 0,
+      "improved": 0,
+      "same_class": 15
+    },
+    "not_identical": []
+  }
+}

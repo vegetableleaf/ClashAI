@@ -1,0 +1,10 @@
+dev A/B 138 identical 138 plants missed []
+fresh1 A/B 9 identical 9 plants missed []
+fresh2 A/B 40 identical 40 plants missed []
+fresh3 A/B 17 identical 17 plants missed []
+fresh4 A/B 78 identical 78 plants missed []
+fresh5 A/B 15 identical 14 plants missed []
+   BANNER 20261029_004719 {'exact': 1210, 'div': 570} 2573 -> {'exact': 1780} None fixed dExact 570
+   ZAP_DEAD 20261029_021310 {'exact': 1660, 'div': 105} 1986 -> {'exact': 1765} None fixed missed []
+fresh6 A/B 15 identical 15 plants missed []
+{'n': 312, 'identical': 311}

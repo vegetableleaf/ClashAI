@@ -2796,6 +2796,12 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
     must-not-fire). **r8 (running) tests v1; its 182050 row is expected to differ, and v2 + ZD_BLDG need their own batch.**
   - **FRESH7 list frozen (d978ab3) before any run:** `fresh/FRESH7.tsv`, 22 Ranked battles, logs from 04:43 EDT 10-29
     (044249 excluded: FRESH6), battle log to 10:16:13Z, build 160635001, 0 overlap with FRESH1-6.
+  - **r7 no-regression DONE (a; Codex ENG-FIX4_1 STATUS DONE, 9,592 s; my own re-tally `engfix/r7/my_tally.py` ->
+    `my_tally.txt` agrees with `table_banner.txt` / `table_zapdead.txt`):** SME_BANNER_GIVEN A vs B on all 312 scored
+    records of dev + FRESH1-6 (lib 5e8089a4): 311 identical (counts, first div, flags, plants missed, refused plays), 1
+    fixed (FRESH5 004719 1210 + 570, first 2573 -> 1780 / 1780, +570 exact), 0 regressed. SME_ZAP_DEAD A vs C: the one
+    changed record (021310) fixed 1660 + 105 (first 1986) -> 1765 / 1765. Plants 0 missed everywhere. **Both flags stay:
+    BANNER_GIVEN in every gate run, ZAP_DEAD in fresh_prep.sh (1e8f59a, FRESH7+).**
   - **FRESH7 RESULT F7_main (a; strict fresh gate on 5e8089a4, no fix on these matches; list d978ab3, freeze file before
     the run, `results/live/fresh7/F7_main_*`):** 22 Ranked battles, 0 skips, 11 RNG-free, 6 unflagged: **6 / 6 exact apart
     from torn and 6 / 6 strictly exact (one-sided 95% CP lower 0.607)**; plants 0 missed of 3,362. Flags FRESH6's +
@@ -2803,7 +2809,7 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
     CPUs 52-53, WORKERS=2, beside Codex r7 on 28-53. 5 flagged (4 opp_no_fitting_deal, 1 own_cycle_fail) not scored.
     **Pooled strict-fresh FRESH2-7: 109 / 132 (0.826, CP lower 0.762).** D1 / D2 NOT met. FRESH7 is dev data from here.
   - **RESTART POINT (ENG-FIX4, 10-29 ~07:20 EDT), in order:**
-    1. Codex ENG-FIX4_1 (r7, pid file `.foreman/scratch/a2/codex/out/ENG-FIX4_1.jsonl.pid`): read the final message and
+    1. DONE (r7 clean, above). Codex ENG-FIX4_1 (r7, pid file `.foreman/scratch/a2/codex/out/ENG-FIX4_1.jsonl.pid`): read the final message and
        re-tally `engfix/r7/table_banner.txt` (A vs B) and `table_zapdead.txt` (A vs C): fixed / same / regressed, exact
        deltas, plants missed. Expected: B differs from A only on 004719 (1210 + 570 -> 1780 / 1780); C 021310 1660 + 105 ->
        1765 / 1765. SME_ZAP_DEAD is already in fresh_prep.sh (1e8f59a, on the r7 field gate + the byte-identical EF3_zd_1 run); a regression in the tables reverts it. BANNER_GIVEN stays if B = A apart from 004719.

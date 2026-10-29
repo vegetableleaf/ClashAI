@@ -1,0 +1,29 @@
+dev ref_sha=d91583504174f5d00381ebdf4d8b952371f35e82536e164ce05ab407025fe0b7 off_sha=d91583504174f5d00381ebdf4d8b952371f35e82536e164ce05ab407025fe0b7 ref_count=138 off_count=138
+dev PASS
+fresh1 ref_sha=564fdb24d3dd4fbed739fee046dbfcec3659c1f4027034b3d7cdff3f6c146a23 off_sha=564fdb24d3dd4fbed739fee046dbfcec3659c1f4027034b3d7cdff3f6c146a23 ref_count=9 off_count=9
+fresh1 PASS
+fresh2 ref_sha=17b48c1caceee0950fb2369e11ffa58d9d97ffeac67e46edee6d0594a98333c3 off_sha=4296f565bb48a5c6ecfc87394a9554a4248db39ac0bcfea9d45f8b60deca6fa6 ref_count=40 off_count=40
+fresh2 changed live_play_20261028_101018 fields=['plays']
+fresh2 PASS
+fresh3 ref_sha=a450d5a3630c5d96250936b4b20863af3250c1895438c5e522fd584af587a749 off_sha=a450d5a3630c5d96250936b4b20863af3250c1895438c5e522fd584af587a749 ref_count=17 off_count=17
+fresh3 PASS
+fresh4 ref_sha=e9d5789a25b1d1e2a7858997b4523477f0e09acc2477cb53b3a10653a566353d off_sha=8f695c580c42b6ed435e0135ae52973572b5054ca579ea88d2798ec98e291bdc ref_count=78 off_count=78
+fresh4 changed live_play_20261028_171948 fields=['plays']
+fresh4 PASS
+fresh5 ref_sha=8f4cb92d6d3c6f715235d6e9bf7b38374412b7da9caf08726f1656a2a288f049 off_sha=8f4cb92d6d3c6f715235d6e9bf7b38374412b7da9caf08726f1656a2a288f049 ref_count=15 off_count=15
+fresh5 PASS
+fresh6 ref_sha=20ac8e69384bec9534d7d6e14fb11ca0edfab3390122fa0baa04eb00d2b141e4 off_sha=20ac8e69384bec9534d7d6e14fb11ca0edfab3390122fa0baa04eb00d2b141e4 ref_count=15 off_count=15
+fresh6 PASS
+OFF_CHECKS_PASS
+dev: OFF=138 ON=138 SHA256={'off': 'd91583504174f5d00381ebdf4d8b952371f35e82536e164ce05ab407025fe0b7', 'on': 'd91583504174f5d00381ebdf4d8b952371f35e82536e164ce05ab407025fe0b7'}; OFF drift gate passed (off_checks.txt)
+fresh1: OFF=9 ON=9 SHA256={'off': '564fdb24d3dd4fbed739fee046dbfcec3659c1f4027034b3d7cdff3f6c146a23', 'on': '564fdb24d3dd4fbed739fee046dbfcec3659c1f4027034b3d7cdff3f6c146a23'}; OFF drift gate passed (off_checks.txt)
+fresh2: OFF=40 ON=40 SHA256={'off': '4296f565bb48a5c6ecfc87394a9554a4248db39ac0bcfea9d45f8b60deca6fa6', 'on': '4296f565bb48a5c6ecfc87394a9554a4248db39ac0bcfea9d45f8b60deca6fa6'}; OFF drift gate passed (off_checks.txt)
+fresh3: OFF=17 ON=17 SHA256={'off': 'a450d5a3630c5d96250936b4b20863af3250c1895438c5e522fd584af587a749', 'on': 'a450d5a3630c5d96250936b4b20863af3250c1895438c5e522fd584af587a749'}; OFF drift gate passed (off_checks.txt)
+fresh4: OFF=78 ON=78 SHA256={'off': '8f695c580c42b6ed435e0135ae52973572b5054ca579ea88d2798ec98e291bdc', 'on': '8f695c580c42b6ed435e0135ae52973572b5054ca579ea88d2798ec98e291bdc'}; OFF drift gate passed (off_checks.txt)
+fresh5: OFF=15 ON=15 SHA256={'off': '8f4cb92d6d3c6f715235d6e9bf7b38374412b7da9caf08726f1656a2a288f049', 'on': '6b81869d889e22424a308f31092ce51f497c73d04cff5699a6262d4b0dac8c75'}; OFF drift gate passed (off_checks.txt)
+fresh5 live_play_20261029_021310: fields=['plays', 'zap_dead'], parsed_equal=False, text_equal=False
+  zap_dead: OFF=null ON=[{"side": 1, "tp": 1984, "t": 1986, "victims": [["Skeleton", 13098, 16861, 130], ["Skeleton", 13236, 18013, 130], ["Skeleton", 12164, 16941, 130]], "R": 1985, "run_ticks": [1984, 1985], "x": 12864, "y": 17261}]
+  OFF Zap rows: [{"side": 0, "kind": "play", "card": "Zap", "deck_index": 6, "name": "Zap", "form": 0, "run_ticks": [585, 585], "tick": 585, "source": "spell_seen", "x": 15009, "y": 18088, "tile": [15, 18], "n": 0, "inferred": true, "mech": "zap_buff"}, {"side": 0, "kind": "play", "card": "Zap", "deck_index": 6, "name": "Zap", "form": 0, "run_ticks": [2958, 2958], "tick": 2958, "source": "spell_seen", "x": 14915, "y": 19227, "tile": [14, 19], "n": 0, "inferred": true, "mech": "zap_buff"}, {"side": 0, "kind": "play", "card": "Zap", "deck_index": 6, "name": "Zap", "form": 0, "run_ticks": [3429, 3429], "tick": 3429, "source": "spell_seen", "x": 12850, "y": 20031, "tile": [12, 20], "n": 0, "inferred": true, "mech": "zap_buff"}]
+  ON Zap rows: [{"side": 0, "kind": "play", "card": "Zap", "deck_index": 6, "name": "Zap", "form": 0, "run_ticks": [585, 585], "tick": 585, "source": "spell_seen", "x": 15009, "y": 18088, "tile": [15, 18], "n": 0, "inferred": true, "mech": "zap_buff"}, {"side": 0, "kind": "play", "card": "Zap", "deck_index": 6, "name": "Zap", "form": 0, "run_ticks": [1984, 1985], "tick": 1985, "source": "spell_seen", "x": 12864, "y": 17261, "tile": [12, 17], "n": 0, "inferred": true, "mech": "zap_dead"}, {"side": 0, "kind": "play", "card": "Zap", "deck_index": 6, "name": "Zap", "form": 0, "run_ticks": [2958, 2958], "tick": 2958, "source": "spell_seen", "x": 14915, "y": 19227, "tile": [14, 19], "n": 0, "inferred": true, "mech": "zap_buff"}, {"side": 0, "kind": "play", "card": "Zap", "deck_index": 6, "name": "Zap", "form": 0, "run_ticks": [3429, 3429], "tick": 3429, "source": "spell_seen", "x": 12850, "y": 20031, "tile": [12, 20], "n": 0, "inferred": true, "mech": "zap_buff"}]
+fresh6: OFF=15 ON=15 SHA256={'off': '20ac8e69384bec9534d7d6e14fb11ca0edfab3390122fa0baa04eb00d2b141e4', 'on': '20ac8e69384bec9534d7d6e14fb11ca0edfab3390122fa0baa04eb00d2b141e4'}; OFF drift gate passed (off_checks.txt)
+fresh5 live_play_20261029_021310 gained plays=[{"side": 0, "kind": "play", "card": "Zap", "deck_index": 6, "name": "Zap", "form": 0, "run_ticks": [1984, 1985], "tick": 1985, "source": "spell_seen", "x": 12864, "y": 17261, "tile": [12, 17], "n": 0, "inferred": true, "mech": "zap_dead"}] removed plays=[]

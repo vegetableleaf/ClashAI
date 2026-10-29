@@ -1,0 +1,85 @@
+match	set	baseline_counts	baseline_first_div	new_counts	new_first_div	new_flags_empty	plants_missed	refused_plays	ability_nonzero_offset	classification	exact_delta	new_flags	added_flags	identical
+live_play_20261029_021310	fresh5	{"div":105,"exact":1660}	1986	{"exact":1765}	null	true	[]	[]	[]	fixed	105	[]	[]	false
+
+SUMMARIES
+{
+  "dev": {
+    "rows": 0,
+    "identical": 0,
+    "classes": {
+      "fixed": 0,
+      "regressed": 0,
+      "improved": 0,
+      "same_class": 0
+    },
+    "not_identical": []
+  },
+  "fresh1": {
+    "rows": 0,
+    "identical": 0,
+    "classes": {
+      "fixed": 0,
+      "regressed": 0,
+      "improved": 0,
+      "same_class": 0
+    },
+    "not_identical": []
+  },
+  "fresh2": {
+    "rows": 0,
+    "identical": 0,
+    "classes": {
+      "fixed": 0,
+      "regressed": 0,
+      "improved": 0,
+      "same_class": 0
+    },
+    "not_identical": []
+  },
+  "fresh3": {
+    "rows": 0,
+    "identical": 0,
+    "classes": {
+      "fixed": 0,
+      "regressed": 0,
+      "improved": 0,
+      "same_class": 0
+    },
+    "not_identical": []
+  },
+  "fresh4": {
+    "rows": 0,
+    "identical": 0,
+    "classes": {
+      "fixed": 0,
+      "regressed": 0,
+      "improved": 0,
+      "same_class": 0
+    },
+    "not_identical": []
+  },
+  "fresh5": {
+    "rows": 1,
+    "identical": 0,
+    "classes": {
+      "fixed": 1,
+      "regressed": 0,
+      "improved": 0,
+      "same_class": 0
+    },
+    "not_identical": [
+      "live_play_20261029_021310"
+    ]
+  },
+  "fresh6": {
+    "rows": 0,
+    "identical": 0,
+    "classes": {
+      "fixed": 0,
+      "regressed": 0,
+      "improved": 0,
+      "same_class": 0
+    },
+    "not_identical": []
+  }
+}
