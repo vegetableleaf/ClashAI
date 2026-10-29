@@ -38,18 +38,30 @@ unchanged without the opp init. Existing: test_timing_head_decode + test_league 
   actors, ONE lambda run at a time: 0.1 first, then 0.03 / 0.3); never the 33903 GPU; bar scored on D3 + the sampled-decode
   number beside it; dry-run on v0 until P2-OPP2 reports v1.
 - DONE (code; opt-in, absent = unchanged): (1) bot partner decode + icebow pool, (2) th_drift monitor, (3) fast-loop timing
-  LEARNER seat. (4) v0 DRY RUN RUNNING in the FAST LOOP (lead 10-29; settles lr / lambda / stop rule before v1): 33308, run
-  oplc_flv0_l01 (lambda 0.1, lr 1e-5, E 64 x G 4, 30 updates, save_every 10; 2 producers x 64 matches x 6 Java threads +
-  learner on GPU1, CPUs 100-121, n_actors=1 (else rl_royale idles 48 actor processes = +30 GB), XMX 3g): PSS 12.7 GB, GPU1
-  13.7 GB; started 02:22 UTC; log /workspace/oplc/logs/oplc_flv0_l01.log. Restart (fresh name; or --resume):
-  `cd /workspace/oplc && CB=/workspace/oplc/cb TABLES=/workspace/crforge_cache/tables/16.635.3 GPU=1 LOGS=/workspace/oplc/logs XMX=3g TMO=36000 FAST_ARGS="--producers 2 --matches 64 --threads 6 --devices cuda:0" setsid nohup bash fl_pod.sh fast RUN 100-121 scratchpad/gauntlet/L74/plan1026/opp/learner/opp_learner_calib.yaml init=opp_ckpt/opp_m10_s0_sim.pt beta0=L beta_min=L beta_max=L max_updates=30 save_every=10 learner_device=cuda n_actors=1 < /dev/null > logs/RUN.out 2>&1 &`
-  (a) speed: production (run_calib.sh, 20 CPU actors, oplc_v0_l01) u0000 = 1,173 s rollout for 256 matches (PSS 30.6 GB =
-  over the 30 GB cap: stopped by PID after u0000); fast loop on GPU1 = 180 s (6.5x), learner 20 s for 7,084 play rows.
-  Same u0000 batch twice on GPU (70/186, 7,084 rows: repeatable); fast-on-cuda vs production-on-cuda compare is (b) owed.
-  (a) u0000 (v0, sampled-decode bot): learner wins 16% vs CLXIII (156 games, so CLXIII ~84%), 45% vs the init (100);
-  th_drift after ONE update: hazard mad 8.3e-3, max 4.2e-2, mean p .1886 -> .1967 (+4% relative: more plays) = the trunk moves
-  the frozen hazard visibly; watch it per update.
-  33308 disk: 2.9 GB free at 02:25 UTC (98%); a numbered checkpoint is 135 MB (Adam state).
+  LEARNER seat. (4) v0 DRY RUNS (lead 10-29: settle lr / lambda / stop rule before v1), FAST LOOP on 33308 GPU1:
+  - oplc_flv0_l01 DONE (lambda 0.1, lr 1e-5, E 64 x G 4, 30 updates 02:22-03:55 UTC, ~180 s per update, PSS 12.7 GB). Curve
+    (a): learner/out/curve_oplc_flv0_l01.md (from train_log.jsonl by learner/curve.py). Win rate vs the bot (CLXIII, sampled
+    decode, n ~160 per update) 16% at u0 -> 18-21% at u25-29 (noise ~3 pp); vs the frozen init 45% -> 55-71%; KL card / cell
+    to the init 0.001 / 0.002 -> 0.026 / 0.033; plays/min 8.54 -> 8.82. Frozen-head drift GROWS with the KL: hazard mean p
+    .1886 -> .2195 (+16% relative), mean |dp| 8e-3 -> 3.4e-2, max .19; ability hazard mean |dp| 2e-3.
+  - D3 evals (a; CLXIII gap.py D3 = live's greedy stack, G2 on, seed block 741200 paired, 480 games; card.py v6 --no-c --no-d;
+    learner/out/TABLE.md): v0fix (= u0) CLXIII 87.7% [84.5, 90.3], B RMS d 0.325, 14 z-fails, lock .75; u0010 87.1% [83.8,
+    89.8], RMS 0.316, 12 z-fails, lock .75. u0020 / u0030: Codex OPP-LEARN-C_2 (running).
+  - oplc_flv0_l01_lr3 RUNNING (lr 3e-5, else the same, 20 updates, started 03:57 UTC; log /workspace/oplc/logs/oplc_flv0_l01_lr3.log):
+    does 3x lr buy strength faster than it buys drift? Its u0010 / u0020 D3 evals are in OPP-LEARN-C_2.
+  - Reading (b): at lr 1e-5 the strength channel barely moves in 30 updates (D3 unchanged at u10; sampled-decode +3-5 pp by
+    u25) while the frozen hazard drifts steadily: at this rate the human-likeness (timing) check, not the 30-50% bar, will
+    stop a long run. Reaching CLXIII 30-50% from ~87% needs far more strength than 30 updates gave.
+  Launch / restart (fresh RUN name or --resume):
+  `cd /workspace/oplc && CB=/workspace/oplc/cb TABLES=/workspace/crforge_cache/tables/16.635.3 GPU=1 LOGS=/workspace/oplc/logs XMX=3g TMO=36000 FAST_ARGS="--producers 2 --matches 64 --threads 6 --devices cuda:0" setsid nohup bash fl_pod.sh fast RUN 100-121 scratchpad/gauntlet/L74/plan1026/opp/learner/opp_learner_calib.yaml init=INIT beta0=L beta_min=L beta_max=L max_updates=N save_every=10 learner_device=cuda n_actors=1 < /dev/null > logs/RUN.out 2>&1 &`
+  (n_actors=1: else rl_royale idles 48 actor processes = +30 GB). Evals: strip on 33308 (`learner/strip_ckpt.py`, 135 -> 45 MB),
+  relay to 33903 /workspace/opplearnc/calib/ck/, `CB=/workspace/opp/cb WORKERS=15 CPUS=220-251 G2_ON=on OPP_T=1.0 OPP_CKPT=... bash
+  /workspace/opp/cb/scratchpad/gauntlet/L74/opp_model/humanlike/run_closed.sh NAME /workspace/opplearnc/calib/rows/NAME 741200`
+  (15 workers = 14.9 GB RSS), fetch to learner/rows/NAME, `card.py score --no-c --no-d --out learner/out/NAME`, `strength/tab.py
+  learner/rows learner/out`.
+  (a) production rl_royale path for comparison (run_calib.sh, 20 CPU actors): 1,173 s per update at PSS 30.6 GB (over the cap;
+  stopped by PID after u0000); the fast loop on GPU1 = 180 s (6.5x). Same u0000 twice on GPU (repeatable); fast-on-cuda vs
+  production-on-cuda compare (b) owed.
   v1: (P2-OPP2: seed 0 at step 62.5k of 100k at 00:50 UTC, then
   attach_sim + level A + level B v1s0 by Codex P2OPP2_3).
 - Pod 33903 (CPUs 200-219, <= ~20 GB; GPU = P2-OPP2's): trees /workspace/opplearnc/cbc_base (HEAD c5383b3 pipeline over
@@ -99,6 +111,22 @@ test_timing_head_decode: 51 passed, 1 skipped, 2 failed = the 2 pre-existing Tes
   11 M-param forward on CPU dominates (b: not profiled). Lever: producers on a GPU device (in-process cuda forward), or
   serve timing models on the server.
 
+### Proposal (NOT built; lead 10-29 asked): a fixed pull on the frozen heads' OUTPUTS ("timing anchor")
+- Problem (a, oplc_flv0_l01): freeze_heads keeps the timing / ability head weights fixed, but card / cell PPO moves the shared
+  trunk, so the frozen hazard's output moves. On the fixed 1,024 rows its mean |dp| grows with KL (table above). Timing
+  human-likeness (gap / rescaled-gap KS, plays/min, lock rhythm) is exactly what level A / B measure.
+- Proposal: + lambda_t * mean over the batch's slot-start rows of [ KL_Bernoulli(h_init || h_theta) + h_init * KL(tick_init ||
+  tick_theta) ] (+ the same for ab_hazard / ab_tick on rows with a visible ability controller), the init's outputs taken from
+  ref_init (already in memory: ref_terms' no-grad pass can return them), gradient into the trunk only (the heads stay frozen).
+  This pulls only what the frozen heads output, so it does not pull card / cell, which the strength RL needs to move. A weight
+  pull (L2-SP on trunk weights) would also pull card / cell features. One key, e.g. `th_anchor: lambda_t`, absent = today.
+- Why not raise lambda instead: lambda pulls card / cell (the strength channel) and only acts on the hazard indirectly.
+- Cost: one more head evaluation on rows the policy forward already encodes (the heads are linear on g: ~0 extra), plus
+  ref_init's heads (one no-grad pass, shared with ref_terms). Test: frozen heads stay bit-identical; th_drift with the anchor
+  on vs off on the same seed (expect mad down, KL card / cell and win-rate trend unchanged).
+- Owner rule check: "no KL leash" binds OUR model; this is the opponent's human-likeness pull, the same kind as lambda (b: the
+  lead decides).
+
 ### Restart
 - Smokes: `ssh -p 33903 ... 'cd /workspace/opplearnc && (setsid nohup bash chainc.sh < /dev/null > chainc.out 2>&1 &)'` (rename the
   RUN names first: rl_royale refuses an existing run dir).
@@ -109,7 +137,11 @@ test_timing_head_decode: 51 passed, 1 skipped, 2 failed = the 2 pre-existing Tes
   {0.03, 0.1, 0.3}; `calib_eval.sh CKPT_DIR RUN OUTROOT` beside each.
 
 ### Codex dispatches
-- none yet (the smokes, compare and checks were short; done by hand).
+- OPP-LEARN-C_1 (medium; .foreman/scratch/a2/codex/OPP-LEARN-C_1.md): baseline + u0010 relayed (sha equal), run, fetched,
+  scored, TABLE.md; BLOCKED before u0020 because P2-OPP2's v1s0 block was running (the ticket said one block at a time; a
+  concurrent other job is allowed). Checked by me: 480 / 480 outcome rows each, ENGINE opp_ckpt = the stripped u0010, table
+  numbers as reported. OPP-LEARN-C_2 (medium): u0020 (started by me 03:39 UTC) / u0030 / lr3 u0010 / u0020, running (a
+  duplicate launch of it was stopped by PID after read-only commands).
 
 ## STATUS (OPP-LEARN-B, 2026-10-28)
 - Code: private worktree, rebased onto 4dd9911 (LEARNER-SCALE MemRowCache landed; one conflict in policy_terms resolved: my GenPolicy line + their gen_rows), committed as hunks only; the merged tree re-smoked (opplearn_opp3: SMOKE PASS, W16 shas = opp2's). Others'
