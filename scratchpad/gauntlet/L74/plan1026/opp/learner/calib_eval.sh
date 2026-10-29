@@ -9,7 +9,8 @@
 # env as run_closed.sh: CB LIB WORKERS CPUS G2_ON (default on = level B v0fix / v1s0's setting).
 set -uo pipefail
 CK=$1; NAME=$2; OUT=$3; SEED=${4:-741200}; EVERY=${5:-5}
-H=$(dirname "$(readlink -f "$0")")/../../../opp_model/humanlike
+CB=${CB:-/workspace/opp/cb}; export CB    # 33903: P2-OPP2's level B code copy (v0fix / v1s0 rows came from it)
+H=$CB/scratchpad/gauntlet/L74/opp_model/humanlike
 export G2_ON=${G2_ON:-on} OPP_T=1.0
 while [ ! -f "$CK/STOP_EVAL" ]; do
   for P in $(ls "$CK"/${NAME}_u[0-9][0-9][0-9][0-9].pt 2>/dev/null | sort); do
