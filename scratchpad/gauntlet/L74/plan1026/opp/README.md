@@ -21,7 +21,30 @@ python cbt/.../opp/level_a.py --ckpt runs/NAME/opp_NAME_s0.pt --data hf_slot_NEW
 ```
 Live split: `live_split.json` (frozen 2026-10-28 09:06 EDT, never rewritten; sealed = every log from 20261028_090648).
 
-## STATUS (P2-OPP2, account 2; updated 2026-10-28 22:20 UTC; keep current)
+## STATUS (P2-OPP2, account 2; updated 2026-10-29 05:30 UTC; keep current)
+RESULTS 10-29 (a; THRESHOLDS v6 26568167; level B = CLXIII D3 vs the opponent at T 1, fe364ceb, G2 on, seeds 741200 742000
+742800 743600; files results/{v0fix,v1_s0,ft_s0}/):
+
+| | v0fix (v0 + decode fixes) | v1 s0 (241 shards, CellRefine, 100k) | ft_s0 (v1 s0 + live train + 20% HF) | pilot bar |
+|---|---|---|---|---|
+| level A HF test: card / cell top-1 | 62.2 / 22.4% | 65.3 / 27.40% (cell bar 27.5) | - | |
+| level A HF: timing KS / ability KS | 0.045 / 0.43 | 0.0145 (pass) / 0.39 | - | |
+| level A live_cal: card / cell / timing KS | - | 54.6 / 21.5% / 0.117 | 56.0 / 24.0% / 0.043 | |
+| live_cal hazard vs rate / slot ECE | - | 0.107 vs 0.080 / 2.67 pp | 0.086 vs 0.080 / 0.61 pp | |
+| B-live RMS d (1,920 / 1,919 games) | 0.33 | 0.34 | running | <= 0.20 (stretch 0.05) |
+| C-live AUC | 0.984 | 0.977 | running | <= 0.60 |
+| lock / zero-lock / P(lock / fail) (live .47/.12/.36) | .75/.00/.70 | .70/.01/.64 | running | v6 margins |
+| CLXIII SIM win | 88.3% | 82.2% | running | 30-50% |
+
+Fine-tune: /workspace/opp/live/run_ft.sh (bs 128, lr 2e-5, 12k steps, held-out = live split 1 tail), data mix_rows.py ->
+/workspace/opp/live/mix_train (398,096 + 46,935 live, 111,379 HF = 20.0%); best 11k total 5.206; live rows carry no ability
+labels (w_ab 0). Chain /workspace/opp/live/after_ft.sh: _sim.pt (band 6 / mode 1 / era 2 = live Ranked) -> level A -> smoke ->
+level B ftR (rows /workspace/opp/score/rows/ftR, log /workspace/opp/score/ftR.out; resumable: rerun its last line).
+crforge fe364ceb crashed one v1s0 worker (UnsupportedOperationException target_is_ground on PrincessTower_1_2): that block's
+D3/matches.jsonl is empty; merge the worker files (cat D3/0*/matches.jsonl) before tab_closed.py. card.py needs icebow/.venv python.
+Seed 1 (PID 5431, run_s1) at ~35k / 100k.
+
+## STATUS history (P2-OPP2, 2026-10-28 22:20 UTC)
 RUNNING on 33903 (22:20 UTC; ssh -p 33903 root@157.157.221.29):
 - v1 pretrain seed 0, PID 4608, /workspace/opp/v1/run_s0/ (restart command below). Measured 10k steps in ~38 min (~4.4 steps/s) ->
   100k ~04:00 UTC 10-29. Held-out at 10k (own held-out set, NOT v0's: b-level comparison only): total 6.109 (v0 6.061), cell
