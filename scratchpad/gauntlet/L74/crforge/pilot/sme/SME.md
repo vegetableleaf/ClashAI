@@ -2839,7 +2839,7 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
     `.foreman/scratch/a2/codex/out/ENG-FIX4_3.jsonl.pid`, out `engfix/r9/`. Expected: only 155749 changes, 2055 + 89 ->
     2144 / 2144. Clean -> SME_ZD_BLDG into fresh_prep.sh.
   - **RESTART POINT (ENG-FIX4, 10-29 ~08:40 EDT; supersedes the 07:20 one below):** (1) r9: read the final message, re-tally
-    `engfix/r9/EF9_*` yourself, clean -> fresh_prep.sh + SME_ZD_BLDG=1. (2) FRESH8 when >= ~20 Ranked battles after FRESH7's
+    `engfix/r9/EF9_*` yourself, clean -> fresh_prep.sh + SME_ZD_BLDG=1. (2) FRESH8 LIST FROZEN (f447908: 33 battles, 061635..082745, battle log to 12:31:54Z); next = prep. (Was: when >= ~20 Ranked battles after FRESH7's
     last log (061315): `freeze.py 20261029_0614 FRESH8.tsv`, commit, `fresh_prep.sh FRESH8.tsv engfix/fresh8`, freeze file
     with BOTH run commands (default = ASSIGN on, plus `SME_HIDDEN_ASSIGN=0`), commit, upload to `/workspace/pilot/fresh8`,
     run F8_main (on) and F8_off on 32657 CPUs 28-53 (`SME_BANNER_GIVEN=1`, lib 5e8089a4), then `assign_guard.py` and report
