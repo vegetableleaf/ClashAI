@@ -35,14 +35,19 @@ COMBOS = {"gate": [1, 0, 0, 0], "card": [0, 1, 0, 0], "cell": [0, 0, 1, 0], "val
           "policy": [1, 1, 1, 0], "total": [1, 1, 1, 1]}
 
 
-def unit_grads(L, B, idx, cfg, params, chunk):
-    """[4, P] float64: sum over rows ``idx`` of each component's per-row gradient (chunked, summed)."""
+def unit_grads(L, B, idx, cfg, params, chunk, gbl=None):
+    """[4, P] float64: sum over rows ``idx`` of each component's per-row gradient (chunked, summed). ``gbl`` (--gate-baseline):
+    the policy components use A - b(s) on gate-sampled rows exactly as minibatch_loss(gate_bl=) does."""
     out = torch.zeros(4, sum(p.numel() for p in params), dtype=torch.float64, device=B["A"].device)
     vfc, vclip = float(R.adv_cfg(cfg)["vf_coef"]), float(R.adv_cfg(cfg)["vf_clip"])
     for s in range(0, len(idx), chunk):
         ii = idx[s:s + chunk]
         t = R.policy_terms(L.model, B, ii, cfg["tau"], cfg["T"], value=True, T_gate=cfg.get("T_gate"))
         A, w = B["A"][ii], B["w"][ii]
+        if gbl is not None:
+            bl = (torch.cat([t["g"].detach().double(), t["g"].new_ones(len(ii), 1, dtype=torch.float64)], 1)
+                  * gbl[B["match"][ii] % 2]).sum(1)
+            A = A - torch.where(B["gate_sampled"][ii], bl, torch.zeros_like(bl))
         v, v_old, ret = t["v"], B["v_old"][ii], B["ret"][ii]
         v_clip = v_old + (v - v_old).clamp(-vclip, vclip)
         losses = [-(w * A * t["lp_gate"]).sum(), -(w * A * t["lp_card"]).sum(), -(w * A * t["lp_cell"]).sum(),
@@ -55,17 +60,17 @@ def unit_grads(L, B, idx, cfg, params, chunk):
     return out
 
 
-def sanity(L, B, cfg, params, N):
+def sanity(L, B, cfg, params, N, gbl=None):
     """sum of the 4 components == minibatch_loss's gradient (policy update, beta 0, no ability) on 256 rows."""
     idx = torch.arange(0, 256, device=B["A"].device)
     ac = R.adv_cfg(cfg)
     vf = {"coef": ac["vf_coef"], "clip": ac["vf_clip"], "policy": True, "trunk_grad": ac["vf_trunk_grad"]}
     Rz = R.LazyRef(L.ref, B, cfg["tau"], cfg["T"], T_gate=cfg.get("T_gate"))
     loss, st = R.minibatch_loss(L.model, B, Rz, idx, tau=cfg["tau"], T=cfg["T"], clip=cfg["clip"], beta=0.0, n_total=N,
-                                vf=vf, T_gate=cfg.get("T_gate"))
+                                vf=vf, T_gate=cfg.get("T_gate"), gate_bl=gbl)
     gs = torch.autograd.grad(loss, params, allow_unused=True)
     ref = torch.cat([(g if g is not None else torch.zeros_like(p)).reshape(-1).double() for g, p in zip(gs, params)])
-    mine = unit_grads(L, B, idx, cfg, params, 256).sum(0) * (N / 256)
+    mine = unit_grads(L, B, idx, cfg, params, 256, gbl).sum(0) * (N / 256)
     return {"rel_diff": float((mine - ref).norm() / ref.norm()), "ratio_maxdev": st["ratio_maxdev"],
             "grad_norm_mb256": float(ref.norm())}
 
@@ -110,6 +115,7 @@ def main():
     ap.add_argument("--row-reps", type=int, default=40)
     ap.add_argument("--max-matches", type=int, default=0)
     ap.add_argument("--out", type=Path, required=True)
+    ap.add_argument("--gate-baseline", default=None, help='JSON of the rl_royale gate_baseline key, e.g. {"weight": "score"}')
     a = ap.parse_args()
     a.out.parent.mkdir(parents=True, exist_ok=True)
     cfg = {**R.load_config(SG.REPO / a.config, [], smoke=False), "T_gate": a.T_gate, "stored_values": True,
@@ -145,7 +151,15 @@ def main():
     match = B["match"]
     M = int(match.max()) + 1
     res_out.update(rows=N, matches=M, params=P, rows_per_match=N / M)
-    res_out["sanity"] = sanity(L, B, cfg, params, N)
+    gbl = None
+    if a.gate_baseline:                                       # LEARNER-SCALE3: the cross-fitted gate baseline (W fixed)
+        gb = json.loads(a.gate_baseline)
+        tg = time.perf_counter()
+        gbl, res_out["gate_baseline"] = R.gate_baseline_fit(L.model, B, {**cfg, "gate_baseline": gb},
+                                                            np.random.default_rng(1029))
+        res_out["gate_baseline"].update(key=gb, fit_s=time.perf_counter() - tg)
+        print("gate_baseline", res_out["gate_baseline"], flush=True)
+    res_out["sanity"] = sanity(L, B, cfg, params, N, gbl)
     print("sanity", res_out["sanity"], flush=True)
     K = a.groups
     S = torch.zeros(K, 4, P, dtype=torch.float64, device=L.dev)     # group sums of h_m
@@ -156,7 +170,7 @@ def main():
     t1 = time.perf_counter()
     for m in range(M):
         idx = order[bounds[m]:bounds[m + 1]]
-        h = unit_grads(L, B, idx, cfg, params, 256) * M
+        h = unit_grads(L, B, idx, cfg, params, 256, gbl) * M
         k = m % K
         S[k] += h
         gram_m[k] += (h @ h.T).cpu().numpy()
@@ -175,7 +189,7 @@ def main():
         d2 = []
         for _ in range(a.row_reps):
             idx = torch.from_numpy(np.sort(rng.choice(N, b, replace=False))).to(L.dev)
-            D = unit_grads(L, B, idx, cfg, params, 256) * (N / b) - Gfin
+            D = unit_grads(L, B, idx, cfg, params, 256, gbl) * (N / b) - Gfin
             d2.append((D @ D.T).cpu().numpy())
         d2 = np.array(d2)
         fpc = b * (N - 1) / (N - b)

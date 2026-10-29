@@ -62,6 +62,7 @@ def main():
     ap.add_argument("--steps", type=int, default=10)
     ap.add_argument("--prof-steps", type=int, default=3)
     ap.add_argument("--depth", type=int, default=2)
+    ap.add_argument("--prefill", action="store_true", help="LEARNER-SCALE3: fill the lazy anchor for ALL rows first, so the profiled window holds the PPO step only")
     ap.add_argument("--max-matches", type=int, default=128)
     ap.add_argument("--out", type=Path, required=True)
     a = ap.parse_args()
@@ -79,6 +80,8 @@ def main():
     B["_mem_cache"] = R.MemRowCache(len(B["A"]))
     R.gae_batch(L.model, B, cfg)
     Rz = R.LazyRef(L.ref, B, cfg["tau"], cfg["T"], T_gate=cfg.get("T_gate"))
+    if a.prefill:
+        Rz.fill(torch.arange(len(B["A"]), device=L.dev))
     ac = R.adv_cfg(cfg)
     vf = {"coef": ac["vf_coef"], "clip": ac["vf_clip"], "policy": True, "trunk_grad": ac["vf_trunk_grad"]}
     abl = {"head": L.ability_head, "opt": L.ability_opt, "ent_coef": float(cfg["ability_ent_coef"])}

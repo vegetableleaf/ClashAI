@@ -1,0 +1,80 @@
+  2301.10M    52  ViewBackward0                    model_v3.py:139 encode | h = self.norm(self.encoder(x, src_key_padding_mask=pad))
+   986.19M    12  SelectBackward0                  model_v3.py:139 encode | h = self.norm(self.encoder(x, src_key_padding_mask=pad))
+   438.30M     8  UnsafeViewBackward0              model_v3.py:139 encode | h = self.norm(self.encoder(x, src_key_padding_mask=pad))
+   328.73M     4  SqueezeBackward1                 model_v3.py:139 encode | h = self.norm(self.encoder(x, src_key_padding_mask=pad))
+   287.44M    26  ViewBackward0                    model_gen.py:158 rep | h = self.encoder(x, src_key_padding_mask=~valid)
+   152.17M     6  SelectBackward0                  model_gen.py:158 rep | h = self.encoder(x, src_key_padding_mask=~valid)
+   109.58M     4  MmBackward0                      model_v3.py:139 encode | h = self.norm(self.encoder(x, src_key_padding_mask=pad))
+    54.79M     2  SliceBackward0                   model_v3.py:140 encode | return {"g": h[:, 0], "p": h[:, 1:1 + N_PATCHES], "u": h[:, 1 + N_PATCHES:]}
+    50.72M     2  SqueezeBackward1                 model_gen.py:158 rep | h = self.encoder(x, src_key_padding_mask=~valid)
+    50.72M     2  UnsafeViewBackward0              model_gen.py:158 rep | h = self.encoder(x, src_key_padding_mask=~valid)
+    29.82M     4  ViewBackward0                    model_gen.py:307 target_patches | vectors = self.projectile_target_in(torch.cat([embedding, features], -1))
+    28.39M     2  SumBackward1                     model_gen.py:112 residual | return ((feat * (q @ self.out.weight).unsqueeze(1)).sum(-1) + (q @ self.out.bias).unsqueez
+    28.39M     2  ViewBackward0                    model_gen.py:108 features | return x.flatten(2).transpose(1, 2)
+    28.39M     2  ReshapeAliasBackward0            model_gen.py:104 features | x = torch.cat([grid.transpose(1, 2).reshape(B, self.C, GRID_Y, GRID_X),
+    27.39M     3  IndexBackward0                   rl_royale.py:2467 policy_terms | cl = cell_of({k: v[pi] for k, v in enc.items()}, slot[pi])
+    27.39M     1  SelectBackward0                  model_v3.py:140 encode | return {"g": h[:, 0], "p": h[:, 1:1 + N_PATCHES], "u": h[:, 1 + N_PATCHES:]}
+    25.79M     8  ViewBackward0                    model_gen.py:339 global_features | parts.append(_pool(layer(torch.cat([embedding, obj[..., 1:]], -1)), obj[..., 0] > 0))
+    18.87M     1  ReshapeAliasBackward0            model_gen.py:313 target_patches | return self.projectile_target_spread(patches).flatten(2).transpose(1, 2)
+    18.87M     1  ReshapeAliasBackward0            model_gen.py:312 target_patches | patches = patches.transpose(1, 2).reshape(len(obj), self.d, PATCH_Y, PATCH_X)
+    16.91M     2  ReshapeAliasBackward0            model_gen.py:158 rep | h = self.encoder(x, src_key_padding_mask=~valid)
+    16.91M     2  ExpandBackward0                  model_gen.py:158 rep | h = self.encoder(x, src_key_padding_mask=~valid)
+     8.91M     2  ViewBackward0                    model_gen.py:65 forward | return self.base(torch.cat([features[..., :13], features[..., 14:]], -1)) + self.project(s
+     8.45M     1  SumBackward1                     model_gen.py:162 rep | pooled = mean + (a.unsqueeze(-1) * h).sum(1)
+     8.45M     1  ViewBackward0                    model_gen.py:161 rep | a = ((h @ self.query.to(h.dtype)) / math.sqrt(h.shape[-1])).masked_fill(~valid, float("-in
+     8.45M     1  SliceBackward0                   model_gen.py:160 rep | mean = (h[:, 1:] * mf).sum(1) / mf.sum(1).clamp(min=1)
+     8.39M     1  UnsafeViewBackward0              model_gen.py:376 <lambda> | hook = self.unit_in.register_forward_hook(lambda m, i, o: o + cue_in(b["cue"].to(o.dtype))
+     8.39M     1  UnsafeViewBackward0              model_gen.py:65 forward | return self.base(torch.cat([features[..., :13], features[..., 14:]], -1)) + self.project(s
+     8.39M     1  UnsafeViewBackward0              model_gen.py:154 rep | x = self.ev_in(ev) + self.card_in(card_emb)
+     8.39M     1  MmBackward0                      model_gen.py:154 rep | x = self.ev_in(ev) + self.card_in(card_emb)
+     8.39M     1  ViewBackward0                    model_gen.py:154 rep | x = self.ev_in(ev) + self.card_in(card_emb)
+     8.39M     1  SumBackward1                     model_gen.py:160 rep | mean = (h[:, 1:] * mf).sum(1) / mf.sum(1).clamp(min=1)
+     7.60M     5  MaxBackward0                     model_gen.py:72 _pool | mx = e.masked_fill(~m.unsqueeze(-1), -1e4).max(1).values * (mf.sum(1) > 0)
+     7.60M     5  SumBackward1                     model_gen.py:71 _pool | mean = (e * mf).sum(1) / mf.sum(1).clamp(min=1)
+     5.68M     2  ViewBackward0                    model_gen.py:513 cell_logits_gen | kp = (self.cell_key(enc["p"]) * q.unsqueeze(1)).sum(-1)                        # same alge
+     2.84M     1  SumBackward1                     model_gen.py:513 cell_logits_gen | kp = (self.cell_key(enc["p"]) * q.unsqueeze(1)).sum(-1)                        # same alge
+     2.15M     4  ViewBackward0                    model_gen.py:342 global_features | parts.append(_pool(self.ability_in(torch.cat([embedding, obj[..., 1:]], -1)), obj[..., 0] 
+     1.88M     4  ViewBackward0                    model_gen.py:101 features | v = self.inp(u) * mask.unsqueeze(-1).to(u.dtype)
+     1.44M     1  MmBackward0                      model_gen.py:376 <lambda> | hook = self.unit_in.register_forward_hook(lambda m, i, o: o + cue_in(b["cue"].to(o.dtype))
+     0.54M     1  ViewBackward0                    model_gen.py:335 global_features | parts.append(torch.cat([ce, cycle[..., 2:3]/4.0, cycle[..., 3:4]/30.0], -1).flatten(1))
+     0.52M     1  MmBackward0                      model_gen.py:65 forward | return self.base(torch.cat([features[..., :13], features[..., 14:]], -1)) + self.project(s
+     0.36M     2  SumBackward1                     rl_royale.py:2645 cat_kl | return (lp.exp() * (lp - lq)).sum(-1)
+     0.35M     3  ViewBackward0                    tower_refine.py:47 cell_feat | return self.cell.features(self.unit(f), self.xy.expand(len(sc), -1, -1), alive)
+     0.30M     1  ViewBackward0                    model_gen.py:331 global_features | parts.append(torch.cat([oe, oxy, _fourier(oxy, self.nf), op[..., 4:5] / 30.0], -1).flatten
+     0.30M     1  ViewBackward0                    model_gen.py:325 global_features | pf = torch.cat([pe, pxy, _fourier(pxy, self.nf), past[..., 4:5] / 30.0], -1).flatten(1)
+     0.26M     1  SumBackward1                     tower_refine.py:43 card_residual | return (hand_emb * h.unsqueeze(1)).sum(-1)
+     0.26M     1  SumBackward1                     model_gen.py:491 heads_gen | card = (hand * self.card_q(g).unsqueeze(1)).sum(-1) + self.card_b(b["hand_card"].long()).s
+     0.13M     1  UnsafeViewBackward0              model_gen.py:161 rep | a = ((h @ self.query.to(h.dtype)) / math.sqrt(h.shape[-1])).masked_fill(~valid, float("-in
+     0.13M     1  MmBackward0                      model_gen.py:150 forward | return Fn.linear(z - z0, self.out.weight)
+     0.04M     2  MmBackward0                      model_gen.py:112 residual | return ((feat * (q @ self.out.weight).unsqueeze(1)).sum(-1) + (q @ self.out.bias).unsqueez
+     0.02M     1  IndexBackward0                   model_gen.py:515 cell_logits_gen | logits = (kp[:, self.cell_patch] + kc) / math.sqrt(self.d) + self.cell_bias
+     0.02M     1  MmBackward0                      model_gen.py:514 cell_logits_gen | kc = q @ self.cell_key(self.cell_emb).t()
+     0.02M     1  ExpandBackward0                  model_v3.py:129 encode | p = self.patch_pos.unsqueeze(0).expand(B, -1, -1) + self.patch_in(_fourier(self.patch_xy, 
+     0.01M     2  SliceBackward0                   rl_royale.py:1148 value_scalar | return p[..., 4:].sum(-1) - p[..., :3].sum(-1)
+     0.01M     1  SliceBackward0                   e1_eval.py:1008 heads_t | card = card.scatter(1, b["hand_slot"], h["card"])[:, :N_SLOTS]       # col 8 = unknown pos
+     0.01M     1  IndexBackward0                   rl_royale.py:2843 minibatch_loss | kl_c = cat_kl(t["card_lp"][pl], R["card_lp"][idx][pl]).mean() if pl.any() else zero
+     0.01M     1  IndexBackward0                   rl_royale.py:2466 policy_terms | lp_card = lp_card.index_put((pi,), card_lp[pi].gather(1, slot[pi].unsqueeze(1)).squeeze(1)
+     0.01M     2  SumBackward1                     rl_royale.py:1148 value_scalar | return p[..., 4:].sum(-1) - p[..., :3].sum(-1)
+     0.00M     1  SqueezeBackward1                 model_gen.py:491 heads_gen | card = (hand * self.card_q(g).unsqueeze(1)).sum(-1) + self.card_b(b["hand_card"].long()).s
+     0.00M     3  SelectBackward0                  model_v3.py:137 encode | x = torch.cat([g + self.type_emb.weight[0], p + self.type_emb.weight[1], u + self.type_emb
+     0.00M     1  SumBackward0                     rl_royale.py:2886 minibatch_loss | l_v = (wv * 0.5 * torch.max((v - ret) ** 2, (v_clip - ret) ** 2)).sum() * (n_total / len(i
+     0.00M     1  IndexBackward0                   rl_royale.py:2841 minibatch_loss | kl_g = bern_kl(t["x"][gs], R["x"][idx][gs]).mean() if gs.any() else zero
+     0.00M     1  SqueezeBackward1                 model_gen.py:499 heads_gen | out = {} if self.opp["timing"] else {"gate": self.gate_head(g).squeeze(-1)}
+     0.00M     1  SumBackward0                     rl_royale.py:2825 minibatch_loss | l_pg = (w * pg).sum() * (n_total / len(idx))
+     0.00M     1  MeanBackward0                    rl_royale.py:2841 minibatch_loss | kl_g = bern_kl(t["x"][gs], R["x"][idx][gs]).mean() if gs.any() else zero
+     0.00M     1  SumBackward0                     rl_royale.py:2877 minibatch_loss | ent_a = (wa * bern_ent(za)).sum() * (n_total / len(idx))
+     0.00M     1  SqueezeBackward1                 rl_royale.py:1235 forward | return self.net(torch.cat([feat.to(g.dtype), g], dim=1)).squeeze(-1)
+     0.00M     1  SumBackward0                     rl_royale.py:2876 minibatch_loss | l_ab = (wa * -torch.min(ar * Aa, ar.clamp(1 - clip, 1 + clip) * Aa)).sum() * (n_total / le
+     0.00M     1  MeanBackward0                    rl_royale.py:2844 minibatch_loss | kl_x = cat_kl(cl, R["cell_lp"][R["play_pos"][idx[pl]]]).mean() if pl.any() else zero
+     0.00M     1  MeanBackward0                    rl_royale.py:2843 minibatch_loss | kl_c = cat_kl(t["card_lp"][pl], R["card_lp"][idx][pl]).mean() if pl.any() else zero
+     0.00M     1  SqueezeBackward1                 rl_royale.py:2469 policy_terms | lp_cell = lp_cell.index_put((pi,), cell_lp.gather(1, cell[pi].unsqueeze(1)).squeeze(1))
+     0.00M     1  SqueezeBackward1                 rl_royale.py:2466 policy_terms | lp_card = lp_card.index_put((pi,), card_lp[pi].gather(1, slot[pi].unsqueeze(1)).squeeze(1)
+     0.00M    24  TransposeBackward0               model_v3.py:139 encode | h = self.norm(self.encoder(x, src_key_padding_mask=pad))
+     0.00M    18  EmbeddingBackward0               model_gen.py:316 emb | return self.card_id(card.long()) + self.form_id(form.long())
+     0.00M    16  TBackward0                       model_v3.py:139 encode | h = self.norm(self.encoder(x, src_key_padding_mask=pad))
+     0.00M    12  AddBackward0                     model_v3.py:139 encode | h = self.norm(self.encoder(x, src_key_padding_mask=pad))
+     0.00M    12  AddmmBackward0                   model_v3.py:139 encode | h = self.norm(self.encoder(x, src_key_padding_mask=pad))
+     0.00M    12  TransposeBackward0               model_gen.py:158 rep | h = self.encoder(x, src_key_padding_mask=~valid)
+     0.00M     9  NativeLayerNormBackward0         model_v3.py:139 encode | h = self.norm(self.encoder(x, src_key_padding_mask=pad))
+     0.00M     9  AddBackward0                     model_gen.py:316 emb | return self.card_id(card.long()) + self.form_id(form.long())
+     0.00M     9  GeluBackward0                    model_gen.py:107 features | x = Fn.gelu(conv(x))

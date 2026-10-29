@@ -2774,7 +2774,7 @@ def prox_lp(R: dict, B: dict, idx) -> torch.Tensor:
 def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: float, beta: float,
                    n_total: int, vf: Optional[dict] = None, T_gate: Optional[float] = None,
                    posture: Optional[dict] = None, ability: Optional[dict] = None,
-                   ent_ref=None, decoupled: Optional[float] = None) -> tuple[torch.Tensor, dict]:
+                   ent_ref=None, decoupled: Optional[float] = None, gate_bl=None) -> tuple[torch.Tensor, dict]:
     """PPO-clip on the joint log pi = lp_gate + g (lp_card + lp_cell) (E1 3.3) with per-match weights, scaled by
     n_total / |mb| so each minibatch estimates the full-batch loss; + beta (mean KL_gate + mean KL_card + mean KL_cell).
     ``vf`` (gae mode: {coef, clip, policy}): + coef x the PPO-clipped value loss 0.5 max((V - ret)^2, (V_old +
@@ -2798,7 +2798,10 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
     pg = -min(pi_prox / pi_behaviour, c) x min(r A, clip(r) A) with r = pi_theta / pi_prox, pi_prox = R's anchor =
     the update-start policy (``prox_lp``), pi_behaviour = the stored ``lp_old``. The ratio monitors are then r's.
     Rows played by the update-start policy itself give a weight of exactly 1 and r = today's ratio. The posture /
-    ability terms keep their behaviour ratios."""
+    ability terms keep their behaviour ratios.
+    ``gate_bl`` W [2, d + 1] (LEARNER-SCALE ``gate_baseline``, ``gate_baseline_fit``; None = unchanged): the joint L_pg's A
+    on GATE-SAMPLED rows is A - b(s), b = [g(s) detached, 1] . W[match % 2] (W[h] fitted on the other half's matches).
+    b depends on the state only, so the gradient's expectation is unchanged; the value / posture / ability terms keep A."""
     if hasattr(R, "fill"):                                    # LOOP-LRN stored_values: the anchor's terms of these rows
         R.fill(idx)
     t = policy_terms(model, B, idx, tau, T, value=vf is not None,
@@ -2806,6 +2809,10 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
                      ctx_head=None if vf is None else vf.get("ctx_head"))
     lp_new = t["lp_gate"] + t["lp_card"] + t["lp_cell"]
     A, w = B["A"][idx], B["w"][idx]
+    if gate_bl is not None:                                   # LEARNER-SCALE gate_baseline: A - b(s) on gate rows (cross-fit)
+        bl = (torch.cat([t["g"].detach().double(), t["g"].new_ones(len(idx), 1, dtype=torch.float64)], 1)
+              * gate_bl[B["match"][idx] % 2]).sum(1)
+        A = A - torch.where(B["gate_sampled"][idx], bl, torch.zeros_like(bl))
     if decoupled is None:
         ratio = torch.exp(lp_new - B["lp_old"][idx])
         pg = -torch.min(ratio * A, ratio.clamp(1 - clip, 1 + clip) * A)
@@ -2904,6 +2911,55 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
         if ast is not None:
             st.update(ast)
     return loss, st
+
+
+@torch.no_grad()
+def gate_baseline_fit(model, B: dict, cfg: dict, rng: np.random.Generator, chunk: int = 1024) -> tuple[torch.Tensor, dict]:
+    """LEARNER-SCALE ``gate_baseline`` {weight, ridge, fit_rows}: a state baseline for the gate rows' A, fitted by match
+    halves. On the gate-sampled rows (at most ``fit_rows`` per half, drawn with ``rng``), the update-start model's trunk
+    output g (``policy_terms``, no grad) -> weighted ridge regression of A on [g, 1], one per half h = match % 2; W[h] is
+    fitted on the OTHER half's rows, so a row's own A (and its match's) never enters its own baseline: b(s) is then a
+    function of the state alone and E[b(s) grad log pi(a | s)] = 0 (unbiased). ``weight`` score (default): row weights
+    (d lp_gate / d x)^2 = (1 - p)^2 played / p^2 waited (the variance-optimal baseline of the gate's own score, up to
+    the state factor |grad x|^2); plain: 1. ``ridge`` lambda (default 1e-3) x mean diag(X'WX). -> (W [2, d + 1] float64,
+    monitors: rows fitted per half, out-of-fold weighted R^2 of A on those rows)."""
+    gb = cfg["gate_baseline"]
+    gi = B["gate_sampled"].nonzero().squeeze(-1)
+    half = B["match"][gi] % 2
+    n_fit = gb.get("fit_rows")
+    sel = []
+    for h in (0, 1):
+        ii = gi[half == h]
+        if n_fit is not None and len(ii) > int(n_fit):
+            ii = ii[torch.from_numpy(np.sort(rng.choice(len(ii), int(n_fit), replace=False))).to(ii.device)]
+        sel.append(ii)
+    if not all(len(ii) for ii in sel):
+        raise SystemExit("gate_baseline: a match half has no gate-sampled rows (needs gate rows in odd and even matches)")
+    X, Y, Wt = [], [], []
+    for ii in sel:
+        xs, ws = [], []
+        for s in range(0, len(ii), chunk):
+            jj = ii[s:s + chunk]
+            t = policy_terms(model, B, jj, cfg["tau"], cfg["T"], T_gate=cfg.get("T_gate"))
+            xs.append(torch.cat([t["g"].double(), t["g"].new_ones(len(jj), 1, dtype=torch.float64)], 1))
+            p = torch.sigmoid(t["x"])
+            ws.append(torch.where(B["played"][jj], 1 - p, p) ** 2 if gb.get("weight", "score") == "score"
+                      else torch.ones_like(p))
+        X.append(torch.cat(xs))
+        Y.append(B["A"][ii].double())
+        Wt.append(torch.cat(ws))
+    lam = float(gb.get("ridge", 1e-3))
+    W = []
+    for h in (0, 1):                                          # W[h] from the other half's rows only
+        o = 1 - h
+        XW = X[o] * Wt[o][:, None]
+        G = XW.T @ X[o]
+        G = G + lam * G.diagonal().mean() * torch.eye(len(G), dtype=G.dtype, device=G.device)
+        W.append(torch.linalg.solve(G, XW.T @ Y[o]))
+    W = torch.stack(W)
+    num = sum(float((Wt[h] * (Y[h] - X[h] @ W[h]) ** 2).sum()) for h in (0, 1))
+    den = sum(float((Wt[h] * (Y[h] - (Wt[h] * Y[h]).sum() / Wt[h].sum()) ** 2).sum()) for h in (0, 1))
+    return W, {"fit_rows": [len(ii) for ii in sel], "oof_r2": 1 - num / den if den > 0 else None}
 
 
 def vf_grad_share(model, B: dict, R: dict, cfg: dict, beta: float, vf: dict) -> dict:
@@ -3024,6 +3080,11 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
     ka = cfg.get("kl_lr_target")                              # LEARNER-SCALE KL-adaptive lr (None = off); policy steps only
     ka = None if ka is None or (vf is not None and not vf["policy"]) else float(ka)
     kl_last, lr0 = None, (float(cfg["lr"]) if ka is not None else None)
+    gbl, gbl_st = None, None                                  # LEARNER-SCALE gate_baseline (None = off); policy steps only
+    if cfg.get("gate_baseline") is not None and (vf is None or vf["policy"]):
+        if "cf" in B:
+            raise SystemExit("gate_baseline: cf_credit rows are not supported")
+        gbl, gbl_st = gate_baseline_fit(model, B, cfg, rng)
 
     def summary(nonfinite: Optional[str]) -> dict:
         """Every key present even on the non-finite early exit (one_update logs them; None = not measured)."""
@@ -3047,7 +3108,8 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
                                   "is_trunc_frac_ep0": mean(ep0, "is_trunc_frac")}}
                    if cfg.get("ppo_decoupled") is not None else {}),
                 **({"l_v": mean(last_ep, "l_v"), "l_v_first": first["l_v"] if first else None} if vf is not None else {}),
-                **({"lr_end": opt.param_groups[0]["lr"]} if ka is not None else {})}
+                **({"lr_end": opt.param_groups[0]["lr"]} if ka is not None else {}),
+                **({"gate_baseline": gbl_st} if gbl_st is not None else {})}
 
     for ep in range(int(cfg["ppo_epochs"])):
         perm = torch.from_numpy(rng.permutation(N)).to(dev)
@@ -3058,7 +3120,8 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
                       **({"posture": posture} if posture is not None else {}),
                       **({"ability": ability} if ability is not None else {}),
                       **({"ent_ref": ent_ref} if pe and ep == 0 and (s // mb) % pe == 0 else {}),
-                      **({"decoupled": cfg["ppo_decoupled"]} if cfg.get("ppo_decoupled") is not None else {}))
+                      **({"decoupled": cfg["ppo_decoupled"]} if cfg.get("ppo_decoupled") is not None else {}),
+                      **({"gate_bl": gbl} if gbl is not None else {}))
             if micro and micro < len(idx):                    # LEARNER-SCALE micro_batch: the same minibatch loss and
                 for o in (opt, ctx_opt, post_opt, ab_opt):    # gradient, accumulated over micro-batches (backward per
                     if o is not None:                         # micro-batch; the KL check below sees the whole minibatch)
@@ -3772,7 +3835,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                               "tau_phase", "memory", "memory_aux", "memory_encoder_frozen",
                               "memory_zero_empty", "learner_deterministic", "kl_stop_prev", "stored_values",
                               "ent_init_rows", "lazy_refine", "ent_pair_every", "matches_per_update", "micro_batch", "mem_row_cache",
-                              "barrel_decoy_sim", "kl_lr_target", "ppo_decoupled") + OPP_TEMPO_KEYS
+                              "barrel_decoy_sim", "kl_lr_target", "ppo_decoupled", "gate_baseline") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS and k not in CROWN_KEYS
                 and k not in HT.KEYS and k not in CF.KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
@@ -3847,6 +3910,15 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
     ka = cfg.get("kl_lr_target")                             # LEARNER-SCALE KL-adaptive lr: absent / null = off
     if ka is not None and (isinstance(ka, bool) or not isinstance(ka, (int, float)) or not (math.isfinite(ka) and ka > 0)):
         raise SystemExit(f"kl_lr_target must be null or a finite number > 0, got {ka!r}")
+    gb = cfg.get("gate_baseline")                            # LEARNER-SCALE gate baseline: absent / null = off
+    if gb is not None:
+        fr, rg = (gb.get("fit_rows"), gb.get("ridge", 1e-3)) if isinstance(gb, dict) else (None, None)
+        if (not isinstance(gb, dict) or set(gb) - {"weight", "ridge", "fit_rows"}
+                or gb.get("weight", "score") not in ("score", "plain")
+                or (fr is not None and (type(fr) is not int or fr < 2))
+                or isinstance(rg, bool) or not isinstance(rg, (int, float)) or not (math.isfinite(rg) and rg >= 0)):
+            raise SystemExit(f"gate_baseline must be null or {{weight: score|plain, ridge: >= 0, fit_rows: int >= 2 | null}}, "
+                             f"got {gb!r}")
     frac = cfg.get("learner_pipeline_frac", 0.0)
     if isinstance(frac, bool) or not isinstance(frac, (int, float)) or not 0 <= frac <= 1:
         raise SystemExit("learner_pipeline_frac must be a finite number in [0, 1]")
@@ -3911,6 +3983,8 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "mem_row_cache"}
     if cfg.get("kl_lr_target") is None:                      # LEARNER-SCALE KL-adaptive lr off = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "kl_lr_target"}
+    if cfg.get("gate_baseline") is None:                     # LEARNER-SCALE gate baseline off = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "gate_baseline"}
     if cfg.get("memory") is None:                            # Plan A memory off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "memory"}
     elif cfg["memory"] == "v2":                              # S1c: the version AND the artifacts its features read
@@ -5034,6 +5108,7 @@ class Learner:
                **({"entropy_pair": upd["ent_pair"], "ent_pair_rows": upd["ent_pair_rows"]} if pe else {}),
                "ratio_mean": upd["ratio_mean"], "grad_norm_mean": upd["grad_norm_mean"],
                **({"decoupled": upd["decoupled"]} if "decoupled" in upd else {}),
+               **({"gate_baseline": upd["gate_baseline"]} if "gate_baseline" in upd else {}),   # LEARNER-SCALE3 fit monitors
                "first_minibatch": {k: first[k] for k in ("ratio_maxdev", "kl_gate", "kl_card", "kl_cell", "lp_maxdiff")},
                "picked": rinfo["picked"], "skipped": rinfo["skipped"],
                **({"matchups": rinfo["league"]} if league else {}), "visits_distinct": sum(v > 0 for v in self.visits),

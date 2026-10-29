@@ -3,7 +3,25 @@
 Labels: (a) measured (number + source), (b) plausible, untested, (c) contradicted. Owner mandate 10-28: learning progress
 per wall-clock hour x50-100+, fp32 only (TF32 off), kl_stop_prev 0.02. Rent only on a measured >= ~50x projection.
 
-## STATUS (keep current; LEARNER-SCALE2, 10-29 ~01:35 EDT)
+## STATUS (keep current; LEARNER-SCALE3, 10-29 ~02:35 UTC)
+- Task list = the LEARNER-SCALE2 handover below, steps 1-6. Results go to section 7.
+- DONE: gate_baseline key (opt-in; section 7a). Tests 26 passed on 33920 (gate 4 + accum + kllr + cache + kl_stop_prev +
+  loop_overlap_decoupled); pyflakes clean. Smokes on 33920: absent PASS = the reference (b5e2a2bbafef, e816a6a4 /
+  3e07cff4, f060b678 / 5c61ac04); key on (critic_warmup_updates=1) PASS.
+- INCIDENT 01:38 UTC (mine): my code copy (/workspace/lrn/cbg, 1 GB) filled 33920's 60 GB overlay disk, and the v2
+  sweep crashed in torch.save. I moved the copy to /dev/shm/cbg and restarted the sweep at 01:53 (same command:
+  /workspace/lrn/chain_ls3a.sh; crash log sweep2v2_crash0138.log). The disk has ~1 GB free: keep new trees on /dev/shm.
+- RUNNING on 33920:
+  - chain_ls3a.sh: the v2 sweep (log /workspace/lrn/logs/sweep2v2.log; tab: `python3 /workspace/lrn/tab.py LOG`).
+  - chain_ls3b.sh: waits for 3a, then runs noise_scale with gate_baseline score, then plain, on the 6e setup.
+    Out: /workspace/lrn/noise3/ns_t01_1024_gbl_{score,plain}.json; logs /workspace/lrn/logs/noise3_*.log. ~25 min each.
+  - Test tree: /dev/shm/cbg = origin/main pipeline + tools + pilot/lrn + pilot/ops, plus my files; icebow/data =
+    cb's links. RAM only: rebuild with git archive (see the 7a restart line).
+- SIM A/B (step 4): the lead says use 33553 once V1-STRENGTH's sweep there finishes (check `pgrep -af "sweep.sh|gap.py"`;
+  keep <= 45 GB); otherwise use 33920 after the noise runs. Not started.
+- Codex: none yet this seat.
+
+## STATUS of LEARNER-SCALE2 (10-29 ~01:35 EDT; superseded, kept for the handover list)
 - Commits this seat:
   - 9bdc04f: kl_lr_target v1, prof_mod, compile probe.
   - daaecbf: kl_lr_target v2 + sweep v1.
@@ -396,3 +414,76 @@ Box inputs:
   2. Per-step latency for options B / C: CUDA graphs on fixed row buckets + glue removal (42% of a step, 6b), ~1.5-2x.
   3. Measure, don't assume: the SIM A/B of M 128 vs 1,024 (option B's I), and LOOP-ASYNC's staleness result.
 - No rent case yet on these numbers.
+
+## 7. LEARNER-SCALE3 (10-29 night)
+
+### 7a. gate_baseline: an unbiased gate-row baseline (opt-in; built + measured, NOT adopted: the owner decides)
+Key `gate_baseline: {weight: score | plain, ridge: 1e-3, fit_rows: null | int}`. Absent / null = off, and the config hash
+is the historical one.
+- What it does. Once per policy update (never in the critic warm-up):
+  - `gate_baseline_fit` takes the update-start model's trunk output g on the gate-sampled rows (no grad; at most
+    fit_rows per match half).
+  - It fits a weighted ridge regression of A on [g, 1], one fit per half h = match % 2.
+  - W[h] is fitted on the OTHER half's rows, so a row's own A, and its match's, never enters its own baseline.
+  - In minibatch_loss, A becomes A - b(s) on gate-sampled rows, with b = [g detached, 1] . W[match % 2]. This goes
+    into the joint PPO-clip term (lp_gate + lp_card + lp_cell share one A).
+  - The value, posture and ability terms keep A.
+  - b depends on the state only, so E[b(s) grad log pi(a | s)] = 0 over the joint action: unbiased.
+- Weights.
+  - score (default): (d lp_gate / d x)^2, i.e. (1 - p)^2 on played rows and p^2 on waited rows. This is the
+    variance-optimal baseline for the gate's own score function, up to the state factor |grad x|^2. With the critic
+    already in A (GAE), E[A | s] is ~0, so the plain fit has little to remove (b, untested). The optimal b* =
+    (1 - p) A_play + p A_wait is not zero.
+  - plain: 1.
+- b uses the CURRENT model's g during the epochs. That is still a state-only function, so it stays unbiased. It costs
+  no extra forward per minibatch. The fit forward runs once per update.
+- Monitors: the update record gets `gate_baseline` {fit_rows per half, oof_r2 (out-of-fold weighted R^2 of A)}.
+- Refused with cf_credit rows. Cross-fit caveat (b): A is normalised over the whole batch, so a row's A carries O(1/N)
+  of every row. Negligible at N ~ 1e5.
+- Tests (a): pipeline/tests/test_learner_fast_gate.py, 4 tests. 33920: 26 passed together with accum, kllr, cache,
+  kl_stop_prev and loop_overlap_decoupled.
+  - off / null: weights and monitors byte-identical, with and without the value loss. On: it runs, fit_rows is
+    respected, and the critic warm-up is untouched.
+  - Monte Carlo unbiasedness on the tiny model.
+    - Setup: 102 fixed gate-sampled states. Each draw samples a fresh joint action (gate, then card and cell if
+      played) from the model's own policy. A = c(s) + 1[played] + 0.5 noise, with c linear in g. The baseline is
+      refitted on every draw.
+    - Gradient: L_pg at ratio 1, checked on draw 1 against minibatch_loss(gate_bl=) itself (rel < 1e-4).
+    - Statistic: paired differences on - off, projected on the mean gradient and 8 random directions.
+    - 300 draws: max |z| on = 0.44 (bar < 4.5).
+    - Planted in-sample variant (W flipped, so each half sees its own A): max |z| = 18.5 (bar > 6). The test does
+      detect a baseline that leaks the row's own A.
+    - Variance: tr(Sigma) 3.02 -> 0.61 (x0.20). Expected, because c(s) is linear in g by construction.
+    - 100 draws: on 1.85, in-sample 11.3.
+    - A 3,000-draw run: /workspace/lrn/logs/gate_mc3000.log (RESULT PENDING).
+- Smokes (a; 33920, tree /dev/shm/cbg, ls3_smoke_off / ls3_smoke_gbl2):
+  - Absent: PASS; b5e2a2bbafef, e816a6a4 / 3e07cff4, f060b678 / 5c61ac04 = the reference.
+  - On, with critic_warmup_updates=1 (config sha 774e54ed1590): PASS.
+    - u0 (warm-up) = the reference shas, as it must be.
+    - u1 was a policy update with the key (KL g/c/x 0.0043 / 0.0018 / 0.0030).
+  - The update-record log line for the monitors was added after the smokes. It is key-on only; pyflakes clean.
+- Restart of the test tree: `git archive origin/main pipeline tools scratchpad/gauntlet/L74/plan1026/pilot/{lrn,ops}`
+  into a copy of /workspace/lrn/cb under /dev/shm (NOT /workspace: the disk is full). Then run tests with
+  `CB=/dev/shm/cbg PYTHONPATH=/dev/shm/cbg:/workspace/lrn/d2/stage/pylib`.
+
+### 7b. Where the backward's memory-movement kernels come from (glue_probe.py; a; CPU graph walk, 1,024 rows, pilot.yaml)
+One pilot minibatch_loss built under autograd anomaly mode, so each backward node carries its forward line. 828 nodes.
+Ranked by the zero-filled gradient buffer each node's backward allocates:
+- SelectBackward0 x12 inside nn.TransformerEncoder (model_v3.py:139, the trunk): 986M elements per step.
+  - These are the packed in_proj q / k / v selects of nn.MultiheadAttention. Each select's backward zero-fills the
+    whole [3, L, B, E] buffer and copies one slice into it.
+  - The same pattern appears x6 in the memory encoder (model_gen.py:158): 152M.
+- IndexBackward0 x3 on the played-row subset (rl_royale.py policy_terms: enc[pi] for cell_of): 27M.
+- The ViewBackward / UnsafeView / Squeeze entries at the top are views: no copy.
+- Reading:
+  - (b) Most of the fill_ / copy_ volume is PyTorch's own MHA training path, not our glue.
+  - (b) Removing it means replacing nn.TransformerEncoder (model_v3 / model_gen) with a split-projection attention of the
+    same maths.
+  - That is a model-code change outside this seat's write set (rl_royale learner hunks), and it moves fp32 rounding:
+    it must pass the 1e-7 gradient bar.
+- Correction to 6b (c): "~42% of a 1,024-row step" divided PROFILED kernel time by the UNPROFILED wall step.
+  - prof_mod.json has gpu_busy_ms_per_step = 473 ms vs a 278 ms wall step (busy_share 1.70): the profiled window also
+    held the lazy-anchor fill (Rz.fill inside step()).
+  - So the glue is 117 / 473 = ~25% of the kernel time, not 42% of the step.
+  - prof_mod.py now has `--prefill`, which fills the anchor for all rows before profiling, so the profiled window is
+    the PPO step only. Rerun owed: GPU, after the noise runs.
