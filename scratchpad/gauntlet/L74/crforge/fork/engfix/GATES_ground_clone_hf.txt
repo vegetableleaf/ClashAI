@@ -1,0 +1,189 @@
+ENG-FIX_4 - crforge 5e8089a47ec9bdf7b8f04cebccd7a7a4e5ea4a9b - pod 33920
+STATUS: DONE
+Library: six SHA256 checks OK; tickprobe false.
+Clone: all eight rc=0; zero clone refusals. cp_sum differs only in output path prefixes at lines 1,39,78,114,151,187,224,234; full diff below.
+HF: 20000 replays, 19974 ran, 21 faults, 5 out_of_scope. Gate PASS: 21 <= 100; 0.105%. 80/80 shards, errs=0, elapsed 351s. PID 183390 absent after final JSON; launch session exited.
+Vs f20k_w4: exactly one outcome change, target_is_ground / FORCE_IS_GROUND fault -> ran; no other outcome changes.
+Vs f20k_cfclone2: 15 ran -> fault, 1 fault -> ran.
+Remote evidence: /dev/shm/engfix/lib_plain/, /dev/shm/engfix/cs/, /dev/shm/engfix/cs.out, /dev/shm/engfix/f20k.log, /dev/shm/engfix/f20k/grades.
+
+=== ENG-FIX_4_sha_check.txt ===
+lib/aircompressor-2.0.3.jar: OK
+lib/core-1.0-SNAPSHOT.jar: OK
+lib/env-1.0-SNAPSHOT.jar: OK
+lib/jackson-annotations-2.22.jar: OK
+lib/jackson-core-2.22.2.jar: OK
+lib/jackson-databind-2.22.2.jar: OK
+
+SOURCE_RC=0 DEST_RC=0
+
+=== ENG-FIX_4_build_and_diff.txt ===
+{"crforge_sha": "5e8089a47ec9bdf7b8f04cebccd7a7a4e5ea4a9b", "ref": "5e8089a47ec9bdf7b8f04cebccd7a7a4e5ea4a9b", "tickprobe": false, "jars": {"aircompressor-2.0.3.jar": "b86bb66f610079e0bf790d62e2ff68853eb0dc4748a6d68ae28bce92b68094aa", "core-1.0-SNAPSHOT.jar": "bd1be8f10f00344e123589518ae341c6193bb546645f0da189cdb3553b66fb78", "env-1.0-SNAPSHOT.jar": "fdb9fe83ee6edd18e225019cc96d0383b54151157cc0d9611c33b82558ca3b10", "jackson-annotations-2.22.jar": "21ddb598807d3a51a876704eb979d9296e1c6a6f47ab1826ff88c6d6a127a2d0", "jackson-core-2.22.2.jar": "ff167a6317be15895706c26668f45b898efe40ab8780970658210fe1393d52a6", "jackson-databind-2.22.2.jar": "d0da14c12b16b5d54719aa172d83b542ff4abeb8b0fb7db476fde8ceece760ca"}}
+8c8
+< LIB=$1; OUT=$2; MODES=${3:-scene match}; H=$(cd $(dirname $0) && pwd)
+---
+> LIB=$1; OUT=$2; MODES=${3:-scene match}; H=/workspace/cfmain
+12c12
+<   ( CLONEPROBE_MODE=$m java -Xmx20g -cp "$LIB/*:$OUT/cls" CloneProbe $T/$v $DECKS $OUT/cp_${m}_$v.tsv 12 > $OUT/cp_${m}_$v.log 2>&1; echo "rc=$? $m $v" >> $OUT/rc.txt ) &
+---
+>   ( CLONEPROBE_MODE=$m java -Xmx20g -cp "$LIB/*:$OUT/cls" CloneProbe $T/$v $DECKS $OUT/cp_${m}_$v.tsv 8 > $OUT/cp_${m}_$v.log 2>&1; echo "rc=$? $m $v" >> $OUT/rc.txt ) &
+
+=== ENG-FIX_4_clone_evidence.txt ===
+rc=0 scene 16.635.3
+rc=0 match 16.635.3
+rc=0 scene 16.402.22
+rc=0 match 16.402.22
+rc=0 mc 16.402.22
+rc=0 mc 16.635.3
+rc=0 cm 16.402.22
+rc=0 cm 16.635.3
+done 0 clone refusal lines
+0 /dev/shm/engfix/cs/cp_clone_refusals.txt
+1c1
+< /dev/shm/cs_f1fix3/cp_cm_16.402.22.tsv scenes 18425 forms 335 with a clone 7725 spawner copies 3 clone children 4193
+---
+> /dev/shm/engfix/cs/cp_cm_16.402.22.tsv scenes 18425 forms 335 with a clone 7725 spawner copies 3 clone children 4193
+39c39
+< /dev/shm/cs_f1fix3/cp_cm_16.635.3.tsv scenes 18425 forms 335 with a clone 7688 spawner copies 3 clone children 4190
+---
+> /dev/shm/engfix/cs/cp_cm_16.635.3.tsv scenes 18425 forms 335 with a clone 7688 spawner copies 3 clone children 4190
+78c78
+< /dev/shm/cs_f1fix3/cp_match_16.402.22.tsv scenes 19430 forms 335 with a clone 5655 spawner copies 4 clone children 3875
+---
+> /dev/shm/engfix/cs/cp_match_16.402.22.tsv scenes 19430 forms 335 with a clone 5655 spawner copies 4 clone children 3875
+114c114
+< /dev/shm/cs_f1fix3/cp_match_16.635.3.tsv scenes 19430 forms 335 with a clone 5631 spawner copies 4 clone children 3880
+---
+> /dev/shm/engfix/cs/cp_match_16.635.3.tsv scenes 19430 forms 335 with a clone 5631 spawner copies 4 clone children 3880
+151c151
+< /dev/shm/cs_f1fix3/cp_mc_16.402.22.tsv scenes 19430 forms 335 with a clone 5630 spawner copies 4 clone children 3778
+---
+> /dev/shm/engfix/cs/cp_mc_16.402.22.tsv scenes 19430 forms 335 with a clone 5630 spawner copies 4 clone children 3778
+187c187
+< /dev/shm/cs_f1fix3/cp_mc_16.635.3.tsv scenes 19430 forms 335 with a clone 5607 spawner copies 4 clone children 3774
+---
+> /dev/shm/engfix/cs/cp_mc_16.635.3.tsv scenes 19430 forms 335 with a clone 5607 spawner copies 4 clone children 3774
+224c224
+< /dev/shm/cs_f1fix3/cp_scene_16.402.22.tsv scenes 19430 forms 335 with a clone 5797 spawner copies 4 clone children 3109
+---
+> /dev/shm/engfix/cs/cp_scene_16.402.22.tsv scenes 19430 forms 335 with a clone 5797 spawner copies 4 clone children 3109
+234c234
+< /dev/shm/cs_f1fix3/cp_scene_16.635.3.tsv scenes 19430 forms 335 with a clone 5761 spawner copies 4 clone children 3114
+---
+> /dev/shm/engfix/cs/cp_scene_16.635.3.tsv scenes 19430 forms 335 with a clone 5761 spawner copies 4 clone children 3114
+
+=== HF summary JSON ===
+{
+  "out": "/dev/shm/engfix/f20k",
+  "replays": 20000,
+  "outcomes": {
+    "ran": 19974,
+    "fault": 21,
+    "out_of_scope": 5
+  },
+  "in_scope": 19995,
+  "faults": 21,
+  "fault_rate_in_scope": 0.00105,
+  "fault_rate_ci95": [
+    0.00069,
+    0.00161
+  ],
+  "fault_rate_all": 0.00105,
+  "first_fault_kind": {
+    "error": 16,
+    "unsupported": 5
+  },
+  "first_fault_detail": {
+    "error:java.lang.UnsupportedOperationException:java.lang.UnsupportedOperationException:": 16,
+    "unsupported:mirror": 5
+  },
+  "skips_not_faults": {
+    "after_crforge_end": 11857,
+    "not_in_hand": 11713,
+    "not_enough_elixir": 4551,
+    "ability_identity_unavailable": 2566,
+    "no_hero": 2111,
+    "ability_not_ready": 30,
+    "ability_spent": 16
+  },
+  "princess_only": {
+    "n": 17406,
+    "fault": 20,
+    "fault_rate": 0.00115,
+    "ran_every_input": 8059,
+    "crowns_match": 5927,
+    "towers_match": 444
+  },
+  "any_troop": {
+    "n": 2589,
+    "fault": 1,
+    "fault_rate": 0.00039,
+    "ran_every_input": 1334,
+    "crowns_match": 897,
+    "towers_match": 102
+  },
+  "by_troop": {
+    "dagger-duchess": {
+      "n": 1060,
+      "fault": 0,
+      "fault_rate": 0.0,
+      "ran_every_input": 493,
+      "crowns_match": 340,
+      "towers_match": 36
+    },
+    "cannoneer": {
+      "n": 355,
+      "fault": 0,
+      "fault_rate": 0.0,
+      "ran_every_input": 180,
+      "crowns_match": 121,
+      "towers_match": 11
+    },
+    "royal-chef": {
+      "n": 1230,
+      "fault": 1,
+      "fault_rate": 0.00081,
+      "ran_every_input": 692,
+      "crowns_match": 452,
+      "towers_match": 57
+    }
+  }
+}
+
+=== ENG-FIX_4_tally_vs_f20k_w4.txt ===
+shards 80 replays 20000
+outcomes base {'ran': 19973, 'fault': 22, 'out_of_scope': 5} | new {'ran': 19974, 'fault': 21, 'out_of_scope': 5}
+outcome changes {'fault -> ran': 1}
+    5  mirror
+    4  giantbuffer_enchanting_buff on ThreeMusketeer_Rework_Character_1, whose attack sequence replaces its attack, 
+    4  giantbuffer_enchanting_buff on ThreeMusketeer_Rework_Character_2, whose attack sequence replaces its attack, 
+    4  # is deflected carrying copies that change its damage, not modelled
+    3  giantbuffer_enchanting_buff on ThreeMusketeer_Rework_Character_3, whose attack sequence replaces its attack, 
+    1  GiantHero_Slap_Pushback runs on #, a clone or a rider, not modelled
+
+=== ENG-FIX_4_tally_vs_f20k_cfclone2.txt ===
+shards 80 replays 20000
+outcomes base {'ran': 19988, 'fault': 7, 'out_of_scope': 5} | new {'ran': 19974, 'fault': 21, 'out_of_scope': 5}
+outcome changes {'ran -> fault': 15, 'fault -> ran': 1}
+    5  mirror
+    4  giantbuffer_enchanting_buff on ThreeMusketeer_Rework_Character_1, whose attack sequence replaces its attack, 
+    4  giantbuffer_enchanting_buff on ThreeMusketeer_Rework_Character_2, whose attack sequence replaces its attack, 
+    4  # is deflected carrying copies that change its damage, not modelled
+    3  giantbuffer_enchanting_buff on ThreeMusketeer_Rework_Character_3, whose attack sequence replaces its attack, 
+    1  GiantHero_Slap_Pushback runs on #, a clone or a rider, not modelled
+
+=== ENG-FIX_4_changed_outcome.txt ===
+{
+  "shard": "part-000011_00000.jsonl",
+  "tag": "ac33021c93fa460d81680c5d329b7b4d",
+  "base_outcome": "fault",
+  "new_outcome": "ran",
+  "base_faults": [
+    [
+      "error",
+      3752,
+      "java.lang.UnsupportedOperationException:java.lang.UnsupportedOperationException: target_is_ground on PrincessTower_1_2, which is not a character and carries FORCE_IS_GROUND, not modelled"
+    ]
+  ],
+  "new_faults": []
+}
