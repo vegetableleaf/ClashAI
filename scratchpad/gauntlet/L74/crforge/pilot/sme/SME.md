@@ -2510,7 +2510,39 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
   No-regression (Codex ENG-FIX_5, lib 5e8089a4, OFF and ON run on the same lib; `results/live/engfix/r5/`): dev /
   FRESH1-4 records change only in 3 matches: FRESH4 220244 and 222707 fixed, dev 235355 same; FRESH1-3 byte-identical;
   0 regressions, plants 0 missed. **fresh_prep.sh now sets SME_OWN_BODYPT=1 (FRESH5+).**
-- **RESTART POINT (10-29):** done = Codex ENG-FIX_5 (`.foreman/scratch/a2/codex/ENG-FIX_5.md`, out
+- **ENG-FIX2 (10-29, after ENG-FIX ran out of context):**
+  - **FRESH5 RESULT F5_main (a; strict fresh gate on 5e8089a4 tickprobe, no fix on these matches; list dd9d38f, freeze
+    81abd94, results d7a022f, `results/live/fresh5/F5_main_*`):** 25 Ranked battles (logs from 00:43 EDT 10-29, cut 00:43
+    not 00:50 so log 004719 is in a set; battle log to 06:34:02Z), 0 skips, 15 RNG-free, 12 unflagged: **10 / 12 exact
+    apart from torn (95% CP lower 0.562)**, strict 10 / 12; plants 4,508, 0 missed. Failures 004719@2573 (opponent Goblins
+    reader-only), 021310@1986 (Skeletons SIM-only). **Pooled strict-fresh FRESH2-5: 93 / 114 (0.816, CP lower 0.746).**
+    D1 (>= 90%) / D2 (LB 0.98) NOT met. FRESH5 is dev data from here. Flags = FRESH4's + SME_OWN_BODYPT.
+  - **FRESH4 151109@925 = extractor dating (a), not engine. SME_SPELL_KING (fights.seen_casts, off by default, 0e7d609):**
+    the opponent Snowball and our Log were first seen on one frame, each one tick early (sim one step further along the
+    same line: Snowball 800 / tick, Log 360 / tick). Moving both to 924 (inside both windows [923, 924]) -> 3031 / 3031
+    exact; either alone leaves the other diverging, and the repair moves one command at a time (objective = first div).
+    Rule: a king-thrown projectile spell's run = first sighting - k, k = |P1 - king| / v from its first two sightings,
+    only when on the king -> aim line (<= 50) with k whole and inside the window. Census FRESH4 (`engfix/spellk_*.py`):
+    Fireball / Rocket / Snowball / Goblin Barrel 285 / 285 king-sourced shots on the line with k whole; 138 / 138
+    exactness-validated fitted runs = first - k; the mid-gap default was wrong on 72. Probe (flag on, 5e8089a4): 151109
+    3031 / 3031 exact, plants 0 missed. Planted `engfix/spellk_test.py` ok 13. Owed: the dev / FRESH1-5 no-regression batch.
+  - **FRESH4 210016@2068 = reader drop (a), not engine.** Our tower's shot kept homing on the vanished body at the SIM
+    Golemite's exact points (2070 5470,8831; 2072 5424,8791). reader_hidden had the window but named it 'Golem' (the reader
+    lists Golemites under card 26000009). **SME_HIDDEN_CHILD (extract.reader_hidden, off by default, 0e7d609)** names it by
+    the card row's DeathSpawnCharacter when its max hp is no own-unit level: probe 16 frames torn_hidden, 28 still div.
+    The rest: sme_live.hidden_ok needs EXACTLY ONE sim row of the name and there are two Golemites. A PROBE-ONLY comparator
+    change in a private copy (pod 32657 `/workspace/pilot/engfix2/sme11f_h`, `.foreman/scratch/engfix2/patch_hidden.py`,
+    SME_HIDDEN_UNIQ: a track point picks the row at that point; no point -> accepted only when exactly one candidate's
+    removal leaves the frame exact) -> 1953 exact + 44 torn_hidden, 0 div, plants 0 missed. **This is a comparator rule:
+    NOT shipped, for the lead to accept or reject.** Planted `engfix/hchild_test.py` ok 7.
+  - **Hog-at-bridge Tornado-to-king (a, crforge 5e8089a4; `engfix/scen_tornado.{py,txt}`, template 150053's decks):**
+    opponent Hog at (3500, 18500) run 200, our Tornado run 280 when the Hog reaches y 12500. In all 5 variants the Hog
+    never retargets to the king: king hp lost 0, no king-tower projectile. Our left princess loses 3549 (no Tornado), 2535
+    (Tornado on the Hog), 3042 / 3042 / 1521 (centre 2000 / 3500 / 5000 units toward our king); at 5000 the Hog stops at
+    (5745, 7341) and dies 80 ticks sooner. Whether the real game retargets: untested (b, needs a recording).
+  - **RESTART POINT:** open = SME_NEAR_BIGGER2 census (see next bullet), the no-regression batch for SPELL_KING +
+    HIDDEN_CHILD (dev / FRESH1-5, Codex, as ENG-FIX_5), the lead's call on SME_HIDDEN_UNIQ, FRESH5 failures 004719 / 021310.
+- **(superseded by ENG-FIX2 above) RESTART POINT (10-29):** done = Codex ENG-FIX_5 (`.foreman/scratch/a2/codex/ENG-FIX_5.md`, out
   `.foreman/scratch/a2/codex/out/ENG-FIX_5.jsonl`, results `engfix/r5/`): BODYPT OFF vs ON on the changed matches of
   dev / FRESH1-4, lib 5e8089a4: DONE, 0 regressions, flag added to fresh_prep.sh.
   Queue (lead 10-29, in order): FRESH4 151109@925 Snowball (198 / 775 units: point or dating) and 210016@2068 (a Golemite
