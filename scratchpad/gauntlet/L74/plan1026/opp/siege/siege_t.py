@@ -23,6 +23,7 @@ sys.path[:0] = [str(HERE), str(HERE.parents[2] / "opp_model/humanlike"), str(HER
 import siege_b as SB  # noqa: E402
 import xbow_count as XC  # noqa: E402
 
+XB_RANGE = 11.5             # tiles (X-Bow range), centre to play point; ponytail: ignores body radii
 TOWER_KINDS = (2, 3)        # facade entity kinds: 0 troop, 1 building, 2 king, 3 princess (checked on tgtR rows)
 nrm = lambda s: re.sub(r"[^a-z0-9]", "", str(s).lower())  # noqa: E731
 
@@ -84,6 +85,11 @@ def one(r, h, xs, res):
                 rec["ans_hits_xb"] = True
         tg = [(t, g) for t, g in tl if g >= 0]
         cls = lambda g: "tower" if g in tower else "answer" if g in ans else "other"  # noqa: E731
+        life_end = death or (tl[-1][0] if tl else t0)
+        ft0 = rec["t"] + rec["dt"] if rec["cls"] == "answer_ontime" else t0
+        rec["n_xb_targets"] = len({g for _, g in tg if g not in tower})      # distinct enemy bodies the X-Bow shot at
+        rec["plays_in_range_after"] = sum(1 for p in r["plays"] if ft0 < p[0] <= life_end and   # opponent plays after the
+                                          math.hypot(p[3] - rec["xx"], p[4] - rec["xy"]) <= XB_RANGE)  # answer, in X-Bow range
         rec.update(xb_uid=U, xb_life=(death or (tl[-1][0] if tl else t0)) - t0, xb_died=death is not None,
                    first_target=cls(tg[0][1]) if tg else "none", first_target_dt=tg[0][0] - t0 if tg else None,
                    tower_dt=next((t - t0 for t, g in tg if g in tower), None),
@@ -104,6 +110,8 @@ def table(rs):
         for ft in ("tower", "answer", "other", "none"):
             s = [r for r in sel if r["first_target"] == ft]
             g[f"first_{ft}"] = {"share": fr([1] * len(s) + [0] * (len(sel) - len(s))), "lock": fr([r["locked"] for r in s]), "n": len(s)}
+        g["n_xb_targets_mean"] = fr([r["n_xb_targets"] for r in sel])
+        g["plays_in_range_after_mean"] = fr([r["plays_in_range_after"] for r in sel])
         g["xb_ever_tower"] = fr([r["tower_dt"] is not None for r in sel])
         g["lock_if_never_tower"] = fr([r["locked"] for r in sel if r["tower_dt"] is None])
         g["tower_dt_q"] = st.quantiles([r["tower_dt"] for r in sel if r["tower_dt"] is not None], n=4) if len(sel) > 4 else None

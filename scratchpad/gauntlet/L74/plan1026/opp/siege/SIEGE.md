@@ -145,16 +145,61 @@ Per card ON the human spot (live / E4 / ftR): tesla .53/.53/.90 (n 59/146/29), c
 locks .55 vs .40 live / .41 E4, the gap is the same at every offset. Placement relative to the X-Bow is not the cause; what
 happens after the answer lands is (next: 2b, board targets).
 
-## STATUS (OPP-SIEGE2, 2026-10-29 11:00 UTC) -- restart point
-- RUNNING on 30408 (`ssh -o BatchMode=yes -i ~/.ssh/runpod_clashbot -p 30408 root@157.157.221.29`), code = POD-ONLY copy
-  `/workspace/siege/opp/cb2` (= cb + `probe/patch_pod.py`: SIEGE_CELL_T = cell temperature of timing-head seats, SIEGE_TGT=1 =
-  hab sample s[8] [[uid, team, kind, target_uid]]; unset = unchanged; NOT in pipeline/ on main). `probe/lanes.sh` (copy at
-  /workspace/siege/lanes.sh): lane 1 (PID 3774642, log /workspace/siege/lane1.out, CPUs 0-127) tgtR = ftR + targets, seed
-  741200 (480), then tgtE4; lane 2 (PID 3774644, lane2.out, CPUs 128-255) ct25 then ct50 = ftR with cell T .25 / .5, 4 x 480.
-  Rows /workspace/siege/score/rows/{tgtR,tgtE4,ct25,ct50}. Restart: `cd /workspace/siege && setsid nohup bash lanes.sh N >
-  laneN.out 2>&1 < /dev/null &` (run_closed skips finished 480-blocks). All on crforge 5e8089a4, G2 on, CLXIII 8d328a43.
-- Recorder control (a): the first 170 tgtR games are outcome-identical to ftR5e (170/170 end tick + outcome); SIEGE_TGT costs
-  ~5x wall per match (median 259 s vs 49 s), hence one seed block for the target arms.
+### 2b. What the X-Bow shoots (siege_t.py, xbhp_t.py, strat_t.py, fol_b.py; probe recorder SIEGE_TGT, read only: tgtR = ftR
+480 games seed 741200 outcome-identical to ftR5e 480/480; tgtE4 = E4, identical to e45e 480/480; crforge 5e8089a4) (a):
+
+| on-time unit/building answers (all reach X-Bows in brackets) | ftR (tgtR) | E4 (tgtE4) |
+|---|---|---|
+| reach X-Bows / lock | 1,746 / .78 | 2,261 / .57 |
+| X-Bow's FIRST target: the answer / tower / another body | .61 / .10 / .28 (all: .21 / .39 / .40) | .61 / .04 / .34 (all: .43 / .15 / .41) |
+| lock when the first target is the answer | .62 | .46 |
+| X-Bow ever targets a tower in its life | .59 (all .76) | .44 (all .51) |
+| lock if it never does (other damage sources) | .19 | .14 |
+| tower ticks per X-Bow, median | 68 (all 142) | 0 (all 25) |
+| distinct enemy bodies the X-Bow shoots, mean | 2.02 | 2.58 |
+| X-Bow shoots the answer / answer shoots the X-Bow / answer alive when the X-Bow dies | .80 / .54 / .32 | .82 / .53 / .30 |
+| CLXIII units shoot the answer / CLXIII tower shoots it | .84 / .34 | .81 / .34 |
+| X-Bow HP share at +5 / +10 / +15 s | .50 / .39 / .31 | .46 / .33 / .22 |
+| X-Bow life median (ticks) / died in 30 s | 354 / .85 | 334 / .92 |
+| opponent / CLXIII bodies on board at the X-Bow | 1.52 / 2.63 | 1.94 / 2.65 |
+
+Stratified, the gap stays at every level (lock ftR / E4): by bodies the X-Bow shoots 1: .54/.38, 2: .70/.53, 3+: .71/.53; by
+opponent bodies on board 0: .63/.53 ... 3+: .70/.45; by CLXIII bodies; by X-Bow life 200-400 ticks .52/.38, > 400 .94/.78.
+Follow-up plays landing in X-Bow range (11.5 tiles) after the answer, in 10 s (fol_b.py): live .89 / ftR .74 / E4 1.10, and the
+lock gap holds in each count bin (0 / 1 / 2+: live .43/.38/.41, ftR .64/.65/.64, E4 .56/.47/.47).
+Reading: (a) the answer's first engagement is the SAME for ftR and E4 (same first-target split, same answer-vs-X-Bow exchange,
+same answer survival, same CLXIII defence); (a) the difference is how much of the X-Bow's life goes on a tower: E4 keeps it on
+more bodies (2.58 vs 2.02) and damages it faster (HP .22 vs .31 at +15 s), so its X-Bows reach the tower less (.44 vs .59).
+(c) contradicted as the single cause: placement (2a), follow-up play count in range, CLXIII's defence of the X-Bow. (b) untested:
+the bodies that keep the X-Bow busy come from the opponent's general board presence (units walking in, not plays landing in
+range; E4 has more bodies on board at the X-Bow, 1.94 vs 1.52) -- a whole-match strength property rather than an answer skill.
+No live counterpart for targets (the reader has no target field).
+
+### 2c. Probe (NOT a fix): cell sampling temperature, whole match (SIEGE_CELL_T, pod copy only; card stays T 1)
+Quick block, seed 741200, 480 games (a): ftR (same seed) CLXIII win 89.4%, lock .776; cell T .25 (ct25): 85.2%, lock .732
+(-0.044; on-time troop answers .29 -> .34 share, "elsewhere" .13 -> .08, answers ON the human spot 158 -> 257 but still lock
+.54 there). Full 1,920 of ct25 and the T .5 block: see STATUS.
+
+## STATUS (OPP-SIEGE2, 2026-10-29 12:10 UTC) -- restart point
+- RUNNING on 30408 (`ssh -o BatchMode=yes -i ~/.ssh/runpod_clashbot -p 30408 root@157.157.221.29`), one job at a time, 44 workers:
+  1. `lanes.sh quick` (PID 3777297, /workspace/siege/queue.out): tgtR, ct25, tgtE4 DONE (480 each); ct50 (cell T .5) running.
+  2. then `lanes.sh full ct25 0.25` (waiter PID 3781621, /workspace/siege/queue_full.out): ct25 seeds 742000 742800 743600.
+  3. then fix 2 `run_ftd.sh ftd3 3 4000` (waiter PID 3784059, /workspace/siege/ftd3.out; script in
+     /workspace/siege/opp/cb/scratchpad/gauntlet/L74/plan1026/opp/siege/): train (GPU, ~11 min) -> _sim.pt -> level A + cardcal ->
+     level B 4 x 480 (rows /workspace/siege/score/rows/ftd3). Mask built: /workspace/siege/ft/mask_fail600.npy (63,105 train rows).
+  Restart any step by re-running its command (each stage / 480-block skips if done): `cd /workspace/siege && setsid nohup bash
+  lanes.sh quick > queue.out 2>&1 < /dev/null &`, `... bash lanes.sh full ct25 0.25 > queue_full.out ...`, `... bash
+  /workspace/siege/opp/cb/scratchpad/gauntlet/L74/plan1026/opp/siege/run_ftd.sh ftd3 3 4000 > ftd3.out ...`. NEVER two at once.
+- Code: probes use the POD-ONLY copy `/workspace/siege/opp/cb2` (= cb + `probe/patch_pod.py`: SIEGE_CELL_T = cell temperature
+  of timing-head seats, SIEGE_TGT=1 = hab sample s[8] [[uid, team, kind, target_uid]]; unset = unchanged; NOT in pipeline/).
+  Fix 2 and its level B use the unpatched cb (as ftx3 / ftx10). crforge 5e8089a4, G2 on, CLXIII 8d328a43, seeds as P2-OPP2.
+- 30408 limits (a): cgroup 54.4 CPUs (cpu.max) and 62 GB RAM (memory.limit_in_bytes; `free` shows the host's 251 GB): two lanes
+  of 80 + 60 workers hit the memory limit at ~11:15 UTC and stalled the pod (sshd timed out); stopped by PID, relaunched as one
+  44-worker queue. Never more than ~45 workers on 30408.
+- Recorder control (a): the first 170 tgtR games are outcome-identical to ftR5e (170/170 end tick + outcome). 30408's cgroup
+  CPU quota is 54.4 CPUs (cpu.max 5440000/100000; nproc 256 is misleading): 80+60 workers share it, so wall per match is ~3x
+  ftx10's (40 workers); the recorder's own cost is ~1.3x (tgtR 101 games / 80 workers vs ct25 104 / 60 in the same 12 min).
+  The target arms stay at one seed block (480).
 - Score: fetch rows to opp_model/humanlike/rows/NAME, `win_b.py DIR`, `siege_b.py sim NAME=DIR` (+ `SIEGE_ALL` unset),
   `siege_t.py NAME=DIR` (target arms), `card.py score --name NAME --sim DIR --no-d` (icebow/.venv python).
 
