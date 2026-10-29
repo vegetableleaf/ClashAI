@@ -2484,6 +2484,14 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
   `/workspace/crforge_main/5e8089a4/{plain,tickprobe}` built on 30408 (not shipped). The F1FIX-3 HF sample (f20k_w4) had
   exactly 1 `target_is_ground ... FORCE_IS_GROUND` fault in 20,000: this fix's case. Clone sweep + HF 20k: Codex
   ENG-FIX_4b on 33920 (`/dev/shm/engfix/`, 32 threads, CPUs only; ENG-FIX_4 blocked on my 48-thread spec).
+- **FRESH4 RESULT F4_fe (a; strict fresh gate, fe364ceb, no fix on these matches; `results/live/fresh4/F4_fe_*`):**
+  78 RNG-free, 61 unflagged: **52 / 61 exact apart from torn (95% CP lower 0.757)**, strictly exact 48 / 61 (0.683);
+  plants 28,277, 0 missed. Pooled strict-fresh (each set scored before any fix on it): FRESH2 22/28 + FRESH3 9/13 +
+  FRESH4 52/61 = 83 / 102. D1 (>= 90%) / D2 (LB 0.98) NOT met. 9 failures, first divergence: 151109@925 (Snowball
+  projectile 198 / 775 units off: spell point or dating), 165155@4811 (Skeletons in the SIM only), 201103@1606 (our Rascals:
+  reader-only rows), 210016@2068 (a Golemite the SIM makes), 220244@3374 and 222707@1653 (our Knight 1,053 / 2,210 units off:
+  own point; SME_OWN_SPAWN did not fire, untraced), 230352@914 (Golden Knight 118 / 124 off), 235834@4612 (a princess
+  tower at 19 hp in the SIM only), 001856@3159 (opponent elixir 2.0 off). FRESH4 is dev data from here.
 - **FRESH4 (list frozen + committed before any run):** `fresh/FRESH4.tsv`, 138 Ranked battles (logs from 2026-10-28
   15:00 EDT; battle log to 2026-10-29T04:46:56Z), build 160635001; prep running (`engfix/fresh4/`), then freeze file +
   F4_fe run on fe364ceb, no fixes.

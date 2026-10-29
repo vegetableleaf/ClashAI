@@ -1,0 +1,14 @@
+plants {'plants': 28277, 'caught': 28200} missed []
+all: unflagged 61 pass 52 (CP95 0.757) strict 48 (CP95 0.683)
+never scored before (not READER-TORN trial): unflagged 61 pass 52 (CP95 0.757) strict 48 (CP95 0.683)
+trial subset: unflagged 0 pass 0 (CP95 0.000) strict 0 (CP95 0.000)
+first-divergence census (unflagged failures):
+  20261028_151109 first_div 925 div frames 264 [["P_rec_only", [0, 8802, 3775], "P:Snowball", [-198, 775]], ["P_rec_only", [1, 3500, 27140], "P:Log", [0, -360]], ["P_sim_only", [0, 8604, 4550], "P:SnowballSpell", [198, -775]], ["P_sim_only", [1, 3500, 26780], "P:LogProjectile", [0, 360]]]
+  20261028_165155 first_div 4811 div frames 706 [["U_sim_only", [0, 7996, 246, 130], "C:Skeleton", null], ["U_sim_only", [0, 8499, 1107, 130], "C:Skeleton", null], ["U_sim_only", [0, 9003, 242, 130], "C:Skeleton", null], ["S0_elixir", 100000, null, 90537]]
+  20261028_201103 first_div 1606 div frames 967 [["U_rec_only", [1, 8277, 31750, 417], "Rascals", null], ["U_rec_only", [1, 9581, 29893, 2928], "Rascals", null], ["U_rec_only", [1, 10723, 31750, 417], "Rascals", null]]
+  20261028_210016 first_div 2068 div frames 44 [["U_sim_only", [1, 5516, 8871, 933], "C:Golemite", null]]
+  20261028_220244 first_div 3374 div frames 295 [["U_rec_only", [0, 2499, 13500, 2822], "Knight", [1053, 140, 0]], ["U_rec_only", [1, 3328, 12939, 58], "ArcherQueen", [-88, -116, 0]], ["U_sim_only", [0, 3552, 13640, 2822], "C:Knight_EV1", [-1053, -140, 0]], ["U_sim_only", [1, 3240, 12823, 58], "C:ArcherQueen", [88, 116, 0]], ["P_rec_only", [0, 33
+  20261028_222707 first_div 1653 div frames 170 [["U_rec_only", [0, 1499, 10500, 2822], "Knight", [2210, -2214, 0]], ["U_rec_only", [1, 3229, 8775, 873], "DarkPrince", [-168, 172, 0]], ["U_sim_only", [0, 3709, 8286, 2822], "C:Knight_EV1", [-2210, 2214, 0]], ["U_sim_only", [1, 3061, 8947, 873], "C:DarkPrinceHero_Mount", [168, -172, 0]], ["P_rec_on
+  20261028_230352 first_div 914 div frames 1383 [["U_rec_only", [0, 12717, 19201, 67], "GoldenKnight", [-118, 124, 0]], ["U_rec_only", [1, 11294, 21386, 491], "Knight", [-13, -14, -487]], ["U_sim_only", [0, 12599, 19325, 67], "C:GoldenKnight", [118, -124, 0]], ["U_sim_only", [1, 11281, 21372, 4], "C:Knight", [13, 14, 487]], ["P_rec_only", [1, 509
+  20261028_235834 first_div 4612 div frames 41 [["T_sim_only", [1, 14500, 25500, 19], "T:PrincessTower", null]]
+  20261029_001856 first_div 3159 div frames 126 [["S0_elixir", 48163, null, 28163]]
