@@ -27,3 +27,30 @@ grep: rows/ftR_635/ftR_635_741200/D3/matches.jsonl: No such file or directory
 2026-10-29T14:34:12Z oplc_ftR_l003_a10_u0160_635 [16.635.3] CLXIII W  / 
 grep: rows/oplc_ftR_l003_a10_u0160_635/oplc_ftR_l003_a10_u0160_635_741200/D3/matches.jsonl: No such file or directory
 grep: rows/oplc_ftR_l003_a10_u0160_635/oplc_ftR_l003_a10_u0160_635_741200/D3/matches.jsonl: No such file or directory
+2026-10-29T14:54:29Z ftR_635 [16.635.3] CLXIII W 427 / 480
+2026-10-29T15:14:51Z oplc_ftR_l003_a10_u0160_635 [16.635.3] CLXIII W 391 / 480
+2026-10-29T15:25:02Z oplc_ftR_l001_a10_u0080 [16.635.3] CLXIII W 392 / 480
+2026-10-29T15:28:46Z TABLES CHECK (a): ftR 427/480 (89.0%) on 16.635.3 vs 429/480 (89.4%) on 16.402.22; B u160 391/480 (81.5%) vs 392/480 (81.7%) -> table version changes ~nothing; earlier numbers stand. C u80 (beta .01) 392/480 (81.7%) ~= B u80 (80.4%): weaker pull not faster so far.
+2026-10-29T16:20:18Z oplc_ftR_l003_bot100_u0040 [16.635.3] CLXIII W 372 / 480
+2026-10-29T16:21:15Z oplc_ftR_l003_a10_u0200 [16.635.3] CLXIII W 379 / 480
+2026-10-29T16:40:33Z oplc_ftR_l003_lr1e4_u0040 [16.635.3] CLXIII W 399 / 480
+2026-10-29T16:45:16Z oplc_ftR_l0003_a10b_u0040 [16.635.3] CLXIII W 402 / 480
+2026-10-29T16:58:58Z Arm B STOPPED at u218 (plateau: best u120 79.8% [16.402], u160 81.5% [16.635]; training flat since u60); u200 still scored by its loop. Arm D oplc_ftR_l003_a10_tpg32 (= B + timing_pg 32) replaces it on 33308 GPU0. F u40 83.1%, G u40 83.8% [16.635.3] = A/B/C at u40.
+2026-10-29T17:27:42Z oplc_ftR_l001_a10_u0120 [16.635.3] CLXIII W 385 / 480
+2026-10-29T17:31:46Z C u120 385/480 (80.2%). Arm D tpg32 OOM at u3 (GPU 21.1 GB) -> relaunched as oplc_ftR_l003_a10_tpg32m (+ micro_batch 256, exact after 1881673).
+2026-10-29T18:01:03Z oplc_ftR_l003_bot100_u0080 [16.635.3] CLXIII W 396 / 480
+2026-10-29T18:45:47Z oplc_ftR_l003_lr1e4_u0080 [16.635.3] CLXIII W 405 / 480
+2026-10-29T18:55:03Z oplc_ftR_l0003_a10b_u0080 [16.635.3] CLXIII W 366 / 480
+2026-10-29T18:58:45Z G (beta .003) u80: 366/480 (76.3%) = best arm so far; quick B RMS .28 (ftR .30, not worse); lock .71 (ftR .78), zero-lock .01, P(lock|fail) .58 (ftR .71). F (lr 1e-4) u80 405/480 (84.4%).
+2026-10-29T19:34:21Z oplc_ftR_l001_a10_u0160 [16.635.3] CLXIII W 372 / 480
+2026-10-29T19:48:32Z oplc_ftR_l003_bot100_u0120 [16.635.3] CLXIII W 373 / 480
+2026-10-29T20:23:46Z oplc_ftR_l003_a10_tpg32m_u0040 [16.635.3] CLXIII W 395 / 480
+2026-10-29T20:51:52Z oplc_ftR_l003_lr1e4_u0120 [16.635.3] CLXIII W 409 / 480
+2026-10-29T21:00:40Z D u40 395/480 (82.3%). F u120 409/480 (85.2%) -> F STOPPED (plateau: best u40 83.1%, 80 updates no gain). Arm H oplc_ftR_l0001_a10 (beta .001, one change vs B) on 33903 GPU (weakest pull = only direction moving: G u80 76.3%).
+2026-10-29T21:10:18Z oplc_ftR_l0003_a10b_u0120 [16.635.3] CLXIII W 369 / 480
+2026-10-29T21:34:43Z oplc_ftR_l003_bot100_u0160 [16.635.3] CLXIII W 374 / 480
+2026-10-29T21:37:52Z E u160 374/480 (77.9%) -> E STOPPED (plateau: best u40 77.5%, 120 updates no gain); pod 33553 STOPPED (key ckpts u40/u160 stripped -> C:/Users/benpe/ClashBot_pod_backup/33553, sha-checked).
+ssh: connect to host 157.157.221.29 port 33553: Connection refused
+2026-10-29T21:42:42Z oplc_ftR_l001_a10_u0200 [16.635.3] CLXIII W 19 / 24
+ssh: connect to host 157.157.221.29 port 33553: Connection refused
+2026-10-29T21:45:26Z C u200 block INVALID (24/480 rows: fe364ceb FORCE_IS_GROUND crash) -> all D3 from now on crforge 5e8089a4 (identical to fe364ceb except that fault); C u200 rerun.
