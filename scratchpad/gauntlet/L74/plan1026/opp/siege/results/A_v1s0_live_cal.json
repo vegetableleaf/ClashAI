@@ -1,0 +1,237 @@
+{
+ "ckpt": "/workspace/opp/v1/opp_v1_s0_sim.pt",
+ "data": "/workspace/opp/live/live_cal",
+ "split": 2,
+ "rows": 320596,
+ "windows": 3120,
+ "groups": {
+  "outside": {
+   "play_rows": 16187,
+   "card_n": 14134,
+   "card_top1": 0.5486769492005094,
+   "card_nll": 1.0685302019119263,
+   "cell_top1": 0.21060109964786558,
+   "cell_nll": 4.985287189483643,
+   "slots": 239635,
+   "hazard_mean": 0.09232527017593384,
+   "event_rate": 0.06731070169215682,
+   "slot_ece_pp": 2.501456623382281,
+   "timing_nll": 0.3832884430885315
+  },
+  "early_0_4s": {
+   "play_rows": 4120,
+   "card_n": 3705,
+   "card_top1": 0.5406207827260459,
+   "card_nll": 1.045512318611145,
+   "cell_top1": 0.21092233009708738,
+   "cell_nll": 4.281579494476318,
+   "slots": 23284,
+   "hazard_mean": 0.2144125998020172,
+   "event_rate": 0.17827692836282424,
+   "slot_ece_pp": 3.616025921024563,
+   "timing_nll": 0.8506434559822083
+  },
+  "late_4_10s": {
+   "play_rows": 3617,
+   "card_n": 3387,
+   "card_top1": 0.5382344257454975,
+   "card_nll": 1.0649408102035522,
+   "cell_top1": 0.24274260436826098,
+   "cell_nll": 4.00927734375,
+   "slots": 33753,
+   "hazard_mean": 0.13923856616020203,
+   "event_rate": 0.10615352709388795,
+   "slot_ece_pp": 3.3085028058804435,
+   "timing_nll": 0.5524985194206238
+  },
+  "window_0_10s": {
+   "play_rows": 7737,
+   "card_n": 7092,
+   "card_top1": 0.5394811054709532,
+   "card_nll": 1.0547908544540405,
+   "cell_top1": 0.22579811296368102,
+   "cell_nll": 4.154280185699463,
+   "slots": 57037,
+   "hazard_mean": 0.16992656886577606,
+   "event_rate": 0.13559619194557918,
+   "slot_ece_pp": 3.4340418106144868,
+   "timing_nll": 0.6742091774940491
+  }
+ },
+ "first_response_4s": {
+  "xbow_all": {
+   "windows": 2871,
+   "human_no_play_4s": 0.059212817833507486,
+   "pit_mean": 0.6347587978175678,
+   "pit_ks": 0.23458426014207948,
+   "pit_below_0.25": 0.07175200278648554,
+   "pre_slots": 10603,
+   "pre_h": 0.3198797106742859,
+   "pre_event_rate": 0.25473922474771293,
+   "post_slots": 12317,
+   "post_h": 0.12181627750396729,
+   "post_event_rate": 0.11049768612486807
+  },
+  "xbow_locked": {
+   "windows": 1426,
+   "human_no_play_4s": 0.08415147265077139,
+   "pit_mean": 0.634114690237046,
+   "pit_ks": 0.2248399033422694,
+   "pit_below_0.25": 0.0876577840112202,
+   "pre_slots": 5536,
+   "pre_h": 0.30539336800575256,
+   "pre_event_rate": 0.23591040462427745,
+   "post_slots": 5833,
+   "post_h": 0.12981337308883667,
+   "post_event_rate": 0.11863535059146237
+  },
+  "xbow_failed": {
+   "windows": 1445,
+   "human_no_play_4s": 0.03460207612456748,
+   "pit_mean": 0.635861872943157,
+   "pit_ks": 0.24895892230663572,
+   "pit_below_0.25": 0.06782006920415225,
+   "pre_slots": 5067,
+   "pre_h": 0.335706889629364,
+   "pre_event_rate": 0.2753108348134991,
+   "post_slots": 6484,
+   "post_h": 0.114622101187706,
+   "post_event_rate": 0.10317705120296114
+  },
+  "other_enemy_play": {
+   "windows": 17693,
+   "human_no_play_4s": 0.5014412479511672,
+   "pit_mean": 0.5653022520468897,
+   "pit_ks": 0.09792157252887423,
+   "pit_below_0.25": 0.19391849884134968,
+   "pre_slots": 109213,
+   "pre_h": 0.11573003232479095,
+   "pre_event_rate": 0.08076877294827539,
+   "post_slots": 32066,
+   "post_h": 0.06438113749027252,
+   "post_event_rate": 0.03651843073660575
+  }
+ },
+ "window_cards": {
+  "barbarian-barrel": {
+   "human_n": 336,
+   "top1": 0.7410714285714286,
+   "mean_p": 0.6038155622414446,
+   "model_top_n": 367
+  },
+  "skeletons": {
+   "human_n": 329,
+   "top1": 0.5288753799392097,
+   "mean_p": 0.4509972484957846,
+   "model_top_n": 331
+  },
+  "knight": {
+   "human_n": 323,
+   "top1": 0.8761609907120743,
+   "mean_p": 0.6833827180020949,
+   "model_top_n": 453
+  },
+  "the-log": {
+   "human_n": 285,
+   "top1": 0.4807017543859649,
+   "mean_p": 0.4125848116777968,
+   "model_top_n": 266
+  },
+  "valkyrie": {
+   "human_n": 274,
+   "top1": 0.7518248175182481,
+   "mean_p": 0.5165275207849859,
+   "model_top_n": 352
+  },
+  "ice-spirit": {
+   "human_n": 194,
+   "top1": 0.5876288659793815,
+   "mean_p": 0.48267903854859245,
+   "model_top_n": 216
+  },
+  "cannon": {
+   "human_n": 194,
+   "top1": 0.26288659793814434,
+   "mean_p": 0.2732426623631384,
+   "model_top_n": 131
+  },
+  "hog-rider": {
+   "human_n": 186,
+   "top1": 0.478494623655914,
+   "mean_p": 0.37386418190053716,
+   "model_top_n": 249
+  },
+  "fireball": {
+   "human_n": 177,
+   "top1": 0.4689265536723164,
+   "mean_p": 0.3650809297032949,
+   "model_top_n": 137
+  },
+  "mega-knight": {
+   "human_n": 173,
+   "top1": 0.9017341040462428,
+   "mean_p": 0.6790704868486248,
+   "model_top_n": 253
+  },
+  "electro-spirit": {
+   "human_n": 165,
+   "top1": 0.4909090909090909,
+   "mean_p": 0.43684006383021673,
+   "model_top_n": 147
+  },
+  "firecracker": {
+   "human_n": 148,
+   "top1": 0.581081081081081,
+   "mean_p": 0.4512610925562881,
+   "model_top_n": 163
+  },
+  "tesla": {
+   "human_n": 142,
+   "top1": 0.2676056338028169,
+   "mean_p": 0.29818539780197323,
+   "model_top_n": 80
+  },
+  "earthquake": {
+   "human_n": 142,
+   "top1": 0.5,
+   "mean_p": 0.37752387010243155,
+   "model_top_n": 108
+  },
+  "dart-goblin": {
+   "human_n": 131,
+   "top1": 0.6030534351145038,
+   "mean_p": 0.4371982826087055,
+   "model_top_n": 179
+  },
+  "skeleton-barrel": {
+   "human_n": 117,
+   "top1": 0.19658119658119658,
+   "mean_p": 0.24924734672611085,
+   "model_top_n": 33
+  },
+  "ice-golem": {
+   "human_n": 106,
+   "top1": 0.8773584905660378,
+   "mean_p": 0.6620548309863739,
+   "model_top_n": 141
+  },
+  "skeleton-army": {
+   "human_n": 103,
+   "top1": 0.47572815533980584,
+   "mean_p": 0.3893377974954913,
+   "model_top_n": 114
+  },
+  "rocket": {
+   "human_n": 103,
+   "top1": 0.6407766990291263,
+   "mean_p": 0.49070508322380124,
+   "model_top_n": 116
+  },
+  "mini-pekka": {
+   "human_n": 100,
+   "top1": 0.49,
+   "mean_p": 0.40324031315743925,
+   "model_top_n": 105
+  }
+ }
+}
