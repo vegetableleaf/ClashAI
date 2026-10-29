@@ -5,6 +5,16 @@ per wall-clock hour x50-100+, fp32 only (TF32 off), kl_stop_prev 0.02. Rent only
 
 ## STATUS (keep current; LEARNER-SCALE3, 10-29 ~03:25 UTC)
 - Task list = the LEARNER-SCALE2 handover below, steps 1-6. Results go to section 7.
+- LEAD DECISIONS (10-29 ~03:35 UTC):
+  1. kl_lr_target is PARKED: the key stays but is unused, and the pilot keeps base small steps.
+  2. Tickets A and B (7e) are APPROVED as learner-only opt-in work, after the A/B result. The lead dispatches them.
+     The live / actor inference path must stay byte-identical, with identity tests on recorded live decisions.
+  3. Finish the A/B into 7f / 7g.
+- 33920 disk: 38 scratch learner-checkpoint dirs of the measurement runs were moved (not deleted) to
+  /dev/shm/lrn_ckpt_moved (726 MB; RAM, lost on a pod restart).
+  - The dirs: bench/rl_royale/lrn_{cap,compile,prof,profmod,st_*}_*. Their results are in the json files.
+  - Free space after the move: 905 MB -> 1.6 GB.
+  - Not touched (not mine): /workspace/lrn/id0_freshhead (4.8 GB) and id1 (2.4 GB), the T 0.3 records of 1b / 6b.
 - Commits: ab133d4 (the gate_baseline key, tests, glue_probe, 7a-7b). This commit: 7c, 7d, the A/B scripts (abm/).
 - DONE:
   1. v2 sweep -> 7c. v2 still overshoots the cap (up to 6.3x). No arm is resolvably better than base.
