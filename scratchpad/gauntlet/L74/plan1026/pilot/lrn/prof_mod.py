@@ -81,7 +81,8 @@ def main():
     R.gae_batch(L.model, B, cfg)
     Rz = R.LazyRef(L.ref, B, cfg["tau"], cfg["T"], T_gate=cfg.get("T_gate"))
     if a.prefill:
-        Rz.fill(torch.arange(len(B["A"]), device=L.dev))
+        for s in range(0, len(B["A"]), 1024):
+            Rz.fill(torch.arange(s, min(s + 1024, len(B["A"])), device=L.dev))
     ac = R.adv_cfg(cfg)
     vf = {"coef": ac["vf_coef"], "clip": ac["vf_clip"], "policy": True, "trunk_grad": ac["vf_trunk_grad"]}
     abl = {"head": L.ability_head, "opt": L.ability_opt, "ent_coef": float(cfg["ability_ent_coef"])}

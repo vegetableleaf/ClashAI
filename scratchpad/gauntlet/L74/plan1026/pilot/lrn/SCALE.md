@@ -3,23 +3,48 @@
 Labels: (a) measured (number + source), (b) plausible, untested, (c) contradicted. Owner mandate 10-28: learning progress
 per wall-clock hour x50-100+, fp32 only (TF32 off), kl_stop_prev 0.02. Rent only on a measured >= ~50x projection.
 
-## STATUS (keep current; LEARNER-SCALE3, 10-29 ~02:35 UTC)
+## STATUS (keep current; LEARNER-SCALE3, 10-29 ~03:25 UTC)
 - Task list = the LEARNER-SCALE2 handover below, steps 1-6. Results go to section 7.
-- DONE: gate_baseline key (opt-in; section 7a). Tests 26 passed on 33920 (gate 4 + accum + kllr + cache + kl_stop_prev +
-  loop_overlap_decoupled); pyflakes clean. Smokes on 33920: absent PASS = the reference (b5e2a2bbafef, e816a6a4 /
-  3e07cff4, f060b678 / 5c61ac04); key on (critic_warmup_updates=1) PASS.
+- Commits: ab133d4 (the gate_baseline key, tests, glue_probe, 7a-7b). This commit: 7c, 7d, the A/B scripts (abm/).
+- DONE:
+  1. v2 sweep -> 7c. v2 still overshoots the cap (up to 6.3x). No arm is resolvably better than base.
+  2. gate_baseline key (7a).
+     - Tests: 26 passed on 33920 (gate 4 + accum + kllr + cache + kl_stop_prev + loop_overlap_decoupled), plus
+       test_rl_royale 46 passed. pyflakes clean.
+     - Smokes on 33920: absent PASS = the reference (b5e2a2bbafef, e816a6a4 / 3e07cff4, f060b678 / 5c61ac04); key on
+       PASS.
+  3. noise_scale with the key -> 7d. Policy noise trace -3% per match, -7.5% per row: no case for adoption.
 - INCIDENT 01:38 UTC (mine): my code copy (/workspace/lrn/cbg, 1 GB) filled 33920's 60 GB overlay disk, and the v2
-  sweep crashed in torch.save. I moved the copy to /dev/shm/cbg and restarted the sweep at 01:53 (same command:
-  /workspace/lrn/chain_ls3a.sh; crash log sweep2v2_crash0138.log). The disk has ~1 GB free: keep new trees on /dev/shm.
-- RUNNING on 33920:
-  - chain_ls3a.sh: the v2 sweep (log /workspace/lrn/logs/sweep2v2.log; tab: `python3 /workspace/lrn/tab.py LOG`).
-  - chain_ls3b.sh: waits for 3a, then runs noise_scale with gate_baseline score, then plain, on the 6e setup.
-    Out: /workspace/lrn/noise3/ns_t01_1024_gbl_{score,plain}.json; logs /workspace/lrn/logs/noise3_*.log. ~25 min each.
-  - Test tree: /dev/shm/cbg = origin/main pipeline + tools + pilot/lrn + pilot/ops, plus my files; icebow/data =
-    cb's links. RAM only: rebuild with git archive (see the 7a restart line).
-- SIM A/B (step 4): the lead says use 33553 once V1-STRENGTH's sweep there finishes (check `pgrep -af "sweep.sh|gap.py"`;
-  keep <= 45 GB); otherwise use 33920 after the noise runs. Not started.
-- Codex: none yet this seat.
+  sweep crashed in torch.save.
+  - Fix: I moved the copy to /dev/shm/cbg and restarted the sweep at 01:53 with the same command
+    (/workspace/lrn/chain_ls3a.sh; crash log sweep2v2_crash0138.log).
+  - The disk still has <1 GB free. Keep new trees on /dev/shm.
+- RUNNING:
+  - 33920, chain_ls3c.sh: prof_mod --prefill at mb 256 / 1,024. Out /workspace/lrn/prof3/prof_mod_prefill*; log
+    logs/prof3.log. This is step 5's measurement: the kernel-busy vs wall share without the anchor fill.
+  - 33920: test_learner_fast_gate MC at 3,000 draws with the default ridge (logs/gate_mc3000_r.log).
+    - Why: the ridge-0 3,000-draw run failed the variance check (on 5.25 vs off 3.02). z stayed fine (on 1.66,
+      in-sample 36.2).
+    - Cause (b): rare near-singular score-weighted fits on ~50 rows per half.
+    - The test now uses ridge 1e-3: 300 draws, on 0.56 / in-sample 12.0, variance x0.22.
+  - 33553: the SIM A/B (step 4; lead: 33553 after V1-STRENGTH, keep <= 45 GB rss + shmem), run by Codex
+    LEARNER-SCALE3_1.
+    - Tree: /workspace/abm/cb (setup_abm.sh), queue /workspace/abm/ab_m.sh, out /workspace/abm/out
+      (TABLE.tsv at the end), progress /workspace/abm/ab_m.out.
+    - The 7 pool checkpoints 33553 lacked were copied from 33920 (sha256-verified; .foreman/scratch/a2/abm/ckpts.tar).
+    - Restart: `cd /workspace/abm && setsid nohup bash ab_m.sh >> ab_m.out 2>&1 < /dev/null &` (finished runs are
+      skipped). A run that died needs its two run dirs removed first (L68/rl/RUN, bench/rl_royale/RUN).
+  - Test tree: /dev/shm/cbg on 33920 (origin/main + my files). RAM only: rebuild per 7a.
+- Codex dispatches (.foreman/scratch/a2/codex/LEARNER-SCALE3_1.md, medium):
+  - 1 / 1b: BLOCKED, correctly. Its run.sh wrote to /workspace/loop/logs; fixed in setup_abm.sh.
+  - 1b was stopped by me (PID) to fix the cgroup memory measure: v1 cgroup, and usage_in_bytes holds ~35 GB of page
+    cache, so the measure is now rss + shmem.
+  - 1c: BLOCKED, correctly: missing pool checkpoints. I installed them.
+  - 1d: RUNNING (out LEARNER-SCALE3_1d_out.jsonl).
+- NEXT:
+  - Read the prefill profile into 7e (the CUDA-graph bound).
+  - Read the A/B table into 7f once ab_m.out says AB_M DONE.
+  - Update 6g with 7c-7f.
 
 ## STATUS of LEARNER-SCALE2 (10-29 ~01:35 EDT; superseded, kept for the handover list)
 - Commits this seat:
@@ -487,3 +512,56 @@ Ranked by the zero-filled gradient buffer each node's backward allocates:
   - So the glue is 117 / 473 = ~25% of the kernel time, not 42% of the step.
   - prof_mod.py now has `--prefill`, which fills the anchor for all rows before profiling, so the profiled window is
     the PPO step only. Rerun owed: GPU, after the noise runs.
+
+### 7c. Equal-KL sweep with kl_lr_target v2 (a; 33920; lr_sweep.py; sweep2/sweep_t01_v2.json; log logs/sweep2v2.log)
+Same setup as 6d: u5-u8 on s2101 / s2102 / s2105 / s2106, held-out s2103 + s2104 (1,024 matches), ppo_epochs 4,
+mem_row_cache on. The first attempt crashed at 01:38 (disk full, my fault, see STATUS). This is the 01:53 restart.
+| arm | steps u5-u8 | stop KL u5-u8 | PPO s per update | lr_end u5-u8 | dJ vs base after u8 (+- se) |
+|---|---|---|---|---|---|
+| base mb 256, lr 1e-5 | 59 / 15 / 43 / 12 | 0.023 / 0.020 / 0.022 / 0.024 | 13.1 / 3.5 / 9.1 / 2.9 | 1e-5 | 0 (J +0.00016 +- 0.00028) |
+| 8k, kl_lr_target 0.005 (v2) | 17 / 1 / 2 / 2 | 0.039 / 0.022 / 0.030 / 0.040 | 87 / 9.8 / 14.4 / 14.2 | 1.4e-4 / 1.4e-4 / 7.0e-5 / 3.6e-5 | +0.0007 +- 0.0007 |
+| 32k, v2 | 17 / 2 / 1 / 2 | 0.053 / 0.041 / **0.126** / 0.029 | 201 / 57 / 39 / 58 | 1.2e-4 / 1.5e-4 / 1.5e-4 / 7.5e-5 | +0.0032 +- 0.0026 |
+- (a) The base arm reproduces 6d's base exactly: same steps and the same stop KLs (deterministic learner).
+- (c) "v2 fixes the overshoot" (6a) is contradicted.
+  - The applied policy movement still lands at 1.5-2.6x the cap in most updates, and at 6.3x once (32k u7: one step
+    of 32k rows at lr 1.5e-4 = KL 0.126).
+  - stop KL is the KL of the refused minibatch, so it measures the steps already TAKEN.
+- (b) Why:
+  - The lr is carried across updates, and each update's first step has no dKL to steer by, so it runs at the
+    previous update's end lr.
+  - Within an update the KL of coherent steps grows like (k x step)^2, so the next increment is ~(2k + 1) / (2k - 1)
+    times the last; the rule sizes the next step from the last increment.
+  - Fixes to test (lead): reset the lr to the config value at each update start; or the no-grad KL check before the
+    step (6a, not built); or predict the increment as dKL_last x g^2 x (k + 1) / k.
+- (a) No large arm is resolvably better than base: 8k +1.1 se, 32k +1.2 se after u8.
+  - The large arms also moved 1.5-6x more KL than base, so a positive J is expected and is NOT an equal-KL comparison.
+- (a) Cost: the large arms pay 3-15x base's PPO seconds per update.
+- Answer to the STATUS question "does any arm reach the cap without overshoot, and with what paired dJ?": no arm does;
+  the dJ are within 1.2 se of 0.
+
+### 7d. Noise scale with the gate baseline on (a; noise_scale.py --gate-baseline; the 6e setup; noise3/)
+Same records, the same 3-update critic warm-up (deterministic: explained variance 0.92, as in 6e), the same 1,024
+matches. W is fitted once on all 321k gate rows (fit_rows null) and held fixed. sanity rel diff vs minibatch_loss(gate_bl=W):
+8.1e-6 / 7.9e-6.
+| run | fit oof R^2 | fit s | tr(Sigma_match) gate / card / cell / policy | tr(Sigma_row, 256-row mbs) policy | G2_U policy (+- se) | B_match policy: point [2 sigma lo] |
+|---|---:|---:|---|---:|---|---|
+| off (6e) | - | - | 85.7 / 4.65 / 3.07 / 92.0 | 31,952 | 0.077 +- 0.158 | 1,202 [234] |
+| score | 0.040 | 66 | 83.5 / 4.34 / 2.92 / 89.2 | 29,562 | 0.113 +- 0.165 | 792 [202] |
+| plain | 0.033 | 70 | 82.9 / 4.44 / 2.94 / 88.8 | 29,603 | 0.104 +- 0.164 | 852 [205] |
+- (a) The baseline cuts the policy gradient noise by only 3-3.5% per match and 7.5% per 256-row minibatch.
+  - The gate head is still 93-94% of the policy trace.
+  - score and plain weights are indistinguishable.
+- (a) G2_U (the signal) is unresolved in all three runs: every value is within 0.3 se of the others, as it must be
+  for an unbiased baseline. The B_match points move only through that noisy G2_U.
+- (b) Why so little: A is a GAE advantage over a critic with explained variance 0.92, so E[A | s] is already ~0. The
+  out-of-fold R^2 of A on g is 0.03-0.04. What remains is A's within-state outcome noise, and no state baseline can
+  remove that.
+- (c) 6g lever 1 as a state baseline ("cut the policy B_row ~5-10x") is contradicted: the measured factor is 1.03-1.08.
+- (b) What is left of lever 1:
+  - Form (a), the expectation over the gate's two outcomes. It needs Q(s, play) and Q(s, wait), which only the cf /
+    R_fork SIM forks provide, and only at fork rows.
+  - Fewer, longer-horizon gate decisions. That changes the decision process: an owner / lead topic.
+- Cost (a): the fit's forward over all gate rows of 1,024 matches takes 66-70 s on a 4090, against a 3-15 s learner
+  update.
+  - So even this small gain would need fit_rows (e.g. 16k per half: ~3 s). How fit_rows changes R^2 is untested.
+- Not adopted. The owner decides; the numbers above do not make a case for it.
