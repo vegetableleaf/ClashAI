@@ -22,7 +22,7 @@ import numpy as np
 HERE = Path(__file__).resolve().parent
 sys.path[:0] = [str(HERE.parents[5]), str(HERE)]
 
-LP = ("lp_gate", "lp_card", "lp_cell", "p_gate", "ab_lp")   # float noise of the forward: max |diff| reported
+LP = ("lp_gate", "lp_card", "lp_cell", "p_gate", "ab_lp", "lp_th")   # float noise of the forward: max |diff| reported (lp_th: OPP-LEARN-D)
 AB_RESULT = ("ability_presses", "ability_deployments", "ability_fallback_generic", "ability_head")
 
 

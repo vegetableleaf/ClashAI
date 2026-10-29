@@ -257,6 +257,8 @@ def actor_cfg(base: dict, kind: str, aid: int, dev: str) -> dict:
         cfg["cf"] = dict(base["cf"])
     if kind == "rollout" and base.get("opp_init"):            # OPP-LEARN: the timing-head learner seat records
         cfg["th_learner"] = True                              # (e1_eval.timing_cfg / th_record)
+        if base.get("timing_pg"):                             # OPP-LEARN-D: + each slot decision's log-prob (lp_th)
+            cfg["th_pg"] = True
     return cfg
 
 
@@ -1343,6 +1345,18 @@ def rl_obs_seed(tag: str, g: int, update: int) -> int:
     return zlib.crc32(f"{tag}:obs:{g}:{update}".encode())
 
 
+def th_sample(slot: np.ndarray, k: Optional[int], r: dict) -> np.ndarray:
+    """OPP-LEARN-D ``timing_pg: K``: the slot-start rows (mask ``slot``) of one match whose timing decision enters the
+    PPO term: all (k None), else K of them uniform without replacement, the draw fixed by the result's row_key (the
+    weights w_th = 1 / (K M) keep it an unbiased estimate of the match's per-decision mean)."""
+    if k is None or int(slot.sum()) <= k:
+        return slot
+    rng = np.random.default_rng(zlib.crc32(("timing_pg:" + ":".join(map(str, row_key(r)))).encode()))
+    out = np.zeros_like(slot)
+    out[rng.choice(np.flatnonzero(slot), int(k), replace=False)] = True
+    return out
+
+
 def match_weights(n_rows) -> list[np.ndarray]:
     """Per-row weights: match i's n_i rows each get 1/(n_i M), M = matches with rows -> every match sums to 1/M."""
     n = [int(k) for k in n_rows]
@@ -2041,7 +2055,8 @@ def _py(x):
 def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_loo",
             shaping: Optional[dict] = None, gamma_tick: Optional[float] = None,
             gae_terminal_gap: bool = False, spell: Optional[dict] = None,
-            crown: Optional[dict] = None, habit: Optional[dict] = None, cf: Optional[dict] = None) -> tuple[dict, dict]:
+            crown: Optional[dict] = None, habit: Optional[dict] = None, cf: Optional[dict] = None,
+            timing_rows: Optional[int] = None) -> tuple[dict, dict]:
     """Rollout result records (each with ``traj`` = ``Match._traj_arrays``) -> numpy batch of the CONTRIBUTING rows
     (gate sampled or card/cell played) with per-row A, per-match weight w, match id, and the stored log-probs.
     ``advantage="gae"`` adds ``r_step`` (``terminal_rewards``, the UNSHAPED win/loss reward); A stays the LOO value
@@ -2080,6 +2095,8 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
             k = k | t["posture_new"]
         if "ab_sampled" in t and len(t["played"]):           # B6: a row with a press decision is kept (its log-prob)
             k = k | t["ab_sampled"]
+        if "lp_th" in t and len(t["played"]):                # OPP-LEARN-D timing_pg: a slot-start (timing) row is kept
+            k = k | th_sample(t["th_j"] >= -1, timing_rows, r)   # (timing_pg K: K of them, uniform without replacement)
         keep.append(k)
     n_rows = [int(k.sum()) for k in keep]
     W = match_weights(n_rows)
@@ -2102,6 +2119,18 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
     B["A"] = cat(lambda j: np.full(n_rows[j], A[j]))
     B["w"] = cat(lambda j: W[j])
     B["match"] = cat(lambda j: np.full(n_rows[j], j))
+    if use and "lp_th" in results[use[0]]["traj"]:                   # OPP-LEARN-D timing_pg: the card / cell rows keep
+        sl = {j: th_sample(results[j]["traj"]["th_j"] >= -1, timing_rows, results[j])[keep[j]] for j in use}
+        pl = {j: results[j]["traj"]["played"][keep[j]] for j in use}       # the play-only batch's weights (each match's
+        #                                                                     plays sum to 1/M); the (sampled) slot-start
+        #                                                                     rows get their own w_th (each match's: 1/M)
+        def per_row(mask):
+            n = {j: int(mask[j].sum()) for j in use}
+            M = max(1, sum(1 for v in n.values() if v))
+            return cat(lambda j: np.where(mask[j], 1.0 / (max(n[j], 1) * M), 0.0))
+        B["w"], B["w_th"] = per_row(pl), per_row(sl)
+        B["lp_th"] = cat(lambda j: results[j]["traj"]["lp_th"][keep[j]])
+        B["th_j"] = cat(lambda j: results[j]["traj"]["th_j"][keep[j]])
     if use and "mem_t" in results[use[0]]["traj"]:                   # Plan A memory model: per-match event tables +
         from pipeline.match_memory import pack                        # per-row ticks (e1_eval.gen_batch rebuilds the
         if any("memory" not in results[j] for j in use):              # rows' memory inputs by match_memory.features_at)
@@ -2471,6 +2500,12 @@ def policy_terms(model, B: dict, idx, tau: float, T: float, value: bool = False,
            "g": enc["g"]}                                    # C1: the posture head's input (detached by the head)
     if "hazard" in heads:                                     # OPP-LEARN-C th_anchor: the frozen heads' outputs
         out["th"] = {k: heads[k] for k in TH_HEADS if k in heads}
+    if "lp_th" in B and "hazard" in heads:                    # OPP-LEARN-D timing_pg: e1_eval.th_record's lp_th (slot start:
+        j = B["th_j"][idx]                                    # wait log(1 - h), tick j log h + log softmax(tick)[j]; else 0)
+        z = heads["hazard"].double()
+        tl = torch.log_softmax(heads["tick"].double(), dim=-1).gather(1, j.clamp(min=0).unsqueeze(1)).squeeze(1)
+        out["lp_th"] = torch.where(j >= 0, Fn.logsigmoid(z) + tl,
+                                   torch.where(j == -1, Fn.logsigmoid(-z), torch.zeros_like(z)))
     if value:
         g = enc["g"] if value_trunk else enc["g"].detach()
         out["v"] = value_scalar(critic_logits(model, g, ctx_head, B["ctx"][idx] if ctx_head is not None else None))
@@ -2822,7 +2857,11 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
     ability terms keep their behaviour ratios.
     ``gate_bl`` W [2, d + 1] (LEARNER-SCALE ``gate_baseline``, ``gate_baseline_fit``; None = unchanged): the joint L_pg's A
     on GATE-SAMPLED rows is A - b(s), b = [g(s) detached, 1] . W[match % 2] (W[h] fitted on the other half's matches).
-    b depends on the state only, so the gradient's expectation is unchanged; the value / posture / ability terms keep A."""
+    b depends on the state only, so the gradient's expectation is unchanged; the value / posture / ability terms keep A.
+    ``B["lp_th"]`` (OPP-LEARN-D ``timing_pg``): + a PPO-clip term on the slot-start timing decisions (rows th_j >= -1),
+    r = pi_new / pi_old of the taken wait / tick (``policy_terms``' lp_th vs the stored one), the row's A, weights
+    ``B["w_th"]`` (each match's slot rows sum to 1/M), scaled like L_pg; it reaches the timing head and the trunk. The
+    card / cell L_pg keeps the play-only batch's weights; its ratio monitors are the played rows'."""
     if hasattr(R, "fill"):                                    # LOOP-LRN stored_values: the anchor's terms of these rows
         R.fill(idx)
     t = policy_terms(model, B, idx, tau, T, value=vf is not None,
@@ -2879,6 +2918,17 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
             th0 = policy_terms(th_anchor[1], B, idx, tau, T, T_gate=T_gate)["th"]
         kl_th = th_anchor_kl(t["th"], th0)
         loss = loss + float(th_anchor[0]) * (kl_th if kl_w is None else kl_w["n"] * kl_th)
+    tst = None
+    if "lp_th" in B:                                          # OPP-LEARN-D timing_pg: PPO-clip on the slot-start timing
+        rt = torch.exp(t["lp_th"] - B["lp_th"][idx])          # decisions, own ratio + weights w_th (each match's slot rows
+        At = B["A"][idx]                                      # sum to 1/M); a row without one: lp 0 - 0, w_th 0
+        l_th = (B["w_th"][idx] * -torch.min(rt * At, rt.clamp(1 - clip, 1 + clip) * At)).sum() * (n_total / len(idx))
+        loss = loss + l_th
+        sl = B["w_th"][idx] > 0
+        with torch.no_grad():
+            dv = (rt[sl] - 1).abs()
+            tst = {"l_th": float(l_th), "th_ratio_maxdev": float(dv.max()) if sl.any() else 0.0,
+                   "th_clip_frac": float((dv > clip).double().mean()) if sl.any() else None, "th_n": int(sl.sum())}
     pst = None
     if posture is not None:
         ch = B["posture_new"][idx]
@@ -2917,12 +2967,14 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
         l_v = (wv * 0.5 * torch.max((v - ret) ** 2, (v_clip - ret) ** 2)).sum() * (n_total / len(idx))
         loss = (loss if vf["policy"] else 0.0) + float(vf["coef"]) * l_v
     with torch.no_grad():
-        dev_ = (ratio - 1).abs()
+        rr = ratio[pl] if tst is not None and pl.any() else ratio   # OPP-LEARN-D: the card / cell rows' ratio monitors
+        dev_ = (rr - 1).abs()
         st = {"l_pg": float(l_pg), "kl_gate": float(kl_g), "kl_card": float(kl_c), "kl_cell": float(kl_x),
               **({"kl_th": float(kl_th)} if kl_th is not None else {}),
-              "ratio_maxdev": float(dev_.max()), "ratio_mean": float(ratio.mean()),
+              "ratio_maxdev": float(dev_.max()), "ratio_mean": float(rr.mean()),
               "clip_frac": float((dev_ > clip).double().mean()), "n": len(idx),
-              "lp_maxdiff": {k: float((t[k] - B[k][idx]).abs().max()) for k in ("lp_gate", "lp_card", "lp_cell")},
+              "lp_maxdiff": {k: float((t[k] - B[k][idx]).abs().max())
+                             for k in ("lp_gate", "lp_card", "lp_cell") + (("lp_th",) if tst is not None else ())},
               "ent_gate": float(bern_ent(t["x"][gs]).mean()) if gs.any() else None,
               "ent_card": float(cat_ent(t["card_lp"][pl]).mean()) if pl.any() else None,
               "ent_cell": float(cat_ent(cl).mean()) if pl.any() else None}
@@ -2942,6 +2994,8 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
             st.update(pst)
         if ast is not None:
             st.update(ast)
+        if tst is not None:
+            st.update(tst)
     return loss, st
 
 
@@ -3019,11 +3073,11 @@ def vf_grad_share(model, B: dict, R: dict, cfg: dict, beta: float, vf: dict) -> 
             "trunk_tensors": len(trunk), "rows": int(len(idx))}
 
 
-_ST_SUM = ("l_pg", "l_v", "l_post", "l_ab", "n", "post_n", "ab_n")
-_ST_MAX = ("ratio_maxdev", "post_ratio_maxdev", "ab_ratio_maxdev", "is_maxdev")
+_ST_SUM = ("l_pg", "l_v", "l_post", "l_ab", "n", "post_n", "ab_n", "l_th", "th_n")
+_ST_MAX = ("ratio_maxdev", "post_ratio_maxdev", "ab_ratio_maxdev", "is_maxdev", "th_ratio_maxdev")
 _ST_W = {"kl_gate": "g", "ent_gate": "g", "ent0_gate": "g", "kl_card": "p", "kl_cell": "p", "ent_card": "p",
          "ent_cell": "p", "ent0_card": "p", "ent0_cell": "p", "ratio_mean": "n", "clip_frac": "n",
-         "ent_posture": "post_n", "ent_ability": "ab_n", "is_trunc_frac": "n", "kl_th": "n"}
+         "ent_posture": "post_n", "ent_ability": "ab_n", "is_trunc_frac": "n", "kl_th": "n", "th_clip_frac": "th_n"}
 
 
 def accum_backward(model, B: dict, R: dict, idx, micro: int, n_total: int, kw: dict) -> tuple[torch.Tensor, dict]:
@@ -3046,7 +3100,7 @@ def accum_backward(model, B: dict, R: dict, idx, micro: int, n_total: int, kw: d
         total = loss.detach() if total is None else total + loss.detach()
         sts.append(st)
         wts.append({"g": int(B["gate_sampled"][ii].sum()), "p": int(B["played"][ii].sum()), "n": len(ii),
-                    "post_n": st.get("post_n") or 0, "ab_n": st.get("ab_n") or 0})
+                    "post_n": st.get("post_n") or 0, "ab_n": st.get("ab_n") or 0, "th_n": st.get("th_n") or 0})
     out = {}
     for k in sts[0]:
         vals = [st[k] for st in sts]
@@ -3101,6 +3155,9 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
     N = len(B["A"])
     dev = B["A"].device
     mb = int(cfg["minibatch"])
+    if "lp_th" in B:                                          # OPP-LEARN-D timing_pg: the play-only batch's step count
+        mb = -(-N // max(1, -(-int(B["played"].sum()) // mb)))   # (minibatches of ~mb play rows + their share of slot rows)
+        N_th = int((B["w_th"] > 0).sum())
     first, last_ep, ep0 = None, [], []
     ratios, clips, gnorms = [], [], []
     mean = (lambda xs, k: float(np.mean([x[k] for x in xs if x[k] is not None])) if any(x[k] is not None for x in xs) else None)
@@ -3135,6 +3192,8 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
                 "kl_gate": mean(last_ep, "kl_gate"), "kl_card": mean(last_ep, "kl_card"),
                 "kl_cell": mean(last_ep, "kl_cell"), "l_pg": mean(last_ep, "l_pg"),
                 **({"kl_th": mean(last_ep, "kl_th")} if th_ref is not None else {}),   # OPP-LEARN-C th_anchor
+                **({"l_th": mean(last_ep, "l_th"), "th_clip_frac": mean(ep0, "th_clip_frac"), "th_n": N_th}
+                   if "lp_th" in B else {}),                                         # OPP-LEARN-D timing_pg
                 **({"kl_gate_imit_low": mean(last_ep, "kl_gate_imit_low")} if "low" in R else {}),
                 "ent": {h: mean(ep0, f"ent_{h}") for h in ("gate", "card", "cell")},
                 **({"ent_pair": {h: mean(pr, f"ent_{h}") for h in ("gate", "card", "cell")},
@@ -3874,7 +3933,8 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                               "tau_phase", "memory", "memory_aux", "memory_encoder_frozen",
                               "memory_zero_empty", "learner_deterministic", "kl_stop_prev", "stored_values",
                               "ent_init_rows", "lazy_refine", "ent_pair_every", "matches_per_update", "micro_batch", "mem_row_cache",
-                              "barrel_decoy_sim", "kl_lr_target", "ppo_decoupled", "th_anchor", "gate_baseline") + OPP_TEMPO_KEYS
+                              "barrel_decoy_sim", "kl_lr_target", "ppo_decoupled", "th_anchor", "gate_baseline",
+                              "timing_pg") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS and k not in CROWN_KEYS
                 and k not in HT.KEYS and k not in CF.KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
@@ -4060,6 +4120,8 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "freeze_heads"}
     if cfg.get("th_anchor") is None:                         # OPP-LEARN-C th_anchor off (absent or null) = historical hash
         cfg = {k: v for k, v in cfg.items() if k != "th_anchor"}
+    if cfg.get("timing_pg") is None:                         # OPP-LEARN-D timing_pg off (absent or null) = historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "timing_pg"}
     if cfg.get("posture_head") is None or cfg.get("posture_head") is False:   # C1 off (absent / null / false) = historical
         cfg = {k: v for k, v in cfg.items() if k not in POSTURE_KEYS}
     else:                                                    # C1 on: defaults filled, one hash for implicit / explicit
@@ -4257,6 +4319,12 @@ class Learner:
         if ta is not None and (isinstance(ta, bool) or not isinstance(ta, (int, float)) or not 0 < ta < math.inf
                                or not self.th):
             raise SystemExit(f"th_anchor must be null or a number > 0, on a timing-head (opponent) learner; got {ta!r}")
+        tp = cfg.get("timing_pg")                             # OPP-LEARN-D: the timing head in PPO (absent / null = off;
+        if tp is not None and (not (tp is True or (type(tp) is int and tp > 0)) or not self.th   # true = every slot row, or "timing" in (cfg.get("freeze_heads") or [])
+                               or cfg.get("ppo_decoupled") is not None):
+            #                                                   K = K slot rows per match)
+            raise SystemExit(f"timing_pg must be null, true or an int K > 0, on a timing-head (opponent) learner whose timing head is "
+                             f"not frozen, without ppo_decoupled; got {tp!r}")
         self.league = None                                    # league on: {"snapshots": [{id, update, path}]}
         if cfg.get("league"):
             self._league_setup()
@@ -4931,7 +4999,8 @@ class Learner:
                           **({"spell": sv} if sv is not None else {}),
                           **({"crown": ct} if ct is not None else {}),
                           **({"habit": hbt} if hbt is not None else {}),
-                          **({"cf": cfc} if cfc is not None else {}))
+                          **({"cf": cfc} if cfc is not None else {}),
+                          **({"timing_rows": cfg["timing_pg"]} if type(cfg.get("timing_pg")) is int else {}))
         if cfc is not None and os.environ.get("CF_DUMP"):    # cf_credit L1 pilot: every sample of this update (no cfg key)
             with open(os.environ["CF_DUMP"], "a", encoding="utf-8") as fh:
                 for r in results:
@@ -5052,7 +5121,10 @@ class Learner:
         if getattr(self, "th", False):                        # OPP-LEARN-C: frozen-head output drift vs the init
             if getattr(self, "th_rows", None) is None:        # ponytail: rows fixed per PROCESS (a resume re-picks them
                 n = min(len(B["A"]), TH_DRIFT_ROWS)           # from its first batch; the reference stays the init)
-                self.th_rows = E.gen_batch(self.model, B, torch.arange(n, device=B["A"].device))
+                ii = torch.arange(n, device=B["A"].device)
+                if "lp_th" in B:                              # OPP-LEARN-D timing_pg: the first PLAY rows (the play-only
+                    ii = B["played"].nonzero().squeeze(-1)[:TH_DRIFT_ROWS]   # batch's rows: comparable with arms A-C)
+                self.th_rows = E.gen_batch(self.model, B, ii)
             th_dr = th_drift(self.model, getattr(self, "ref_init", self.ref), self.th_rows)
             self.log(f"[rl] th_drift u{u:04d} rows {th_dr['rows']} " + " ".join(
                 f"{k} mad {v['mad']:.2e} max {v['max']:.2e} p {v['p_init']:.4f}->{v['p_now']:.4f} tick_kl {v['tick_kl']:.2e}"
@@ -5078,6 +5150,7 @@ class Learner:
             bad = first["ratio_maxdev"] >= ASSERT_RATIO or max(kl0) >= ASSERT_KL or (
                 (first.get("post_ratio_maxdev") or 0.0) >= ASSERT_RATIO) or (     # C1: the posture's own ratio
                 (first.get("ab_ratio_maxdev") or 0.0) >= ASSERT_RATIO) or (       # B6: the press's own ratio
+                (first.get("th_ratio_maxdev") or 0.0) >= ASSERT_RATIO) or (       # OPP-LEARN-D timing_pg's own ratio
                 (first.get("is_maxdev") or 0.0) >= ASSERT_RATIO)                  # ppo_decoupled: stored vs recompute
             if glo is not None:
                 self.log(f"[rl] kl_ref_gate_max_elixir {glo['max_elixir']}: update-0 KL_gate_imit_low to "
@@ -5092,7 +5165,8 @@ class Learner:
                              f"{first['ratio_maxdev']:.3g} (< {ASSERT_RATIO}), KL gate/card/cell {first['kl_gate']:.3g}/"
                              f"{first['kl_card']:.3g}/{first['kl_cell']:.3g} (< {ASSERT_KL}), lp max diffs "
                              f"{first['lp_maxdiff']}, posture max|ratio-1| {first.get('post_ratio_maxdev')}, ability "
-                             f"max|ratio-1| {first.get('ab_ratio_maxdev')} -- a bug "
+                             f"max|ratio-1| {first.get('ab_ratio_maxdev')}, timing max|ratio-1| "
+                             f"{first.get('th_ratio_maxdev')} -- a bug "
                              f"between the stored forward and the recompute")
         reasons, crash = [], False
         if upd["nonfinite"]:
@@ -5164,6 +5238,9 @@ class Learner:
                "actor_gpu_peak_mb": {a: s["gpu_peak_mb"] for a, s in rinfo["actors"].items()}}
         if "kl_th" in upd:                                     # OPP-LEARN-C th_anchor: the pull term (last-epoch mean)
             rec["kl_th"], rec["th_anchor"] = upd["kl_th"], float(cfg["th_anchor"])
+        if "l_th" in upd:                                      # OPP-LEARN-D timing_pg: the timing term (last-epoch mean)
+            rec["timing_pg"] = {k: upd[k] for k in ("l_th", "th_clip_frac", "th_n")}
+            rec["timing_pg"]["th_ratio_maxdev_first"] = (upd["first"] or {}).get("th_ratio_maxdev")
         if th_dr is not None:                                  # OPP-LEARN-C frozen-head drift (timing-head learner only)
             rec["th_drift"] = th_dr
         if gae_on:
@@ -5267,7 +5344,9 @@ class Learner:
                  + (f"kl_stop {'e%d mb%d KL %.4f' % (upd['kl_stop']['epoch'], upd['kl_stop']['minibatch'], upd['kl_stop']['kl']) if upd['kl_stop'] else 'no'} "
                     f"steps {upd['steps']} " if "kl_stop" in upd else "")
                  + f"mixed {bst['mixed_groups']}/{bst['groups']} rows {bst['rows']} "
-                 f"wall roll {t_roll:.0f}s upd {t_upd:.0f}s"
+                 + (f"timing_pg rows {upd['th_n']} l_th {f(upd['l_th'], '{:+.5f}')} clip {f(upd['th_clip_frac'])} "
+                    if "l_th" in upd else "")
+                 + f"wall roll {t_roll:.0f}s upd {t_upd:.0f}s"
                  + (f" | gae{' WARMUP (critic only)' if warm else ''} vloss {f(upd['l_v'], '{:.4f}')} ev "
                     f"{f(gst['explained_var'])} A {f(gst['adv_mean'], '{:+.4f}')}/{f(gst['adv_std'], '{:.4f}')} "
                     f"ret {f(gst['ret_mean'], '{:+.3f}')} V {f(gst['v_mean'], '{:+.3f}')} vshare "
@@ -5376,6 +5455,8 @@ class Learner:
         base["gen"] = getattr(self, "gen", None)
         if getattr(self, "th", False):                        # OPP-LEARN: actors rebuild the opponent architecture
             base["opp_init"] = str(self.init_path)
+            if self.cfg.get("timing_pg"):                     # OPP-LEARN-D (absent: base unchanged)
+                base["timing_pg"] = True
         base["runtime"] = getattr(self, "runtime", None)
         base["seed"] = self.cfg["seed"]                                       # rollout_jobs: per-(update, job) pipelining draw
         tg = self.cfg.get("T_gate")

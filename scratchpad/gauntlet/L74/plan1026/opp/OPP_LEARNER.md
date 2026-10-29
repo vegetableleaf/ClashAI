@@ -30,6 +30,74 @@ adapt_beta fixed at lambda; freeze_heads absent / refusals; config_sha(absent) =
 unchanged without the opp init. Existing: test_timing_head_decode + test_league 42 passed, 1 skipped, 2 failed -- the same
 2 (TestSelfPlayCounters, x_bow vs x-bow names) fail on the unchanged tree too (a: pre-existing).
 
+## OPP-LEARN-D (2026-10-29): the timing head under RL (`timing_pg`)
+
+### STATUS (keep current)
+- RUNNING: arm D `oplc_ftR_l003_a10_tpg32m` on 33308 GPU0 (replaced arm B, stopped by the lead at its plateau), CPUs 124-145,
+  PIDs 117589 (timeout) / 117593, started 2026-10-29 ~17:05 UTC, config sha 12b896c627e5, tree /workspace/oplc/cbd (= cb2 +
+  this change; cbd_base = the untouched copy). = arm B + `freeze_heads=[ability] timing_pg=32` (the one change) + micro_batch
+  256 (memory only: the same minibatches / steps, exact since 1881673): ftR init, beta 0.03, th_anchor 10, lr 3e-5, cap 400,
+  save_every 10. Log /workspace/oplc/logs/oplc_ftR_l003_a10_tpg32m.log. D3 evals: the lead's lead_d3_loop.sh (every 40
+  updates). Owner rule: runs until a clear plateau (best D3 not improved >= 2 pp for >= 50 updates).
+- The first launch `oplc_ftR_l003_a10_tpg32` (no micro_batch) died at u0003: CUDA OOM (learner 21.1 GB; u0 peak 17.6 GB grew
+  through u2). With micro_batch 256: learner peak 8.5 GB, GPU0 15.0 / 24.5 GB (= arm B's).
+- WATCH: GPU0 headroom (learner_gpu_peak_mb in train_log, ~8.5 GB); ppm vs ftR 7.94 (u0-u1 8.11 / 8.13; the guard stops
+  outside [0.6, 1.6]x of u0); th_drift hazard mad on the fixed play rows (u0 4.3e-3; arm B reached 9.7e-3 at u142 with the
+  timing head frozen); the timing log fields `timing_pg rows 8192 l_th ... clip ...`.
+- Restart (after a checkpoint; stop by exact PID first): the launch below + `--resume`.
+  `cd /workspace/oplc && CB=/workspace/oplc/cbd TABLES=/workspace/crforge_cache/tables/16.635.3 GPU=0 LOGS=/workspace/oplc/logs XMX=3g TMO=172800 FAST_ARGS="--producers 2 --matches 64 --threads 6 --devices cuda:0" setsid nohup bash fl_pod.sh fast oplc_ftR_l003_a10_tpg32m 124-145 scratchpad/gauntlet/L74/plan1026/opp/learner/opp_learner_calib.yaml init=/workspace/oplc/opp_ft_s0_R_sim.pt beta0=0.03 beta_min=0.03 beta_max=0.03 lr=3.0e-5 th_anchor=10.0 "freeze_heads=[ability]" timing_pg=32 micro_batch=256 max_updates=400 save_every=10 learner_device=cuda n_actors=1 < /dev/null > logs/oplc_ftR_l003_a10_tpg32m.out 2>&1 &`
+- u0-u2 of the first (OOM'd) launch (a): u0 rollout = arm B's u0 exactly (192,939 rows, W/L 71/185); learner GPU peak 17,634 MB (GPU0 22.4 / 24.5 GB with
+  the producers); update 50 s (B 25 s), ~4 min per update. Rows 14,897 (8,192 timing = 256 matches x 32). KL c/x u2 .0064 /
+  .0133 (B .0060 / .0115); hazard mad on the 1,024 fixed play rows 4.3e-3 / 5.5e-3 / 6.2e-3 (B 3.5e-3 / 4.5e-3 / 5.3e-3); ppm
+  8.11 / 8.23 / 8.14 (ftR 7.94).
+
+### (a) Why the arms could not train timing
+e1_eval.th_record recorded every slot-start row with th_j but lp_gate 0 and gate_sampled False; rl_royale.collate keeps
+gate_sampled | played rows (arm B u0142: 6,954 of ~96k learner rows); policy_terms gives a timing model x = 0. So hazard /
+tick never enter the PPO ratio; only th_anchor touches their outputs. Unit test: the arms' loss gives timing_head no gradient
+even unfrozen (test_opp_timing_pg::test_off_the_timing_head_gets_no_gradient).
+
+### What was built (opt-in; absent / null = config hash, rollout rows and batch unchanged)
+- `timing_pg: true | K` (rl_royale; refused unless a timing-head learner with the timing head NOT frozen; refused with
+  ppo_decoupled). actor_base -> actor_cfg `th_pg` -> e1_eval.th_record stores `lp_th` per row = the taken slot decision's
+  log-prob (wait log(1 - h), play at tick j log h + log softmax(tick)[j]; 0 at drawn ticks / game over), float64 of the
+  float32 heads; _record / _traj_arrays carry it (the fast loop's timing seat uses these production functions).
+- collate: + the slot-start rows (true = all, K = K per match uniform without replacement, the draw fixed by the result's
+  row_key: `th_sample`); the card / cell rows keep the play-only batch's weights bit for bit; the timing rows get `w_th`
+  (each match's sum to 1/M: unbiased for the per-match mean). minibatch_loss: a SEPARATE PPO-clip term (own ratio, clip 0.2,
+  A = the match LOO) on lp_th, gradient into the timing head + trunk; th_anchor (KL(init || now) of hazard + tick) is its
+  pull; card / cell ratio monitors = the played rows'. _ppo_steps keeps the play-only batch's steps per epoch (minibatch =
+  ~mb play rows + their share of the timing rows). Monitors: log `timing_pg rows N l_th X clip Y`, rec["timing_pg"], the
+  update-0 on-policy check includes the timing ratio. th_drift keeps the first 1,024 PLAY rows (comparable with A-C).
+- Why not the literal joint ratio (lead agreed 10-29): under the per-match row weights 1/(n_rows M) the ~13x slot rows would
+  cut each card / cell row's weight ~13x (beta acting ~13x stronger) and minibatch 256 would give ~13x Adam steps.
+- Why K = 32 (lead 10-29): all slot rows = one ~3.5k-row minibatch (smokes OOM'd the 125 GB cgroup on CPU; a 4090 would too)
+  and ~13x learner cost (~8 min / update); K 32 = ~2x rows. The variance K adds: see below (owed).
+- compare.py: lp_th joins the float-noise keys (LP).
+
+### Finding: micro_batch KL scaling (fixed, 1881673)
+accum_backward summed per-micro-batch minibatch_loss values whose beta x KL and th_anchor terms are MEANS, so with beta > 0
+or th_anchor the pull grew with the micro-batch count (tests ran at beta 0). Fixed: each micro-batch's KL means x its row
+share (minibatch_loss kl_w; None = old code). beta 0 runs unchanged. Test with beta 0.5 red on base, green with the fix.
+
+### Tests / smokes (a)
+- pipeline/tests/test_opp_timing_pg.py 8 passed (33308). With test_opp_learner, test_timing_head_decode, test_league,
+  test_learner_fast_accum, test_rl_royale: 111 passed, 3 failed = the same 3 on the base tree (2 TestSelfPlayCounters,
+  test_one_minibatch_gradient). pyflakes: the 2 pre-existing e1_eval warnings only.
+- 33308 smokes (crforge fe364ceb, tables 16.635.3, CPU learner, logs /workspace/oplc/logsd):
+  | run | config | u0 batch / weights | u1 batch / weights | result |
+  |---|---|---|---|---|
+  | oplcd_s48_base / _new | succ48_x_s101 b5e2a2bbafef | 1258dce4 / 3e07cff4 | 6639f498 / 76597674 | base = new |
+  | oplcd_tpg_prod2 / _fl2 | bot + th_anchor 10 + timing_pg true + micro_batch 256 (8a33d0b3925a) | fa885119 / b3eaf2ad | d1f72b96 / 35a1f631 | prod = fast, SMOKE PASS both |
+  | oplcd_k32_prod / _fl | bot + th_anchor 10 + timing_pg 32 | 37c60ee2 / b3eaf2ad | 4f7f4712 / cc8b1025 | prod = fast, SMOKE PASS both |
+  | oplcd_s48_new2 (final code) | succ48_x_s101 b5e2a2bbafef | 1258dce4 / 3e07cff4 | 6639f498 / 76597674 | = base, SMOKE PASS |
+  | oplcd_bot_base / _new (final code) | bot + th_anchor 1.0, timing_pg absent (094d06414628) | 56ac16cc / b3eaf2ad | 33d2272c / d79eca6e | base = new, SMOKE PASS both |
+  compare.py fast vs production on tpg_fl2's u0 msg (CPU, /workspace/oplc/cmp_tpg_cpu2.json): 8/8 identical, lp_th max diff
+  0, memory tables 8/8, ability 8/8. CPU update cost: all slot rows 2,712 s (3,043 rows), K 32 398 s (432 rows).
+
+### Codex dispatches
+- none (the work was design + diagnosis; pod waits were scripted).
+
 ## OPP-LEARN-C (2026-10-29): bot-partner decode, frozen-head drift monitor, fast-loop learner seat, calibration
 
 ### STATUS (keep current)

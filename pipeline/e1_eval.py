@@ -785,18 +785,22 @@ def timing_decide_batch(model, enc, heads, allowed: np.ndarray, matches: Sequenc
         out.append({"play": False, "slot": -1, "cell": -1, "why": "no_affordable"} if got is None else
                    {"play": True, "slot": got[0], "cell": got[1], "why": "timing"})
     if cfg.get("record"):
-        th_record(out, allowed, matches, hz, card, cell, ab_j, T)
+        th_record(out, allowed, matches, hz, card, cell, ab_j, T, tk if cfg.get("th_pg") else None)
     return out
 
 
-def th_record(out: list, allowed: np.ndarray, matches: Sequence, hz, card, cell, ab_j: list, T: float) -> None:
+def th_record(out: list, allowed: np.ndarray, matches: Sequence, hz, card, cell, ab_j: list, T: float,
+              tk=None) -> None:
     """OPP-LEARN (a timing-head LEARNER seat, cfg["record"]): sample_decide_batch's record fields on every row, in place.
     Only card / cell act through the policy the learner trains (timing / ability heads frozen: ``freeze_heads``), so
     the behaviour log-probs are lp_card / lp_cell of the play rows (the mask = the seat's REAL allowed slots, as drawn;
     float64 of the float32 heads at T, rl_royale.policy_terms' recompute); lp_gate 0 and gate_sampled False on every row
     (there is no gate). Labels of the frozen heads: th_j = the tick-in-slot drawn at a slot start (-1 no play this slot),
     -2 at a drawn tick (the play row of an earlier slot start), -3 game over; th_ab = the tick an ability press was
-    queued at this slot start, -1 none. p_gate = sigmoid(hazard) (the monitors' p)."""
+    queued at this slot start, -1 none. p_gate = sigmoid(hazard) (the monitors' p).
+    ``tk`` (OPP-LEARN-D, cfg th_pg = rl_royale timing_pg; None = no key, rows unchanged): + lp_th = the log-prob of the
+    slot-start timing decision taken (timing_slot_draw: wait log(1 - h), a play at tick j log h + log softmax(tick)[j];
+    float64 of the float32 heads, T 1 as drawn), 0 on rows that decide no timing (th_j -2 / -3)."""
     import torch
     for r, (d, m) in enumerate(zip(out, matches)):
         lc = lx = 0.0
@@ -811,6 +815,15 @@ def th_record(out: list, allowed: np.ndarray, matches: Sequence, hz, card, cell,
         d.update(allowed=allowed[r].copy(), stalled=False, gate_sampled=False, lp_gate=0.0, lp_card=lc, lp_cell=lx,
                  p_gate=float(1.0 / (1.0 + math.exp(-float(hz[r])))), T=T, th_j=int(j),
                  th_ab=-1 if ab_j[r] is None else int(ab_j[r]))
+        if tk is not None:                                    # OPP-LEARN-D timing_pg: the slot decision's log-prob
+            x = float(hz[r])
+            lt = 0.0
+            if j == -1:
+                lt = -float(np.logaddexp(0.0, x))             # log(1 - sigmoid(x))
+            elif j >= 0:
+                z = np.asarray(tk[r], np.float64)
+                lt = -float(np.logaddexp(0.0, -x)) + float(z[j] - z.max() - np.log(np.exp(z - z.max()).sum()))
+            d["lp_th"] = lt
 
 
 def gen_row_keys(model):
@@ -1640,6 +1653,8 @@ class Match:
                 row = {**row, **{k: d[k] for k in ability_defaults()}}
             if "th_j" in d:                                   # OPP-LEARN: a timing-head learner seat's frozen-head labels
                 row = {**row, "th_j": d["th_j"], "th_ab": d["th_ab"]}
+            if "lp_th" in d:                                  # OPP-LEARN-D timing_pg: the slot decision's log-prob
+                row = {**row, "lp_th": d["lp_th"]}
             self.traj.append({**row, "allowed": d["allowed"],
                               "stalled": d["stalled"], "gate_sampled": d["gate_sampled"], "played": d["play"],
                               "slot": d["slot"], "cell": d["cell"], "lp_gate": d["lp_gate"], "lp_card": d["lp_card"],
@@ -1826,6 +1841,8 @@ class Match:
         if tj:                                               # OPP-LEARN: an opponent model's context ids + timing labels
             for k in opp_row_keys(tj[0]) + (("th_j", "th_ab") if "th_j" in tj[0] else ()):
                 out[k] = scalar(k, np.int64)
+            if "lp_th" in tj[0]:                              # OPP-LEARN-D timing_pg
+                out["lp_th"] = scalar("lp_th", np.float64)
         if tj and "forced" in tj[0]:                         # plan1026 P1: rule-forced rows (sample decide SAMPLE_RULES)
             out["forced"] = scalar("forced", bool)
         if tj and "phi_state" in tj[0]:                      # cfg["record_phi"]: reward_shaping.phi_record rows
