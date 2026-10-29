@@ -96,6 +96,7 @@ OWN_NEARDEAD = os.environ.get('SME_OWN_NEARDEAD', '0') == '1'   # ENG-FIX, deplo
 OWN_BODYPT = os.environ.get('SME_OWN_BODYPT', '0') == '1'       # ENG-FIX, deployments' own-tap pairing (comment there)
 OWN_BODYPT_D = 750                                               # units: the Knight back-row clamp moves 500
 NEAR_BIGGER = os.environ.get('SME_NEAR_BIGGER', '0') == '1'     # ENG-FIX, deployments' near list (comment there)
+NEAR_BIGGER2 = os.environ.get('SME_NEAR_BIGGER2', '0') == '1'   # ENG-FIX2, the narrower NEAR_BIGGER (comment there)
 # ENG-FIX2 (SME_SPELL_KING=1, off by default): a king-thrown projectile spell is dated by how far it flew. Its first two
 # sightings give the speed v per tick; if the first lies on the line king -> aim (<= 50 units off) and k = |P1 - king| / v
 # is whole (+-0.05), crforge's run tick is first - k (the SIM's shot is k steps from the king on frame first). The window
@@ -732,6 +733,17 @@ def deployments(m, catalog, life=None, own_unit=None, stats=None):
         # is not living). FRESH2 101018@5968: a second Goblinstein (monster 3578 hp, doctor 1153) beside the first play's
         # living doctor (479 / 1153 hp, 1,394 units away) was dropped as that doctor's child; its doctor as a role-child.
         if NEAR_BIGGER:
+            near = [q for q in near if not (q['max_hp'] < .95*r['max_hp'] and q['last'] > r['first'] + 2)]
+        # ENG-FIX2 (SME_NEAR_BIGGER2=1, off by default): NEAR_BIGGER only for a body whose max hp (+-1%) equals a body of an
+        # EARLIER play group of its side and card (a group started > 6 ticks before it): one card at one level makes bodies of
+        # one max hp, so a second play repeats it. NEAR_BIGGER's dev false plays all have a new max hp: hero Dark Prince
+        # 2167 beside plays of 1918, hero Musketeer 2454 beside 1153, the Little Prince guardian 2556 beside 1116; FRESH2
+        # 101018's second Goblinstein monster 3578 = the first play's monster (engfix/nearbig2_*). Tried and rejected: the
+        # smaller body from an earlier play only (kept 6 / 7 dev logs' false plays); own-unit hp + deploying + own half
+        # (FRESH2 081253: a hero Musketeer 2454 body deploying in its own half).
+        if NEAR_BIGGER2 and any(g['side'] == r['side'] and g['card_id'] == r['card_id'] and g['tick'] < r['first'] - 6
+                                and any(abs(b['max_hp'] - r['max_hp']) <= .01 * r['max_hp'] for b in g['members'])
+                                for g in groups):
             near = [q for q in near if not (q['max_hp'] < .95*r['max_hp'] and q['last'] > r['first'] + 2)]
         c = catalog[r['card_id']]
         # H-NEARPARENT (diag_night/r5c): a body of the card's own unit (a level's max_hp) next to a LIVING same-size body of

@@ -2554,6 +2554,20 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
     at (14838, 11863), in the opponent's NON-own half) and Little Prince 221406 (guardian 2556). The first variant
     removed the Little Prince extras, so the combination leaves only 154839. Its candidate separator (b, untested): the
     deploy point lies outside the side's legal half. The FRESH census of this variant was stopped (dev decides).
+    **Legal-half separator: contradicted (c).** Own-unit hp + deploying + own half + earlier play clears all 7 dev logs
+    and FRESH2's Dark Prince / Little Prince extras, but not FRESH2 081253@705: a hero Musketeer 2454-hp body deploying
+    20 ticks in its OWN half (14926 < 16000).
+    **Committed instead: SME_NEAR_BIGGER2 = "same max hp as an earlier play" (fights.deployments, off by default).**
+    NEAR_BIGGER applies only when the new body's max hp is within 1% of a body of an EARLIER play group of its side and
+    card (a group started > 6 ticks before it). The reasoning: one card at one level makes one max hp. Every false extra
+    has a new max hp (hero Dark Prince 2167 vs 1918, hero Musketeer 2454 vs 1153, Little Prince guardian 2556 vs 1116);
+    101018's monster 3578 equals the first play's (a).
+    Census (a, `engfix/nearbig2_dev.txt` for the old rule's 7 dev firings, `nearbig2_samehp_fresh.txt` FRESH1-5 273 logs):
+    on dev the old rule changes 7 logs and the new rule 0; on FRESH1-5 the old rule changes 19 and the new rule 2.
+    Those 2 are 101018 (the target) and FRESH4 171948@5848, a Giant Skeleton of 5908 hp beside a living 5370 one with
+    an earlier 5908-hp play. That one is plausibly a real play (b); the match is flagged opp_no_fitting_deal either way.
+    Planted `engfix/nearbig2_test.py` ok 3. Owed: the SME no-regression on the 2 changed records before fresh_prep
+    takes it.
     101018's second monster deploys 20 ticks inside its own half (a).
   - **Running:** Codex ENG-FIX2_1 (pid file `.foreman/scratch/a2/codex/out/ENG-FIX2_1.jsonl.pid` = 2047381, ticket
     `.foreman/scratch/a2/codex/ENG-FIX2_1.md`, results `engfix/r6/`): SPELL_KING + HIDDEN_CHILD OFF vs ON on dev /
