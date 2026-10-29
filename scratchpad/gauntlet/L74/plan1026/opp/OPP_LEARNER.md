@@ -72,7 +72,16 @@ even unfrozen (test_opp_timing_pg::test_off_the_timing_head_gets_no_gradient).
 - Why not the literal joint ratio (lead agreed 10-29): under the per-match row weights 1/(n_rows M) the ~13x slot rows would
   cut each card / cell row's weight ~13x (beta acting ~13x stronger) and minibatch 256 would give ~13x Adam steps.
 - Why K = 32 (lead 10-29): all slot rows = one ~3.5k-row minibatch (smokes OOM'd the 125 GB cgroup on CPU; a 4090 would too)
-  and ~13x learner cost (~8 min / update); K 32 = ~2x rows. The variance K adds: see below (owed).
+  and ~13x learner cost (~8 min / update); K 32 = ~2x rows.
+- The variance K 32 adds (a; learner/timing_pg/tpg_var.py on a 64-match ftR timing_pg rollout, records /workspace/oplc/rec_d,
+  24,538 slot rows; gradient of the timing term at the init): |g_all| 0.113; K 32, 3 draws: |g_K| 0.303 / 0.319 / 0.313,
+  cos(g_K, g_all) 0.35 / 0.65 / -0.03, |g_K - g_all| / |g_all| 2.5 / 2.3 / 3.0 -> the subsample adds noise of ~2.7x the
+  full gradient's norm (variance ~7x |g_all|^2). For scale, g_all itself is mostly match noise: cos between the two match
+  halves -0.03 / 0.46 (2 splits). So at 256 matches / update the timing step is noise-dominated either way, and K 32 makes
+  it several times noisier (b: whether that slows timing learning materially is untested; the lever is a larger K once
+  the learner cost allows, e.g. K 128 at ~3x rows, or more matches per update).
+- Drift so far (a, arm D): hazard mad on the fixed play rows u0 4.3e-3, u41 8.9e-3, u46 1.04e-2 (arm B, timing frozen, was
+  9.7e-3 at u142); mean p .1966 -> .2010 at u46; ppm 8.11 (u0) -> 8.34 (u41) / 8.40 (u46) (ftR 7.94); train W/L u41 130/126.
 - compare.py: lp_th joins the float-noise keys (LP).
 
 ### Finding: micro_batch KL scaling (fixed, 1881673)
