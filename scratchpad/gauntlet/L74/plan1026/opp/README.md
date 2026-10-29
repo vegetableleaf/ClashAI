@@ -21,7 +21,7 @@ python cbt/.../opp/level_a.py --ckpt runs/NAME/opp_NAME_s0.pt --data hf_slot_NEW
 ```
 Live split: `live_split.json` (frozen 2026-10-28 09:06 EDT, never rewritten; sealed = every log from 20261028_090648).
 
-## STATUS (P2-OPP2, account 2; updated 2026-10-29 05:30 UTC; keep current)
+## STATUS (P2-OPP2, account 2; updated 2026-10-29 06:30 UTC; keep current)
 RESULTS 10-29 (a; THRESHOLDS v6 26568167; level B = CLXIII D3 vs the opponent at T 1, fe364ceb, G2 on, seeds 741200 742000
 742800 743600; files results/{v0fix,v1_s0,ft_s0}/):
 
@@ -31,10 +31,10 @@ RESULTS 10-29 (a; THRESHOLDS v6 26568167; level B = CLXIII D3 vs the opponent at
 | level A HF: timing KS / ability KS | 0.045 / 0.43 | 0.0145 (pass) / 0.39 | - | |
 | level A live_cal: card / cell / timing KS | - | 54.6 / 21.5% / 0.117 | 56.0 / 24.0% / 0.043 | |
 | live_cal hazard vs rate / slot ECE | - | 0.107 vs 0.080 / 2.67 pp | 0.086 vs 0.080 / 0.61 pp | |
-| B-live RMS d (1,920 / 1,919 games) | 0.33 | 0.34 | running | <= 0.20 (stretch 0.05) |
-| C-live AUC | 0.984 | 0.977 | running | <= 0.60 |
-| lock / zero-lock / P(lock / fail) (live .47/.12/.36) | .75/.00/.70 | .70/.01/.64 | running | v6 margins |
-| CLXIII SIM win | 88.3% | 82.2% | running | 30-50% |
+| B-live RMS d (1,920 / 1,919 / 1,920 games) | 0.33 | 0.34 | 0.31 | <= 0.20 (stretch 0.05) |
+| C-live AUC | 0.984 | 0.977 | 0.974 | <= 0.60 |
+| lock / zero-lock / P(lock / fail) (live .47/.12/.36) | .75/.00/.70 | .70/.01/.64 | .75/.00/.68 | v6 margins |
+| CLXIII SIM win | 88.3% | 82.2% | 88.4% | 30-50% |
 
 Fine-tune: /workspace/opp/live/run_ft.sh (bs 128, lr 2e-5, 12k steps, held-out = live split 1 tail), data mix_rows.py ->
 /workspace/opp/live/mix_train (398,096 + 46,935 live, 111,379 HF = 20.0%); best 11k total 5.206; live rows carry no ability
@@ -42,7 +42,11 @@ labels (w_ab 0). Chain /workspace/opp/live/after_ft.sh: _sim.pt (band 6 / mode 1
 level B ftR (rows /workspace/opp/score/rows/ftR, log /workspace/opp/score/ftR.out; resumable: rerun its last line).
 crforge fe364ceb crashed one v1s0 worker (UnsupportedOperationException target_is_ground on PrincessTower_1_2): that block's
 D3/matches.jsonl is empty; merge the worker files (cat D3/0*/matches.jsonl) before tab_closed.py. card.py needs icebow/.venv python.
-Seed 1 (PID 5431, run_s1) at ~35k / 100k.
+Seed 1 (PID 5431, run_s1) running, ETA ~10:30 UTC. Nothing else of mine runs on 33903 (level B ftR DONE 06:13).
+Reading (a): every column FAILS the pilot bar. The fine-tune fixes live TIMING (live_cal KS 0.117 -> 0.043) and nudges style
+(RMS 0.34 -> 0.31) but not strength (CLXIII 88.4%) or siege defence (lock 0.75 vs 0.47): imitation alone leaves the opponent far
+weaker than live humans at stopping X-Bow locks. Next lever = strength calibration (V1-STRENGTH / LOOP-INT2), base checkpoint
+/workspace/opp/live/ft_s0/opp_ft_s0_R_sim.pt (closest style + live timing); v1 s0 _sim.pt is the stronger one (82.2%).
 
 ## STATUS history (P2-OPP2, 2026-10-28 22:20 UTC)
 RUNNING on 33903 (22:20 UTC; ssh -p 33903 root@157.157.221.29):
