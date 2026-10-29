@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Name the handoff",
+    "lang": "bash",
+    "prompt": "Print the repo-relative path to the handoff on one line. Example output: `HANDOFF.md`. Use `printf`; this task practices spelling, not file reading.",
+    "starter": "# TODO: write the requested read-only Bash command(s).\nprintf 'unfinished\\n'\n",
+    "expect": "\\AHANDOFF\\.md\\n?\\Z",
+    "hint": "Single quotes keep the path literal.",
+    "solution": "printf 'HANDOFF.md\\n'",
+    "id": "e1"
+  },
+  {
+    "title": "Check the shared folder",
+    "lang": "bash",
+    "prompt": "Use `ls -d` to check the real shared-code folder. Example output: `pipeline/`.",
+    "starter": "# TODO: write the requested read-only Bash command(s).\nprintf 'unfinished\\n'\n",
+    "expect": "\\Apipeline/\\n?\\Z",
+    "hint": "The -d option displays the directory itself.",
+    "solution": "ls -d pipeline/",
+    "id": "e2"
+  },
+  {
+    "title": "Translate an absolute route",
+    "lang": "bash",
+    "prompt": "Print the Git Bash spelling of `C:\\Users\\benpe\\ClashBot\\HANDOFF.md`. Use a lowercase drive letter. Example prefix: `/c/Users/`.",
+    "starter": "# TODO: write the requested read-only Bash command(s).\nprintf 'unfinished\\n'\n",
+    "expect": "\\A/c/Users/benpe/ClashBot/HANDOFF\\.md\\n?\\Z",
+    "hint": "Replace the drive prefix with /c and use forward slashes.",
+    "solution": "printf '/c/Users/benpe/ClashBot/HANDOFF.md\\n'",
+    "id": "e3"
+  },
+  {
+    "title": "Reason from a child folder",
+    "lang": "bash",
+    "prompt": "Imagine your working directory is `pipeline/`. Print the relative route to the handoff in its parent. Example pattern: `../filename`.",
+    "starter": "# TODO: write the requested read-only Bash command(s).\nprintf 'unfinished\\n'\n",
+    "expect": "\\A\\.\\./HANDOFF\\.md\\n?\\Z",
+    "hint": ".. means parent; this exercise prints the route without changing directories.",
+    "solution": "printf '../HANDOFF.md\\n'",
+    "id": "e4"
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "id": "e1",
+    "title": "Stable softmax",
+    "lang": "python",
+    "prompt": "Return row-wise softmax for a 2D array. Example: [1000,1000] becomes [0.5,0.5].",
+    "starter": "import numpy as np\ndef softmax(z):\n    # TODO: shift, exponentiate, normalise each row\n    return np.asarray(z)",
+    "tests": "with np.errstate(over='raise'):\n    assert np.allclose(softmax([[1000,1000]]),[[0.5,0.5]]), 'Avoid overflow for large scores'\na=np.array([[1,2,3],[-2,0,1]])\nassert np.allclose(softmax(a).sum(axis=1),1), 'Each row must sum to one'\nassert np.allclose(softmax(a),softmax(a+100)), 'Adding a row-wide constant must not change probabilities'",
+    "hint": "Keep dimensions while taking max and sum.",
+    "solution": "import numpy as np\ndef softmax(z):\n    z=np.asarray(z,dtype=float)\n    e=np.exp(z-z.max(axis=1,keepdims=True))\n    return e/e.sum(axis=1,keepdims=True)"
+  },
+  {
+    "id": "e2",
+    "title": "Top-1 accuracy",
+    "lang": "python",
+    "prompt": "Return fraction of row-wise argmax predictions matching labels; first index wins ties. Example: [[0.2,0.8],[0.6,0.4]], [1,1] gives 0.5.",
+    "starter": "import numpy as np\ndef accuracy(scores,labels):\n    # TODO: choose class per row\n    return 0.0",
+    "tests": "assert accuracy([[0.2,0.8],[0.6,0.4]],[1,1])==0.5, 'One of two predictions is correct'\nassert accuracy([[0.5,0.5]],[0])==1, 'First maximum wins ties'",
+    "hint": "Argmax axis=1 selects within rows.",
+    "solution": "import numpy as np\ndef accuracy(scores,labels):\n    return float((np.asarray(scores).argmax(axis=1)==np.asarray(labels)).mean())"
+  },
+  {
+    "id": "e3",
+    "title": "Multiclass NLL",
+    "lang": "python",
+    "prompt": "Return mean -log probability at each true label, clipping to [1e-12,1]. Example: true probabilities [0.8,0.6] give about 0.367.",
+    "starter": "import numpy as np\ndef nll(p,y):\n    # TODO: select true-class probabilities\n    return 0.0",
+    "tests": "assert np.isclose(nll([[0.8,0.2],[0.4,0.6]],[0,1]),-np.log([0.8,0.6]).mean()), 'Score the true class in each row'\nassert nll([[0.99,0.01]],[1])>4, 'A confident wrong answer needs a large penalty'\nassert np.isfinite(nll([[1,0]],[1])), 'Clip zero probabilities before logging'",
+    "hint": "Pair row indices with target indices.",
+    "solution": "import numpy as np\ndef nll(p,y):\n    p=np.asarray(p,dtype=float)\n    y=np.asarray(y,dtype=int)\n    selected=p[np.arange(len(y)),y]\n    return float(-np.log(np.clip(selected,1e-12,1)).mean())"
+  },
+  {
+    "id": "e4",
+    "title": "Binned ECE",
+    "lang": "python",
+    "prompt": "Given 1D confidence and correctness arrays, return weighted absolute confidence/accuracy gaps for equal-width bins over [0,1]. Include 1 in the final bin; skip empty bins. Example: [0.2,0.4,0.8,1], [0,1,1,1], bins=2 gives 0.15.",
+    "starter": "import numpy as np\ndef ece(confidence,correct,bins=2):\n    # TODO: weighted bin gaps\n    return 0.0",
+    "tests": "assert np.isclose(ece([0.2,0.4,0.8,1],[0,1,1,1],2),0.15), 'Weight each gap by its bin share'\nassert np.isclose(ece([1],[0],10),1), 'Probability one belongs in the final bin'\nassert np.isclose(ece([0.5,0.5],[1,0],10),0), 'Skip empty bins and preserve calibrated groups'",
+    "hint": "Use a different upper-bound comparison for the last bin.",
+    "solution": "import numpy as np\ndef ece(confidence,correct,bins=2):\n    c,r=np.asarray(confidence),np.asarray(correct)\n    total=0.0\n    for i in range(bins):\n        lower,upper=i/bins,(i+1)/bins\n        mask=(c>=lower)&((c<upper) if i<bins-1 else (c<=upper))\n        if mask.any():\n            total+=mask.mean()*abs(c[mask].mean()-r[mask].mean())\n    return float(total)"
+  },
+  {
+    "id": "e5",
+    "title": "Pairwise AUC",
+    "lang": "python",
+    "prompt": "Return positive-negative pairwise ranking accuracy with half credit for ties. Return None if either class is absent. Example: labels [1,1,0,0], scores [0.8,0.6,0.2,0.6] gives 0.875.",
+    "starter": "def auc(labels,scores):\n    # TODO: compare each positive against each negative\n    return 0.0",
+    "tests": "assert auc([1,1,0,0],[0.8,0.6,0.2,0.6])==0.875, 'Count three wins and one tie'\nassert auc([1,0],[0.1,0.9])==0, 'Reversed ranking gives zero'\nassert auc([1,0],[0.5,0.5])==0.5, 'Ties get half credit'\nassert auc([1,1],[0.2,0.3]) is None, 'AUC requires both classes'",
+    "hint": "Normalise by number of positive-negative pairs.",
+    "solution": "def auc(labels,scores):\n    pos=[s for y,s in zip(labels,scores) if y==1]\n    neg=[s for y,s in zip(labels,scores) if y==0]\n    if not pos or not neg:\n        return None\n    credit=sum(1 if p>n else 0.5 if p==n else 0 for p in pos for n in neg)\n    return credit/(len(pos)*len(neg))"
+  }
+]

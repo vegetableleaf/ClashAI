@@ -1,0 +1,63 @@
+[
+  {
+    "title": "Clean the input table",
+    "prompt": "Implement clean_rows(rows) returning columns ts,result,time. Preserve WIN/LOSS/DRAW and normalize other outcomes to unknown. Parse format '%Y%m%d_%H%M%S'. Example: {'ts':'bad'} has unknown result and missing time.",
+    "starter": "import pandas as pd\ndef clean_rows(rows):\n    # TODO: normalize records and parse time\n    return pd.DataFrame()",
+    "solution": "import pandas as pd\ndef clean_rows(rows):\n    records=[]\n    for r in rows:\n        result=r.get('derived')\n        if result not in ('WIN','LOSS','DRAW'): result='unknown'\n        records.append({'ts':r.get('ts'), 'result':result})\n    df=pd.DataFrame(records,columns=['ts','result'])\n    df['time']=pd.to_datetime(df['ts'],format='%Y%m%d_%H%M%S',errors='coerce')\n    return df\n",
+    "tests": "x=clean_rows([{'ts':'20260925_183254','derived':'WIN'},{'ts':'bad'}, {'derived':'DRAW'}])\nassert list(x.columns)==['ts','result','time'], 'Return the declared analysis columns'\nassert x['result'].tolist()==['WIN','unknown','DRAW'], 'Keep known draws and missing outcomes distinct'\nassert x['time'].notna().tolist()==[True,False,False], 'Parse only valid timestamps'\nassert clean_rows([]).empty, 'Handle an empty input file'",
+    "hint": "Build records with explicit columns before parsing.",
+    "id": "e1",
+    "lang": "python"
+  },
+  {
+    "title": "Split chronological halves",
+    "prompt": "Using supplied clean_rows, implement split_periods(df) returning early,late,invalid_date_count. Stable-sort valid dates; split at len(valid)//2. Example: three valid records produce sizes 1 and 2.",
+    "starter": "import pandas as pd\ndef clean_rows(rows):\n    records=[]\n    for r in rows:\n        result=r.get('derived')\n        if result not in ('WIN','LOSS','DRAW'): result='unknown'\n        records.append({'ts':r.get('ts'), 'result':result})\n    df=pd.DataFrame(records,columns=['ts','result'])\n    df['time']=pd.to_datetime(df['ts'],format='%Y%m%d_%H%M%S',errors='coerce')\n    return df\ndef split_periods(df):\n    # TODO: sort, split, report invalid dates\n    return df,df,0",
+    "solution": "import pandas as pd\ndef clean_rows(rows):\n    records=[]\n    for r in rows:\n        result=r.get('derived')\n        if result not in ('WIN','LOSS','DRAW'): result='unknown'\n        records.append({'ts':r.get('ts'), 'result':result})\n    df=pd.DataFrame(records,columns=['ts','result'])\n    df['time']=pd.to_datetime(df['ts'],format='%Y%m%d_%H%M%S',errors='coerce')\n    return df\ndef split_periods(df):\n    valid=df[df['time'].notna()].sort_values('time',kind='stable').copy()\n    cut=len(valid)//2\n    return valid.iloc[:cut].copy(),valid.iloc[cut:].copy(),int(df['time'].isna().sum())\n",
+    "tests": "x=clean_rows([{'ts':'20260927_000000'},{'ts':'bad'},{'ts':'20260925_000000'},{'ts':'20260926_000000'}])\na,b,u=split_periods(x)\nassert len(a)==1 and len(b)==2 and u==1, 'Split only valid records and report exclusions'\nassert a.iloc[0]['ts']=='20260925_000000' and b.iloc[-1]['ts']=='20260927_000000', 'Sort chronologically before splitting'\nassert len(x)==4, 'Do not discard rows from the caller table'",
+    "hint": "Use notna, sort_values(kind='stable'), and iloc slices.",
+    "id": "e2",
+    "lang": "python"
+  },
+  {
+    "title": "Compute period summaries",
+    "prompt": "Implement period_stats(df), returning wins,losses,draws,unknown,n,rate,ci. Use the supplied Wilson helper. Example: WIN,LOSS,unknown gives n=2,rate=.5.",
+    "starter": "import pandas as pd\ndef clean_rows(rows):\n    records=[]\n    for r in rows:\n        result=r.get('derived')\n        if result not in ('WIN','LOSS','DRAW'): result='unknown'\n        records.append({'ts':r.get('ts'), 'result':result})\n    df=pd.DataFrame(records,columns=['ts','result'])\n    df['time']=pd.to_datetime(df['ts'],format='%Y%m%d_%H%M%S',errors='coerce')\n    return df\nfrom math import sqrt\ndef wilson(w,n,z=1.96):\n    if n == 0:\n        return None\n    p=w/n\n    den=1+z*z/n\n    centre=(p+z*z/(2*n))/den\n    half=z*sqrt(p*(1-p)/n+z*z/(4*n*n))/den\n    return max(0,centre-half),min(1,centre+half)\ndef period_stats(df):\n    # TODO: count and calculate\n    return {}",
+    "solution": "import pandas as pd\ndef clean_rows(rows):\n    records=[]\n    for r in rows:\n        result=r.get('derived')\n        if result not in ('WIN','LOSS','DRAW'): result='unknown'\n        records.append({'ts':r.get('ts'), 'result':result})\n    df=pd.DataFrame(records,columns=['ts','result'])\n    df['time']=pd.to_datetime(df['ts'],format='%Y%m%d_%H%M%S',errors='coerce')\n    return df\nfrom math import sqrt\ndef wilson(w,n,z=1.96):\n    if n == 0:\n        return None\n    p=w/n\n    den=1+z*z/n\n    centre=(p+z*z/(2*n))/den\n    half=z*sqrt(p*(1-p)/n+z*z/(4*n*n))/den\n    return max(0,centre-half),min(1,centre+half)\ndef period_stats(df):\n    w=int((df['result']=='WIN').sum()); l=int((df['result']=='LOSS').sum())\n    d=int((df['result']=='DRAW').sum()); u=len(df)-w-l-d\n    n=w+l\n    return {'wins':w,'losses':l,'draws':d,'unknown':u,'n':n,'rate':w/n if n else None,'ci':wilson(w,n)}\n",
+    "tests": "x=clean_rows([{'derived':'WIN'},{'derived':'LOSS'},{'derived':'DRAW'},{}])\ns=period_stats(x)\nassert (s['wins'],s['losses'],s['draws'],s['unknown'],s['n'])==(1,1,1,1,2), 'Keep all four categories with decisive denominator'\nassert s['rate']==.5 and s['ci'][0]<.5<s['ci'][1], 'Compute rate and interval'\ns=period_stats(clean_rows([{}]))\nassert s['rate'] is None and s['ci'] is None, 'No decisive outcomes means no estimate'",
+    "hint": "Counts come before rate and interval.",
+    "id": "e3",
+    "lang": "python"
+  },
+  {
+    "title": "Save interval comparison",
+    "prompt": "Write plot_periods(summaries,path). Each summary has rate and ci. Draw only defined rates, use errorbar with asymmetric yerr in percent, label y 'Decisive win rate (%)', save PNG, and close. Return the number of plotted periods. Example: one defined and one undefined gives 1.",
+    "starter": "import matplotlib.pyplot as plt\ndef plot_periods(summaries,path):\n    # TODO: plot defined estimates and intervals\n    return 0",
+    "solution": "import matplotlib.pyplot as plt\ndef plot_periods(summaries,path):\n    fig,ax=plt.subplots()\n    count=0\n    for i,s in enumerate(summaries):\n        if s['rate'] is None: continue\n        p=s['rate']; lo,hi=s['ci']\n        ax.errorbar([i],[100*p],yerr=[[100*(p-lo)],[100*(hi-p)]],fmt='o')\n        count+=1\n    ax.set_xticks([0,1],['early','late'])\n    ax.set_ylabel('Decisive win rate (%)'); ax.set_ylim(0,100)\n    fig.savefig(path,format='png'); plt.close(fig)\n    return count",
+    "tests": "from pathlib import Path\nfrom tempfile import TemporaryDirectory\nbefore=set(plt.get_fignums())\nwith TemporaryDirectory() as d:\n    p=Path(d)/'periods.png'\n    n=plot_periods([{'rate':.5,'ci':(.2,.8)},{'rate':None,'ci':None}],p)\n    assert n==1, 'Skip undefined periods instead of drawing zero'\n    assert p.exists() and p.read_bytes().startswith(b'\\x89PNG'), 'Save a PNG comparison'\nassert set(plt.get_fignums())==before, 'Close every created figure'",
+    "hint": "Pass distances, not interval endpoints, to yerr.",
+    "id": "e4",
+    "lang": "python"
+  },
+  {
+    "title": "Run the real-data report",
+    "prompt": "Using supplied helpers, implement report(rows) returning {'early':summary,'late':summary,'invalid_dates':count,'rows':len(rows)}. Assign actual_report=report(read_rows()). Example: its four category counts plus invalid dates reconcile to rows.",
+    "starter": "import json\nfrom pathlib import Path\nDATA = Path('scratchpad/gauntlet/L74/loss_review/matches.jsonl')\ndef read_rows():\n    with DATA.open(encoding='utf-8') as f:\n        return [json.loads(line) for line in f if line.strip()]\nimport pandas as pd\ndef clean_rows(rows):\n    records=[]\n    for r in rows:\n        result=r.get('derived')\n        if result not in ('WIN','LOSS','DRAW'): result='unknown'\n        records.append({'ts':r.get('ts'), 'result':result})\n    df=pd.DataFrame(records,columns=['ts','result'])\n    df['time']=pd.to_datetime(df['ts'],format='%Y%m%d_%H%M%S',errors='coerce')\n    return df\ndef split_periods(df):\n    valid=df[df['time'].notna()].sort_values('time',kind='stable').copy()\n    cut=len(valid)//2\n    return valid.iloc[:cut].copy(),valid.iloc[cut:].copy(),int(df['time'].isna().sum())\nfrom math import sqrt\ndef wilson(w,n,z=1.96):\n    if n == 0:\n        return None\n    p=w/n\n    den=1+z*z/n\n    centre=(p+z*z/(2*n))/den\n    half=z*sqrt(p*(1-p)/n+z*z/(4*n*n))/den\n    return max(0,centre-half),min(1,centre+half)\ndef period_stats(df):\n    w=int((df['result']=='WIN').sum()); l=int((df['result']=='LOSS').sum())\n    d=int((df['result']=='DRAW').sum()); u=len(df)-w-l-d\n    n=w+l\n    return {'wins':w,'losses':l,'draws':d,'unknown':u,'n':n,'rate':w/n if n else None,'ci':wilson(w,n)}\ndef report(rows):\n    # TODO: connect clean, split, summarize\n    return {}\nactual_report=report(read_rows())",
+    "solution": "import json\nfrom pathlib import Path\nDATA = Path('scratchpad/gauntlet/L74/loss_review/matches.jsonl')\ndef read_rows():\n    with DATA.open(encoding='utf-8') as f:\n        return [json.loads(line) for line in f if line.strip()]\nimport pandas as pd\ndef clean_rows(rows):\n    records=[]\n    for r in rows:\n        result=r.get('derived')\n        if result not in ('WIN','LOSS','DRAW'): result='unknown'\n        records.append({'ts':r.get('ts'), 'result':result})\n    df=pd.DataFrame(records,columns=['ts','result'])\n    df['time']=pd.to_datetime(df['ts'],format='%Y%m%d_%H%M%S',errors='coerce')\n    return df\ndef split_periods(df):\n    valid=df[df['time'].notna()].sort_values('time',kind='stable').copy()\n    cut=len(valid)//2\n    return valid.iloc[:cut].copy(),valid.iloc[cut:].copy(),int(df['time'].isna().sum())\nfrom math import sqrt\ndef wilson(w,n,z=1.96):\n    if n == 0:\n        return None\n    p=w/n\n    den=1+z*z/n\n    centre=(p+z*z/(2*n))/den\n    half=z*sqrt(p*(1-p)/n+z*z/(4*n*n))/den\n    return max(0,centre-half),min(1,centre+half)\ndef period_stats(df):\n    w=int((df['result']=='WIN').sum()); l=int((df['result']=='LOSS').sum())\n    d=int((df['result']=='DRAW').sum()); u=len(df)-w-l-d\n    n=w+l\n    return {'wins':w,'losses':l,'draws':d,'unknown':u,'n':n,'rate':w/n if n else None,'ci':wilson(w,n)}\ndef report(rows):\n    a,b,u=split_periods(clean_rows(rows))\n    return {'early':period_stats(a),'late':period_stats(b),'invalid_dates':u,'rows':len(rows)}\nactual_report=report(read_rows())",
+    "tests": "rows=read_rows()\nr=actual_report\nassert r['rows']==len(rows), 'Use current real records, not a hard-coded count'\na,b,u=split_periods(clean_rows(rows))\nassert r['early']==period_stats(a) and r['late']==period_stats(b), 'Recompute both period summaries from the declared split'\nassert r['invalid_dates']==u, 'Report invalid date exclusions'\nassert sum(sum(r[p][k] for k in ['wins','losses','draws','unknown']) for p in ['early','late'])+u==len(rows), 'Every input record must be accounted for'",
+    "hint": "Connect the already tested components.",
+    "id": "e5",
+    "lang": "python"
+  },
+  {
+    "title": "Generate a qualified conclusion",
+    "prompt": "Write conclusion(early,late) for summary dictionaries containing rate. If either is None return 'insufficient decisive outcomes'. Otherwise include 'measured', signed difference in percentage points to one decimal, and 'causation not established'. Example: .5 to .6 includes '+10.0'.",
+    "starter": "def conclusion(early,late):\n    # TODO: distinguish description from causation\n    return ''",
+    "solution": "def conclusion(early,late):\n    if early['rate'] is None or late['rate'] is None:\n        return 'insufficient decisive outcomes'\n    delta=100*(late['rate']-early['rate'])\n    return f'measured: {delta:+.1f} percentage points; causation not established'",
+    "tests": "s=conclusion({'rate':.5},{'rate':.6})\nassert 'measured' in s and '+10.0' in s and 'percentage points' in s, 'State the signed descriptive change with units'\nassert 'causation not established' in s, 'Do not infer causal improvement from time periods'\nassert '-10.0' in conclusion({'rate':.6},{'rate':.5}), 'Report unfavorable changes honestly'\nassert conclusion({'rate':None},{'rate':.5})=='insufficient decisive outcomes', 'Do not subtract missing rates'",
+    "hint": "Multiply the difference by 100.",
+    "id": "e6",
+    "lang": "python"
+  }
+]
+

@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Independent seeded draws",
+    "lang": "python",
+    "prompt": "Implement `draws(seed,n)` using random.Random(seed), returning n integers from range(10). Example: repeated calls with the same seed agree.",
+    "starter": "import random\n\ndef draws(seed,n):\n    # TODO: use a local generator\n    return []",
+    "tests": "a=draws(8,5)\nassert len(a)==5 and all(0<=x<10 for x in a), 'Return five valid draws'\nrandom.seed(999)\nrandom.random()\nassert draws(8,5)==a, 'Global random calls must not alter the local sequence'\nassert draws(8,0)==[], 'Zero draws gives an empty list'",
+    "hint": "Create the generator inside the function.",
+    "solution": "import random\n\ndef draws(seed,n):\n    rng=random.Random(seed)\n    return [rng.randrange(10) for _ in range(n)]",
+    "id": "e1"
+  },
+  {
+    "title": "Hash a real source artifact",
+    "lang": "python",
+    "prompt": "Set `source_digest` to the SHA-256 hexadecimal digest of bytes in `pipeline/cf_credit.py`. Do not print file content. Example: a SHA-256 hexadecimal digest has 64 characters.",
+    "starter": "import hashlib\nfrom pathlib import Path\n# TODO: read only this named source file and hash its bytes\nsource_digest = ''",
+    "tests": "expected=hashlib.sha256(Path('pipeline/cf_credit.py').read_bytes()).hexdigest()\nassert source_digest==expected, 'Hash the current source bytes, not the filename or a remembered digest'\nassert len(source_digest)==64, 'SHA-256 hexadecimal output has 64 characters'",
+    "hint": "Path.read_bytes avoids text line-ending conversion.",
+    "solution": "import hashlib\nfrom pathlib import Path\nsource_digest=hashlib.sha256(Path('pipeline/cf_credit.py').read_bytes()).hexdigest()",
+    "id": "e2"
+  },
+  {
+    "title": "Documented null equivalence",
+    "lang": "python",
+    "prompt": "Implement `config_digest(config)`. For this toy schema only, remove `optional_probe` when its value is None; preserve all other fields, including zero. Canonicalize with sorted compact JSON, UTF-8 encode, SHA-256 hash. Example: {} and {'optional_probe':None} match.",
+    "starter": "import json\nimport hashlib\n\ndef config_digest(config):\n    # TODO: normalize only the documented optional setting\n    return ''",
+    "tests": "assert config_digest({})==config_digest({'optional_probe':None}), 'Absent and null optional_probe are equivalent here'\nassert config_digest({'beta':0})!=config_digest({}), 'A meaningful zero must remain in the digest'\nassert config_digest({'a':1,'b':2})==config_digest({'b':2,'a':1}), 'Field order should not change the digest'\nassert len(config_digest({}))==64, 'Return a SHA-256 digest'",
+    "hint": "Copy the dictionary before removing the optional field.",
+    "solution": "import json\nimport hashlib\n\ndef config_digest(config):\n    c=dict(config)\n    if c.get('optional_probe') is None:\n        c.pop('optional_probe',None)\n    raw=json.dumps(c,sort_keys=True,separators=(',',':')).encode('utf-8')\n    return hashlib.sha256(raw).hexdigest()",
+    "id": "e3"
+  },
+  {
+    "title": "Reject mixed comparison builds",
+    "lang": "python",
+    "prompt": "Implement `mismatches(a,b)` for required fields engine, tables, decoder. Return their names in that order if missing on either side or unequal. Example: only different tables gives ['tables'].",
+    "starter": "def mismatches(a,b):\n    # TODO: missing metadata is not a match\n    return []",
+    "tests": "a={'engine':'a','tables':'v1','decoder':'d'}\nb={'engine':'a','tables':'v2','decoder':'d'}\nassert mismatches(a,b)==['tables'], 'Identify the actual confound'\nassert mismatches({}, {})==['engine','tables','decoder'], 'Two missing values do not establish compatibility'\nassert mismatches(a,a)==[], 'Identical complete metadata is compatible'",
+    "hint": "Test presence before comparing values.",
+    "solution": "def mismatches(a,b):\n    return [name for name in ('engine','tables','decoder') if name not in a or name not in b or a[name]!=b[name]]",
+    "id": "e4"
+  }
+]

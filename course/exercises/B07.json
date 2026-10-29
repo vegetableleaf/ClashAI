@@ -1,0 +1,42 @@
+[
+  {
+    "id": "e1",
+    "title": "Repair a missing field",
+    "lang": "python",
+    "prompt": "Define get_label(row) using try/except KeyError. Return row[\"derived\"] when present and \"UNKNOWN\" otherwise. Example: get_label({}) == \"UNKNOWN\".",
+    "starter": "def get_label(row):\n    # TODO handle the missing field\n    return row[\"derived\"]",
+    "tests": "assert get_label({}) == \"UNKNOWN\", \"missing derived should be UNKNOWN\"\nassert get_label({\"derived\":\"DRAW\"}) == \"DRAW\", \"preserve a present label\"",
+    "hint": "Place only the dictionary lookup inside try.",
+    "solution": "def get_label(row):\n    try:\n        return row[\"derived\"]\n    except KeyError:\n        return \"UNKNOWN\""
+  },
+  {
+    "id": "e2",
+    "title": "Repair a type mismatch",
+    "lang": "python",
+    "prompt": "Define plays(text) to convert a numeric string to an integer and add one. Example: plays(\"6\") == 7. Invalid numeric text returns None.",
+    "starter": "def plays(text):\n    # TODO convert and handle invalid numeric text\n    return text + 1",
+    "tests": "assert plays(\"6\") == 7, \"six recorded plays plus one should be seven\"\nassert plays(\"0\") == 1, \"zero plus one should be one\"\nassert plays(\"unknown\") is None, \"invalid text must remain unavailable\"",
+    "hint": "int(text) converts numeric text; conversion can raise ValueError.",
+    "solution": "def plays(text):\n    try:\n        return int(text) + 1\n    except ValueError:\n        return None"
+  },
+  {
+    "id": "e3",
+    "title": "Count malformed lines visibly",
+    "lang": "python",
+    "prompt": "Define parse_checked(lines) returning (rows, bad). Ignore blank lines. Catch json.JSONDecodeError and count malformed nonblank lines. Example: [\"{\", '{\"derived\":\"WIN\"}'] returns one row and bad == 1.",
+    "starter": "import json\ndef parse_checked(lines):\n    # TODO return accepted rows and malformed-line count\n    return [], 0",
+    "tests": "assert parse_checked([\"{\", '{\"derived\":\"WIN\"}', \" \"]) == ([{\"derived\":\"WIN\"}],1), \"keep the valid row, count the torn row, ignore blank whitespace\"\nassert parse_checked([]) == ([],0), \"empty input has no malformed records\"",
+    "hint": "Put json.loads inside try and increment bad in except.",
+    "solution": "import json\ndef parse_checked(lines):\n    rows = []\n    bad = 0\n    for line in lines:\n        if line.strip():\n            try:\n                rows.append(json.loads(line))\n            except json.JSONDecodeError:\n                bad += 1\n    return rows, bad"
+  },
+  {
+    "id": "e4",
+    "title": "Assert an elixir assumption",
+    "lang": "python",
+    "prompt": "Define spend(elixir, cost). Assert 0 <= elixir <= 10, cost >= 0, and cost <= elixir, each with a clear message. Then return elixir - cost. Example: spend(10, 6) == 4.",
+    "starter": "def spend(elixir, cost):\n    # TODO validate before subtracting\n    return elixir - cost",
+    "tests": "assert spend(10,6) == 4, \"X-Bow costing six leaves four elixir\"\nfor args in [(11,1),(3,-1),(3,6)]:\n    caught = False\n    try:\n        spend(*args)\n    except AssertionError as exc:\n        caught = bool(str(exc))\n    assert caught, \"invalid elixir or cost needs an assertion with a message\"",
+    "hint": "Write three assertions before the subtraction. These are learning checks, not a production input-validation design.",
+    "solution": "def spend(elixir, cost):\n    assert 0 <= elixir <= 10, \"elixir must be between 0 and 10\"\n    assert cost >= 0, \"cost cannot be negative\"\n    assert cost <= elixir, \"cost exceeds available elixir\"\n    return elixir - cost"
+  }
+]

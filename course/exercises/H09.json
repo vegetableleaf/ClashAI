@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Rate with units",
+    "lang": "python",
+    "prompt": "Implement `per_hour(count,seconds)`; require seconds>0 and count>=0. Example: 120 in 60 seconds gives 7200.",
+    "starter": "def per_hour(count,seconds):\n    # TODO: convert seconds to hours\n    return 0.0",
+    "tests": "assert per_hour(120,60)==7200, 'Multiply per-second rate by 3600'\nassert per_hour(0,10)==0, 'Zero completed work gives zero rate'\nfor n,s in ((1,0),(-1,2)):\n    try:\n        per_hour(n,s)\n    except ValueError:\n        pass\n    else:\n        assert False, 'Reject invalid work or time'",
+    "hint": "Validate before dividing.",
+    "solution": "def per_hour(count,seconds):\n    if seconds<=0 or count<0:\n        raise ValueError('Invalid count or time')\n    return count/seconds*3600",
+    "id": "e1"
+  },
+  {
+    "title": "Critical-path estimate",
+    "lang": "python",
+    "prompt": "Implement `periods(collect,learn,overhead)` returning (sequential,ideal_overlap). Example: 90,120,10 gives (220,130).",
+    "starter": "def periods(collect,learn,overhead):\n    # TODO: distinguish sum from maximum\n    return (0,0)",
+    "tests": "assert periods(90,120,10)==(220,130), 'Overlapped stages contribute their maximum'\nassert periods(30,10,5)==(45,35), 'Collection can also be the bottleneck'",
+    "hint": "Overhead is added once in either model.",
+    "solution": "def periods(collect,learn,overhead):\n    return collect+learn+overhead,max(collect,learn)+overhead",
+    "id": "e2"
+  },
+  {
+    "title": "Policy-lag summary",
+    "lang": "python",
+    "prompt": "Implement `lag_summary(current,versions)` returning {'max':..., 'mean':...}; reject empty lists or future versions. Example: 8,[8,7,5] has max 3 and mean 4/3.",
+    "starter": "def lag_summary(current,versions):\n    # TODO: calculate and validate version differences\n    return {}",
+    "tests": "s=lag_summary(8,[8,7,5])\nassert s['max']==3 and abs(s['mean']-4/3)<1e-9, 'Lag is current minus recorded version'\nfor versions in ([],[9]):\n    try:\n        lag_summary(8,versions)\n    except ValueError:\n        pass\n    else:\n        assert False, 'Empty or future-version records are invalid'",
+    "hint": "Validate every lag is nonnegative.",
+    "solution": "def lag_summary(current,versions):\n    if not versions or any(v>current for v in versions):\n        raise ValueError('Invalid policy versions')\n    lags=[current-v for v in versions]\n    return {'max':max(lags),'mean':sum(lags)/len(lags)}",
+    "id": "e3"
+  },
+  {
+    "title": "Two throughput denominators",
+    "lang": "python",
+    "prompt": "Implement `rates(row)` for fields matches, rollout_s, period_s. Return rollout_per_hour and overall_per_hour. Example: 100 matches, 50 rollout seconds, 200 total seconds gives 7200 and 1800.",
+    "starter": "def rates(row):\n    # TODO: use the denominator belonging to each metric\n    return {}",
+    "tests": "r=rates({'matches':100,'rollout_s':50,'period_s':200})\nassert r=={'rollout_per_hour':7200,'overall_per_hour':1800}, 'Whole-update throughput uses period_s'\nr=rates({'matches':20,'rollout_s':20,'period_s':20})\nassert r['rollout_per_hour']==r['overall_per_hour']==3600, 'Equal denominators give equal rates'",
+    "hint": "Use the same match count but two different times.",
+    "solution": "def rates(row):\n    return {'rollout_per_hour':row['matches']/row['rollout_s']*3600,'overall_per_hour':row['matches']/row['period_s']*3600}",
+    "id": "e4"
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "title": "Milestone 1: verify sources",
+    "lang": "bash",
+    "prompt": "Check the ledger and handoff using two ls -d commands, ledger first. Example first line: `.foreman/ledger.md`. Record their purposes in your study notes.",
+    "starter": "# TODO: write the requested read-only Bash command(s).\nprintf 'unfinished\\n'\n",
+    "expect": "\\A\\.foreman/ledger\\.md\\nHANDOFF\\.md\\n?\\Z",
+    "hint": "Two commands make the order explicit.",
+    "solution": "ls -d .foreman/ledger.md\nls -d HANDOFF.md",
+    "id": "e1"
+  },
+  {
+    "title": "Milestone 2: locate live-state evidence",
+    "lang": "bash",
+    "prompt": "Search `.foreman/ledger.md` for literal CLXIII with line numbers; display the first matching line. Example shape: `5:Live: CLXIII ...`. Then interpret it in your notes: recorded live state need not establish first promotion time.",
+    "starter": "# TODO: write the requested read-only Bash command(s).\nprintf 'unfinished\\n'\n",
+    "expect": "\\A\\d+:[^\\n]*CLXIII[^\\n]*\\n?\\Z",
+    "hint": "Use grep -n -F and head -n 1.",
+    "solution": "grep -n -F 'CLXIII' .foreman/ledger.md | head -n 1",
+    "id": "e2"
+  },
+  {
+    "title": "Milestone 3: count learner commits",
+    "lang": "bash",
+    "prompt": "Count returned git log subjects for `scratchpad/gauntlet/L74/plan1026/opp/learner/`. Example output: an integer, which can be zero. Explain the history scope in your notes.",
+    "starter": "# TODO: write the requested read-only Bash command(s).\nprintf 'unfinished\\n'\n",
+    "expect": "\\A\\s*\\d+\\s*\\Z",
+    "hint": "One subject per line makes wc -l a commit-entry count.",
+    "solution": "git log --format=%s -- scratchpad/gauntlet/L74/plan1026/opp/learner/ | wc -l",
+    "id": "e3"
+  },
+  {
+    "title": "Milestone 4: bound the ledger window",
+    "lang": "bash",
+    "prompt": "Print `BEGIN LEDGER`, the actual last ten lines of `.foreman/ledger.md`, then `END LEDGER`. Example first line: `BEGIN LEDGER`. Summarize the window and its limits in your notes.",
+    "starter": "# TODO: write the requested read-only Bash command(s).\nprintf 'unfinished\\n'\n",
+    "expect": "\\ABEGIN LEDGER\\n(?:[^\\n]*\\n){10}END LEDGER\\n?\\Z",
+    "hint": "tail -n 10 goes between the two printf commands.",
+    "solution": "printf 'BEGIN LEDGER\\n'\ntail -n 10 .foreman/ledger.md\nprintf 'END LEDGER\\n'",
+    "id": "e4"
+  },
+  {
+    "title": "Milestone 5: evidence packet",
+    "lang": "bash",
+    "prompt": "Print sections in this order: `CLXIII EVIDENCE`, the first ledger line matching CLXIII (no line number needed), `LEARNER COMMITS`, the current learner-directory history count, `LEDGER END`, and the actual last ten ledger lines. Example section label: `LEARNER COMMITS`. Finish the lesson write-up in your own notes; output-shape checks cannot judge historical interpretation.",
+    "starter": "# TODO: write the requested read-only Bash command(s).\nprintf 'unfinished\\n'\n",
+    "expect": "\\ACLXIII EVIDENCE\\n[^\\n]*CLXIII[^\\n]*\\nLEARNER COMMITS\\n[ \\t]*\\d+[ \\t]*\\nLEDGER END\\n(?:[^\\n]*\\n){10}\\Z",
+    "hint": "Combine the earlier read-only commands with labels; rerun rather than paste old observations.",
+    "solution": "printf 'CLXIII EVIDENCE\\n'\ngrep -F 'CLXIII' .foreman/ledger.md | head -n 1\nprintf 'LEARNER COMMITS\\n'\ngit log --format=%s -- scratchpad/gauntlet/L74/plan1026/opp/learner/ | wc -l\nprintf 'LEDGER END\\n'\ntail -n 10 .foreman/ledger.md",
+    "id": "e5"
+  }
+]

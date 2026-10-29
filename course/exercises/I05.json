@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Minimal public report",
+    "lang": "python",
+    "prompt": "Implement `public_fields(record)` returning only wins, losses, draws and unknown if present. Example: extra private_auth or internal_note fields must not be copied.",
+    "starter": "def public_fields(record):\n    # TODO: select approved fields only\n    return dict(record)",
+    "tests": "r={'wins':3,'losses':1,'private_auth':'SYNTHETIC_PLACEHOLDER','new_private_field':'synthetic'}\nassert public_fields(r)=={'wins':3,'losses':1}, 'Unexpected fields must stay out of the report'\nassert public_fields({'draws':2,'unknown':4})=={'draws':2,'unknown':4}, 'Preserve outcome accounting'\nassert public_fields({})=={}, 'Do not invent missing fields'",
+    "hint": "Build from the allowlist, not from every input field.",
+    "solution": "def public_fields(record):\n    return {name:record[name] for name in ('wins','losses','draws','unknown') if name in record}",
+    "id": "e1"
+  },
+  {
+    "title": "Exact read scope",
+    "lang": "python",
+    "prompt": "Implement `permitted(path)` allowing exactly 'pipeline/cf_credit.py' and 'course/syllabus.json'. This exercise checks strings only and opens no files. Example: adding '.backup' to an allowed name is not allowed.",
+    "starter": "def permitted(path):\n    # TODO: exact allowlist membership\n    return True",
+    "tests": "assert permitted('pipeline/cf_credit.py'), 'The named public source is allowed'\nassert permitted('course/syllabus.json'), 'The course syllabus is allowed'\nassert not permitted('pipeline/cf_credit.py.backup'), 'Similar names are not exact matches'\nassert not permitted('../outside.txt'), 'Unlisted paths are outside the exercise scope'",
+    "hint": "Use membership in a set of exact paths.",
+    "solution": "def permitted(path):\n    return path in {'pipeline/cf_credit.py','course/syllabus.json'}",
+    "id": "e2"
+  },
+  {
+    "title": "Ignoring is not untracking",
+    "lang": "python",
+    "prompt": "Implement `ignore_effect(matches_pattern,already_tracked)` returning 'ignored untracked' only when the pattern matches and the file is not tracked; otherwise 'not removed by ignore'. Example: True,True is not removed.",
+    "starter": "def ignore_effect(matches_pattern,already_tracked):\n    # TODO: preserve the tracked-file distinction\n    return 'ignored untracked'",
+    "tests": "assert ignore_effect(True,False)=='ignored untracked', 'Matching untracked paths can be ignored'\nassert ignore_effect(True,True)=='not removed by ignore', 'Ignore rules do not untrack recorded content'\nassert ignore_effect(False,False)=='not removed by ignore', 'A nonmatching path is not ignored by this rule'",
+    "hint": "Both conditions are necessary for the first result.",
+    "solution": "def ignore_effect(matches_pattern,already_tracked):\n    return 'ignored untracked' if matches_pattern and not already_tracked else 'not removed by ignore'",
+    "id": "e3"
+  },
+  {
+    "title": "Synthetic incident response",
+    "lang": "python",
+    "prompt": "Implement `response(exposed,disabled)` returning 'owner revocation needed' when exposed and not disabled, 'document containment' when exposed and disabled, otherwise 'no exposure reported'. Do not perform any external action.",
+    "starter": "def response(exposed,disabled):\n    # TODO: classify the next response without handling private values\n    return 'no exposure reported'",
+    "tests": "assert response(True,False)=='owner revocation needed', 'Deleting a copy does not disable old access'\nassert response(True,True)=='document containment', 'Record completed containment without repeating private material'\nassert response(False,False)=='no exposure reported', 'Do not invent an incident'",
+    "hint": "Use two branches under exposed.",
+    "solution": "def response(exposed,disabled):\n    if exposed:\n        return 'document containment' if disabled else 'owner revocation needed'\n    return 'no exposure reported'",
+    "id": "e4"
+  }
+]

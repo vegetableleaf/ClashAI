@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Extract only pre-action features",
+    "prompt": "Implement example(event), returning ([before elixir/10, float(before enemy_xbow)], action card). Never use after. Example elixir 4 and visible X-Bow gives [0.4,1.0].",
+    "starter": "def example(event):\n    # TODO: use only the before observation\n    return [],None\n",
+    "tests": "e={'before':{'elixir':4,'enemy_xbow':True},'after':{'elixir':0},'action':{'card':1}}\nassert example(e)==([0.4,1.0],1), 'Use pre-action elixir and threat'\ne['after']['elixir']=9\nassert example(e)==([0.4,1.0],1), 'Changing the future must not change the input'\ne['before']={'elixir':10,'enemy_xbow':False}\nassert example(e)==([1.0,0.0],1), 'Normalise elixir and encode the boolean'",
+    "hint": "Read event['before'] into a local variable.",
+    "solution": "def example(event):\n    s=event['before']\n    return [s['elixir']/10,float(s['enemy_xbow'])],event['action']['card']\n",
+    "id": "e1",
+    "lang": "python"
+  },
+  {
+    "title": "Restore the contribution of sampled waits",
+    "prompt": "Implement weighted_loss(losses,weights), returning sum(loss*weight)/sum(weights). Inputs have equal length and positive weights. Example losses [0.2,0.8], weights [1,8] gives about 0.7333.",
+    "starter": "def weighted_loss(losses,weights):\n    # TODO: account for retained rows representing different counts\n    return sum(losses)/len(losses)\n",
+    "tests": "assert abs(weighted_loss([0.2,0.8],[1,8])-6.6/9)<1e-10, 'The retained wait row represents eight slots'\nassert weighted_loss([1,3],[2,2])==2, 'Equal weights recover the ordinary mean'\nassert weighted_loss([5],[8])==5, 'Normalise by total weight'",
+    "hint": "Use zip to multiply corresponding losses and weights.",
+    "solution": "def weighted_loss(losses,weights):\n    return sum(l*w for l,w in zip(losses,weights))/sum(weights)\n",
+    "id": "e2",
+    "lang": "python"
+  },
+  {
+    "title": "Keep replay groups together",
+    "prompt": "Implement split_rows(rows,train_ids) returning (train,test) lists based only on row['match'] membership. Preserve order. Example both rows with match 'a' stay in train when train_ids={'a'}.",
+    "starter": "def split_rows(rows,train_ids):\n    # TODO: partition by match identity\n    return [],rows\n",
+    "tests": "rows=[{'match':'a','card':1},{'match':'b','card':2},{'match':'a','card':3}]\na,b=split_rows(rows,{'a'})\nassert a==[rows[0],rows[2]] and b==[rows[1]], 'Both rows from match a must stay together'\nassert split_rows(rows,set())==([],rows), 'An empty train-ID set selects no rows'\nassert split_rows([],{'a'})==([],[]), 'Empty inputs preserve the output structure'",
+    "hint": "Use two list comprehensions with opposite membership conditions.",
+    "solution": "def split_rows(rows,train_ids):\n    return [r for r in rows if r['match'] in train_ids],[r for r in rows if r['match'] not in train_ids]\n",
+    "id": "e3",
+    "lang": "python"
+  },
+  {
+    "title": "Audit the real match outcomes",
+    "prompt": "Complete summarize(rows), returning wins, losses, draws, unknown, total, and win_rate. WIN and LOSS are decisive, DRAW is known but excluded from this decisive rate, every other/missing derived value is unknown. Return None if there are no decisive games. Then set report=summarize(rows) for the supplied real-file snapshot. Example WIN plus missing gives rate 1.0 and unknown 1.",
+    "starter": "import json\nfrom pathlib import Path\npath=Path('scratchpad/gauntlet/L74/loss_review/matches.jsonl')\nrows=[json.loads(line) for line in path.read_text(encoding='utf-8').splitlines() if line.strip()]\n\ndef summarize(rows):\n    # TODO: preserve draws and unknowns outside the decisive denominator\n    return {}\n\nreport=summarize(rows)\n",
+    "tests": "from collections import Counter\nc=Counter(r.get('derived') for r in rows)\nw=c['WIN'];l=c['LOSS'];d=c['DRAW'];u=len(rows)-w-l-d\nassert report=={'wins':w,'losses':l,'draws':d,'unknown':u,'total':len(rows),'win_rate':w/(w+l) if w+l else None}, 'Recompute all counts from the same real-data snapshot'\nassert report['wins']+report['losses']+report['draws']+report['unknown']==report['total'], 'Every record must be accounted for exactly once'\nr=summarize([{'derived':'WIN'},{},{'derived':'DRAW'},{'derived':None}])\nassert r['unknown']==2 and r['draws']==1 and r['win_rate']==1, 'Do not count missing outcomes or draws as losses'\nassert summarize([{}])['win_rate'] is None, 'No decisive outcomes means unavailable win rate'",
+    "hint": "Count each recognised string explicitly, then classify the remainder as unknown.",
+    "solution": "import json\nfrom pathlib import Path\npath=Path('scratchpad/gauntlet/L74/loss_review/matches.jsonl')\nrows=[json.loads(line) for line in path.read_text(encoding='utf-8').splitlines() if line.strip()]\n\ndef summarize(rows):\n    w=sum(r.get('derived')=='WIN' for r in rows)\n    l=sum(r.get('derived')=='LOSS' for r in rows)\n    d=sum(r.get('derived')=='DRAW' for r in rows)\n    return {'wins':w,'losses':l,'draws':d,'unknown':len(rows)-w-l-d,'total':len(rows),'win_rate':w/(w+l) if w+l else None}\n\nreport=summarize(rows)\n",
+    "id": "e4",
+    "lang": "python"
+  }
+]

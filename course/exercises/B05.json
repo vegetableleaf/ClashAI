@@ -1,0 +1,52 @@
+[
+  {
+    "title": "Return doubled elixir",
+    "lang": "python",
+    "prompt": "Define double_elixir(amount) returning twice its input. Example: double_elixir(3) returns 6. Do not only print it.",
+    "starter": "# TODO: return the calculation.\ndef double_elixir(amount):\n    return 0",
+    "solution": "def double_elixir(amount):\n    return amount * 2",
+    "tests": "assert double_elixir(3) == 6, \"double_elixir(3) should be 6 (3 elixir doubled)\"\nassert double_elixir(0) == 0, \"Zero doubled remains zero\"\nassert double_elixir(2.5) == 5, \"Fractional input 2.5 should return 5\"",
+    "hint": "Use return instead of print.",
+    "id": "e1"
+  },
+  {
+    "title": "Afford cards by name",
+    "lang": "python",
+    "prompt": "Implement can_afford(card, elixir) with teaching costs X-Bow 6, Tesla 4, Skeletons 1. Unknown names return False. Example: can_afford(\"Tesla\", 4) is True.",
+    "starter": "# TODO: handle known and unknown cards.\ndef can_afford(card, elixir):\n    return False",
+    "solution": "def can_afford(card, elixir):\n    costs = {\"X-Bow\": 6, \"Tesla\": 4, \"Skeletons\": 1}\n    if card not in costs:\n        return False\n    return elixir >= costs[card]",
+    "tests": "assert can_afford(\"Tesla\", 4) is True, \"Tesla is affordable at exactly 4\"\nassert can_afford(\"X-Bow\", 5.9) is False, \"5.9 is below the X-Bow cost\"\nassert can_afford(\"X-Bow\", 6) is True, \"X-Bow is affordable at exactly 6\"\nassert can_afford(\"Skeletons\", 0) is False, \"Skeletons still needs one elixir\"\nassert can_afford(\"Skeletons\", 10) is True, \"Skeletons is affordable at ten\"\nassert can_afford(\"Unknown\", 10) is False, \"Unknown cards must not be treated as free\"",
+    "hint": "Return early for a name absent from the mapping.",
+    "id": "e2"
+  },
+  {
+    "title": "Regenerate with a default",
+    "lang": "python",
+    "prompt": "Implement regenerate(elixir, seconds, multiplier=1) using the continuous 2.8-second model and cap ten. Inputs are nonnegative. Example: regenerate(3, 2.8, 2) returns 5.0. Add a docstring describing the units.",
+    "starter": "# TODO: document and calculate regeneration.\ndef regenerate(elixir, seconds, multiplier=1):\n    return 0",
+    "solution": "def regenerate(elixir, seconds, multiplier=1):\n    \"\"\"Return capped elixir after seconds at the given phase multiplier.\"\"\"\n    return min(10, elixir + seconds * multiplier / 2.8)",
+    "tests": "assert abs(regenerate(3, 2.8) - 4) < 1e-9, \"Default 1x should add one in 2.8 seconds\"\nassert abs(regenerate(3, 2.8, 2) - 5) < 1e-9, \"2x should add two in 2.8 seconds\"\nassert regenerate(9, 10, 3) == 10, \"Regeneration must cap at ten\"\nassert regenerate(4, 0) == 4, \"Zero elapsed seconds must preserve elixir\"\nassert regenerate.__doc__, \"Include a docstring describing the returned quantity\"",
+    "hint": "Put the multiplier in the gain formula and min around the total.",
+    "id": "e3"
+  },
+  {
+    "title": "Apply toy tower damage",
+    "lang": "python",
+    "prompt": "Implement damage_left(hp, damage) returning max(0, hp-damage). Example: damage_left(300, 500) returns 0. Inputs are nonnegative.",
+    "starter": "# TODO: return remaining HP with a zero floor.\ndef damage_left(hp, damage):\n    return hp",
+    "solution": "def damage_left(hp, damage):\n    return max(0, hp - damage)",
+    "tests": "assert damage_left(300, 100) == 200, \"100 damage should leave 200 of 300 HP\"\nassert damage_left(300, 500) == 0, \"Overkill should leave zero\"\nassert damage_left(300, 300) == 0, \"Exact lethal damage should leave zero\"\nassert damage_left(300, 0) == 300, \"Zero damage should preserve HP\"",
+    "hint": "Use the earlier arithmetic rule inside a reusable function.",
+    "id": "e4"
+  },
+  {
+    "title": "Cycle a four-card hand without mutation",
+    "lang": "python",
+    "prompt": "Implement cycle_hand(hand, queue, slot). Inputs are two four-card lists and slot 0-3. Return (new_hand, new_queue). Replace the selected slot with the front queued card; append the played card to the queue. Preserve both inputs. Example: playing X-Bow in slot 0 with Skeletons at the queue front draws Skeletons and queues X-Bow last.",
+    "starter": "# TODO: copy inputs, update both lists, return the pair.\ndef cycle_hand(hand, queue, slot):\n    return hand, queue",
+    "solution": "def cycle_hand(hand, queue, slot):\n    new_hand = hand[:]\n    new_queue = queue[:]\n    played = new_hand[slot]\n    new_hand[slot] = new_queue.pop(0)\n    new_queue.append(played)\n    return new_hand, new_queue",
+    "tests": "h = [\"X-Bow\", \"Tesla\", \"Ice Wizard\", \"Knight\"]\nq = [\"Skeletons\", \"Tornado\", \"Rocket\", \"The Log\"]\nh_before, q_before = h[:], q[:]\nnh, nq = cycle_hand(h, q, 0)\nassert nh == [\"Skeletons\", \"Tesla\", \"Ice Wizard\", \"Knight\"], \"Slot zero should draw the queue front\"\nassert nq == [\"Tornado\", \"Rocket\", \"The Log\", \"X-Bow\"], \"Played X-Bow must go to the queue end\"\nassert h == h_before and q == q_before, \"Do not mutate either input list\"\nassert nh is not h and nq is not q, \"Return independent outer lists\"\nnh, nq = cycle_hand(h, q, 3)\nassert nh == [\"X-Bow\", \"Tesla\", \"Ice Wizard\", \"Skeletons\"], \"Slot three must work too\"\nassert nq[-1] == \"Knight\", \"The actual played slot supplies the queued card\"\nfor step in range(4):\n    nh, nq = cycle_hand(nh, nq, 3)\nassert nh[3] == \"Knight\", \"After four further ordinary plays, Knight should return\"\nassert len(nh) == len(nq) == 4, \"Both collections should stay four cards long\"",
+    "hint": "Copy with slices before pop or assignment; return two values separated by a comma.",
+    "id": "e5"
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Validate a run record",
+    "lang": "python",
+    "prompt": "Implement `missing_fields(record)` for run, question, baseline, treatment, evidence, status. Return missing or empty fields in that order. Example: an empty dictionary returns all six names.",
+    "starter": "def missing_fields(record):\n    # TODO: require reviewable metadata\n    return []",
+    "tests": "fields=['run','question','baseline','treatment','evidence','status']\nassert missing_fields({})==fields, 'An empty record is not reviewable'\nr={f:'present' for f in fields}; r['evidence']=''\nassert missing_fields(r)==['evidence'], 'An empty pointer is missing evidence'\nr['evidence']='toy results'; assert missing_fields(r)==[], 'Complete records pass structural validation'",
+    "hint": "A field must exist and contain a nonempty value.",
+    "solution": "def missing_fields(record):\n    return [f for f in ('run','question','baseline','treatment','evidence','status') if not record.get(f)]",
+    "id": "e1"
+  },
+  {
+    "title": "Counts before percentages",
+    "lang": "python",
+    "prompt": "Implement `result_line(wins,losses,draws,unknown)` returning `W/N decisive; draws D; unknown U; rate R`, where R is one decimal percent or 'unavailable'. Example: 3,1,0,2 gives '3/4 decisive; draws 0; unknown 2; rate 75.0%'.",
+    "starter": "def result_line(wins,losses,draws,unknown):\n    # TODO: retain the denominator and missingness\n    return ''",
+    "tests": "assert result_line(3,1,0,2)=='3/4 decisive; draws 0; unknown 2; rate 75.0%', 'Keep exact counts beside the rate'\nassert result_line(0,0,1,2)=='0/0 decisive; draws 1; unknown 2; rate unavailable', 'No decisive games is unavailable, not zero percent'",
+    "hint": "Format the percentage only when wins+losses is positive.",
+    "solution": "def result_line(wins,losses,draws,unknown):\n    n=wins+losses\n    rate=f'{wins/n:.1%}' if n else 'unavailable'\n    return f'{wins}/{n} decisive; draws {draws}; unknown {unknown}; rate {rate}'",
+    "id": "e2"
+  },
+  {
+    "title": "Append without erasing history",
+    "lang": "python",
+    "prompt": "Implement `append_event(events,event)` returning a deep-copied new history with the new event appended. Example: later edits to the supplied event must not change the stored history.",
+    "starter": "import copy\n\ndef append_event(events,event):\n    # TODO: preserve the previous snapshot and nested event content\n    return events",
+    "tests": "old=[{'state':'started','counts':[1]}]\nevent={'state':'finished','counts':[2]}\nnew=append_event(old,event)\nassert len(old)==1 and len(new)==2, 'Appending must not alter the old history'\nevent['counts'][0]=99; old[0]['counts'][0]=88\nassert new[0]['counts']==[1] and new[1]['counts']==[2], 'Stored event snapshots must not share nested mutable state'",
+    "hint": "Deep-copy both the existing history and the appended event.",
+    "solution": "import copy\n\ndef append_event(events,event):\n    return copy.deepcopy(events)+[copy.deepcopy(event)]",
+    "id": "e3"
+  },
+  {
+    "title": "Render a restart note",
+    "lang": "python",
+    "prompt": "Implement `restart_note(record)` producing four lines labelled Completed, Next, Evidence, Authority using lowercase field names in the input. Example: authority 'offline only' must remain visible.",
+    "starter": "def restart_note(record):\n    # TODO: make the next action and its scope explicit\n    return ''",
+    "tests": "r={'completed':'evaluation','next':'review interval','evidence':'toy report','authority':'offline only'}\nassert restart_note(r)=='Completed: evaluation\\nNext: review interval\\nEvidence: toy report\\nAuthority: offline only', 'A restart note must retain all four fields in order'",
+    "hint": "Build one line per field, then join with newline.",
+    "solution": "def restart_note(record):\n    return '\\n'.join(f'{name.title()}: {record[name]}' for name in ('completed','next','evidence','authority'))",
+    "id": "e4"
+  }
+]

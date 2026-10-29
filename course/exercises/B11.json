@@ -1,0 +1,52 @@
+[
+  {
+    "id": "e1",
+    "title": "Inspect a real path",
+    "lang": "python",
+    "prompt": "Define describe_path(path) returning (filename, suffix, exists) using Path. Example: course/syllabus.json gives (\"syllabus.json\", \".json\", True).",
+    "starter": "from pathlib import Path\ndef describe_path(path):\n    # TODO inspect the path\n    return None",
+    "solution": "from pathlib import Path\ndef describe_path(path):\n    p = Path(path)\n    return p.name, p.suffix, p.exists()",
+    "tests": "assert describe_path(\"course/syllabus.json\") == (\"syllabus.json\",\".json\",True), \"describe the real syllabus path\"\nassert describe_path(\"course/nonexistent_example_991.txt\") == (\"nonexistent_example_991.txt\",\".txt\",False), \"a missing path still has a name and suffix\"",
+    "hint": "Construct Path(path) before accessing its attributes."
+  },
+  {
+    "id": "e2",
+    "title": "Parse report flags",
+    "lang": "python",
+    "prompt": "Define parse_flags(argv). Use argparse for --limit (int, default 5) and --no-fast-plays (store_true). Example: parse_flags([\"--limit\",\"2\"]).limit == 2. Only parse; do not operate the bot.",
+    "starter": "import argparse\ndef parse_flags(argv):\n    # TODO declare and parse both flags\n    return None",
+    "solution": "import argparse\ndef parse_flags(argv):\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--limit\",type=int,default=5)\n    parser.add_argument(\"--no-fast-plays\",action=\"store_true\")\n    return parser.parse_args(argv)",
+    "tests": "a = parse_flags([])\nassert a.limit == 5 and a.no_fast_plays is False, \"defaults must be five and False\"\nb = parse_flags([\"--limit\",\"2\",\"--no-fast-plays\"])\nassert b.limit == 2 and b.no_fast_plays is True, \"parse and convert explicit flags\"",
+    "hint": "Hyphens in argument names become underscores in attributes."
+  },
+  {
+    "id": "e3",
+    "title": "State the timezone",
+    "lang": "python",
+    "prompt": "Define utc_day(text) for ISO timestamps containing an offset. Convert to UTC before returning an ISO date. Example: 2026-10-29T23:30:00-04:00 becomes 2026-10-30.",
+    "starter": "from datetime import datetime, timezone\ndef utc_day(text):\n    # TODO convert before taking the date\n    return text[:10]",
+    "solution": "from datetime import datetime, timezone\ndef utc_day(text):\n    return datetime.fromisoformat(text).astimezone(timezone.utc).date().isoformat()",
+    "tests": "assert utc_day(\"2026-10-29T23:30:00-04:00\") == \"2026-10-30\", \"UTC conversion can cross midnight\"\nassert utc_day(\"2026-10-29T12:00:00+00:00\") == \"2026-10-29\", \"UTC input keeps its date\"",
+    "hint": "Call astimezone(timezone.utc) before date()."
+  },
+  {
+    "id": "e4",
+    "title": "Count and fingerprint labels",
+    "lang": "python",
+    "prompt": "Define audit_labels(labels) returning (plain dictionary of counts, SHA-256 hex digest). Hash labels joined with newline, UTF-8 encoded, without a final newline. Example: [\"WIN\",\"WIN\"] has WIN count two.",
+    "starter": "from collections import Counter\nimport hashlib\ndef audit_labels(labels):\n    # TODO count and hash\n    return {}, \"\"",
+    "solution": "from collections import Counter\nimport hashlib\ndef audit_labels(labels):\n    return dict(Counter(labels)), hashlib.sha256(\"\\n\".join(labels).encode(\"utf-8\")).hexdigest()",
+    "tests": "counts,digest = audit_labels([\"WIN\",\"LOSS\",\"WIN\"])\nassert counts == {\"WIN\":2,\"LOSS\":1}, \"count repeated labels\"\nassert digest == hashlib.sha256(b\"WIN\\nLOSS\\nWIN\").hexdigest(), \"hash the specified bytes without a final newline\"\nassert audit_labels([])[0] == {}, \"empty labels have empty counts\"",
+    "hint": "Text must be encoded to bytes before hashing."
+  },
+  {
+    "id": "e5",
+    "title": "Run a tiny local process",
+    "lang": "python",
+    "prompt": "Define child_summary() using subprocess.run with [sys.executable, \"-B\", \"-c\", \"print(6 - 3)\"], capture_output=True, text=True, timeout=5. Return (returncode, stripped stdout). Example: (0, \"3\").",
+    "starter": "import subprocess\nimport sys\ndef child_summary():\n    # TODO capture local arithmetic output\n    return None",
+    "solution": "import subprocess\nimport sys\ndef child_summary():\n    result = subprocess.run([sys.executable,\"-B\",\"-c\",\"print(6 - 3)\"],capture_output=True,text=True,timeout=5)\n    return result.returncode, result.stdout.strip()",
+    "tests": "assert child_summary() == (0,\"3\"), \"local Python should exit successfully and print three\"",
+    "hint": "The returned object has returncode and stdout attributes."
+  }
+]

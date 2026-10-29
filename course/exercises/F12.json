@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Estimate one tensor's storage",
+    "prompt": "Implement `tensor_bytes(shape, bytes_per_element=4)` by multiplying dimensions and element size. This estimates one dense tensor, not peak training memory. Example `(32,20,128)` float32 needs 327680 bytes.",
+    "starter": "def tensor_bytes(shape,bytes_per_element=4):\n    # TODO: multiply all dimensions\n    return 0\n",
+    "tests": "assert tensor_bytes((32,20,128))==327680, 'Count all tensor elements times four bytes'\nassert tensor_bytes((2,3),8)==48, 'Respect the element size'\nassert tensor_bytes((0,3))==0, 'An empty dimension stores no elements'\nassert tensor_bytes(())==4, 'A scalar tensor has one element'",
+    "hint": "Start the product at one, even for an empty shape tuple.",
+    "solution": "def tensor_bytes(shape,bytes_per_element=4):\n    count=1\n    for n in shape: count*=n\n    return count*bytes_per_element\n",
+    "id": "e1",
+    "lang": "python"
+  },
+  {
+    "title": "Weight an uneven final chunk",
+    "prompt": "Implement `batch_mean(means, sizes)` for nonempty matching lists with positive sizes. Example means `[1,3,5]`, sizes `[4,4,2]` gives 2.6.",
+    "starter": "def batch_mean(means,sizes):\n    # TODO: weight by row count\n    return sum(means)/len(means)\n",
+    "tests": "assert abs(batch_mean([1,3,5],[4,4,2])-2.6)<1e-10, 'Do not overweight the last two rows'\nassert batch_mean([2,8],[1,3])==6.5, 'Use every row in the denominator'\nassert batch_mean([4],[7])==4, 'A single chunk keeps its mean'",
+    "hint": "Sum mean*size, then divide by total size.",
+    "solution": "def batch_mean(means,sizes):\n    return sum(m*n for m,n in zip(means,sizes))/sum(sizes)\n",
+    "id": "e2",
+    "lang": "python"
+  },
+  {
+    "title": "Match full-batch gradients",
+    "prompt": "Complete `accumulate(model,x,y,micro)` for a one-output linear model and mean squared error. Clear gradients once, split rows, weight each chunk mean by its row share, and call backward. Do not step an optimiser. Example five rows with micro=2 uses chunks 2,2,1.",
+    "starter": "import torch\n\ndef accumulate(model,x,y,micro):\n    model.zero_grad()\n    # TODO: accumulate row-weighted chunk losses\n",
+    "tests": "from torch import nn\nimport copy\ntorch.set_num_threads(1)\ntorch.manual_seed(9)\na=nn.Linear(2,1);b=copy.deepcopy(a)\nx=torch.tensor([[1.,2.],[0.,1.],[2.,-1.],[3.,2.],[-1.,4.]])\ny=torch.tensor([[1.],[2.],[0.],[3.],[-2.]])\n((a(x)-y)**2).mean().backward()\nbefore=[p.detach().clone() for p in b.parameters()]\naccumulate(b,x,y,2)\nassert all(p.grad is not None for p in b.parameters()), 'Backpropagate each weighted chunk'\nassert all(torch.allclose(p.grad,q.grad,atol=1e-6,rtol=1e-6) for p,q in zip(a.parameters(),b.parameters())), 'Uneven chunks must match full-batch gradients'\nassert all(torch.equal(old,p) for old,p in zip(before,b.parameters())), 'Accumulate gradients without updating parameters'",
+    "hint": "Use len(xb)/len(x) before backward; leave zero_grad outside the loop.",
+    "solution": "import torch\n\ndef accumulate(model,x,y,micro):\n    model.zero_grad()\n    for start in range(0,len(x),micro):\n        xb=x[start:start+micro];yb=y[start:start+micro]\n        loss=((model(xb)-yb)**2).mean()\n        (loss*len(xb)/len(x)).backward()\n",
+    "id": "e3",
+    "lang": "python"
+  },
+  {
+    "title": "Bound the total speedup",
+    "prompt": "Implement `overall_speedup(fraction, component_speedup)` using Amdahl's law. Assume fraction in [0,1] and positive speedup. Example accelerating 20% of the work by 2x gives approximately 1.111x overall.",
+    "starter": "def overall_speedup(fraction,component_speedup):\n    # TODO: include the unchanged work\n    return component_speedup\n",
+    "tests": "assert abs(overall_speedup(0.2,2)-1/0.9)<1e-10, 'Include the unchanged 80 percent'\nassert overall_speedup(0,100)==1, 'Speeding up no work has no benefit'\nassert overall_speedup(1,4)==4, 'If all work improves, total speedup matches it'",
+    "hint": "New relative time is (1-fraction)+fraction/component_speedup.",
+    "solution": "def overall_speedup(fraction,component_speedup):\n    return 1/((1-fraction)+fraction/component_speedup)\n",
+    "id": "e4",
+    "lang": "python"
+  }
+]

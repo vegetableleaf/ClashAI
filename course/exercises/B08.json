@@ -1,0 +1,42 @@
+[
+  {
+    "id": "e1",
+    "title": "Import the module",
+    "lang": "python",
+    "prompt": "Import json and define round_trip(row) using json.dumps then json.loads. Example: {\"card\":\"Xbow\"} is returned unchanged.",
+    "starter": "# TODO import json\ndef round_trip(row):\n    return None",
+    "tests": "assert round_trip({\"card\":\"Xbow\",\"cost\":6}) == {\"card\":\"Xbow\",\"cost\":6}, \"JSON round trip must preserve this dictionary\"",
+    "hint": "Module imports use the name before a dot, such as json.loads.",
+    "solution": "import json\ndef round_trip(row):\n    return json.loads(json.dumps(row))"
+  },
+  {
+    "id": "e2",
+    "title": "Import a single function",
+    "lang": "python",
+    "prompt": "Use from math import ceil. Define ticks_needed(seconds, tick_seconds) to round seconds / tick_seconds upward. Example: ticks_needed(1.1, 0.5) == 3. Inputs are nonnegative seconds and positive tick lengths.",
+    "starter": "# TODO import ceil\ndef ticks_needed(seconds, tick_seconds):\n    return 0",
+    "tests": "assert ticks_needed(1.1,0.5) == 3, \"1.1 seconds needs three half-second ticks\"\nassert ticks_needed(0,0.5) == 0, \"zero duration needs zero ticks\"\nassert ticks_needed(1,0.5) == 2, \"an exact duration needs no extra tick\"",
+    "hint": "ceil rounds upward, unlike int which discards a fractional part.",
+    "solution": "from math import ceil\ndef ticks_needed(seconds, tick_seconds):\n    return ceil(seconds / tick_seconds)"
+  },
+  {
+    "id": "e3",
+    "title": "Use an import alias",
+    "lang": "python",
+    "prompt": "Import json as data_json. Define decode_many(lines), ignoring whitespace-only lines. Example: ['{\"derived\":\"LOSS\"}'] returns a one-element list.",
+    "starter": "import json as data_json\ndef decode_many(lines):\n    # TODO use the alias\n    return []",
+    "tests": "assert decode_many(['{\"derived\":\"LOSS\"}',\" \"]) == [{\"derived\":\"LOSS\"}], \"use the imported decoder and skip blanks\"\nassert data_json.__name__ == \"json\", \"data_json should name the json module\"",
+    "hint": "The alias changes the local name, not the module itself.",
+    "solution": "import json as data_json\ndef decode_many(lines):\n    rows = []\n    for line in lines:\n        if line.strip():\n            rows.append(data_json.loads(line))\n    return rows"
+  },
+  {
+    "id": "e4",
+    "title": "Read a package description",
+    "lang": "python",
+    "prompt": "Open pipeline/__init__.py as UTF-8 text, without importing pipeline. Define package_mentions(name) to return whether name occurs in that text. Example: package_mentions(\"Deck-agnostic\") is True.",
+    "starter": "def package_mentions(name):\n    # TODO read the real package file\n    return False",
+    "tests": "with open(\"pipeline/__init__.py\", encoding=\"utf-8\") as source:\n    content = source.read()\nfor term in [\"Deck-agnostic\", \"pipeline\", \"not_a_real_package_marker_991\"]:\n    assert package_mentions(term) == (term in content), \"search the actual package description for each requested term\"",
+    "hint": "source.read() returns the whole text; this file is small.",
+    "solution": "def package_mentions(name):\n    with open(\"pipeline/__init__.py\", encoding=\"utf-8\") as source:\n        return name in source.read()"
+  }
+]

@@ -1,0 +1,53 @@
+[
+  {
+    "title": "A labeled line",
+    "prompt": "Write draw() returning (fig,ax) with x=[1,2,3], y=[.5,.6,.4], xlabel 'Match', ylabel 'Win fraction'. Example: the second y value is .6.",
+    "starter": "import matplotlib.pyplot as plt\ndef draw():\n    # TODO: plot and label\n    return plt.subplots()",
+    "solution": "import matplotlib.pyplot as plt\ndef draw():\n    fig,ax=plt.subplots()\n    ax.plot([1,2,3],[.5,.6,.4])\n    ax.set_xlabel('Match'); ax.set_ylabel('Win fraction')\n    return fig,ax",
+    "tests": "fig,ax=draw()\nassert len(ax.lines)==1, 'Draw exactly one line'\nassert list(ax.lines[0].get_ydata())==[.5,.6,.4], 'Plot the supplied fractions'\nassert ax.get_xlabel()=='Match' and ax.get_ylabel()=='Win fraction', 'Label both axes'\nplt.close(fig)",
+    "hint": "Use ax.plot and set_ylabel.",
+    "id": "e1",
+    "lang": "python"
+  },
+  {
+    "title": "Outcome bars",
+    "prompt": "Write bars(counts) returning (fig,ax) with WIN, LOSS, DRAW, unknown in that order. Example: counts={'WIN':2} gives heights [2,0,0,0].",
+    "starter": "import matplotlib.pyplot as plt\ndef bars(counts):\n    # TODO: preserve category order\n    return plt.subplots()",
+    "solution": "import matplotlib.pyplot as plt\ndef bars(counts):\n    fig,ax=plt.subplots()\n    names=['WIN','LOSS','DRAW','unknown']\n    ax.bar(names,[counts.get(n,0) for n in names])\n    ax.set_ylabel('Matches')\n    return fig,ax",
+    "tests": "f,a=bars({'WIN':2,'unknown':3})\nassert [p.get_height() for p in a.patches]==[2,0,0,3], 'Preserve all four categories and their counts'\nassert [t.get_text() for t in a.get_xticklabels()]==['WIN','LOSS','DRAW','unknown'], 'Keep outcome labels in declared order'\nplt.close(f)",
+    "hint": "Use dict.get(name,0).",
+    "id": "e2",
+    "lang": "python"
+  },
+  {
+    "title": "Latency bins",
+    "prompt": "Write histogram(values) returning (fig,ax,counts) using bins [0,25,50]. Example: [10,30] gives counts [1,1].",
+    "starter": "import matplotlib.pyplot as plt\ndef histogram(values):\n    # TODO: draw fixed bins\n    fig,ax=plt.subplots()\n    return fig,ax,[]",
+    "solution": "import matplotlib.pyplot as plt\ndef histogram(values):\n    fig,ax=plt.subplots()\n    counts,edges,patches=ax.hist(values,bins=[0,25,50])\n    ax.set_xlabel('Decision latency (ms)')\n    return fig,ax,counts",
+    "tests": "f,a,c=histogram([0,24,25,50])\nassert list(c)==[2,2], '25 starts the second bin; final edge 50 is included'\nassert len(a.patches)==2, 'Draw two histogram bins'\nplt.close(f)",
+    "hint": "hist returns counts, edges, and bars.",
+    "id": "e3",
+    "lang": "python"
+  },
+  {
+    "title": "Rolling decisive rate",
+    "prompt": "Write rolling(results,width) returning a pandas Series. Remove results other than WIN/LOSS, encode wins as 1, and calculate rolling mean. Example: WIN,unknown,LOSS with width 2 ends at .5.",
+    "starter": "import pandas as pd\ndef rolling(results,width):\n    # TODO: filter before rolling\n    return pd.Series(dtype=float)",
+    "solution": "import pandas as pd\ndef rolling(results,width):\n    values=[int(r=='WIN') for r in results if r in ('WIN','LOSS')]\n    return pd.Series(values,dtype=float).rolling(width).mean()",
+    "tests": "s=rolling(['WIN',None,'DRAW','LOSS','WIN'],2)\nassert len(s)==3 and pd.isna(s.iloc[0]), 'Keep only decisive games and leave incomplete window missing'\nassert s.iloc[1:].tolist()==[.5,.5], 'Average consecutive decisive outcomes'\nassert rolling([None],2).empty, 'Unknown-only input has no plotted rate'",
+    "hint": "Filter before constructing the Series.",
+    "id": "e4",
+    "lang": "python"
+  },
+  {
+    "title": "Save the report image",
+    "prompt": "Write save_chart(path), drawing [1,2] against [40,60], labeling y 'Win rate (%)', saving PNG to path, then closing the figure. Example: the caller supplies a temporary report.png.",
+    "starter": "import matplotlib.pyplot as plt\ndef save_chart(path):\n    # TODO: create, label, save, close\n    pass",
+    "solution": "import matplotlib.pyplot as plt\ndef save_chart(path):\n    fig,ax=plt.subplots()\n    ax.plot([1,2],[40,60]); ax.set_ylabel('Win rate (%)')\n    fig.savefig(path,format='png')\n    plt.close(fig)",
+    "tests": "from pathlib import Path\nfrom tempfile import TemporaryDirectory\nbefore=set(plt.get_fignums())\nwith TemporaryDirectory() as d:\n    p=Path(d)/'report.png'\n    save_chart(p)\n    assert p.exists(), 'Save the requested image'\n    assert p.read_bytes().startswith(b'\\x89PNG\\r\\n\\x1a\\n'), 'Write an actual PNG image'\nassert set(plt.get_fignums())==before, 'Close the figure after saving'",
+    "hint": "Save before closing.",
+    "id": "e5",
+    "lang": "python"
+  }
+]
+

@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Signed PPO clipping",
+    "lang": "python",
+    "prompt": "Implement `ppo_loss(ratio, advantage, epsilon=.2)`. Example: ratio 1.5, advantage 2 gives -2.4.",
+    "starter": "def ppo_loss(ratio, advantage, epsilon=.2):\n    # TODO: choose the pessimistic objective, then negate\n    return 0.0",
+    "tests": "assert abs(ppo_loss(1.5,2)+2.4)<1e-9, 'Cap positive-advantage improvement'\nassert ppo_loss(1.5,-2)==3, 'Do not hide harmful probability increases'\nassert abs(ppo_loss(.5,-2)-1.6)<1e-9, 'Cap improvement for a negative advantage'\nassert ppo_loss(1,0)==0, 'Zero advantage gives zero policy loss'",
+    "hint": "Use min(ratio*A, clipped_ratio*A), then negate.",
+    "solution": "def ppo_loss(ratio, advantage, epsilon=.2):\n    clipped=min(1+epsilon,max(1-epsilon,ratio))\n    return -min(ratio*advantage,clipped*advantage)",
+    "id": "e1"
+  },
+  {
+    "title": "Calculate full KL",
+    "lang": "python",
+    "prompt": "Implement `kl(p,q)` for equal-length positive probability lists. Example: identical distributions give zero.",
+    "starter": "import math\n\ndef kl(p,q):\n    # TODO: weighted log ratios\n    return 0.0",
+    "tests": "assert abs(kl([.5,.5],[.6,.4])-.020410997260127586)<1e-9, 'KL must weight each log ratio by p'\nassert abs(kl([.2,.8],[.2,.8]))<1e-12, 'Identical distributions have zero KL'\nassert kl([.9,.1],[.5,.5])>0, 'Different distributions have positive KL'",
+    "hint": "Use natural logarithms from math.log.",
+    "solution": "import math\n\ndef kl(p,q):\n    return sum(a*math.log(a/b) for a,b in zip(p,q))",
+    "id": "e2"
+  },
+  {
+    "title": "Decouple stale data",
+    "lang": "python",
+    "prompt": "Implement `decoupled_loss(behaviour, proximal, current, advantage, cap=2)`, epsilon .2. Example: .2,.3,.33,1 gives -1.65.",
+    "starter": "def decoupled_loss(behaviour, proximal, current, advantage, cap=2):\n    # TODO: two distinct ratios\n    return 0.0",
+    "tests": "assert abs(decoupled_loss(.2,.3,.33,1)+1.65)<1e-9, 'Use proximal/behaviour times current/proximal objective'\nassert abs(decoupled_loss(.01,.3,.6,1)+2.4)<1e-9, 'Cap importance weight at two and PPO ratio at 1.2'\nassert abs(decoupled_loss(.2,.3,.6,-1)-3)<1e-9, 'Retain harmful movement for negative advantage'",
+    "hint": "Cap only the importance ratio at cap; PPO uses its own interval.",
+    "solution": "def decoupled_loss(behaviour, proximal, current, advantage, cap=2):\n    w=min(cap,proximal/behaviour)\n    ratio=current/proximal\n    clipped=min(1.2,max(.8,ratio))\n    return -w*min(ratio*advantage,clipped*advantage)",
+    "id": "e3"
+  },
+  {
+    "title": "Pre-step KL decision",
+    "lang": "python",
+    "prompt": "Implement `should_stop(head_kls, threshold)`. None disables stopping; otherwise stop only when the sum exceeds the threshold. Example: [.01,.015], .02 gives True.",
+    "starter": "def should_stop(head_kls, threshold):\n    # TODO: match the source condition\n    return False",
+    "tests": "assert should_stop([.01,.015],.02), 'Summed head KL exceeds the limit'\nassert not should_stop([.02],.02), 'Equality is not greater than'\nassert not should_stop([9],None), 'None disables the stop'",
+    "hint": "Check None before comparing the sum.",
+    "solution": "def should_stop(head_kls, threshold):\n    return threshold is not None and sum(head_kls)>threshold",
+    "id": "e4"
+  }
+]

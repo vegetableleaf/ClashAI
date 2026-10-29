@@ -1,0 +1,52 @@
+[
+  {
+    "id": "e1",
+    "title": "Select one PID",
+    "lang": "python",
+    "prompt": "Return all rows whose Id equals target. Example: select_pid([{'Id': 3}], 3) returns that one row.",
+    "starter": "def select_pid(rows, target):\n    # TODO: filter exact IDs\n    return []",
+    "tests": "assert select_pid([{'Id':3},{'Id':4}],3) == [{'Id':3}], 'Select only exact PID 3'\nassert select_pid([],3) == [], 'Missing PID should give an empty list'",
+    "hint": "Use a list comprehension.",
+    "solution": "def select_pid(rows, target):\n    return [r for r in rows if r.get('Id') == target]"
+  },
+  {
+    "id": "e2",
+    "title": "Project fields",
+    "lang": "python",
+    "prompt": "Return dictionaries with only Id and ProcessName. Example: CPU should be removed.",
+    "starter": "def project(rows):\n    # TODO: choose two properties\n    return rows",
+    "tests": "assert project([{'Id':7,'ProcessName':'python','CPU':2}]) == [{'Id':7,'ProcessName':'python'}], 'Keep only the two requested properties'\nassert project([]) == [], 'Empty input stays empty'",
+    "hint": "Build a new dictionary per row.",
+    "solution": "def project(rows):\n    return [{'Id':r['Id'],'ProcessName':r['ProcessName']} for r in rows]"
+  },
+  {
+    "id": "e3",
+    "title": "Convert memory",
+    "lang": "python",
+    "prompt": "Return bytes as MiB. Example: 1048576 becomes 1.0.",
+    "starter": "def mib(byte_count):\n    # TODO: convert units\n    return byte_count",
+    "tests": "assert mib(1048576) == 1.0, '1048576 bytes should be one MiB'\nassert mib(0) == 0, 'Zero bytes should stay zero'\nassert mib(524288) == 0.5, 'Preserve fractional MiB'",
+    "hint": "Divide twice by 1024.",
+    "solution": "def mib(byte_count):\n    return byte_count / (1024 * 1024)"
+  },
+  {
+    "id": "e4",
+    "title": "Reject reused IDs",
+    "lang": "python",
+    "prompt": "Return True only if Id, start, and run are present in both dictionaries and all equal. Example: same Id but a different start returns False.",
+    "starter": "def same_process(observed, expected):\n    # TODO: require all identity fields\n    return False",
+    "tests": "good={'Id':3,'start':'10:00','run':'toy'}\nassert same_process(good,good), 'Complete matching identity should pass'\nassert not same_process(dict(good,start='11:00'),good), 'Reject a reused ID'\nassert not same_process({'Id':3},{'Id':3}), 'Missing identity fields cannot establish ownership'",
+    "hint": "Check membership before comparing values.",
+    "solution": "def same_process(observed, expected):\n    fields = ['Id', 'start', 'run']\n    return all(k in observed and k in expected and observed[k] == expected[k] for k in fields)"
+  },
+  {
+    "id": "e5",
+    "title": "Produce a review record",
+    "lang": "python",
+    "prompt": "Return {'Id': target, 'decision': 'review'} for exactly one matching row with the expected start and run, otherwise None. This only builds data. Example: missing PID gives None.",
+    "starter": "def review(rows, target, start, run):\n    # TODO: verify one exact record\n    return None",
+    "tests": "rows=[{'Id':8,'start':'a','run':'toy'}]\nassert review(rows,8,'a','toy') == {'Id':8,'decision':'review'}, 'Matching identity should produce a review record'\nassert review(rows,8,'b','toy') is None, 'Reject changed start time'\nassert review(rows,9,'a','toy') is None, 'Reject missing PID'\nassert review(rows+rows,8,'a','toy') is None, 'Ambiguous duplicate observations need review outside this function'",
+    "hint": "First require exactly one matching ID.",
+    "solution": "def review(rows, target, start, run):\n    matches = [r for r in rows if r.get('Id') == target]\n    if len(matches) != 1:\n        return None\n    r = matches[0]\n    if r.get('start') != start or r.get('run') != run:\n        return None\n    return {'Id':target,'decision':'review'}"
+  }
+]

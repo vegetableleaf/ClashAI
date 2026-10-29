@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Normalize a league",
+    "lang": "python",
+    "prompt": "Implement `normalize(weights)` for a dictionary of nonnegative numbers with positive total. Raise ValueError otherwise. Example: {'a':2,'b':1} gives probabilities 2/3 and 1/3.",
+    "starter": "def normalize(weights):\n    # TODO: validate and normalize\n    return weights",
+    "tests": "p=normalize({'a':2,'b':1})\nassert abs(p['a']-2/3)<1e-9 and abs(sum(p.values())-1)<1e-9, 'Mixture probabilities must sum to one'\nfor w in ({}, {'a':0}, {'a':-1,'b':2}):\n    try:\n        normalize(w)\n    except ValueError:\n        pass\n    else:\n        assert False, 'Reject empty, zero-total or negative mixtures'",
+    "hint": "Check individual weights before dividing by their sum.",
+    "solution": "def normalize(weights):\n    total=sum(weights.values())\n    if total<=0 or any(w<0 for w in weights.values()):\n        raise ValueError('Invalid mixture')\n    return {name:w/total for name,w in weights.items()}",
+    "id": "e1"
+  },
+  {
+    "title": "Population-weighted score",
+    "lang": "python",
+    "prompt": "Implement `weighted_score(scores,weights)` with matching names and weights already summing to one. Example: scores .8,.4 with weights .25,.75 gives .5.",
+    "starter": "def weighted_score(scores,weights):\n    # TODO: preserve the declared population weights\n    return 0.0",
+    "tests": "assert abs(weighted_score({'hog':.8,'siege':.4},{'hog':.25,'siege':.75})-.5)<1e-9, 'Use weights, not an unweighted mean'\nassert weighted_score({'hog':.7},{'hog':1})==.7, 'One opponent keeps its score'",
+    "hint": "Multiply matching entries and sum.",
+    "solution": "def weighted_score(scores,weights):\n    return sum(scores[name]*w for name,w in weights.items())",
+    "id": "e2"
+  },
+  {
+    "title": "Do not hide a weak matchup",
+    "lang": "python",
+    "prompt": "Implement `passes(scores,mean_bar,min_bar)` requiring a nonempty list, mean >= mean_bar and every score >= min_bar. Example: [.8,.2],.5,.3 fails.",
+    "starter": "def passes(scores,mean_bar,min_bar):\n    # TODO: require both aggregate and subgroup evidence\n    return True",
+    "tests": "assert not passes([.8,.2],.5,.3), 'A weak subgroup must fail despite a passing mean'\nassert passes([.6,.5],.55,.5), 'Meeting both inclusive thresholds passes'\nassert not passes([],.5,.3), 'No evaluation evidence cannot pass'",
+    "hint": "Check the empty list before computing a mean.",
+    "solution": "def passes(scores,mean_bar,min_bar):\n    return bool(scores) and sum(scores)/len(scores)>=mean_bar and min(scores)>=min_bar",
+    "id": "e3"
+  },
+  {
+    "title": "Name the winning seat",
+    "lang": "python",
+    "prompt": "Implement `seat_rates(bot_wins,total)` for decisive no-draw counts. Return {'bot': rate, 'opponent': rate}; for total zero return both None. Example: 3/4 gives .75 and .25.",
+    "starter": "def seat_rates(bot_wins,total):\n    # TODO: label both perspectives\n    return {'bot':0,'opponent':0}",
+    "tests": "assert seat_rates(3,4)=={'bot':.75,'opponent':.25}, 'Opponent wins are the complement only in this no-draw fixture'\nassert seat_rates(0,0)=={'bot':None,'opponent':None}, 'No games is not a zero-percent estimate'\nassert seat_rates(0,5)['opponent']==1, 'All bot losses are opponent wins here'",
+    "hint": "Use None for unavailable estimates.",
+    "solution": "def seat_rates(bot_wins,total):\n    if total==0:\n        return {'bot':None,'opponent':None}\n    return {'bot':bot_wins/total,'opponent':(total-bot_wins)/total}",
+    "id": "e4"
+  }
+]

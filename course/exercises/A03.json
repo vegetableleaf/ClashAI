@@ -1,0 +1,52 @@
+[
+  {
+    "title": "Make a Markdown note",
+    "lang": "bash",
+    "prompt": "Print a Markdown heading `# Icebow report`, a blank line, and the bullet `- Source: simulator`. Example first line: `# Icebow report`.",
+    "starter": "# TODO: write the requested read-only Bash command(s).\nprintf 'unfinished\\n'\n",
+    "expect": "\\A# Icebow report\\n\\n- Source: simulator\\n?\\Z",
+    "hint": "A blank line needs an extra newline escape.",
+    "solution": "printf '# Icebow report\\n\\n- Source: simulator\\n'",
+    "id": "e1"
+  },
+  {
+    "title": "Repair JSON punctuation",
+    "lang": "bash",
+    "prompt": "Print one valid compact JSON object with card X-Bow and numeric cost 6, in that order. Example shape: `{\"card\":\"Tesla\",\"cost\":4}`. Fix the starter double-quote and trailing-comma errors.",
+    "starter": "# TODO: fix this invalid JSON output.\nprintf '{card:X-Bow,cost:6,}\\n'",
+    "expect": "\\A\\{\"card\":\"X-Bow\",\"cost\":6\\}\\n?\\Z",
+    "hint": "JSON names and string values need double quotes; the last pair has no trailing comma.",
+    "solution": "printf '{\"card\":\"X-Bow\",\"cost\":6}\\n'",
+    "id": "e2"
+  },
+  {
+    "title": "Produce two JSONL records",
+    "lang": "bash",
+    "prompt": "Print two JSON objects on separate lines, first `n_plays` 2, then `n_plays` 5. Example first record: `{\"n_plays\":2}`. No surrounding array or comma between records.",
+    "starter": "# TODO: write the requested read-only Bash command(s).\nprintf 'unfinished\\n'\n",
+    "expect": "\\A\\{\"n_plays\":2\\}\\n\\{\"n_plays\":5\\}\\n?\\Z",
+    "hint": "Use a newline between complete objects.",
+    "solution": "printf '{\"n_plays\":2}\\n{\"n_plays\":5}\\n'",
+    "id": "e3"
+  },
+  {
+    "title": "Make a CSV table",
+    "lang": "bash",
+    "prompt": "Print header `card,cost` and rows X-Bow with 6 and Tesla with 4. Example data row: `Tesla,4`.",
+    "starter": "# TODO: write the requested read-only Bash command(s).\nprintf 'unfinished\\n'\n",
+    "expect": "\\Acard,cost\\nX-Bow,6\\nTesla,4\\n?\\Z",
+    "hint": "The header is a line too.",
+    "solution": "printf 'card,cost\\nX-Bow,6\\nTesla,4\\n'",
+    "id": "e4"
+  },
+  {
+    "title": "Inspect real match data",
+    "lang": "bash",
+    "prompt": "Use head to read exactly the first record of `scratchpad/gauntlet/L74/loss_review/matches.jsonl`. Example field shape: `\"n_plays\": 12`; do not assume any fixed count. The check looks for a JSON-object line with a numeric n_plays field.",
+    "starter": "# TODO: write the requested read-only Bash command(s).\nprintf 'unfinished\\n'\n",
+    "expect": "\\A\\{[^\\n]*\"n_plays\"\\s*:\\s*\\d+[^\\n]*\\}\\n?\\Z",
+    "hint": "The runner starts in the repo root.",
+    "solution": "head -n 1 scratchpad/gauntlet/L74/loss_review/matches.jsonl",
+    "id": "e5"
+  }
+]

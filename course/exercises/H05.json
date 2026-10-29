@@ -1,0 +1,42 @@
+[
+  {
+    "title": "One shaping step",
+    "lang": "python",
+    "prompt": "Implement `shape(phi,next_phi,gamma)`. Example: .2,.3,.9 gives .07.",
+    "starter": "def shape(phi,next_phi,gamma):\n    # TODO: discounted potential difference\n    return 0.0",
+    "tests": "assert abs(shape(.2,.3,.9)-.07)<1e-9, 'Discount next potential before subtracting current'\nassert shape(.3,0,.9)==-.3, 'Terminal shaping removes current potential'",
+    "hint": "Use gamma*next_phi-phi.",
+    "solution": "def shape(phi,next_phi,gamma):\n    return gamma*next_phi-phi",
+    "id": "e1"
+  },
+  {
+    "title": "Telescoping audit",
+    "lang": "python",
+    "prompt": "Implement `shaping_total(potentials,gamma)` where the list includes initial and terminal potentials. Sum discounted shaping rewards. Example: [.2,.3,0], .9 gives -.2.",
+    "starter": "def shaping_total(potentials,gamma):\n    # TODO: include every transition and its discount\n    return 0.0",
+    "tests": "assert abs(shaping_total([.2,.3,0],.9)+.2)<1e-9, 'Interior potentials should cancel'\nassert abs(shaping_total([.4,-.2,.8,0],.7)+.4)<1e-9, 'Cancellation must also hold for a longer path'\nassert shaping_total([0],.9)==0, 'No transitions means no shaping reward'",
+    "hint": "Transition t receives weight gamma**t.",
+    "solution": "def shaping_total(potentials,gamma):\n    return sum(gamma**t*(gamma*potentials[t+1]-potentials[t]) for t in range(len(potentials)-1))",
+    "id": "e2"
+  },
+  {
+    "title": "Find a farmed objective",
+    "lang": "python",
+    "prompt": "Implement `ranking_reversed(win_bonus,loss_bonus)` comparing a +1 win and a -1 loss after their bonuses. Return True only if the loss scores strictly more. Example: 0,3 gives True.",
+    "starter": "def ranking_reversed(win_bonus,loss_bonus):\n    # TODO: compare combined returns\n    return False",
+    "tests": "assert ranking_reversed(0,3), 'A three-point bonus makes the loss outrank the win'\nassert not ranking_reversed(0,2), 'A tie is not a strict reversal'\nassert not ranking_reversed(.2,.1), 'Small bonuses here preserve the ranking'",
+    "hint": "Compare -1+loss_bonus with 1+win_bonus.",
+    "solution": "def ranking_reversed(win_bonus,loss_bonus):\n    return -1+loss_bonus>1+win_bonus",
+    "id": "e3"
+  },
+  {
+    "title": "Shape a completed episode",
+    "lang": "python",
+    "prompt": "Implement `shape_episode(rewards,potentials,gamma)`. Require len(potentials)=len(rewards)+1 and final potential zero; otherwise raise ValueError. Example: [0,1],[.2,.3,0],.9 gives [.07,.7].",
+    "starter": "def shape_episode(rewards,potentials,gamma):\n    # TODO: validate boundaries, then shape each reward\n    return []",
+    "tests": "out=shape_episode([0,1],[.2,.3,0],.9)\nassert len(out)==2 and abs(out[0]-.07)<1e-9 and abs(out[1]-.7)<1e-9, 'Shape both transitions including the terminal one'\nfor phi in ([.2,.3], [.2,.3,.1]):\n    try:\n        shape_episode([0,1],phi,.9)\n    except ValueError:\n        pass\n    else:\n        assert False, 'Reject a wrong length or nonzero terminal potential'",
+    "hint": "Validate before indexing into the potential list.",
+    "solution": "def shape_episode(rewards,potentials,gamma):\n    if len(potentials)!=len(rewards)+1 or potentials[-1]!=0:\n        raise ValueError('Need one more potential and terminal zero')\n    return [r+gamma*potentials[t+1]-potentials[t] for t,r in enumerate(rewards)]",
+    "id": "e4"
+  }
+]

@@ -1,0 +1,53 @@
+[
+  {
+    "title": "Separate tables from rules",
+    "prompt": "Write hit(hp,stats) using stats['damage'] and clamp at zero. Example: hp=45,damage=20 gives 25. Do not modify stats.",
+    "starter": "def hit(hp,stats):\n    # TODO: apply supplied parameter\n    return hp",
+    "solution": "def hit(hp,stats):\n    return max(0,hp-stats['damage'])",
+    "tests": "s={'damage':20}\nassert hit(45,s)==25 and hit(10,s)==0, 'Apply damage with a zero-health floor'\nassert hit(45,{'damage':5})==40, 'Read the parameter instead of hard-coding one card'\nassert s=={'damage':20}, 'Do not alter the table row'",
+    "hint": "Use the supplied damage value.",
+    "id": "e1",
+    "lang": "python"
+  },
+  {
+    "title": "Audit a run manifest",
+    "prompt": "Write comparable(a,b) returning True only if both contain engine,tables,adapter and those values match. Example: same engine but different tables is False.",
+    "starter": "def comparable(a,b):\n    # TODO: require all version fields\n    return True",
+    "solution": "def comparable(a,b):\n    names=['engine','tables','adapter']\n    return all(k in a and k in b and a[k]==b[k] for k in names)",
+    "tests": "a={'engine':'a','tables':'16.402.22','adapter':'v1'}\nassert comparable(a,dict(a)), 'Identical complete manifests are comparable on these fields'\nassert not comparable(a,{**a,'tables':'16.635.3'}), 'Different tables need explicit rebaselining'\nassert not comparable({},{}), 'Two missing manifests are not evidence of equivalence'",
+    "hint": "Presence is required before equality.",
+    "id": "e2",
+    "lang": "python"
+  },
+  {
+    "title": "Scale coordinates",
+    "prompt": "Write to_engine(point) and to_pool(point), where point is a pair and engine scale is 18. Return tuples. Example: (1000,2000) maps to (18000,36000).",
+    "starter": "def to_engine(point):\n    # TODO: multiply both coordinates\n    return point\ndef to_pool(point):\n    # TODO: divide both coordinates\n    return point",
+    "solution": "def to_engine(point):\n    return tuple(v*18 for v in point)\ndef to_pool(point):\n    return tuple(v/18 for v in point)",
+    "tests": "assert to_engine((1000,2000))==(18000,36000), 'Apply SCALE to both coordinates'\nassert to_pool((81000,369000))==(4500,20500), 'Invert the documented scale'\nassert to_pool(to_engine((3500,6500)))==(3500,6500), 'Round trip must preserve the point'",
+    "hint": "A tuple comprehension can be built with tuple(generator).",
+    "id": "e3",
+    "lang": "python"
+  },
+  {
+    "title": "Inspect the real adapter safely",
+    "prompt": "Read pipeline/royale_env.py as text and assign scale, the integer literal on its SCALE assignment. Do not import the module. Example: a text line 'SCALE = 7 # comment' would yield 7.",
+    "starter": "from pathlib import Path\ntext=Path('pipeline/royale_env.py').read_text(encoding='utf-8')\n# TODO: parse the line starting SCALE =\nscale=0",
+    "solution": "from pathlib import Path\ntext=Path('pipeline/royale_env.py').read_text(encoding='utf-8')\nscale=int(next(line.split('=',1)[1].split('#',1)[0].strip() for line in text.splitlines() if line.startswith('SCALE =')))",
+    "tests": "lines=Path('pipeline/royale_env.py').read_text(encoding='utf-8').splitlines()\nexpected=int(next(l.split('=',1)[1].split('#',1)[0].strip() for l in lines if l.startswith('SCALE =')))\nassert isinstance(scale,int) and scale==expected and scale>0, 'Read the current positive integer SCALE without importing runtime code'",
+    "hint": "split removes the assignment prefix and trailing comment.",
+    "id": "e4",
+    "lang": "python"
+  },
+  {
+    "title": "Bound the conclusion",
+    "prompt": "Write verdict(evidence): return 'exact' only if smoke,deterministic,all_frames_exact are all True; otherwise 'not established'. Missing fields fail. Example: smoke alone is not enough.",
+    "starter": "def verdict(evidence):\n    # TODO: require every stated gate\n    return 'exact'",
+    "solution": "def verdict(evidence):\n    return 'exact' if all(evidence.get(k) is True for k in ['smoke','deterministic','all_frames_exact']) else 'not established'",
+    "tests": "assert verdict({'smoke':True})=='not established', 'A smoke test does not prove exactness'\nassert verdict({'smoke':True,'deterministic':True,'all_frames_exact':False})=='not established', 'Preserve a measured replay failure'\nassert verdict({'smoke':True,'deterministic':True,'all_frames_exact':True})=='exact', 'All declared toy gates support the bounded verdict'",
+    "hint": "Require explicit True for every field.",
+    "id": "e5",
+    "lang": "python"
+  }
+]
+

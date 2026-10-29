@@ -1,0 +1,52 @@
+[
+  {
+    "id": "e1",
+    "title": "Quote a run name",
+    "lang": "bash",
+    "prompt": "Implement describe so describe 'Icebow trial' 20 prints run=Icebow trial seeds=20.",
+    "starter": "# TODO: print arguments\ndescribe() { :; }\ndescribe 'Icebow trial' 20",
+    "expect": "^run=Icebow trial seeds=20$",
+    "hint": "Double-quote positional arguments.",
+    "solution": "describe() { printf 'run=%s seeds=%s\\n' \"$1\" \"$2\"; }\ndescribe 'Icebow trial' 20"
+  },
+  {
+    "id": "e2",
+    "title": "Affordability branch",
+    "lang": "bash",
+    "prompt": "Print play for elixir at least 6, otherwise wait. Example: affordable 5 prints wait.",
+    "starter": "# TODO: branch\naffordable() { :; }\naffordable 5\naffordable 6",
+    "expect": "^wait\\r?\\nplay\\r?$",
+    "hint": "Use test and -ge.",
+    "solution": "affordable() {\n if test \"$1\" -ge 6; then printf 'play\\n'; else printf 'wait\\n'; fi\n}\naffordable 5\naffordable 6"
+  },
+  {
+    "id": "e3",
+    "title": "Seed labels",
+    "lang": "bash",
+    "prompt": "Loop over 0 1 2; print seed=0 then seed=1 then seed=2, one per line.",
+    "starter": "# TODO: loop",
+    "expect": "^seed=0\\r?\\nseed=1\\r?\\nseed=2\\r?$",
+    "hint": "End a for loop with done.",
+    "solution": "for seed in 0 1 2; do printf 'seed=%s\\n' \"$seed\"; done"
+  },
+  {
+    "id": "e4",
+    "title": "Capture failure",
+    "lang": "bash",
+    "prompt": "Return status 7 from worker, capture it, then print status=7. Do not exit the whole script with 7.",
+    "starter": "# TODO: fix the return status\nworker() { return 0; }\nworker\nstatus=$?\nprintf 'status=%s\\n' \"$status\"",
+    "expect": "^status=7$",
+    "hint": "return ends a function.",
+    "solution": "worker() { return 7; }\nworker\nstatus=$?\nprintf 'status=%s\\n' \"$status\""
+  },
+  {
+    "id": "e5",
+    "title": "Wait for output",
+    "lang": "bash",
+    "prompt": "Launch worker in the background, save its PID, wait, then print collected. Expected lines: worker and collected.",
+    "starter": "worker() { printf 'worker\\n'; }\n# TODO: launch, capture PID, wait, print",
+    "expect": "^worker\\r?\\ncollected\\r?$",
+    "hint": "Use $! for the last background PID.",
+    "solution": "worker() { printf 'worker\\n'; }\nworker &\nchild=$!\nwait \"$child\"\nprintf 'collected\\n'"
+  }
+]

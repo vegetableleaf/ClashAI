@@ -1,0 +1,53 @@
+[
+  {
+    "title": "Normalize outcomes",
+    "prompt": "Write clean(values), returning a Series with WIN/LOSS/DRAW preserved and everything else replaced by 'unknown'. Example: [None,'WIN'] becomes ['unknown','WIN'].",
+    "starter": "import pandas as pd\ndef clean(values):\n    # TODO: normalize\n    return pd.Series(values)",
+    "solution": "import pandas as pd\ndef clean(values):\n    s=pd.Series(values,dtype=object)\n    return s.where(s.isin(['WIN','LOSS','DRAW']),'unknown')",
+    "tests": "assert clean([None,'WIN','DRAW','?']).tolist()==['unknown','WIN','DRAW','unknown'], 'Recognize only declared outcomes'\nassert clean([]).empty, 'Empty input must remain empty'",
+    "hint": "Use isin and where.",
+    "id": "e1",
+    "lang": "python"
+  },
+  {
+    "title": "Declare the denominator",
+    "prompt": "Write summary(values) returning (wins,losses,draws,unknown,rate). Return None for rate if wins+losses is zero. Example: ['WIN','LOSS',None] gives (1,1,0,1,0.5).",
+    "starter": "def summary(values):\n    # TODO: count four categories\n    return (0,0,0,0,None)",
+    "solution": "def summary(values):\n    w=values.count('WIN'); l=values.count('LOSS'); d=values.count('DRAW')\n    u=len(values)-w-l-d\n    return w,l,d,u,w/(w+l) if w+l else None",
+    "tests": "assert summary(['WIN','LOSS','DRAW',None])==(1,1,1,1,.5), 'Unknowns and draws stay outside decisive rate'\nassert summary([None,'DRAW'])==(0,0,1,1,None), 'No decisive games means undefined rate'\nassert summary(['WIN','WIN'])[-1]==1, 'All decisive wins gives 1'",
+    "hint": "Count categories before dividing.",
+    "id": "e2",
+    "lang": "python"
+  },
+  {
+    "title": "Read real match outcomes",
+    "prompt": "Read the supplied DATA path and assign outcomes, a list containing each nonblank row's derived value or None. Example: a row without derived contributes None. Do not print complete records.",
+    "starter": "import json\nfrom pathlib import Path\nDATA = Path('scratchpad/gauntlet/L74/loss_review/matches.jsonl')\ndef read_rows():\n    with DATA.open(encoding='utf-8') as f:\n        return [json.loads(line) for line in f if line.strip()]\n# TODO: extract derived from every row\noutcomes=[]",
+    "solution": "import json\nfrom pathlib import Path\nDATA = Path('scratchpad/gauntlet/L74/loss_review/matches.jsonl')\ndef read_rows():\n    with DATA.open(encoding='utf-8') as f:\n        return [json.loads(line) for line in f if line.strip()]\noutcomes=[r.get('derived') for r in read_rows()]",
+    "tests": "expected=[r.get('derived') for r in read_rows()]\nassert outcomes==expected, 'Read each nonblank record once, preserving missing outcomes'\nassert len(outcomes)==len(expected), 'Counts must follow the current file, not a fixed snapshot'",
+    "hint": "Use dict.get for optional fields.",
+    "id": "e3",
+    "lang": "python"
+  },
+  {
+    "title": "Parse recorded days",
+    "prompt": "Write days(values), returning date strings or 'unknown'. Example: ['20260925_183254','bad'] gives ['2026-09-25','unknown'].",
+    "starter": "import pandas as pd\ndef days(values):\n    # TODO: parse explicit format\n    return []",
+    "solution": "import pandas as pd\ndef days(values):\n    s=pd.to_datetime(pd.Series(values,dtype=object),format='%Y%m%d_%H%M%S',errors='coerce')\n    return s.dt.strftime('%Y-%m-%d').fillna('unknown').tolist()",
+    "tests": "assert days(['20260925_183254','bad'])==['2026-09-25','unknown'], 'Parse the actual ts format and retain invalid dates'\nassert days(['20261001_000000'])==['2026-10-01'], 'Handle a different month'",
+    "hint": "Use errors='coerce'.",
+    "id": "e4",
+    "lang": "python"
+  },
+  {
+    "title": "Aggregate daily results",
+    "prompt": "Write daily(df) returning a table indexed by day with columns wins and decisive. df has day and result. Count WIN as wins and WIN/LOSS as decisive. Example: WIN plus unknown on day A gives wins=1, decisive=1.",
+    "starter": "import pandas as pd\ndef daily(df):\n    # TODO: add indicator columns and group\n    return pd.DataFrame()",
+    "solution": "import pandas as pd\ndef daily(df):\n    x=df.copy()\n    x['wins']=(x['result']=='WIN').astype(int)\n    x['decisive']=x['result'].isin(['WIN','LOSS']).astype(int)\n    return x.groupby('day')[['wins','decisive']].sum()",
+    "tests": "df=pd.DataFrame({'day':['A','A','B','B'],'result':['WIN','unknown','LOSS','DRAW']})\nx=daily(df)\nassert x.loc['A','wins']==1 and x.loc['A','decisive']==1, 'Unknown must not enter day A denominator'\nassert x.loc['B','wins']==0 and x.loc['B','decisive']==1, 'Draw must not enter day B denominator'\nassert list(df.columns)==['day','result'], 'Do not mutate caller table'",
+    "hint": "astype(int) changes Boolean indicators to zero or one.",
+    "id": "e5",
+    "lang": "python"
+  }
+]
+

@@ -1,0 +1,53 @@
+[
+  {
+    "title": "Estimate standard error",
+    "prompt": "Write se(w,n), returning None if n=0; otherwise sqrt(p*(1-p)/n). Example: se(50,100)=.05.",
+    "starter": "from math import sqrt\ndef se(w,n):\n    # TODO: handle empty sample\n    return 0",
+    "solution": "from math import sqrt\ndef se(w,n):\n    if n==0: return None\n    p=w/n\n    return sqrt(p*(1-p)/n)",
+    "tests": "assert abs(se(50,100)-.05)<1e-12, 'Use the standard error of a proportion'\nassert se(0,0) is None, 'No games means no estimate'\nassert abs(se(200,400)-.025)<1e-12, 'Four times n halves standard error'",
+    "hint": "Compute p first.",
+    "id": "e1",
+    "lang": "python"
+  },
+  {
+    "title": "Implement Wilson",
+    "prompt": "Write wilson(w,n,z=1.96), returning (low,high), or None for n=0. Example: 5/10 gives approximately (.237,.763).",
+    "starter": "from math import sqrt\ndef wilson(w,n,z=1.96):\n    # TODO: implement adjusted centre and half-width\n    return None",
+    "solution": "from math import sqrt\ndef wilson(w,n,z=1.96):\n    if n == 0:\n        return None\n    p=w/n\n    den=1+z*z/n\n    centre=(p+z*z/(2*n))/den\n    half=z*sqrt(p*(1-p)/n+z*z/(4*n*n))/den\n    return max(0,centre-half),min(1,centre+half)\n",
+    "tests": "a=wilson(5,10)\nassert a is not None and abs(a[0]-.2365895936)<1e-8 and abs(a[1]-.7634104064)<1e-8, '5/10 should have Wilson interval about .237 to .763'\nassert wilson(0,0) is None, 'An empty sample has no interval'\nassert 0<=wilson(0,10)[0]<1e-12 and wilson(0,10)[1]>.27, 'Zero wins still has nonzero upper uncertainty'\nassert wilson(10,10)[0]<.73 and wilson(10,10)[1]<=1, 'All wins does not prove p=1'",
+    "hint": "Use the displayed formula and clamp to [0,1].",
+    "id": "e2",
+    "lang": "python"
+  },
+  {
+    "title": "Exact boundary interval",
+    "prompt": "Write exact_boundary(n,all_wins,alpha=.05), returning the Clopper-Pearson interval for zero wins or n wins. n is positive. Example: n=10,False gives (0,about .3085).",
+    "starter": "def exact_boundary(n,all_wins,alpha=.05):\n    # TODO: use the exact tail equation\n    return (0,1)",
+    "solution": "def exact_boundary(n,all_wins,alpha=.05):\n    if all_wins: return ((alpha/2)**(1/n),1)\n    return (0,1-(alpha/2)**(1/n))",
+    "tests": "a=exact_boundary(10,False)\nb=exact_boundary(10,True)\nassert a[0]==0 and abs(a[1]-.3084971078)<1e-8, 'Zero of ten upper exact limit is about .3085'\nassert b[1]==1 and abs(b[0]-.6915028922)<1e-8, 'Ten of ten lower exact limit is about .6915'\nassert exact_boundary(20,False)[1]<a[1], 'More zero-win games tighten the upper bound'",
+    "hint": "Solve the probability of all losses or all wins.",
+    "id": "e3",
+    "lang": "python"
+  },
+  {
+    "title": "Apply a frozen threshold",
+    "prompt": "Use supplied wilson and write passes(w,n,bar=.327). Return True only when an interval exists and its lower bound is strictly greater than bar. Example: no games fails.",
+    "starter": "from math import sqrt\ndef wilson(w,n,z=1.96):\n    if n == 0:\n        return None\n    p=w/n\n    den=1+z*z/n\n    centre=(p+z*z/(2*n))/den\n    half=z*sqrt(p*(1-p)/n+z*z/(4*n*n))/den\n    return max(0,centre-half),min(1,centre+half)\ndef passes(w,n,bar=.327):\n    # TODO: compare lower endpoint\n    return False",
+    "solution": "from math import sqrt\ndef wilson(w,n,z=1.96):\n    if n == 0:\n        return None\n    p=w/n\n    den=1+z*z/n\n    centre=(p+z*z/(2*n))/den\n    half=z*sqrt(p*(1-p)/n+z*z/(4*n*n))/den\n    return max(0,centre-half),min(1,centre+half)\ndef passes(w,n,bar=.327):\n    ci=wilson(w,n)\n    return ci is not None and ci[0]>bar",
+    "tests": "assert passes(80,100), '80/100 has a lower bound above .327'\nassert not passes(1,2), 'A point estimate above .327 alone is insufficient'\nassert not passes(0,0), 'Missing evidence cannot pass'\nassert not passes(5,10,wilson(5,10)[0]), 'The threshold comparison is strict'",
+    "hint": "Check None before indexing.",
+    "id": "e4",
+    "lang": "python"
+  },
+  {
+    "title": "Plan a margin",
+    "prompt": "Write plan(margin,z=1.96) using ceil(z*z*.25/margin**2). Example: .05 gives 385. Inputs are positive.",
+    "starter": "from math import ceil\ndef plan(margin,z=1.96):\n    # TODO: round required n upward\n    return 0",
+    "solution": "from math import ceil\ndef plan(margin,z=1.96):\n    return ceil(z*z*.25/margin**2)",
+    "tests": "assert plan(.05)==385, 'Five percentage points needs about 385 independent games under this approximation'\nassert plan(.10)==97, 'Ten percentage points needs 97'\nassert plan(.025)>3.9*plan(.05), 'Halving margin roughly quadruples sample size'",
+    "hint": "A margin of five percentage points is .05.",
+    "id": "e5",
+    "lang": "python"
+  }
+]
+

@@ -1,0 +1,53 @@
+[
+  {
+    "title": "Initialize the lane",
+    "prompt": "Write initial() returning tick=0,elixir=5,units=0,tower_hp=20. Each call must return a new dictionary. Example: modifying one returned state must not change another.",
+    "starter": "def initial():\n    # TODO: return a fresh state\n    return {}",
+    "solution": "def initial():\n    return {'tick':0,'elixir':5,'units':0,'tower_hp':20}",
+    "tests": "a=initial(); b=initial()\nassert a=={'tick':0,'elixir':5,'units':0,'tower_hp':20}, 'Initialize every declared field'\na['elixir']=0\nassert b['elixir']==5, 'Each initial state must be independent'",
+    "hint": "Create the dictionary inside the function.",
+    "id": "e1",
+    "lang": "python"
+  },
+  {
+    "title": "Implement one step",
+    "prompt": "Write step(state,action) with the declared order: affordable deploy costs 3 and adds a unit; every unit deals 2 tower damage; regen 1 capped at 10; increment tick. Clamp HP at 0. Example: initial state + deploy gives elixir=3,units=1,hp=18.",
+    "starter": "def step(state,action):\n    # TODO: implement the transition without mutation\n    return dict(state)",
+    "solution": "def step(state,action):\n    new=dict(state)\n    if action=='deploy' and new['elixir']>=3:\n        new['elixir']-=3\n        new['units']+=1\n    new['tower_hp']=max(0,new['tower_hp']-2*new['units'])\n    new['elixir']=min(10,new['elixir']+1)\n    new['tick']+=1\n    return new\n",
+    "tests": "s={'tick':0,'elixir':5,'units':0,'tower_hp':20}\na=step(s,'deploy')\nassert a=={'tick':1,'elixir':3,'units':1,'tower_hp':18}, 'Follow spend, damage, regen, increment order'\nassert s['elixir']==5 and s['tick']==0, 'Preserve the caller state'\nb=step({'tick':2,'elixir':0,'units':2,'tower_hp':1},'deploy')\nassert b=={'tick':3,'elixir':1,'units':2,'tower_hp':0}, 'Reject unaffordable deploy and clamp HP'",
+    "hint": "Copy state before updates.",
+    "id": "e2",
+    "lang": "python"
+  },
+  {
+    "title": "Replay a fixed script",
+    "prompt": "Using supplied step, write replay(start,actions), returning the initial state followed by each resulting state. Example: two actions produce three snapshots.",
+    "starter": "def step(state,action):\n    new=dict(state)\n    if action=='deploy' and new['elixir']>=3:\n        new['elixir']-=3\n        new['units']+=1\n    new['tower_hp']=max(0,new['tower_hp']-2*new['units'])\n    new['elixir']=min(10,new['elixir']+1)\n    new['tick']+=1\n    return new\ndef replay(start,actions):\n    # TODO: collect the trace\n    return []",
+    "solution": "def step(state,action):\n    new=dict(state)\n    if action=='deploy' and new['elixir']>=3:\n        new['elixir']-=3\n        new['units']+=1\n    new['tower_hp']=max(0,new['tower_hp']-2*new['units'])\n    new['elixir']=min(10,new['elixir']+1)\n    new['tick']+=1\n    return new\ndef replay(start,actions):\n    state=dict(start); trace=[dict(state)]\n    for action in actions:\n        state=step(state,action)\n        trace.append(dict(state))\n    return trace",
+    "tests": "s={'tick':0,'elixir':5,'units':0,'tower_hp':20}\nt=replay(s,['deploy','wait'])\nassert [r['tick'] for r in t]==[0,1,2], 'Include tick zero and one frame per action'\nassert [r['tower_hp'] for r in t]==[20,18,16], 'Replay damage in order'\nassert t==replay(s,['deploy','wait']), 'Identical scripts must reproduce the full trace'\nt[-1]['elixir']=99\nassert t[0]['elixir']==5 and s['elixir']==5, 'Snapshots must not alias each other'",
+    "hint": "Append a fresh state at each step.",
+    "id": "e3",
+    "lang": "python"
+  },
+  {
+    "title": "A local seeded RNG",
+    "prompt": "Write damages(seed,n) returning n randint(1,3) values from one local random.Random generator. Example: n=0 returns [].",
+    "starter": "import random\ndef damages(seed,n):\n    # TODO: create one local generator\n    return []",
+    "solution": "import random\ndef damages(seed,n):\n    rng=random.Random(seed)\n    return [rng.randint(1,3) for _ in range(n)]",
+    "tests": "r=random.Random(8)\nassert damages(8,6)==[r.randint(1,3) for _ in range(6)], 'Use one seeded draw stream'\nassert damages(8,0)==[], 'An empty replay consumes no draws'\nrandom.seed(19); expected=random.random(); random.seed(19)\ndamages(8,6)\nassert random.random()==expected, 'Do not consume global RNG state'",
+    "hint": "Use random.Random, not random.seed in the function.",
+    "id": "e4",
+    "lang": "python"
+  },
+  {
+    "title": "Validate invariants",
+    "prompt": "Write valid(state), requiring integer tick>=0, elixir in [0,10], units>=0, and tower_hp>=0. Inputs contain all fields. Example: elixir=11 is invalid.",
+    "starter": "def valid(state):\n    # TODO: combine bounds\n    return True",
+    "solution": "def valid(state):\n    return isinstance(state['tick'],int) and state['tick']>=0 and 0<=state['elixir']<=10 and state['units']>=0 and state['tower_hp']>=0",
+    "tests": "s={'tick':0,'elixir':5,'units':0,'tower_hp':20}\nassert valid(s), 'Initial state must satisfy invariants'\nfor name,value in [('tick',-.5),('elixir',11),('elixir',-1),('units',-1),('tower_hp',-1)]:\n    bad=dict(s); bad[name]=value\n    assert not valid(bad), f'Reject invalid {name}={value}'",
+    "hint": "Check all fields, not only health.",
+    "id": "e5",
+    "lang": "python"
+  }
+]
+

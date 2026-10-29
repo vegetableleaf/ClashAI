@@ -1,0 +1,53 @@
+[
+  {
+    "title": "Canonical object list",
+    "prompt": "Write canonical(objects) returning a sorted list of (side,x,y,hp) tuples, preserving duplicates. Example: two identical units remain two tuples.",
+    "starter": "def canonical(objects):\n    # TODO: sort full tuples, do not use set\n    return []",
+    "solution": "def canonical(objects):\n    return sorted((u['side'],u['x'],u['y'],u['hp']) for u in objects)",
+    "tests": "u={'side':0,'x':4,'y':20,'hp':10}\nv={'side':1,'x':2,'y':3,'hp':5}\nassert canonical([u,u])==[(0,4,20,10),(0,4,20,10)], 'Preserve duplicate objects'\nassert canonical([v,u])==canonical([u,v]), 'Ignore input ordering'\nassert canonical([])==[], 'An empty board has an empty representation'",
+    "hint": "A sorted list preserves multiplicity.",
+    "id": "e1",
+    "lang": "python"
+  },
+  {
+    "title": "Find the first strict mismatch",
+    "prompt": "Write first_difference(live,sim) for tick-to-list-of-tuples dictionaries. Return earliest missing or unequal tick, else None. Compare sorted lists so ordering is irrelevant. Example: identical tick 0 but different tick 2 returns 2.",
+    "starter": "def first_difference(live,sim):\n    # TODO: scan sorted union of ticks\n    return None",
+    "solution": "def first_difference(live,sim):\n    for t in sorted(set(live)|set(sim)):\n        if t not in live or t not in sim or sorted(live[t])!=sorted(sim[t]): return t\n    return None",
+    "tests": "assert first_difference({0:[(1,)],2:[(2,)]},{0:[(1,)],2:[(3,)]})==2, 'Report earliest differing tick'\nassert first_difference({0:[]},{0:[],1:[]})==1, 'Missing frames are visible failures'\nassert first_difference({0:[(1,),(2,)]},{0:[(2,),(1,)]}) is None, 'Ordering alone is not a mismatch'",
+    "hint": "Check membership before comparing.",
+    "id": "e2",
+    "lang": "python"
+  },
+  {
+    "title": "Report coverage and agreement",
+    "prompt": "Write coverage(live,sim) returning {'compared':intersection size,'exact':equal values on shared ticks,'missing':symmetric-difference size}. Example: live={0:1},sim={0:1,1:2} gives 1,1,1.",
+    "starter": "def coverage(live,sim):\n    # TODO: separate missing and compared\n    return {}",
+    "solution": "def coverage(live,sim):\n    shared=set(live)&set(sim)\n    return {'compared':len(shared),'exact':sum(live[t]==sim[t] for t in shared),'missing':len(set(live)^set(sim))}",
+    "tests": "assert coverage({0:1},{0:1,1:2})=={'compared':1,'exact':1,'missing':1}, 'Do not hide unobserved frames'\nassert coverage({0:1,1:2},{0:9,1:2})=={'compared':2,'exact':1,'missing':0}, 'Count exactness separately from coverage'\nassert coverage({}, {})=={'compared':0,'exact':0,'missing':0}, 'Empty traces have no evidence'",
+    "hint": "The set operator ^ gives elements present on only one side.",
+    "id": "e3",
+    "lang": "python"
+  },
+  {
+    "title": "Detect a toy mixed-time signature",
+    "prompt": "Write mixed(observed,before,after) for equal-length numeric lists. Return True only if every observed value matches its corresponding before or after value, at least one matches only before, and at least one matches only after. Example: [1,4] from before=[1,2],after=[3,4] is True.",
+    "starter": "def mixed(observed,before,after):\n    # TODO: require a mixture, not a whole-frame shift\n    return False",
+    "solution": "def mixed(observed,before,after):\n    triples=list(zip(observed,before,after))\n    return all(o==b or o==a for o,b,a in triples) and any(o==b and o!=a for o,b,a in triples) and any(o==a and o!=b for o,b,a in triples)",
+    "tests": "assert mixed([1,4],[1,2],[3,4]), 'A before-only and after-only component form a mixed signature'\nassert not mixed([3,4],[1,2],[3,4]), 'A whole after-frame is a shift, not a mixture'\nassert not mixed([1,9],[1,2],[3,4]), 'Unexplained values do not establish a torn-read signature'",
+    "hint": "Track both exclusive match types.",
+    "id": "e4",
+    "lang": "python"
+  },
+  {
+    "title": "A planted health defect",
+    "prompt": "Write inject_hp(objects,index,delta) returning a deep-copied list with only the selected object's hp changed. Example: delta=-1 plants a one-HP mismatch without editing the original.",
+    "starter": "from copy import deepcopy\ndef inject_hp(objects,index,delta):\n    # TODO: copy and modify one field\n    return objects",
+    "solution": "from copy import deepcopy\ndef inject_hp(objects,index,delta):\n    out=deepcopy(objects)\n    out[index]['hp']+=delta\n    return out",
+    "tests": "a=[{'hp':10,'x':4},{'hp':20,'x':5}]\nb=inject_hp(a,1,-1)\nassert b==[{'hp':10,'x':4},{'hp':19,'x':5}], 'Change exactly the selected health value'\nassert a[1]['hp']==20, 'Preserve the original evidence'\nb[0]['x']=99\nassert a[0]['x']==4, 'All nested snapshots must be independent'",
+    "hint": "Use deepcopy before assignment.",
+    "id": "e5",
+    "lang": "python"
+  }
+]
+

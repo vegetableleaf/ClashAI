@@ -1,0 +1,53 @@
+[
+  {
+    "title": "Detect changed configuration fields",
+    "prompt": "Write changed(a,b), returning sorted names whose values differ or are absent on one side. Example: {'x':None} versus {} must report ['x'].",
+    "starter": "def changed(a,b):\n    # TODO: compare presence as well as value\n    return []",
+    "solution": "def changed(a,b):\n    return sorted(k for k in set(a)|set(b) if k not in a or k not in b or a[k]!=b[k])",
+    "tests": "assert changed({'tables':'v1','timing':0},{'tables':'v1','timing':1})==['timing'], 'Identify the one changed factor'\nassert changed({'x':None},{})==['x'], 'Absent and explicit None are different configurations'\nassert changed({'x':1},{'x':1})==[], 'Identical configs have no changes'",
+    "hint": "Use membership before value comparison.",
+    "id": "e1",
+    "lang": "python"
+  },
+  {
+    "title": "Reject overlapping sets",
+    "prompt": "Write fresh_ok(dev,fresh,inspected) returning True only if fresh is nonempty and shares no identifiers with dev or inspected. Example: fresh={'b'},dev={'a'},inspected={} passes.",
+    "starter": "def fresh_ok(dev,fresh,inspected):\n    # TODO: require untouched records\n    return False",
+    "solution": "def fresh_ok(dev,fresh,inspected):\n    return bool(fresh) and set(fresh).isdisjoint(set(dev)|set(inspected))",
+    "tests": "assert fresh_ok({'a'},{'b'},set()), 'A nonempty untouched disjoint block is eligible'\nassert not fresh_ok({'a'},{'a','b'},set()), 'Development overlap invalidates the block'\nassert not fresh_ok(set(),{'b'},{'b'}), 'Inspected outcomes are not fresh'\nassert not fresh_ok(set(),set(),set()), 'An empty block supplies no evidence'",
+    "hint": "Combine dev and inspected identifiers.",
+    "id": "e2",
+    "lang": "python"
+  },
+  {
+    "title": "Fingerprint a plan",
+    "prompt": "Write fingerprint(plan) as SHA-256 of UTF-8 JSON with sort_keys=True and separators=(',',':'). Example: insertion order must not change the fingerprint.",
+    "starter": "import json,hashlib\ndef fingerprint(plan):\n    # TODO: stable serialization\n    return ''",
+    "solution": "import json,hashlib\ndef fingerprint(plan):\n    s=json.dumps(plan,sort_keys=True,separators=(',',':'))\n    return hashlib.sha256(s.encode('utf-8')).hexdigest()",
+    "tests": "assert fingerprint({'n':40,'metric':'wins'})==fingerprint({'metric':'wins','n':40}), 'Dictionary insertion order should not change the plan ID'\nassert fingerprint({'n':40})!=fingerprint({'n':41}), 'A changed sample plan needs a changed ID'\nassert len(fingerprint({}))==64, 'SHA-256 hexadecimal representation has 64 characters'",
+    "hint": "Hash bytes, not the dictionary object.",
+    "id": "e3",
+    "lang": "python"
+  },
+  {
+    "title": "Freeze the stopping rule",
+    "prompt": "Write should_stop(completed,planned) returning completed >= planned. Example: 39 of 40 is False, 40 of 40 is True. Ignore whether the current score looks good.",
+    "starter": "def should_stop(completed,planned):\n    # TODO: compare counts\n    return False",
+    "solution": "def should_stop(completed,planned):\n    return completed>=planned",
+    "tests": "assert not should_stop(39,40), 'Do not stop before the fixed plan completes'\nassert should_stop(40,40) and should_stop(41,40), 'Stop at or beyond the planned count'",
+    "hint": "Use >=.",
+    "id": "e4",
+    "lang": "python"
+  },
+  {
+    "title": "Plant a comparator defect",
+    "prompt": "Write exact(recorded,simulated) comparing dictionaries with hp,x,y. All fields must match, including equality of dictionary contents. Example: a one-HP difference fails.",
+    "starter": "def exact(recorded,simulated):\n    # TODO: compare complete observations\n    return True",
+    "solution": "def exact(recorded,simulated):\n    return recorded==simulated",
+    "tests": "a={'hp':100,'x':4,'y':20}\nassert exact(a,dict(a)), 'Identical observations must pass'\nassert not exact(a,{'hp':99,'x':4,'y':20}), 'A planted one-HP defect must fail'\nassert not exact(a,{'hp':100,'x':5,'y':20}), 'A coordinate defect must fail too'",
+    "hint": "Dictionary equality compares names and values.",
+    "id": "e5",
+    "lang": "python"
+  }
+]
+

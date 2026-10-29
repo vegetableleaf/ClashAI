@@ -1,0 +1,52 @@
+[
+  {
+    "title": "Handle exact affordability",
+    "lang": "python",
+    "prompt": "Set `decision` to play when elixir is at least cost, otherwise wait. Example: exactly 6 for a 6-cost card means play.",
+    "starter": "elixir = 6\ncost = 6\n# TODO: repair the boundary comparison.\nif elixir > cost:\n    decision = \"play\"\nelse:\n    decision = \"wait\"",
+    "solution": "elixir = 6\ncost = 6\nif elixir >= cost:\n    decision = \"play\"\nelse:\n    decision = \"wait\"",
+    "tests": "assert decision == \"play\", \"Exactly enough elixir should choose play\"",
+    "hint": "Affordability includes equality.",
+    "id": "e1"
+  },
+  {
+    "title": "Trace phase boundaries",
+    "lang": "python",
+    "prompt": "For the supplied times, append each multiplier to `multipliers`: below 120 -> 1, below 180 -> 2, otherwise 3. Example: time 120 uses 2. These are teaching boundaries.",
+    "starter": "times = [0, 119, 120, 179, 180, 240]\nmultipliers = []\n# TODO: loop over times and append the correct multiplier.",
+    "solution": "times = [0, 119, 120, 179, 180, 240]\nmultipliers = []\nfor seconds in times:\n    if seconds < 120:\n        multiplier = 1\n    elif seconds < 180:\n        multiplier = 2\n    else:\n        multiplier = 3\n    multipliers.append(multiplier)",
+    "tests": "assert multipliers == [1, 1, 2, 2, 3, 3], \"Check both sides of the 120 and 180 teaching boundaries\"",
+    "hint": "Only the first matching branch runs.",
+    "id": "e2"
+  },
+  {
+    "title": "Count affordable cards",
+    "lang": "python",
+    "prompt": "With 4 elixir, count costs no greater than 4 in the supplied list. Store the count in `affordable`. Example: cost 4 qualifies.",
+    "starter": "costs = [6, 4, 3, 1, 6]\nelixir = 4\naffordable = 0\n# TODO: count qualifying costs.",
+    "solution": "costs = [6, 4, 3, 1, 6]\nelixir = 4\naffordable = 0\nfor cost in costs:\n    if cost <= elixir:\n        affordable += 1",
+    "tests": "assert affordable == 3, \"Costs 4, 3, and 1 are affordable at 4 elixir\"",
+    "hint": "Initialize outside the loop and increment inside the condition.",
+    "id": "e3"
+  },
+  {
+    "title": "Stop a waiting loop",
+    "lang": "python",
+    "prompt": "Start at 3 elixir. In this deliberately simplified drill, add one elixir each step until at least 6. Update `steps`. Example: starting at 5 would require one step.",
+    "starter": "elixir = 3\nsteps = 0\n# TODO: write a terminating while loop.",
+    "solution": "elixir = 3\nsteps = 0\nwhile elixir < 6:\n    elixir = min(10, elixir + 1)\n    steps += 1",
+    "tests": "assert elixir == 6, \"The loop should stop at 6 elixir\"\nassert steps == 3, \"3 to 6 at one per step takes three steps\"",
+    "hint": "Both elixir and the counter must change in the loop.",
+    "id": "e4"
+  },
+  {
+    "title": "Simulate three short phases",
+    "lang": "python",
+    "prompt": "Simulate nine one-second ticks, starting at 8 elixir. Ticks 0-2 use 1x, 3-5 use 2x, 6-8 use 3x. Each tick: regenerate multiplier/2.8, cap at 10, then at tick 4 spend 6 if affordable, then append the resulting elixir to `trace`. Example: the first entry is 8 + 1/2.8. This short schedule is a teaching fixture.",
+    "starter": "elixir = 8.0\ntrace = []\n# TODO: simulate range(9), including phases, cap, spending, and trace.",
+    "solution": "elixir = 8.0\ntrace = []\nfor tick in range(9):\n    if tick < 3:\n        multiplier = 1\n    elif tick < 6:\n        multiplier = 2\n    else:\n        multiplier = 3\n    elixir = min(10, elixir + multiplier / 2.8)\n    if tick == 4 and elixir >= 6:\n        elixir -= 6\n    trace.append(elixir)",
+    "tests": "assert len(trace) == 9, \"Record one post-update value for each of nine ticks\"\nexpected = [8+1/2.8, 8+2/2.8, 8+3/2.8, 8+5/2.8, 4.0, 4+2/2.8, 4+5/2.8, 4+8/2.8, 4+11/2.8]\nfor index in range(9):\n    assert abs(trace[index] - expected[index]) < 1e-9, f\"Wrong elixir after tick {index}: check phase, cap-before-spend, and trace timing\"\nassert abs(elixir - trace[-1]) < 1e-9, \"Final elixir must match the last trace entry\"",
+    "hint": "Cap before the tick-4 play; append after spending.",
+    "id": "e5"
+  }
+]

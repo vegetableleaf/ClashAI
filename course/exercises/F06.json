@@ -1,0 +1,52 @@
+[
+  {
+    "id": "e1",
+    "title": "Group split",
+    "lang": "python",
+    "prompt": "Partition rows using train_ids, val_ids, test_ids. Reject overlapping ID sets or unassigned rows. Return {'train':list,'val':list,'test':list}, preserving row order. Example: both rows from match a must stay together.",
+    "starter": "def split_matches(rows,train_ids,val_ids,test_ids):\n    # TODO: validate sets and route every row\n    return {}",
+    "tests": "rows=[{'match':'a','tick':1},{'match':'a','tick':2},{'match':'b','tick':1}]\nr=split_matches(rows,{'a'},{'b'},{'c'})\nassert r=={'train':rows[:2],'val':rows[2:],'test':[]}, 'Keep every match together and preserve rows'\nfor args in [(rows,{'a'},{'a'},set()),(rows,{'a'},set(),set())]:\n    try:\n        split_matches(*args)\n    except ValueError:\n        pass\n    else:\n        assert False, 'Reject overlap or missing assignments'",
+    "hint": "Validate set intersections before routing.",
+    "solution": "def split_matches(rows,train_ids,val_ids,test_ids):\n    groups={'train':set(train_ids),'val':set(val_ids),'test':set(test_ids)}\n    if groups['train']&groups['val'] or groups['train']&groups['test'] or groups['val']&groups['test']:\n        raise ValueError('Overlapping match IDs')\n    result={name:[] for name in groups}\n    for row in rows:\n        choices=[name for name,ids in groups.items() if row['match'] in ids]\n        if len(choices)!=1:\n            raise ValueError('Unassigned match')\n        result[choices[0]].append(row)\n    return result"
+  },
+  {
+    "id": "e2",
+    "title": "Training-only standardisation",
+    "lang": "python",
+    "prompt": "Return (mean,scale,transformed) using training means and population standard deviations. Replace zero scales with one. Example: train [[1,10],[3,10]], held-out [[5,10]] yields transformed [[3,0]].",
+    "starter": "import numpy as np\ndef standardise(train,held_out):\n    # TODO: fit on train only\n    return None,None,None",
+    "tests": "mean,scale,out=standardise([[1,10],[3,10]],[[5,10]])\nassert np.allclose(mean,[2,10]), 'Fit means only on training examples'\nassert np.allclose(scale,[1,1]), 'Replace constant-feature scale by one'\nassert np.allclose(out,[[3,0]]), 'Apply stored training statistics'\na,b,_=standardise([[1,10],[3,10]],[[500,100]])\nassert np.allclose(a,mean) and np.allclose(b,scale), 'Held-out changes must not alter fitted preprocessing'",
+    "hint": "Use axis=0.",
+    "solution": "import numpy as np\ndef standardise(train,held_out):\n    train=np.asarray(train,dtype=float)\n    mean=train.mean(axis=0)\n    scale=train.std(axis=0)\n    scale=np.where(scale==0,1.0,scale)\n    return mean,scale,(np.asarray(held_out,dtype=float)-mean)/scale"
+  },
+  {
+    "id": "e3",
+    "title": "Select checkpoint",
+    "lang": "python",
+    "prompt": "Return the step with smallest val_nll; first entry wins ties. History is nonempty. Ignore train_loss and test_nll if present. Example: validation [0.8,0.6,0.7] selects the middle step.",
+    "starter": "def choose(history):\n    # TODO: select by validation loss\n    return history[-1]['step']",
+    "tests": "h=[{'step':10,'val_nll':0.8,'train_loss':0.2},{'step':20,'val_nll':0.6,'train_loss':0.3},{'step':30,'val_nll':0.7,'train_loss':0.1}]\nassert choose(h)==20, 'Select validation best, not final or training best'\nassert choose([{'step':1,'val_nll':0.5},{'step':2,'val_nll':0.5}])==1, 'Keep earliest on a tie'\nassert choose([dict(r,test_nll=0 if r['step']==30 else 9) for r in h])==20, 'Test scores must not choose the checkpoint'",
+    "hint": "Use min with val_nll.",
+    "solution": "def choose(history):\n    return min(history,key=lambda row:row['val_nll'])['step']"
+  },
+  {
+    "id": "e4",
+    "title": "Sequential early stopping",
+    "lang": "python",
+    "prompt": "Return the zero-based evaluation index where patience consecutive non-improvements first occurs; None if it never occurs. Strictly lower loss improves and resets the count. Example: [0.9,0.7,0.71,0.72,0.6], patience=2 returns 3.",
+    "starter": "def stopping_index(losses,patience):\n    # TODO: scan in order\n    return None",
+    "tests": "assert stopping_index([0.9,0.7,0.71,0.72,0.6],2)==3, 'Stop before inspecting the later improvement'\nassert stopping_index([1,1,1],2)==2, 'Ties count as non-improvements'\nassert stopping_index([1,0.9,0.8],1) is None, 'Improvement resets patience'\nassert stopping_index([1,1.1,0.9,1,1.1],2)==4, 'Reset the counter after improvement'",
+    "hint": "Track best loss and consecutive bad evaluations.",
+    "solution": "def stopping_index(losses,patience):\n    best=float('inf')\n    bad=0\n    for i,value in enumerate(losses):\n        if value<best:\n            best,bad=value,0\n        else:\n            bad+=1\n        if bad>=patience:\n            return i\n    return None"
+  },
+  {
+    "id": "e5",
+    "title": "L2 objective and gradient",
+    "lang": "python",
+    "prompt": "Given weights and strength, return (data_loss + strength*sum(w*w), 2*strength*w). The gradient returned is the penalty gradient only. Example: [3,4], strength=.01, loss=.5 gives objective .75.",
+    "starter": "import numpy as np\ndef regularised(weights,strength,data_loss):\n    # TODO: objective and penalty gradient\n    return data_loss,np.zeros(len(weights))",
+    "tests": "value,gradient=regularised([3,4],0.01,0.5)\nassert np.isclose(value,0.75), 'Add the specified L2 penalty'\nassert np.allclose(gradient,[0.06,0.08]), 'Differentiate the penalty in parameter order'\nvalue,gradient=regularised([3,-4],0,0.5)\nassert value==0.5 and np.allclose(gradient,0), 'Zero strength must leave the data objective unchanged'",
+    "hint": "The derivative of w squared is 2w.",
+    "solution": "import numpy as np\ndef regularised(weights,strength,data_loss):\n    w=np.asarray(weights,dtype=float)\n    return float(data_loss+strength*np.sum(w*w)),2*strength*w"
+  }
+]

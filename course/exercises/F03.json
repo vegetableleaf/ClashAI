@@ -1,0 +1,52 @@
+[
+  {
+    "id": "e1",
+    "title": "Analytical slope",
+    "lang": "python",
+    "prompt": "Return derivative of (w-3)**2. Example: gradient(1) is -4.",
+    "starter": "def gradient(w):\n    # TODO: differentiate the quadratic\n    return 0",
+    "tests": "assert gradient(1)==-4, 'Slope at one should be minus four'\nassert gradient(3)==0, 'Minimum should have zero slope'\nassert gradient(5)==4, 'Slope at five should be four'",
+    "hint": "Bring down the exponent.",
+    "solution": "def gradient(w):\n    return 2*(w-3)"
+  },
+  {
+    "id": "e2",
+    "title": "Central difference",
+    "lang": "python",
+    "prompt": "Implement central_difference(f,x,h=1e-5). Example: f(x)=x*x at x=2 has derivative approximately 4.",
+    "starter": "def central_difference(f,x,h=1e-5):\n    # TODO: evaluate both sides\n    return 0",
+    "tests": "import math\nassert math.isclose(central_difference(lambda x:x*x,2),4,abs_tol=1e-6), 'Use both sides of x'\nassert math.isclose(central_difference(lambda x:x**3,-2),12,abs_tol=1e-5), 'Cubic slope at minus two should be twelve'",
+    "hint": "Divide by 2*h.",
+    "solution": "def central_difference(f,x,h=1e-5):\n    return (f(x+h)-f(x-h))/(2*h)"
+  },
+  {
+    "id": "e3",
+    "title": "One descent step",
+    "lang": "python",
+    "prompt": "Return w-lr*2*(w-3). Example: step(1,0.1) is 1.4.",
+    "starter": "def step(w,lr):\n    # TODO: move opposite the slope\n    return w",
+    "tests": "import math\nassert math.isclose(step(1,0.1),1.4), 'Negative slope should increase w'\nassert math.isclose(step(5,0.1),4.6), 'Positive slope should decrease w'\nassert step(1,0)==1, 'Zero rate must preserve the parameter'\nassert (step(1,1.5)-3)**2>4, 'The specified large step should demonstrate overshooting'",
+    "hint": "Subtract the gradient, even when it is negative.",
+    "solution": "def step(w,lr):\n    return w-lr*2*(w-3)"
+  },
+  {
+    "id": "e4",
+    "title": "Two-dimensional descent",
+    "lang": "python",
+    "prompt": "Starting from a,b, take steps updates with lr on L=(a-2)^2+2*(b+1)^2. Return (a,b). Example: (0,0), one step, lr=0.1 gives (0.4,-0.4).",
+    "starter": "def descend(a,b,steps,lr):\n    # TODO: simultaneous updates\n    return a,b",
+    "tests": "import numpy as np\nassert np.allclose(descend(0,0,1,0.1),(0.4,-0.4)), 'Use both partial derivatives'\nassert np.allclose(descend(0,0,80,0.1),(2,-1),atol=1e-6), 'Small steps should approach the minimum'\nassert descend(3,4,0,0.1)==(3,4), 'Zero steps preserve the starting point'",
+    "hint": "Compute both gradients before assigning either parameter.",
+    "solution": "def descend(a,b,steps,lr):\n    for _ in range(steps):\n        ga,gb=2*(a-2),4*(b+1)\n        a,b=a-lr*ga,b-lr*gb\n    return a,b"
+  },
+  {
+    "id": "e5",
+    "title": "Chain-rule gradient",
+    "lang": "python",
+    "prompt": "Return derivative of mean (w*x-y)^2 for nonempty paired xs,ys. Example: xs=[1,2], ys=[2,4], w=0 gives -10.",
+    "starter": "def mean_gradient(xs,ys,w):\n    # TODO: chain rule and average\n    return 0",
+    "tests": "import math\nassert mean_gradient([1,2],[2,4],0)==-10, 'Include input factors and divide by example count'\nxs,ys,w=[-1,0,2],[2,1,3],0.7\nf=lambda v:sum((v*x-y)**2 for x,y in zip(xs,ys))/len(xs)\nh=1e-5\nnumeric=(f(w+h)-f(w-h))/(2*h)\nassert math.isclose(mean_gradient(xs,ys,w),numeric,abs_tol=1e-6), 'Analytical derivative must agree with finite differences'",
+    "hint": "Each example contributes 2*(w*x-y)*x.",
+    "solution": "def mean_gradient(xs,ys,w):\n    return sum(2*(w*x-y)*x for x,y in zip(xs,ys))/len(xs)"
+  }
+]

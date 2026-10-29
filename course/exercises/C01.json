@@ -1,0 +1,53 @@
+[
+  {
+    "title": "Build a tile board",
+    "prompt": "Write arena() returning an integer array of shape (32,18), zero except 6 at y=20,x=4. Example: arena()[20,4] is 6.",
+    "starter": "import numpy as np\ndef arena():\n    # TODO: build board\n    return np.zeros((1,1))",
+    "solution": "import numpy as np\ndef arena():\n    a=np.zeros((32,18),dtype=int)\n    a[20,4]=6\n    return a",
+    "tests": "a=arena()\nassert a.shape==(32,18), 'Use 32 rows and 18 columns'\nassert a.dtype.kind in 'iu', 'Use integer storage'\nassert a[20,4]==6 and a.sum()==6, 'Only tile (4,20) should contain 6'",
+    "hint": "Index with [y,x].",
+    "id": "e1",
+    "lang": "python"
+  },
+  {
+    "title": "Regenerate elixir",
+    "prompt": "Write regen(values,gain), returning a float array capped at 10 without changing values. Example: [9,2] plus 2 gives [10,4].",
+    "starter": "import numpy as np\ndef regen(values,gain):\n    # TODO: add and cap\n    return np.asarray(values)",
+    "solution": "import numpy as np\ndef regen(values,gain):\n    return np.minimum(np.array(values,dtype=float)+gain,10)",
+    "tests": "a=np.array([9.5,1.0])\nassert np.allclose(regen(a,1),[10,2]), 'Add and cap each value'\nassert np.allclose(a,[9.5,1]), 'Preserve input'\nassert np.allclose(regen([0],.5),[.5]), 'Keep fractional regeneration'",
+    "hint": "Use np.minimum.",
+    "id": "e2",
+    "lang": "python"
+  },
+  {
+    "title": "Column totals",
+    "prompt": "Write column_totals(board). Example: [[1,2],[3,4]] gives [4,6].",
+    "starter": "import numpy as np\ndef column_totals(board):\n    # TODO: reduce rows\n    return np.array([])",
+    "solution": "import numpy as np\ndef column_totals(board):\n    return np.asarray(board).sum(axis=0)",
+    "tests": "assert np.array_equal(column_totals([[1,2],[3,4]]),[4,6]), 'Sum each column'\nassert np.array_equal(column_totals([[2,0,1]]),[2,0,1]), 'Keep all columns for a single row'",
+    "hint": "axis=0 combines rows.",
+    "id": "e3",
+    "lang": "python"
+  },
+  {
+    "title": "Affordable costs",
+    "prompt": "Write affordable(costs,elixir) returning costs <= elixir in original order. Example: [6,1,4] at 4 gives [1,4].",
+    "starter": "import numpy as np\ndef affordable(costs,elixir):\n    # TODO: mask\n    return np.array([])",
+    "solution": "import numpy as np\ndef affordable(costs,elixir):\n    a=np.asarray(costs)\n    return a[a<=elixir]",
+    "tests": "assert np.array_equal(affordable([6,1,4],4),[1,4]), 'Include equal costs and preserve order'\nassert affordable([6],0).size==0, 'Return an empty array if none are affordable'",
+    "hint": "A comparison creates the mask.",
+    "id": "e4",
+    "lang": "python"
+  },
+  {
+    "title": "Feature offsets",
+    "prompt": "Write offset(rows,adjustment) to add one offset per column. Example: [[1,2]] plus [10,20] gives [[11,22]].",
+    "starter": "import numpy as np\ndef offset(rows,adjustment):\n    # TODO: broadcast\n    return np.asarray(rows)",
+    "solution": "import numpy as np\ndef offset(rows,adjustment):\n    return np.asarray(rows)+np.asarray(adjustment)",
+    "tests": "assert np.array_equal(offset([[1,2],[3,4]],[10,20]),[[11,22],[13,24]]), 'Offsets apply to columns'\nassert np.array_equal(offset([[0,0,0]],[1,2,3]),[[1,2,3]]), 'Support three columns'",
+    "hint": "Convert both inputs into arrays.",
+    "id": "e5",
+    "lang": "python"
+  }
+]
+

@@ -1,0 +1,42 @@
+[
+  {
+    "title": "One legal transition",
+    "lang": "python",
+    "prompt": "Implement `step(state, action)` using the toy rules in the lesson. Return a fresh dictionary. Reject unavailable actions with ValueError. Example: waiting at 5 elixir gives 6.",
+    "starter": "def step(state, action):\n    # TODO: enforce affordability and preserve the input\n    return state.copy()",
+    "tests": "s={'elixir':6,'tick':0}\nassert step(s,'xbow') == {'elixir':0,'tick':1}, 'X-Bow costs six and advances one tick'\nassert s == {'elixir':6,'tick':0}, 'Do not mutate the input state'\nassert step({'elixir':10,'tick':2},'wait')['elixir']==10, 'Elixir is capped at ten'\ntry:\n    step({'elixir':5,'tick':0},'xbow')\nexcept ValueError:\n    pass\nelse:\n    assert False, 'An unaffordable X-Bow must raise ValueError'",
+    "hint": "Handle wait and affordable X-Bow as separate branches.",
+    "solution": "def step(state, action):\n    e=state['elixir']\n    if action=='wait':\n        e=min(10,e+1)\n    elif action=='xbow' and e>=6:\n        e-=6\n    else:\n        raise ValueError('action is unavailable')\n    return {'elixir':e,'tick':state['tick']+1}",
+    "id": "e1"
+  },
+  {
+    "title": "Discount a match",
+    "lang": "python",
+    "prompt": "Write `discounted(rewards, gamma)`. Example: `[0,1]` at gamma 0.5 returns 0.5.",
+    "starter": "def discounted(rewards, gamma):\n    # TODO: sum rewards with the correct powers\n    return 0.0",
+    "tests": "assert abs(discounted([0,0,1],.9)-.81)<1e-9, 'A win two steps later contributes 0.81'\nassert discounted([2,-1],0)==2, 'Gamma zero keeps only the immediate reward'\nassert discounted([], .9)==0, 'Empty rewards have zero total'",
+    "hint": "enumerate starts the first exponent at zero.",
+    "solution": "def discounted(rewards, gamma):\n    return sum(gamma**t*r for t,r in enumerate(rewards))",
+    "id": "e2"
+  },
+  {
+    "title": "Return at every decision",
+    "lang": "python",
+    "prompt": "Implement `returns_to_go(rewards, gamma)` with a backwards loop. Example: `[0,1]`, 0.5 gives `[0.5,1.0]`.",
+    "starter": "def returns_to_go(rewards, gamma):\n    # TODO: accumulate backwards, restore time order\n    return []",
+    "tests": "assert returns_to_go([0,1],.5)==[.5,1.0], 'Return order must match decision order'\nassert returns_to_go([1,-1],1)==[0.0,-1.0], 'Later losses must affect earlier returns'\nassert returns_to_go([], .9)==[], 'No decisions means no returns'",
+    "hint": "Append backwards, then reverse the list once.",
+    "solution": "def returns_to_go(rewards, gamma):\n    out=[]\n    running=0.0\n    for reward in reversed(rewards):\n        running=reward+gamma*running\n        out.append(running)\n    return list(reversed(out))",
+    "id": "e3"
+  },
+  {
+    "title": "Read observed outcomes",
+    "lang": "python",
+    "prompt": "Read `scratchpad/gauntlet/L74/loss_review/matches.jsonl`. Define `count_outcomes(rows)` and assign `counts` for the real file. Buckets: WIN, LOSS, DRAW, unknown. Example: `[{}, {'derived':'WIN'}]` has one unknown and one win. Never print raw records.",
+    "starter": "import json\nfrom pathlib import Path\n\ndef count_outcomes(rows):\n    # TODO: count each parsed record exactly once\n    return {}\n\n# TODO: read nonblank JSONL lines and set counts\ncounts = {}",
+    "tests": "sample=[{}, {'derived':'WIN'}, {'derived':'DRAW'}, {'derived':'LOSS'}, {'derived':None}]\nassert count_outcomes(sample)=={'WIN':1,'LOSS':1,'DRAW':1,'unknown':2}, 'Missing outcomes are unknown, not losses'\nraw=[json.loads(s) for s in Path('scratchpad/gauntlet/L74/loss_review/matches.jsonl').read_text(encoding='utf-8').splitlines() if s.strip()]\nexpected={b:0 for b in ('WIN','LOSS','DRAW','unknown')}\nfor r in raw:\n    v=r.get('derived'); expected[v if v in ('WIN','LOSS','DRAW') else 'unknown']+=1\nassert counts==expected, 'Counts must match a fresh read of the real file'\nassert sum(counts.values())==len(raw), 'Each parsed row belongs to exactly one bucket'",
+    "hint": "Use json.loads on each nonblank line and row.get('derived').",
+    "solution": "import json\nfrom pathlib import Path\n\ndef count_outcomes(rows):\n    counts={b:0 for b in ('WIN','LOSS','DRAW','unknown')}\n    for row in rows:\n        v=row.get('derived')\n        counts[v if v in ('WIN','LOSS','DRAW') else 'unknown']+=1\n    return counts\nrows=[json.loads(s) for s in Path('scratchpad/gauntlet/L74/loss_review/matches.jsonl').read_text(encoding='utf-8').splitlines() if s.strip()]\ncounts=count_outcomes(rows)",
+    "id": "e4"
+  }
+]

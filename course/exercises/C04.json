@@ -1,0 +1,53 @@
+[
+  {
+    "title": "Expected match count",
+    "prompt": "Write expected_wins(n,p). Example: 20 games at .6 gives 12.",
+    "starter": "def expected_wins(n,p):\n    # TODO: expectation\n    return 0",
+    "solution": "def expected_wins(n,p):\n    return n*p",
+    "tests": "assert expected_wins(20,.6)==12, 'Expected wins are n times p'\nassert expected_wins(0,.7)==0, 'Zero trials have zero expected wins'\nassert expected_wins(10,1)==10, 'Certain wins give n'",
+    "hint": "Multiply trials by probability.",
+    "id": "e1",
+    "lang": "python"
+  },
+  {
+    "title": "Exactly k wins",
+    "prompt": "Write binomial(n,k,p), the probability of exactly k wins. Example: n=3,k=2,p=.5 gives .375.",
+    "starter": "from math import comb\ndef binomial(n,k,p):\n    # TODO: include all arrangements\n    return 0",
+    "solution": "from math import comb\ndef binomial(n,k,p):\n    return comb(n,k)*p**k*(1-p)**(n-k)",
+    "tests": "assert abs(binomial(3,2,.5)-.375)<1e-12, 'Include all three arrangements'\nassert abs(sum(binomial(5,k,.3) for k in range(6))-1)<1e-12, 'Probabilities must sum to one'\nassert binomial(4,0,0)==1, 'p=0 puts all mass on zero wins'",
+    "hint": "Use comb(n,k).",
+    "id": "e2",
+    "lang": "python"
+  },
+  {
+    "title": "Seeded outcomes",
+    "prompt": "Write simulate(n,p,seed) using random.Random(seed) and one random() call per trial. Return a list of 0/1 outcomes. Example: p=1 returns n ones.",
+    "starter": "import random\ndef simulate(n,p,seed):\n    # TODO: create one generator before the loop\n    return []",
+    "solution": "import random\ndef simulate(n,p,seed):\n    rng=random.Random(seed)\n    return [int(rng.random()<p) for _ in range(n)]",
+    "tests": "a=simulate(20,.6,7)\nr=random.Random(7)\nassert a==[int(r.random()<.6) for _ in range(20)], 'Use one seeded stream and one draw per trial'\nassert simulate(3,1,2)==[1,1,1] and simulate(3,0,2)==[0,0,0], 'Respect probability boundaries'\nassert simulate(0,.5,2)==[], 'Zero trials give an empty list'",
+    "hint": "Do not reseed inside the loop.",
+    "id": "e3",
+    "lang": "python"
+  },
+  {
+    "title": "Expected toy reward",
+    "prompt": "Write expected_reward(p,win_reward,loss_reward). Example: p=.5, win=2, loss=-1 gives .5.",
+    "starter": "def expected_reward(p,win_reward,loss_reward):\n    # TODO: weighted average\n    return 0",
+    "solution": "def expected_reward(p,win_reward,loss_reward):\n    return p*win_reward+(1-p)*loss_reward",
+    "tests": "assert expected_reward(.5,2,-1)==.5, 'Weight both rewards by their probabilities'\nassert expected_reward(0,3,-2)==-2, 'At p=0 only loss reward remains'\nassert expected_reward(1,3,-2)==3, 'At p=1 only win reward remains'",
+    "hint": "A loss reward may already be negative.",
+    "id": "e4",
+    "lang": "python"
+  },
+  {
+    "title": "Many simulated batches",
+    "prompt": "Write batches(n,p,count,seed) using np.random.default_rng(seed).binomial and returning count sampled win counts. Example: n=0 yields all zeros.",
+    "starter": "import numpy as np\ndef batches(n,p,count,seed):\n    # TODO: draw binomial counts\n    return np.array([])",
+    "solution": "import numpy as np\ndef batches(n,p,count,seed):\n    return np.random.default_rng(seed).binomial(n,p,size=count)",
+    "tests": "a=batches(10,.4,20,8)\nassert np.array_equal(a,np.random.default_rng(8).binomial(10,.4,size=20)), 'Use the specified seeded binomial generator'\nassert a.shape==(20,) and ((a>=0)&(a<=10)).all(), 'Each batch count must lie between 0 and n'\nassert np.array_equal(batches(0,.5,3,8),[0,0,0]), 'No trials means zero wins'",
+    "hint": "Use size=count.",
+    "id": "e5",
+    "lang": "python"
+  }
+]
+

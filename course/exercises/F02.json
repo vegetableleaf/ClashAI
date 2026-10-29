@@ -1,0 +1,52 @@
+[
+  {
+    "id": "e1",
+    "title": "Dot product",
+    "lang": "python",
+    "prompt": "Return a float dot product of two equal-length vectors. Example: [2,-0.5] and [0.3,0.8] gives 0.2.",
+    "starter": "import numpy as np\ndef score(x,w):\n    # TODO: dot product\n    return 0.0",
+    "tests": "assert np.isclose(score([2,-0.5],[0.3,0.8]),0.2), 'Multiply matching components then sum'\nassert score([1,2,3],[3,2,1])==10, 'Support more than two features'",
+    "hint": "Use @.",
+    "solution": "import numpy as np\ndef score(x,w):\n    return float(np.asarray(x) @ np.asarray(w))"
+  },
+  {
+    "id": "e2",
+    "title": "Batch scores with bias",
+    "lang": "python",
+    "prompt": "Return X @ w + b as a NumPy array. Example: two states should produce two scores.",
+    "starter": "import numpy as np\ndef predict(X,w,b):\n    # TODO: preserve batch shape\n    return np.array([])",
+    "tests": "r=predict([[1,2],[3,4]],[2,-1],0.5)\nassert r.shape==(2,), 'One score per row'\nassert np.allclose(r,[0.5,2.5]), 'Apply dot product and bias to every row'\nassert np.allclose(predict([[0,0]],[2,3],-1),[-1]), 'Zero features should leave the bias'",
+    "hint": "Add bias after matrix-vector multiplication.",
+    "solution": "import numpy as np\ndef predict(X,w,b):\n    return np.asarray(X) @ np.asarray(w) + b"
+  },
+  {
+    "id": "e3",
+    "title": "Multiple card scores",
+    "lang": "python",
+    "prompt": "Return X @ W. Validate that X and W are 2D and X columns equal W rows; raise ValueError otherwise. Example: (2,2) times (2,3) gives (2,3).",
+    "starter": "import numpy as np\ndef card_scores(X,W):\n    # TODO: validate and multiply\n    return np.zeros((1,1))",
+    "tests": "assert np.allclose(card_scores([[2,1],[0,-1]],[[1,0,0.5],[0,2,-1]]),[[2,2,0],[0,-2,1]]), 'Use column-per-output weights'\nfor X,W in [([1,2],[[1],[2]]),([[1,2]],[[1,2,3]])]:\n    try:\n        card_scores(X,W)\n    except ValueError:\n        pass\n    else:\n        assert False, 'Reject incompatible shapes'",
+    "hint": "Check ndim before indexing shape.",
+    "solution": "import numpy as np\ndef card_scores(X,W):\n    X,W=np.asarray(X),np.asarray(W)\n    if X.ndim!=2 or W.ndim!=2 or X.shape[1]!=W.shape[0]:\n        raise ValueError('Need compatible 2D matrices')\n    return X @ W"
+  },
+  {
+    "id": "e4",
+    "title": "Cosine with a zero convention",
+    "lang": "python",
+    "prompt": "Return cosine similarity; return 0.0 if either vector has zero norm. Example: [1,0] and [2,0] gives 1.0.",
+    "starter": "import numpy as np\ndef cosine(a,b):\n    # TODO: dot divided by norms\n    return 0.0",
+    "tests": "assert np.isclose(cosine([1,0],[2,0]),1), 'Same direction gives one'\nassert np.isclose(cosine([1,0],[-2,0]),-1), 'Opposite direction gives minus one'\nassert cosine([0,0],[1,2])==0, 'Use the documented zero-vector convention'\nassert np.isclose(cosine([1,0],[0,1]),0), 'Perpendicular vectors give zero'",
+    "hint": "Guard the denominator.",
+    "solution": "import numpy as np\ndef cosine(a,b):\n    a,b=np.asarray(a,dtype=float),np.asarray(b,dtype=float)\n    den=np.linalg.norm(a)*np.linalg.norm(b)\n    return float(a @ b / den) if den else 0.0"
+  },
+  {
+    "id": "e5",
+    "title": "Rank a toy embedding table",
+    "lang": "python",
+    "prompt": "Return index of the row with highest cosine similarity to query; first wins ties. Zero similarities use the previous convention. Example: [[1,0],[0,1]] queried with [0,2] returns 1.",
+    "starter": "import numpy as np\ndef nearest(table,query):\n    # TODO: compare directions\n    return 0",
+    "tests": "assert nearest([[1,0],[0,1]],[0,2])==1, 'Choose the aligned row'\nassert nearest([[100,100],[1,0]],[1,0])==1, 'Magnitude alone must not win cosine comparison'\nassert nearest([[1,0],[2,0]],[1,0])==0, 'Choose first index on a tie'",
+    "hint": "np.argmax returns the first maximum.",
+    "solution": "import numpy as np\ndef nearest(table,query):\n    table=np.asarray(table,dtype=float)\n    query=np.asarray(query,dtype=float)\n    scores=[]\n    for row in table:\n        den=np.linalg.norm(row)*np.linalg.norm(query)\n        scores.append(float(row @ query/den) if den else 0.0)\n    return int(np.argmax(scores))"
+  }
+]

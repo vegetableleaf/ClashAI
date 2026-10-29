@@ -1,0 +1,52 @@
+[
+  {
+    "id": "e1",
+    "title": "Linear predictions",
+    "lang": "python",
+    "prompt": "Return X@w+b as an array. Example: [[1],[2]], w=[2], b=1 gives [3,5].",
+    "starter": "import numpy as np\ndef linear(X,w,b):\n    # TODO: weighted sum and bias\n    return np.zeros(len(X))",
+    "tests": "assert np.allclose(linear([[1],[2]],[2],1),[3,5]), 'Apply the same learned rule to both examples'\nassert np.allclose(linear([[1,2]],[3,-1],0),[1]), 'Combine every feature'",
+    "hint": "Use @.",
+    "solution": "import numpy as np\ndef linear(X,w,b):\n    return np.asarray(X)@np.asarray(w)+b"
+  },
+  {
+    "id": "e2",
+    "title": "Fit linear regression",
+    "lang": "python",
+    "prompt": "Return (w,b) after steps gradient-descent updates from zeros on MSE. X is 2D, y is 1D. Example: y=2*x+1 should be recovered approximately.",
+    "starter": "import numpy as np\ndef fit_linear(X,y,steps=300,lr=0.1):\n    X,y=np.asarray(X,dtype=float),np.asarray(y,dtype=float)\n    w,b=np.zeros(X.shape[1]),0.0\n    # TODO: compute residuals and update both parameters\n    return w,b",
+    "tests": "w,b=fit_linear([[-1],[0],[1]],[-1,1,3])\nassert np.allclose(w,[2],atol=1e-5) and abs(b-1)<1e-5, 'Recover slope two and bias one'\nassert abs(float(np.array([2])@w+b)-5)<1e-4, 'Predict an unseen input correctly'\nw,b=fit_linear([[1],[2]],[2,4],steps=1,lr=0.1)\nassert np.allclose(w,[1]) and abs(b-0.6)<1e-10, 'Use the specified MSE gradients'",
+    "hint": "Average gradients and use the same residuals for both.",
+    "solution": "import numpy as np\ndef fit_linear(X,y,steps=300,lr=0.1):\n    X,y=np.asarray(X,dtype=float),np.asarray(y,dtype=float)\n    w,b=np.zeros(X.shape[1]),0.0\n    for _ in range(steps):\n        r=X@w+b-y\n        dw,db=2*X.T@r/len(y),2*r.mean()\n        w,b=w-lr*dw,b-lr*db\n    return w,b"
+  },
+  {
+    "id": "e3",
+    "title": "Stable sigmoid",
+    "lang": "python",
+    "prompt": "Accept a one-dimensional array-like z and return sigmoid probabilities without overflow. Example: [-1000,0,1000] gives [0,0.5,1].",
+    "starter": "import numpy as np\ndef sigmoid(z):\n    # TODO: use separate positive and negative branches\n    return np.zeros_like(np.asarray(z,dtype=float))",
+    "tests": "with np.errstate(over='raise',invalid='raise'):\n    assert np.allclose(sigmoid([-1000,0,1000]),[0,0.5,1]), 'Extreme scores must avoid overflow'\nassert np.allclose(sigmoid([-2,2]),[0.119202922,0.880797078]), 'Match ordinary sigmoid values'",
+    "hint": "For negative z, exp(z) is safe.",
+    "solution": "import numpy as np\ndef sigmoid(z):\n    z=np.asarray(z,dtype=float)\n    p=np.empty_like(z)\n    positive=z>=0\n    p[positive]=1/(1+np.exp(-z[positive]))\n    e=np.exp(z[~positive])\n    p[~positive]=e/(1+e)\n    return p"
+  },
+  {
+    "id": "e4",
+    "title": "Binary log-loss",
+    "lang": "python",
+    "prompt": "Return average binary log-loss, clipping p to [1e-12,1-1e-12]. Example: y=[1,0], p=[0.8,0.2] gives about 0.2231.",
+    "starter": "import numpy as np\ndef log_loss(y,p):\n    # TODO: clip and score probabilities\n    return 0.0",
+    "tests": "assert np.isclose(log_loss([1,0],[0.8,0.2]),-np.log(0.8)), 'Use the probability assigned to the true class'\nassert np.isfinite(log_loss([1,0],[0,1])), 'Clipping must avoid infinite values'\nassert log_loss([1],[0.01])>log_loss([1],[0.4]), 'Confidently wrong predictions need a larger penalty'",
+    "hint": "Average both label cases.",
+    "solution": "import numpy as np\ndef log_loss(y,p):\n    y=np.asarray(y,dtype=float)\n    p=np.clip(np.asarray(p,dtype=float),1e-12,1-1e-12)\n    return float(-np.mean(y*np.log(p)+(1-y)*np.log(1-p)))"
+  },
+  {
+    "id": "e5",
+    "title": "Fit logistic regression",
+    "lang": "python",
+    "prompt": "Fill fit_logistic using X.T@(p-y)/n and mean(p-y), starting at zero. The supplied sigmoid is stable. Return (w,b). Example: negative x labels 0 and positive x labels 1 should separate.",
+    "starter": "import numpy as np\ndef sigmoid(z):\n    z=np.asarray(z,dtype=float)\n    p=np.empty_like(z)\n    m=z>=0\n    p[m]=1/(1+np.exp(-z[m]))\n    e=np.exp(z[~m]); p[~m]=e/(1+e)\n    return p\ndef fit_logistic(X,y,steps=300,lr=0.1):\n    X,y=np.asarray(X,dtype=float),np.asarray(y,dtype=float)\n    w,b=np.zeros(X.shape[1]),0.0\n    # TODO: update from probability residuals\n    return w,b",
+    "tests": "w,b=fit_logistic([[-2],[-1],[1],[2]],[0,0,1,1])\np=sigmoid(np.array([[-1.5],[1.5]])@w+b)\nassert p[0]<0.15 and p[1]>0.85, 'Learn the toy relationship on unseen inputs'\nw,b=fit_logistic([[-1],[1]],[0,1],steps=1,lr=0.1)\nassert np.allclose(w,[0.05]) and abs(b)<1e-12, 'Use logistic gradients without the MSE factor two'",
+    "hint": "Probability residuals are p-y.",
+    "solution": "import numpy as np\ndef sigmoid(z):\n    z=np.asarray(z,dtype=float)\n    p=np.empty_like(z)\n    m=z>=0\n    p[m]=1/(1+np.exp(-z[m]))\n    e=np.exp(z[~m]); p[~m]=e/(1+e)\n    return p\ndef fit_logistic(X,y,steps=300,lr=0.1):\n    X,y=np.asarray(X,dtype=float),np.asarray(y,dtype=float)\n    w,b=np.zeros(X.shape[1]),0.0\n    for _ in range(steps):\n        r=sigmoid(X@w+b)-y\n        dw,db=X.T@r/len(y),r.mean()\n        w,b=w-lr*dw,b-lr*db\n    return w,b"
+  }
+]

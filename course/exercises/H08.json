@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Penalty and stop are independent",
+    "lang": "python",
+    "prompt": "Implement `controls(policy_loss,kl,beta,limit)` returning (total_loss,should_stop). Example: (-.4,.025,0,.02) gives (-.4,True).",
+    "starter": "def controls(policy_loss,kl,beta,limit):\n    # TODO: calculate two independent controls\n    return (0,False)",
+    "tests": "assert controls(-.4,.025,0,.02)==(-.4,True), 'Zero penalty does not disable the stop'\na,b=controls(-.4,.03,2,.04)\nassert abs(a+.34)<1e-9 and not b, 'Add beta times KL and compare the separate threshold'",
+    "hint": "Do not use beta to decide whether stopping is enabled.",
+    "solution": "def controls(policy_loss,kl,beta,limit):\n    return policy_loss+beta*kl, kl>limit",
+    "id": "e1"
+  },
+  {
+    "title": "Fixed-probe drift",
+    "lang": "python",
+    "prompt": "Implement `mad(before,after)`. Reject empty or unequal lists. Example: [.2,.4],[.3,.3] gives .1.",
+    "starter": "def mad(before,after):\n    # TODO: paired absolute differences\n    return 0.0",
+    "tests": "assert abs(mad([.2,.4],[.3,.3])-.1)<1e-9, 'Average absolute differences, not signed differences'\nassert mad([.5],[.5])==0, 'Identical outputs have zero drift'\nfor a,b in (([],[]),([1],[1,2])):\n    try:\n        mad(a,b)\n    except ValueError:\n        pass\n    else:\n        assert False, 'Need a nonempty matched probe set'",
+    "hint": "Signed changes can cancel; absolute changes cannot.",
+    "solution": "def mad(before,after):\n    if not before or len(before)!=len(after):\n        raise ValueError('Need matched probe rows')\n    return sum(abs(a-b) for a,b in zip(before,after))/len(before)",
+    "id": "e2"
+  },
+  {
+    "title": "Frozen head, moving output",
+    "lang": "python",
+    "prompt": "Implement `probe(trunk_value)` returning (output, trunk_gradient, head_gradient). Use scalar tensors: trainable trunk=trunk_value, frozen head=2, output=trunk*head. Backpropagate output. Example: probe(3) gives (6,2,None).",
+    "starter": "import torch\n\ndef probe(trunk_value):\n    # TODO: freeze the head but retain the trunk gradient\n    return (0,0,None)",
+    "tests": "assert probe(3)==(6,2,None), 'Frozen head still transmits a gradient to the trunk'\nassert probe(1)==(2,2,None), 'Changing the trunk changes output without changing the head'",
+    "hint": "Use a float tensor for the trainable scalar.",
+    "solution": "import torch\n\ndef probe(trunk_value):\n    trunk=torch.tensor(float(trunk_value),requires_grad=True)\n    head=torch.tensor(2.,requires_grad=False)\n    output=trunk*head\n    output.backward()\n    return output.item(),trunk.grad.item(),head.grad",
+    "id": "e3"
+  },
+  {
+    "title": "Clamp the coefficient",
+    "lang": "python",
+    "prompt": "Implement `clamp_beta(proposed,low,high)` and reject low>high. Example: .12,.03,.03 gives .03.",
+    "starter": "def clamp_beta(proposed,low,high):\n    # TODO: enforce the configured range\n    return proposed",
+    "tests": "assert clamp_beta(.12,.03,.03)==.03, 'Equal bounds fix the coefficient'\nassert clamp_beta(.01,.02,.1)==.02, 'Respect the lower bound'\nassert clamp_beta(.05,.02,.1)==.05, 'Keep an interior value'\ntry:\n    clamp_beta(.05,.1,.02)\nexcept ValueError:\n    pass\nelse:\n    assert False, 'Reject reversed bounds'",
+    "hint": "Validate the bounds, then use min and max.",
+    "solution": "def clamp_beta(proposed,low,high):\n    if low>high:\n        raise ValueError('Reversed bounds')\n    return min(high,max(low,proposed))",
+    "id": "e4"
+  }
+]

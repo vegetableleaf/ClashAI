@@ -1,0 +1,52 @@
+[
+  {
+    "id": "e1",
+    "title": "Translate integer logic",
+    "lang": "python",
+    "prompt": "Return whether elixir can pay 6 for X-Bow. Example: affordable(6) is True.",
+    "starter": "def affordable(elixir):\n    # TODO: translate the Java comparison\n    return False",
+    "tests": "assert affordable(6) is True, 'Six elixir should afford X-Bow'\nassert affordable(5) is False, 'Five elixir cannot pay six'\nassert affordable(10), 'Ten elixir should afford X-Bow'",
+    "hint": "Use >=.",
+    "solution": "def affordable(elixir):\n    return elixir >= 6"
+  },
+  {
+    "id": "e2",
+    "title": "Independent player arrays",
+    "lang": "python",
+    "prompt": "Return a fresh two-by-eight list filled with level. Example: decks(16)[1][0] is 16. Rows must be independent.",
+    "starter": "def decks(level):\n    # TODO: build independent rows\n    return []",
+    "tests": "a=decks(16)\nassert len(a)==2 and all(len(r)==8 for r in a), 'Need two sides and eight slots'\nassert all(v==16 for r in a for v in r), 'Every starting level should be 16'\na[0][0]=1\nassert a[1][0]==16, 'The two sides must not share one inner list'",
+    "hint": "Use an inner and outer comprehension.",
+    "solution": "def decks(level):\n    return [[level for _ in range(8)] for _ in range(2)]"
+  },
+  {
+    "id": "e3",
+    "title": "Convert facade coordinates",
+    "lang": "python",
+    "prompt": "Return x * 18. Example: to_sim(1000) returns 18000.",
+    "starter": "def to_sim(x):\n    # TODO: apply the documented scale\n    return x",
+    "tests": "assert to_sim(1000)==18000, '1000 crforge units should become 18000 subtiles'\nassert to_sim(0)==0, 'Origin must remain zero'\nassert to_sim(-2)==-36, 'Conversion should preserve signed arithmetic'",
+    "hint": "K equals 18.",
+    "solution": "def to_sim(x):\n    return x * 18"
+  },
+  {
+    "id": "e4",
+    "title": "Reject lossy conversion",
+    "lang": "python",
+    "prompt": "Convert subtiles back to crforge integer units, raising ValueError if not divisible by 18. Example: from_sim(36) is 2.",
+    "starter": "def from_sim(x):\n    # TODO: validate divisibility\n    return 0",
+    "tests": "assert from_sim(36)==2, '36 subtiles should give two units'\nassert from_sim(-36)==-2, 'Negative exact multiples should convert'\ntry:\n    from_sim(19)\nexcept ValueError:\n    pass\nelse:\n    assert False, '19 must be rejected rather than truncated'",
+    "hint": "Use remainder before integer division.",
+    "solution": "def from_sim(x):\n    if x % 18 != 0:\n        raise ValueError('Position is not an exact crforge unit')\n    return x // 18"
+  },
+  {
+    "id": "e5",
+    "title": "Read the real facade",
+    "lang": "python",
+    "prompt": "Read CfCore.java as text without importing any project module. Set source to its text and declaration to the stripped line declaring K and NONE. Example: declaration starts public static final int K.",
+    "starter": "from pathlib import Path\npath = Path('scratchpad/gauntlet/L74/crforge/facade/CfCore.java')\n# TODO: read source and find the declaration\nsource = ''\ndeclaration = ''",
+    "tests": "assert source == path.read_text(encoding='utf-8'), 'Read the complete actual source as text'\nexpected=next(line.strip() for line in source.splitlines() if 'public static final int K =' in line)\nassert declaration==expected, 'Extract the actual constant declaration without inventing one'",
+    "hint": "Use splitlines and a condition on each line.",
+    "solution": "from pathlib import Path\npath = Path('scratchpad/gauntlet/L74/crforge/facade/CfCore.java')\nsource = path.read_text(encoding='utf-8')\ndeclaration = next(line.strip() for line in source.splitlines() if 'public static final int K =' in line)"
+  }
+]

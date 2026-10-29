@@ -1,0 +1,62 @@
+[
+  {
+    "title": "Select hand positions",
+    "lang": "python",
+    "prompt": "Assign `first_card` and `last_card` from the supplied hand using indexing. Example: index 0 means the first element.",
+    "starter": "hand = [\"X-Bow\", \"Tesla\", \"Knight\", \"Skeletons\"]\n# TODO: select the first and last cards.\nfirst_card = \"\"\nlast_card = \"\"",
+    "solution": "hand = [\"X-Bow\", \"Tesla\", \"Knight\", \"Skeletons\"]\nfirst_card = hand[0]\nlast_card = hand[-1]",
+    "tests": "assert first_card == \"X-Bow\", \"Index 0 should select X-Bow\"\nassert last_card == \"Skeletons\", \"Index -1 should select Skeletons\"",
+    "hint": "Negative one selects the final element.",
+    "id": "e1"
+  },
+  {
+    "title": "Split an eight-card deck",
+    "lang": "python",
+    "prompt": "Use slices to assign the first four cards to `hand` and the remaining four to `queue`. Example: `items[:2]` selects two starting items.",
+    "starter": "deck = [\"X-Bow\", \"Tesla\", \"Ice Wizard\", \"Knight\", \"Skeletons\", \"Tornado\", \"Rocket\", \"The Log\"]\n# TODO: make two four-card lists.\nhand = []\nqueue = []",
+    "solution": "deck = [\"X-Bow\", \"Tesla\", \"Ice Wizard\", \"Knight\", \"Skeletons\", \"Tornado\", \"Rocket\", \"The Log\"]\nhand = deck[:4]\nqueue = deck[4:]",
+    "tests": "assert hand == deck[:4], \"hand must contain the first four cards in order\"\nassert queue == deck[4:], \"queue must contain the last four cards in order\"\nassert len(hand) == len(queue) == 4, \"Both groups should contain four cards\"",
+    "hint": "Slice stops are excluded.",
+    "id": "e2"
+  },
+  {
+    "title": "Look up costs without inventing free cards",
+    "lang": "python",
+    "prompt": "Use the supplied dictionary to assign `tesla_cost` and `missing_cost`. Use -1 as the default for Unknown. Example: looking up X-Bow returns 6.",
+    "starter": "costs = {\"X-Bow\": 6, \"Tesla\": 4}\n# TODO: use lookup and get.\ntesla_cost = 0\nmissing_cost = 0",
+    "solution": "costs = {\"X-Bow\": 6, \"Tesla\": 4}\ntesla_cost = costs[\"Tesla\"]\nmissing_cost = costs.get(\"Unknown\", -1)",
+    "tests": "assert tesla_cost == 4, \"Tesla should cost 4 in this mapping\"\nassert missing_cost == -1, \"Unknown should remain explicitly missing as -1\"",
+    "hint": "Use square brackets for a known entry and get for a default.",
+    "id": "e3"
+  },
+  {
+    "title": "Preserve a before-state",
+    "lang": "python",
+    "prompt": "Make `after` a copy of `before`, then replace its first card with Rocket. Example: before must still begin with X-Bow.",
+    "starter": "before = [\"X-Bow\", \"Tesla\", \"Knight\", \"Skeletons\"]\n# TODO: repair the accidental shared-list update.\nafter = before\nafter[0] = \"Rocket\"",
+    "solution": "before = [\"X-Bow\", \"Tesla\", \"Knight\", \"Skeletons\"]\nafter = before[:]\nafter[0] = \"Rocket\"",
+    "tests": "assert before == [\"X-Bow\", \"Tesla\", \"Knight\", \"Skeletons\"], \"The original hand must remain unchanged\"\nassert after == [\"Rocket\", \"Tesla\", \"Knight\", \"Skeletons\"], \"Only the new first card should change\"\nassert after is not before, \"after must be a separate list\"",
+    "hint": "A full slice copies this flat list.",
+    "id": "e4"
+  },
+  {
+    "title": "Count distinct observed cards",
+    "lang": "python",
+    "prompt": "Convert the supplied sequence to a set named `unique_cards`. Assign its length to `distinct_count`. Example: Tesla appearing twice counts once.",
+    "starter": "plays = [\"Tesla\", \"X-Bow\", \"Tesla\", \"Skeletons\"]\n# TODO: retain distinct names.\nunique_cards = set([])\ndistinct_count = 0",
+    "solution": "plays = [\"Tesla\", \"X-Bow\", \"Tesla\", \"Skeletons\"]\nunique_cards = set(plays)\ndistinct_count = len(unique_cards)",
+    "tests": "assert unique_cards == {\"Tesla\", \"X-Bow\", \"Skeletons\"}, \"The set should retain exactly the three distinct names\"\nassert distinct_count == 3, \"Repeated Tesla should count once\"",
+    "hint": "A set removes duplicates but is not a hand order.",
+    "id": "e5"
+  },
+  {
+    "title": "Read the real card-name mapping",
+    "lang": "python",
+    "prompt": "The supplied scaffold reads the allowed real identifier mapping. Assign `knight_name = card_names[\"26000000\"]` and `entry_count = len(card_names)`. Example: identifiers are strings, not costs. The count is checked against the file, never a fixed dataset size.",
+    "starter": "import json\nwith open(\"icebow/data/card_ids.json\", encoding=\"utf-8\") as source:\n    card_names = json.load(source)\n# TODO: inspect the mapping using collection operations.\nknight_name = \"\"\nentry_count = -1",
+    "solution": "import json\nwith open(\"icebow/data/card_ids.json\", encoding=\"utf-8\") as source:\n    card_names = json.load(source)\nknight_name = card_names[\"26000000\"]\nentry_count = len(card_names)",
+    "tests": "with open(\"icebow/data/card_ids.json\", encoding=\"utf-8\") as check_source:\n    expected_mapping = json.load(check_source)\nassert isinstance(card_names, dict), \"The file should load as a dictionary\"\nassert card_names == expected_mapping, \"Preserve the complete mapping read from disk\"\nassert knight_name == expected_mapping[\"26000000\"], \"Look up the string identifier 26000000 in the real mapping\"\nassert entry_count == len(expected_mapping), \"entry_count should equal the current mapping size\"",
+    "hint": "The scaffold handles reading; your task uses only lookup and len.",
+    "id": "e6"
+  }
+]

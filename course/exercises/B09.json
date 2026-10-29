@@ -1,0 +1,42 @@
+[
+  {
+    "id": "e1",
+    "title": "Construct a Card",
+    "lang": "python",
+    "prompt": "Create Card(name, cost) with instance attributes name and cost. Example: Card(\"Xbow\", 6).cost == 6.",
+    "starter": "class Card:\n    def __init__(self, name, cost):\n        # TODO store both values\n        pass",
+    "tests": "card = Card(\"Xbow\",6)\nassert getattr(card,\"name\",None) == \"Xbow\", \"Card must store its name\"\nassert getattr(card,\"cost\",None) == 6, \"Card must store its elixir cost\"\nassert Card(\"Skeletons\",1).cost == 1, \"each Card must keep its own cost\"",
+    "hint": "Assign self.name = name inside __init__.",
+    "solution": "class Card:\n    def __init__(self, name, cost):\n        self.name = name\n        self.cost = cost"
+  },
+  {
+    "id": "e2",
+    "title": "Damage a Unit",
+    "lang": "python",
+    "prompt": "Create Unit(hp) and take_damage(amount). Assume nonnegative numbers; clamp HP at zero. Example: Unit(100) takes 130 damage and has hp == 0.",
+    "starter": "class Unit:\n    def __init__(self, hp):\n        self.hp = hp\n    def take_damage(self, amount):\n        # TODO update this unit\n        pass",
+    "tests": "a = Unit(100)\nb = Unit(200)\na.take_damage(30)\nassert a.hp == 70, \"100 HP minus 30 damage should leave 70\"\na.take_damage(100)\nassert a.hp == 0, \"overkill must not create negative HP\"\nassert b.hp == 200, \"damaging one instance must not damage another\"",
+    "hint": "Store the result of max(0, self.hp - amount) back on self.",
+    "solution": "class Unit:\n    def __init__(self, hp):\n        self.hp = hp\n    def take_damage(self, amount):\n        self.hp = max(0, self.hp - amount)"
+  },
+  {
+    "id": "e3",
+    "title": "Give a Tower a target",
+    "lang": "python",
+    "prompt": "Using the supplied Unit, create Tower(damage) with shoot(target), calling target.take_damage(self.damage). Example: a 20-damage tower changes 100 HP to 80.",
+    "starter": "class Unit:\n    def __init__(self, hp):\n        self.hp = hp\n    def take_damage(self, amount):\n        self.hp = max(0, self.hp - amount)\nclass Tower:\n    def __init__(self, damage):\n        self.damage = damage\n    def shoot(self, target):\n        # TODO ask the target to take damage\n        pass",
+    "tests": "u = Unit(100)\nt = Tower(20)\nt.shoot(u)\nassert u.hp == 80, \"a 20-damage shot should leave 80 HP\"\nt.shoot(u)\nassert u.hp == 60, \"a second shot should apply damage again\"",
+    "hint": "target is a Unit object, so call its method using a dot.",
+    "solution": "class Unit:\n    def __init__(self, hp):\n        self.hp = hp\n    def take_damage(self, amount):\n        self.hp = max(0, self.hp - amount)\nclass Tower:\n    def __init__(self, damage):\n        self.damage = damage\n    def shoot(self, target):\n        target.take_damage(self.damage)"
+  },
+  {
+    "id": "e4",
+    "title": "Make an immutable options record",
+    "lang": "python",
+    "prompt": "Use @dataclass(frozen=True) to define Options with annotated fields card_choice: str = \"argmax\" and card_ratio: float = 0.7. Example: Options().card_ratio == 0.7.",
+    "starter": "from dataclasses import dataclass\n# TODO decorate the class and declare the fields\nclass Options:\n    pass",
+    "tests": "from dataclasses import FrozenInstanceError, is_dataclass\no = Options()\nassert is_dataclass(o), \"Options should be a dataclass\"\nassert o.card_choice == \"argmax\" and o.card_ratio == 0.7, \"match the requested defaults\"\nassert Options(card_ratio=0.5).card_ratio == 0.5, \"construction can override a default\"\ncaught = False\ntry:\n    o.card_ratio = 0.2\nexcept FrozenInstanceError:\n    caught = True\nassert caught, \"frozen options must reject later field assignment\"",
+    "hint": "The decorator goes immediately above class; annotated fields go inside it.",
+    "solution": "from dataclasses import dataclass\n@dataclass(frozen=True)\nclass Options:\n    card_choice: str = \"argmax\"\n    card_ratio: float = 0.7"
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Analytic gradient",
+    "lang": "python",
+    "prompt": "Implement `expected_gradient(p)` for J=2p-1 and p=sigmoid(theta). Example: p=.5 gives .5.",
+    "starter": "def expected_gradient(p):\n    # TODO: chain rule\n    return 0.0",
+    "tests": "assert expected_gradient(.5)==.5, 'The symmetric policy gradient is 0.5'\nassert abs(expected_gradient(.9)-.18)<1e-9, 'Include sigmoid sensitivity'\nassert expected_gradient(1)==0, 'A saturated sigmoid has zero sensitivity'",
+    "hint": "Multiply dJ/dp by dp/dtheta.",
+    "solution": "def expected_gradient(p):\n    return 2*p*(1-p)",
+    "id": "e1"
+  },
+  {
+    "title": "A scalar policy loss",
+    "lang": "python",
+    "prompt": "Implement `policy_loss(probability, advantage)` using math.log. Example: p=.5, A=1 gives about .6931.",
+    "starter": "import math\n\ndef policy_loss(probability, advantage):\n    # TODO: negative log probability times advantage\n    return 0.0",
+    "tests": "assert abs(policy_loss(.5,1)-math.log(2))<1e-9, 'Positive advantage uses negative log probability'\nassert policy_loss(.5,-1)<0, 'Negative advantage reverses the loss sign'\nassert policy_loss(.25,0)==0, 'Zero advantage contributes zero loss'",
+    "hint": "The probability is for the action actually taken.",
+    "solution": "import math\n\ndef policy_loss(probability, advantage):\n    return -math.log(probability)*advantage",
+    "id": "e2"
+  },
+  {
+    "title": "Detach the baseline",
+    "lang": "python",
+    "prompt": "Define `loss_for(logp, value, reward)` returning a tensor. Detach reward minus value before multiplying by logp. Example: reward 1, value .2 gives logp gradient -.8.",
+    "starter": "import torch\n\ndef loss_for(logp, value, reward):\n    # TODO: keep the target out of autograd\n    return logp*0",
+    "tests": "lp=torch.tensor(-.7,requires_grad=True)\nv=torch.tensor(.2,requires_grad=True)\nloss_for(lp,v,torch.tensor(1.)).backward()\nassert abs(lp.grad.item()+.8)<1e-6, 'Log probability gradient should be -0.8'\nassert v.grad is None, 'The policy loss must not train its baseline'",
+    "hint": "Use (reward-value).detach().",
+    "solution": "import torch\n\ndef loss_for(logp, value, reward):\n    return -(logp*(reward-value).detach())",
+    "id": "e3"
+  },
+  {
+    "title": "Train a tiny sampled policy",
+    "lang": "python",
+    "prompt": "Implement `train()` returning the final probability of action 1. Start two logits at zero; use seed 12, one CPU thread, SGD lr .2, 60 batches of 64 Categorical samples. Action 1 earns +1 and action 0 earns -1. Minimize the mean REINFORCE loss. Example: initial probability is .5; the trained probability should exceed .85.",
+    "starter": "import torch\n\ndef train():\n    # TODO: sample, reward, clear gradients, backpropagate, step\n    return 0.5",
+    "tests": "p=train()\nassert .85<p<1, 'The rewarded action should become likely without returning a hard-coded certainty'\nassert abs(train()-p)<1e-6, 'Reset the seed inside train for repeatability'",
+    "hint": "Use rewards=2*actions.float()-1 and dist.log_prob(actions).",
+    "solution": "import torch\n\ndef train():\n    torch.set_num_threads(1)\n    torch.manual_seed(12)\n    logits=torch.nn.Parameter(torch.zeros(2))\n    opt=torch.optim.SGD([logits],lr=.2)\n    for _ in range(60):\n        dist=torch.distributions.Categorical(logits=logits)\n        actions=dist.sample((64,))\n        rewards=2*actions.float()-1\n        loss=-(dist.log_prob(actions)*rewards).mean()\n        opt.zero_grad()\n        loss.backward()\n        opt.step()\n    return logits.softmax(0)[1].item()",
+    "id": "e4"
+  }
+]

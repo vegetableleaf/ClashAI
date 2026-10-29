@@ -1,0 +1,42 @@
+[
+  {
+    "title": "An illustrative compounding calculation",
+    "prompt": "Implement all_correct(p,n)=p**n for independent successes. Validate 0<=p<=1 and integer n>=0. Example p=0.9,n=10 gives about 0.348678. This is not a match win-rate estimator.",
+    "starter": "def all_correct(p,n):\n    # TODO: validate and compute the independent-success probability\n    return p\n",
+    "tests": "assert abs(all_correct(0.9,10)-0.9**10)<1e-12, 'Multiply success probabilities across all decisions'\nassert all_correct(0.2,0)==1, 'No required decisions gives probability one'\nfor p,n in [(1.1,2),(0.5,-1),(0.5,1.5)]:\n    try: all_correct(p,n)\n    except ValueError: pass\n    else: assert False, 'Reject invalid probability or decision count'",
+    "hint": "Check the domain before exponentiation.",
+    "solution": "def all_correct(p,n):\n    if not 0<=p<=1 or not isinstance(n,int) or n<0:\n        raise ValueError('Need a probability and a nonnegative integer count')\n    return p**n\n",
+    "id": "e1",
+    "lang": "python"
+  },
+  {
+    "title": "Let actions change the next state",
+    "prompt": "Implement rollout(policy,steps=8), starting threat=0,hp=5. Call policy(threat,hp) each step. wait adds 1 threat; defend subtracts 2 down to zero; reject other actions. Then threat>=3 costs one HP down to zero. Append (threat,hp) after each step and stop at zero HP. Example always waiting first yields (1,5),(2,5),(3,4).",
+    "starter": "def rollout(policy,steps=8):\n    # TODO: feed each updated state into the next policy call\n    return []\n",
+    "tests": "a=rollout(lambda threat,hp:'wait',8)\nassert a==[(1,5),(2,5),(3,4),(4,3),(5,2),(6,1),(7,0)], 'Apply damage after transition and stop at zero HP'\nb=rollout(lambda threat,hp:'defend' if threat>=2 else 'wait',8)\nassert len(b)==8 and all(hp==5 for threat,hp in b), 'A reactive policy should see updated threat and prevent damage'\nassert rollout(lambda t,h:'wait',0)==[], 'Zero steps should produce no transitions'",
+    "hint": "Keep state variables outside the loop and update them before recording.",
+    "solution": "def rollout(policy,steps=8):\n    threat=0;hp=5;history=[]\n    for _ in range(steps):\n        action=policy(threat,hp)\n        if action=='wait': threat+=1\n        elif action=='defend': threat=max(0,threat-2)\n        else: raise ValueError('Unknown action')\n        if threat>=3: hp=max(0,hp-1)\n        history.append((threat,hp))\n        if hp==0: break\n    return history\n",
+    "id": "e2",
+    "lang": "python"
+  },
+  {
+    "title": "Standardise the response mix",
+    "prompt": "Implement standardised_rate(reference_mix,conditional_rates). Require identical category sets and mix shares summing to one (within 1e-9); all shares/rates must be in [0,1]. Return their weighted sum. Example mix {on_time:0.75,late:0.25}, rates {on_time:0.4,late:0.8} gives 0.5.",
+    "starter": "def standardised_rate(reference_mix,conditional_rates):\n    # TODO: validate compatible evidence and weight rates\n    return 0.0\n",
+    "tests": "assert abs(standardised_rate({'on_time':0.75,'late':0.25},{'on_time':0.4,'late':0.8})-0.5)<1e-10, 'Use the declared reference shares'\nfor mix,rates in [({'a':1},{'b':0.5}),({'a':0.5},{'a':0.2}),({'a':1},{'a':2})]:\n    try: standardised_rate(mix,rates)\n    except ValueError: pass\n    else: assert False, 'Reject missing classes, invalid shares, or invalid rates'",
+    "hint": "Validate sets and ranges before summing mix[g]*rates[g].",
+    "solution": "def standardised_rate(reference_mix,conditional_rates):\n    if set(reference_mix)!=set(conditional_rates) or abs(sum(reference_mix.values())-1)>1e-9:\n        raise ValueError('Need matching classes and a normalised mix')\n    if not all(0<=v<=1 for v in list(reference_mix.values())+list(conditional_rates.values())):\n        raise ValueError('Shares and rates must be probabilities')\n    return sum(reference_mix[g]*conditional_rates[g] for g in reference_mix)\n",
+    "id": "e3",
+    "lang": "python"
+  },
+  {
+    "title": "Pair by scenario identity",
+    "prompt": "Implement paired_gain(baseline,candidate), dictionaries mapping scenario IDs to binary known wins (0/1). Require identical nonempty ID sets and binary values; otherwise raise ValueError. Return mean candidate-minus-baseline. Example baseline {a:0,b:1}, candidate {b:1,a:1} gives 0.5 regardless of dictionary order.",
+    "starter": "def paired_gain(baseline,candidate):\n    # TODO: align by ID and reject incomplete evidence\n    return 0.0\n",
+    "tests": "assert paired_gain({'a':0,'b':1},{'b':1,'a':1})==0.5, 'Pair using scenario IDs, not row order'\nassert paired_gain({'a':1},{'a':0})==-1, 'Preserve losses in performance'\nfor b,c in [({'a':1},{'b':1}),({},{}),({'a':None},{'a':1})]:\n    try: paired_gain(b,c)\n    except ValueError: pass\n    else: assert False, 'Reject incomplete, empty, or unknown-outcome pairs'",
+    "hint": "Once IDs match, use candidate[k]-baseline[k] for each baseline ID.",
+    "solution": "def paired_gain(baseline,candidate):\n    if not baseline or set(baseline)!=set(candidate):\n        raise ValueError('Need complete nonempty pairs')\n    if not all(v in (0,1) for v in list(baseline.values())+list(candidate.values())):\n        raise ValueError('Need known binary outcomes')\n    return sum(candidate[k]-baseline[k] for k in baseline)/len(baseline)\n",
+    "id": "e4",
+    "lang": "python"
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "id": "e1",
+    "title": "CPU headroom",
+    "lang": "python",
+    "prompt": "Return max(0, allowed-reserve). Example: usable(54,6) returns 48.",
+    "starter": "def usable(allowed,reserve):\n    # TODO: reserve capacity\n    return allowed",
+    "tests": "assert usable(54,6)==48, 'Reserve six from the allowed 54'\nassert usable(2,6)==0, 'Usable capacity cannot be negative'",
+    "hint": "Clamp at zero.",
+    "solution": "def usable(allowed,reserve):\n    return max(0,allowed-reserve)"
+  },
+  {
+    "id": "e2",
+    "title": "Parse a CPU quota",
+    "lang": "python",
+    "prompt": "Parse a two-word quota string: quota period. Return quota/period, or None when quota is max. Example: '5400000 100000' gives 54.0. Inputs have positive periods.",
+    "starter": "def cpu_equivalents(text):\n    # TODO: split and handle max\n    return 0",
+    "tests": "assert cpu_equivalents('5400000 100000')==54.0, 'Convert quota and period to 54 CPU equivalents'\nassert cpu_equivalents('150000 100000')==1.5, 'Preserve fractional capacity'\nassert cpu_equivalents('max 100000') is None, 'Unlimited needs an explicit None marker'",
+    "hint": "Use split, then convert numeric text.",
+    "solution": "def cpu_equivalents(text):\n    quota, period = text.split()\n    return None if quota == 'max' else int(quota)/int(period)"
+  },
+  {
+    "id": "e3",
+    "title": "Combine worker ceilings",
+    "lang": "python",
+    "prompt": "Return the smaller integer worker ceiling from usable CPUs and GiB. Per-worker inputs are positive. Example: budget(48,50,2,3) is 16.",
+    "starter": "def budget(cpus,gib,per_cpu,per_gib):\n    # TODO: enforce both resources\n    return 0",
+    "tests": "assert budget(48,50,2,3)==16, 'Memory should limit this plan to 16'\nassert budget(4,100,2,3)==2, 'CPU should limit this plan to two'\nassert budget(0,10,1,1)==0, 'No usable CPU means no workers'",
+    "hint": "Calculate two ceilings with //.",
+    "solution": "def budget(cpus,gib,per_cpu,per_gib):\n    return min(cpus//per_cpu,gib//per_gib)"
+  },
+  {
+    "id": "e4",
+    "title": "Storage review",
+    "lang": "python",
+    "prompt": "Return artifact names with retained absent or not exactly True. Example: [{'name':'cache'}] returns ['cache'].",
+    "starter": "def needs_review(artifacts):\n    # TODO: keep unknown and non-retained artifacts\n    return []",
+    "tests": "assert needs_review([{'name':'summary','retained':True},{'name':'cache','retained':False},{'name':'unknown'}])==['cache','unknown'], 'Missing retention information requires review'\nassert needs_review([])==[], 'Empty inventory has no entries'",
+    "hint": "Missing metadata must not become True.",
+    "solution": "def needs_review(artifacts):\n    return [a['name'] for a in artifacts if a.get('retained') is not True]"
+  },
+  {
+    "id": "e5",
+    "title": "Classify run records",
+    "lang": "python",
+    "prompt": "Count WIN, LOSS, DRAW and unknown from derived strings. Return wins, losses, draws, unknown and rate (decisive win rate or None). Example: WIN plus missing gives rate 1.0 and unknown 1.",
+    "starter": "def summarise(rows):\n    # TODO: distinguish missing outcomes\n    return {}",
+    "tests": "assert summarise([{'derived':'WIN'},{}])=={'wins':1,'losses':0,'draws':0,'unknown':1,'rate':1.0}, 'Unknowns must not lower decisive win rate'\nr=summarise([{'derived':'DRAW'},{'derived':'LOSS'},{'derived':None}])\nassert r=={'wins':0,'losses':1,'draws':1,'unknown':1,'rate':0.0}, 'Keep draws and unknowns separate'\nassert summarise([])['rate'] is None, 'No decisive games means unavailable rate'",
+    "hint": "Count only explicit WIN and LOSS in the denominator.",
+    "solution": "def summarise(rows):\n    w=sum(r.get('derived')=='WIN' for r in rows)\n    l=sum(r.get('derived')=='LOSS' for r in rows)\n    d=sum(r.get('derived')=='DRAW' for r in rows)\n    u=len(rows)-w-l-d\n    return {'wins':w,'losses':l,'draws':d,'unknown':u,'rate':w/(w+l) if w+l else None}"
+  }
+]

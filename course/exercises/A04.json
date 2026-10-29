@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Read the local helper header",
+    "lang": "bash",
+    "prompt": "Read only the first line of the local `.foreman/scratch/loop_ops/safe_commit.sh`. Example output shape: a Bash shebang. Display it; do not invoke the script.",
+    "starter": "# TODO: write the requested read-only Bash command(s).\nprintf 'unfinished\\n'\n",
+    "expect": "\\A#!/bin/bash\\n?\\Z",
+    "hint": "head reads the file as text.",
+    "solution": "head -n 1 .foreman/scratch/loop_ops/safe_commit.sh",
+    "id": "e1"
+  },
+  {
+    "title": "Count one history entry",
+    "lang": "bash",
+    "prompt": "Use git log to request at most one commit subject from current history, then count its output lines. This repo has history. Example output: `1`.",
+    "starter": "# TODO: write the requested read-only Bash command(s).\nprintf 'unfinished\\n'\n",
+    "expect": "\\A\\s*1\\s*\\Z",
+    "hint": "Use -n 1 and --format=%s before piping to wc.",
+    "solution": "git log -n 1 --format=%s | wc -l",
+    "id": "e2"
+  },
+  {
+    "title": "Label a historical subject",
+    "lang": "bash",
+    "prompt": "Print `SUBJECT`, then use git log to display the latest commit subject. Example shape: `SUBJECT` followed by a nonempty subject on a second line. The subject is allowed to change.",
+    "starter": "# TODO: write the requested read-only Bash command(s).\nprintf 'unfinished\\n'\n",
+    "expect": "\\ASUBJECT\\n[^\\n]+\\n?\\Z",
+    "hint": "printf makes the label; git log supplies real history.",
+    "solution": "printf 'SUBJECT\\n'\ngit log -n 1 --format=%s",
+    "id": "e3"
+  },
+  {
+    "title": "Scope the history count",
+    "lang": "bash",
+    "prompt": "Print `LEARNER COMMITS`, then count subjects returned by git log for `scratchpad/gauntlet/L74/plan1026/opp/learner/`. Example second line: a nonnegative integer. Zero is valid; do not hard-code a count.",
+    "starter": "# TODO: write the requested read-only Bash command(s).\nprintf 'unfinished\\n'\n",
+    "expect": "\\ALEARNER COMMITS\\n[ \\t]*\\d+[ \\t]*\\n?\\Z",
+    "hint": "Put -- before the directory path.",
+    "solution": "printf 'LEARNER COMMITS\\n'\ngit log --format=%s -- scratchpad/gauntlet/L74/plan1026/opp/learner/ | wc -l",
+    "id": "e4"
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Check a brief",
+    "lang": "python",
+    "prompt": "Implement `brief_ready(brief)` requiring nonempty goal, inputs, outputs, constraints and checks fields. Example: missing checks means False.",
+    "starter": "def brief_ready(brief):\n    # TODO: require every part of the contract\n    return True",
+    "tests": "good={f:'specified' for f in ('goal','inputs','outputs','constraints','checks')}\nassert brief_ready(good), 'A complete brief should pass'\nbad=dict(good); bad['checks']=''\nassert not brief_ready(bad), 'Empty acceptance checks make the brief incomplete'\nassert not brief_ready({}), 'An empty request is not a bounded brief'",
+    "hint": "Use all over the required field names.",
+    "solution": "def brief_ready(brief):\n    return all(brief.get(f) for f in ('goal','inputs','outputs','constraints','checks'))",
+    "id": "e1"
+  },
+  {
+    "title": "Review exact path scope",
+    "lang": "python",
+    "prompt": "Implement `outside_scope(changed,allowed)` returning sorted unique changed paths not in allowed. Inputs are normalized repository-relative strings. Example: ['a','b'],['a'] gives ['b'].",
+    "starter": "def outside_scope(changed,allowed):\n    # TODO: exact membership, no fuzzy prefixes\n    return []",
+    "tests": "assert outside_scope(['course/lessons/H01.md','pipeline/rl_royale.py'],['course/lessons/H01.md'])==['pipeline/rl_royale.py'], 'Unrelated source edits must be visible'\nassert outside_scope(['a','a','b'],['b'])==['a'], 'Return unique violations'\nassert outside_scope(['a'],['a'])==[], 'Allowed paths are not violations'",
+    "hint": "Use set difference and sorted.",
+    "solution": "def outside_scope(changed,allowed):\n    return sorted(set(changed)-set(allowed))",
+    "id": "e2"
+  },
+  {
+    "title": "Re-tally the claimed rate",
+    "lang": "python",
+    "prompt": "Implement `verify_rate(rows,claimed)` using derived WIN and LOSS only in the denominator. Return False for no decisive rows unless claimed is None. Example: WIN,LOSS,missing supports .5, not 1/3.",
+    "starter": "def verify_rate(rows,claimed):\n    # TODO: recompute from records\n    return True",
+    "tests": "rows=[{'derived':'WIN'},{'derived':'LOSS'},{}]\nassert verify_rate(rows,.5), 'Correct decisive rate must pass'\nassert not verify_rate(rows,1/3), 'Unknown records must not dilute the rate'\nassert verify_rate([{}],None), 'Unavailable rate must remain unavailable'\nassert not verify_rate([{}],0), 'No observations is not zero performance'",
+    "hint": "Count wins and losses independently before comparing.",
+    "solution": "def verify_rate(rows,claimed):\n    w=sum(r.get('derived')=='WIN' for r in rows)\n    l=sum(r.get('derived')=='LOSS' for r in rows)\n    if w+l==0:\n        return claimed is None\n    return claimed is not None and abs(claimed-w/(w+l))<1e-9",
+    "id": "e3"
+  },
+  {
+    "title": "Test the checker with a defect",
+    "lang": "python",
+    "prompt": "Implement `audit_checker(checker)` returning True only if checker accepts the correct .5 rate and rejects the wrong 1/3 rate for [WIN,LOSS,missing]. The checker signature is checker(rows,rate). Example: a checker returning True for everything must fail this audit.",
+    "starter": "def audit_checker(checker):\n    # TODO: require both a positive and a negative control\n    return True",
+    "tests": "def good(rows,rate):\n    w=sum(r.get('derived')=='WIN' for r in rows)\n    l=sum(r.get('derived')=='LOSS' for r in rows)\n    return abs(rate-w/(w+l))<1e-9\nassert audit_checker(good), 'A correct checker should pass its controls'\nassert not audit_checker(lambda rows,rate:True), 'A checker accepting everything must fail'\nassert not audit_checker(lambda rows,rate:False), 'A checker rejecting everything must also fail'",
+    "hint": "Use the same fixture for the known-correct and known-wrong rates.",
+    "solution": "def audit_checker(checker):\n    rows=[{'derived':'WIN'},{'derived':'LOSS'},{}]\n    return bool(checker(rows,.5) and not checker(rows,1/3))",
+    "id": "e4"
+  }
+]

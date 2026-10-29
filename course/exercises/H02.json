@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Value is not probability",
+    "lang": "python",
+    "prompt": "Implement `value_from_win(p)` for a no-draw, undiscounted +1/-1 outcome. Example: p=0.75 gives 0.5.",
+    "starter": "def value_from_win(p):\n    # TODO: expected reward\n    return p",
+    "tests": "assert value_from_win(.75)==.5, '75 percent wins has value 0.5'\nassert value_from_win(0)==-1, 'Certain loss has value -1'\nassert value_from_win(1)==1, 'Certain win has value 1'",
+    "hint": "Weight both winning and losing rewards.",
+    "solution": "def value_from_win(p):\n    return p-(1-p)",
+    "id": "e1"
+  },
+  {
+    "title": "Terminal TD error",
+    "lang": "python",
+    "prompt": "Implement `td_error(reward, value, next_value, gamma, done)`. Example: a terminal win with value .2 gives .8.",
+    "starter": "def td_error(reward, value, next_value, gamma, done):\n    # TODO: mask the terminal continuation\n    return 0.0",
+    "tests": "assert abs(td_error(0,.2,.5,.9,False)-.25)<1e-9, 'Continuing TD error should be 0.25'\nassert abs(td_error(1,.2,99,.9,True)-.8)<1e-9, 'Terminal error must ignore next_value'",
+    "hint": "Use zero continuation when done is True.",
+    "solution": "def td_error(reward, value, next_value, gamma, done):\n    return reward+gamma*(0 if done else next_value)-value",
+    "id": "e2"
+  },
+  {
+    "title": "GAE across match boundaries",
+    "lang": "python",
+    "prompt": "Implement `gae(rewards, values, done, gamma, lam)` returning a list. The lists have equal lengths and the final row is terminal. Example: rewards [0,1], zero values, gamma .9, lambda 1 gives [.9,1].",
+    "starter": "def gae(rewards, values, done, gamma, lam):\n    # TODO: walk backwards and reset at done\n    return [0.0]*len(rewards)",
+    "tests": "a=gae([0,1],[0,0],[False,True],.9,1)\nassert len(a)==2 and abs(a[0]-.9)<1e-9 and a[1]==1, 'Lambda one should recover the return with zero values'\nassert gae([1,100],[.2,0],[True,True],.9,.95)==[.8,100], 'Do not leak advantage across matches'\nassert gae([],[],[],.9,.95)==[], 'An empty batch has no advantages'",
+    "hint": "At done, reset both the next value and the running advantage.",
+    "solution": "def gae(rewards, values, done, gamma, lam):\n    out=[0.0]*len(rewards)\n    next_v=next_a=0.0\n    for t in range(len(rewards)-1,-1,-1):\n        if done[t]:\n            next_v=next_a=0.0\n        delta=rewards[t]+gamma*next_v-values[t]\n        out[t]=delta+gamma*lam*next_a\n        next_v=values[t]\n        next_a=out[t]\n    return out",
+    "id": "e3"
+  },
+  {
+    "title": "Match leave-one-out",
+    "lang": "python",
+    "prompt": "Implement `loo(returns)` with zero output for fewer than two samples. Example: [1,-1,1] gives [1,-2,1].",
+    "starter": "def loo(returns):\n    # TODO: exclude each rollout from its own baseline\n    return [0.0]*len(returns)",
+    "tests": "assert loo([1,-1,1])==[1,-2,1], 'The losing rollout compares against two wins'\nassert loo([1,1])==[0,0], 'Equal outcomes have zero contrast'\nassert loo([1])==[0], 'Singleton groups use zero advantage'\nassert loo([])==[], 'Empty groups remain empty'",
+    "hint": "Subtract each result from the sum before dividing by n-1.",
+    "solution": "def loo(returns):\n    if len(returns)<2:\n        return [0.0]*len(returns)\n    total=sum(returns)\n    return [r-(total-r)/(len(returns)-1) for r in returns]",
+    "id": "e4"
+  }
+]

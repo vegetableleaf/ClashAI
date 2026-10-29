@@ -1,0 +1,52 @@
+[
+  {
+    "id": "e1",
+    "title": "Separate features and target",
+    "lang": "python",
+    "prompt": "Return ([elixir,tower_hp],next_card) from a row. Example: target Tesla must not appear in the input list.",
+    "starter": "def example_parts(row):\n    # TODO: separate inputs and label\n    return ([],None)",
+    "tests": "assert example_parts({'elixir':8,'tower_hp':1500,'next_card':'Tesla'})==([8,1500],'Tesla'), 'Keep the next card out of the input features'\nassert example_parts({'elixir':3,'tower_hp':400,'next_card':'Knight'})==([3,400],'Knight'), 'Use supplied values, not constants'",
+    "hint": "Return a pair containing a list and target.",
+    "solution": "def example_parts(row):\n    return ([row['elixir'],row['tower_hp']],row['next_card'])"
+  },
+  {
+    "id": "e2",
+    "title": "MSE with validation",
+    "lang": "python",
+    "prompt": "Compute mean squared error for equal nonempty lists; otherwise raise ValueError. Example: mse([2,4],[2,3]) is 0.5.",
+    "starter": "def mse(predictions,targets):\n    # TODO: validate and average squared errors\n    return 0",
+    "tests": "assert mse([2,4],[2,3])==0.5, 'Average the two squared errors'\nassert mse([1],[3])==4, 'Negative errors must also be squared'\nfor p,y in [([],[]),([1],[1,2])]:\n    try:\n        mse(p,y)\n    except ValueError:\n        pass\n    else:\n        assert False, 'Reject empty or mismatched inputs'",
+    "hint": "Check lengths before zip.",
+    "solution": "def mse(predictions,targets):\n    if not targets or len(predictions)!=len(targets):\n        raise ValueError('Need equal nonempty lists')\n    return sum((p-y)**2 for p,y in zip(predictions,targets))/len(targets)"
+  },
+  {
+    "id": "e3",
+    "title": "Fit a tiny model",
+    "lang": "python",
+    "prompt": "Choose the candidate weight minimising mean squared error of weight*x versus y; ties choose the first candidate. Inputs are nonempty and equal length. Example: [1,2] -> [2,4] chooses 2 from [0,1,2,3].",
+    "starter": "def fit(xs,ys,candidates):\n    # TODO: score each candidate\n    return candidates[0]",
+    "tests": "assert fit([1,2],[2,4],[0,1,2,3])==2, 'Select the multiplier that fits the examples'\nassert fit([1],[0],[1,-1])==1, 'Keep the first candidate on a tie'\nassert fit([1,2],[3,6],[1,3,5])==3, 'Fit must respond to changed targets'",
+    "hint": "Use min with a scoring function.",
+    "solution": "def fit(xs,ys,candidates):\n    return min(candidates,key=lambda w:sum((w*x-y)**2 for x,y in zip(xs,ys))/len(ys))"
+  },
+  {
+    "id": "e4",
+    "title": "Evaluate a baseline",
+    "lang": "python",
+    "prompt": "Return mean training target, then its MSE on held-out targets. Lists are nonempty. Example: train [0,1], held-out [1,1] gives (0.5,0.25).",
+    "starter": "def baseline(train,held_out):\n    # TODO: fit only on train\n    return (0,0)",
+    "tests": "assert baseline([0,1],[1,1])==(0.5,0.25), 'Fit the baseline on training targets only'\nassert baseline([0,0],[1])==(0.0,1.0), 'Held-out targets must not change the fitted mean'",
+    "hint": "Do not combine the two lists.",
+    "solution": "def baseline(train,held_out):\n    value=sum(train)/len(train)\n    loss=sum((value-y)**2 for y in held_out)/len(held_out)\n    return value,loss"
+  },
+  {
+    "id": "e5",
+    "title": "Read real match outcomes",
+    "lang": "python",
+    "prompt": "Read scratchpad/gauntlet/L74/loss_review/matches.jsonl into rows, skipping blank lines. Build counts with WIN, LOSS, DRAW, UNKNOWN and rate=WIN/(WIN+LOSS), or None. Example: a missing derived field increments UNKNOWN, not LOSS.",
+    "starter": "import json\nfrom pathlib import Path\npath=Path('scratchpad/gauntlet/L74/loss_review/matches.jsonl')\n# TODO: read rows and count outcomes\nrows=[]\ncounts={}\nrate=None",
+    "tests": "assert rows, 'Read the nonempty real match log'\nassert all(isinstance(r,dict) for r in rows), 'Every record should be an object'\nexpected={k:0 for k in ['WIN','LOSS','DRAW','UNKNOWN']}\nfor r in rows:\n    label=r.get('derived')\n    expected[label if label in ('WIN','LOSS','DRAW') else 'UNKNOWN']+=1\nassert counts==expected, 'Recompute every category from your loaded snapshot'\nassert sum(counts.values())==len(rows), 'All rows must be accounted for'\nn=expected['WIN']+expected['LOSS']\nassert rate==(expected['WIN']/n if n else None), 'Exclude unknown and draw rows from decisive rate'\nassert any('n_plays' in r or 'n_states' in r for r in rows), 'Load actual match-summary structure'",
+    "hint": "Use json.loads for each nonblank line.",
+    "solution": "import json\nfrom pathlib import Path\npath=Path('scratchpad/gauntlet/L74/loss_review/matches.jsonl')\nrows=[json.loads(line) for line in path.read_text(encoding='utf-8').splitlines() if line.strip()]\ncounts={label:0 for label in ['WIN','LOSS','DRAW','UNKNOWN']}\nfor row in rows:\n    value=row.get('derived')\n    label=value if value in ('WIN','LOSS','DRAW') else 'UNKNOWN'\n    counts[label]+=1\nn=counts['WIN']+counts['LOSS']\nrate=counts['WIN']/n if n else None\nprint(counts)"
+  }
+]

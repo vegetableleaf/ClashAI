@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Outcome denominator",
+    "lang": "python",
+    "prompt": "Implement `summary(rows)` returning wins, losses, draws, unknown and rate. Read `derived`; rate is WIN/(WIN+LOSS), or None. Example: WIN plus missing gives rate 1 and unknown 1.",
+    "starter": "def summary(rows):\n    # TODO: clean outcomes before division\n    return {}",
+    "tests": "s=summary([{'derived':'WIN'},{'derived':'LOSS'},{'derived':'DRAW'},{}])\nassert s=={'wins':1,'losses':1,'draws':1,'unknown':1,'rate':.5}, 'Draws and unknowns must be reported separately'\nassert summary([{}])['rate'] is None, 'No decisive outcomes means no rate'",
+    "hint": "Use an explicit mapping for the three known outcome strings.",
+    "solution": "def summary(rows):\n    s={'wins':0,'losses':0,'draws':0,'unknown':0}\n    names={'WIN':'wins','LOSS':'losses','DRAW':'draws'}\n    for row in rows:\n        s[names.get(row.get('derived'),'unknown')]+=1\n    n=s['wins']+s['losses']\n    s['rate']=s['wins']/n if n else None\n    return s",
+    "id": "e1"
+  },
+  {
+    "title": "Wilson interval",
+    "lang": "python",
+    "prompt": "Implement `wilson(wins,n,z=1.96)` returning (low,high), or None for n=0. Use centre=(p+z*z/(2*n))/(1+z*z/n); half=z*sqrt(p*(1-p)/n+z*z/(4*n*n))/(1+z*z/n). Example: 5/10 is centred on .5.",
+    "starter": "import math\n\ndef wilson(wins,n,z=1.96):\n    # TODO: calculate the interval on observed games\n    return None",
+    "tests": "lo,hi=wilson(5,10)\nassert abs(lo-.2365895936)<1e-8 and abs(hi-.7634104064)<1e-8, 'Use the Wilson correction, not the simple normal interval'\nassert wilson(0,0) is None, 'No observed games gives no interval'\nlo,hi=wilson(10,10)\nassert 0<lo<1 and abs(hi-1)<1e-9, 'Ten wins still leave uncertainty'",
+    "hint": "Compute p only after the n=0 case.",
+    "solution": "import math\n\ndef wilson(wins,n,z=1.96):\n    if n==0:\n        return None\n    p=wins/n\n    den=1+z*z/n\n    centre=(p+z*z/(2*n))/den\n    half=z*math.sqrt(p*(1-p)/n+z*z/(4*n*n))/den\n    return centre-half,centre+half",
+    "id": "e2"
+  },
+  {
+    "title": "A simplified SIM gate",
+    "lang": "python",
+    "prompt": "Implement `sim_gate(identity,pooled_low,mortar_rate)`: all must be available; require identity True, pooled_low>0, mortar_rate>=.45. Example: True,.01,.45 passes. This is only a teaching subset of the real ladder.",
+    "starter": "def sim_gate(identity,pooled_low,mortar_rate):\n    # TODO: every required condition must pass\n    return True",
+    "tests": "assert sim_gate(True,.01,.45), 'Inclusive Mortar bar and positive lower bound pass'\nassert not sim_gate(True,0,.9), 'A lower bound touching zero fails'\nassert not sim_gate(True,None,.9), 'Missing uncertainty evidence cannot pass'\nassert not sim_gate(False,.1,.9), 'Identity is independently required'",
+    "hint": "Handle None before numeric comparisons.",
+    "solution": "def sim_gate(identity,pooled_low,mortar_rate):\n    return identity is True and pooled_low is not None and mortar_rate is not None and pooled_low>0 and mortar_rate>=.45",
+    "id": "e3"
+  },
+  {
+    "title": "Offline safety-stage decision",
+    "lang": "python",
+    "prompt": "Implement `trial_status(observed,minimum,alarm)` returning 'review alarm' first if alarm, otherwise 'collect more' below minimum, else 'eligible for review'. Example: 29,30,False needs more. Return text only.",
+    "starter": "def trial_status(observed,minimum,alarm):\n    # TODO: prioritize safety evidence over sample count\n    return 'eligible for review'",
+    "tests": "assert trial_status(100,30,True)=='review alarm', 'An alarm overrides a completed sample count'\nassert trial_status(29,30,False)=='collect more', 'Do not call an incomplete block complete'\nassert trial_status(60,60,False)=='eligible for review', 'Use configurable block size'\nassert trial_status(150,150,False)=='eligible for review', 'Completion supports review, not automatic deployment'",
+    "hint": "Check alarm before the sample-count branch.",
+    "solution": "def trial_status(observed,minimum,alarm):\n    if alarm:\n        return 'review alarm'\n    if observed<minimum:\n        return 'collect more'\n    return 'eligible for review'",
+    "id": "e4"
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Grade an exact count claim",
+    "lang": "python",
+    "prompt": "Implement `grade_count(claimed,observed)`: if observed is None return 'plausible'; equal returns 'measured'; otherwise 'contradicted'. This toy rule is for an exact numerical claim, not causal explanations. Example: 18,18 is measured.",
+    "starter": "def grade_count(claimed,observed):\n    # TODO: distinguish unavailable evidence from disagreement\n    return 'measured'",
+    "tests": "assert grade_count(18,18)=='measured', 'Exact agreement supports this count claim'\nassert grade_count(18,None)=='plausible', 'Unavailable evidence cannot verify the claim'\nassert grade_count(30,18)=='contradicted', 'A different observed count contradicts the exact claim'",
+    "hint": "Handle unavailable evidence first.",
+    "solution": "def grade_count(claimed,observed):\n    if observed is None:\n        return 'plausible'\n    return 'measured' if claimed==observed else 'contradicted'",
+    "id": "e1"
+  },
+  {
+    "title": "Interval against a declared threshold",
+    "lang": "python",
+    "prompt": "Implement `assess(low,high,threshold)` for the claim 'effect is strictly greater than threshold'. Return 'supported' if low>threshold, 'contradicted' if high<=threshold, otherwise 'unresolved'. Example: -.04,.04,0 is unresolved.",
+    "starter": "def assess(low,high,threshold):\n    # TODO: compare the whole interval with the claim\n    return 'supported'",
+    "tests": "assert assess(-.04,.04,0)=='unresolved', 'An interval crossing the threshold cannot settle the sign'\nassert assess(.01,.05,0)=='supported', 'The whole interval lies above zero'\nassert assess(-.05,0,0)=='contradicted', 'A strict positive claim conflicts with this interval'\nassert assess(.01,.05,.1)=='contradicted', 'Judge the stated practical threshold, not always zero'",
+    "hint": "Use both endpoints, not only the midpoint.",
+    "solution": "def assess(low,high,threshold):\n    if low>threshold:\n        return 'supported'\n    if high<=threshold:\n        return 'contradicted'\n    return 'unresolved'",
+    "id": "e2"
+  },
+  {
+    "title": "A planted denominator defect",
+    "lang": "python",
+    "prompt": "Implement `rate_matches(reported,wins,losses,unknown)` checking the decisive rate with tolerance 1e-9. If there are no decisive games, only None is valid. Example: reported .5 with 1 win,1 loss,8 unknown is valid; .1 is not.",
+    "starter": "def rate_matches(reported,wins,losses,unknown):\n    # TODO: do not include unknowns in the denominator\n    return True",
+    "tests": "assert rate_matches(.5,1,1,8), 'The correct decisive rate must pass'\nassert not rate_matches(.1,1,1,8), 'The planted all-record denominator bug must fail'\nassert rate_matches(None,0,0,8), 'No decisive outcomes means unavailable'\nassert not rate_matches(0,0,0,8), 'Zero is not a substitute for unavailable'",
+    "hint": "unknown is reported context, not part of this denominator.",
+    "solution": "def rate_matches(reported,wins,losses,unknown):\n    n=wins+losses\n    if not n:\n        return reported is None\n    return reported is not None and abs(reported-wins/n)<1e-9",
+    "id": "e3"
+  },
+  {
+    "title": "Preserve a correction",
+    "lang": "python",
+    "prompt": "Implement `revise(old_claim,evidence,new_claim)` returning a dictionary with before, evidence, after. Reject any empty string. Example: a new conclusion without evidence is incomplete.",
+    "starter": "def revise(old_claim,evidence,new_claim):\n    # TODO: preserve both claims and their evidence bridge\n    return {}",
+    "tests": "assert revise('large gap','paired diagnostic','gap unestablished')=={'before':'large gap','evidence':'paired diagnostic','after':'gap unestablished'}, 'Preserve the correction chain'\ntry:\n    revise('old','','new')\nexcept ValueError:\n    pass\nelse:\n    assert False, 'A revision needs evidence, not just a replacement story'",
+    "hint": "Validate before returning the structured record.",
+    "solution": "def revise(old_claim,evidence,new_claim):\n    if not all(s.strip() for s in (old_claim,evidence,new_claim)):\n        raise ValueError('Incomplete correction')\n    return {'before':old_claim,'evidence':evidence,'after':new_claim}",
+    "id": "e4"
+  }
+]

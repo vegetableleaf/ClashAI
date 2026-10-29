@@ -1,0 +1,52 @@
+[
+  {
+    "id": "e1",
+    "title": "Filter affordable cards",
+    "lang": "python",
+    "prompt": "Define affordable(cards, elixir) using a list comprehension to return names whose cost <= elixir, in input order. Example: Xbow at 6 is excluded when elixir is 5.",
+    "starter": "def affordable(cards, elixir):\n    # TODO filter and extract names\n    return []",
+    "tests": "cards = [{\"name\":\"Xbow\",\"cost\":6},{\"name\":\"Skeletons\",\"cost\":1}]\nassert affordable(cards,5) == [\"Skeletons\"], \"only Skeletons fits five elixir\"\nassert affordable(cards,6) == [\"Xbow\",\"Skeletons\"], \"include exact-cost cards in input order\"",
+    "hint": "Put the expression before for and the condition after the loop.",
+    "solution": "def affordable(cards, elixir):\n    return [card[\"name\"] for card in cards if card[\"cost\"] <= elixir]"
+  },
+  {
+    "id": "e2",
+    "title": "Rank recorded losses",
+    "lang": "python",
+    "prompt": "Define rank_losses(counts), returning card names ordered by decreasing count, then alphabetically for ties. Example: {\"Xbow\":2,\"Giant\":2,\"Knight\":1} gives [\"Giant\",\"Xbow\",\"Knight\"].",
+    "starter": "def rank_losses(counts):\n    # TODO sort names by a two-part value\n    return []",
+    "tests": "assert rank_losses({\"Xbow\":2,\"Giant\":2,\"Knight\":1}) == [\"Giant\",\"Xbow\",\"Knight\"], \"sort counts descending and tied names ascending\"\nassert rank_losses({}) == [], \"empty counts should produce no names\"",
+    "hint": "A tuple (-counts[name], name) orders first by the negative count.",
+    "solution": "def rank_losses(counts):\n    return sorted(counts, key=lambda name: (-counts[name], name))"
+  },
+  {
+    "id": "e3",
+    "title": "Number paired cards and costs",
+    "lang": "python",
+    "prompt": "Define numbered_cards(names, costs) using enumerate(zip(...), start=1). Return strings such as \"1: Xbow costs 6\". Inputs have equal length.",
+    "starter": "def numbered_cards(names, costs):\n    # TODO combine, number, and format\n    return []",
+    "tests": "assert numbered_cards([\"Xbow\",\"Knight\"],[6,3]) == [\"1: Xbow costs 6\",\"2: Knight costs 3\"], \"pair each card with its cost and number from one\"\nassert numbered_cards([],[]) == [], \"empty inputs produce no lines\"",
+    "hint": "Unpack number, (name, cost) in the loop.",
+    "solution": "def numbered_cards(names, costs):\n    return [f\"{number}: {name} costs {cost}\" for number, (name, cost) in enumerate(zip(names, costs), start=1)]"
+  },
+  {
+    "id": "e4",
+    "title": "Yield losses lazily",
+    "lang": "python",
+    "prompt": "Define loss_rows(rows) as a generator yielding only rows with derived == \"LOSS\". Example: WIN, LOSS, UNKNOWN yields just LOSS.",
+    "starter": "def loss_rows(rows):\n    # TODO use yield inside a loop\n    yield from ()",
+    "tests": "import types\nrows = [{\"derived\":\"WIN\"},{\"derived\":\"LOSS\",\"ts\":\"20261029_120000\"},{}]\ng = loss_rows(rows)\nassert isinstance(g,types.GeneratorType), \"loss_rows must return a generator\"\nassert list(g) == [rows[1]], \"yield only the recorded loss\"\nassert list(g) == [], \"a consumed generator does not restart itself\"",
+    "hint": "yield hands one value to the caller and pauses the function.",
+    "solution": "def loss_rows(rows):\n    for row in rows:\n        if row.get(\"derived\") == \"LOSS\":\n            yield row"
+  },
+  {
+    "id": "e5",
+    "title": "Summarise real opponent-card losses",
+    "lang": "python",
+    "prompt": "Define card_losses(path). Read the real JSONL file. For rows with derived == \"LOSS\" and dry_run is False, count each distinct string in opp_cards once per match. Missing opp_cards means no observed cards. Example: [\"Xbow\",\"Xbow\"] contributes one Xbow loss.",
+    "starter": "import json\ndef card_losses(path):\n    # TODO read, filter, and count distinct cards per loss\n    return {}",
+    "tests": "from collections import Counter\npath = \"scratchpad/gauntlet/L74/loss_review/matches.jsonl\"\nexpected = Counter()\nwith open(path, encoding=\"utf-8\") as source:\n    for line in source:\n        if line.strip():\n            row = json.loads(line)\n            if row.get(\"derived\") == \"LOSS\" and row.get(\"dry_run\") is False:\n                expected.update(set(row.get(\"opp_cards\",[])))\nassert card_losses(path) == dict(expected), \"counts must match distinct observed cards in current non-dry recorded losses\"",
+    "hint": "Use a set to avoid counting repeated sightings of the same card twice in one match.",
+    "solution": "import json\ndef card_losses(path):\n    counts = {}\n    with open(path, encoding=\"utf-8\") as source:\n        for line in source:\n            if not line.strip():\n                continue\n            row = json.loads(line)\n            if row.get(\"derived\") == \"LOSS\" and row.get(\"dry_run\") is False:\n                for card in set(row.get(\"opp_cards\", [])):\n                    counts[card] = counts.get(card,0) + 1\n    return counts"
+  }
+]

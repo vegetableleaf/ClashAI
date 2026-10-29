@@ -1,0 +1,52 @@
+[
+  {
+    "id": "e1",
+    "title": "Decode one match",
+    "lang": "python",
+    "prompt": "Define decode(line) to return the dictionary decoded from JSON. Example: decode('{\"derived\":\"WIN\"}')[\"derived\"] is \"WIN\".",
+    "starter": "import json\ndef decode(line):\n    # TODO decode the text\n    return {}",
+    "tests": "assert decode('{\"derived\":\"WIN\"}') == {\"derived\":\"WIN\"}, \"decode should preserve the WIN field\"\nassert decode('{\"n_plays\":0}')[\"n_plays\"] == 0, \"zero plays must remain zero\"",
+    "hint": "Use json.loads, with an s for string.",
+    "solution": "import json\ndef decode(line):\n    return json.loads(line)"
+  },
+  {
+    "id": "e2",
+    "title": "Ignore blank lines",
+    "lang": "python",
+    "prompt": "Define parse_lines(lines), returning decoded dictionaries for nonblank lines in order. Inputs are valid JSON or whitespace. Example: ['{\"derived\":\"LOSS\"}', \"  \"] produces one dictionary.",
+    "starter": "import json\ndef parse_lines(lines):\n    # TODO build and return a list\n    return []",
+    "tests": "assert parse_lines(['{\"derived\":\"LOSS\"}', \"  \", '{\"derived\":\"WIN\"}']) == [{\"derived\":\"LOSS\"},{\"derived\":\"WIN\"}], \"skip blanks and preserve row order\"\nassert parse_lines([]) == [], \"an empty input should give an empty list\"",
+    "hint": "strip() removes whitespace; an empty string is false in an if.",
+    "solution": "import json\ndef parse_lines(lines):\n    rows = []\n    for line in lines:\n        if line.strip():\n            rows.append(json.loads(line))\n    return rows"
+  },
+  {
+    "id": "e3",
+    "title": "Count recorded labels",
+    "lang": "python",
+    "prompt": "Define tally(rows) returning WIN, LOSS, DRAW and UNKNOWN counts. Missing or unfamiliar derived labels are UNKNOWN. Example: [{\"derived\":\"WIN\"}, {}] gives one WIN and one UNKNOWN.",
+    "starter": "def tally(rows):\n    counts = {\"WIN\":0,\"LOSS\":0,\"DRAW\":0,\"UNKNOWN\":0}\n    # TODO count each row exactly once\n    return counts",
+    "tests": "assert tally([{\"derived\":\"WIN\"},{\"derived\":\"LOSS\"},{\"derived\":\"DRAW\"},{},{\"derived\":\"later\"}]) == {\"WIN\":1,\"LOSS\":1,\"DRAW\":1,\"UNKNOWN\":2}, \"each row needs one category; missing is not LOSS\"\nassert tally([]) == {\"WIN\":0,\"LOSS\":0,\"DRAW\":0,\"UNKNOWN\":0}, \"empty input has zero counts\"",
+    "hint": "Use row.get(\"derived\") so an absent field gives None.",
+    "solution": "def tally(rows):\n    counts = {\"WIN\":0,\"LOSS\":0,\"DRAW\":0,\"UNKNOWN\":0}\n    for row in rows:\n        label = row.get(\"derived\")\n        if label not in (\"WIN\", \"LOSS\", \"DRAW\"):\n            label = \"UNKNOWN\"\n        counts[label] += 1\n    return counts"
+  },
+  {
+    "id": "e4",
+    "title": "Read the real match log",
+    "lang": "python",
+    "prompt": "Define load_rows(path) to read nonblank JSON lines with UTF-8. Set rows by calling it on scratchpad/gauntlet/L74/loss_review/matches.jsonl. Example: each element of rows is a dictionary; no fixed row count is required. Do not write to the log.",
+    "starter": "import json\nPATH = \"scratchpad/gauntlet/L74/loss_review/matches.jsonl\"\ndef load_rows(path):\n    # TODO open and decode nonblank lines\n    return []\nrows = load_rows(PATH)",
+    "tests": "with open(PATH, encoding=\"utf-8\") as source:\n    expected = []\n    for line in source:\n        if line.strip():\n            expected.append(json.loads(line))\nassert rows == expected, \"rows must match every nonblank record in the current log\"\nassert isinstance(rows, list), \"rows must be a list\"\nfor row in rows:\n    assert isinstance(row, dict), \"each match record should be a dictionary\"\nassert load_rows.__name__ == \"load_rows\", \"keep the requested loader function\"",
+    "hint": "Use with open(path, encoding=\"utf-8\") as source: and loop over source.",
+    "solution": "import json\nPATH = \"scratchpad/gauntlet/L74/loss_review/matches.jsonl\"\ndef load_rows(path):\n    rows = []\n    with open(path, encoding=\"utf-8\") as source:\n        for line in source:\n            if line.strip():\n                rows.append(json.loads(line))\n    return rows\nrows = load_rows(PATH)"
+  },
+  {
+    "id": "e5",
+    "title": "Write JSON lines to a supplied stream",
+    "lang": "python",
+    "prompt": "Define write_rows(stream, rows) to write one JSON object and newline per row. The checker supplies an in-memory text stream, so no project file changes. Example: two rows create two lines.",
+    "starter": "import json\ndef write_rows(stream, rows):\n    # TODO write JSON text and a newline for each row\n    return None",
+    "tests": "import io\nout = io.StringIO()\nwrite_rows(out, [{\"derived\":\"WIN\"},{\"derived\":\"DRAW\"}])\nassert out.getvalue().endswith(\"\\n\"), \"the final record needs a newline\"\nassert [json.loads(s) for s in out.getvalue().splitlines()] == [{\"derived\":\"WIN\"},{\"derived\":\"DRAW\"}], \"write both rows in order\"",
+    "hint": "json.dumps converts a dictionary to JSON text; stream.write writes that text.",
+    "solution": "import json\ndef write_rows(stream, rows):\n    for row in rows:\n        stream.write(json.dumps(row) + \"\\n\")"
+  }
+]

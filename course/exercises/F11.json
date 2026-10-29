@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Count a two-layer model",
+    "prompt": "Implement `mlp_parameters(inputs, hidden, outputs)` for two biased linear layers separated by ReLU. Example `(2,4,3)` has 27 parameters.",
+    "starter": "def mlp_parameters(inputs,hidden,outputs):\n    # TODO: count both weight matrices and both biases\n    return 0\n",
+    "tests": "assert mlp_parameters(2,4,3)==27, 'Two biased layers should have 27 parameters'\nassert mlp_parameters(1,1,1)==4, 'Each one-to-one layer has weight plus bias'\nassert mlp_parameters(8,16,3)==195, 'Count every registered scalar'",
+    "hint": "First layer: inputs*hidden+hidden. Second: hidden*outputs+outputs.",
+    "solution": "def mlp_parameters(inputs,hidden,outputs):\n    return inputs*hidden+hidden+hidden*outputs+outputs\n",
+    "id": "e1",
+    "lang": "python"
+  },
+  {
+    "title": "Read the real held-out curve",
+    "prompt": "Implement `read_curve(path)`. Read only the section beginning `## Table 1.` and ending at the next `## ` heading. For data rows whose first cell starts with `m`, return dictionaries with `name`, `params_m`, and `nll` from columns 0,1,3. Example a row `| m2 | 2.53 | 160 x 4 | 5.4401 |` becomes those three fields. Call it on the provided real path as `curve`.",
+    "starter": "from pathlib import Path\n\ndef read_curve(path):\n    # TODO: anchor the section and parse only data rows\n    return []\n\ncurve=read_curve('scratchpad/gauntlet/L74/scale/v1/CURVE_V1.md')\n",
+    "tests": "import math\npath=Path('scratchpad/gauntlet/L74/scale/v1/CURVE_V1.md')\nsection=path.read_text(encoding='utf-8').split('## Table 1.',1)[1].split('\\n## ',1)[0]\nexpected=[]\nfor line in section.splitlines():\n    cells=[s.strip() for s in line.strip().strip('|').split('|')]\n    if line.startswith('| m'):\n        expected.append({'name':cells[0],'params_m':float(cells[1]),'nll':float(cells[3])})\nassert curve, 'Read at least one measured model row'\nassert curve==expected, 'Parse every first-table model row, preserving names and values'\nassert all(r['params_m']>0 and math.isfinite(r['nll']) for r in curve), 'Sizes must be positive and losses finite'",
+    "hint": "Track an inside flag, stop at the next heading, and skip separator/header rows.",
+    "solution": "from pathlib import Path\n\ndef read_curve(path):\n    inside=False\n    rows=[]\n    for line in Path(path).read_text(encoding='utf-8').splitlines():\n        if line.startswith('## Table 1.'):\n            inside=True\n            continue\n        if inside and line.startswith('## '): break\n        if inside and line.startswith('| m'):\n            c=[x.strip() for x in line.strip().strip('|').split('|')]\n            rows.append({'name':c[0],'params_m':float(c[1]),'nll':float(c[3])})\n    return rows\n\ncurve=read_curve('scratchpad/gauntlet/L74/scale/v1/CURVE_V1.md')\n",
+    "id": "e2",
+    "lang": "python"
+  },
+  {
+    "title": "Report seed variation honestly",
+    "prompt": "Implement `seed_summary(losses)`, returning `(mean, range)` where range=max-min. Reject an empty list. Example `[5.31,5.33]` gives approximately `(5.32,0.02)`. This range is not a confidence interval.",
+    "starter": "def seed_summary(losses):\n    # TODO: reject empty input and compute both quantities\n    return (0,0)\n",
+    "tests": "m,r=seed_summary([5.31,5.33])\nassert abs(m-5.32)<1e-10 and abs(r-0.02)<1e-10, 'Mean and observed range should be 5.32 and 0.02'\nassert seed_summary([2])==(2,0), 'One run has observed range zero, not known zero uncertainty'\ntry: seed_summary([])\nexcept ValueError: pass\nelse: assert False, 'Empty evidence must not become a zero loss'",
+    "hint": "Use sum/len for the mean and max-minus-min for the range.",
+    "solution": "def seed_summary(losses):\n    if not losses: raise ValueError('Need at least one loss')\n    return sum(losses)/len(losses),max(losses)-min(losses)\n",
+    "id": "e3",
+    "lang": "python"
+  },
+  {
+    "title": "Measure marginal improvements",
+    "prompt": "Implement `marginal_gains(points)` for strictly increasing `(params_m,nll)` pairs. Return each adjacent NLL reduction per added million parameters. Reject non-increasing sizes. Example `[(2,5),(4,4.8),(8,4.7)]` gives approximately `[0.1,0.025]`.",
+    "starter": "def marginal_gains(points):\n    # TODO: compare adjacent measured sizes\n    return []\n",
+    "tests": "g=marginal_gains([(2,5),(4,4.8),(8,4.7)])\nassert len(g)==2 and abs(g[0]-0.1)<1e-10 and abs(g[1]-0.025)<1e-10, 'Divide loss reduction by added size'\nassert marginal_gains([(2,5)])==[], 'One size has no adjacent comparison'\nassert marginal_gains([(2,5),(3,6)])==[-1], 'Preserve a worsening loss as a negative gain'\ntry: marginal_gains([(2,5),(2,4)])\nexcept ValueError: pass\nelse: assert False, 'Repeated seeds must be summarised before comparing sizes'",
+    "hint": "zip(points, points[1:]) gives adjacent pairs.",
+    "solution": "def marginal_gains(points):\n    result=[]\n    for (p0,l0),(p1,l1) in zip(points,points[1:]):\n        if p1<=p0: raise ValueError('Sizes must increase')\n        result.append((l0-l1)/(p1-p0))\n    return result\n",
+    "id": "e4",
+    "lang": "python"
+  }
+]

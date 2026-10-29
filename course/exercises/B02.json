@@ -1,0 +1,52 @@
+[
+  {
+    "title": "Name numeric state",
+    "lang": "python",
+    "prompt": "Assign integer `elixir` equal to 10 and string `card` equal to X-Bow. Example: a numeric value uses no quotes.",
+    "starter": "# TODO: fix the types and values.\nelixir = \"10\"\ncard = \"Tesla\"",
+    "solution": "elixir = 10\ncard = \"X-Bow\"",
+    "tests": "assert type(elixir) is int and elixir == 10, \"elixir must be the integer 10, not text\"\nassert card == \"X-Bow\", \"card should name X-Bow\"",
+    "hint": "Keep the number unquoted.",
+    "id": "e1"
+  },
+  {
+    "title": "Spend elixir",
+    "lang": "python",
+    "prompt": "Given elixir 9 and cost 6, assign `remaining` by subtraction. Example: ten minus six would leave four.",
+    "starter": "# TODO: compute remaining from these inputs.\nelixir = 9\ncost = 6\nremaining = 0",
+    "solution": "elixir = 9\ncost = 6\nremaining = elixir - cost",
+    "tests": "assert remaining == 3, \"9 elixir minus a 6-elixir X-Bow should leave 3\"",
+    "hint": "Use the variable names on the right side.",
+    "id": "e2"
+  },
+  {
+    "title": "Regenerate and cap",
+    "lang": "python",
+    "prompt": "Start at 9 elixir and wait 5.6 seconds at one elixir per 2.8 seconds. Assign `after` with a cap of 10. Example: starting at 3 would produce 5.0.",
+    "starter": "# TODO: include regeneration and the cap.\nstart = 9\nseconds = 5.6\nafter = start",
+    "solution": "start = 9\nseconds = 5.6\nafter = min(10, start + seconds / 2.8)",
+    "tests": "assert after == 10, \"9 plus 2 regenerated elixir must be capped at 10\"",
+    "hint": "Apply min to ten and the uncapped total.",
+    "id": "e3"
+  },
+  {
+    "title": "Floor tower HP",
+    "lang": "python",
+    "prompt": "A toy tower has 300 HP and takes 350 damage. Assign `remaining_hp` with a floor of zero. Example: 300 minus 100 would leave 200.",
+    "starter": "# TODO: prevent negative HP.\nhp = 300\ndamage = 350\nremaining_hp = hp - damage",
+    "solution": "hp = 300\ndamage = 350\nremaining_hp = max(0, hp - damage)",
+    "tests": "assert remaining_hp == 0, \"Overkill should leave 0 HP, not a negative value\"",
+    "hint": "max chooses the larger of zero and the subtraction.",
+    "id": "e4"
+  },
+  {
+    "title": "Format fractional elixir",
+    "lang": "python",
+    "prompt": "Calculate `elixir = 3 + 1 / 2.8` and assign an f-string `report` displaying one decimal place as `Elixir: 3.4`. Example format specifier: `:.1f`. Keep elixir unrounded.",
+    "starter": "# TODO: keep numeric precision and format the report.\nelixir = 3 + 1 / 2.8\nreport = \"Elixir: unfinished\"",
+    "solution": "elixir = 3 + 1 / 2.8\nreport = f\"Elixir: {elixir:.1f}\"",
+    "tests": "assert abs(elixir - (3 + 1 / 2.8)) < 1e-12, \"Keep the unrounded elixir value\"\nassert report == \"Elixir: 3.4\", \"report should display one decimal: Elixir: 3.4\"",
+    "hint": "Format the display inside braces; do not round the stored state.",
+    "id": "e5"
+  }
+]

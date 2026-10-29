@@ -1,0 +1,42 @@
+[
+  {
+    "id": "e1",
+    "title": "Write boundary tests",
+    "lang": "python",
+    "prompt": "Implement check_afford(fn) with assertions for exact affordability, insufficient elixir, and zero cost. A correct fn(cost, elixir) returns cost <= elixir. Example: fn(6,6) is True.",
+    "starter": "def check_afford(fn):\n    # TODO assert three boundary cases with messages\n    pass",
+    "solution": "def check_afford(fn):\n    assert fn(6,6) is True, \"six elixir affords X-Bow\"\n    assert fn(6,5) is False, \"five elixir cannot afford X-Bow\"\n    assert fn(0,0) is True, \"zero cost is affordable at zero elixir\"",
+    "tests": "check_afford(lambda cost,elixir: cost <= elixir)\nfor broken in [lambda c,e: c < e, lambda c,e: True, lambda c,e: c > 0 and c <= e]:\n    caught = False\n    try:\n        check_afford(broken)\n    except AssertionError as exc:\n        caught = bool(str(exc))\n    assert caught, \"tests must reject each planted bug with a message\"",
+    "hint": "Equality at the boundary distinguishes < from <=."
+  },
+  {
+    "id": "e2",
+    "title": "Preserve the absent option",
+    "lang": "python",
+    "prompt": "Define choose_threshold(config, old=0.5). Absent tau returns old; present tau returns its value, including zero. Example: choose_threshold({\"tau\":0}) == 0.",
+    "starter": "def choose_threshold(config, old=0.5):\n    # TODO distinguish absence from zero\n    return config.get(\"tau\") or old",
+    "solution": "def choose_threshold(config, old=0.5):\n    return config.get(\"tau\",old)",
+    "tests": "assert choose_threshold({}) == 0.5, \"absence preserves the default\"\nassert choose_threshold({},0.7) == 0.7, \"absence preserves the supplied old value\"\nassert choose_threshold({\"tau\":0}) == 0, \"explicit zero is not absence\"\nassert choose_threshold({\"tau\":0.2}) == 0.2, \"present values are honoured\"",
+    "hint": "Use the default argument of dict.get."
+  },
+  {
+    "id": "e3",
+    "title": "Test an expected exception",
+    "lang": "python",
+    "prompt": "Implement test_bad_cost() using pytest.raises(ValueError, match=\"negative\") around cost(-1). Example: negative input must raise, not return.",
+    "starter": "import pytest\ndef cost(value):\n    if value < 0:\n        raise ValueError(\"negative cost\")\n    return value\ndef test_bad_cost():\n    # TODO require the exception\n    pass",
+    "solution": "import pytest\ndef cost(value):\n    if value < 0:\n        raise ValueError(\"negative cost\")\n    return value\ndef test_bad_cost():\n    with pytest.raises(ValueError, match=\"negative\"):\n        cost(-1)",
+    "tests": "test_bad_cost()\noriginal = cost\ncost = lambda value: value\ncaught = False\ntry:\n    test_bad_cost()\nexcept pytest.fail.Exception:\n    caught = True\nfinally:\n    cost = original\nassert caught, \"test must fail when the planted function accepts negative cost\"",
+    "hint": "The with block should contain the call that must raise."
+  },
+  {
+    "id": "e4",
+    "title": "Check categories independently",
+    "lang": "python",
+    "prompt": "Define verify_counts(rows, counts). Recompute WIN, LOSS, DRAW, UNKNOWN from derived labels and assert dictionary equality with a clear message. Example: one WIN cannot be reported as one LOSS even if totals match.",
+    "starter": "def verify_counts(rows, counts):\n    # TODO check categories, not only totals\n    assert sum(counts.values()) == len(rows), \"total must match rows\"",
+    "solution": "def verify_counts(rows, counts):\n    expected = {\"WIN\":0,\"LOSS\":0,\"DRAW\":0,\"UNKNOWN\":0}\n    for row in rows:\n        label = row.get(\"derived\")\n        if label not in (\"WIN\",\"LOSS\",\"DRAW\"):\n            label = \"UNKNOWN\"\n        expected[label] += 1\n    assert counts == expected, \"categories must match independently counted labels\"",
+    "tests": "rows = [{\"derived\":\"WIN\"},{}]\nverify_counts(rows,{\"WIN\":1,\"LOSS\":0,\"DRAW\":0,\"UNKNOWN\":1})\ncaught = False\ntry:\n    verify_counts(rows,{\"WIN\":0,\"LOSS\":1,\"DRAW\":0,\"UNKNOWN\":1})\nexcept AssertionError as exc:\n    caught = bool(str(exc))\nassert caught, \"equal totals must not hide a WIN changed into LOSS\"",
+    "hint": "Build expected counts from rows, not from counts."
+  }
+]

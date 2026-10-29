@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Look up card vectors",
+    "prompt": "Implement `lookup(table, ids)` with tensor indexing. Example: IDs `[2,0,2]` return table rows 2, 0, and 2 in that order.",
+    "starter": "import torch\n\ndef lookup(table, ids):\n    # TODO: select each requested row\n    return table\n",
+    "tests": "t=torch.tensor([[1.,0.],[0.,1.],[0.5,0.5]])\ni=torch.tensor([2,0,2])\nassert torch.equal(lookup(t,i),torch.tensor([[0.5,0.5],[1.,0.],[0.5,0.5]])), 'Preserve repeated IDs and their order'\nassert tuple(lookup(t,torch.tensor([[0,1]])).shape)==(1,2,2), 'Append embedding width to the ID shape'",
+    "hint": "Tensor indexing works like the table[ids] example.",
+    "solution": "import torch\n\ndef lookup(table, ids):\n    return table[ids]\n",
+    "id": "e1",
+    "lang": "python"
+  },
+  {
+    "title": "Compute scaled attention",
+    "prompt": "Implement `attend(query, keys, values)` with NumPy. Keys are rows, query is a vector, and values have the same row count as keys. Scale dot products by sqrt(query.size), then stable softmax, then weighted values. Example: a zero query gives the mean value.",
+    "starter": "import numpy as np\n\ndef attend(query, keys, values):\n    # TODO: scores, stable normalisation, weighted values\n    return values[0]\n",
+    "tests": "q=np.zeros(2); k=np.eye(2); v=np.array([[2.,0.],[0.,4.]])\nassert np.allclose(attend(q,k,v),[1,2]), 'Equal scores should average the values'\nq=np.array([2.,0.]); scores=k@q/np.sqrt(2); p=np.exp(scores-scores.max());p/=p.sum()\nassert np.allclose(attend(q,k,v),p@v), 'Scale by sqrt(width) before normalising'\nassert np.isfinite(attend(np.array([1e4,0]),k,v)).all(), 'Subtract maximum to avoid overflow'",
+    "hint": "Use query.size for width; the final multiplication is weights @ values.",
+    "solution": "import numpy as np\n\ndef attend(query, keys, values):\n    scores=keys@query/np.sqrt(query.size)\n    weights=np.exp(scores-scores.max())\n    weights/=weights.sum()\n    return weights@values\n",
+    "id": "e2",
+    "lang": "python"
+  },
+  {
+    "title": "Ignore padded items",
+    "prompt": "Implement `masked_weights(scores, allowed)` using PyTorch. Return a softmax with unavailable entries exactly zero. Raise ValueError if none are allowed. Example: `[0,100,0]` with `[True,False,True]` gives `[0.5,0,0.5]`.",
+    "starter": "import torch\n\ndef masked_weights(scores, allowed):\n    # TODO: validate and mask before softmax\n    return torch.softmax(scores,dim=0)\n",
+    "tests": "p=masked_weights(torch.tensor([0.,100.,0.]),torch.tensor([True,False,True]))\nassert torch.allclose(p,torch.tensor([0.5,0.,0.5])), 'Padded item must get zero weight'\ntry:\n    masked_weights(torch.zeros(2),torch.tensor([False,False]))\nexcept ValueError:\n    pass\nelse:\n    assert False, 'Reject an all-masked input instead of returning NaNs'",
+    "hint": "Check allowed.any(), then masked_fill(~allowed, -inf).",
+    "solution": "import torch\n\ndef masked_weights(scores, allowed):\n    if not allowed.any():\n        raise ValueError('At least one item must be allowed')\n    return torch.softmax(scores.masked_fill(~allowed,float('-inf')),dim=0)\n",
+    "id": "e3",
+    "lang": "python"
+  },
+  {
+    "title": "Build one encoder layer",
+    "prompt": "Implement `make_encoder()` returning an nn.TransformerEncoderLayer with width 8, two attention heads, feed-forward width 16, dropout zero, batch_first=True, in eval mode. Example input shape `(2,3,8)` must stay `(2,3,8)`.",
+    "starter": "import torch\nfrom torch import nn\n\ndef make_encoder():\n    # TODO: build the requested small encoder layer\n    return nn.Identity()\n",
+    "tests": "torch.set_num_threads(1)\ne=make_encoder()\nassert isinstance(e,nn.TransformerEncoderLayer), 'Return a transformer encoder layer'\nassert e.self_attn.num_heads==2 and e.self_attn.batch_first, 'Use two heads and batch-first inputs'\nassert e.linear1.out_features==16, 'Internal MLP width must be 16'\nassert not e.training and e.dropout.p==0, 'Disable dropout for this deterministic exercise'\nx=torch.randn(2,3,8)\nwith torch.no_grad(): y=e(x)\nassert y.shape==x.shape and torch.isfinite(y).all(), 'Encoder should preserve shape and produce finite values'",
+    "hint": "Copy the constructor pattern from section 8, then call eval().",
+    "solution": "import torch\nfrom torch import nn\n\ndef make_encoder():\n    layer=nn.TransformerEncoderLayer(d_model=8,nhead=2,dim_feedforward=16,dropout=0.0,batch_first=True)\n    layer.eval()\n    return layer\n",
+    "id": "e4",
+    "lang": "python"
+  }
+]

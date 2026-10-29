@@ -1,0 +1,53 @@
+[
+  {
+    "title": "Align paired seeds",
+    "prompt": "Write paired(base,new) returning differences in sorted seed order. Require equal identifier sets with an assertion. Example: {2:0,1:1} and {1:1,2:1} gives [0,1].",
+    "starter": "def paired(base,new):\n    # TODO: validate identifiers, then subtract\n    return []",
+    "solution": "def paired(base,new):\n    assert set(base)==set(new), 'Both arms must have identical seed IDs'\n    return [new[s]-base[s] for s in sorted(base)]",
+    "tests": "assert paired({2:0,1:1},{1:1,2:1})==[0,1], 'Match by seed, not insertion order'\nassert paired({1:1},{1:0})==[-1], 'Keep negative effects'\ntry:\n    paired({1:0},{2:1})\nexcept AssertionError:\n    pass\nelse:\n    assert False, 'Mismatched identifiers must be rejected'",
+    "hint": "Compare sets before computing differences.",
+    "id": "e1",
+    "lang": "python"
+  },
+  {
+    "title": "Exact sign-test tail",
+    "prompt": "Write sign_p(positive,negative) using the smaller sign count k, n=positive+negative, and min(1,2*sum(comb(n,i)*.5**n for i in range(k+1))). Return 1 for no non-tied pairs. Example: 4,0 gives .125.",
+    "starter": "from math import comb\ndef sign_p(positive,negative):\n    # TODO: exact two-sided symmetric tail\n    return 1",
+    "solution": "from math import comb\ndef sign_p(positive,negative):\n    n=positive+negative\n    k=min(positive,negative)\n    return min(1,2*sum(comb(n,i)*.5**n for i in range(k+1)))",
+    "tests": "assert abs(sign_p(4,0)-.125)<1e-12, 'Four same-direction pairs give two-sided p=.125'\nassert sign_p(2,2)==1 and sign_p(0,0)==1, 'Balanced or empty evidence must not imply an advantage'\nassert sign_p(0,4)==sign_p(4,0), 'Two-sided test is symmetric'",
+    "hint": "Use the binomial formula from C04.",
+    "id": "e2",
+    "lang": "python"
+  },
+  {
+    "title": "RMS standardized difference",
+    "prompt": "Write rms_d(model,human,scales) for equal-length nonempty lists with positive reference scales. Example: model=[12,8], human=[10,10], scales=[4,4] gives .5.",
+    "starter": "from math import sqrt\ndef rms_d(model,human,scales):\n    # TODO: standardize, square, average, root\n    return 0",
+    "solution": "from math import sqrt\ndef rms_d(model,human,scales):\n    ds=[(m-h)/s for m,h,s in zip(model,human,scales)]\n    return sqrt(sum(d*d for d in ds)/len(ds))",
+    "tests": "assert abs(rms_d([12,8],[10,10],[4,4])-.5)<1e-12, 'Opposite effects must not cancel'\nassert rms_d([1,2],[1,2],[1,1])==0, 'Identical means have zero difference'\nassert rms_d([12],[10],[2])==1, 'Scale by the supplied reference SD'",
+    "hint": "zip aligns corresponding features.",
+    "id": "e3",
+    "lang": "python"
+  },
+  {
+    "title": "KS distance",
+    "prompt": "Write ks(a,b) for two nonempty numeric lists. Compare ECDFs at every distinct observed value. Example: [1,2] versus [2,3] gives .5.",
+    "starter": "def ks(a,b):\n    # TODO: compare cumulative fractions\n    return 0",
+    "solution": "def ks(a,b):\n    return max(abs(sum(x<=t for x in a)/len(a)-sum(x<=t for x in b)/len(b)) for t in set(a+b))",
+    "tests": "assert ks([1,2],[2,3])==.5, 'Largest cumulative gap is .5'\nassert ks([1,1],[1,1])==0, 'Identical tied distributions have distance zero'\nassert ks([0,0],[1,1])==1, 'Disjoint ordered samples have distance one'",
+    "hint": "The CDF includes observations equal to t.",
+    "id": "e4",
+    "lang": "python"
+  },
+  {
+    "title": "Ranking AUC with ties",
+    "prompt": "Write auc(positive,negative) for nonempty score lists. Give each positive-negative pair 1 for greater, .5 for equal, else 0. Example: [.5] versus [.5] gives .5.",
+    "starter": "def auc(positive,negative):\n    # TODO: compare every pair\n    return 0",
+    "solution": "def auc(positive,negative):\n    return sum((p>n)+.5*(p==n) for p in positive for n in negative)/(len(positive)*len(negative))",
+    "tests": "assert auc([.5],[.5])==.5, 'Tied scores earn half credit'\nassert auc([.8,.5],[.5,.2])==.875, 'Count all positive-negative pairs'\nassert auc([0],[1])==0 and auc([1],[0])==1, 'Keep the positive-score orientation'",
+    "hint": "Divide by the number of pairs.",
+    "id": "e5",
+    "lang": "python"
+  }
+]
+

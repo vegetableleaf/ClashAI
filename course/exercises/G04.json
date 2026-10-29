@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Standardise one style feature",
+    "prompt": "Implement cohen_d(human,bot) using pooled sample variance (ddof=1), sign bot minus human. Require at least two values per group. Equal zero-variance constants return 0; unequal constants raise ValueError. Example [1,2,3] versus [2,3,4] gives 1.",
+    "starter": "import numpy as np\n\ndef cohen_d(human,bot):\n    # TODO: pool variances and handle zero spread explicitly\n    return 0.0\n",
+    "solution": "import numpy as np\n\ndef cohen_d(human,bot):\n    human=np.asarray(human,dtype=float);bot=np.asarray(bot,dtype=float)\n    if len(human)<2 or len(bot)<2: raise ValueError('Need two matches per group')\n    pooled=((len(human)-1)*human.var(ddof=1)+(len(bot)-1)*bot.var(ddof=1))/(len(human)+len(bot)-2)\n    delta=bot.mean()-human.mean()\n    if pooled==0:\n        if delta==0: return 0.0\n        raise ValueError('Unequal constants have undefined standardised difference')\n    return float(delta/np.sqrt(pooled))\n",
+    "tests": "assert abs(cohen_d([1,2,3],[2,3,4])-1)<1e-10, 'Bot shifted by one pooled SD should give d=1'\nassert abs(cohen_d([2,3,4],[1,2,3])+1)<1e-10, 'Swapping groups reverses the sign'\nassert cohen_d([2,2],[2,2])==0, 'Equal constants follow the explicit zero convention'\nfor h,b in [([1],[2,3]),([1,1],[2,2])]:\n    try: cohen_d(h,b)\n    except ValueError: pass\n    else: assert False, 'Reject insufficient data or unequal zero-spread groups'",
+    "hint": "Weight each sample variance by its group size minus one.",
+    "id": "e1",
+    "lang": "python"
+  },
+  {
+    "title": "Combine style deviations without cancellation",
+    "prompt": "Implement rms(effects), the square root of mean squared effects. Reject empty input. Example [0.3,-0.4] gives approximately 0.353553.",
+    "starter": "import math\n\ndef rms(effects):\n    # TODO: square, average, square root\n    return 0.0\n",
+    "tests": "assert abs(rms([0.3,-0.4])-math.sqrt(0.125))<1e-12, 'Do not cancel opposite signs'\nassert rms([-2,2])==2, 'RMS measures magnitude'\nassert rms([0,0])==0, 'Identical means have zero aggregate deviation'\ntry: rms([])\nexcept ValueError: pass\nelse: assert False, 'An empty feature set is unavailable, not a zero score'",
+    "hint": "Use sum(d*d for d in effects)/len(effects).",
+    "solution": "import math\n\ndef rms(effects):\n    if not effects: raise ValueError('Need at least one feature')\n    return math.sqrt(sum(d*d for d in effects)/len(effects))\n",
+    "id": "e2",
+    "lang": "python"
+  },
+  {
+    "title": "Compute discriminator AUC with ties",
+    "prompt": "Implement auc(human_scores,bot_scores): larger means more likely bot. Compare every bot-human pair, giving 1 for bot higher, 0.5 for equal, 0 for lower; average. Reject either empty group. Example humans [0.2,0.5], bots [0.5,0.8] gives 0.875.",
+    "starter": "def auc(human_scores,bot_scores):\n    # TODO: count pairwise ranking credit\n    return 0.5\n",
+    "tests": "assert auc([0.2,0.5],[0.5,0.8])==0.875, 'Tied pairs receive half credit'\nassert auc([1,1],[1,1])==0.5, 'All ties give chance ranking'\nassert auc([0,0],[1,1])==1, 'Perfect separation gives AUC one'\nassert auc([1,1],[0,0])==0, 'Reversed scores give AUC zero'\ntry: auc([],[1])\nexcept ValueError: pass\nelse: assert False, 'Both classes need observations'",
+    "hint": "Use nested loops and divide by the product of group sizes.",
+    "solution": "def auc(human_scores,bot_scores):\n    if not human_scores or not bot_scores: raise ValueError('Need both classes')\n    credit=0.0\n    for b in bot_scores:\n        for h in human_scores:\n            credit+=(b>h)+0.5*(b==h)\n    return credit/(len(human_scores)*len(bot_scores))\n",
+    "id": "e3",
+    "lang": "python"
+  },
+  {
+    "title": "Build a human-versus-human null",
+    "prompt": "Complete human_null(values,repeats,seed). values is a finite 2-D NumPy matrix with an even number of match rows (at least four), one column per feature. Use one default_rng. Each repeat permutes whole rows, splits into equal halves, computes supplied cohen_d per column, and returns their RMS. Return a list of repeat scores. Example repeats=3 returns three nonnegative scores; the same seed reproduces them.",
+    "starter": "import numpy as np\n\ndef cohen_d(human,bot):\n    human=np.asarray(human,dtype=float);bot=np.asarray(bot,dtype=float)\n    if len(human)<2 or len(bot)<2: raise ValueError('Need two matches per group')\n    pooled=((len(human)-1)*human.var(ddof=1)+(len(bot)-1)*bot.var(ddof=1))/(len(human)+len(bot)-2)\n    delta=bot.mean()-human.mean()\n    if pooled==0:\n        if delta==0: return 0.0\n        raise ValueError('Unequal constants have undefined standardised difference')\n    return float(delta/np.sqrt(pooled))\n\ndef human_null(values,repeats,seed):\n    # TODO: shuffle match rows together, then compare halves\n    return []\n",
+    "solution": "import numpy as np\n\ndef cohen_d(human,bot):\n    human=np.asarray(human,dtype=float);bot=np.asarray(bot,dtype=float)\n    if len(human)<2 or len(bot)<2: raise ValueError('Need two matches per group')\n    pooled=((len(human)-1)*human.var(ddof=1)+(len(bot)-1)*bot.var(ddof=1))/(len(human)+len(bot)-2)\n    delta=bot.mean()-human.mean()\n    if pooled==0:\n        if delta==0: return 0.0\n        raise ValueError('Unequal constants have undefined standardised difference')\n    return float(delta/np.sqrt(pooled))\n\ndef human_null(values,repeats,seed):\n    rng=np.random.default_rng(seed);scores=[];half=len(values)//2\n    for _ in range(repeats):\n        order=rng.permutation(len(values))\n        a=values[order[:half]];b=values[order[half:]]\n        effects=np.array([cohen_d(a[:,j],b[:,j]) for j in range(values.shape[1])])\n        scores.append(float(np.sqrt(np.mean(effects**2))))\n    return scores\n",
+    "tests": "values=np.array([[0.,1.],[1.,2.],[2.,4.],[3.,8.],[4.,16.],[5.,32.]])\ns=human_null(values,5,19)\nassert len(s)==5 and all(np.isfinite(v) and v>=0 for v in s), 'Return one finite RMS per split'\nassert s==human_null(values,5,19), 'A fixed seed must reproduce the human control'\nrng=np.random.default_rng(19);expected=[]\nfor _ in range(5):\n    idx=rng.permutation(6);a=values[idx[:3]];b=values[idx[3:]]\n    scale=np.sqrt((a.var(axis=0,ddof=1)+b.var(axis=0,ddof=1))/2)\n    d=(b.mean(axis=0)-a.mean(axis=0))/scale\n    expected.append(float(np.sqrt((d*d).mean())))\nassert np.allclose(s,expected), 'Permute whole rows and use all feature columns'\nassert human_null(values,0,19)==[], 'Zero repeats requests no scores'",
+    "hint": "Use one row-index permutation per repeat for all columns, then np.sqrt(np.mean(effects**2)).",
+    "id": "e4",
+    "lang": "python"
+  }
+]

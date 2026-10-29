@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Let autograd check F07",
+    "prompt": "Implement `slope(w_value)` using autograd for `0.5*(2*w-1)**2`. Return a Python float. Example: `slope(0)` returns `-2.0`.",
+    "starter": "import torch\n\ndef slope(w_value):\n    # TODO: make a floating tensor, build loss, and call backward\n    return 0.0\n",
+    "tests": "assert abs(slope(0)+2)<1e-6, 'Slope at zero should be -2'\nassert abs(slope(2)-6)<1e-6, 'Slope at two should be 6'\nassert isinstance(slope(1),float), 'Return a Python float using item()'",
+    "hint": "Use torch.tensor(float(w_value), requires_grad=True).",
+    "solution": "import torch\n\ndef slope(w_value):\n    w=torch.tensor(float(w_value),requires_grad=True)\n    loss=0.5*(2*w-1)**2\n    loss.backward()\n    return w.grad.item()\n",
+    "id": "e1",
+    "lang": "python"
+  },
+  {
+    "title": "Register a card classifier",
+    "prompt": "Complete `CardModel`: one registered `nn.Linear(2, 3)` named `output`, returned by forward. Example: four two-feature observations produce shape `(4, 3)`.",
+    "starter": "import torch\nfrom torch import nn\n\nclass CardModel(nn.Module):\n    def __init__(self):\n        super().__init__()\n        # TODO: register output\n    def forward(self,x):\n        # TODO: compute logits\n        return x\n",
+    "tests": "m=CardModel()\nassert tuple(m(torch.zeros(4,2)).shape)==(4,3), 'Return three logits for each observation'\nassert sum(p.numel() for p in m.parameters())==9, 'Register six weights and three biases'\nx=torch.ones(2,2)\nm(x).sum().backward()\nassert all(p.grad is not None for p in m.parameters()), 'Forward must use the registered parameters'",
+    "hint": "Assign self.output in __init__, then call it in forward.",
+    "solution": "import torch\nfrom torch import nn\n\nclass CardModel(nn.Module):\n    def __init__(self):\n        super().__init__()\n        self.output=nn.Linear(2,3)\n    def forward(self,x):\n        return self.output(x)\n",
+    "id": "e2",
+    "lang": "python"
+  },
+  {
+    "title": "Train a tiny score model",
+    "prompt": "Implement `fit_line()`: seed 7, one CPU thread, Linear(1,1), Adam at 0.05, and 180 full-batch updates on x=[-1,0,1,2], y=2*x+1. Return the model. This is a numerical teaching score, not a live win model. Example: input 1 should predict approximately 3.",
+    "starter": "import torch\nfrom torch import nn\n\ndef fit_line():\n    torch.set_num_threads(1)\n    torch.manual_seed(7)\n    model=nn.Linear(1,1)\n    # TODO: train with mean squared error and Adam\n    return model\n",
+    "tests": "m=fit_line()\nx=torch.tensor([[-1.],[0.],[1.],[2.]])\nwith torch.no_grad(): error=((m(x)-(2*x+1))**2).mean().item()\nassert error<0.005, 'After training, mean squared error on this easy line should be below 0.005'\nassert sum(p.numel() for p in m.parameters())==2, 'Keep the requested one-input linear model'",
+    "hint": "Repeat zero_grad, prediction, mean squared loss, backward, step.",
+    "solution": "import torch\nfrom torch import nn\n\ndef fit_line():\n    torch.set_num_threads(1)\n    torch.manual_seed(7)\n    model=nn.Linear(1,1)\n    x=torch.tensor([[-1.],[0.],[1.],[2.]])\n    y=2*x+1\n    opt=torch.optim.Adam(model.parameters(),lr=0.05)\n    for _ in range(180):\n        opt.zero_grad()\n        loss=((model(x)-y)**2).mean()\n        loss.backward()\n        opt.step()\n    return model\n",
+    "id": "e3",
+    "lang": "python"
+  },
+  {
+    "title": "Round-trip a teaching checkpoint",
+    "prompt": "Implement `round_trip(model)` for an nn.Linear model. Save its state dictionary in a TemporaryDirectory, hash the bytes, rebuild and restore the layer on CPU with weights_only=True. Return `(restored_model, digest)` after the temporary directory closes. Example: the digest has 64 hexadecimal characters.",
+    "starter": "import torch, tempfile, hashlib\nfrom pathlib import Path\nfrom torch import nn\n\ndef round_trip(model):\n    # TODO: save, hash, reconstruct, and load inside temporary storage\n    return nn.Linear(model.in_features,model.out_features), ''\n",
+    "tests": "import re\nm=nn.Linear(2,3)\nr,d=round_trip(m)\nassert re.fullmatch('[0-9a-f]{64}',d), 'Return the SHA-256 hex digest of the saved bytes'\nassert r is not m, 'Reconstruct a separate model'\nassert all(torch.equal(a,b) for a,b in zip(m.parameters(),r.parameters())), 'Restored parameters must match exactly'\nx=torch.tensor([[0.1,0.8]])\nassert torch.equal(m(x),r(x)), 'Restored predictions must match'",
+    "hint": "Rebuild with model.in_features and model.out_features, then call load_state_dict.",
+    "solution": "import torch, tempfile, hashlib\nfrom pathlib import Path\nfrom torch import nn\n\ndef round_trip(model):\n    with tempfile.TemporaryDirectory() as folder:\n        path=Path(folder)/'tiny.pt'\n        torch.save(model.state_dict(),path)\n        digest=hashlib.sha256(path.read_bytes()).hexdigest()\n        restored=nn.Linear(model.in_features,model.out_features)\n        restored.load_state_dict(torch.load(path,map_location='cpu',weights_only=True))\n    return restored,digest\n",
+    "id": "e4",
+    "lang": "python"
+  }
+]

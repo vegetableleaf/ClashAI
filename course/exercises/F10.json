@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Temperature softmax",
+    "prompt": "Implement `softmax_T(logits, T)` with NumPy and stable exponentiation. Reject nonpositive or nonfinite T with ValueError. Example `[0,0]` gives `[0.5,0.5]` at T=1.",
+    "starter": "import numpy as np\n\ndef softmax_T(logits,T):\n    # TODO: validate T and normalise scaled logits\n    return np.zeros(len(logits))\n",
+    "tests": "assert np.allclose(softmax_T([0,0],1),[0.5,0.5]), 'Equal logits need equal probabilities'\nassert softmax_T([2,0],0.5)[0]>softmax_T([2,0],1)[0], 'Lower T should concentrate on the larger logit'\nassert np.isfinite(softmax_T([10000,9999],1)).all(), 'Stabilise exponentials'\nfor t in [0,-1,float('inf'),float('nan')]:\n    try: softmax_T([1,0],t)\n    except ValueError: pass\n    else: assert False, 'Reject invalid temperature'",
+    "hint": "Check np.isfinite(T), divide logits by T, then subtract their maximum.",
+    "solution": "import numpy as np\n\ndef softmax_T(logits,T):\n    if not np.isfinite(T) or T<=0:\n        raise ValueError('Temperature must be positive and finite')\n    z=np.asarray(logits,dtype=float)/T\n    w=np.exp(z-z.max())\n    return w/w.sum()\n",
+    "id": "e1",
+    "lang": "python"
+  },
+  {
+    "title": "Build the legal-card mask",
+    "prompt": "Implement `legal(costs, in_hand, elixir)`, returning a NumPy boolean array. Require both hand membership and cost <= elixir. Example costs `[6,4,1]`, hand `[True,True,False]`, elixir 4 gives `[False,True,False]`.",
+    "starter": "import numpy as np\n\ndef legal(costs,in_hand,elixir):\n    # TODO: combine both conditions\n    return np.asarray(in_hand,dtype=bool)\n",
+    "tests": "assert legal([6,4,1],[True,True,False],4).tolist()==[False,True,False], 'Affordability and hand membership both matter'\nassert legal([1,2],[True,True],0).tolist()==[False,False], 'Zero elixir cannot afford positive costs'\nassert legal([3],[True],3).tolist()==[True], 'Exact cost is affordable'",
+    "hint": "Convert costs to an array and combine comparisons with &.",
+    "solution": "import numpy as np\n\ndef legal(costs,in_hand,elixir):\n    return np.asarray(in_hand,dtype=bool) & (np.asarray(costs)<=elixir)\n",
+    "id": "e2",
+    "lang": "python"
+  },
+  {
+    "title": "Mask before decoding",
+    "prompt": "Implement `card_probs(logits, allowed)` at temperature 1. Return None when no card is allowed. Otherwise return normalised probabilities with illegal entries zero. Example `[100,0,0]` and `[False,True,True]` gives `[0,0.5,0.5]`.",
+    "starter": "import numpy as np\n\ndef card_probs(logits,allowed):\n    # TODO: handle no-card case, then masked softmax\n    return None\n",
+    "tests": "assert np.allclose(card_probs([100,0,0],[False,True,True]),[0,0.5,0.5]), 'Illegal large logits must have zero influence'\nassert card_probs([1,2],[False,False]) is None, 'No legal card must be explicit'\nassert np.allclose(card_probs([1,2],[True,False]),[1,0]), 'One legal action has probability one'",
+    "hint": "Use np.where on a boolean mask before subtracting the largest allowed score.",
+    "solution": "import numpy as np\n\ndef card_probs(logits,allowed):\n    allowed=np.asarray(allowed,dtype=bool)\n    if not allowed.any(): return None\n    z=np.where(allowed,np.asarray(logits,dtype=float),-np.inf)\n    w=np.exp(z-z.max())\n    return w/w.sum()\n",
+    "id": "e3",
+    "lang": "python"
+  },
+  {
+    "title": "A reproducible sequence of choices",
+    "prompt": "Implement `draw_cards(probabilities, seed, n)` with one default_rng per call and its choice method. Return a list of n integer indices. Example probabilities `[0,1,0]` always give index 1.",
+    "starter": "import numpy as np\n\ndef draw_cards(probabilities,seed,n):\n    # TODO: create one generator and draw n cards\n    return []\n",
+    "tests": "assert draw_cards([0,1,0],5,8)==[1]*8, 'Zero-probability cards must never be selected'\na=draw_cards([0.7,0.2,0.1],21,20)\nexpected=np.random.default_rng(21).choice(3,size=20,p=[0.7,0.2,0.1]).tolist()\nassert a==expected, 'Use one seeded generator and one sequence of n draws'\nassert draw_cards([1],1,0)==[], 'Zero requested draws should return an empty list'",
+    "hint": "rng.choice(len(probabilities), size=n, p=probabilities).tolist()",
+    "solution": "import numpy as np\n\ndef draw_cards(probabilities,seed,n):\n    rng=np.random.default_rng(seed)\n    return rng.choice(len(probabilities),size=n,p=probabilities).tolist()\n",
+    "id": "e4",
+    "lang": "python"
+  }
+]

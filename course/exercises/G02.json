@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Split match records in time",
+    "prompt": "Implement chronological(rows,validation_start,test_start). Each row has numeric time. Return train (<validation_start), validation (>=validation_start and <test_start), test (>=test_start). Example times 10,20,30 with boundaries 20,30 give one per group.",
+    "starter": "def chronological(rows,validation_start,test_start):\n    # TODO: use non-overlapping half-open intervals\n    return {'train':rows,'validation':[],'test':[]}\n",
+    "tests": "rows=[{'time':10},{'time':20},{'time':29},{'time':30}]\ng=chronological(rows,20,30)\nassert g=={'train':[rows[0]],'validation':rows[1:3],'test':[rows[3]]}, 'Boundary records must appear in exactly one group'\nassert chronological([],20,30)=={'train':[],'validation':[],'test':[]}, 'Keep the same structure for empty input'",
+    "hint": "Write one list comprehension per interval.",
+    "solution": "def chronological(rows,validation_start,test_start):\n    return {'train':[r for r in rows if r['time']<validation_start],\n            'validation':[r for r in rows if validation_start<=r['time']<test_start],\n            'test':[r for r in rows if r['time']>=test_start]}\n",
+    "id": "e1",
+    "lang": "python"
+  },
+  {
+    "title": "Measure the population mix",
+    "prompt": "Implement proportions(labels), returning a dictionary of observed category frequencies. Return {} for no labels. Example ['hog','hog','bait'] gives hog=2/3 and bait=1/3.",
+    "starter": "def proportions(labels):\n    # TODO: count and divide by total observations\n    return {}\n",
+    "tests": "p=proportions(['hog','hog','bait'])\nassert abs(p.get('hog',0)-2/3)<1e-10 and abs(p.get('bait',0)-1/3)<1e-10, 'Use the full population count'\nassert proportions([])=={}, 'Empty data should not invent frequencies'\nassert proportions(['siege'])=={'siege':1}, 'One observed category has all the mass'",
+    "hint": "Counter from collections counts each category.",
+    "solution": "from collections import Counter\n\ndef proportions(labels):\n    if not labels: return {}\n    return {name:n/len(labels) for name,n in Counter(labels).items()}\n",
+    "id": "e2",
+    "lang": "python"
+  },
+  {
+    "title": "Adapt a copy, preserve the baseline",
+    "prompt": "Implement fine_tune(base,x,y,steps=40): deep-copy base, use Adam at 0.05 and cross-entropy, update the copy for steps, return it. Keep base unchanged. This toy target uses two card classes; it is not a live result. Example zero-initialised Linear(2,2) should learn labels separating the two input coordinates.",
+    "starter": "import copy\nimport torch\nfrom torch import nn\n\ndef fine_tune(base,x,y,steps=40):\n    adapted=copy.deepcopy(base)\n    # TODO: train only the copy\n    return adapted\n",
+    "tests": "torch.set_num_threads(1)\nbase=nn.Linear(2,2)\nwith torch.no_grad():\n    base.weight.zero_();base.bias.zero_()\nx=torch.tensor([[1.,0.],[2.,0.],[0.,1.],[0.,2.]])\ny=torch.tensor([0,0,1,1])\nbefore=[p.detach().clone() for p in base.parameters()]\na=fine_tune(base,x,y)\nassert a is not base, 'Return an independent model'\nassert all(torch.equal(old,p) for old,p in zip(before,base.parameters())), 'Do not alter baseline parameters'\nassert nn.functional.cross_entropy(a(x),y).item()<0.15, 'The copied model should learn the simple target labels'\nz=fine_tune(base,x,y,steps=0)\nassert all(torch.equal(p,q) for p,q in zip(base.parameters(),z.parameters())), 'Zero-step adaptation must preserve the copied values'",
+    "hint": "Create Adam from adapted.parameters(), not base.parameters().",
+    "solution": "import copy\nimport torch\nfrom torch import nn\n\ndef fine_tune(base,x,y,steps=40):\n    adapted=copy.deepcopy(base)\n    adapted.train()\n    opt=torch.optim.Adam(adapted.parameters(),lr=0.05)\n    for _ in range(steps):\n        opt.zero_grad()\n        loss=nn.functional.cross_entropy(adapted(x),y)\n        loss.backward()\n        opt.step()\n    return adapted\n",
+    "id": "e3",
+    "lang": "python"
+  },
+  {
+    "title": "Keep a forgetting guardrail",
+    "prompt": "Implement acceptable(before,after,tolerance): dictionaries contain source and target losses. Return True only if target loss strictly decreases and source loss rises by no more than tolerance. Example before={source:1,target:2}, after={source:1.05,target:1.5}, tolerance=0.1 passes.",
+    "starter": "def acceptable(before,after,tolerance):\n    # TODO: require both target improvement and source protection\n    return True\n",
+    "tests": "b={'source':1.,'target':2.}\nassert acceptable(b,{'source':1.05,'target':1.5},0.1), 'A bounded source regression with target gain should pass'\nassert not acceptable(b,{'source':1.3,'target':1.5},0.1), 'Do not hide excessive forgetting'\nassert not acceptable(b,{'source':0.9,'target':2.},0.1), 'Target loss must strictly improve'\nassert acceptable(b,{'source':0.9,'target':1.8},0), 'Improving both populations should pass'",
+    "hint": "Use and to combine the two declared conditions.",
+    "solution": "def acceptable(before,after,tolerance):\n    return after['target']<before['target'] and after['source']-before['source']<=tolerance\n",
+    "id": "e4",
+    "lang": "python"
+  }
+]

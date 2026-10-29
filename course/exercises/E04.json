@@ -1,0 +1,52 @@
+[
+  {
+    "id": "e1",
+    "title": "Translate a signature",
+    "lang": "python",
+    "prompt": "Implement remaining(hp, damage), clamped at zero. Example: remaining(20, 30) is 0.",
+    "starter": "def remaining(hp, damage):\n    # TODO: translate the return expression\n    return hp",
+    "tests": "assert remaining(100,30)==70, '100 HP minus 30 damage should be 70'\nassert remaining(20,30)==0, 'HP must not go below zero'",
+    "hint": "Use max.",
+    "solution": "def remaining(hp, damage):\n    return max(0, hp-damage)"
+  },
+  {
+    "id": "e2",
+    "title": "Scale a coordinate",
+    "lang": "python",
+    "prompt": "Return a tuple (x*k, y*k). Example: scaled(2,3,18) returns (36,54).",
+    "starter": "def scaled(x,y,k):\n    # TODO: model Vec2::new\n    return (x,y)",
+    "tests": "assert scaled(2,3,18)==(36,54), 'Scale both coordinates'\nassert scaled(0,-1,1000)==(0,-1000), 'Respect the supplied unit factor'",
+    "hint": "Return two multiplied values.",
+    "solution": "def scaled(x,y,k):\n    return (x*k,y*k)"
+  },
+  {
+    "id": "e3",
+    "title": "Preserve a snapshot",
+    "lang": "python",
+    "prompt": "Given {'units': [{'hp': number}, ...]}, return an independent copy with damage removed from the first unit, clamped at zero. Example: 100 HP and 30 damage gives 70 without changing the input.",
+    "starter": "def branch_hit(state, damage):\n    # TODO: copy outer and inner records\n    return state",
+    "tests": "s={'units':[{'hp':100},{'hp':50}]}\nb=branch_hit(s,30)\nassert b['units'][0]['hp']==70, 'Branch should receive damage'\nassert s['units'][0]['hp']==100, 'Original state must stay unchanged'\nb['units'][1]['hp']=0\nassert s['units'][1]['hp']==50, 'Other nested units must also be independent'\nassert branch_hit({'units':[]},4)=={'units':[]}, 'Empty state should remain valid'",
+    "hint": "Copy each unit dictionary.",
+    "solution": "def branch_hit(state, damage):\n    branch = {'units':[u.copy() for u in state['units']]}\n    if branch['units']:\n        branch['units'][0]['hp'] = max(0, branch['units'][0]['hp']-damage)\n    return branch"
+  },
+  {
+    "id": "e4",
+    "title": "Sequential reductions",
+    "lang": "python",
+    "prompt": "Apply an integer keep-percent twice, rounding down after each stage. Example: reduced(133,40) is 21.",
+    "starter": "def reduced(damage, keep_percent):\n    # TODO: perform two stages\n    return damage",
+    "tests": "assert reduced(133,40)==21, '133 should reduce to 53 then 21'\nassert reduced(147,40)==23, '147 should reduce to 58 then 23'\nassert reduced(3,60)==0, 'Round at each stage: 3 to 1 to 0'\nassert reduced(10,100)==10, 'Keeping 100 percent preserves damage'",
+    "hint": "Do not combine the two percentages before rounding.",
+    "solution": "def reduced(damage, keep_percent):\n    first = damage * keep_percent // 100\n    return first * keep_percent // 100"
+  },
+  {
+    "id": "e5",
+    "title": "Read a Rust helper",
+    "lang": "python",
+    "prompt": "Read the real Rust test as text. Set signature to the stripped line starting fn n(. Example: it contains -> Vec2. Do not compile the file.",
+    "starter": "from pathlib import Path\npath=Path('scratchpad/gauntlet/L74/parity/diag_night/r7c/fork/buff_pulse_reduction.rs')\n# TODO: read and locate the signature\nsource=''\nsignature=''",
+    "tests": "assert source==path.read_text(encoding='utf-8'), 'Read the actual test source'\nexpected=next(line.strip() for line in source.splitlines() if line.strip().startswith('fn n('))\nassert signature==expected, 'Extract the actual coordinate helper signature'",
+    "hint": "Use startswith on stripped lines.",
+    "solution": "from pathlib import Path\npath=Path('scratchpad/gauntlet/L74/parity/diag_night/r7c/fork/buff_pulse_reduction.rs')\nsource=path.read_text(encoding='utf-8')\nsignature=next(line.strip() for line in source.splitlines() if line.strip().startswith('fn n('))"
+  }
+]

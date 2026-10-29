@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Select a beginning",
+    "lang": "bash",
+    "prompt": "Produce three lines `observe`, `decide`, `tap` with printf, then pipe them to head to display only the first two. Example first output line: `observe`.",
+    "starter": "# TODO: write the requested read-only Bash command(s).\nprintf 'unfinished\\n'\n",
+    "expect": "\\Aobserve\\ndecide\\n?\\Z",
+    "hint": "Put head -n 2 after the pipe.",
+    "solution": "printf 'observe\\ndecide\\ntap\\n' | head -n 2",
+    "id": "e1"
+  },
+  {
+    "title": "Filter supervisor events",
+    "lang": "bash",
+    "prompt": "Use the supplied practice log. Print only the lines containing literal `[sup]`. Example matching line: `[sup] start`.",
+    "starter": "# TODO: add a pipe and a literal-text filter.\nprintf '[sup] start\\n[bot] observe\\n[sup] exit\\n'",
+    "expect": "\\A\\[sup\\] start\\n\\[sup\\] exit\\n?\\Z",
+    "hint": "Use -F so square brackets are literal.",
+    "solution": "printf '[sup] start\\n[bot] observe\\n[sup] exit\\n' | grep -F '[sup]'",
+    "id": "e2"
+  },
+  {
+    "title": "Count selected events",
+    "lang": "bash",
+    "prompt": "Use the same three-line practice log, filter `[sup]`, then count the selected lines. Example output: `2`. This counts events, not games.",
+    "starter": "# TODO: write the requested read-only Bash command(s).\nprintf 'unfinished\\n'\n",
+    "expect": "\\A\\s*2\\s*\\Z",
+    "hint": "Build the pipeline left to right.",
+    "solution": "printf '[sup] start\\n[bot] observe\\n[sup] exit\\n' | grep -F '[sup]' | wc -l",
+    "id": "e3"
+  },
+  {
+    "title": "Read the real supervisor record",
+    "lang": "bash",
+    "prompt": "Read the actual `scratchpad/gauntlet/L70/live/supervisor.log`, select literal `[sup]` lines, and show the first one. Example shape: `[sup] start ...`. Do not print a fabricated line.",
+    "starter": "# TODO: write the requested read-only Bash command(s).\nprintf 'unfinished\\n'\n",
+    "expect": "\\A\\[sup\\] [^\\n]+\\n?\\Z",
+    "hint": "grep can accept a file path after the pattern.",
+    "solution": "grep -F '[sup]' scratchpad/gauntlet/L70/live/supervisor.log | head -n 1",
+    "id": "e4"
+  }
+]

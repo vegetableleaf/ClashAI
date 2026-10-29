@@ -1,0 +1,53 @@
+[
+  {
+    "title": "Convert ticks to seconds",
+    "prompt": "Write seconds(ticks,rate=20). Example: 60 ticks gives 3.0 seconds.",
+    "starter": "def seconds(ticks,rate=20):\n    # TODO: convert units\n    return 0",
+    "solution": "def seconds(ticks,rate=20):\n    return ticks/rate",
+    "tests": "assert seconds(60)==3, '60 ticks at 20 Hz is 3 seconds'\nassert seconds(10,10)==1, 'Use the supplied rate'\nassert seconds(0)==0, 'Tick zero is time zero'",
+    "hint": "Divide by ticks per second.",
+    "id": "e1",
+    "lang": "python"
+  },
+  {
+    "title": "Regenerate with a cap",
+    "prompt": "Write regen(elixir,dt,multiplier=1), using dt*multiplier/2.8 and cap 10. Example: regen(5,2.8,2)=7.",
+    "starter": "def regen(elixir,dt,multiplier=1):\n    # TODO: preserve fractions and cap\n    return elixir",
+    "solution": "def regen(elixir,dt,multiplier=1):\n    return min(10.0,elixir+dt*multiplier/2.8)",
+    "tests": "assert abs(regen(5,2.8,2)-7)<1e-12, 'Double phase regenerates twice as much'\nassert regen(9,2.8,3)==10, 'Elixir cannot exceed ten'\nassert abs(regen(0,.05)-.05/2.8)<1e-12, 'Keep fractional tick gains'",
+    "hint": "Apply the multiplier to gain, not current elixir.",
+    "id": "e2",
+    "lang": "python"
+  },
+  {
+    "title": "Phase boundaries",
+    "prompt": "Implement toy_phase(seconds): 1 below 120, 2 below 180, else 3. Example: exactly 120 returns 2.",
+    "starter": "def toy_phase(seconds):\n    # TODO: ordered boundary checks\n    return 1",
+    "solution": "def toy_phase(seconds):\n    if seconds<120: return 1\n    if seconds<180: return 2\n    return 3",
+    "tests": "assert [toy_phase(t) for t in [0,119.99,120,179.99,180]]==[1,1,2,2,3], 'Apply the declared toy boundaries exactly'",
+    "hint": "Use < rather than <=.",
+    "id": "e3",
+    "lang": "python"
+  },
+  {
+    "title": "Move forward on the board",
+    "prompt": "Write forward(y,speed,dt), decreasing y and clamping at 0. Example: forward(20,2,.5)=19.",
+    "starter": "def forward(y,speed,dt):\n    # TODO: subtract distance\n    return y",
+    "solution": "def forward(y,speed,dt):\n    return max(0,y-speed*dt)",
+    "tests": "assert forward(20,2,.5)==19, 'Forward decreases y'\nassert forward(.2,2,1)==0, 'Clamp at the toy destination'\nassert forward(20,2,0)==20, 'Zero time means zero movement'",
+    "hint": "Distance is speed times elapsed time.",
+    "id": "e4",
+    "lang": "python"
+  },
+  {
+    "title": "Check hand and affordability",
+    "prompt": "Write legal(card,hand,elixir,costs), True only if card is in hand, has a supplied cost, and is affordable. Example: an affordable X-Bow outside hand is False.",
+    "starter": "def legal(card,hand,elixir,costs):\n    # TODO: combine legality conditions\n    return True",
+    "solution": "def legal(card,hand,elixir,costs):\n    return card in hand and card in costs and costs[card]<=elixir",
+    "tests": "c={'X-Bow':6,'Skeletons':1}\nassert legal('X-Bow',['X-Bow'],6,c), 'Exact affordability is legal'\nassert not legal('X-Bow',['Skeletons'],10,c), 'A card outside hand is illegal'\nassert not legal('X-Bow',['X-Bow'],5,c), 'Insufficient elixir is illegal'\nassert not legal('unknown',['unknown'],10,c), 'Unknown cost must not be guessed'",
+    "hint": "Use short-circuit and before dictionary indexing.",
+    "id": "e5",
+    "lang": "python"
+  }
+]
+

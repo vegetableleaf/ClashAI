@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Independent branches",
+    "lang": "python",
+    "prompt": "Implement `forks(root,n)` using copy.deepcopy. Example: changing branch zero's nested unit must leave root and branch one unchanged.",
+    "starter": "import copy\n\ndef forks(root,n):\n    # TODO: duplicate all nested state independently\n    return [root]*n",
+    "tests": "root={'units':[{'hp':100}],'elixir':9}\nbs=forks(root,2)\nbs[0]['units'][0]['hp']=0\nassert root['units'][0]['hp']==100, 'Fork mutation must not affect root'\nassert bs[1]['units'][0]['hp']==100, 'Forks must not share nested unit state'\nassert forks(root,0)==[], 'Zero requested forks gives an empty list'",
+    "hint": "Deep-copy separately for every branch.",
+    "solution": "import copy\n\ndef forks(root,n):\n    return [copy.deepcopy(root) for _ in range(n)]",
+    "id": "e1"
+  },
+  {
+    "title": "Paired differences",
+    "lang": "python",
+    "prompt": "Implement `paired_delta(actual,alternative)` as mean(alternative-actual). Reject empty or unequal lists. Example: [.2,.8],[.1,.7] gives -.1.",
+    "starter": "def paired_delta(actual,alternative):\n    # TODO: validate pairing, then subtract in the right direction\n    return 0.0",
+    "tests": "assert abs(paired_delta([.2,.8],[.1,.7])+.1)<1e-9, 'Use alternative minus actual'\nfor a,b in (([],[]),([1],[1,2])):\n    try:\n        paired_delta(a,b)\n    except ValueError:\n        pass\n    else:\n        assert False, 'Invalid pairing must not silently truncate'",
+    "hint": "Check lengths before zip.",
+    "solution": "def paired_delta(actual,alternative):\n    if not actual or len(actual)!=len(alternative):\n        raise ValueError('Need nonempty paired returns')\n    return sum(b-a for a,b in zip(actual,alternative))/len(actual)",
+    "id": "e2"
+  },
+  {
+    "title": "Candidate advantages",
+    "lang": "python",
+    "prompt": "Implement `candidate_advantages(q)` for a nonempty rectangular list: outer rows are candidates, inner values are continuations. Average each candidate, then subtract the candidate mean. Example: [[1,1],[-1,-1]] gives [1,-1].",
+    "starter": "def candidate_advantages(q):\n    # TODO: average continuations before centering candidates\n    return [0.0]*len(q)",
+    "tests": "assert candidate_advantages([[1,1],[-1,-1]])==[1,-1], 'Center candidate means'\na=candidate_advantages([[.2,.8],[.1,.7],[0,.6]])\nassert abs(sum(a))<1e-9 and abs(a[0]-.1)<1e-9, 'Advantages should sum to zero across candidates'\nassert candidate_advantages([[1,0]])==[0], 'One candidate has no contrast'",
+    "hint": "Compute a list of row means and its mean.",
+    "solution": "def candidate_advantages(q):\n    means=[sum(row)/len(row) for row in q]\n    baseline=sum(means)/len(means)\n    return [m-baseline for m in means]",
+    "id": "e3"
+  },
+  {
+    "title": "Audit sign agreement",
+    "lang": "python",
+    "prompt": "Implement `audit(horizon,terminal)` returning a dictionary with `same_sign` and `terminal_pp`. Zero has its own sign; terminal_pp = terminal/2*100 for the stated no-draw return convention. Example: -.24,-.22 gives True and -11.",
+    "starter": "def audit(horizon,terminal):\n    # TODO: retain units and distinguish zero\n    return {}",
+    "tests": "a=audit(-.24,-.22)\nassert a['same_sign'] and abs(a['terminal_pp']+11)<1e-9, 'Return difference converts to half as many probability points'\nassert not audit(-.1,.1)['same_sign'], 'Opposite signs disagree'\nassert not audit(0,.1)['same_sign'], 'Zero is not a positive sign'",
+    "hint": "Define sign using comparisons with zero.",
+    "solution": "def audit(horizon,terminal):\n    def sign(x):\n        return (x>0)-(x<0)\n    return {'same_sign':sign(horizon)==sign(terminal),'terminal_pp':terminal*50}",
+    "id": "e4"
+  }
+]

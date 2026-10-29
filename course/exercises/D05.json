@@ -1,0 +1,53 @@
+[
+  {
+    "title": "Measure observation age",
+    "prompt": "Write ages(capture,read_done,decide_done,tap_done), returning (model_ms,total_ms). Require nondecreasing times with an assertion. Example: 1000,1040,1060,1090 gives (20,90).",
+    "starter": "def ages(capture,read_done,decide_done,tap_done):\n    # TODO: validate ordering and subtract\n    return (0,0)",
+    "solution": "def ages(capture,read_done,decide_done,tap_done):\n    assert capture<=read_done<=decide_done<=tap_done, 'Event times must be ordered on one clock'\n    return decide_done-read_done,tap_done-capture",
+    "tests": "assert ages(1000,1040,1060,1090)==(20,90), 'Separate model latency from observation age'\nassert ages(0,0,0,0)==(0,0), 'Equal event times are allowed'\ntry:\n    ages(10,9,11,12)\nexcept AssertionError:\n    pass\nelse:\n    assert False, 'Reject inconsistent event order'",
+    "hint": "Subtract read_done for model time and capture for total time.",
+    "id": "e1",
+    "lang": "python"
+  },
+  {
+    "title": "Count confirmed requests",
+    "prompt": "Write confirmation(events) returning (requested,confirmed) for event strings 'tap_requested' and 'play_confirmed'; ignore other events. Example: two requests and one confirmation gives (2,1).",
+    "starter": "def confirmation(events):\n    # TODO: count distinct event types\n    return (0,0)",
+    "solution": "def confirmation(events):\n    return events.count('tap_requested'),events.count('play_confirmed')",
+    "tests": "assert confirmation(['tap_requested','tap_requested','play_confirmed','heartbeat'])==(2,1), 'Do not treat every request as confirmed'\nassert confirmation(['heartbeat'])==(0,0), 'A heartbeat is not a play'\nassert confirmation([])==(0,0), 'Handle no events'",
+    "hint": "Count each named event separately.",
+    "id": "e2",
+    "lang": "python"
+  },
+  {
+    "title": "Classify synthetic log lines",
+    "prompt": "Write classify(line): starts '[live] stop file' -> intentional_stop; contains 'NOT restarting' -> gave_up; starts '[nav] run stopped' -> incident; else ordinary. Example: 'unknown: wait' is ordinary.",
+    "starter": "def classify(line):\n    # TODO: apply ordered rules\n    return 'ordinary'",
+    "solution": "def classify(line):\n    if line.startswith('[live] stop file'): return 'intentional_stop'\n    if 'NOT restarting' in line: return 'gave_up'\n    if line.startswith('[nav] run stopped'): return 'incident'\n    return 'ordinary'",
+    "tests": "assert classify('[live] stop file requested')=='intentional_stop', 'Owner stop must not become a crash alert'\nassert classify('supervisor NOT restarting')=='gave_up', 'Detect exhausted restart policy'\nassert classify('[nav] run stopped before match 3: reason')=='incident', 'Recognize a stop event'\nassert classify('unknown: wait')=='ordinary' and classify('tap_through: menu')=='ordinary', 'Normal transitions are not enough for an incident'",
+    "hint": "Use startswith for the event prefixes.",
+    "id": "e3",
+    "lang": "python"
+  },
+  {
+    "title": "No-progress decision",
+    "prompt": "Write stalled(now,last_progress,running,stop_requested), True only if running, not intentionally stopped, and elapsed >=720 seconds. Example: now=850,last=100,running=True,stop=False gives True.",
+    "starter": "def stalled(now,last_progress,running,stop_requested):\n    # TODO: combine elapsed time and lifecycle state\n    return False",
+    "solution": "def stalled(now,last_progress,running,stop_requested):\n    return running and not stop_requested and now-last_progress>=720",
+    "tests": "assert stalled(850,100,True,False), 'A running loop with 750 seconds of no progress triggers the toy rule'\nassert not stalled(819,100,True,False), '719 seconds has not reached the threshold'\nassert not stalled(850,100,True,True), 'Honor intentional stopping'\nassert not stalled(850,100,False,False), 'No-progress rule requires an active process'",
+    "hint": "Time alone is insufficient.",
+    "id": "e4",
+    "lang": "python"
+  },
+  {
+    "title": "Choose a read-only lifecycle status",
+    "prompt": "Write status(stop_requested,running), returning 'remain stopped', 'observe existing process', or 'needs operator review' in the order taught. Example: stop=True wins even if running=True.",
+    "starter": "def status(stop_requested,running):\n    # TODO: prioritize intentional stop\n    return 'needs operator review'",
+    "solution": "def status(stop_requested,running):\n    if stop_requested: return 'remain stopped'\n    if running: return 'observe existing process'\n    return 'needs operator review'",
+    "tests": "assert status(True,True)=='remain stopped', 'A stop request takes priority'\nassert status(False,True)=='observe existing process', 'Do not recommend duplicate startup'\nassert status(False,False)=='needs operator review', 'Missing process does not imply automatic restart authorization'",
+    "hint": "Return strings only; no process commands.",
+    "id": "e5",
+    "lang": "python"
+  }
+]
+

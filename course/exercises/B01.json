@@ -1,0 +1,46 @@
+[
+  {
+    "title": "Print the deck name",
+    "lang": "python",
+    "prompt": "Write a print call displaying exactly `Icebow` on one line. Example output: `Icebow`.",
+    "starter": "# TODO: print the requested label.\nprint(\"unfinished\")",
+    "solution": "print(\"Icebow\")",
+    "tests": "",
+    "hint": "Quotes surround text, parentheses surround the print argument.",
+    "expect": "\\AIcebow\\n\\Z",
+    "id": "e1"
+  },
+  {
+    "title": "Print stages in order",
+    "lang": "python",
+    "prompt": "Print `observe` and then `decide` on separate lines. Example first line: `observe`.",
+    "starter": "# TODO: repair the order.\nprint(\"decide\")\nprint(\"observe\")",
+    "solution": "print(\"observe\")\nprint(\"decide\")",
+    "tests": "",
+    "hint": "Statements run top to bottom.",
+    "expect": "\\Aobserve\\ndecide\\n\\Z",
+    "id": "e2"
+  },
+  {
+    "title": "Calculate rather than quote",
+    "lang": "python",
+    "prompt": "Fix the code so it calculates ten elixir minus six, rather than printing the expression. Example output: `4`.",
+    "starter": "# TODO: turn the string into arithmetic.\nprint(\"10 - 6\")",
+    "solution": "print(10 - 6)",
+    "tests": "",
+    "hint": "Numeric arithmetic belongs outside quotation marks.",
+    "expect": "\\A4\\n\\Z",
+    "id": "e3"
+  },
+  {
+    "title": "Build a tiny practice report",
+    "lang": "python",
+    "prompt": "Print `X-Bow remaining`, then the result of ten minus six, then a blank line, then `practice only`. Example first line: `X-Bow remaining`. Use print calls, not an emulator command.",
+    "starter": "# TODO: print the four requested output lines.\nprint(\"unfinished\")",
+    "solution": "print(\"X-Bow remaining\")\nprint(10 - 6)\nprint()\nprint(\"practice only\")",
+    "tests": "",
+    "hint": "print() with no argument produces the blank line.",
+    "expect": "\\AX-Bow remaining\\n4\\n\\npractice only\\n\\Z",
+    "id": "e4"
+  }
+]

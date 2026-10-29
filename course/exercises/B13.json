@@ -1,0 +1,42 @@
+[
+  {
+    "id": "e1",
+    "title": "Trace a classifier",
+    "lang": "python",
+    "prompt": "Implement classify(reason, rules). Rules are (substring, label) pairs. Return the first matching label, else \"other\". Example: \"loading screen for 400 s\" matches \"loading screen\".",
+    "starter": "def classify(reason, rules):\n    # TODO follow the ordered rules\n    return \"other\"",
+    "solution": "def classify(reason, rules):\n    for substring,label in rules:\n        if substring in reason:\n            return label\n    return \"other\"",
+    "tests": "rules = [(\"loading screen\",\"loading_stuck\"),(\"loading\",\"generic\")]\nassert classify(\"loading screen for 400 s\",rules) == \"loading_stuck\", \"first matching rule wins\"\nassert classify(\"ready\",rules) == \"other\", \"unmatched input returns other\"",
+    "hint": "A return ends the function, including its loop."
+  },
+  {
+    "id": "e2",
+    "title": "Trace progress state",
+    "lang": "python",
+    "prompt": "Define progress_times(lines, start). Each item is (text, timestamp). Update last only when text starts with \"[ladder] result: \". Return last. Example: unrelated text at 99 must not overwrite a result at 20.",
+    "starter": "def progress_times(lines, start):\n    # TODO update only for results\n    return start",
+    "solution": "def progress_times(lines, start):\n    last = start\n    for text,timestamp in lines:\n        if text.startswith(\"[ladder] result: \"):\n            last = timestamp\n    return last",
+    "tests": "assert progress_times([(\"[ladder] result: WIN\",20),(\"loading\",99)],0) == 20, \"only result lines update progress\"\nassert progress_times([],7) == 7, \"no lines preserve the initial value\"",
+    "hint": "Track last on paper after each iteration."
+  },
+  {
+    "id": "e3",
+    "title": "Separate selection from saving",
+    "lang": "python",
+    "prompt": "Define unseen(rows, seen), returning rows whose file value is not in seen. Preserve order and do not mutate inputs. Each row has file. Example: seen={\"a\"} excludes {\"file\":\"a\"}.",
+    "starter": "def unseen(rows, seen):\n    # TODO return a new filtered list\n    return rows",
+    "solution": "def unseen(rows, seen):\n    return [row for row in rows if row[\"file\"] not in seen]",
+    "tests": "rows = [{\"file\":\"a\"},{\"file\":\"b\"}]\nseen = {\"a\"}\nassert unseen(rows,seen) == [{\"file\":\"b\"}], \"exclude already seen records\"\nassert rows == [{\"file\":\"a\"},{\"file\":\"b\"}] and seen == {\"a\"}, \"do not mutate either input\"\nassert unseen([],seen) == [], \"empty input stays empty\"",
+    "hint": "Selection can return data without performing the later save operation."
+  },
+  {
+    "id": "e4",
+    "title": "Inspect source without launching it",
+    "lang": "python",
+    "prompt": "Define source_facts(path) returning entry_guard (whether text contains if __name__ == \"__main__\":) and definitions (count of lines beginning exactly \"def \"). Example: indented methods are not top-level definitions. Read the watcher as text only.",
+    "starter": "def source_facts(path):\n    # TODO read and inspect the text\n    return {}",
+    "solution": "def source_facts(path):\n    with open(path,encoding=\"utf-8\") as source:\n        text = source.read()\n    return {\"entry_guard\": 'if __name__ == \"__main__\":' in text, \"definitions\": sum(line.startswith(\"def \") for line in text.splitlines())}",
+    "tests": "path = \"scratchpad/gauntlet/L74/liveops/stuck_watch2.py\"\nwith open(path,encoding=\"utf-8\") as source:\n    text = source.read()\nexpected_count = 0\nfor line in text.splitlines():\n    if line.startswith(\"def \"):\n        expected_count += 1\nassert source_facts(path) == {\"entry_guard\": 'if __name__ == \"__main__\":' in text,\"definitions\":expected_count}, \"inspect current source without executing it\"",
+    "hint": "Use open rather than import for source inspection."
+  }
+]
