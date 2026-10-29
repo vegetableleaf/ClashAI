@@ -31,8 +31,8 @@ def ok(t, oo=None, f=None):
 
 H = sorted(t for t in frames if frames[t].get('H') and t in by)
 an = sme_live.analyse(o, frames, me)
-check(H and all(an['cls'][t] == 'exact' for t in H), 'every hidden frame of 210016 scores exact under the assignment')
-check(not any(c in ('torn_hidden',) for c in an['cls'].values()), 'no torn_hidden class with the flag')
+check(H and all(an['cls'][t] == 'torn_hidden' for t in H), 'every hidden frame of 210016 is torn_hidden (never exact)')
+check(all(c == 'exact' for t, c in an['cls'].items() if t not in H), 'the other frames stay exact')
 
 
 def moved(t, pick, dx):

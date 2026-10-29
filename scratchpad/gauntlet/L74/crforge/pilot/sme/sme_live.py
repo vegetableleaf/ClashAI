@@ -823,7 +823,8 @@ def hidden_ok(f, o, me):
 
 
 # ENG-FIX2 (SME_HIDDEN_ASSIGN=1, off by default; lead 10-29, instead of the probe-only SME_HIDDEN_UNIQ): a frame with
-# reader-hidden bodies is scored exact or div, never torn_hidden. Per (side, crforge name) the k hidden bodies (k <= 3)
+# reader-hidden bodies is torn_hidden when the assignment below holds, else div (lead 10-29 rev: never exact, since the
+# hidden body's hp, and without a target point its position, is unread). Per (side, crforge name) the k hidden bodies (k <= 3)
 # are assigned one-to-one to k of the sim's rows of that name by minimum total distance to each body's reference point (the
 # frame's projectile target point, else the latest earlier one; a tie or no reference with a choice -> div); an assigned
 # row must sit exactly on the frame's target point when the frame has one; the assigned rows are taken out and the rest of
@@ -885,7 +886,10 @@ def analyse(obs, frames, me, lo=0, hi=10 ** 9):
         elif TORN_STEP and t + 1 in by and (p := step_read(frames[t], by[t], by[t + 1], me)):
             cls[t], prov[t] = 'torn_step', p
         elif HIDDEN_ASSIGN and frames[t].get('H'):
-            cls[t] = 'exact' if hidden_assign(frames[t], by[t], me) else 'div'
+            cls[t] = 'torn_hidden' if hidden_assign(frames[t], by[t], me) else 'div'
+            if cls[t] == 'torn_hidden':
+                prov[t] = {'rule': 'hidden_assign', 'bodies': len(frames[t]['H']),
+                           'point_checked': sum(1 for h in frames[t]['H'] if h[2] is not None)}
         elif frames[t].get('H') and hidden_ok(frames[t], by[t], me):
             cls[t] = 'torn_hidden'
             prov[t] = {'rule': 'hidden', 'bodies': len(frames[t]['H']),

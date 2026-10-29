@@ -2566,7 +2566,15 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
     `.foreman/scratch/a2/codex/out/ENG-FIX2_1.jsonl`. HIDDEN_ASSIGN is a comparator flag: its batch was run separately
     (`engfix/hassign_nr.txt`) and it is NOT for fresh_prep.sh (extractor flags only); it goes into runH.sh only if the
     lead accepts it.
-  - **Lead 10-29: SME_HIDDEN_UNIQ rejected (it turned ambiguous frames into torn_hidden). Built instead: SME_HIDDEN_ASSIGN
+  - **SME_HIDDEN_ASSIGN REVISED (lead 10-29 rev, supersedes the exact-labelling version described in the next bullet;
+    that version stays out of every gate number):** the same one-to-one assignment and checks. A frame whose hidden
+    bodies assign cleanly is now labelled **torn_hidden**, the same as one hidden body today. A failed assignment, a tie
+    or a missing body is div. It never upgrades a frame to exact. `engfix/hassign_test.py` ok 10: every plant still
+    fails as div. **210016 (HIDDEN_CHILD + ASSIGN, pod run EF2_p210b): 1953 exact + 44 torn_hidden, 0 div, plants 0
+    missed. It passes "exact apart from torn" and fails strict** (44 torn frames). 6-record no-regression
+    (`engfix/hassign_nr.txt`): ASSIGN 0 and 1 give identical counts on all 6, so all 222 torn_hidden frames stay
+    torn_hidden and nothing new goes div. 210016 stays at 44 div there because those inputs lack HIDDEN_CHILD.
+  - (superseded) **Lead 10-29: SME_HIDDEN_UNIQ rejected (it turned ambiguous frames into torn_hidden). Built instead: SME_HIDDEN_ASSIGN
     (sme_live.hidden_assign, off by default):** a frame with reader-hidden bodies scores exact or div, never torn. Per
     (side, name), the k hidden bodies (k <= 3) are assigned one-to-one to sim rows of that name by minimum total distance
     to a reference point: the frame's projectile target point, else the latest earlier one. A tie, or no reference
