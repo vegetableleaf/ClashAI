@@ -2500,6 +2500,14 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
   reader-only rows), 210016@2068 (a Golemite the SIM makes), 220244@3374 and 222707@1653 (our Knight 1,053 / 2,210 units off:
   own point; SME_OWN_SPAWN did not fire, untraced), 230352@914 (Golden Knight 118 / 124 off), 235834@4612 (a princess
   tower at 19 hp in the SIM only), 001856@3159 (opponent elixir 2.0 off). FRESH4 is dev data from here.
+- **FRESH4 Knight placements fixed: SME_OWN_BODYPT (fights.deployments, off by default) (a).** 220244@3374 / 222707@1653:
+  the game placed our evo Knight 1 / 2 tiles off the tap and the bot's confirmation saw NO body (spawn [], latency 42 /
+  46 ticks), so SME_OWN_SPAWN could not fire. Rule: a one-body own play (Knight / X-Bow / Tesla / IceWizard) whose body the
+  reader first saw >= 750 units from the tap keeps the body's point. Census (`engfix/bodypt_census.txt`, dev + FRESH1-4,
+  7,170 one-body own plays): 8 fire, all whole-tile offsets (1000-2001; 142926 7.6 tiles); the back-row clamp (500) never.
+  Probes on 5e8089a4 (`results/live/engfix/EF_t5_{a,d}_results.jsonl`): 220244 3025/3025 and 222707 1766/1766 exact;
+  dev 235355 (fires: Tesla 1 tile) stays exact (3031 + 1 torn_snap = baseline). Planted `engfix/bodypt_test.py` ok 4.
+  Owed: the dev / FRESH1-4 no-regression batch (Codex) before fresh_prep.sh takes the flag.
 - **FRESH4 (list frozen + committed before any run):** `fresh/FRESH4.tsv`, 138 Ranked battles (logs from 2026-10-28
   15:00 EDT; battle log to 2026-10-29T04:46:56Z), build 160635001; prep running (`engfix/fresh4/`), then freeze file +
   F4_fe run on fe364ceb, no fixes.

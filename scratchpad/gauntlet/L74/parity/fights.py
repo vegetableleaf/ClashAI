@@ -93,6 +93,8 @@ FORM_SYM_FROM = os.environ.get('PARITY_FORM_SYM_FROM', '20261019_0600')         
 # are left alone. ponytail: the icebow deck's one-body cards by name; another own deck adds its cards.
 OWN_SPAWN = os.environ.get('SME_OWN_SPAWN', '0') == '1'
 OWN_NEARDEAD = os.environ.get('SME_OWN_NEARDEAD', '0') == '1'   # ENG-FIX, deployments' H-NEARPARENT (comment there)
+OWN_BODYPT = os.environ.get('SME_OWN_BODYPT', '0') == '1'       # ENG-FIX, deployments' own-tap pairing (comment there)
+OWN_BODYPT_D = 750                                               # units: the Knight back-row clamp moves 500
 NEAR_BIGGER = os.environ.get('SME_NEAR_BIGGER', '0') == '1'     # ENG-FIX, deployments' near list (comment there)
 OWN_SPAWN_ERR = 0.75
 OWN_SPAWN_CARDS = {'Knight', 'Xbow', 'Tesla', 'IceWizard'}
@@ -792,6 +794,12 @@ def deployments(m, catalog, life=None, own_unit=None, stats=None):
             if cand:
                 i = cand[-1]; used.add(i); p = m['plays'][i]
                 ev.update(x=p['x'], y=p['y'], source='own_tap', tap=p['tick']); delays.append(tick-p['tick'])
+                # ENG-FIX (SME_OWN_BODYPT=1, off by default): a one-body own play whose body the reader first saw
+                # >= OWN_BODYPT_D from the tap keeps the body's point (the game's placement). SME_OWN_SPAWN reads the
+                # bot's confirmation, which is empty when the bot never saw the body: FRESH4 220244@3374 and 222707@1653
+                # (confirmation spawn [], latency 42 / 46 ticks; the game's Knight 1 / 2 tiles off the tap).
+                if OWN_BODYPT and ev['name'] in OWN_SPAWN_CARDS and len(g['members']) == 1                         and math.hypot(g['x'] - p['x'], g['y'] - p['y']) >= OWN_BODYPT_D:
+                    ev.update(x=round(g['x']), y=round(g['y']), body_moved=[p['x'], p['y']])
                 if ev['name'] == 'GoblinDrill' and os.environ.get('PARITY_DRILL_TAP') != '1':   # H-DRILL-SURFACE
                     s = drill_surface(tr, g['side'], g['card_id'], p['tick'])
                     if s:
