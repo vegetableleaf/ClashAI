@@ -1,0 +1,78 @@
+# OPP-LEARN-B (plan1026/opp/OPP_LEARNER.md): the P2 opponent model as the rl_royale LEARNER (REPORT_opponents 3 step 4.3).
+# Fixed pull to the imitation init: beta0 = beta_min = beta_max (adapt_beta clamps to it; ref = the init, no refresh).
+# Timing + ability heads frozen (freeze_heads); win-only reward (advantage match_loo, shaping none).
+# Partners: league_mix s1 = CLXIII (league_specialist) on icebow = the bot pool on our deck; init = the human model vs
+# itself on census deck pairs (learner decks: census only). init / specialist paths are pod paths (OPP_INIT / CLXIII).
+init: opp_ckpt/opp_m10_s0_sim.pt
+pool: icebow/data/ghost_pool/pool_env_v1.jsonl
+proagree_data: icebow/data/pipeline/s1_dataset.npz
+proagree_rows: 0
+proagree_data_gen: icebow/data/pipeline/gen_dataset_v32_fv5.npz
+noise_off: all
+opp_elixir: counter
+action_delay_ticks: 26
+extrapolate_ticks: 26
+hero_abilities: true
+ability_policy: v2
+forms_mode: deck
+league: true
+league_decks: icebow/data/rltest/decks_rl.json
+league_specialist: icebow/data/models/ICEBOW/ICEBOW_Mark_CLXIII_NOLEAK.pt
+league_opp_policy: sample
+league_mix: {latest: 0.0, older: 0.0, init: 0.4, s1: 0.6}
+league_snapshot_every: 1
+league_snapshot_keep: 4
+league_icebow_share: 0.0
+league_learner_icebow_share: 0.0
+league_deck_alpha: 1.0
+league_deck_floor: 0.0
+E: 16
+G: 4
+adv_clip: 2.0
+advantage: match_loo
+shaping: none
+n_actors: 1
+in_flight: 8
+actor_device: cpu
+actor_threads: 1
+actor_timeout_s: 3600
+T: 1.0
+tau: 0.35
+afford_mask: true
+stall_elixir: null
+stall_seconds: 12
+obs: live
+decide_every: 10
+learner_device: cpu
+lr: 1.0e-5
+grad_clip: 0.5
+ppo_epochs: 2
+minibatch: 256
+clip: 0.2
+beta0: 0.1
+beta_min: 0.1
+beta_max: 0.1
+kl_target: 0.1
+leash: max
+freeze_heads: [timing, ability]
+seed: 0
+max_updates: 2
+save_every: 1
+proagree_every: 1
+screen_every: 1
+screen_entries: 0
+screen_seeds: [0]
+stop_consecutive: 2
+plays_lo: 0.6
+plays_hi: 1.6
+kl_cell_stop: 0.5
+kl_gate_stop: 0.1
+tripwire_cell_pp: 1.0
+hard_cell_pp: 3.0
+hard_card_pp: 3.0
+hard_gate_bal: 0.05
+screen_stop_pp: -10.0
+entropy_floor_frac: 0.5
+outlived_pp: 15.0
+low_delivered_pp: 10.0
+ghost_refusal_x: 2.0

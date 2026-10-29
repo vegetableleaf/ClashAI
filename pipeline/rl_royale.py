@@ -255,6 +255,8 @@ def actor_cfg(base: dict, kind: str, aid: int, dev: str) -> dict:
         cfg["habit_track"] = cfg["record_tick"] = True
     if kind == "rollout" and base.get("cf"):                  # cf_credit: SIM forks at selected learner decisions
         cfg["cf"] = dict(base["cf"])
+    if kind == "rollout" and base.get("opp_init"):            # OPP-LEARN: the timing-head learner seat records
+        cfg["th_learner"] = True                              # (e1_eval.timing_cfg / th_record)
     return cfg
 
 
@@ -2078,6 +2080,8 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
         extra += E.GEN_V31_KEYS
     if gen and "cue" in results[use[0]]["traj"]:                      # step c: the cue rows (a model with cue_in)
         extra += E.GEN_CUE_KEYS
+    if gen:                                                           # OPP-LEARN: deck_gid / ctx_* (none for others)
+        extra += E.opp_row_keys(results[use[0]]["traj"])
     B = {k: cat(lambda j, k=k: results[j]["traj"][k][keep[j]]) for k in TRAJ_KEYS + extra}
     for k in ("lp_gate", "lp_card", "lp_cell"):
         B[k] = cat(lambda j, k=k: results[j]["traj"][k][keep[j]])
@@ -2417,7 +2421,8 @@ def policy_terms(model, B: dict, idx, tau: float, T: float, value: bool = False,
     False (``vf_trunk_grad: false``) detaches the trunk features under ``v``, so a loss on ``v`` reaches value_head only.
     ``ctx_head`` (critic_ctx): ``v`` also adds the ``CtxHead`` residual on ``B["ctx"]`` (same g, same detach rule)."""
     if "hand_card" in B:
-        pol = E.GenPolicy(model, ())
+        pol = E.GenPolicy(model, (), {"ctx": dict.fromkeys(model.opp["ctx_tokens"], 0)} if E.opp_ctx_keys(model)
+                          else None)                         # OPP-LEARN: heads_t only (the rows carry their ctx ids)
         enc, heads = pol.heads_t(gen_rows(model, B, idx))
         cell_of = pol.cell_logits
     else:
@@ -2434,7 +2439,10 @@ def policy_terms(model, B: dict, idx, tau: float, T: float, value: bool = False,
     elif "posture_dtau" in B:                                 # C1: the threshold of the posture in force (e1_eval)
         tt = tau + B["posture_dtau"][idx]
         lt = torch.log(tt / (1.0 - tt))
-    x = (heads["gate"].double() - lt) / (T_gate or T)                   # T_gate: the sampler's own gate temperature
+    if "gate" in heads:
+        x = (heads["gate"].double() - lt) / (T_gate or T)               # T_gate: the sampler's own gate temperature
+    else:                                                     # OPP-LEARN: a timing-head model (no gate; e1_eval.th_record
+        x = torch.zeros(len(allowed), dtype=torch.float64, device=allowed.device)   # rows are never gate-sampled)
     card_lp = torch.log_softmax(heads["card"].double().masked_fill(~allowed, CARD_FILL) / T, dim=-1)
     lp_gate = torch.where(gs, torch.where(played, Fn.logsigmoid(x), Fn.logsigmoid(-x)), torch.zeros_like(x))
     lp_card = torch.zeros_like(x)
@@ -3147,7 +3155,12 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
         opp_cache: dict = {}                                  # league: checkpoint path -> (frozen policy, its grid)
         deck = load_deck("icebow")
         g = base.get("gen")
-        if g:                                                 # generalist: GenModel weights behind GenPolicy
+        if base.get("opp_init"):                              # OPP-LEARN: the opponent architecture + its opp_sim
+            from pipeline.model_gen import load_model as load_gen
+            net, st = load_gen(base["opp_init"], torch.device(dev))
+            net = net.eval()
+            model = E.GenPolicy(net, st["card_vocab"], st.get("opp_sim"))
+        elif g:                                               # generalist: GenModel weights behind GenPolicy
             from pipeline.model_gen import GenModel
             net = GenModel(d=int(base["d"]), layers=int(base["layers"]), d_c=int(g["d_c"]),
                            n_cards=len(g["card_vocab"]), feature_version=int(g.get("feature_version", 1))).to(dev).eval()
@@ -3587,6 +3600,53 @@ def _cancel_join(q) -> None:
 # ------------------------------------------------------------------------------------------------------
 # config, paths, logging
 # ------------------------------------------------------------------------------------------------------
+FREEZE_HEADS = {"timing": "timing_head.", "ability": "ability_head."}   # OPP-LEARN: GenModel(timing / ability) params
+
+
+def freeze_heads(model, cfg: dict, log=None) -> Optional[dict]:
+    """``freeze_heads`` (OPP-LEARN; absent / null = None, nothing changes): a list of FREEZE_HEADS names -> those
+    GenModel parameters get requires_grad False (no gradient, so Adam never steps them) -> {name: init copy} (the smoke
+    checks they stay bit-identical). There is no PPO / KL / entropy term for them: the loss's terms are gate / card / cell
+    only, and a timing-head model has no gate (policy_terms). ponytail: the shared trunk still trains, so the frozen
+    heads' OUTPUTS can drift with it; measure the hazard on fixed rows if that matters (the fixed KL pull on card /
+    cell is the only leash)."""
+    fh = cfg.get("freeze_heads")
+    if fh is None:
+        return None
+    if not isinstance(fh, list) or not fh or len(set(fh)) != len(fh) or not set(fh) <= set(FREEZE_HEADS):
+        raise SystemExit(f"freeze_heads must be null or a non-empty list of distinct {sorted(FREEZE_HEADS)}, got {fh!r}")
+    pre = tuple(FREEZE_HEADS[h] for h in fh)
+    out = {n: q.detach().clone() for n, q in model.named_parameters() if n.startswith(pre)}
+    missing = [h for h in fh if not any(n.startswith(FREEZE_HEADS[h]) for n in out)]
+    if missing:
+        raise SystemExit(f"freeze_heads {missing}: the init has no such head")
+    for n, q in model.named_parameters():
+        if n in out:
+            q.requires_grad_(False)
+    if log is not None:
+        log(f"[rl] freeze_heads {fh}: {len(out)} tensors ({sum(v.numel() for v in out.values())} params) frozen")
+    return out
+
+
+def opp_learner_meta(ick: dict, cfg: dict) -> dict:
+    """OPP-LEARN: a timing-head (P2 opponent) init as the learner. -> the checkpoint keys its saves / snapshots must carry
+    (model_gen.load_model rebuilds the architecture from ``opp`` + ``memory``; e1_eval.GenPolicy needs ``opp_sim``).
+    SystemExit unless the run can decode it: league on (only a SelfPlaySide seat decodes a timing head), no gate-only
+    learner keys, decide_every = the 10-tick slot, and opp_sim present (attach_sim.py)."""
+    from pipeline.decision_options import TIMING_SLOT_TICKS
+    bad = [k for k in ("posture_head", "ability_head", "tau_phase", "branch_gate", "kl_ref_gate", "kl_ref_card",
+                       "kl_ref_gate_max_elixir", "learner_pipeline_frac", "cf_credit") if cfg.get(k)]
+    if bad:
+        raise SystemExit(f"a timing-head (opponent) learner cannot run {bad}")
+    if not cfg.get("league"):
+        raise SystemExit("a timing-head (opponent) learner needs league true (its seat decodes in self-play only)")
+    if int(cfg["decide_every"]) != TIMING_SLOT_TICKS:
+        raise SystemExit(f"a timing-head (opponent) learner needs decide_every {TIMING_SLOT_TICKS} (its slot grid)")
+    if not ick.get("opp_sim"):
+        raise SystemExit("a timing-head (opponent) learner needs the init's opp_sim (plan1026/opp/attach_sim.py)")
+    return {k: ick[k] for k in ("opp", "opp_sim", "memory", "memory_v2") if k in ick}
+
+
 def memory_cfg(cfg: dict) -> Optional[str]:
     """Plan A ``memory``: absent / null = off (no key in the hash, every code path unchanged), "v1" / "v2" = the learner gets a
     match-memory encoder (model_gen.add_memory, zero-output at init: = the init policy) and its rollouts record per-match
@@ -3801,6 +3861,8 @@ def config_sha(cfg: dict) -> str:
     elif cfg.get("kl_ref_gate_target_frac") is None:         # F6' frac absent / null = the 0.5 default, one hash
         cfg = {**cfg, "kl_ref_gate_target_frac": GATE_LO_FRAC}
     cfg = {k: v for k, v in cfg.items() if k not in OPP_TEMPO_KEYS or v is not None}   # human tempo off = historical hash
+    if cfg.get("freeze_heads") is None:                      # OPP-LEARN freeze_heads off (absent or null) = historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "freeze_heads"}
     if cfg.get("posture_head") is None or cfg.get("posture_head") is False:   # C1 off (absent / null / false) = historical
         cfg = {k: v for k, v in cfg.items() if k not in POSTURE_KEYS}
     else:                                                    # C1 on: defaults filled, one hash for implicit / explicit
@@ -3952,6 +4014,8 @@ class Learner:
                 raise SystemExit(f"branch_phi_ckpt {bc['branch_phi_ckpt']} not found")
         ick = torch.load(self.init_path, map_location="cpu")
         self.gen = {"d_c": int(ick["d_c"]), "card_vocab": list(ick["card_vocab"])} if ick.get("gen") else None
+        self.th = bool(self.gen and (ick.get("opp") or {}).get("timing"))   # OPP-LEARN: the opponent model is the learner
+        self.opp_meta = opp_learner_meta(ick, cfg) if self.th else {}
         if self.gen and int(ick["args"].get("feature_version", 1)) >= 3:
             self.gen["feature_version"] = int(ick["args"]["feature_version"])
         if self.gen:                                          # generalist init: the learner trains the GenModel itself
@@ -3988,8 +4052,10 @@ class Learner:
                 self.mem_frozen = {n: q.detach().clone() for n, q in self.model.named_parameters() if mem_frozen_name(n)}
                 log(f"[rl] memory_encoder_frozen: {len(names)} memory encoder / aux tensors "
                     f"({sum(q.numel() for q in self.mem_frozen.values())} params) frozen; mem.out trains")
-        self.init_meta = {"args": dict(ick["args"]), "deck": ick["deck"], "epoch": ick["epoch"], "n_params": ick["n_params"]}
+        self.init_meta = {"args": dict(ick["args"]), "deck": ick["deck"],     # OPP-LEARN: train_gen --opp counts steps
+                          "epoch": ick["step"] if self.th and "epoch" not in ick else ick["epoch"], "n_params": ick["n_params"]}
         self.grid = self.minfo["grid"]
+        self.head_frozen = freeze_heads(self.model, cfg, log)    # OPP-LEARN freeze_heads (None = absent: nothing frozen)
         self.league = None                                    # league on: {"snapshots": [{id, update, path}]}
         if cfg.get("league"):
             self._league_setup()
@@ -4174,7 +4240,8 @@ class Learner:
                 "args": _py(dict(self.init_meta["args"]) | {"rl_run": self.run, "rl_init": str(self.cfg["init"])}),
                 "deck": self.init_meta["deck"], "epoch": self.init_meta["epoch"],
                 "n_params": int(self.init_meta["n_params"]), "gen": True, "d_c": int(self.gen["d_c"]),
-                "card_vocab": list(self.gen["card_vocab"]), "snapshot": {"run": self.run, "update": int(self.update)}}
+                "card_vocab": list(self.gen["card_vocab"]), "snapshot": {"run": self.run, "update": int(self.update)},
+                **getattr(self, "opp_meta", {})}                 # OPP-LEARN: opp / opp_sim / memory meta ({} otherwise)
 
     def _snapshot(self) -> tuple[str, list[Path]]:
         """Freeze the learner now as a league opponent: ``<run>_snap_u{NNNN}.pt`` beside the checkpoints (weights +
@@ -4264,6 +4331,9 @@ class Learner:
     def _load_net(self, path: Path):
         """A checkpoint's network on the learner device, eval(): GenModel via eval_gen.load_model for a generalist
         run, else engine_play.load_model's S1Model (unchanged)."""
+        if getattr(self, "th", False):                       # OPP-LEARN: the opponent architecture (timing / ability
+            from pipeline.model_gen import load_model           # heads, deck encoder, context tokens, its memory)
+            return load_model(path, self.dev)[0].eval()
         if getattr(self, "gen", None):
             from pipeline.eval_gen import load_model
             return load_model(path, self.dev)[0].eval()
@@ -4448,6 +4518,7 @@ class Learner:
                "rl": self._rl_state()}
         if getattr(self, "gen", None):                       # train_gen's keys: eval_gen / e1_eval.load_policy load it
             out.update({"gen": True, "d_c": int(self.gen["d_c"]), "card_vocab": list(self.gen["card_vocab"])})
+        out.update(getattr(self, "opp_meta", {}))            # OPP-LEARN: opp / opp_sim / memory meta ({} otherwise)
         if getattr(self.model, "mem", None) is not None:     # Plan A: the model flag (the weights also build it on load)
             out["memory"] = getattr(self.model.mem, "version", "v1")
             if out["memory"] == "v2":                         # S1c: the artifacts its features read (load_model checks)
@@ -4919,7 +4990,7 @@ class Learner:
         del B, R
         if not crash:
             u1 = self.update
-            if u1 % int(cfg["screen_every"]) == 0:
+            if u1 % int(cfg["screen_every"]) == 0 and not getattr(self, "th", False):   # OPP-LEARN: no ghost screen
                 t = time.perf_counter()
                 rec["screen"] = self.screen()
                 rec["wall_screen_s"] = time.perf_counter() - t
@@ -4927,7 +4998,7 @@ class Learner:
                 reasons += ([r] if r else []) + self._screen_exploit(rec["screen"])
                 if rec["screen"]["delta_pp"] is None:
                     self.log(f"[rl] held-out screen after update {u} had NO paired matches -- counted as no screen")
-            if u1 % int(cfg["proagree_every"]) == 0:
+            if u1 % int(cfg["proagree_every"]) == 0 and not getattr(self, "th", False):   # OPP-LEARN: none
                 t = time.perf_counter()
                 pa = self.proagree(self.model)
                 rec["proagree"] = {k: pa[k] for k in PA_KEYS + ("cell_tile_top1",)}
@@ -5085,6 +5156,8 @@ class Learner:
         base.update({"d": int(a.get("d", 128)), "layers": int(a.get("layers", 4)), "grid": self.grid})
         base.update({k: self.cfg.get(k) for k in COND_KEYS})
         base["gen"] = getattr(self, "gen", None)
+        if getattr(self, "th", False):                        # OPP-LEARN: actors rebuild the opponent architecture
+            base["opp_init"] = str(self.init_path)
         base["runtime"] = getattr(self, "runtime", None)
         base["seed"] = self.cfg["seed"]                                       # rollout_jobs: per-(update, job) pipelining draw
         tg = self.cfg.get("T_gate")
@@ -5185,6 +5258,8 @@ class Learner:
                 f"min {self.census_p.min():.4f}); opponents mix {cfg['league_mix']} (opp policy "
                 f"{cfg['league_opp_policy']}), S1 specialist {cfg['league_specialist']} (icebow only); snapshot every "
                 f"{cfg['league_snapshot_every']} updates, keep {cfg['league_snapshot_keep']}")
+        if getattr(self, "th", False):                        # OPP-LEARN: no pro agreement / ghost screen (gate decodes)
+            return self._startup_th(smoke)
         t = time.perf_counter()
         pa = self.proagree(self.model)
         self.base["init_proagree"] = {k: pa[k] for k in PA_KEYS + ("cell_tile_top1", "n", "n_play")}
@@ -5215,6 +5290,23 @@ class Learner:
                 f"agreement identical (floats to 1e-6) = {same}")
             if not same:
                 raise SmokeFail(f"u0000 reload pro agreement {pa2} != in-memory init {pa}")
+
+    def _startup_th(self, smoke: bool) -> None:
+        """OPP-LEARN startup: actors, then u0000 saved. The pro-agreement instrument and the held-out ghost screen run a
+        gate model (eval_gen.evaluate's gate metrics; run_batch's ghost Match), so neither runs for a timing-head learner;
+        its guards are the KL / entropy / plays-per-min ones of every update. --smoke: the u0000 file reloads bit-exact."""
+        self.start_actors()
+        path = self.save(None, numbered=True)
+        self.log(f"[rl] OPP-LEARN: timing-head learner (no pro agreement / held-out screen); saved {path}")
+        self.log.json({"type": "startup", "opp_learner": True, "train_loadable": len(self.train),
+                       "heldout_loadable": len(self.heldout), "config": self.cfg})
+        if smoke:
+            m2 = self._load_net(path)
+            same = all(torch.equal(a, b.to(a.device)) for a, b in zip(self.model.state_dict().values(),
+                                                                       m2.state_dict().values()))
+            self.log(f"[rl] SMOKE u0000 round trip via model_gen.load_model: state_dict identical = {same}")
+            if not same:
+                raise SmokeFail("u0000 reload state_dict != the in-memory init")
 
     def loop(self) -> tuple[int, Optional[str]]:
         for u in range(self.update, int(self.cfg["max_updates"])):
@@ -5328,6 +5420,12 @@ def main(argv=None) -> int:
             if why:
                 raise SmokeFail(f"a stop rule fired during the smoke: {why}")
             smoke_resume_check(cfg, a.run, run_dir, ck_dir, log, L)
+            if getattr(L, "head_frozen", None) is not None:   # OPP-LEARN freeze_heads: the heads never moved
+                sd = dict(L.model.named_parameters())
+                moved = [n for n, v in L.head_frozen.items() if not torch.equal(sd[n].detach(), v) or sd[n].requires_grad]
+                log(f"[rl] SMOKE freeze_heads: {len(L.head_frozen)} tensors, moved / trainable {moved}")
+                if moved:
+                    raise SmokeFail(f"freeze_heads: frozen head tensors moved / trainable: {moved[:5]}")
             if getattr(L, "mem_frozen", None) is not None:    # memory_encoder_frozen: the encoder never moved
                 sd = dict(L.model.named_parameters())
                 moved = [n for n, v in L.mem_frozen.items() if not torch.equal(sd[n].detach(), v)]

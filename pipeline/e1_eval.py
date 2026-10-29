@@ -656,6 +656,11 @@ def opp_ctx_keys(model) -> tuple:
     return (("deck_gid",) if o.get("deck_enc") else ()) + tuple(f"ctx_{k}" for k in o.get("ctx_tokens") or {})
 
 
+def opp_row_keys(row: dict) -> tuple:
+    """The opponent-model context keys a row carries (deck_gid, ctx_<name>: GenPolicy.opp_inputs), in its order."""
+    return tuple(k for k in row if k == "deck_gid" or k.startswith("ctx_"))
+
+
 def is_timing(policy) -> bool:
     """A GenPolicy whose GenModel has the P2 slot timing head (no gate): decoded only by gate_decode 'timing_head'."""
     return bool((getattr(getattr(policy, "model", None), "opp", None) or {}).get("timing"))
@@ -668,7 +673,7 @@ def timing_cfg(cfg: dict) -> dict:
     than the slot, or a mechanism this decode does not define."""
     from .decision_options import TIMING_SLOT_TICKS
     bad = [k for k in ("pipeline_decisions", "tap_loss", "tap_slow", "record", "posture", "ability", "_opp_style")
-           if cfg.get(k)]
+           if cfg.get(k) and not (k == "record" and cfg.get("th_learner"))]   # OPP-LEARN: a learner seat records
     if bad or cfg.get("gate_decode", "timing_head") != "timing_head":
         raise ValueError(f"a timing-head seat cannot run {bad or cfg.get('gate_decode')}")
     if int(cfg.get("decide_every", TIMING_SLOT_TICKS)) != TIMING_SLOT_TICKS:
@@ -707,27 +712,30 @@ def th_decided(m) -> bool:
     return core.check_deploy(DeployCommand(m.side, 0, 0, 0)) == DeployStatus.GAME_OVER
 
 
-def th_ability(m, heads, r: int) -> None:
+def th_ability(m, heads, r: int) -> Optional[int]:
     """The learned ability head of a timing-head seat (SelfPlaySide.prepare keeps the env's press rule off its side). At a
     slot start with a visible own ability controller (the rows' ab_ok) draw Bernoulli(h) and the tick j inside the slot
     from the seat's own ability stream (its card / cell draws untouched); a press of a READY button is queued j ticks on
-    (the env's queue rechecks readiness then); no ready button = no press (the HF rows label accepted presses only)."""
+    (the env's queue rechecks readiness then); no ready button = no press (the HF rows label accepted presses only).
+    -> the tick j a press was queued at (OPP-LEARN: the row's th_ab label), else None."""
     from .decision_options import timing_slot_draw
     oa = (getattr(m, "_gen_row", None) or {}).get("own_ability")
     ready = m.env._scan(m.side, lambda *_: True)             # readiness only (royale_env._any_gate)
     if not (ready if oa is None else (np.asarray(oa)[..., 0] > 0).any()):
-        return
+        return None
     if getattr(m, "_th_ab_rng", None) is None:
         m._th_ab_rng = np.random.default_rng(zlib.crc32(f"{m.tag}:th_ability".encode()))
     st = m.__dict__.setdefault("th_ab", {"slots": 0, "draws": 0, "queued": 0})
     st["slots"] += 1
     j = timing_slot_draw(float(heads["ab_hazard"][r]), heads["ab_tick"][r].detach().float().cpu().numpy(), m._th_ab_rng)
     if j is None:
-        return
+        return None
     st["draws"] += 1
     if ready:
         st["queued"] += 1
         m.env.queue_abilities(m.side, [ready[0]], j)
+        return j
+    return None
 
 
 def timing_decide_batch(model, enc, heads, allowed: np.ndarray, matches: Sequence, cfg: dict) -> list[dict]:
@@ -738,7 +746,8 @@ def timing_decide_batch(model, enc, heads, allowed: np.ndarray, matches: Sequenc
     rows were built (decision_options.timing_play_draw). The card is drawn among the slots the seat can REALLY play:
     crforge runs a play engine_delay_ticks after it is issued and charges / cycles it only then, so the board still shows
     the elixir and the hand from before my plays it holds; those slots are not choosable and their cost is taken off
-    the elixir (a human's client charges at the tap: the re-driven human commands never overspend)."""
+    the elixir (a human's client charges at the tap: the re-driven human commands never overspend).
+    cfg["record"] (OPP-LEARN: the opponent model as the RL learner; refused for a frozen seat): ``th_record``'s fields."""
     from .decision_options import model_cell_logits, timing_play_draw, timing_slot_draw
     if not all(hasattr(m, "_th_slot") for m in matches):
         raise ValueError("timing_head decodes a SelfPlaySide seat only")
@@ -759,13 +768,13 @@ def timing_decide_batch(model, enc, heads, allowed: np.ndarray, matches: Sequenc
     tk = heads["tick"].detach().float().cpu().numpy()
     card = heads["card"].detach().float().cpu().numpy()
     cell = model_cell_logits(model, enc, heads["card"].device)
-    out = []
+    out, ab_j = [], [None] * len(matches)
     for r, m in enumerate(matches):
         if over[r]:                                           # crforge: the match is decided, every play is refused
             out.append({"play": False, "slot": -1, "cell": -1, "why": "game_over"})
             continue
         if m._th_slot is None and "ab_hazard" in heads:     # the learned ability head (its own slot draw + stream)
-            th_ability(m, heads, r)
+            ab_j[r] = th_ability(m, heads, r)
         if m._th_slot is None:
             j = timing_slot_draw(hz[r], tk[r], m.rng_behave)
             if j is None or j > 0:
@@ -775,7 +784,33 @@ def timing_decide_batch(model, enc, heads, allowed: np.ndarray, matches: Sequenc
         got = timing_play_draw(card[r], allowed[r], lambda s: cell([r], [s])[0].detach().float().cpu().numpy(), m.rng_behave, T)
         out.append({"play": False, "slot": -1, "cell": -1, "why": "no_affordable"} if got is None else
                    {"play": True, "slot": got[0], "cell": got[1], "why": "timing"})
+    if cfg.get("record"):
+        th_record(out, allowed, matches, hz, card, cell, ab_j, T)
     return out
+
+
+def th_record(out: list, allowed: np.ndarray, matches: Sequence, hz, card, cell, ab_j: list, T: float) -> None:
+    """OPP-LEARN (a timing-head LEARNER seat, cfg["record"]): sample_decide_batch's record fields on every row, in place.
+    Only card / cell act through the policy the learner trains (timing / ability heads frozen: ``freeze_heads``), so
+    the behaviour log-probs are lp_card / lp_cell of the play rows (the mask = the seat's REAL allowed slots, as drawn;
+    float64 of the float32 heads at T, rl_royale.policy_terms' recompute); lp_gate 0 and gate_sampled False on every row
+    (there is no gate). Labels of the frozen heads: th_j = the tick-in-slot drawn at a slot start (-1 no play this slot),
+    -2 at a drawn tick (the play row of an earlier slot start), -3 game over; th_ab = the tick an ability press was
+    queued at this slot start, -1 none. p_gate = sigmoid(hazard) (the monitors' p)."""
+    import torch
+    for r, (d, m) in enumerate(zip(out, matches)):
+        lc = lx = 0.0
+        if d["play"]:
+            z = np.where(allowed[r], np.asarray(card[r], np.float64), -1e9) / T
+            lc = float(z[d["slot"]] - z.max() - np.log(np.exp(z - z.max()).sum()))
+            with torch.no_grad():
+                c = cell([r], [d["slot"]])[0].detach().float().cpu().numpy().astype(np.float64) / T
+            lx = float(c[d["cell"]] - c.max() - np.log(np.exp(c - c.max()).sum()))
+        j = (-3 if d["why"] == "game_over" else -2 if m._th_slot is not None else -1 if d["why"] == "timing_wait"
+             else d.get("th_tick", 0))
+        d.update(allowed=allowed[r].copy(), stalled=False, gate_sampled=False, lp_gate=0.0, lp_card=lc, lp_cell=lx,
+                 p_gate=float(1.0 / (1.0 + math.exp(-float(hz[r])))), T=T, th_j=int(j),
+                 th_ab=-1 if ab_j[r] is None else int(ab_j[r]))
 
 
 def gen_row_keys(model):
@@ -1578,7 +1613,7 @@ class Match:
             row = {"tok": tok, "mask": mask, "sc": sc, "past": past}
             if self._gen_row is not None:                     # GenPolicy: the generalist's input row (zeroed sc,
                 row = {k: self._gen_row[k] for k in self._gen_row
-                       if k in GEN_ROW_KEYS + GEN_V3_KEYS + GEN_V31_KEYS + GEN_CUE_KEYS}
+                       if k in GEN_ROW_KEYS + GEN_V3_KEYS + GEN_V31_KEYS + GEN_CUE_KEYS + opp_row_keys(self._gen_row)}
             if cfg.get("record_phi"):                         # rl_royale shaping: what Phi needs, own view (True =
                 from pipeline import reward_shaping as RS     # R2 tower_crown, else the step-3 mode's own row)
                 mem = self.__dict__.setdefault("_phi_mem", {})
@@ -1603,6 +1638,8 @@ class Match:
                 row = {**row, "forced": d["forced"]}
             if "ab_sampled" in d:                             # rl_royale ability_head: the press decision / label
                 row = {**row, **{k: d[k] for k in ability_defaults()}}
+            if "th_j" in d:                                   # OPP-LEARN: a timing-head learner seat's frozen-head labels
+                row = {**row, "th_j": d["th_j"], "th_ab": d["th_ab"]}
             self.traj.append({**row, "allowed": d["allowed"],
                               "stalled": d["stalled"], "gate_sampled": d["gate_sampled"], "played": d["play"],
                               "slot": d["slot"], "cell": d["cell"], "lp_gate": d["lp_gate"], "lp_card": d["lp_card"],
@@ -1786,6 +1823,9 @@ class Match:
                 out[key] = stack(key).astype(np.float32)
         if tj and "cue" in tj[0]:                            # step c: the cue rows the model saw
             out["cue"] = stack("cue").astype(np.float32)
+        if tj:                                               # OPP-LEARN: an opponent model's context ids + timing labels
+            for k in opp_row_keys(tj[0]) + (("th_j", "th_ab") if "th_j" in tj[0] else ()):
+                out[k] = scalar(k, np.int64)
         if tj and "forced" in tj[0]:                         # plan1026 P1: rule-forced rows (sample decide SAMPLE_RULES)
             out["forced"] = scalar("forced", bool)
         if tj and "phi_state" in tj[0]:                      # cfg["record_phi"]: reward_shaping.phi_record rows
