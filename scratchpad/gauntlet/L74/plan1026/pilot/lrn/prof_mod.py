@@ -127,7 +127,8 @@ def main():
         for h in hs:
             h.remove()
         ka = prof.key_averages()
-        kern = [e for e in prof.events() if e.device_type == CUDA]
+        ann = ("forward", "backward", "clip_optim")   # LEARNER-SCALE3: user ranges are mirrored as CUDA events; not kernels
+        kern = [e for e in prof.events() if e.device_type == CUDA and e.name not in ann and not e.name.startswith("mod:")]
         busy = sum(e.device_time for e in kern) / a.prof_steps / 1000
         mods = sorted(((e.key, e.device_time_total / a.prof_steps / 1000, e.count / a.prof_steps) for e in ka
                        if e.key.startswith("mod:") or e.key in ("forward", "backward", "clip_optim")), key=lambda x: -x[1])

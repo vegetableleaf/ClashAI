@@ -20,8 +20,8 @@ per wall-clock hour x50-100+, fp32 only (TF32 off), kl_stop_prev 0.02. Rent only
     (/workspace/lrn/chain_ls3a.sh; crash log sweep2v2_crash0138.log).
   - The disk still has <1 GB free. Keep new trees on /dev/shm.
 - RUNNING:
-  - 33920, chain_ls3c.sh: prof_mod --prefill at mb 256 / 1,024. Out /workspace/lrn/prof3/prof_mod_prefill*; log
-    logs/prof3.log. This is step 5's measurement: the kernel-busy vs wall share without the anchor fill.
+  - (done) 33920 prof_mod --prefill -> 7e (prof3/prof_mod_prefill2.json).
+
   - 33920: test_learner_fast_gate MC at 3,000 draws with the default ridge (logs/gate_mc3000_r.log).
     - Why: the ridge-0 3,000-draw run failed the variance check (on 5.25 vs off 3.02). z stayed fine (on 1.66,
       in-sample 36.2).
@@ -42,9 +42,9 @@ per wall-clock hour x50-100+, fp32 only (TF32 off), kl_stop_prev 0.02. Rent only
   - 1c: BLOCKED, correctly: missing pool checkpoints. I installed them.
   - 1d: RUNNING (out LEARNER-SCALE3_1d_out.jsonl).
 - NEXT:
-  - Read the prefill profile into 7e (the CUDA-graph bound).
+  - 7e (CUDA-graph bound) and 7g (projection) DONE. CUDA graphs + glue NOT built: lead decision on tickets A / B (7e).
   - Read the A/B table into 7f once ab_m.out says AB_M DONE.
-  - Update 6g with 7c-7f.
+  - Fold 7f into 7g.
 
 ## STATUS of LEARNER-SCALE2 (10-29 ~01:35 EDT; superseded, kept for the handover list)
 - Commits this seat:
@@ -565,3 +565,47 @@ matches. W is fitted once on all 321k gate rows (fit_rows null) and held fixed. 
   update.
   - So even this small gain would need fit_rows (e.g. 16k per half: ~3 s). How fit_rows changes R^2 is untested.
 - Not adopted. The owner decides; the numbers above do not make a case for it.
+
+### 7e. How much CUDA graphs + glue removal can give, measured from the kernel timeline (a; prof_mod.py --prefill; prof3/)
+prof_mod's busy_share was wrong in 6b / 7b: `prof.events()` with device_type CUDA also returns the user ranges
+("forward", "backward", "mod:*"), which the profiler mirrors onto the GPU timeline. So busy double-counted (busy_share
+1.5-1.7 > 1). Fixed: kernels only. Also --prefill now fills the lazy anchor (chunked) BEFORE profiling, so the window
+holds the PPO step only. 33920 4090, pilot.yaml + mem_row_cache, T 0.1 records s2101 (128 matches).
+| mb | wall ms / step (unprofiled median) | GPU kernel ms / step | kernel share of wall | kernels / step | ms / row |
+|---:|---:|---:|---:|---:|---:|
+| 256 | 128.1 | 63.5 | 0.50 | 3,875 | 0.50 |
+| 1,024 | 278.7 | 236.6 | 0.85 | 4,324 | 0.27 |
+- (a) At the pilot's minibatch of 256, half the step is GPU idle: launch and CPU overhead across ~3,900 kernels.
+- (a) At 1,024 rows the step is 85% kernel time.
+- Memory-movement kernels at 1,024 rows: copy_ ~27 ms + fill_ ~26 ms per step, plus clone / index_put_ / zeros. That
+  is ~25% of the kernel time, not 6b's 42% (wrong denominator, 7b). 7b traces the bulk to nn.MultiheadAttention's packed
+  in_proj selects (trunk + memory encoder).
+- Upper bounds (b, from the measured shares; the speed of a real implementation is untested):
+  - CUDA graphs remove at most the idle share: <= 2.0x at mb 256, <= 1.18x at mb 1,024.
+  - Glue removal: <= 1.3x of the kernel time.
+  - Both together: <= ~2.6x per step at mb 256, <= ~1.5x at 1,024.
+- Why NOT built this seat (needs a lead decision; NEEDS_CONTEXT):
+  - (i) Graph capture needs a static-shape, sync-free minibatch_loss. Today the loss has data-dependent shapes:
+    `played.nonzero()` and the played-row cell / lazy-refine forwards, `gs.any()` branches, the boolean-mask KL /
+    entropy monitors, `float()` monitor syncs, and gen_rows' CPU-side memory features.
+    - Making it static means padding the played subset to fixed buckets with masks and moving the monitors out of
+      the step. That is a parallel loss path that must equal minibatch_loss to 1e-7 on gradients.
+  - (ii) The glue sits in model code (model_v3 / model_gen nn.TransformerEncoder), outside this seat's write set.
+  - Proposed split, two tickets:
+    - A: a split-projection attention module with the same maths. Identity bar: the forward to 1e-6, gradients
+      <= 1e-7 rel.
+    - B: `minibatch_loss_static` for padded buckets (256 rows, played <= 64 / 128 / 256) + torch.cuda.graphs capture
+      per bucket, with the same identity bar vs minibatch_loss and a kl_stop equality test.
+    - Expected (b): ~1.5-2.5x on the learner step at mb 256.
+
+### 7g. Projection update (replaces the "what could close the gap" list of 6g; b unless marked)
+| 6g lever | before | measured now | effect on learning / h |
+|---|---|---|---|
+| 1. gate variance reduction (state baseline) | B_row / 5-10 hoped | policy noise -3% per match / -7.5% per row (7d, a) | ~1.0x: drop it as a state baseline. Form (a) (both gate outcomes) needs cf-fork Q values: untested, a design topic |
+| 2. per-step latency (CUDA graphs + glue) | ~1.5-2x | bounds <= 2.6x at mb 256, <= 1.5x at 1,024 (7e, a: the shares); not built | option B's learner ~4 s -> ~1.6-2.7 s on the box; U then likely wave-bound (~6-9 s per wave, PROJECTION.md, b) unless the rollouts overlap |
+| kl_lr_target v2 for option C | assumed to reach the cap cleanly | overshoots 1.5-6.3x (7c, a) | option C's ~14 s update and its I estimate are not usable until the lr rule is fixed |
+| 3. SIM A/B M 128 vs 1,024 | not measured | RUNNING on 33553 (7f, pending) | decides option B's I |
+- Verdict (b): unchanged. ~10-30x, short of the ~50x rent bar.
+  - Option B (M 128, learner-bound, with rollouts overlapped) is the only path above ~30x.
+  - It needs BOTH the A/B to show I(M 128) ~ I(M 1,024) per update, AND the per-step work (7e tickets A + B).
+- No rent case on these numbers.
