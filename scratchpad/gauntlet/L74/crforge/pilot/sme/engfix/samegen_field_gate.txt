@@ -1,0 +1,10 @@
+CHANGED dev_off_all.jsonl 20261026_090406 True [(26, 0, 'FirespiritHut', 2385, 1, 'Tesla'), (27, 1, 'Tesla', 2385, 0, 'FirespiritHut')]
+CHANGED dev_off_all.jsonl 20261026_154319 True [(88, 0, 'IceWizard', 4951, 1, 'Skeletons'), (89, 1, 'Skeletons', 4951, 0, 'IceWizard')]
+CHANGED dev_off_all.jsonl 20261026_162012 True [(28, 1, 'Monk', 2571, 0, 'Knight'), (29, 0, 'Knight', 2571, 1, 'Monk')]
+CHANGED dev_off_all.jsonl 20261026_175456 True [(35, 1, 'Xbow', 3009, 0, 'Cannon'), (36, 0, 'Cannon', 3009, 1, 'Xbow')]
+CHANGED fresh2_off_all.jsonl 20261028_115543 False [(49, 0, 'MinionHorde', 3611, 1, 'Knight'), (50, 1, 'Knight', 3611, 0, 'MinionHorde')]
+CHANGED fresh3_off_all.jsonl 20261028_144727 True [(114, 0, 'Skeletons', 5517, 1, 'Knight'), (115, 1, 'Knight', 5517, 0, 'Skeletons')]
+CHANGED fresh4_off_all.jsonl 20261028_152022 True [(29, 1, 'IceGolemite', 2317, 0, 'Knight'), (30, 0, 'Knight', 2317, 1, 'IceGolemite')]
+CHANGED fresh5_off_all.jsonl 20261029_022524 False [(91, 1, 'WitchMother', 5113, 0, 'Knight'), (92, 0, 'Knight', 5113, 1, 'WitchMother')]
+CHANGED fresh6_off_all.jsonl 20261029_031310 True [(63, 0, 'MegaKnight', 3931, 1, 'Knight'), (64, 1, 'Knight', 3931, 0, 'MegaKnight')]
+records 467 changed 9

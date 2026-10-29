@@ -2862,6 +2862,42 @@ Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
        frames to /workspace/pilot/fresh7 first); hidden-window records both ways (SME_HIDDEN_ASSIGN=1 as a trailing VAR).
     4. Open: 031310 MoveProbe; 165155 per-frame diff (KEEP=1); FRESH4 230352@914 (Golden Knight 118 / 124), 123045
        (Witch), 142926 (client lag).
+- **ENG-FIX5 (10-29, from ENG-FIX4's 08:40 restart point; pod 32657 `/workspace/pilot/engfix5/`, laptop scratch
+  `.foreman/scratch/engfix5/`):**
+  - **FRESH6 031310@3954 is NOT an engine fault (c for "engine body position"): same-tick play order, extractor (a).** Our
+    evolved Knight and the opponent Mega Knight run on one tick (3931). crforge ran MK first (ids MK 5000172, Knight 5000173);
+    the game's phase2 'generation' (its entity id, mapped from each ents row's address) is Knight 5000172, MK 5000173. In
+    crforge's order the Knight's route goal flips at 3953 on the MK's same-tick move (1121 -> 1157, re-aim at node 1193,
+    (18, -56)); with the Knight first it flips at 3954 instead, and (19, -56) from (2528, 17385) is the game's (2547, 17329)
+    (by hand and by a MoveProbe trace: 5e8089a4 rebuilt on 32657 from bec5811a + the fork patches, every class of the
+    tickprobe jars byte-identical to the shipped lib, + MoveProbe 0003/0004, `ProbeRun` = the gate's SmeRun + probe events).
+    Swapped plan: 3954 (2547, 17329) and 3957 (2569, 17213) = live. **Why bp9's order rule kept the wrong order (a):** the
+    reader lists EVOLVED bodies (codes 13xxxxxx: Knight_EV1, Tesla_EV1, Skeletons_EV1, an evo Cannon) after all others, so
+    their rows say nothing about creation order (031310: MK row 10, Knight row 12 behind our Tesla_EV1 row 11, which every
+    new body is inserted before).
+  - **SME_SAMETICK_GEN (bp9/order_inputs.reorder gens= + gen_frames; hook extract.match; off by default, needs
+    SME_SAMETICK_ORDER):** a same-tick group whose read plays all have a generation reading (lowest generation of the
+    play's new rows, every row mapped, above every generation of the frame before the tick) is sorted by generation; else
+    by rows, as before. Census (`engfix/samegen_census.{py,txt}`, all scored records dev + FRESH1-7): 178 cross-side
+    groups, 124 read both ways, 116 agree, 8 differ (7 with an evolved body; FRESH4 235316 Tornado's "new body" is older
+    than the frame before -> rejected). Field gate (`engfix/samegen_field_gate.{py,txt}`: reorder is extract.match's last
+    step and order-independent, so reorder(OFF record, gens) = the ON extraction; all 467 records of r9 OFF dev + FRESH1-6
+    and FRESH7): 9 change, the 7 census records + 2 not RNG-free (FRESH2 115543, FRESH5 022524). Flag-off re-extraction of
+    the 8 census records = r9 OFF byte for byte. Planted `engfix/samegen_test.py` ok 12 (rows vs gens, no gens = old rule,
+    spurious / missing / absent generations fall back, agreeing gens keep, a spell keeps its slot, different ticks never
+    move, real 031310 and 235316). pyflakes 0. **SME OFF vs ON (pod runs X5_gen_{dev,fr}_{off,on}, lib 5e8089a4, gate
+    sme11f, BANNER_GIVEN, ASSIGN default): 031310 2102 + 40 div (first 3954) -> 2142 / 2142 exact; dev 090406, 154319,
+    162012, 175456, FRESH4 152022 exact both ways, FRESH3 144727 flagged, same counts; 0 regressed, plants 0 missed.**
+    No fork branch is needed. -> fresh_prep.sh adds SME_SAMETICK_GEN=1 for FRESH8+.
+  - **FRESH4 165155@4811 (+0.2539 own elixir; lead: no scoring change) traced (a unless marked):** not crforge's elixir
+    accounting (ENG-FIX4 cap census: 328 / 329 plays at a displayed 10.0 fit the capped bank, `engfix/cap_short.txt`: 99
+    of them reached the cap more recently than this one, 7 at 3x, all capped) and not the extractor (run 4810 = the game's:
+    Skeletons on the 4811 second read in both; re-dating fails). The reads are coherent: 4811b 9.3076 then exactly +0.0537
+    / tick to the cap at 4824. Its unique feature (`engfix/lag_census.{py,txt}`, FRESH2-7, ~7,400 own plays): run - tap = 10
+    (tap 4800, run 4810); lags <= 15 occur 4 times (normal 20-46), and it is the only one whose bank reaches 10 inside the
+    tap -> run window. The arithmetic fits exactly "the cost was taken at the tap (9.7169 -> 8.7169) and the display showed
+    bank + pending cost, clamped at 10" (4803 9.878, 4805 9.9854, 4807+ 10.0) - or an uncapped bank; the two are
+    indistinguishable here (b). One case: no rule; watch short-lag plays in each new FRESH set with lag_census.py.
 - **(superseded by ENG-FIX2 above) RESTART POINT (10-29):** done = Codex ENG-FIX_5 (`.foreman/scratch/a2/codex/ENG-FIX_5.md`, out
   `.foreman/scratch/a2/codex/out/ENG-FIX_5.jsonl`, results `engfix/r5/`): BODYPT OFF vs ON on the changed matches of
   dev / FRESH1-4, lib 5e8089a4: DONE, 0 regressions, flag added to fresh_prep.sh.

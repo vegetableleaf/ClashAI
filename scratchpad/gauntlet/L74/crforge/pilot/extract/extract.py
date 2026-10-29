@@ -580,7 +580,8 @@ def match(path, bl=None, names=None, cat=None, shims=None, tt=None, uhp=None, by
         sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'sme' / 'bp9'))
         import live_frames
         import order_inputs
-        rec = order_inputs.reorder(rec, [], fr=[(f['t'], f) for f in live_frames.convert(path)])
+        rec = order_inputs.reorder(rec, [], fr=[(f['t'], f) for f in live_frames.convert(path)],
+                                   gens=order_inputs.gen_frames(path) if os.environ.get('SME_SAMETICK_GEN') == '1' else None)  # ENG-FIX5
     return rec, None
 
 
