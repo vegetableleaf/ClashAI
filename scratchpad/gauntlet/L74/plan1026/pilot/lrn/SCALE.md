@@ -3,58 +3,37 @@
 Labels: (a) measured (number + source), (b) plausible, untested, (c) contradicted. Owner mandate 10-28: learning progress
 per wall-clock hour x50-100+, fp32 only (TF32 off), kl_stop_prev 0.02. Rent only on a measured >= ~50x projection.
 
-## STATUS (keep current; LEARNER-SCALE3, 10-29 ~03:25 UTC)
-- Task list = the LEARNER-SCALE2 handover below, steps 1-6. Results go to section 7.
+## STATUS (keep current; LEARNER-SCALE3, 10-29 ~13:30 UTC; ALL STEPS DONE)
+- Task list = the LEARNER-SCALE2 handover below, steps 1-6. Results are in section 7.
 - LEAD DECISIONS (10-29 ~03:35 UTC):
   1. kl_lr_target is PARKED: the key stays but is unused, and the pilot keeps base small steps.
-  2. Tickets A and B (7e) are APPROVED as learner-only opt-in work, after the A/B result. The lead dispatches them.
-     The live / actor inference path must stay byte-identical, with identity tests on recorded live decisions.
-  3. Finish the A/B into 7f / 7g.
-- 33920 disk: 38 scratch learner-checkpoint dirs of the measurement runs were moved (not deleted) to
-  /dev/shm/lrn_ckpt_moved (726 MB; RAM, lost on a pod restart).
-  - The dirs: bench/rl_royale/lrn_{cap,compile,prof,profmod,st_*}_*. Their results are in the json files.
-  - Free space after the move: 905 MB -> 1.6 GB.
-  - Not touched (not mine): /workspace/lrn/id0_freshhead (4.8 GB) and id1 (2.4 GB), the T 0.3 records of 1b / 6b.
-- Commits: ab133d4 (the gate_baseline key, tests, glue_probe, 7a-7b). This commit: 7c, 7d, the A/B scripts (abm/).
-- DONE:
-  1. v2 sweep -> 7c. v2 still overshoots the cap (up to 6.3x). No arm is resolvably better than base.
-  2. gate_baseline key (7a).
-     - Tests: 26 passed on 33920 (gate 4 + accum + kllr + cache + kl_stop_prev + loop_overlap_decoupled), plus
-       test_rl_royale 46 passed. pyflakes clean.
-     - Smokes on 33920: absent PASS = the reference (b5e2a2bbafef, e816a6a4 / 3e07cff4, f060b678 / 5c61ac04); key on
-       PASS.
-  3. noise_scale with the key -> 7d. Policy noise trace -3% per match, -7.5% per row: no case for adoption.
-- INCIDENT 01:38 UTC (mine): my code copy (/workspace/lrn/cbg, 1 GB) filled 33920's 60 GB overlay disk, and the v2
-  sweep crashed in torch.save.
-  - Fix: I moved the copy to /dev/shm/cbg and restarted the sweep at 01:53 with the same command
-    (/workspace/lrn/chain_ls3a.sh; crash log sweep2v2_crash0138.log).
-  - The disk still has <1 GB free. Keep new trees on /dev/shm.
-- RUNNING:
-  - (done) 33920 prof_mod --prefill -> 7e (prof3/prof_mod_prefill2.json).
-
-  - (done) 33920: MC at 3,000 draws, default ridge: PASS (on 1.50, in-sample 33.5, x0.225; 7a).
-    - Why: the ridge-0 3,000-draw run failed the variance check (on 5.25 vs off 3.02). z stayed fine (on 1.66,
-      in-sample 36.2).
-    - Cause (b): rare near-singular score-weighted fits on ~50 rows per half.
-    - The test now uses ridge 1e-3: 300 draws, on 0.56 / in-sample 12.0, variance x0.22.
-  - 33553: the SIM A/B (step 4; lead: 33553 after V1-STRENGTH, keep <= 45 GB rss + shmem), run by Codex
-    LEARNER-SCALE3_1.
-    - Tree: /workspace/abm/cb (setup_abm.sh), queue /workspace/abm/ab_m.sh, out /workspace/abm/out
-      (TABLE.tsv at the end), progress /workspace/abm/ab_m.out.
-    - The 7 pool checkpoints 33553 lacked were copied from 33920 (sha256-verified; .foreman/scratch/a2/abm/ckpts.tar).
-    - Restart: `cd /workspace/abm && setsid nohup bash ab_m.sh >> ab_m.out 2>&1 < /dev/null &` (finished runs are
-      skipped). A run that died needs its two run dirs removed first (L68/rl/RUN, bench/rl_royale/RUN).
-  - Test tree: /dev/shm/cbg on 33920 (origin/main + my files). RAM only: rebuild per 7a.
-- Codex dispatches (.foreman/scratch/a2/codex/LEARNER-SCALE3_1.md, medium):
-  - 1 / 1b: BLOCKED, correctly. Its run.sh wrote to /workspace/loop/logs; fixed in setup_abm.sh.
-  - 1b was stopped by me (PID) to fix the cgroup memory measure: v1 cgroup, and usage_in_bytes holds ~35 GB of page
-    cache, so the measure is now rss + shmem.
-  - 1c: BLOCKED, correctly: missing pool checkpoints. I installed them.
-  - 1d: RUNNING (out LEARNER-SCALE3_1d_out.jsonl).
-- NEXT:
-  - 7e (CUDA-graph bound) and 7g (projection) DONE. CUDA graphs + glue NOT built: lead decision on tickets A / B (7e).
-  - Read the A/B table into 7f once ab_m.out says AB_M DONE.
-  - Fold 7f into 7g.
+  2. Tickets A (split-projection attention) and B (static-shape minibatch_loss + CUDA graphs) are APPROVED as
+     learner-only opt-in work after the A/B. The lead dispatches them. The live / actor inference path must stay
+     byte-identical, with identity tests on recorded live decisions.
+  3. Finish the A/B into 7f / 7g: DONE.
+- Commits:
+  - ab133d4: gate_baseline key, tests, glue_probe, 7a-7b.
+  - 0e266d2: 7c, 7d, abm/.
+  - d4cfc7c: 7e, 7g.
+  - 792e868: the MC at 3,000 draws.
+  - The STATUS commit: lead decisions.
+  - This commit: 7f.
+- Results:
+  - 7a: gate_baseline is unbiased (MC at 3,000 draws: z 1.50; the planted leak is caught at 33.5). Smokes PASS.
+  - 7c: kl_lr_target v2 overshoots the cap up to 6.3x (now parked).
+  - 7d: gate baseline = -3% of the policy noise per match. Not adopted.
+  - 7e: CUDA-graph bound <= 2x at mb 256; glue ~25% of kernel time.
+  - 7f: SIM A/B, M 1,024 - M 128 = +0.6 +- 1.0 pp after 7 updates (both arms +1.0 / +1.7 pp vs B0, unresolved).
+  - 7g: verdict ~10-30x, no rent case.
+- Finding for the lead (7f): the memory v2 artifacts differ between pods. 33553 /workspace/loop/cb: priors 178955c2,
+  lock_head ca144009. 33920 /workspace/lrn/cb: 4312a8ad / 15065623.
+- Nothing of mine is running. Leftovers (RAM, safe to drop):
+  - 33920: /dev/shm/cbg (test tree), /dev/shm/abm (the dropped eval tree), /dev/shm/lrn_ckpt_moved (726 MB of
+    moved scratch checkpoints).
+  - 33553: /workspace/abm. On disk there: the A/B checkpoints, ~21 GB free before the run.
+- Codex: LEARNER-SCALE3_1 (medium). Dispatches 1, 1b and 1c were BLOCKED correctly (each fixed by me); 1d ran the A/B
+  to completion. 1d stopped one run at the 45 GB bar and reran it at 2 x 64, as the ticket said. Its numbers were
+  checked against the raw logs (abm/ab_tab.py).
 
 ## STATUS of LEARNER-SCALE2 (10-29 ~01:35 EDT; superseded, kept for the handover list)
 - Commits this seat:
@@ -617,8 +596,54 @@ holds the PPO step only. 33920 4090, pilot.yaml + mem_row_cache, T 0.1 records s
 | 1. gate variance reduction (state baseline) | B_row / 5-10 hoped | policy noise -3% per match / -7.5% per row (7d, a) | ~1.0x: drop it as a state baseline. Form (a) (both gate outcomes) needs cf-fork Q values: untested, a design topic |
 | 2. per-step latency (CUDA graphs + glue) | ~1.5-2x | bounds <= 2.6x at mb 256, <= 1.5x at 1,024 (7e, a: the shares); not built | option B's learner ~4 s -> ~1.6-2.7 s on the box; U then likely wave-bound (~6-9 s per wave, PROJECTION.md, b) unless the rollouts overlap |
 | kl_lr_target v2 for option C | assumed to reach the cap cleanly | overshoots 1.5-6.3x (7c, a) | option C's ~14 s update and its I estimate are not usable until the lr rule is fixed |
-| 3. SIM A/B M 128 vs 1,024 | not measured | RUNNING on 33553 (7f, pending) | decides option B's I |
+| 3. SIM A/B M 128 vs 1,024 | not measured | no resolvable difference, M 1,024 - M 128 = +0.6 +- 1.0 pp after 7 updates (7f, a) | option B's I is not shown to be worse; M 128 used 1/8 of the matches |
 - Verdict (b): unchanged. ~10-30x, short of the ~50x rent bar.
   - Option B (M 128, learner-bound, with rollouts overlapped) is the only path above ~30x.
   - It needs BOTH the A/B to show I(M 128) ~ I(M 1,024) per update, AND the per-step work (7e tickets A + B).
 - No rent case on these numbers.
+
+### 7f. SIM A/B: 128 vs 1,024 matches per update at equal updates (a; 33553; abm/ab_m.sh, ab_tab.py; logs .foreman/scratch/a2/abm/out)
+Setup:
+- ref_pilot_noiw (the pilot without the hero ability), B0 init, critic warm-up 1, then 7 policy updates (8 updates).
+- 2 training seeds (1028, 2029) x M 128 (E 32) / M 1,024 (E 256), G 4.
+- Eval = each u0008 checkpoint (and B0) as init, playing 1,024 matches per eval seed (7001, 7002 = common matchups) vs
+  the training pool, read from the critic-only u0000 rollouts.
+- Caveat (b): in an eval run the pool's "init" opponent is the checkpoint itself, ~1/8 of the matches. It biases every
+  arm the same way.
+Training: on-policy win rate per update vs the pool (n 128 or 1,024 per update), PPO steps until kl_stop 0.02:
+| run | win rate u0 -> u7 | mean u4-u7 | steps per update u1-u7 | wall |
+|---|---|---|---|---|
+| s1028 M 1,024 | .717 .715 .719 .749 .745 .711 .751 .720 | .732 | 36-111 | 70 min (4 x 128 in flight) |
+| s2029 M 1,024 | .721 .736 .750 .725 .730 .719 .715 .729 | .723 | 47-145 | ~2.5 h (rerun at 2 x 64 after a 45 GB memory stop at u6) |
+| s1028 M 128 | .719 .750 .781 .656 .742 .789 .797 .711 | .760 | 10-83 | 21 min |
+| s2029 M 128 | .773 .742 .836 .727 .727 .695 .828 .750 | .750 | 36-158 | 24 min |
+Eval (2,048 matches per checkpoint; binomial se; arm differences are unpaired):
+| checkpoint | win rate | vs B0 |
+|---|---|---|
+| B0 | 0.7231 +- 0.0099 | - |
+| s1028 M 128 | 0.7427 +- 0.0097 | +1.95 pp +- 1.38 |
+| s2029 M 128 | 0.7246 +- 0.0099 | +0.15 pp +- 1.40 |
+| s1028 M 1,024 | 0.7427 +- 0.0097 | +1.95 pp +- 1.38 |
+| s2029 M 1,024 | 0.7368 +- 0.0097 | +1.37 pp +- 1.39 |
+| pooled M 128 (4,096) | 0.7337 +- 0.0069 | +1.05 pp +- 1.2 |
+| pooled M 1,024 (4,096) | 0.7398 +- 0.0069 | +1.66 pp +- 1.2 |
+- (a) Over 7 policy updates, neither arm is resolvably better than B0, or than the other.
+  - M 1,024 minus M 128 = +0.6 pp +- 1.0.
+  - Both point estimates are positive (+1.0 / +1.7 pp).
+- (a) Steps until the cap are similar for both arms (10-158 vs 33-145), as 6f found offline.
+- (a) At equal updates, M 128 used 1/8 of the matches: 1,024 vs 8,192 per seed. Its updates were ~3x cheaper in wall
+  time here (wave-bound: 128 matches ~2.7 min per update vs 1,024 matches ~7.5-9 min per update).
+- (b) Reading for option B (7g): no evidence that I(M 128) per update is below I(M 1,024), but the A/B can exclude
+  only a large gap. The 2 sigma bound on the difference is ~2 pp over 7 updates. Resolving ~0.5 pp per update would
+  need ~10x the eval matches or many more updates.
+- Infrastructure findings:
+  - (a) The 45 GB bar on 33553 is tight for M 1,024: rss + shmem peaked at 44 GB with 4 x 128 in flight. One run
+    crossed it at u6 and was rerun at 2 x 64, 2.5x slower per wave (1,034 s vs 416 s per 1,024 matches).
+  - (a) The memory v2 artifacts DIFFER between pods. 33553's tree (via /workspace/loop/cb): counter_priors 178955c2,
+    lock_head ca144009. 33920's /workspace/lrn/cb: 4312a8ad / 15065623.
+    - The arms' checkpoints refuse to load on 33920 (model_gen.check_memory_meta), so the parallel evals I started on
+      33920 were dropped. Only 33553 numbers are used above.
+    - The lead should check which pair the pilot uses: runs on different pods may feed different memory features.
+- 7g update from 7f: the A/B line now reads "M 128 vs 1,024 per update: no resolvable difference at +-1 pp over 7
+  updates (M 1,024 - M 128 = +0.6 +- 1.0 pp)". Option B stays the only path above ~30x. Its I is not shown to be worse.
+  Its per-step work is approved (tickets A / B, learner-only).

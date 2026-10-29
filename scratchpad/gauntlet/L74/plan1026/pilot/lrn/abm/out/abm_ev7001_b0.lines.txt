@@ -1,0 +1,4 @@
+[rl] START abm_ev7001_b0 pid 111014 config sha 9a8f366dea8e argv ['--run', 'abm_ev7001_b0', '--config', 'scratchpad/gauntlet/L74/plan1026/pilot/loop/ref_pilot_noiw.yaml', 'G=4', 'critic_warmup_updates=1', 'n_actors=2', 'proagree_every=1000', 'screen_entries=2', 'E=256', 'max_updates=1', 'save_every=1', 'seed=7001', 'init=icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt']
+[fastloop] u0000 1024 matches in 1054.2 s = 3497 /h, 657900 rows (624/s), skipped 0
+[rl] W16 u0000 batch_sha b210d235edf0f339 weights_sha e7323edae2c4f4b5
+[rl] u0000 W/L/D 760/264/0 ppm 12.33 pgate 0.224 KL g/c/x 0.0000/0.0000/0.0000 beta 0->0 (leash max: card) clip 0.000 kl_stop no steps 2436 mixed 148/256 rows 311724 wall roll 1054s upd 455s | gae WARMUP (critic only) vloss 0.0064 ev 0.912 A +0.0255/0.1723 ret +0.240 V +0.105 vshare - | tower_phat |F| 0.0052 |Phi| 0.1928 max 0.5000 dom 0.193 | league wr init 0.74/156 snapshot -/0 s1 -/0 exploiter 0.78/772 exploiter_league 0.45/96 D 0

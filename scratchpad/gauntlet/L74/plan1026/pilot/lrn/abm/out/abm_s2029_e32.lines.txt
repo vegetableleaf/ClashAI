@@ -1,0 +1,25 @@
+[rl] START abm_s2029_e32 pid 93913 config sha d7912e7372fd argv ['--run', 'abm_s2029_e32', '--config', 'scratchpad/gauntlet/L74/plan1026/pilot/loop/ref_pilot_noiw.yaml', 'G=4', 'critic_warmup_updates=1', 'n_actors=2', 'proagree_every=1000', 'screen_entries=2', 'E=32', 'max_updates=8', 'save_every=1', 'seed=2029']
+[fastloop] u0000 128 matches in 141.9 s = 3247 /h, 85961 rows (606/s), skipped 0
+[rl] W16 u0000 batch_sha 37f4c86804fc2fd5 weights_sha e7323edae2c4f4b5
+[rl] u0000 W/L/D 99/29/0 ppm 12.11 pgate 0.223 KL g/c/x 0.0000/0.0000/0.0000 beta 0->0 (leash max: card) clip 0.000 kl_stop no steps 318 mixed 20/32 rows 40504 wall roll 142s upd 54s | gae WARMUP (critic only) vloss 0.0067 ev 0.905 A +0.0265/0.1750 ret +0.274 V +0.116 vshare - | tower_phat |F| 0.0050 |Phi| 0.2044 max 0.5000 dom 0.204 | league wr init 0.75/16 snapshot -/0 s1 -/0 exploiter 0.80/108 exploiter_league 0.25/4 D 0
+[fastloop] u0001 128 matches in 131.6 s = 3501 /h, 77436 rows (588/s), skipped 0
+[rl] W16 u0001 batch_sha a4cac57e23750532 weights_sha 7cbc9e4926644235
+[rl] u0001 W/L/D 95/33/0 ppm 12.68 pgate 0.227 KL g/c/x 0.0055/0.0016/0.0017 beta 0->0 (leash max: card) clip 0.042 kl_stop e0 mb50 KL 0.0210 steps 50 mixed 15/32 rows 37275 wall roll 132s upd 18s | gae vloss 0.0067 ev 0.921 A +0.0246/0.1692 ret +0.265 V +0.125 vshare 0.012 | tower_phat |F| 0.0055 |Phi| 0.1978 max 0.5000 dom 0.198 | league wr init 0.00/4 snapshot -/0 s1 -/0 exploiter 0.88/96 exploiter_league 0.39/28 D 0
+[fastloop] u0002 128 matches in 143.5 s = 3212 /h, 88156 rows (615/s), skipped 0
+[rl] W16 u0002 batch_sha 4dbb197ad405a77f weights_sha a7cb3aa8ccd902e3
+[rl] u0002 W/L/D 107/21/0 ppm 12.12 pgate 0.222 KL g/c/x 0.0030/0.0016/0.0020 beta 0->0 (leash max: card) clip 0.033 kl_stop e0 mb68 KL 0.0246 steps 68 mixed 15/32 rows 42382 wall roll 143s upd 21s | gae vloss 0.0056 ev 0.902 A +0.0307/0.1596 ret +0.314 V +0.144 vshare 0.012 | tower_phat |F| 0.0049 |Phi| 0.1853 max 0.5000 dom 0.185 | league wr init 0.85/20 snapshot -/0 s1 -/0 exploiter 0.85/104 exploiter_league 0.50/4 D 0
+[fastloop] u0003 128 matches in 133.1 s = 3461 /h, 76629 rows (576/s), skipped 0
+[rl] W16 u0003 batch_sha cd8e128da02ef32d weights_sha 4f2bcbed88fd9ee9
+[rl] u0003 W/L/D 93/35/0 ppm 12.30 pgate 0.222 KL g/c/x 0.0042/0.0021/0.0022 beta 0->0 (leash max: card) clip 0.038 kl_stop e0 mb109 KL 0.0206 steps 109 mixed 21/32 rows 37447 wall roll 133s upd 32s | gae vloss 0.0075 ev 0.916 A +0.0192/0.1774 ret +0.265 V +0.138 vshare 0.009 | tower_phat |F| 0.0055 |Phi| 0.1958 max 0.5000 dom 0.196 | league wr init 0.92/12 snapshot -/0 s1 -/0 exploiter 0.76/84 exploiter_league 0.56/32 D 0
+[fastloop] u0004 128 matches in 136.2 s = 3383 /h, 81505 rows (598/s), skipped 0
+[rl] W16 u0004 batch_sha dd0bfa4e8082ee75 weights_sha 56b265a305d3bc69
+[rl] u0004 W/L/D 93/35/0 ppm 12.08 pgate 0.219 KL g/c/x 0.0033/0.0027/0.0022 beta 0->0 (leash max: card) clip 0.031 kl_stop e0 mb83 KL 0.0200 steps 83 mixed 20/32 rows 38887 wall roll 136s upd 25s | gae vloss 0.0070 ev 0.912 A +0.0165/0.1719 ret +0.313 V +0.166 vshare 0.006 | tower_phat |F| 0.0052 |Phi| 0.1894 max 0.5000 dom 0.189 | league wr init 0.62/8 snapshot -/0 s1 -/0 exploiter 0.77/108 exploiter_league 0.42/12 D 0
+[fastloop] u0005 128 matches in 132.3 s = 3484 /h, 80956 rows (612/s), skipped 0
+[rl] W16 u0005 batch_sha f361cd8ff3c20fba weights_sha bf7375070aff289f
+[rl] u0005 W/L/D 89/39/0 ppm 12.15 pgate 0.222 KL g/c/x 0.0030/0.0020/0.0024 beta 0->0 (leash max: card) clip 0.031 kl_stop e0 mb61 KL 0.0202 steps 61 mixed 20/32 rows 40093 wall roll 132s upd 19s | gae vloss 0.0068 ev 0.913 A +0.0112/0.1707 ret +0.271 V +0.152 vshare 0.006 | tower_phat |F| 0.0051 |Phi| 0.1813 max 0.5000 dom 0.181 | league wr init 0.58/12 snapshot -/0 s1 -/0 exploiter 0.80/84 exploiter_league 0.47/32 D 0
+[fastloop] u0006 128 matches in 157.6 s = 2925 /h, 84133 rows (534/s), skipped 0
+[rl] W16 u0006 batch_sha a6cab063d7364e11 weights_sha 707289ce934801d4
+[rl] u0006 W/L/D 106/22/0 ppm 12.54 pgate 0.231 KL g/c/x 0.0055/0.0021/0.0049 beta 0->0 (leash max: card) clip 0.043 kl_stop e1 mb5 KL 0.0206 steps 158 mixed 15/32 rows 39122 wall roll 158s upd 47s | gae vloss 0.0071 ev 0.907 A +0.0223/0.1614 ret +0.495 V +0.236 vshare 0.007 | tower_phat |F| 0.0050 |Phi| 0.1964 max 0.5000 dom 0.196 | league wr init 0.78/32 snapshot -/0 s1 -/0 exploiter 0.85/92 exploiter_league 0.75/4 D 0
+[fastloop] u0007 128 matches in 130.3 s = 3538 /h, 80592 rows (619/s), skipped 0
+[rl] W16 u0007 batch_sha a52a5fc9663fb7de weights_sha 04fe19f61780986e
+[rl] u0007 W/L/D 96/32/0 ppm 12.50 pgate 0.226 KL g/c/x 0.0027/0.0013/0.0007 beta 0->0 (leash max: card) clip 0.025 kl_stop e0 mb36 KL 0.0215 steps 36 mixed 17/32 rows 38172 wall roll 130s upd 11s | gae vloss 0.0064 ev 0.919 A +0.0121/0.1702 ret +0.396 V +0.225 vshare 0.009 | tower_phat |F| 0.0052 |Phi| 0.1990 max 0.5000 dom 0.199 | league wr init 1.00/4 snapshot -/0 s1 -/0 exploiter 0.80/108 exploiter_league 0.38/16 D 0
