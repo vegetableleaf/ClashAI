@@ -79,10 +79,34 @@ Labels: (a) measured, (b) plausible / untested, (c) contradicted.
     - Historical hashes unchanged (succ48_x_s101 32192ba00a43, ref_pilot_noiw f692d08823da).
     - rl_royale --smoke on 33308 (`async/smoke_dc.sh`): key absent PASS (b5e2a2bbafef); key on PASS (is_maxdev_first
       3.0e-6 / 3.7e-6).
-- A/B v2 RUNNING (33308 GPU0): `cd /workspace/async && XO="ppo_decoupled=2.0" setsid nohup bash ab_queue.sh v2 "1028 2029"
-  > ab_v2.out 2>&1 < /dev/null &` (resumable: finished runs skipped via ab_v2/RUN.done).
-  - The key is on in both modes. m0 is a live check that the key reproduces today's loss on-policy (compare v1 m0);
-    m1 is the overlap arm.
+- A/B v2 DONE (a; 33308 GPU0, 10-29 01:12-03:02). Same setup as v1 + `ppo_decoupled=2.0` on BOTH modes.
+  - Results on the laptop: .foreman/scratch/a2/async/ab_v2/ (eval json, logs, throughput, train logs).
+  - Summary: `cd /workspace/async && python cb/.../loop/async/ab_summary.py v1 v2`.
+  - m0 with the key (on-policy) = v1 m0 without it at u0-u2: same W/L, steps 322 / 29 / 97, KL to 4 decimals. That is
+    the live check that the key is today's loss on-policy. From u3 on the runs drift apart through the server-mode lp
+    noise (sampled actions); the J spread between v1 m0 and v2 m0 at u8 (+0.0020 vs -0.0062, s1028) shows that
+    run-to-run noise.
+  | (u2-u7 unless noted) | s1028 m0 | s1028 m1 | s2029 m0 | s2029 m1 | v1 m1 (for reference) |
+  |---|---|---|---|---|---|
+  | updates/h | 22.62 | 26.03 (**1.15x**) | 22.05 | 25.47 (**1.16x**) | 26.5 / 25.9 |
+  | PPO steps | 97 78 45 49 59 93 | 52 78 18 81 23 85 | 52 90 54 57 68 145 | 48 71 35 70 81 101 | 9-16 |
+  | mean steps (m1 / m0) | 70.2 | 56.2 (0.80x) | 77.7 | 67.7 (0.87x) | ~0.15x |
+  | first max abs(r-1) / clip_frac | 0 / .030-.038 | 0 / .031-.045 | 0 / .034-.044 | 0 / .030-.042 | 0.8-4.1 / .046-.096 |
+  | max abs(pi_prox / pi_beh - 1) at step 0; rows truncated at c 2 | 0; 0 | 0.56-6.5; 0.1-0.7% | 0; 0 | 0.67-2.2; 0.2-0.5% | - |
+  | held KL cell from B0 at u8 | 0.0285 | 0.0212 (0.74x) | 0.0208 | 0.0290 (1.39x) | 0.4x |
+  | held KL gate u2..u8 | .010 .040 .039 .083 .048 .098 .123 | .013 .027 .033 .034 .045 .095 .128 | .009 .029 .059 .103 .125 .091 .062 | .010 .028 .011 .019 .054 .066 .058 | saw-tooth |
+  | held J at u8 +- se | -.0062 +- .0087 | -.0016 +- .0088 | -.0025 +- .0029 | -.0034 +- .0022 | |
+  - VERDICT v2:
+    - (a) The v1 pathologies are gone. Steps per update recovered from ~0.15x to 0.80-0.87x of mode 0, the clip
+      fraction is mode 0's, and the gate KL no longer saw-tooths on s1028 (monotone .013 -> .128).
+    - (a) After 7 policy updates, the distance moved from B0 is within mode 0's own range: cell 0.74x / 1.39x, gate
+      1.04x / 0.94x.
+    - (b) J cannot resolve real improvement: all four arms are within ~1 se of each other and of 0, and the
+      run-to-run J spread (v1 m0 vs v2 m0) is larger than any arm difference.
+    - So "per-update progress not worse" holds to the resolution of these metrics. The real test is the SIM A/B over
+      many updates at pilot scale.
+    - (a) Speed is unchanged by the key: 1.15-1.16x at this size (T_roll ~130 s >> T_learn 5-30 s, hidden). The
+      ceiling is 2x at T_roll = T_learn.
 - A/B v1 restart: `cd /workspace/async && setsid nohup bash ab_queue.sh v1 "1028 2029" > ab_v1.out 2>&1 < /dev/null &`
   (finished runs skipped via ab_v1/RUN.done).
 - Codex dispatches: LOOP-ASYNC_1 (medium; .foreman/scratch/a2/codex/LOOP-ASYNC_1.md): ran + watched the queue, built
