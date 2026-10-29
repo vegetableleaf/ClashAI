@@ -21,7 +21,27 @@ per wall-clock hour x50-100+, fp32 only (TF32 off), kl_stop_prev 0.02. Rent only
     /workspace/lrn/tab.py /workspace/lrn/logs/sweep2v2.log`.
   - Restart: the last command in /workspace/lrn/chain_ls2b.sh.
 - Codex: LEARNER-SCALE_3 (low), the T 0.1 capture: DONE, 4/4 PASS, checked against the log. No other dispatch.
-- NEXT:
+- HANDOVER (10-29 ~01:35; this seat's context is exhausted). Lead's overnight ticket (BUILD + MEASURE; nothing goes into
+  pilot.yaml), for a fresh seat, in order:
+  1. Gate-head variance reduction, as an opt-in key. It must be UNBIASED.
+     - Where: the gate term is in policy_terms (rl_royale.py ~2460: lp_gate = logsigmoid(+-x) on gate_sampled rows) and
+       minibatch_loss (joint ratio on lp_gate + lp_card + lp_cell, ~2807).
+     - Form (a), the expected value over the two gate outcomes: needs Q(s, play) and Q(s, wait). The records hold only
+       the sampled outcome, so this needs counterfactual returns (the R_fork / cf SIM forks give them at fork rows
+       only). Not buildable from today's records.
+     - Form (b), a gate-specific state baseline: A_gate = A - b(s) on gate rows only. b(s) is a detached regression of
+       A on the trunk's g. CROSS-FIT it by match halves, so a row's own A never enters its baseline; otherwise the bias
+       comes back. Unbiased because b does not depend on the gate action.
+     - Proof: on test_rl_royale's tiny model, compare the mean gradient over many sampled trajectories (MC), on vs off,
+       equal within MC error. Plus: absent = byte-identical, hash unchanged, a real smoke.
+     - Then: noise_scale.py on s2101 + s2102 with the key on; compare against 6e (gate tr 85.7; policy B_match ~1,200).
+  2. SIM win-rate A/B: 128 vs 1,024 matches per update, >= 2 seeds, at equal updates. ASK THE LEAD before using 33308.
+     Use LOOP-ASYNC's ab_queue.sh pattern (fastloop + ab_eval) with E/G set per arm.
+  3. CUDA graphs on fixed row buckets (pad the minibatch to 256 rows; played-row subsets padded to fixed buckets) +
+     removing the glue (6b: fill / clone / copy / index_put ~42%). Identity: gradients <= 1e-7 rel, monitors <= 1e-4.
+     Measure with prof_mod.py.
+  Then update 6g with what got measured.
+- NEXT (older):
   1. Read the v2 sweep into 6d. The question: does any arm reach the cap without overshoot, and with what paired dJ?
   2. Lead / owner decision on 6g lever 1 (gate-gradient variance reduction; it changes the loss).
   3. SIM A/B for M 128 vs 1,024 per update at equal updates; it needs producers (LOOP-INT / ASYNC tooling).
