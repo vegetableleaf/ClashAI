@@ -1,0 +1,32 @@
+2026-10-28T14:48:19Z memory
+2026-10-28T14:49:27Z subset
+2026-10-28T14:51:56Z smoke
+/workspace/p4/code/scratchpad/gauntlet/L74/scale/v1/run_base.sh: line 16: runs/base_smoke/train.out: No such file or directory
+/workspace/p4/code/scratchpad/gauntlet/L74/scale/v1/run_base.sh: line 20: runs/base_smoke/train.out: No such file or directory
+grep: runs/base_smoke/train.out: No such file or directory
+2026-10-28T14:52:32Z smoke
+2026-10-28T14:54:57Z smoke
+2026-10-28T15:00:00Z base_pre
+2026-10-28T15:01:00Z gpu busy (4500 MiB free)
+2026-10-28T15:03:00Z gpu busy (4080 MiB free)
+2026-10-28T17:24:47Z base_ice
+2026-10-28T17:33:16Z eval base_ice/opp_base_ice_s0
+2026-10-28T17:35:18Z eval base_pre/opp_base_pre_s0
+2026-10-28T17:37:21Z eval clxiii
+2026-10-28T17:39:23Z curve m10 320 7 0
+2026-10-28T17:42:56Z curve m2 160 4 0
+2026-10-28T17:47:39Z eval runs/base_ice/opp_base_ice_s0.pt
+2026-10-28T17:57:28Z eval runs/base_pre/opp_base_pre_s0.pt
+2026-10-28T18:00:55Z EVAL FAILED runs/base_pre/opp_base_pre_s0.pt (see runs/base_pre/eval.out)
+2026-10-28T18:02:05Z eval runs/base_pre/opp_base_pre_s0.pt
+2026-10-28T18:12:05Z eval data/ICEBOW_Mark_CLXIII_NOLEAK.pt
+2026-10-28T18:17:33Z eval data/v0_gen_m10_s0.pt
+2026-10-28T18:24:19Z curve m2 160 4 0
+2026-10-28T20:08:05Z curve m5 224 6 0
+2026-10-28T22:01:09Z curve m20 384 10 0
+2026-10-29T01:26:42Z curve m10 320 7 1
+2026-10-29T03:53:22Z DONE
+2026-10-29T03:55:53Z after_queue: DONE #1 seen, starting the control round
+2026-10-29T03:55:53Z v32subset
+2026-10-29T04:00:00Z control m10
+2026-10-29T06:28:50Z DONE
