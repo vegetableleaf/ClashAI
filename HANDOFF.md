@@ -1,3 +1,24 @@
+## 2026-10-29 ~00:15 EDT -- OVERNIGHT CHECKPOINT (account 2 lead; context near compaction)
+
+- OWNER AUTHORIZATION (10-28 ~22:25, asleep): if opponent v1 meets the pilot bar (v6 B-live RMS <= 0.20, siege facts in
+  v6 margins, CLXIII D3 SIM win vs v1 30-50%), start the pilot on 33308 (clear other jobs; LOOP_INT.md "Pilot on 33308"),
+  and if the pilot passes its SIM gate vs CLXIII, stop live BETWEEN MATCHES and start the 30-match live safety trial
+  (revert if <= 5/30 or idle-on-threat worse), then a 150-match block (promote if CI low > 32.7%). Live currently runs
+  CLXIII via the supervisor (owner restarted it 18:44).
+- v1: seed 0 DONE (33903 /workspace/opp/v1/run_s0/opp_v1_s0.pt, attached opp_v1_s0_sim.pt, best total 5.216); level B v1s0
+  running (Codex P2OPP2_3; /workspace/opp/score/v1s0.out); seed 1 running (ETA ~06:30 EDT); live rows delivered
+  (/workspace/opp/live/live_train, live_cal) for the fine-tune. NEXT: resume P2-OPP2 (ac85409b/aa542a90) to check v1s0
+  level A/B vs the bar + fine-tune; OPP-LEARN-C (acd4886d) runs v1 strength calibration on 33308 GPU1 (timing-output pull
+  approved; v0 dry run: strength barely moved, frozen hazard drifted +16%).
+- Training-speed verdict so far (owner bar ~100x): projection ~10-30x (< 50x rent bar). Large batches not better per
+  update; per-row exact speed-ups <= ~1.5-2.6x; overlap + decoupled PPO 1.15x at 128/update (<= 2x). Gate baseline: no
+  gain. Pending: SIM A/B 128 vs 1,024 matches/update on 33553 (~03:00 EDT; LEARNER-SCALE3 a751f3bc). Morning: put the
+  constraint trade-off (fp32 / KL cap 0.02) to the owner.
+- Engine: fresh pooled 31/41; ENG-FIX (ad4aacf6) extractor rules fix 8 (dev); Rocket damage + OT tiebreak = game.
+- Reward: macro library (Rocket cycling +8 pp, defensive X-Bow +12 pp); Rocket-family fork triggers weight 0 until signs
+  turn; macro prefixes next (needs a fresh fork worker).
+- Ledger: .foreman/ledger.md "RUN 2026-10-28b" (full detail); workers' docs hold STATUS + restart commands.
+
 ## 2026-10-28 ~18:10 EDT -- account 2 checkpoint: pilot READY but POSTPONED for opponent v1; v6 thresholds; 100x speed work
 
 - Owner decisions today (all in HANDOFF_1028.md 10.x + memory): Zap rule built; lazy_refine ON; KL cap 0.02 (option A);
