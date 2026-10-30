@@ -70,5 +70,34 @@ G family: .157 / .163 / .217 at u0-9 / 10-19 / 20-29).
 - Success-mark note: G u160 (26.7%) is G's best block; comparing a new arm's single block to it biases against the arm. Compare to
   G's u80-u240 mean (23.3%) as well.
 
+### Style track S0 (2026-10-30 ~21:40 UTC, laptop, `style_s0.py`; sealed block never read): the error is NOT human drift
+Data constraint first (a): CLXIII-era human rows exist only in the calibration block (10-25 08:49 .. 10-28 09:06 = the v6 newest
+block, the scoring reference) and the sealed block (>= 10-28 09:06, level D only; live_split.json, frozen 10-28). So "re-imitate
+on CLXIII-era rows with the newest block held out" has no data unless the owner re-splits. S0 asks whether it is needed at all.
+Unweighted Cohen d per stat, humans pre-CLXIII (10-19 .. 10-24, older Marks, n 877 matches; = live_train's span) vs CLXIII-era
+(calibration, n 867), and ftR / G u160 (480 games each, 16.635.3, 5e8089a4) against each era (a):
+
+| stat | drift (CLXIII - pre humans) | ftR - pre | ftR - CLXIII | G u160 - pre | G u160 - CLXIII |
+|---|---|---|---|---|---|
+| react_lift | +0.01 | +0.50 | +0.49 | +0.43 | +0.43 |
+| gap_p10 | -0.04 | -0.68 | -0.58 | -0.53 | -0.45 |
+| react_s | -0.11 | -0.37 | -0.25 | -0.38 | -0.27 |
+| ppm_1x | +0.05 | -0.30 | -0.34 | -0.27 | -0.32 |
+| spell_depth | +0.08 | +0.72 | +0.66 | +0.43 | +0.37 |
+| push_mean | +0.07 | -0.40 | -0.45 | -0.09 | -0.16 |
+| our_half | -0.08 | -0.00 | +0.08 | +0.56 | +0.66 |
+| pocket_share | -0.13 | +0.13 | +0.26 | +0.53 | +0.68 |
+(all 25 stats: drift |d| <= 0.13; own_half / bridge / troop_depth are masked before 10-25 by the reader rule.)
+Reading: (a) human drift between the two eras is <= 0.13 d on every stat, and the model's errors are the same size against the
+humans it imitated as against CLXIII-era humans. (c) CONTRADICTED: "the timing error comes from imitating older humans" --
+re-imitating the timing head on CLXIII-era rows would target a difference of ~0.05 d. The style error is a closed-loop property
+(per decision the timing head is calibrated: SIEGE test 1, slot ECE 0.5-0.75 pp, a). Next style probes (b, ranked):
+- S0b instrument / environment: the same stats on HF human-vs-human data vs the model in B-HF closed loop (pairs.py --mvm, both
+  seats the model; no live reader, no CLXIII). If react_lift / gap_p10 errors persist there, it is the model's closed-loop
+  dynamics; if they vanish, it is the live instrument or CLXIII's SIM behaviour (CLXIII plays 1.79 vs live 2.48 plays in the
+  10 s after its X-Bow, SIEGE, a).
+- S1 our_half / pocket_share: RL-made (ftR .00 / .13 vs pre humans -> G .56 / .53). Exploit check: CLXIII tower damage per
+  opponent pocket / our-half play, SIM (G rows, --record-board) vs live humans (calibration block, analysis only).
+
 ## Rounds (ledger)
 (none yet)

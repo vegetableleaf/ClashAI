@@ -8,9 +8,9 @@
 # Log: /workspace/oplm/logs/RUN.out. Resume after a stop: the same command + --resume. Stop: kill the rl_royale PID (exact PID).
 # Opt-in env (OPP-PUSH 10-30; unset = the command above, unchanged): GPU=i (CUDA_VISIBLE_DEVICES, default 0, for a 2-GPU pod);
 # ALLOC=expandable_segments:True (PYTORCH_CUDA_ALLOC_CONF: the allocator only, numerics unchanged; lets two 8.5 GB-peak learners
-# that each RESERVE ~13 GB share one 24 GB card -- (b) untested).
+# that each RESERVE ~13 GB share one 24 GB card -- (b) untested). HOST=ip (pods off 157.157.221.29).
 P=$1; RUN=$2; CPUS=$3; NACT=$4; CFG=$5; shift 5
-ssh -o BatchMode=yes -i ~/.ssh/runpod_clashbot -p "$P" root@157.157.221.29 "cd /workspace/oplm/cb2 && mkdir -p /workspace/oplm/logs && \
+ssh -o BatchMode=yes -i ~/.ssh/runpod_clashbot -p "$P" root@${HOST:-157.157.221.29} "cd /workspace/oplm/cb2 && mkdir -p /workspace/oplm/logs && \
  export RL_BATCH_SHA=1 ROYALE_ENGINE=crforge CRFORGE_LIB=/workspace/crforge_main/fe364ceb/plain/lib ROYALE_HEROIW_FORM=hero \
  CRFORGE_TABLES=/workspace/oplm/tables/16.635.3 CUDA_VISIBLE_DEVICES=${GPU:-0} ${ALLOC:+PYTORCH_CUDA_ALLOC_CONF=$ALLOC }PYTHONPATH=/workspace/oplm/cb2/scratchpad/gauntlet/L74/plan1026/pilot/loop/hook:/workspace/oplm/cb2 \
  CUBLAS_WORKSPACE_CONFIG=:4096:8 CRFORGE_FACADE_BUILD=/workspace/oplm/cb2/scratchpad/gauntlet/L74/plan1026/pilot/loop/jbuild_fe364ceb \

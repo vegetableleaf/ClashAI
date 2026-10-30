@@ -14,10 +14,10 @@
 # Then: JDK 17 + rsync (apt) if missing, python3.12 if missing (apt, else uv + venv symlink), a CUDA matmul per GPU in the venv,
 # and a sha256 digest of every copied tree on BOTH pods (must match; a mismatch on opp/cb can be the lead's D3 block writing
 # there: re-run). Idempotent: re-running re-copies and re-verifies. Output: /workspace/oppboot/BOOT.txt on the new pod.
-set -euo pipefail
-NP=$1; SP=${2:-33903}; H=root@157.157.221.29; TAG=opp-push-boot-$NP
+set -euo pipefail   # opt-in env HOST = the NEW pod's host (default 157.157.221.29); the source stays 157.157.221.29:SRCPORT
+NP=$1; SP=${2:-33903}; H=root@157.157.221.29; NH=root@${HOST:-157.157.221.29}; TAG=opp-push-boot-$NP
 K="-o BatchMode=yes -o ConnectTimeout=30 -o ServerAliveInterval=30 -i $HOME/.ssh/runpod_clashbot"
-N="ssh $K -p $NP $H"; S="ssh $K -p $SP $H"
+N="ssh $K -p $NP $NH"; S="ssh $K -p $SP $H"
 X="--exclude=workspace/oplm/cb2/icebow/data/bench/rl_royale/* --exclude=workspace/oplm/cb2/scratchpad/gauntlet/L68/rl/*"
 X="$X --exclude=workspace/oplm/cb2/hs_err_pid* --exclude=workspace/icebow_data/bench/rl_royale/* --exclude=*/remote_actors.token"
 X="$X --exclude=*/__pycache__"

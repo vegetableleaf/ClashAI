@@ -6,7 +6,7 @@
 # Local rows / reports (bulk, not committed): .foreman/scratch/opp_push/{rows,card}/NAME.
 # Stop: touch STOP_ARM_D3 next to the running copy. Never edit a running copy (run a copy with a new name per loop).
 RUN=$1; SP=$2; EP=$3; CPUS=$4; W=$5; shift 5
-S="ssh -o BatchMode=yes -o ConnectTimeout=30 -i $HOME/.ssh/runpod_clashbot root@157.157.221.29 -p"
+S="ssh -o BatchMode=yes -o ConnectTimeout=30 -i $HOME/.ssh/runpod_clashbot root@${HOST:-157.157.221.29} -p"   # opt-in HOST (OPP-PUSH 10-30): the arm pod's host, SRC = EVAL pod
 STOP=$(dirname "$0")/STOP_ARM_D3
 REPO=/c/Users/benpe/ClashBot; LR=$REPO/.foreman/scratch/opp_push
 root() { [ "$1" = 33308 ] && echo /workspace/oplc/cb2 || echo /workspace/oplm/cb2; }
