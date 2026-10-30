@@ -1,3 +1,15 @@
+# 2026-10-30 ~18:40 EDT -- OWNER: stack graphs + overlap on --local-forward + step speedups; A/B restart APPROVED when the stack passes
+
+- Owner 10-30 (verbatim intent): "Yes, you may stop both A/B arms and restart them with the changes when the stack passes.
+  Restart them not with just --local-forward in the meantime." -> NO interim restart; ONE restart with the full stack.
+- Stack = --server graphs (ROLLOUT-SPEED fixing the capture crash; proof = multi-producer run + compare 16/16) + --local-forward
+  + --overlap 1 with ppo_decoupled 2.0 + split_attn + trunk_graph (LEARNER-SPEED commits the keys with smokes) -> ROLLOUT-SPEED
+  full-stack check (compare + measured matches/h + updates/h) -> lead stops abS_b0 / abL_b0 and relaunches (recipe in the
+  18:10 entry; add the stack flags / keys).
+- Correction (a): overlap A/B v2 WITH ppo_decoupled 2.0 already ran 10-29 (OVERLAP.md "A/B v2 DONE"): steps per update
+  0.80-0.87x of mode 0 (v1 0.15x), first-step |r-1| 0, gate KL monotone (no saw-tooth), held cell KL 0.74x / 1.39x of mode 0
+  = inside its range; speed 1.15x at that size. Open (b): overlap at arm-L learner settings (one large step on stale rows) ->
+  LEARNER-SPEED v3 on 33903 (8 updates x 128, minibatch 32768 / micro 1024 / lr 2e-5).
 # 2026-10-30 ~18:10 EDT -- A/B speed: --local-forward came 3 min after launch; restart to use it BLOCKED pending owner OK
 
 - Timeline (a): A/B arms launched ~21:20 UTC; --local-forward committed 21:22:54 UTC (d94730f), reported to the lead ~21:50.
