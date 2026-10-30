@@ -1,0 +1,50 @@
+== as extracted (flagged = not passing)
+gate   n 151  pass(apart from torn) 142 (0.940, CP low 0.898)  strict 132 (0.874, CP low 0.821)
+v2     n 151  pass(apart from torn) 126 (0.834, CP low 0.777)  strict 119 (0.788, CP low 0.726)
+v3     n 151  pass(apart from torn) 136 (0.901, CP low 0.851)  strict 129 (0.854, CP low 0.799)
+gate vs v2 pass   only-gate 16 only-v2  0  p=0.0000
+gate vs v2 strict only-gate 13 only-v2  0  p=0.0002
+gate vs v3 pass   only-gate  7 only-v3  1  p=0.0703
+gate vs v3 strict only-gate  4 only-v3  1  p=0.3750
+== with --unflag counted
+gate   n 151  pass(apart from torn) 142 (0.940, CP low 0.898)  strict 132 (0.874, CP low 0.821)
+v2     n 151  pass(apart from torn) 128 (0.848, CP low 0.791)  strict 121 (0.801, CP low 0.740)
+v3     n 151  pass(apart from torn) 138 (0.914, CP low 0.867)  strict 131 (0.868, CP low 0.813)
+gate vs v2 pass   only-gate 14 only-v2  0  p=0.0001
+gate vs v2 strict only-gate 11 only-v2  0  p=0.0010
+gate vs v3 pass   only-gate  5 only-v3  1  p=0.2188
+gate vs v3 strict only-gate  2 only-v3  1  p=1.0000
+
+failing in any pipeline (class per pipeline, F = flagged):
+261028_083923 gate1 v20 v30 | gate {'exact': 1814, 'torn_hidden': 41} None | v2 {'exact': 1814, 'torn_hidden': 39, 'div': 2} 935 | v3 {'exact': 1814, 'torn_hidden': 39, 'div': 2} 935 | U_sim_only C:MiniPekkaHero s1@(3260,10298) | struct []
+261028_091720 gate2 v20 v30 | gate {'exact': 3030} None | v2 {'exact': 2860, 'div': 170} 3519 | v3 {'exact': 2860, 'div': 170} 3519 | U_rec_only Knight s1@(6499,23499); U_sim_only C:Knight_EV1 s1@(6499,23499) | struct []
+261028_100341 gate2 v20 v32 | gate {'exact': 1758} None | v2 {'exact': 1384, 'div': 374} 2930 | v3 {'exact': 1758} None |  | struct ['repress s1 cmd34_2 R2928 (was cmd34_0)']
+261028_101018 gate2 v20 v32 | gate {'exact': 3026} None | v2 {'exact': 2905, 'div': 121} 5968 | v3 {'exact': 3026} None |  | struct ['add s0 Goblinstein R5967 (3499,14500) pos119']
+261028_123045 gate0 v20 v30 | gate {'exact': 809, 'div': 1726} 1768 | v2 {'exact': 809, 'div': 1643} 1768 | v3 {'exact': 833, 'div': 1619} 1816 | U_rec_only GoldenKnight s0@(2693,18830); U_rec_only HogRider s0@(3206,17636); U_sim_only C:GoldenKnight s0@(2690,18830); U_sim_only C:HogRider s0@(3206,17638) | struct ['drop s0 cmd17_0 {}']
+261028_130148 gate2 v20 v32 | gate {'exact': 1767} None | v2 {'exact': 1626, 'div': 141} 3404 | v3 {'exact': 1767} None |  | struct ['drop s1 Zap {}']
+261028_141254 gate1 v20 v30 | gate {'exact': 3028, 'torn_late': 8} None | v2 {'exact': 1442, 'torn_late': 8, 'div': 1586} 3044 | v3 {'exact': 1442, 'torn_late': 8, 'div': 1586} 3044 | U_rec_only Firecracker s0@(10918,13818); U_rec_only HogRider s0@(12825,18433); U_rec_only BarbLog s0@(13854,18876); U_rec_only Knight s1@(13500,23499); U_sim_only C:Firecracker_EV1 s0@(10915,13817) | struct []
+261028_142926 gate0 v20 v30 | gate {'exact': 2038, 'torn_late': 5, 'div': 8} 581 | v2 {'exact': 56, 'div': 1701} 254 | v3 {'exact': 2038, 'torn_late': 5, 'div': 8} 581 | U_sim_only C:Skeleton s1@(6818,17960); U_sim_only C:Skeleton s1@(7499,17226); U_sim_only C:Skeleton s1@(8179,17960); S1_elixir 18740/8740 | struct ['point s1 Knight {"x": 5499, "y": 24499}']
+261028_145600 gate2 v20 v32 | gate {'exact': 2695} None | v2 {'exact': 579, 'div': 2090} 1308 | v3 {'exact': 2695} None |  | struct ['repress s0 cmd9_2 R1306 (was cmd9_0)', 'repress s0 cmd46_2 R3618 (was cmd46_0)']
+261028_155011 gate1 v21 v31 | gate {'exact': 1377, 'torn_late': 2} None | v2 {'exact': 1377, 'torn_late': 2} None | v3 {'exact': 1377, 'torn_late': 2} None |  | struct []
+261028_155249 gate2 v2F2 v3F2 | gate {'exact': 2786} None | v2 {'exact': 2786} None | v3 {'exact': 2786} None |  | struct ['add s1 IceWizard R5464 (15500,17499) pos114']
+261028_165155 gate0 v20 v30 | gate {'exact': 2319, 'div': 706} 4811 | v2 {'exact': 2309, 'div': 719} 4791 | v3 {'exact': 2309, 'div': 719} 4791 | U_sim_only C:HogRider s1@(15500,17499) | struct []
+261028_165724 gate2 v20 v32 | gate {'exact': 2209} None | v2 {'exact': 197, 'div': 1564} 549 | v3 {'exact': 2209} None |  | struct ['repress s1 cmd1_2 R547 (was cmd1_0)', 'repress s1 cmd17_2 R1996 (was cmd17_0)', 'repress s1 cmd45_2 R4077 (was cmd63_0)']
+261028_170122 gate2 v20 v32 | gate {'exact': 1765} None | v2 {'exact': 986, 'div': 779} 2124 | v3 {'exact': 1765} None |  | struct ['repress s1 cmd21_2 R2123 (was cmd21_0)']
+261028_173440 gate1 v21 v31 | gate {'exact': 1741, 'torn_hidden': 25} None | v2 {'exact': 1741, 'torn_hidden': 25} None | v3 {'exact': 1741, 'torn_hidden': 25} None |  | struct []
+261028_174451 gate1 v21 v31 | gate {'exact': 1766, 'torn_late': 1} None | v2 {'exact': 1766, 'torn_late': 1} None | v3 {'exact': 1766, 'torn_late': 1} None |  | struct []
+261028_175120 gate2 v20 v32 | gate {'exact': 1926} None | v2 {'exact': 1147, 'div': 779} 2448 | v3 {'exact': 1926} None |  | struct ['repress s1 cmd22_2 R2446 (was cmd22_0)']
+261028_181730 gate1 v21 v31 | gate {'exact': 1762, 'torn_late': 3} None | v2 {'exact': 1762, 'torn_late': 3} None | v3 {'exact': 1762, 'torn_late': 3} None |  | struct []
+261028_210016 gate1 v20 v30 | gate {'exact': 1953, 'torn_hidden': 44} None | v2 {'exact': 1953, 'div': 44} 2068 | v3 {'exact': 1953, 'div': 44} 2068 | U_sim_only C:Golemite s1@(5516,8871) | struct []
+261028_230352 gate0 v20 v30 | gate {'exact': 1429, 'div': 710} 3002 | v2 {'exact': 379, 'div': 1383} 914 | v3 {'exact': 1429, 'div': 710} 3002 | U_sim_only C:GoldenKnight s0@(14500,14500) | struct ['drop s0 cmd6_0 {}']
+261029_000242 gate2 v2F2 v3F2 | gate {'exact': 3028} None | v2 {'exact': 3028} None | v3 {'exact': 3028} None |  | struct ['add s1 IceWizard R4996 (10500,24574) pos81']
+261029_001856 gate2 v20 v32 | gate {'exact': 1629} None | v2 {'exact': 1503, 'div': 126} 3159 | v3 {'exact': 1629} None |  | struct ['drop s0 cmd37_0 {}']
+261029_024716 gate2 v20 v32 | gate {'exact': 1764} None | v2 {'exact': 1326, 'div': 438} 2805 | v3 {'exact': 1764} None |  | struct ['add s0 Zap R1397 (14479,24739) pos16', 'repress s0 cmd31_2 R2803 (was cmd31_0)']
+261029_031310 gate2 v2F0 v3F2 | gate {'exact': 2142} None | v2 {'exact': 48, 'div': 1716} 246 | v3 {'exact': 2142} None |  | struct ['drop s0 Zap {}', 'swap MegaKnight s0 <-> Knight s1 @3931']
+261029_042050 gate1 v21 v31 | gate {'exact': 1136, 'torn_hidden': 93} None | v2 {'exact': 1136, 'torn_hidden': 93} None | v3 {'exact': 1136, 'torn_hidden': 93} None |  | struct []
+261029_062715 gate1 v21 v31 | gate {'exact': 1519, 'torn_hidden': 92} None | v2 {'exact': 1519, 'torn_hidden': 92} None | v3 {'exact': 1519, 'torn_hidden': 92} None |  | struct []
+261029_063025 gate0 v20 v30 | gate {'exact': 188, 'div': 1577} 153 | v2 {'exact': 188, 'div': 1577} 153 | v3 {'exact': 188, 'div': 1577} 153 | U_rec_only SuspiciousBush s0@(2499,14500) | struct ['point s0 Rascals {"x": 9527, "y": 869}']
+261029_065705 gate1 v21 v31 | gate {'exact': 1922, 'torn_late': 1} None | v2 {'exact': 1922, 'torn_late': 1} None | v3 {'exact': 1922, 'torn_late': 1} None |  | struct []
+261029_071306 gate0 v20 v30 | gate {'exact': 2799, 'div': 233} 5473 | v2 {'exact': 2799, 'div': 233} 5473 | v3 {'exact': 2799, 'div': 233} 5473 | U_sim_only C:Skeleton s1@(10820,17960); U_sim_only C:Skeleton s1@(11500,17226); U_sim_only C:Skeleton s1@(12181,17960); A_sim_only A:DarkMagicAOE s0@(17500,19500); S1_elixir 34343/24343 | struct []
+261029_073232 gate0 v20 v30 | gate {'exact': 2037, 'div': 3, 'torn_late': 7} 3312 | v2 {'exact': 2037, 'div': 3, 'torn_late': 7} 3312 | v3 {'exact': 2037, 'div': 3, 'torn_late': 7} 3312 | U_rec_only Knight s0@(14041,15449); U_sim_only C:Knight s0@(14008,15400); U_sim_only C:Skeleton s1@(12053,17499); U_sim_only C:Skeleton s1@(12934,17499); U_sim_only C:Skeleton s1@(13126,18735) | struct []
+261029_074143 gate0 v20 v30 | gate {'exact': 1680, 'div': 83, 'torn_late': 1} 1572 | v2 {'exact': 1680, 'div': 83, 'torn_late': 1} 1572 | v3 {'exact': 1680, 'div': 83, 'torn_late': 1} 1572 | U_sim_only C:Witch_EV1 s1@(9500,31000) | struct ['point s1 BattleRam {"x": 15660, "y": 16810}']
+261029_075729 gate0 v20 v32 | gate {'exact': 1460, 'div': 251} 2917 | v2 {'exact': 1378, 'div': 333} 2917 | v3 {'exact': 1711} None |  | struct ['point s0 Skeletons {"x": 10501, "y": 7501}', 'point s0 Knight {"x": 8499, "y": 500}', 'add s0 Knight R3271 (3499,18500) pos39']

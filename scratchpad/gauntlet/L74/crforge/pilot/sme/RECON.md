@@ -5,7 +5,18 @@ cases, `field_census.py` the rules on every frozen fresh input, `recon_search.py
 Evidence: `results/live/recon/`. Labels: (a) measured, (b) plausible but untested, (c) contradicted.
 
 ## STATUS (keep current)
-- **RECON-3 (10-30 ~13:40 EDT, section 10): the missing comparison is MEASURED. Nothing of mine is running.** Both pod drivers
+- **RECON-4 (10-30 ~16:20 EDT, section 11) -- STOPPED at the owner's priority change; committed, resumable.** Built and committed (code frozen, `ok 56`): generator v3 operators
+  + `cls_ticks` in recon results + `recon/r4_report.py` + `recon/r4_prep.sh`; FRESH9 frozen (list sha 88059ea5, commit 7ec0921, BEFORE any generator change). Measured:
+  dev 151 (IN-SAMPLE): gate 142 / 132 strict; v2 126 / 119; **v3 136 pass / 129 strict (138 / 131 with 155249 + 000242 counted)**; 0 matches lost v2 -> v3;
+  paired v3 vs gate 7 : 1 (p 0.07; with the two counted 5 : 1, p 0.22). Held-out FRESH9: the 20-flag GATE is done: 122 / 177 pass, 117 strict (177 unique matches of 179 records; 35 flagged
+  by the extractor: 27 opp_no_fitting_deal + 8 own_cycle_fail; 122 / 142 of the unflagged pass). **RECON v3 on FRESH9 was still running unattended when I stopped
+  (f9_v3 ~60 / 179, then f9_gate_a0, f9_v3_a0, the ASSIGN pair on the 8 reader-hidden records); NOT measured: v3 on FRESH9, the FRESH9 ASSIGN guard.**
+  Restart (pod 33903, tree `/workspace/smeR3`, CPUs 226-237; driver `drive_f9.sh` PID 600144 ends by itself with F9_DONE in `runs/f9_drive.log`):
+  `cd /workspace/smeR3 && (nohup bash drive_f9.sh > drive_f9.out 2>&1 < /dev/null &)` (skips steps whose log says done; delete a half-done `runs/<step>` first).
+  Then pull `runs/f9_gate/results.jsonl`, `runs/f9_v3/recon_results.jsonl`, `runs/f9_gate_a0/results.jsonl`, `runs/f9_v3_a0/recon_results.jsonl` and run
+  `python3 recon/r4_report.py gate=f9_gate.jsonl v3=f9_v3.jsonl --a0 gate=f9_gate_a0.jsonl v3=f9_v3_a0.jsonl --unflag 155249,000242` (the --unflag ids are DEV ids; FRESH9 has none
+  to un-flag, report as extracted). Dev rerun: `drive_v3.sh` (v3_dev on `data/off_all151.jsonl` + `v3_a0`). Known v3 dev gaps (11.3). Codex dispatches: none.
+- **RECON-3 (10-30 ~13:40 EDT, earlier; superseded by the RECON-4 line above), section 10): the missing comparison is MEASURED. Nothing of mine is running.** Both pod drivers
   ended (R2_DONE, R2B_DONE). Hand-rule gate (20 flags, same raw logs, same lib 5e8089a4): **142 / 151 pass apart from torn
   (0.940, CP low 0.898), 132 strict**; RECON v1 123 / 116; RECON v2 126 / 119 (0.834, CP low 0.777). The gate wins 16 matches,
   RECON wins 0 (paired sign p < 0.0001). **The gate number is IN-SAMPLE (every hand rule was written on these records): not a
@@ -394,3 +405,12 @@ r3_unit2 recon <ABSOLUTE inputs path> /workspace/smeR/data/allframes` (runR cds,
 - Dev check (in-sample, 16 gap matches, `v3_t16`/`v3_t3`): 13 of 16 reach the gate result (100341, 145600, 165724, 170122, 175120, 024716 Tombstone; 130148, 031310, 001856
   drops; 142926 = gate; 101018 add; 075729 1711/1711, better than the gate's 1460); still failing: 083923 (scoring path), 091720, 141254.
 - Owner 10-30: the two flagged-exact records 155249, 000242 are COUNTED for RECON from now on; reports give both counts. The gate numbers are unchanged.
+### 11.3 RECON-4 results and gaps (dev = in-sample; evidence `results/live/recon/r4/`)
+- Dev 151, `dev_report_gate_v2_v3.txt`: gate 142 / 132; v2 126 / 119 (128 / 121 with the 2 counted); v3 136 / 129 (138 / 131 with the 2 counted; unflagged-only v3 = same 138 minus nothing).
+  v3 gains over v2 (+10): the 6 Tombstone-hero matches, 130148, 001856, 101018, 075729 (1711 / 1711, the gate itself fails it), 142926 = gate, 031310 exact but still FLAGGED
+  (opp_no_fitting_deal from the extractor; the drop repaired it) -- counted as not passing. Lost v2 -> v3: none; errors: none.
+- Still failing on dev (v3): 083923 (2 frames scoring path, b), 091720 (overhit press added but no variant beats d; b: untested why), 141254 (the body is listed 13 ticks after the run:
+  the Knight point edit is right but the search objective counts the torn_late frames as div, so no variant "beats d"; fix = score torn_late in the objective or accept a point edit on the
+  full-run result), 210016 (HIDDEN_CHILD annotation, not an edit), 230352, 165155, 063025, 071306, 073232, 074143, 123045 (traced / untraced as section 10.4).
+- FRESH9 gate (held out for the gate: its rules were frozen at bf92222): 122 / 177 pass, 117 strict, 35 flagged (27 opp_no_fitting_deal, 8 own_cycle_fail). The flagged 35 are
+  exactly the class RECON's cycle repair / HIDDEN_GEN-type add targets; whether v3 passes them is the first thing to read when f9_v3 finishes.
