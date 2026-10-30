@@ -1,3 +1,15 @@
+# 2026-10-30 ~18:50 EDT -- A/B arms RESTARTED NOW with --local-forward (owner: "restart them now with --local-forward"); 33308 code -> origin c714d63
+
+- Owner OK in chat -> lead stopped both arms by exact PIDs (~22:24 UTC), moved their 50-min runs aside (*_eager: run dir,
+  ckpt dir, /workspace/loop/pilot dir, logs), relaunched with the same names + `SERVER="eager --local-forward"`.
+- First relaunch FAILED at once: 33308's tree (c51efd9 + patches) had no --local-forward (`fastloop.py: error: unrecognized
+  arguments`). Fix: backed up 33308's code (/workspace/loop/cb_code_pre_c714d63.tar = pipeline + pilot/ + obsid + facade),
+  extracted origin/main c714d63 for those paths over /workspace/loop/cb (verified fast loop: FASTLOOP-FIX), Java rebuilt into a
+  NEW dir jbuild_5e8089a4_h. Second relaunch ~22:29 UTC: both arms "ability_head: loaded from the init checkpoint
+  b0_clxiii_s3aux_grafted.pt"; 2 fastloop processes; same configs otherwise (S: GPU0 CPUs 0-53; L: GPU1 CPUs 54-107 + large batch).
+- pilot_watch.sh FIX: it reported "process GONE" during run.sh's Java compile (no fastloop process yet) -> 2 false Discord
+  alerts 22:25 UTC and the earlier silent watcher deaths. Now needs 2 misses in a row. Watchers re-armed (alive); check loops alive.
+- Full-stack restart (graphs + overlap + split_attn + trunk_graph) still owner-approved for when the stack passes.
 # 2026-10-30 ~18:40 EDT -- OWNER: stack graphs + overlap on --local-forward + step speedups; A/B restart APPROVED when the stack passes
 
 - Owner 10-30 (verbatim intent): "Yes, you may stop both A/B arms and restart them with the changes when the stack passes.

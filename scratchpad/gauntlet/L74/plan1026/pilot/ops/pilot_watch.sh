@@ -12,7 +12,10 @@ while [ ! -f "$STOP" ]; do
   if [ -z "$out" ]; then fails=$((fails+1)); [ $fails = 3 ] && post ":rotating_light: $RUN watcher: ssh to $P failed 3x"; sleep 600; continue; fi
   fails=0; n=$(sed -n 1p <<<"$out"); fin=$(sed -n 2p <<<"$out"); line=$(sed -n 3p <<<"$out"); u=$(grep -oE 'u[0-9]{4}' <<<"$line" | head -1)
   if [ "$fin" != none ]; then post "$RUN FINAL: $fin | $line"; exit 0; fi
-  if [ "$n" = 0 ]; then post ":rotating_light: $RUN process GONE on $P with no FINAL (OOM? check oom_kill). Last: $line"; exit 1; fi
+  if [ "$n" = 0 ]; then                       # 2 misses in a row: run.sh compiles Java before fastloop starts (10-30 false alarm)
+    gone=$((${gone:-0}+1)); [ $gone -ge 2 ] && { post ":rotating_light: $RUN process GONE on $P with no FINAL (OOM? check oom_kill). Last: $line"; exit 1; }
+    sleep 600; continue
+  fi; gone=0
   if [ "$u" != "$last" ]; then
     [ -n "$last" ] && [ $((10#${u#u} % 10)) = 0 ] && post "$RUN $line"
     last=$u; since=$(date +%s); stalled=0
