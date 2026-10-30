@@ -1,0 +1,100 @@
+{
+ "mode": "graphs",
+ "java_ms": 20.0,
+ "wait_ms": 1.0,
+ "models": [
+  "learner",
+  "init",
+  "wk_adapt_exp1",
+  "wk_adapt_exp2",
+  "wk_adapt_exp3",
+  "newsim_base_exp1",
+  "newsim_base_exp2",
+  "E4",
+  "w14opp_I"
+ ],
+ "rows": [
+  {
+   "K": 16,
+   "producers": 21,
+   "rows_per_s": 3076,
+   "round_ms": 218.26,
+   "per_round_ms": {
+    "fwd": 63.04,
+    "decide": 135.08,
+    "cell": 120.19,
+    "java": 20.14
+   },
+   "cell_calls_per_round": 9.0,
+   "batches_per_s": 68.4,
+   "mean_batch": {
+    "learner": 145.8,
+    "init": 19.7,
+    "wk_adapt_exp1": 22.4,
+    "wk_adapt_exp2": 24.4,
+    "wk_adapt_exp3": 26.4,
+    "newsim_base_exp1": 28.1,
+    "newsim_base_exp2": 31.6,
+    "E4": 33.2,
+    "w14opp_I": 33.5
+   },
+   "server_s": {
+    "stack_s": 0.68,
+    "forward_s": 14.73,
+    "cell_s": 14.88,
+    "idle_s": 13.6
+   },
+   "cell_calls_per_s": 143.3,
+   "window_s": 20.2,
+   "server_thread_cpu_s": {
+    "MainThread": 0.0,
+    "other": 0.02,
+    "_recv_loop": 2.76,
+    "_fwd_loop": 6.93,
+    "_cell_loop": 9.62
+   },
+   "server_cpu_frac": 0.96
+  },
+  {
+   "K": 64,
+   "producers": 5,
+   "rows_per_s": 4082,
+   "round_ms": 156.76,
+   "per_round_ms": {
+    "fwd": 50.33,
+    "decide": 86.31,
+    "cell": 71.59,
+    "java": 20.12
+   },
+   "cell_calls_per_round": 9.0,
+   "batches_per_s": 71.7,
+   "mean_batch": {
+    "learner": 160.0,
+    "init": 25.0,
+    "wk_adapt_exp1": 30.1,
+    "wk_adapt_exp2": 32.6,
+    "wk_adapt_exp3": 37.4,
+    "newsim_base_exp1": 39.4,
+    "newsim_base_exp2": 39.7,
+    "E4": 40.0,
+    "w14opp_I": 40.0
+   },
+   "server_s": {
+    "stack_s": 0.51,
+    "forward_s": 13.14,
+    "cell_s": 12.14,
+    "idle_s": 13.07
+   },
+   "cell_calls_per_s": 139.5,
+   "window_s": 20.1,
+   "server_thread_cpu_s": {
+    "MainThread": 0.0,
+    "other": 0.0,
+    "_recv_loop": 1.18,
+    "_fwd_loop": 7.31,
+    "_cell_loop": 10.87
+   },
+   "server_cpu_frac": 0.96
+  }
+ ]
+}
