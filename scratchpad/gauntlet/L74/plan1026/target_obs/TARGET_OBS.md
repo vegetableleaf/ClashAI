@@ -44,7 +44,10 @@ git-ignored `icebow/data/reader_targets/`. Tracked code consumes only the per-un
   (`/workspace/cftgt/cmp_{on,absent}_b.json`). Logs `/workspace/cftgt/logs/{cftgt_fl_on_b,cftgt_fl_absent_b}.log`, rc
   lines `logs/chain_b.rc` (CHAIN_DONE at the end). Launcher `/workspace/cftgt/fl.sh` (= opp/learner/fl_pod.sh fixed to
   this tree; NOT /workspace/opplearnc/fl.sh, which hard-codes the cbc tree). Restart: `ssh ... -p 33903 'cd /workspace/cftgt
-  && (setsid nohup bash chain.sh c > logs/chain_c.out 2>&1 < /dev/null &)'` (new tag = new run names).
+  && (setsid nohup bash chain.sh d > logs/chain_d.out 2>&1 < /dev/null &)'` (new tag = new run names).
+- 11:35 EDT chain b's on-arm SMOKE FAIL (a): producer guard "a model with target layers in a run without target_obs":
+  rl_royale's actor_base carries no `target_obs` key. Fix 933d7d0: the producer enables CfTgt when the learner state
+  dict has `tgt_in.weight`. Chain b stopped by PID; **chain c RUNNING** (same recipe, tag c, logs `*_c`).
 - NEXT (owner steps, not started): (1) M1c exact validation (recipe below; SME-REBUILD 18f614a now has rebuild scripts
   for the SME gate on 33903: `crforge/pilot/sme/recon/rebuild_gate.sh`); (2) live wiring in live_gen (lead approval);
   (3) CfTgt Java builder for the fast loop (spec in M2); (4) train with `target_obs: on` from B0 / CLXIII + SIM gate.
