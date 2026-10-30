@@ -1,0 +1,33 @@
+records 139 | opponent cycle ok 113 | own cycle ok 137 | elixir rule skipped (elixir-making deck) 4
+opponent bank minimum over the match: n 135, min -1.66, p5 -0.18, median 0.48
+  below -SLACK (0.5): [(-1.6607142857142927, 'fresh4', '223547', ''), (-1.5800000000000018, 'fresh4', '211745', 'opp_no_fitting_deal'), (-0.7142857142857162, 'fresh4', '171948', 'opp_no_fitting_deal'), (-0.6964285714285714, 'fresh7', '054032', 'opp_no_fitting_deal'), (-0.5714285714285721, 'fresh4', '203126', '')]
+own bank model |model - reader| (elixir), 3791 frames: median 0.052, p95 0.155, max 6.037
+  worst 8: [(6.0372, 'fresh8', '064443', 6130), (5.9272, 'fresh4', '220244', 6156), (5.913428571428563, 'fresh4', '164306', 6113), (5.607171428571429, 'fresh4', '181209', 6110), (5.534742857142854, 'fresh5', '012620', 6107), (5.472414285714273, 'fresh5', '005039', 6105), (5.440357142857136, 'fresh8', '070039', 6105), (5.4188999999999945, 'fresh4', '152022', 6104)]
+zone breaks among 9939 extracted plays: 18
+   ('fresh4', '162245', 0, 'Heal', 4120, 15584, 436)
+   ('fresh4', '163818', 0, 'Heal', 14500, 25500, 1272)
+   ('fresh4', '165155', 1, 'HogRider', 15332, 14889, 4790)
+   ('fresh4', '180849', 0, 'BarbLog', 15500, 20547, 587)
+   ('fresh4', '193007', 1, 'SuspiciousBush', 14230, 9565, 508)
+   ('fresh4', '193007', 1, 'SuspiciousBush', 13850, 12913, 1466)
+   ('fresh4', '211745', 0, 'Heal', 4361, 20474, 1706)
+   ('fresh4', '211745', 0, 'Heal', 13735, 17828, 2625)
+   ('fresh6', '040050', 0, 'Heal', 7082, 20168, 1821)
+   ('fresh6', '040050', 0, 'Heal', 7517, 24443, 2648)
+   ('fresh7', '050136', 0, 'BarbLog', 12566, 21483, 3648)
+   ('fresh7', '054032', 0, 'SuspiciousBush', 14815, 22221, 2000)
+   ('fresh7', '054032', 0, 'SuspiciousBush', 4589, 17869, 2468)
+   ('fresh7', '054032', 0, 'SuspiciousBush', 3671, 16927, 2897)
+   ('fresh7', '054032', 0, 'SuspiciousBush', 3270, 22434, 3433)
+   ('fresh8', '063025', 0, 'SuspiciousBush', 7684, 20176, 1100)
+   ('fresh8', '063025', 0, 'SuspiciousBush', 3732, 20996, 1801)
+   ('fresh8', '063025', 0, 'SuspiciousBush', 7083, 26528, 3580)
+travel rule on extracted projectile-spell plays (card, verdict vs the extractor window): count
+   ('BarbLog', 'in_window') 191
+   ('BarbLog', 'none') 1
+   ('BarbLog', 'outside') 1
+   ('Fireball', 'in_window') 168
+   ('GoblinBarrel', 'in_window') 42
+   ('Log', 'in_window') 942
+   ('Rocket', 'in_window') 57
+   ('Snowball', 'in_window') 23
