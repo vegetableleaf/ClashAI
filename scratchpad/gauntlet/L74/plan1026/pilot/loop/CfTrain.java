@@ -1,6 +1,7 @@
 // LOOP-INT (plan1026 pilot fast loop): the env side of the fast crforge training loop. N facade matches (CfCore) on a
 // pool of T threads; each match is driven by e1_eval.SelfPlayMatch's schedule (port of due() / SelfPlaySide.apply /
-// Match._land for the rollout cfg: action delay > 0, no follow-ups, no pipelined decisions, no tap loss; hero ability
+// Match._land for the rollout cfg: action delay > 0, no pipelined decisions, no tap loss; follow-up plays = SelfPlaySide's
+// _follow_start / _follow_check / _follow_resolved (setFollowUps; the live rules' rocket_tornado combo); hero ability
 // presses = royale_env's queue / _fire_abilities through LOOP-IW's CfAbil, enableAbilities) and each deciding seat's GenModel row is built by the obsid builders in e1_eval.Match.prepare's order
 // (CfLoop.obs, byte-identical to production: SPEED_CRFORGE.md S3b-3a..S3b-4, D2-T2).
 //
@@ -114,6 +115,21 @@ public final class CfTrain implements AutoCloseable {
   CfCtx.Seat[][] ctxSeat;
   boolean[][] jCtx;
   static final ThreadLocal<DoubleBuffer> CTX_SCRATCH = ThreadLocal.withInitial(() -> direct(8L * 65536).asDoubleBuffer());
+  // FAST-LIVEOPP follow-ups: a decision dict with follow_ups (decision_options' rocket_tornado: the 2nd card) -> production's
+  // SelfPlaySide event-driven schedule (e1_eval._follow_start / _follow_check / _follow_resolved, SelfPlayMatch.due): the first
+  // play and every fired follow-up wait in the seat's pend queue (q: land, first, slot, cell, x, y, px, py; landed in land
+  // order at their own ticks), each follow-up is judged by follow_up_verdict / follow_up_have on the reader-frame grid, the
+  // seat decides again only once all are resolved. Python registers a play's follow-ups for its row (setFollowUps) before
+  // step(); absent = no state touched (rows / schedule as before).
+  public static final int FU_W = 10, FOLLOW_AFFORD = 6, FOLLOW_FRAME = 2, FOLLOW_MAX_OUT = 2, NEVER = 1_000_000_000;
+  int[][] fuReq;                                          // per row: Python's follow-ups (FU_W ints each) or null
+  int[] fuReqArrival;
+  double[][] fuReqCost;
+  final ArrayList<int[]>[][] fq, fuTasks;                 // per seat: pend queue; tasks {slot cell x y px py due expire next aff req}
+  final int[][] fuTick0, fuLandA, fuArr, fuLast;
+  final boolean[][] fuOn, fuALanded, fuAAcc;
+  final double[][][] fuCost;
+  public final AtomicLong fuPlans = new AtomicLong(), fuFired = new AtomicLong(), fuCancelled = new AtomicLong();
 
   /** One card-id table set: the detector keys, public-object tables, memory tables and each match's builders on them. */
   static final class Univ {
@@ -167,6 +183,9 @@ public final class CfTrain implements AutoCloseable {
     jTim = new boolean[n][2]; nTim = new boolean[n][2]; jExt = new int[n][2]; jU = new int[n][2]; nExt = new int[n][2];
     nU = new int[n][2]; thSlot = new int[n][2];
     for (int[] e : nExt) Arrays.fill(e, -1);
+    fq = newLists(n); fuTasks = newLists(n);
+    fuTick0 = new int[n][2]; fuLandA = new int[n][2]; fuArr = new int[n][2]; fuLast = new int[n][2];
+    fuOn = new boolean[n][2]; fuALanded = new boolean[n][2]; fuAAcc = new boolean[n][2]; fuCost = new double[n][2][];
     pool = Executors.newFixedThreadPool(threads, r -> { Thread t = new Thread(r, "cftrain"); t.setDaemon(true); return t; });
     long r2 = 2L * n;
     tokB = direct(r2 * MAX_U * F * 4); maskB = direct(r2 * MAX_U); scB = direct(r2 * S * 4); formB = direct(r2 * MAX_U);
@@ -217,6 +236,22 @@ public final class CfTrain implements AutoCloseable {
   public void setSeat(int i, int s, boolean timing, int extrapTicks, int u) {
     if (u < 0 || u >= U.size()) throw new IllegalArgumentException("no card-id universe " + u);
     nTim[i][s] = timing; nExt[i][s] = extrapTicks; nU[i][s] = u;
+  }
+
+  @SuppressWarnings("unchecked")
+  static ArrayList<int[]>[][] newLists(int n) {
+    ArrayList<int[]>[][] a = new ArrayList[n][2];
+    for (ArrayList<int[]>[] x : a) { x[0] = new ArrayList<>(); x[1] = new ArrayList<>(); }
+    return a;
+  }
+
+  /** The follow-ups of row r's play this round (Python, after writing its action; production's d["follow_ups"]): FU_W
+   *  ints each = slot, cell, crforge x, y, engine x, y (as the action), after_ticks, within_ticks, afford_ticks (-1 None),
+   *  require_first; arrival = cfg follow_arrival_ticks; costs = SelfPlaySide.costs (8 slots). Consumed by apply(). */
+  public void setFollowUps(int r, int arrival, double[] costs, int[] fu) {
+    if (fu.length == 0 || fu.length % FU_W != 0) throw new IllegalArgumentException("follow-ups: " + fu.length + " ints");
+    if (fuReq == null) { fuReq = new int[2 * n][]; fuReqArrival = new int[2 * n]; fuReqCost = new double[2 * n][]; }
+    fuReq[r] = fu; fuReqArrival[r] = arrival; fuReqCost[r] = costs.clone();
   }
 
   static ByteBuffer direct(long bytes) { return ByteBuffer.allocateDirect((int) bytes).order(ByteOrder.nativeOrder()); }
@@ -309,10 +344,17 @@ public final class CfTrain implements AutoCloseable {
   /** Which seats of match i's next job decide with the live rules (call after setJob). */
   public void setCtx(int i, boolean c0, boolean c1) { jCtx[i][0] = c0; jCtx[i][1] = c1; }
 
-  /** CfCtx.build into a scratch buffer, then row r's slot: n >= 0, or -1 (a Tables key missing: nothing changed). */
+  /** CfCtx.build into a scratch buffer, then row r's slot: n >= 0, or -1 (a Tables key missing: nothing changed).
+   *  build's -2 tests the SHARED Names.missing size around its unit pass, so another pool thread's obs miss can fail an
+   *  innocent row (FASTLOOP-FIX: the (16, 15) compare = one such match counted as crashed); this row's own miss is
+   *  x.missed (TrainMatch.unitCode). -2 returns before any Seat / output change, so a foreign -2 just rebuilds. */
   int ctxRow(TrainMatch x, int i, int seat, int r) {
     DoubleBuffer sb = CTX_SCRATCH.get();
-    int k = CfCtx.build(ctxT, names, x, seat, ctxSeat[i][seat], sb, 0);
+    int k;
+    do {
+      x.missed = false;
+      k = CfCtx.build(ctxT, names, x, seat, ctxSeat[i][seat], sb, 0);
+    } while (k == -2 && !x.missed);
     if (k == -1) return -1;
     if (k < 0) throw new IllegalStateException("CfCtx.build " + k + ": a body without a Names entry after the obs");
     if (k + 1 > CTX) throw new IllegalStateException("CfCtx row of " + k + " doubles > CTX " + CTX);
@@ -378,6 +420,7 @@ public final class CfTrain implements AutoCloseable {
     for (int s = 0; s < 2; s++) {
       pendLand[i][s] = -1;
       thSlot[i][s] = -1;
+      fq[i][s].clear(); fuTasks[i][s].clear(); fuOn[i][s] = false;
       for (int k = 0; k < TAL; k++) tal.put((2 * i + s) * TAL + k, 0);
     }
     advanceTo(i, warmup);                                 // RoyaleSelfPlayEnv.reset: _advance_to(warmup_ticks)
@@ -434,39 +477,50 @@ public final class CfTrain implements AutoCloseable {
     CfCore c = core[i];
     while (true) {
       int t = c.tick();
-      for (int s = 0; s < 2; s++)
+      for (int s = 0; s < 2; s++) {
         if (pendLand[i][s] >= 0 && pendLand[i][s] <= t && !c.over()) land(i, s, true);
+        while (!fq[i][s].isEmpty() && fq[i][s].get(0)[0] <= t && !c.over()) landQ(i, s, fq[i][s].remove(0), true);
+      }
+      for (int s = 0; s < 2; s++) if (!fuTasks[i][s].isEmpty() && !c.over()) followCheck(i, s, t);
       if (done(i)) {
-        for (int s = 0; s < 2; s++) if (pendLand[i][s] >= 0) land(i, s, false);
+        for (int s = 0; s < 2; s++) {
+          fuTasks[i][s].clear();
+          if (pendLand[i][s] >= 0) land(i, s, false);
+          while (!fq[i][s].isEmpty()) landQ(i, s, fq[i][s].remove(0), false);
+        }
         return -1;
       }
       int mask = 0;
       for (int s = 0; s < 2; s++) if (next[i][s] <= t) mask |= 1 << s;
       if (mask != 0) return mask;
       int nxt = Math.min(next[i][0], next[i][1]);
-      for (int s = 0; s < 2; s++) if (pendLand[i][s] >= 0) nxt = Math.min(nxt, pendLand[i][s]);
+      for (int s = 0; s < 2; s++) {
+        if (pendLand[i][s] >= 0) nxt = Math.min(nxt, pendLand[i][s]);
+        if (!fq[i][s].isEmpty()) nxt = Math.min(nxt, fq[i][s].get(0)[0]);
+        for (int[] k : fuTasks[i][s]) nxt = Math.min(nxt, k[8]);
+      }
       advanceTo(i, Math.min(nxt, tailCap));
     }
   }
 
   void tally(int i, int s, int k) { int at = (2 * i + s) * TAL + k; tal.put(at, tal.get(at) + 1); }
 
-  /** Match._land + RoyalePoolEnv._Core.act: the pending play enters the engine (or never: landed false). */
-  void land(int i, int s, boolean landed) {
+  /** Match._land + RoyalePoolEnv._Core.act: the pending play enters the engine (or never: landed false). -> accepted. */
+  boolean land(int i, int s, boolean landed) {
     CfCore c = core[i];
     int slot = pendSlot[i][s], landT = pendLand[i][s] >= 0 ? pendLand[i][s] : c.tick();   // Match._land's land
     pendLand[i][s] = -1;
     tally(i, s, 0);
-    if (!landed) { tally(i, s, 2); return; }
+    if (!landed) { tally(i, s, 2); return false; }
     int k = jSlotDeal[i][s][slot];                        // our deck slot -> deal index (the card)
     int[] h = c.s.std.getMatch().side(s).getHand().slots();
     int hs = -1;
     for (int j = 0; j < h.length; j++) if (h[j] == k) { hs = j; break; }
-    if (hs < 0) { tally(i, s, 3); return; }               // _Core.act: cid not in hand -> NOT_IN_HAND
+    if (hs < 0) { tally(i, s, 3); return false; }         // _Core.act: cid not in hand -> NOT_IN_HAND
     int t = c.tick(), cid = c.s.deckIds[s][k];
     int form = memT != null ? CfMem.Log.playForm(c, s, cid) : 0;   // read BEFORE the play (public_plays' form)
     int[] r = c.play(s, hs, pendX[i][s], pendY[i][s]);
-    if (r[0] != 0) { tally(i, s, 4); return; }
+    if (r[0] != 0) { tally(i, s, 4); return false; }
     tally(i, s, 1);
     if (ctxSeat != null && ctxSeat[i][s] != null) ctxSeat[i][s].played(ctxT, landT, slot, pendCell[i][s]);
     if (ab != null) {                                     // _Core.act v2: _last_play, ability_deployments; public_plays
@@ -477,6 +531,94 @@ public final class CfTrain implements AutoCloseable {
       if (u.memT != null) u.mlog[i].play(s, t, cid, form, pendPX[i][s], pendPY[i][s]);
       u.id[i].played(c, s, t, slot, pendCell[i][s]);      // past: the facade tick at the act, slot, decided cell
       u.po[i].act(s, t, c.s.deckIds[s][k]);               // public_plays / own events: the act tick (+ DELAY inside)
+    }
+    return true;
+  }
+
+  /** SelfPlayMatch.due's pend landing (_land(p, d, land, landed, cur)) of queue entry q through land(); the first play of
+   *  the open plan sets a_landed / a_acc (SelfPlaySide._land). A seat in a follow-up plan never has a delayed play. */
+  void landQ(int i, int s, int[] q, boolean landed) {
+    if (pendLand[i][s] >= 0) throw new IllegalStateException("a follow-up queue beside a pending play");
+    pendLand[i][s] = q[0]; pendSlot[i][s] = q[2]; pendCell[i][s] = q[3];
+    pendX[i][s] = q[4]; pendY[i][s] = q[5]; pendPX[i][s] = q[6]; pendPY[i][s] = q[7];
+    boolean acc = land(i, s, landed);
+    if (q[1] == 1) { fuALanded[i][s] = true; fuAAcc[i][s] = acc; }
+  }
+
+  /** Is our deck slot's card in the core hand now (Match._slot_in_hand: deck_ids[side][di] in state().players[side].hand;
+   *  8 distinct cards = its deal index in the hand slots, as land()'s NOT_IN_HAND test). */
+  boolean inHand(int i, int s, int slot) {
+    int k = jSlotDeal[i][s][slot];
+    for (int h : core[i].s.std.getMatch().side(s).getHand().slots()) if (h == k) return true;
+    return false;
+  }
+
+  /** SelfPlaySide._follow_start: the first play at tick + self.delay (NOT + opp_style's _style_delay, as production), one
+   *  task per follow-up, no decision until all are resolved. */
+  void followStart(int i, int s, int r, int t) {
+    int[] f = fuReq[r];
+    int a0 = r * ACT, arr = fuReqArrival[r], landA = t + jDelay[i][s];
+    fuReq[r] = null;
+    fq[i][s].add(new int[] {landA, 1, act.get(a0 + 1), act.get(a0 + 2), act.get(a0 + 3), act.get(a0 + 4), act.get(a0 + 5),
+        act.get(a0 + 6)});
+    fq[i][s].sort((x, y) -> Integer.compare(x[0], y[0]));  // stable, as list.sort(key=land)
+    fuOn[i][s] = true; fuTick0[i][s] = t; fuLandA[i][s] = landA; fuArr[i][s] = arr; fuLast[i][s] = landA;
+    fuALanded[i][s] = fuAAcc[i][s] = false; fuCost[i][s] = fuReqCost[r];
+    fuTasks[i][s].clear();
+    for (int b = 0; b < f.length; b += FU_W) {
+      int due = t + f[b + 6], expire = due + f[b + 7], x = Math.max(due, t + arr);
+      int nc = t + -Math.floorDiv(-(x - t), FOLLOW_FRAME) * FOLLOW_FRAME;   // grid(x): the first frame tick >= x
+      fuTasks[i][s].add(new int[] {f[b], f[b + 1], f[b + 2], f[b + 3], f[b + 4], f[b + 5], due, expire, nc, f[b + 8], f[b + 9]});
+    }
+    next[i][s] = NEVER;
+    fuPlans.incrementAndGet();
+  }
+
+  /** e1_eval.follow_up_verdict's checks in its order -> 0 wait, 1 cancel, 2 fire (test_follow_verdict.py: vs Python). */
+  public static int verdict(boolean firstFailed, boolean slotChanged, int t, int due, int expire, boolean busy, int nOut,
+      double have, double cost) {
+    if (firstFailed || slotChanged || t > expire) return 1;   // first_unconfirmed / slot_changed / blocked or late
+    if (t < due) return 0;                                // early
+    if (busy) return 1;                                   // slot_busy
+    if (nOut >= FOLLOW_MAX_OUT || have + 1e-6 < cost) return 0;   // outstanding / unaffordable
+    return 2;
+  }
+
+  /** SelfPlaySide._follow_check(t) + _follow_resolved: every task whose check tick is t, on the engine state after this
+   *  tick's landings (follow_up_verdict's order; follow_up_have = min(10, elixir_exact + regen_between) - reserved). */
+  void followCheck(int i, int s, int t) {
+    ArrayList<int[]> q = fq[i][s];
+    double[] cost = fuCost[i][s];
+    for (int[] k : new ArrayList<>(fuTasks[i][s])) {
+      if (k[8] > t) continue;
+      int horizon = k[9] < 0 ? FOLLOW_AFFORD : k[9];
+      double reserved = 0.0;
+      boolean busy = false;
+      for (int[] e : q) { reserved += cost[e[2]]; busy |= e[2] == k[0]; }
+      double el = core[i].s.std.getMatch().side(s).getElixir() / 10 / 1000.0;   // raw() players elixir_exact
+      double have = Math.min(10.0, el + m[i].regen(t, t + horizon)) - reserved;
+      int v = verdict(k[10] != 0 && fuALanded[i][s] && !fuAAcc[i][s], !inHand(i, s, k[0]), t, k[6], k[7], busy, q.size(),
+          have, cost[k[0]]);
+      if (v == 0) {
+        k[8] = t + FOLLOW_FRAME;
+        if (k[8] <= k[7]) continue;
+        v = 1;                                            // the window closed while waiting: never fired late
+      }
+      fuTasks[i][s].remove(k);
+      if (v == 2) {
+        int landB = Math.max(fuLandA[i][s] + Math.max(t - fuTick0[i][s] - fuArr[i][s], 0), t + 1);
+        q.add(new int[] {landB, 0, k[0], k[1], k[2], k[3], k[4], k[5]});
+        q.sort((x, y) -> Integer.compare(x[0], y[0]));
+        fuLast[i][s] = Math.max(fuLast[i][s], landB);
+        fuFired.incrementAndGet();
+      } else {
+        fuCancelled.incrementAndGet();
+      }
+    }
+    if (fuOn[i][s] && fuTasks[i][s].isEmpty()) {
+      fuOn[i][s] = false;
+      int de = jDe[i][s];
+      next[i][s] = fuTick0[i][s] + de * ((fuLast[i][s] - fuTick0[i][s]) / de + 1);
     }
   }
 
@@ -500,6 +642,11 @@ public final class CfTrain implements AutoCloseable {
       }
       next[i][s] = (thSlot[i][s] < 0 ? t : thSlot[i][s]) + de;   // the next slot, whatever the engine still holds
       thSlot[i][s] = -1;
+      return;
+    }
+    if (fuReq != null && fuReq[r] != null) {              // SelfPlaySide.apply: d["play"] and d.get("follow_ups")
+      if (act.get(r * ACT) == 0) throw new IllegalStateException("follow-ups on a decision without a play");
+      followStart(i, s, r, t);
       return;
     }
     if (act.get(r * ACT) != 0) {

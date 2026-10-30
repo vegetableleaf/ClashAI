@@ -5,6 +5,7 @@ per-side code). Per match: outcome, end tick, the learner's traj row count; per 
 |diff| (log-probs); the first diverging row of each match with the gate / card / cell draws around it.
 
 usage (pod, run.sh's env): python compare.py MSG.pkl OUT.json [--device cuda] [--in-flight 1] [--matches 1] [--max-jobs N]
+       [--skip-jobs K] [--runtime-here] [--fast-only]
        [--server eager|graphs]   (the fast loop's forwards on a LOOP-SRV serve.py on --device; then every learner row's
        v_old is checked against production's critic on the same rows / device, and wver == the update)
 """
@@ -35,14 +36,22 @@ def main():
     ap.add_argument("--matches", type=int, default=1, help="fast loop matches in flight")
     ap.add_argument("--threads", type=int, default=1)
     ap.add_argument("--max-jobs", type=int, default=0)
+    ap.add_argument("--skip-jobs", type=int, default=0, help="drop the first K jobs (split one msg over parallel runs)")
+    ap.add_argument("--fast-only", action="store_true", help="the fast loop only: its stats + skipped jobs (crash probe)")
     ap.add_argument("--server", default=None, help="eager | graphs: fast-loop forwards on serve.py (LOOP-SRV)")
     ap.add_argument("--init", default="icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt",
                     help="server mode: the learner architecture checkpoint (the run's init; fastloop passes cfg init)")
+    ap.add_argument("--runtime-here", action="store_true",
+                    help="a message dumped on another pod / engine build: both paths run under THIS pod's runtime stamp")
     a = ap.parse_args()
     base, update, sd, jobs = pickle.loads(Path(a.msg).read_bytes())
+    jobs = jobs[a.skip_jobs:]
     if a.max_jobs:
         jobs = jobs[:a.max_jobs]
     base = {**base, "actor_device": a.device, "in_flight": a.in_flight}
+    if a.runtime_here:
+        from pipeline.royale_runtime import activate
+        base["runtime"] = activate()
     from producer import Producer
     servers, srv = [], None
     if a.server:
@@ -72,6 +81,13 @@ def main():
     E.SelfPlaySide._record = record
     trace["cur"], trace["fast"], trace["prod"] = "fast", {}, {}
     fast, skipped, st = P.run(update, sd, jobs)
+    if skipped:                                          # a CfTrain match crash (Java RuntimeException): never silent
+        print("FAST SKIPPED", json.dumps(skipped, default=str), file=sys.stderr, flush=True)
+    if a.fast_only:
+        Path(a.out).write_text(json.dumps({"msg": a.msg, "matches": len(fast), "fast_skipped": skipped, "fast_stats": st},
+                                          indent=1, default=str))
+        print(json.dumps({"matches": len(fast), "skipped": len(skipped), "first_crash": st["first_crash"]}))
+        return
     for s_ in servers:
         s_.kill()
     trace["cur"] = "prod"
@@ -88,7 +104,7 @@ def main():
             raise RuntimeError(m[3])
         if m[0] == "done":
             prod = sorted(m[3], key=R.row_key)
-    assert prod is not None and len(prod) == len(fast), (None if prod is None else len(prod), len(fast))
+    assert prod is not None and len(prod) == len(fast), (None if prod is None else len(prod), len(fast), skipped)
     rep, keys_bad, lp_max = [], {}, {k: 0.0 for k in LP}
     for p, f in zip(prod, fast):
         assert R.row_key(p) == R.row_key(f)
@@ -137,7 +153,7 @@ def main():
     ab = abil_summary(prod, fast) if any("ability_presses" in r for r in prod) else None
     out = {"ability": ab, "heroiw_press": __import__("os").environ.get("ROYALE_HEROIW_PRESS"), "sides": out_sides, "msg": a.msg, "device": a.device, "in_flight": a.in_flight, "fast_matches": a.matches, "matches": len(rep),
            "identical_matches": sum(r["identical"] for r in rep), "first_div_keys": keys_bad,
-           "lp_maxdiff_before_divergence": lp_max, "server": a.server, "v_old": vchk, "memory": mchk, "fast_stats": st, "matches_detail": rep}
+           "lp_maxdiff_before_divergence": lp_max, "server": a.server, "v_old": vchk, "memory": mchk, "fast_stats": st, "fast_skipped": skipped, "matches_detail": rep}
     Path(a.out).write_text(json.dumps(out, indent=1, default=str))
     print(json.dumps({k: out[k] for k in ("matches", "identical_matches", "first_div_keys", "lp_maxdiff_before_divergence",
                                           "v_old", "memory", "ability")}))

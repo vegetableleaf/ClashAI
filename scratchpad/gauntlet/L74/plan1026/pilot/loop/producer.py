@@ -21,8 +21,10 @@ opponent whose card_vocab differs from the learner's gets its own card-id univer
 memory tables + builders filled with ITS gid). A timing-head LEARNER seat (OPP-LEARN-C, opponent-as-learner: rl_royale's
 base["opp_init"]) is the same seat with cfg th_learner: production's timing_decide_batch -> th_record rows + _record /
 _traj_arrays, its own universe 0 (its card_vocab), ability mode 3 when it has the learned ability head.
-Not supported yet (each raises): follow-ups, pipelined decisions, tap loss / slow, tower troops, mid-match starts, the
-posture head, decision rules in the sampled decide (LOOP-CTX), crown / habit / spell tracking.
+'live'-policy seats (FAST-LIVEOPP: CfCtx context + production's live decide) incl. a decision's follow_ups (the
+rocket_tornado combo's 2nd card: CfTrain ports SelfPlaySide's _follow_start / _follow_check schedule, setFollowUps).
+Not supported yet (each raises): cfg follow_ups / pipelined decisions, tap loss / slow, tower troops, mid-match starts,
+the posture head, decision rules in the sampled decide (LOOP-CTX), crown / habit / spell tracking.
 """
 from __future__ import annotations
 
@@ -709,7 +711,8 @@ class Producer:
         stats = {"wall_s": time.perf_counter() - t0, "matches": len(results), "rounds": st["rounds"],
                  "crashed": len(skipped), "fills": self.stats["fills"], "time": dict(tm), "counts": dict(self.stats),
                  "java_engine_core_s": (int(L.engineNs.get()) - c0[0]) / 1e9, "java_obs_core_s": (int(L.obsNs.get()) - c0[1]) / 1e9,
-                 "rows": int(L.rowsBuilt.get()) - c0[2], "first_crash": None if L.firstCrash is None else str(L.firstCrash)}
+                 "rows": int(L.rowsBuilt.get()) - c0[2], "first_crash": None if L.firstCrash is None else str(L.firstCrash),
+                 "follow_ups": [int(L.fuPlans.get()), int(L.fuFired.get()), int(L.fuCancelled.get())]}   # JVM totals
         return results, skipped, stats
 
     def _decide(self, live: dict) -> None:
@@ -927,9 +930,6 @@ class Producer:
                 tau, kw = E.posture_live(sides, enc, c, c["tau"], kw)
                 decisions = E.live_decide_batch(model, enc, heads, p, allowed, stalled, tau=tau, device=c["device"], **kw)
                 self.stats["live_rows"] += len(sides)
-                if any(d.get("follow_ups") for d in decisions):   # rocket_tornado's 2nd card: Match._apply_follow_ups
-                    raise NotImplementedError("a live decision with follow_ups (rocket_tornado combo): CfTrain has no "
-                                              "_apply_follow_ups schedule yet (LOOP_INT.md FAST-LIVEOPP)")
             elif enc is not None:
                 decisions = E.sample_decide_batch(model, enc, heads, p, allowed, stalled, sides, c)
             else:
@@ -949,8 +949,28 @@ class Producer:
                     s.n_stall += int(d["why"] == "stall")
                     if isinstance(s.env, ThEnv):              # issued now: done_plays once CfTrain accepts it
                         s._th_issue = (int(v.meta[r, 3]), int(d["slot"]), *s.ep.cell_center(d["cell"], s.cfg["grid"]))
+                    if d.get("follow_ups"):                   # SelfPlaySide.apply -> _follow_start (CfTrain.followStart)
+                        self._follow_ups(int(r), s, d["follow_ups"])
                 else:
                     a[:] = (0, -1, -1, 0, 0, 0, 0, int(d.get("th_tick", 0)) if isinstance(s.env, ThEnv) else 0)
+
+    def _follow_ups(self, r: int, s, fus) -> None:
+        """Row r's follow_up_spec list -> CfTrain.setFollowUps (each play's action ints as _prod_group writes them, after /
+        within / afford (-1 = None) / require_first), the seat's arrival ticks and deck-slot costs."""
+        from pipeline import engine_play as ep
+        from pipeline.e1_eval import FOLLOW_ARRIVAL_TICKS
+        from pipeline.royale_env import SCALE
+        a = []
+        for fu in fus:
+            X, Y = ep.cell_to_engine(fu["cell"], s.mirror, s.cfg["grid"])
+            aff = fu.get("afford_ticks")
+            a += [int(fu["slot"]), int(fu["cell"]), int(X) * SCALE // 18, int(Y) * SCALE // 18, int(X), int(Y),
+                  int(fu["after_ticks"]), int(fu["within_ticks"]), -1 if aff is None else int(aff),
+                  int(bool(fu.get("require_first", True)))]
+        JD = self.jpype.JArray(self.jpype.JDouble)
+        self.L.setFollowUps(r, int(s.cfg.get("follow_arrival_ticks", FOLLOW_ARRIVAL_TICKS)), JD([float(c) for c in s.costs]),
+                            self.JInt(a))
+        self.stats["follow_up_plans"] += 1
 
     def _ctx_on(self, cfgs) -> None:
         """FAST-LIVEOPP: CfCtx on (once per JVM) when a seat plays policy 'live'; one options / grid set per JVM (CfCtx's
