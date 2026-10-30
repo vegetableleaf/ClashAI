@@ -32,7 +32,18 @@ CASES = [
      lambda p: by_card(p, 0, 'Snowball', 924) and by_card(p, 1, 'Log', 924)),
     ('fresh6', 'F6_main', '20261029_031310', 'SME_SAMETICK_GEN: our Knight before the opponent Mega Knight on 3931',
      lambda p: (by_card(p, 1, 'Knight', 3931) or [99])[0] < (by_card(p, 0, 'MegaKnight', 3931) or [-1])[0]),
+    ('fresh4', 'F4_fe', '20261028_235834', 'SME_TOWER_ZAP + TZ_REACH: opponent Zap on our 19-hp tower centre, R 4611',
+     lambda p: any(c['side'] == 0 and c.get('card') == 'Zap' and c['_src'].get('source') == 'recon_add'
+                   and c['run'] == 4611 and math.hypot(c['x'] - 14500, c['y'] - 25500) <= 300 for c in p['cmds'])),
+    ('fresh4', 'F4_fe', '20261028_220244', 'SME_OWN_BODYPT: our Knight at its first listed body point (1 tile off the tap)',
+     lambda p: any(c['side'] == 0 and c.get('card') == 'Knight' and math.hypot(c['x'] - 2499, c['y'] - 13500) <= 100
+                   for c in p['cmds'])),
+    ('fresh4', 'F4_fe', '20261028_222707', 'SME_OWN_BODYPT: our Knight at its first listed body point (2 tiles off the tap)',
+     lambda p: any(c['side'] == 0 and c.get('card') == 'Knight' and math.hypot(c['x'] - 1499, c['y'] - 10500) <= 100
+                   for c in p['cmds'])),
 ]
+# No hand fix exists (untraced in SME.md): print what the generator proposes, for the engine run.
+PROPOSE = [('fresh6', 'F6_main', '20261029_024716')]
 
 
 def main():
@@ -66,6 +77,19 @@ def main():
         else:
             bad += 1
             print('  HAND FIX NOT PROPOSED')
+    for fs, run, m in PROPOSE:
+        rec = find(os.path.join(SME, 'engfix', fs, 'inputs_all.jsonl'), m)
+        res = find(os.path.join(SME, 'results', 'live', fs, run + '_results.jsonl'), m)
+        frames = sme_live.load_frames(os.path.join(SME, 'engfix', fs, 'frames', rec['match'] + '.jsonl'))
+        plan = recon.base_plan(rec, frames)
+        e0 = recon.start_elixir(frames, plan, rec['my_side'], tab)
+        recon.with_elixir_base(plan, tab, e0)
+        hs = sorted(recon.legal_hypotheses(plan, frames, res['first_div'], res['first_detail'], tab, rec['my_side'], e0),
+                    key=lambda h: h[1])
+        print('=== %s (%s) first div %d; no hand fix. %d legal; by op %s; the adds:' % (
+            m, fs, res['first_div'], len(hs), dict(collections.Counter(e['op'] for e, _, _ in hs))))
+        for e, c, _ in [h for h in hs if h[0]['op'] == 'add'][:6]:
+            print('    cost %d: %s' % (c, recon.describe(plan, e)))
     sys.exit(1 if bad else 0)
 
 

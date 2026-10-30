@@ -35,6 +35,7 @@ ZONE_SLACK = 500                          # calibration knob: extracted points a
 SLACK = float(os.environ.get('RECON_ELIXIR_SLACK', '0.5'))   # calibration knob (field census in RECON.md)
 REGEN = 1 / 56                            # elixir per tick at 1x (measured: own frames +0.0178 / tick, 3x +0.0537)
 PHASES = (2400, 4800)                     # 2x from tick 2400, 3x from 4800 (fights.elixir_wait)
+PRESS_BACK = 4                            # a press is tried at R in [d - 4, d - 1] (sme_live.GHOST_BACK)
 VIS_MAX = 2                               # an unseen spell is on the board at most this many ticks
 GRID = 500
 COST = {'shift': 1, 'swap': 1, 'joint': 2, 'point': 2, 'add': 3, 'drop': 3}
@@ -322,6 +323,8 @@ def victims(detail):
     within 300 units, and live bodies at the SIM body's point with less hp."""
     out = []
     for kind, x, _, near in detail:
+        if len(x) > 3 and x[3] < 0:
+            continue                              # the reader's hp -1 placeholder says nothing about damage
         if kind in ('U_sim_only', 'T_sim_only') and (near is None or abs(near[0]) + abs(near[1]) > 300):
             out.append((x[0], x[1], x[2]))
         elif kind in ('U_rec_only', 'T_rec_only') and near and near[0] == near[1] == 0 and len(near) > 2 and near[2] > 0:
@@ -334,14 +337,17 @@ def prev_frame(frames, d):
 
 
 def first_seen(frames, side, card, x, y, d, reach=1500):
-    """Earliest tick (scanning back from d) a body of the side and card is listed within reach of (x, y)."""
-    t0 = None
+    """Earliest tick (scanning back from d) a body of the side and card is listed within reach of (x, y), and the centre of
+    the card's bodies listed then (a formation's point)."""
+    t0, first = None, []
     for t in sorted((t for t in frames if d - WIN <= t <= d), reverse=True):
         hit = [e for e in frames[t]['E'] if e[0] == side and sme.card_name(e[3]) == card
                and math.hypot(e[1] - x, e[2] - y) <= reach]
         if not hit:
             break
-        t0, x, y = t, hit[0][1], hit[0][2]
+        t0, x, y, first = t, hit[0][1], hit[0][2], hit
+    if first:
+        x, y = round(sum(e[1] for e in first) / len(first)), round(sum(e[2] for e in first) / len(first))
     return t0, x, y
 
 
@@ -399,6 +405,17 @@ def hypotheses(plan, frames, d, detail, tab, me):
     for i in imp:
         if not cmds[i]['_src']['own']:
             out.append(({'op': 'drop', 'i': i}, COST['drop']))
+    # press: an ability press of the side's latest play of an implicated card that has one (hero / champion)
+    for i in imp:
+        c = cmds[i]
+        if not tab.ability_cost(c['card']) or any(k > i and cmds[k].get('card') == c['card'] and cmds[k]['side'] == c['side']
+                                                  for k in range(len(cmds))):
+            continue
+        for R in range(max(c['run'] + 1, d - PRESS_BACK), d):
+            a = {'kind': 'ability', 'given': R - 20, 'run': R, 'side': c['side'], 'unit': 'cmd%d_0' % i,
+                 '_src': {'lo': R, 'hi': R, 'tick': R, 'source': 'recon_add', 'own': c['_src']['own']}}
+            for k in add_positions(plan, R):
+                out.append(({'op': 'add', 'pos': k, 'cmd': a}, COST['add']))
     # add (a): an unseen spell of the other side whose radius covers every victim of one side
     vic = victims(detail)
     tp = prev_frame(frames, d)
@@ -470,6 +487,9 @@ def cmd_side(plan, e):
 def describe(plan, e):
     c = e['cmd'] if e['op'] == 'add' else plan['cmds'][int(e.get('i', next(iter(e.get('runs', {0: 0})))))]
     tag = '%s s%d %s' % (e['op'], c['side'], c.get('card', c.get('unit')))
+    if e['op'] == 'add' and c['kind'] == 'ability':
+        n = int(c['unit'][3:].split('_')[0])
+        return 'press s%d %s (cmd%d) R%d pos%d' % (c['side'], plan['cmds'][n].get('card'), n, c['run'], e['pos'])
     if e['op'] == 'add':
         return tag + ' R%d (%d,%d) pos%d' % (c['run'], c['x'], c['y'], e['pos'])
     if e['op'] == 'joint':

@@ -5,12 +5,16 @@ cases, `field_census.py` the rules on every frozen fresh input, `recon_search.py
 Evidence: `results/live/recon/`. Labels: (a) measured, (b) plausible but untested, (c) contradicted.
 
 ## STATUS (keep current)
-- **Restart point (10-30):** laptop part DONE and committed: rules + generator + 34 planted checks (`python -I
-  sme/recon/test_recon.py` -> `ok 34`), the three hand-rule cases proposed by the general generator (`offline.py`),
-  the field census (`results/live/recon/field_census.txt`). `recon_search.py` (engine-scored beam search) is written for
-  a pod and has NOT been run (no crforge on the laptop; 33903 was over its CPU quota at 13:45 UTC: load 70 vs 54.4 CPUs).
-  Next: section 7 (the pod runs), in order.
-- Codex dispatches: none.
+- **Restart point (10-30 ~14:30 UTC):** laptop part DONE and committed: rules + generator (`recon.py`), 35 planted
+  checks (`python -I sme/recon/test_recon.py` -> `ok 35`), the general generator proposes the hand fix on all 6
+  hand-rule cases tried (`offline.py`, output `results/live/recon/offline.txt`, section 5), field census of the rules on
+  FRESH4-8 (`results/live/recon/field_census.txt`, section 4), the engine-scored beam search `recon_search.py` with a
+  stub-engine loop test (`python -I sme/recon/test_search_dry.py` -> `ok 12`).
+- **NOT done: no engine run.** No crforge on the laptop; the SME gate tree (32657 `/workspace/pilot/f1fix/sme11f`) is
+  gone (32657 refuses SSH; TARGET_OBS.md M1c: SME pods stopped, /workspace wiped). 33903 has JDK + the 5e8089a4 tickprobe
+  lib but no gate code and only tables 16.402.22 under crforge_cache (14:00 UTC load 5, quota 54.4 CPUs). Next: section 7.
+- Codex dispatches: none. pyflakes not installed on the laptop (plain or icebow/.venv): `py_compile` + a manual
+  unused-import pass only; run pyflakes on the pod before relying on it.
 
 ## 1. Why (the measured problem)
 - (a) Pooled strict-fresh FRESH2-8 = 122 / 151 (0.808, CP lower 0.748), flat at ~81% across ~20 SME_* rules
@@ -43,6 +47,7 @@ touched: a hypothesis only changes crforge's inputs (as every SME_* extractor ru
 | add (a) | an unseen spell of side o | VICTIMS of side 1-o in the diff (SIM-only bodies with no live body within 300; live bodies at the SIM point with less hp); every spell in o's deck whose radius covers all victims from the centroid or a +-500 grid point; run ticks [previous frame - flight, d - 1 - flight] | SME_ZAP_DEAD, ZD_SINGLE, ZD_BLDG, TOWER_ZAP, ZAP_CHAIN1, ZAP_ADD (021310, 235834, 024716 class) |
 | add (b) | a play the extractor missed | a live body the SIM lacks (no SIM body within 300) of a deck card no near command plays; run [frame before its first listing - 1, first listing - 1] | SME_HIDDEN_GEN-type misses, 063025 bush, 004719 |
 | drop | a play the extractor invented | an implicated opponent play | NEAR_BIGGER(2)-type false plays, 211745 duplicate Heal |
+| press | an unseen ability press | the side's latest play of an implicated card with an ability row (hero / champion), R in [d-4, d-1] | IWGHOST10, TOMB_HERO, BB_RISE, OWN_PENDCAST, CHARGE8 |
 
 ## 4. Hard rules (`recon.legal` + the generator; planted checks in `test_recon.py`)
 | rule | statement | field census on the frozen inputs of FRESH4-8 (139 records, 9,939 plays; `results/live/recon/field_census.txt`) |
@@ -55,13 +60,34 @@ touched: a hypothesis only changes crforge's inputs (as every SME_* extractor ru
 
 ## 5. The hand-rule cases: does the general generator propose the hand fix? (a; `offline.py`, laptop, no engine)
 Inputs: the FROZEN fresh inputs (scored before the fix) + the gate's first-divergence diff (`*_results.jsonl`
-first_detail). "Legal" = after the hard rules; the count is the engine runs this round would cost.
-| case | hand rule and its fix | general generator |
+first_detail). "Legal" = after the hard rules; that count is the engine runs the round costs. Output `results/live/recon/offline.txt`.
+| case | hand rule and its fix | general generator (rank among legal edits by prior cost) |
 |---|---|---|
-| FRESH5 021310@1986 | SME_ZAP_DEAD: opponent Zap (12864, 17261), R 1985, window [1984, 1985] | 19 legal edits (1 shift + 18 adds); the fix = **#2 / #3: add Zap R 1984 / 1985 at the victims' centroid (12922, 17231)**, 66 units from the hand point (the hand probe at (12800, 17300) was also exact) |
-| FRESH4 151109@925 | SME_SPELL_KING: Snowball and our Log both run 924 | 13 legal (2 shift, 1 joint, 1 swap, 9 point; 1 refused by the cycle); the travel rule alone gives both 924, and the fix = **#4: joint Log -> 924, Snowball -> 924** |
-| FRESH6 031310@3954 | SME_SAMETICK_GEN: our Knight created before the Mega Knight on 3931 | 26 legal (1 swap, 25 point); the fix = **#1: swap MegaKnight <-> Knight @3931** |
-Not shown yet: that the ENGINE ranks each fix first among the legal edits (section 7, item 1).
+| FRESH5 021310@1986 | SME_ZAP_DEAD: opponent Zap (12864, 17261), R 1985, window [1984, 1985] | 19 legal (1 shift, 18 add); **#2 / #3: add Zap R 1984 / 1985 at the victims' centroid (12922, 17231)**, 66 units from the hand point (the hand probe at (12800, 17300) was also exact) |
+| FRESH4 151109@925 | SME_SPELL_KING: Snowball and our Log both run 924 | 12 legal (1 refused by the cycle); the travel rule gives each 924; **#4: joint Log -> 924, Snowball -> 924** |
+| FRESH6 031310@3954 | SME_SAMETICK_GEN: our Knight created before the Mega Knight on 3931 | 25 legal; **#1: swap MegaKnight <-> Knight @3931** |
+| FRESH4 235834@4612 | TOWER_ZAP + TZ_REACH: opponent Zap on our 19-hp princess tower, R 4611 | 19 legal; **#3: add Zap R 4611 at (14500, 25500)** (R 4610 is proposed too; the hand probe: 4610 -> 40 div, so the engine must pick 4611) |
+| FRESH4 220244@3374 | SME_OWN_BODYPT: our Knight at its first body point | 1 legal; **#1: point Knight (2499, 13500)** |
+| FRESH4 222707@1653 | SME_OWN_BODYPT | 2 legal; **#2: point Knight (1499, 10500)** |
+Prediction, no hand fix exists: **FRESH6 024716@1399** (SME.md: "our princess tower 77 below the SIM = exactly a
+level-16 Zap's crown-tower damage; untraced"). The diff also has our Knight 306 below the SIM = the level-16 Zap's troop
+damage (ZAP_DMG 16 = (306, 77)) (a). The generator's only proposals are 18 Zap adds; the cheapest = Zap R 1397 / 1398 at
+the two victims' centroid (14479, 24739) (b until the engine scores it).
+Out of scope (a): FRESH5 004719 (SME_BANNER_GIVEN) was an input-DELIVERY fix in SmeRun (the banner by object id), not an
+input edit; RECON does not cover it.
+Not shown yet: that the ENGINE keeps each fix (section 7, item 1).
+
+### Hand rule -> RECON edit (b, except the 6 rows above)
+| fresh_prep flag (20) | RECON edit that should cover it |
+|---|---|
+| ZAP_DEAD, ZD_SINGLE, ZD_BLDG, TOWER_ZAP, TZ_REACH, ZAP_CHAIN1, ZAP_DOT | add (a) unseen spell, victims from the diff |
+| SPELL_KING | travel rule (+ joint) |
+| SAMETICK_GEN | swap |
+| OWN_BODYPT, OWN_SPAWN, RASCAL_EDGE2 | point (first listed body / formation centre) |
+| NEAR_BIGGER2, OWN_NEARDEAD | drop / add (b) |
+| HIDDEN_GEN, HIDDEN_CHILD | add (b) for missed plays; HIDDEN_CHILD's comparator side is not an input edit (not covered) |
+| TOMB_HERO, BB_RISE, OWN_PENDCAST | press (add / its absence) |
+| GK_WALK | drop of an ability cast (drop covers plays only today: owed) |
 
 ## 6. Scoring and search strategy (`recon_search.py`)
 - Objective: `sme_live.objective` = (first div frame outside given-up episodes, - div frames), on the same window the
@@ -76,11 +102,24 @@ Not shown yet: that the ENGINE ranks each fix first among the legal edits (secti
   fork (snapshot at d - 125, run only the window) would cut each run ~5-20x; SmeRun has no snapshot entry (b).
 
 ## 7. Owed (next account), in order
-1. Engine-score the three cases on a pod (`recon_search.py one`, commands in its docstring): does the beam keep the
-   hand fix and reach the hand-rule result (021310 1765 / 1765, 151109 3031 / 3031, 031310 2142 / 2142)?
+0. **Gate rebuild (prerequisite, shared with TARGET_OBS.md M1c):** a pod with JDK 17 + `/workspace/crforge_main/
+   5e8089a4/tickprobe/lib` + tables 16.635.3 (laptop copy `.foreman/scratch/reader_torn/sme/tables/16.635.3`, sha
+   1243a2df... in each fresh `prep.txt`). Copy `crforge/pilot/sme` (tracked tree) to the pod, build `build/` (SmeRun) and
+   `build_snap/` (SnapRun2) against that lib, env = `f1fix/runH.sh` with SME_LIB = the tickprobe lib and
+   SME_BANNER_GIVEN=1. **Byte-identity check before anything else:** `sme_live.py one` on FRESH5 021310 (frozen inputs
+   `engfix/fresh5/inputs_rngfree.jsonl`, frames `engfix/fresh5/frames`) must give F5_main's 1660 exact + 105 div, first
+   1986; FRESH4 151109 2767 + 264, first 925; FRESH6 031310 2102 + 40, first 3954. A mismatch = the rebuild is not the gate.
+1. Engine-score the 6 cases + 024716: `cd SME && <runH env> python3 recon/recon_search.py all --workers 4 --inputs
+   <set>/inputs_rngfree.jsonl --frames <set>/frames --out OUT --only 021310,151109,...` (<= 8 threads on 33903, CPUs
+   210-217, `taskset`, check load first). Pass = the beam keeps the hand fix and reaches the hand-rule result (021310
+   1765 / 1765, 151109 3031 / 3031, 031310 2142 / 2142, 235834 2271 / 2271, 220244 3025 / 3025, 222707 1766 / 1766).
+   Also `--ops shift,point --beam 1` on the same cases must equal F*_main (the fitter's move set).
 2. Planted recall: in exact matches, delete one seen opponent Zap / one seen play / swap one same-tick pair; the
    search must restore it (and nothing else).
 3. Precision: run the search on every failing record WITHOUT the 20 SME_* flags; count adds / drops kept on
-   divergences whose cause is traced as non-observational (body position, 123045, 073232).
+   divergences whose cause is traced as non-observational (body position: 123045, 073232); the HEAL rule (20 ticks)
+   and the edit cost are the knobs.
 4. The gate question: RECON (flags off) vs fresh_prep's 20 flags on dev + FRESH1-8, then the first fresh set scored with
    RECON alone. Only then retire flags (each retirement = byte-identical scored outcome or better, planted checks kept).
+5. Small owed rule work: drop for ability casts (GK_WALK); trace the 2 unflagged elixir breaks (223547 -1.66, 203126
+   -0.57); a census of the visible rule.

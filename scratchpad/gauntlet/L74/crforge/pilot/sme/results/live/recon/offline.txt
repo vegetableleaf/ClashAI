@@ -1,0 +1,32 @@
+=== 20261029_021310 (fresh5) first div 1986; hand rule SME_ZAP_DEAD: opponent Zap (12864, 17261) R 1985, window [1984, 1985]
+  E0 5.991  base cycle ok [True, True]  elixir ok [True, True]  opp bank min 0.44
+  generated 19, legal 19 (refused {}); by op {'shift': 1, 'add': 18}
+  HAND FIX PROPOSED: #2 of 19 legal (3 at cost <= 3): add s0 Zap R1984 (12922,17231) pos24
+    also #3: add s0 Zap R1985 (12922,17231) pos24
+=== 20261028_151109 (fresh4) first div 925; hand rule SME_SPELL_KING: opponent Snowball and our Log both run 924
+  E0 5.991  base cycle ok [True, True]  elixir ok [True, True]  opp bank min 0.48
+  generated 13, legal 12 (refused {'cycle': 1}); by op {'shift': 2, 'swap': 1, 'joint': 1, 'point': 8}
+  HAND FIX PROPOSED: #4 of 12 legal (4 at cost <= 2): joint Log->924, Snowball->924
+=== 20261029_031310 (fresh6) first div 3954; hand rule SME_SAMETICK_GEN: our Knight before the opponent Mega Knight on 3931
+  E0 5.991  base cycle ok [True, True]  elixir ok [True, False]  opp bank min 0.55
+  generated 25, legal 25 (refused {}); by op {'swap': 1, 'point': 24}
+  HAND FIX PROPOSED: #1 of 25 legal (1 at cost <= 1): swap MegaKnight s0 <-> Knight s1 @3931
+=== 20261028_235834 (fresh4) first div 4612; hand rule SME_TOWER_ZAP + TZ_REACH: opponent Zap on our 19-hp tower centre, R 4611
+  E0 5.991  base cycle ok [True, True]  elixir ok [True, True]  opp bank min 0.46
+  generated 19, legal 19 (refused {}); by op {'point': 1, 'add': 18}
+  HAND FIX PROPOSED: #3 of 19 legal (3 at cost <= 3): add s0 Zap R4611 (14500,25500) pos76
+=== 20261028_220244 (fresh4) first div 3374; hand rule SME_OWN_BODYPT: our Knight at its first listed body point (1 tile off the tap)
+  E0 5.991  base cycle ok [True, True]  elixir ok [True, True]  opp bank min 0.50
+  generated 1, legal 1 (refused {}); by op {'point': 1}
+  HAND FIX PROPOSED: #1 of 1 legal (1 at cost <= 2): point s0 Knight {"x": 2499, "y": 13500}
+=== 20261028_222707 (fresh4) first div 1653; hand rule SME_OWN_BODYPT: our Knight at its first listed body point (2 tiles off the tap)
+  E0 5.991  base cycle ok [True, True]  elixir ok [True, True]  opp bank min 0.48
+  generated 2, legal 2 (refused {}); by op {'shift': 1, 'point': 1}
+  HAND FIX PROPOSED: #2 of 2 legal (2 at cost <= 2): point s0 Knight {"x": 1499, "y": 10500}
+=== 20261029_024716 (fresh6) first div 1399; no hand fix. 18 legal; by op {'add': 18}; the adds:
+    cost 3: add s0 Zap R1397 (14479,24739) pos16
+    cost 3: add s0 Zap R1398 (14479,24739) pos16
+    cost 4: add s0 Zap R1397 (13979,24239) pos16
+    cost 4: add s0 Zap R1398 (13979,24239) pos16
+    cost 4: add s0 Zap R1397 (13979,24739) pos16
+    cost 4: add s0 Zap R1398 (13979,24739) pos16
