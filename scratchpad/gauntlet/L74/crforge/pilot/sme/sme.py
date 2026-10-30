@@ -15,7 +15,7 @@ import argparse, collections, json, os, subprocess, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 LIB = os.environ.get('SME_LIB', '/workspace/crforge/env/build/install/env/lib')  # the pin; a fork build via env
-TABLES = '/workspace/crforge_cache/tables/16.402.22'
+TABLES = os.environ.get('SME_TABLES', '/workspace/crforge_cache/tables/16.402.22')  # sme10f/sme11f: tables by env (absent = the old default)
 SHIFTS = (1, -1, 2, -2)
 TIE_WINDOW = 120
 THREADS = int(os.environ.get('SME_THREADS', '24'))
