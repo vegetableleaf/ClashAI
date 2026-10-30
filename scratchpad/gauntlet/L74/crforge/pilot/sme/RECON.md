@@ -373,3 +373,13 @@ none of the 4 is among the 16 where RECON trails the gate.
 Restart for this section: `python3 recon/r3_report.py` on the pod files (`/workspace/smeR/runs/{r2_gate,r2_fail,r2_rest,r2_gate_a0,r2_recon_a0}`, `/workspace/smeR2/runs/{r2v2_a,r2v2_b,r2v2_a0}`;
 laptop copies `.foreman/scratch/recon3/in/`). Diagnostic: `recon/r3_unit_test.py` builds the patched inputs; run `R=/workspace/smeR2 CPUS=226-231 WORKERS=2 SME_THREADS=3 bash sme/recon/runR.sh
 r3_unit2 recon <ABSOLUTE inputs path> /workspace/smeR/data/allframes` (runR cds, so a relative path fails).
+
+## 11. RECON-4: FRESH9 held-out freeze, then generator v3 (10-30)
+### 11.1 FRESH9 freeze (pre-registration: committed BEFORE any generator change and before any FRESH9 run)
+- List `fresh/FRESH9.tsv` (sha256 88059ea537fbc7600bd5bd288bde53067e4b7570dd87c2446073e63dc8c779e8): 317 Ranked (pathOfLegend) battles of the main account,
+  each paired with its live log by extract.batch's rule; cut = live log starts at or after 2026-10-29 08:28 EDT (FRESH8's last log is 082745); first log
+  `live_play_20261029_083215`, last `live_play_20261030_103320` (battle 2026-10-30T14:36:43Z = 10:36 EDT, when live stopped). Build 160635001 for all 317.
+  The hand-run logs of 10-30 10:43 / 10:56 are not in the list (no battle-log entry; not frozen). Created with `freeze.py 20261029_0828` at repo HEAD bf92222.
+- Pipelines frozen against it: the 20-flag gate (fresh_prep.sh flags + SME_ZD_SINGLE) as of bf92222, and RECON v3 = generator v2 (bf92222) plus the operators
+  of 11.2, whose code is committed before FRESH9 is run. No FRESH9 number may change a rule; a FRESH9 failure is reported, not fixed, in this round.
+- Scored set = the RNG-free subset (as FRESH2-8); both re-extractions (flags on for the gate, flags off for RECON) from the same raw logs.
