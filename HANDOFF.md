@@ -1,3 +1,20 @@
+# 2026-10-30 ~17:30 EDT -- u20 VERDICT: the pilot's policy got WORSE vs CLXIII, not only its press head; opponent push + speed plan
+
+- (a) u20's trunk with CLXIII's press head grafted back (threshold gate, iu40 480): 249/480 = -8.75 pp [-14.12, -3.38] vs
+  CLXIII (u0000 with the same graft: +0.00 exactly). u20 with its own head: -10.21; head-only difference +1.46 [-4.04, +6.96].
+  Presses / match: CLXIII 1.88, u0 2.61-2.73, u20 own head 2.17, u20 trunk + CLXIII head 2.24 (the head reads the trunk's g,
+  so a fixed head presses differently on a moved trunk). Training win vs its own pool flat 65-71% u5-u21.
+  Reading: 20 KL-capped updates moved the policy AWAY from CLXIII's strength on iu40 while not beating its pool more: (b)
+  consistent with LEARNER-SCALE's noise finding (a 256-row step is ~390x noise vs signal; critical batch >= ~126k rows) =
+  random-walk drift, and/or adaptation around the bad head; not separable by this test.
+- Opponent push DISPATCHED (owner: keep going until the bar): worker OPP-PUSH (PLATEAU.md); prepares a pod bootstrap, reads
+  u40 D3 (~01:00 UTC), seed replicate + one lever on the owner's new pod, moves the live-partner arm to the fast loop when
+  FASTLOOP-FIX's follow-up port passes 48/48.
+- Speed (owner: hundreds of thousands matches/h, hundreds of updates/h, significant learning per update): FASTLOOP-FIX queued
+  ROLLOUT-SPEED (SPEED2 F3 single cell request, F2' sharded servers, straggler work-stealing, overlap). RECON-4 asked to
+  stop at a committed point (FRESH9 frozen) -> its slot = LEARNER-SPEED (SCALE.md 7e tickets A split-projection attention +
+  B static minibatch + CUDA graphs, approved 10-29, not built) + a large-batch learning A/B.
+- u25 switch (512 / update, graphs, small heap) still armed on 33308 (PID 190426).
 # 2026-10-30 ~16:30 EDT -- u20 check; pilot SWITCH to faster settings armed at u25 (owner: more updates/h, switch at a checkpoint)
 
 - u20 (a, iu40 480, paired vs CLXIII base_iu40): pilot u0020 (sampled gate) 242/480 = -10.21 pp [-15.78, -4.63]; vs u0000
