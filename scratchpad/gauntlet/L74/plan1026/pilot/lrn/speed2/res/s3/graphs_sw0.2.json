@@ -1,0 +1,60 @@
+{
+ "mode": "graphs",
+ "switch_ms": 0.2,
+ "java_ms": 20.0,
+ "wait_ms": 1.0,
+ "models": [
+  "learner",
+  "init",
+  "wk_adapt_exp1",
+  "wk_adapt_exp2",
+  "wk_adapt_exp3",
+  "newsim_base_exp1",
+  "newsim_base_exp2",
+  "E4",
+  "w14opp_I"
+ ],
+ "rows": [
+  {
+   "K": 16,
+   "producers": 21,
+   "rows_per_s": 2912,
+   "round_ms": 230.63,
+   "per_round_ms": {
+    "fwd": 60.89,
+    "decide": 149.52,
+    "cell": 133.82,
+    "java": 20.22
+   },
+   "cell_calls_per_round": 9.0,
+   "batches_per_s": 75.3,
+   "mean_batch": {
+    "learner": 124.1,
+    "init": 17.8,
+    "wk_adapt_exp1": 20.0,
+    "wk_adapt_exp2": 21.7,
+    "wk_adapt_exp3": 23.0,
+    "newsim_base_exp1": 23.9,
+    "newsim_base_exp2": 25.5,
+    "E4": 26.9,
+    "w14opp_I": 27.7
+   },
+   "server_s": {
+    "stack_s": 1.21,
+    "forward_s": 22.91,
+    "cell_s": 24.07,
+    "idle_s": 20.32
+   },
+   "cell_calls_per_s": 144.0,
+   "window_s": 30.2,
+   "server_thread_cpu_s": {
+    "MainThread": 0.01,
+    "other": 0.01,
+    "_recv_loop": 4.12,
+    "_fwd_loop": 10.23,
+    "_cell_loop": 15.86
+   },
+   "server_cpu_frac": 1.0
+  }
+ ]
+}

@@ -93,8 +93,19 @@ Reading (a unless marked):
 - F4 (b) more rows in flight per server: the box spreads 2,048 matches over 6 servers (~680 rows per server cycle);
   LOOP-SRV reached 95% of a 4090's rate only at ~12k rows in flight. Fewer inference GPUs at the same rows/s is the
   cheap direction (one server with all 128 producers: ~6x rows per cycle for a ~1.3x longer cycle, b).
-- F3 one cell request per producer round instead of one per model group (round trips 9 -> 1): code (producer decide in
-  two phases + a multi-block cell message); not built.
+- F5 the server's GIL switch interval (sys.setswitchinterval 5 ms default -> 0.5 / 0.2 ms; a thread-scheduling knob, no
+  math change): (c) no effect (a; speed2/sweep3.sh, res/s3/; 16x21, max_batch 512): eager 1,633 / 1,670 / 1,730 rows/s,
+  graphs 2,985 / 2,979 / 2,912 (another agent's rl_royale held 9.7-13 GB of the GPU during these runs).
+- With graphs on, the CELL calls are the largest part of a producer's round (a): 129 of 225 ms (graphs_sw5), 9
+  sequential round trips per round (one per model group: _fast_group / loop_opp.decide call cell_fn synchronously),
+  each ~14 ms of queueing behind the server's other threads; the cell work itself is ~3.5 ms CPU per call.
+- F3 (b, the next lever after graphs) one cell request per producer round instead of one per model group (round trips
+  9 -> 1): expected cell wait ~129 -> ~35-40 ms (one trip + the server's 9 cell_logits of ~3.5 ms), round ~225 -> ~130
+  ms, ~1.7x on top of graphs. Code: a multi-block cell message in policy_server ("cells": [(bid, ids, slots)...]) and
+  the producer's group decides run so that every group's cell request is collected before one send (production's
+  loop_opp.decide calls cell_fn synchronously, so either one thread per group with a collector barrier, or a two-phase
+  split of _fast_group plus threads for the styled groups only); identity = compare.py --server (16/16 identical,
+  lp bar 5e-5). Not built in this ticket.
 
 ## 3. Multi-GPU learner (design; NOT prototyped -- see the verdict)
 Where the learner's time goes in the pilot (a unless marked):
