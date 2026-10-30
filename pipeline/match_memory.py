@@ -103,11 +103,21 @@ FIELDS = ('is_play', 'is_ability', 'is_tower_damage', 'is_tower_fall',     # typ
           'is_xb_answer',                          # this play was the first answer to the other side's X-Bow
           'rk_tower', 'rk_done', 'rk_tower_lost', 'rk_tower_known', 'rk_value_10', 'rk_value_known', 'rk_combo')
 F = len(FIELDS)                  # 46
+# MEM-FULL (owner 10-30, opt-in ``snap``): + a board snapshot per play / ability event, appended after FIELDS, from the last
+# sample BEFORE the play (the same sample crowns / margin read: causal, public). Per side (me / opp) x zone in MY frame
+# (back = my half y >= .5, front = theirs; l = x < .5): the bodies with a known value (``_value``) / 10 and their elixir
+# value / 10; then the 6 tower HP fractions (TOWER order, unknown = 0) and two known flags. Tower events: zeros.
+SNAP_ZONES = ('back_l', 'back_r', 'front_l', 'front_r')
+SNAP_FIELDS = (tuple(f'sn_{s}_{z}_{k}' for s in ('me', 'opp') for z in SNAP_ZONES for k in ('n10', 'v10'))
+               + ('sn_hp_mk', 'sn_hp_ml', 'sn_hp_mr', 'sn_hp_ok', 'sn_hp_ol', 'sn_hp_or', 'sn_hp_known', 'sn_units_known'))
+F_SNAP = F + len(SNAP_FIELDS)    # 70
 _COL = {k: i for i, k in enumerate(FIELDS)}
+_COLX = {k: i for i, k in enumerate(FIELDS + SNAP_FIELDS)}   # + the snapshot columns (writers; _COL stays FIELDS)
 GROUPS = ('static', 'out', 'xb', 'answer', 'is_answer', 'rk')     # table: when each field appears (its group's res tick)
 FIELD_GROUP = np.array([1 if k.startswith('out_') else 2 if k in ('xb_done', 'xb_locked', 'xb_failed', 'xb_damage')
                         else 3 if k in ('xb_answer_done', 'xb_answered', 'xb_answer_dist_12') else 4 if k == 'is_xb_answer'
                         else 5 if k.startswith('rk_') and k != 'rk_tower' else 0 for k in FIELDS])
+FIELD_GROUP_SNAP = np.concatenate([FIELD_GROUP, np.zeros(len(SNAP_FIELDS), FIELD_GROUP.dtype)])   # snapshot: static
 
 # summary(): the compact plan-B vector (own side), then CARD_FIELDS per own deck card in the caller's deck order
 SUMMARY_FIELDS = ('xb_placed_10', 'xb_resolved_10', 'xb_locked_10', 'xb_failed_10', 'xb_pending_10',   # reach X-Bows
@@ -226,10 +236,18 @@ def sample_sim(state, side):
 
 
 # ------------------------------------------------------------------------------------------------------------ memory
-class MatchMemory:
-    """One match, one observer side. ``observe`` once per decision (ticks increasing), ``features(t)`` after it."""
+def opts(mem):
+    """MEM-FULL options of a model's memory encoder (model_gen MemoryEncoder ``e_max`` / ``snap``; absent = the defaults):
+    {e_max, snap} for MatchMemory(side, **opts(mem)) / build; rows_features / features_at take e_max (snap is in the table)."""
+    return dict(e_max=int(getattr(mem, 'e_max', E_MAX) or E_MAX), snap=bool(getattr(mem, 'snap', False)))
 
-    def __init__(self, side):
+
+class MatchMemory:
+    """One match, one observer side. ``observe`` once per decision (ticks increasing), ``features(t)`` after it.
+    MEM-FULL (opt-in): ``e_max`` = events kept in features (default E_MAX, the newest), ``snap`` = + SNAP_FIELDS per play."""
+
+    def __init__(self, side, e_max=E_MAX, snap=False):
+        self.e_max, self.snap = int(e_max), bool(snap)
         self.side = int(side)
         self.t, self.hp, self.alive, self.el, self.units, self.top = [], [], [], [], [], []
         self.plays, self.tower_ev = [], []
@@ -333,9 +351,35 @@ class MatchMemory:
         if slug == 'rocket' and mine and not ab:
             d = min((_tiles(xy, TOWER_XY[q]), q) for q in (3, 4, 5)) if xy is not None else (99.0, None)
             e['aim'] = d[1] if d[0] <= RK_TOWER_R else None
+        if self.snap:
+            e['snap'] = self._snap(i)
         self.plays.append(e)
         self._sorted = None
         return True
+
+    def _snap(self, i):
+        """SNAP_FIELDS values at sample ``i`` (the last one before the play); None = no sample yet (all zero). Sums run in
+        the sample's body order (CfMem.snap repeats it)."""
+        if i < 0:
+            return None
+        v = [0.0] * len(SNAP_FIELDS)
+        hp, U = self.hp[i], self.units[i]
+        for j, h in enumerate(hp):
+            v[16 + j] = 0.0 if h is None else h
+        v[22] = float(None not in hp)
+        if U is not None:
+            v[23] = 1.0
+            n = [0] * 8
+            for rel, key, h, mx, x, y in U.values():
+                val = _value(key, h, mx, self.top[i][rel])
+                if val is None:
+                    continue
+                c = 4 * rel + 2 * (y < .5) + (x >= .5)
+                n[c] += 1
+                v[2 * c + 1] += val
+            for c in range(8):
+                v[2 * c], v[2 * c + 1] = n[c] / 10, v[2 * c + 1] / 10
+        return v
 
     # ------------------------------------------------------------------------------------------------------ outcomes
     def _lost(self, idx, i0, i1):
@@ -444,7 +488,7 @@ class MatchMemory:
         the per-card summary rows follow (the model's ``deck_card``). ``version`` 'v2': + the S1C_FIELDS, from this match's
         table so far (the one vectorised implementation, so incremental == offline by construction of the table)."""
         ev = self.events(t)
-        e, m, c, f = encode(ev, t, gid)
+        e, m, c, f = encode(ev, t, gid, self.e_max, self.snap)
         s, ans = summary(ev, t, deck, gid)
         if version != 'v1':                       # = features_at(table, [t], deck, 'v2', gid) minus its v1 part (= s)
             if version != 'v2':
@@ -466,15 +510,15 @@ class MatchMemory:
         pos = {id(d): i for i, d in enumerate(ev)}
         tab = dict(tick=np.array([d['tick'] for d in ev], np.int32),
                    vis=np.array([max(d['tick'] + 1, d.get('seen', d['tick'])) for d in ev], np.int32),
-                   vals=np.zeros((n, F), np.float32), res=np.zeros((n, len(GROUPS)), np.int32),
+                   vals=np.zeros((n, F_SNAP if self.snap else F), np.float32), res=np.zeros((n, len(GROUPS)), np.int32),
                    card=np.array([gid.get(d['card'], 0) if 'card' in d else 0 for d in ev], np.int32),
                    form=np.array([d['form'] if 'card' in d else FORM_PAD for d in ev], np.int8),
                    ans_card=np.zeros(n, np.int32), flag=np.zeros(n, np.int8), xb_dmg=np.zeros(n), rk_tl=np.zeros(n),
                    swing=np.zeros(n), vpe=np.zeros(n))
         tab['res'][[i for i, d in enumerate(ev) if 'card' in d], 1:] = NEVER   # before any is_answer tick is lowered
         for i, d in enumerate(ev):
-            for k, x in _row(d, d['tick']).items():
-                tab['vals'][i, _COL[k]] = x
+            for k, x in _row(d, d['tick'], self.snap).items():
+                tab['vals'][i, _COLX[k]] = x
             tab['vals'][i, _COL['ago_60']] = 0.0
             if 'card' not in d:
                 continue
@@ -503,9 +547,9 @@ class MatchMemory:
         return tab
 
 
-def build(side, samples, plays=()):
+def build(side, samples, plays=(), e_max=E_MAX, snap=False):
     """Offline: a whole recorded match -> MatchMemory (its features(t) = the incremental ones at every decision tick)."""
-    m = MatchMemory(side)
+    m = MatchMemory(side, e_max, snap)
     for s in sorted(samples, key=lambda s: int(s['tick'])):
         m.observe(**s)
     for p in plays:
@@ -513,7 +557,7 @@ def build(side, samples, plays=()):
     return m
 
 
-def _row(e, t):
+def _row(e, t, snap=False):
     tp = e['tick']
     v = {'is_' + e['type']: 1.0, 'mine': float(e['mine']), 'ago_60': (t - tp) * TICK_S / 60, 't_300': tp * TICK_S / 300,
          ('ph_1x', 'ph_2x', 'ph_ot')[0 if tp < DOUBLE_T else 1 if tp < OT_T else 2]: 1.0,
@@ -529,6 +573,8 @@ def _row(e, t):
         v['tower_lost'] = e['lost'] or 0.0
         return v
     v['cost_10'] = e['cost'] / 10
+    if snap and e.get('snap') is not None:
+        v.update(zip(SNAP_FIELDS, e['snap']))
     o = e.get('out')
     if o is not None:
         v['out_done'] = 1.0
@@ -559,16 +605,16 @@ def _row(e, t):
     return v
 
 
-def encode(events, t, gid):
-    """events(t) -> (ev [E_MAX, F] float32, mask [E_MAX] bool, card [E_MAX] int64 (gid ids, 0 = pad / tower event),
-    form [E_MAX] int64 (FORM_PAD = pad / unknown)); the newest E_MAX events, newest first."""
-    ev = np.zeros((E_MAX, F), np.float32)
-    mask = np.zeros(E_MAX, bool)
-    card = np.zeros(E_MAX, np.int64)
-    form = np.full(E_MAX, FORM_PAD, np.int64)
-    for r, e in enumerate(reversed(events[-E_MAX:])):
-        for k, x in _row(e, t).items():
-            ev[r, _COL[k]] = x
+def encode(events, t, gid, e_max=E_MAX, snap=False):
+    """events(t) -> (ev [e_max, F (F_SNAP with snap)] float32, mask [e_max] bool, card [e_max] int64 (gid ids, 0 = pad /
+    tower event), form [e_max] int64 (FORM_PAD = pad / unknown)); the newest e_max events, newest first."""
+    ev = np.zeros((e_max, F_SNAP if snap else F), np.float32)
+    mask = np.zeros(e_max, bool)
+    card = np.zeros(e_max, np.int64)
+    form = np.full(e_max, FORM_PAD, np.int64)
+    for r, e in enumerate(reversed(events[-e_max:])):
+        for k, x in _row(e, t, snap).items():
+            ev[r, _COLX[k]] = x
         mask[r] = True
         if 'card' in e:
             card[r], form[r] = gid.get(e['card'], 0), e['form']
@@ -617,9 +663,9 @@ def summary(events, t, deck=(), gid=None):
 
 
 # ------------------------------------------------------------------------------------------------------------ tables
-def _features(E, ticks, decks, version='v1', gid=None):
+def _features(E, ticks, decks, version='v1', gid=None, e_max=E_MAX):
     """``_features_v1``; version 'v2' appends ``_s1c`` (needs ``gid``, the vocabulary the tables' card ids are in)."""
-    out = _features_v1(E, ticks, decks)
+    out = _features_v1(E, ticks, decks, e_max)
     if version == 'v1':
         return out
     if version != 'v2':
@@ -633,22 +679,23 @@ def _features(E, ticks, decks, version='v1', gid=None):
     return out
 
 
-def _features_v1(E, ticks, decks):
+def _features_v1(E, ticks, decks, e_max=E_MAX):
     """The vectorised MatchMemory.features: ``E`` = per-ROW event arrays {TABLE_KEYS: [T, N, ...]} (each row its own match's
     events, padding never visible), ``ticks`` [T], ``decks`` [T, <= 8] gid ids. Sums run in event order through np.cumsum,
     as the python sums do, so every array is bit-identical to MatchMemory.features (tested)."""
     ticks = np.asarray(ticks, np.int64)
     T, N = E['tick'].shape
-    out = empty_rows(T)
+    n_f = E['vals'].shape[-1]                                 # F, or F_SNAP for a snap table (MEM-FULL)
+    out = empty_rows(T, e_max=e_max, n_f=n_f)
     if not T or not N:
         return out
     tick, vals, res = E['tick'].astype(np.int64), E['vals'], E['res'].astype(np.int64)
     t = ticks[:, None]
     V = t >= E['vis'].astype(np.int64)
     rank = np.cumsum(V[:, ::-1], 1)[:, ::-1]                  # visible events at or after each one
-    r, n = np.nonzero(V & (rank <= E_MAX))
+    r, n = np.nonzero(V & (rank <= e_max))
     p = rank[r, n] - 1                                        # 0 = the newest
-    rows = np.where(ticks[r][:, None] >= res[r, n][:, FIELD_GROUP], vals[r, n], np.float32(0))
+    rows = np.where(ticks[r][:, None] >= res[r, n][:, FIELD_GROUP_SNAP[:n_f]], vals[r, n], np.float32(0))
     rows[:, _COL['ago_60']] = ((ticks[r] - tick[r, n]) * TICK_S / 60).astype(np.float32)
     out['mem_ev'][r, p] = rows
     out['mem_mask'][r, p] = True
@@ -697,12 +744,13 @@ def _features_v1(E, ticks, decks):
     return out
 
 
-def features_at(tab, ticks, deck=(), version='v1', gid=None):
+def features_at(tab, ticks, deck=(), version='v1', gid=None, e_max=E_MAX):
     """MatchMemory.features(t, gid, deck, version) for every t in ``ticks``, from the match's ``table(gid)``, vectorised
     (numpy, CPU). ``deck`` = up to 8 gid ids (the model's deck_card order); v2 needs the ``gid`` the table was built with."""
     T = len(ticks)
     E = {k: np.broadcast_to(tab[k], (T,) + tab[k].shape) for k in TABLE_KEYS}
-    return _features(E, ticks, np.broadcast_to(np.asarray(deck, np.int64).reshape(1, -1), (T, len(deck))), version, gid)
+    return _features(E, ticks, np.broadcast_to(np.asarray(deck, np.int64).reshape(1, -1), (T, len(deck))), version, gid,
+                     e_max)
 
 
 def pack(tables):
@@ -733,13 +781,13 @@ def gather_rows(packed, tabs):
     return E
 
 
-def rows_features(packed, row_tab, row_t, row_deck, ids, version='v1', gid=None):
+def rows_features(packed, row_tab, row_t, row_deck, ids, version='v1', gid=None, e_max=E_MAX):
     """MEM_KEYS arrays for rows ``ids`` of a batch / dataset: row i is table ``row_tab[i]`` (index into ``packed``; -1 = no
     table: an empty memory) at tick ``row_t[i]`` with deck ``row_deck[i]`` (8 gid ids). One vectorised pass for the batch.
     v2: + ``gid`` (the vocabulary of the tables' card ids)."""
     ids = np.asarray(ids, np.int64)
     return _features(gather_rows(packed, np.asarray(row_tab)[ids]), np.asarray(row_t)[ids], np.asarray(row_deck)[ids],
-                     version, gid)
+                     version, gid, e_max)
 
 
 def mirror_ev(ev):
@@ -749,13 +797,21 @@ def mirror_ev(ev):
     x, k, lc, rc = _COL['x'], _COL['xy_known'], _COL['tower_l'], _COL['tower_r']
     out[..., x] = (1 - ev[..., x]) * ev[..., k] + ev[..., x] * (1 - ev[..., k])
     out[..., lc], out[..., rc] = ev[..., rc], ev[..., lc]
+    if ev.shape[-1] == F_SNAP:                  # MEM-FULL snapshot: lane zones l <-> r, princess HP L <-> R (a body at x
+        for a, b in _SNAP_MIRROR:               # exactly .5 counts right both ways: the mirror is exact elsewhere)
+            out[..., a], out[..., b] = ev[..., b], ev[..., a]
     return out
 
 
-def empty_rows(n, version='v1'):
-    """MEM_KEYS for ``n`` rows with an EMPTY memory (no event, zero summary): a path with no tables (declared, never silent)."""
-    return dict(mem_ev=np.zeros((n, E_MAX, F), np.float32), mem_mask=np.zeros((n, E_MAX), bool),
-                mem_card=np.zeros((n, E_MAX), np.int64), mem_form=np.full((n, E_MAX), FORM_PAD, np.int64),
+_SNAP_MIRROR = tuple((_COLX[a], _COLX[a.replace('_l_', '_r_').replace('hp_ml', 'hp_mr').replace('hp_ol', 'hp_or')])
+                     for a in SNAP_FIELDS if '_l_' in a or a in ('sn_hp_ml', 'sn_hp_ol'))
+
+
+def empty_rows(n, version='v1', e_max=E_MAX, n_f=F):
+    """MEM_KEYS for ``n`` rows with an EMPTY memory (no event, zero summary): a path with no tables (declared, never silent).
+    MEM-FULL: ``e_max`` events, ``n_f`` = F or F_SNAP."""
+    return dict(mem_ev=np.zeros((n, e_max, n_f), np.float32), mem_mask=np.zeros((n, e_max), bool),
+                mem_card=np.zeros((n, e_max), np.int64), mem_form=np.full((n, e_max), FORM_PAD, np.int64),
                 mem_summary=np.zeros((n, N_SUM[version]), np.float32), mem_answer=np.zeros(n, np.int64))
 
 

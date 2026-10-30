@@ -1,0 +1,76 @@
+{
+ "label": "gen_dataset_v32_fv5_memory_v1.npz",
+ "tables": 29322,
+ "events": {
+  "50": 100,
+  "90": 169,
+  "95": 183,
+  "99": 201,
+  "mean": 109.1,
+  "max": 229
+ },
+ "over_128": 0.2852,
+ "over_192": 0.0253,
+ "over_256": 0.0,
+ "by_type_mean": {
+  "play": 68.5,
+  "ability": 1.4,
+  "tower_damage": 37.7,
+  "tower_fall": 1.5
+ },
+ "by_phase_mean": {
+  "1x": 40.9,
+  "2x": 34.9,
+  "ot": 33.3
+ },
+ "own_share": 0.509,
+ "dropped_at_end": {
+  "events": 277970,
+  "share_of_all": 0.0869,
+  "by_type": {
+   "play": 214690,
+   "ability": 3408,
+   "tower_damage": 59728,
+   "tower_fall": 144
+  },
+  "by_phase": {
+   "1x": 224070,
+   "2x": 53641,
+   "ot": 259
+  },
+  "own": 141293,
+  "opp": 136677
+ },
+ "empty_tables": 0,
+ "tick_of_event_129_s": {
+  "50": 260,
+  "90": 292,
+  "95": 303,
+  "99": 305,
+  "mean": 261.4,
+  "max": 306
+ },
+ "event_129_phase": {
+  "1x": 0,
+  "2x": 25,
+  "ot": 8337
+ },
+ "decisions": {
+  "rows": 3517863,
+  "visible": {
+   "50": 36,
+   "90": 100,
+   "95": 120,
+   "99": 152,
+   "mean": 45.1,
+   "max": 221
+  },
+  "over_128": 0.0346,
+  "over_128_by_phase": {
+   "1x": 0.0,
+   "2x": 0.0,
+   "ot": 0.1724
+  },
+  "dropped_mean_when_over": 17.9
+ }
+}

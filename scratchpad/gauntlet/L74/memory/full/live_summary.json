@@ -1,0 +1,39 @@
+{
+ "label": "live400",
+ "tables": 400,
+ "events": {
+  "50": 101,
+  "90": 151,
+  "95": 163,
+  "99": 177,
+  "mean": 105.8,
+  "max": 203
+ },
+ "over_128": 0.28,
+ "over_192": 0.0025,
+ "over_256": 0.0,
+ "play_mean": 72.8,
+ "ability_mean": 1.0,
+ "tower_damage_mean": 31.0,
+ "tower_fall_mean": 1.0,
+ "1x_mean": 40.4,
+ "2x_mean": 32.0,
+ "ot_mean": 33.4,
+ "dropped_sum": 2344,
+ "dropped_1x_sum": 2241,
+ "dropped_2x_sum": 103,
+ "dropped_ot_sum": 0,
+ "dropped_own_sum": 1193,
+ "dropped_opp_sum": 1151,
+ "dec_sum": 150004,
+ "dec_over_sum": 3770,
+ "decision_over_128_share": 0.0251,
+ "tick_of_event_129_s": {
+  "50": 271,
+  "90": 292,
+  "95": 293,
+  "99": 296,
+  "mean": 270.3,
+  "max": 297
+ }
+}
