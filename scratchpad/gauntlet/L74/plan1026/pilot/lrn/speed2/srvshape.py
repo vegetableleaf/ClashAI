@@ -91,8 +91,12 @@ def main():
     ap.add_argument("--java-ms", type=float, default=20.0)
     ap.add_argument("--wait-ms", type=float, default=1.0)       # serve.py's PolicyServer default
     ap.add_argument("--forced-every", type=int, default=7)
+    ap.add_argument("--max-batch", type=int, default=2048)
+    ap.add_argument("--switch-ms", type=float, default=None, help="sys.setswitchinterval of the server process (default 5 ms)")
     ap.add_argument("--models", type=int, default=len(POOL), help="first N of POOL (learner first)")
     a = ap.parse_args()
+    if a.switch_ms is not None:
+        sys.setswitchinterval(a.switch_ms / 1000)
     from srv_bench import rows_for
     from pipeline import batched_rollout as BR
     from pipeline import e1_eval as E
@@ -100,7 +104,7 @@ def main():
     pool = POOL[:a.models]
     pols = {name: E.load_policy(REPO / p, "cuda")[0] for name, p in pool}
     base = {name: rows_for(pols[name].model, 512, seed=j) for j, (name, _) in enumerate(pool)}
-    res = {"mode": a.mode, "java_ms": a.java_ms, "wait_ms": a.wait_ms, "models": [n for n, _ in pool], "rows": []}
+    res = {"mode": a.mode, "switch_ms": a.switch_ms, "java_ms": a.java_ms, "wait_ms": a.wait_ms, "models": [n for n, _ in pool], "rows": []}
     for cfgs in a.configs.split(","):
         K, P = map(int, cfgs.split("x"))
         blocks = []
@@ -115,11 +119,13 @@ def main():
         models = [{"name": name, "policy": BR.LazyRefine(pols[name]), "cfg": CFG, "block_max": len(b[1]),
                    "spec": row_spec(b[0], E.gen_row_keys(pols[name].model)), "swap": name == "learner"}
                   for name, b in blocks]
-        srv = PolicyServer(models, n_clients=P, device="cuda", max_batch=2048, wait_ms=a.wait_ms, mode=a.mode)
+        srv = PolicyServer(models, n_clients=P, device="cuda", max_batch=a.max_batch, wait_ms=a.wait_ms, mode=a.mode)
         ctx = mp.get_context("spawn")
         q, go = ctx.Queue(), ctx.Event()
         procs = [ctx.Process(target=producer, args=(srv.clients[i], blocks, a.seconds, a.java_ms / 1000, i, q, go))
                  for i in range(P)]
+        for p in procs:
+            p.daemon = True                      # an exception in the server must not wait on them at exit
         for p in procs:
             p.start()
         srv.start(warm={name: base[name] for name, _ in blocks})

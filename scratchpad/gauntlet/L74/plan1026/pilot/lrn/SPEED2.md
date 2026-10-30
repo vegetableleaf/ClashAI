@@ -71,11 +71,28 @@ Reading (a unless marked):
   server at 16x21 -> 64x5 -> 128x3; small, because the per-batch CPU cost is per MODEL batch, and there are 9 models
   per cycle whatever the producer count. On the box it went the other way (16 x 128 = 16.4k/h < 128 x 16 = 49.9k/h)
   because fewer producers also means fewer JVM threads stepping: the server is not the only limit there.
-- F2 more server processes per GPU (the GIL limit is per process): ZERO code -- fastloop already starts one serve.py
-  per `--devices` entry and maps producer k to entry k % len, so `--devices cuda:0,cuda:0,cuda:1,cuda:1,...` = 2 per GPU.
-  Measurement running (speed2/sweep2.sh). Needs the GPU NOT in
-  exclusive-process compute mode (33903 is not: four processes share its GPU; the box: unknown, check
-  `nvidia-smi -q | grep "Compute Mode"`).
+- F2 more server processes per GPU, each serving ALL models: (c) contradicted as a big lever. Zero code (fastloop
+  starts one serve.py per `--devices` entry and maps producer k to entry k % len, so `cuda:0,cuda:0,...` = 2 per GPU),
+  but measured (a; speed2/sweep2.sh, max_batch 512, 33903 GPU otherwise idle except a 0.5 GB process; res/s2/):
+
+  | servers x (K x producers), eager | rows/s total (per server) | round ms | fwd wait ms | cell wait ms | server CPU / wall |
+  |---|---|---|---|---|---|
+  | 1 x 16x22 | 1,751 | 402 | 236 | 128 | 1.09 |
+  | 2 x 16x11 | 2,127 (1,079 + 1,048) = 1.21x | 326 / 336 | 195 / 199 | 97 / 102 | 0.91 / 0.96 |
+  | 3 x 16x7 | 1,994 (675 + 657 + 662) = 1.14x | 332-341 | 200-217 | 90-102 | 0.94-1.16 |
+
+  Why: each server still runs ~32 forward batches/s at ~19 ms CPU each = one full core, and a server cycle is 9 model
+  forwards + 9 cell calls whatever the rows. A producer's round = one cycle, so splitting the producers over more
+  servers halves each server's rows per cycle without shortening the cycle. Rows/s scale with ROWS PER CYCLE (rows in
+  flight per server) and with 1 / cycle time, not with server count. (Caveat: all 8 of my CPUs carried 22 producers +
+  3 servers; on the box CPU is plentiful, but the cycle argument does not depend on that.)
+- F2' (b) model-sharded servers: server j serves only a subset of the 9 models (e.g. learner | 4 opponents | 4
+  opponents), a producer sends its blocks to all of them at once; the 9 forwards then run in parallel processes and the
+  cycle shrinks ~k-fold. Code: producer with one Client per server + a model -> server map, serve.py --models subset.
+  Not built.
+- F4 (b) more rows in flight per server: the box spreads 2,048 matches over 6 servers (~680 rows per server cycle);
+  LOOP-SRV reached 95% of a 4090's rate only at ~12k rows in flight. Fewer inference GPUs at the same rows/s is the
+  cheap direction (one server with all 128 producers: ~6x rows per cycle for a ~1.3x longer cycle, b).
 - F3 one cell request per producer round instead of one per model group (round trips 9 -> 1): code (producer decide in
   two phases + a multi-block cell message); not built.
 
