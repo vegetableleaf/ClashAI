@@ -1,3 +1,17 @@
+# 2026-10-30 ~18:30 EDT -- FASTLOOP-FIX DONE: origin/main fast loop verified again; live partner ported; real rollout bottleneck found
+
+- (a) (16, 15) root cause = a thread race in CfCtx.build's missing-name check (another thread's miss failed an innocent row ->
+  match counted crashed / skipped); fixed in CfTrain.ctxRow (retry when the -2 is not the row's own miss). Lead's
+  follow_ups-guard hypothesis (c). Keys-absent compare on origin/main code, non-live B0 message: 16/16, memory rows 5,257/5,257.
+  -> the 12:05 "fast loop on origin/main UNVERIFIED" warning is CLOSED (a4af5ee, 257c17f).
+- (a) Follow-ups ported (SelfPlaySide event logic; the old spec named the wrong path): live CLXIII partner 144/144 identical,
+  lp max 2.9e-6; MEM-FULL keys on 16/16 + smoke with a real PPO step through the widened encoder; live-config arm smoke PASS.
+- (a) ROLLOUT bottleneck on the pilot = the CPU forward of the timing-head opponent G u0160 (not on serve.py): 436-707 s of a
+  658-924 s producer wall, and the straggler spread; serve.py wait only 112-117 s. `--local-forward` (opt-in, d94730f) runs it on
+  the producer's GPU: compare 16/16, lp 1.1e-5 (bar 5e-5); expected 2.5-3x shorter rollouts (b). Graphs crash: first capture fails
+  on a capture-unsupported op, then the pool stays recording (c: not concurrency).
+- Workers: ROLLOUT-SPEED (fresh) = --local-forward at pilot scale on 31892, graphs fix + proof, F3, F2', 5-GPU projection.
+  OPP-PUSH cleared to move the live-partner arm to the fast loop after u40 D3. LEARNER-SPEED on tickets A/B benches (31892).
 # 2026-10-30 ~17:30 EDT -- PILOT REPLACED by the S / L learning A/B from B0 (owner); u25 graphs switch FAILED
 
 - u25 switch (switch_fast.sh) fired 20:57 UTC but every producer crashed at start: `beginAllocateToPool: already recording to
