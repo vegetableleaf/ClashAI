@@ -54,3 +54,24 @@ ssh: connect to host 157.157.221.29 port 33553: Connection refused
 2026-10-29T21:42:42Z oplc_ftR_l001_a10_u0200 [16.635.3] CLXIII W 19 / 24
 ssh: connect to host 157.157.221.29 port 33553: Connection refused
 2026-10-29T21:45:26Z C u200 block INVALID (24/480 rows: fe364ceb FORCE_IS_GROUND crash) -> all D3 from now on crforge 5e8089a4 (identical to fe364ceb except that fault); C u200 rerun.
+2026-10-29T22:08:31Z oplc_ftR_l001_a10_u0200 [16.635.3] CLXIII W 382 / 480
+ssh: connect to host 157.157.221.29 port 33308: Connection timed out
+ssh: connect to host 157.157.221.29 port 33308: Connection timed out
+ssh: connect to host 157.157.221.29 port 30408: Connection timed out
+ssh: connect to host 157.157.221.29 port 33903: Connection timed out
+2026-10-29T23:02:04Z oplc_ftR_l003_a10_tpg32m_u0080 [16.635.3] CLXIII W 412 / 480
+2026-10-29T23:18:49Z oplc_ftR_l0003_a10b_u0160 [16.635.3] CLXIII W 352 / 480
+2026-10-29T23:21:31Z C u200 382/480 (79.6%, best u160 77.5%); D u80 412/480 (85.8%, worse than u40 82.3% and B u80 80.4%: timing_pg K=32 not helping, b: noisy timing grad); G u160 352/480 (73.3%) NEW BEST, quick RMS .30 (= ftR .30), lock .70, P(lock|fail) .60.
+2026-10-29T23:25:53Z oplc_ftR_l0001_a10_u0040 [16.635.3] CLXIII W 384 / 480
+2026-10-29T23:48:31Z oplc_ftR_l001_a10_u0240 [16.635.3] CLXIII W 368 / 480
+2026-10-30T01:20:20Z oplc_ftR_l0003_a10b_u0200 [16.635.3] CLXIII W 225 / 288
+2026-10-30T01:31:33Z oplc_ftR_l003_a10_tpg32m_u0120 [16.635.3] CLXIII W 378 / 480
+2026-10-30T01:38:52Z oplc_ftR_l0001_a10_u0080 [16.635.3] CLXIII W 379 / 480
+2026-10-30T01:51:33Z oplc_ftR_l001_a10_u0280 [16.635.3] CLXIII W 357 / 480
+2026-10-30T03:26:27Z oplc_ftR_l0003_a10b_u0240 [16.635.3] CLXIII W 378 / 480
+2026-10-30T03:49:24Z oplc_ftR_l0001_a10_u0120 [16.635.3] CLXIII W 377 / 480
+2026-10-30T04:09:39Z oplc_ftR_l001_a10_u0320 [16.635.3] CLXIII W 375 / 480
+2026-10-30T04:10:11Z oplc_ftR_l003_a10_tpg32m_u0160 [16.635.3] CLXIII W 386 / 480
+2026-10-30T11:29:44Z ALL ARMS PLATEAUED (arms_watch, owner rule): best G u160 73.3%, C u280 74.4%, D u120 78.8%, H u40 80.0% (H u80 79.0, u120 78.5). Pilot pilot_G3 training on 33308 with G u160 in the pool. Seed check: oplc_ftR_l0003_s1 = G's recipe, seed 1 (33903).
+2026-10-30T13:55:01Z oplc_ftR_l0003_s1_u0040 [16.635.3] CLXIII W 390 / 480
+2026-10-30T14:01:14Z oplc_ftR_l0003_s1 STOPPED at u48 by OPP-LIVEPARTNER (owner priority: live-partner fix). D3 u40 390/480 (81.3%; G u40 83.7%). Training wr vs CLXIII partner per 10 updates: .157 .163 .217 .247 .233 (u0-49).

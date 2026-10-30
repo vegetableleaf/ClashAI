@@ -2,7 +2,43 @@
 
 Grades: (a) measured (number + source), (b) plausible but untested, (c) contradicted by the data.
 
-## STATUS (keep current; 2026-10-30 ~14:30 UTC, OPP-PLATEAU, account 3)
+## STATUS: the live-partner run (keep current; OPP-LIVEPARTNER, 2026-10-30 14:30 UTC) -- RESTART POINT
+- RUNNING: `oplc_ftR_l0003_live` on 33903, PRODUCTION rl_royale (not the fast loop): timeout PID 81253 -> rl_royale PID
+  81255 (+ 20 actor children), CPUs 240-255,180-185, CUDA learner, tree /workspace/oplm/cb2, started 14:24 UTC.
+  Log `/workspace/oplm/logs/oplc_ftR_l0003_live.out`; train log `/workspace/oplm/cb2/scratchpad/gauntlet/L68/rl/oplc_ftR_l0003_live/train_log.jsonl`;
+  checkpoints every 10 updates in `/workspace/oplm/cb2/icebow/data/bench/rl_royale/oplc_ftR_l0003_live/`. Cap 400 updates.
+  Config = opp_learner_calib_live.yaml (pod sha 816728b8) + G's recipe (beta .003, lr 3e-5, th_anchor 10, ftR init); config sha 5cb9a41e6763.
+  Launch / resume (resume = the same command + `--resume`):
+  `bash scratchpad/gauntlet/L74/plan1026/opp/learner/launch_arm_prod.sh 33903 oplc_ftR_l0003_live 240-255,180-185 20 scratchpad/gauntlet/L74/plan1026/opp/learner/opp_learner_calib_live.yaml beta0=0.003 beta_min=0.003 beta_max=0.003`
+  Stop: `ssh ... -p 33903 root@157.157.221.29 'kill 81255'` (exact PID; check `pgrep -P 81255` is empty after).
+- D3 loop (laptop): bash PID 16372 running a COPY `C:/Users/benpe/AppData/Local/Temp/claude/C--Users-benpe-ClashBot/f4e7cd66-2122-4134-a1d2-d45291b5bc2a/scratchpad/arm_d3_live.sh`
+  (= learner/arm_d3.sh, sha 519be4b0) `oplc_ftR_l0003_live 33903 33903 0-179 30 0040 0080 ... 0400`, appends to `out/lead_d3.log`.
+  Stop: touch STOP_ARM_D3 in that scratchpad dir, or `Stop-Process -Id 16372`. If it is gone (account switch), restart from a NEW
+  copy with the not-yet-scored updates only: `cp learner/arm_d3.sh <scratch>/arm_d3_live2.sh && bash <scratch>/arm_d3_live2.sh oplc_ftR_l0003_live 33903 33903 0-179 30 UNNNN ... >> learner/out/lead_d3.log 2>&1`.
+- Monitor: `ssh ... -p 33903 root@157.157.221.29 "grep '^\[rl\] u0' /workspace/oplm/logs/oplc_ftR_l0003_live.out | tail -3 | cut -c1-260"`
+  (the `frozen W/N` field = the training win vs the CLXIII live-stack partner); D3 lines in `out/lead_d3.log`.
+- Why production: the fast loop REFUSED the config (a): smoke oplc_ftR_l0003_live_smoke -> `NotImplementedError: policy 'live':
+  the fast loop samples` (producer.py:702). Not a small exact fix (a, code read): the fast loop's decide builds stand-in boards
+  (`_prod_group`: s._cur = (tick, t_sec, my_elixir) only), while the LIVE_OPTIONS rules read the engine BoardState
+  (decision_options.match_kwargs: m._cur[1] towers / units, m.state crown_towers for lethal / rocket_dead_target / xbow_dead_lane /
+  tau_threatened). Porting = a Java BoardState export + a compare.py exactness pass = a separate ticket. Production smoke
+  oplc_ftR_l0003_live_psmoke2 (8 actors, max_updates=2): SMOKE PASS (a); both updates' matchups = `frozen:...CLXIII_NOLEAK.pt`
+  only; the merged config carries league_opp_live; live_opp_cfg merges it for opponent type frozen (rl_royale.py:1793, pod tree).
+  (Smoke note: `--smoke` does NOT cap updates when max_updates is passed as an override: the first psmoke ran to u11 and was
+  stopped by PID; pass max_updates=2 after the others.)
+- Speed (b until u10 is logged): OPP_LEARNER.md measured 1,173 s per update with 20 CPU actors (vs 160-240 s in the fast loop),
+  so u40 (first D3) is ~13 h after the start and u160 ~2.2 days.
+- Success (from "Next experiment"): D3 opponent win at or above G at u80 (G 23.8%) and u160 (G 26.7%), AND training win vs the
+  partner within ~3 pp of D3 at the same checkpoint (transfer near 1). Plus the v6 quick card at each D3 (G u160 RMS .30).
+  Init sanity check (b): u0's training win vs the live partner should sit near ftR's D3 opponent win (.11), not .14.
+  For curves.py: the partner's matchups are `frozen:...`, not `exploiter...`: add that prefix first.
+- Seed check oplc_ftR_l0003_s1 (G's recipe, seed 1) STOPPED at u48 (owner priority) by exact PID (33903 60962 / 60963; laptop D3
+  loop 2916); checkpoints u0000-u0040 kept on 33903. Results kept (a): D3 u40 390/480 CLXIII = opponent 18.7% (G u40 16.3%; the two
+  differ by 2.4 pp, ~1 SE of the difference). Training win vs the sampled partner per 10 updates (curves.py 10, n ~1,400 each):
+  .157 (u0-9) .163 .217 .247 .233 (u40-48) = G-family arms' curve (C u20-39 .232).
+- Codex dispatches: none (launch + diagnosis + 2 smokes needed decisions at each step).
+
+## STATUS (2026-10-30 ~14:30 UTC, OPP-PLATEAU, account 3) -- superseded by the section above
 - DONE: diagnosis from data on disk only (no games, no training, no pod writes). Proposed config written and checked with
   rl_royale's own validators on the laptop. NOT launched (33903's GPU is full: 23.0 / 24.6 GB with the seed check
   oplc_ftR_l0003_s1 + other jobs; 33308 runs the pilot; 30408 is down).
