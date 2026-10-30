@@ -12,6 +12,12 @@ P(lock|fail) .36 +- .07). Grades: (a) measured (number + source), (b) plausible 
   opt-in `GPU=` / `ALLOC=` (unset = byte-identical remote command, checked).
 - Waiting on: the new pod's SSH port (lead); the u40 D3 of the live run (~00:30-01:00 UTC); FASTLOOP-FIX (48/48).
 - Codex dispatches: none (design + script writing; nothing menial yet).
+- LEAD DECISIONS (10-30 ~21:00 UTC): (1) pods = 2 single RTX 3090 pods (ports to come; 24 GB = one production arm per pod).
+  (2) arm 2 at u40: lever 3 (`advantage: gae` + critic warm-up, win-only reward) APPROVED if transfer is fixed (training win
+  within ~3 pp of D3), smoke first; else lever 4. tower_phat for opponents stays OFF (reward change = owner). (3) STYLE is
+  OPP-PUSH's (no-discard): timing-head re-imitation on CLXIII-era human rows (v6 newest block held out) as its own track on the
+  second 3090 pod + the our_half / pocket_share exploit check. Success marks reported vs BOTH G's best block (26.7%) and G's
+  u80-u240 mean (23.3%).
 
 ## Bootstrap a new pod (laptop; ~10 GB pod to pod, never through the laptop)
 1. `bash scratchpad/gauntlet/L74/plan1026/opp/learner/boot_opp_pod.sh NEWPORT` -> must end `BOOT OK` (digests of venvf16, cb2,
