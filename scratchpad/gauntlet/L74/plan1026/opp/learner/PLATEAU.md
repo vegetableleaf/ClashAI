@@ -26,8 +26,10 @@ Grades: (a) measured (number + source), (b) plausible but untested, (c) contradi
   only; the merged config carries league_opp_live; live_opp_cfg merges it for opponent type frozen (rl_royale.py:1793, pod tree).
   (Smoke note: `--smoke` does NOT cap updates when max_updates is passed as an override: the first psmoke ran to u11 and was
   stopped by PID; pass max_updates=2 after the others.)
-- Speed (b until u10 is logged): OPP_LEARNER.md measured 1,173 s per update with 20 CPU actors (vs 160-240 s in the fast loop),
-  so u40 (first D3) is ~13 h after the start and u160 ~2.2 days.
+- u0000 (a, log 14:39 UTC): 256 matches, rollout 855 s + update 27 s = ~880 s per update (fast loop 160-240 s); training win
+  vs the live-stack partner 28/256 = .109, = ftR's D3 opponent win .110 (the sampled partner gave .14-.16 at u0: the sanity
+  check passes, read as a check only, SE ~2 pp). At ~880 s: u40 (first D3) ~00:10 UTC 10-31, u80 ~10:00, u160 ~2026-11-01 05:30
+  (b: extrapolated from one update; the pod's load changes with other jobs).
 - Success (from "Next experiment"): D3 opponent win at or above G at u80 (G 23.8%) and u160 (G 26.7%), AND training win vs the
   partner within ~3 pp of D3 at the same checkpoint (transfer near 1). Plus the v6 quick card at each D3 (G u160 RMS .30).
   Init sanity check (b): u0's training win vs the live partner should sit near ftR's D3 opponent win (.11), not .14.
