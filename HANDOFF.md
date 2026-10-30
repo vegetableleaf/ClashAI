@@ -1,3 +1,18 @@
+# 2026-10-30 ~16:45 EDT -- ENGINE HELD-OUT RESULT (FRESH9, frozen before any change): general search = hand rules
+
+- (a) r4_report on 33903 /workspace/smeR3 runs (driver ended F9_DONE): FRESH9 177 unique matches, as extracted (flagged =
+  not passing): hand-rule gate 122 pass apart from torn (0.689, CP low 0.627), 117 strict; RECON v3 (general ops, no hand
+  flags) 120 (0.678, CP low 0.615), 117 strict. Paired: only-gate 7 / only-v3 5 (p .77); strict 5 / 5 (p 1.0) -> on held-out
+  data the ONE general search matches the 20 hand rules (owner's general-rules direction holds). 8 records are flagged by the
+  extractor but exact under v3 (its cycle-repair / add ops restore the missed play; e.g. 012313, 024332, 030902, 040421):
+  by the owner's 10-30 rule for 155249 / 000242 they would count once their ops are ablation-confirmed (not done for FRESH9).
+- (a) ASSIGN guard on FRESH9's 5+ reader-hidden records: off == on for every record (no exact frame lost).
+- Where it fails (b, from the per-match classes): mostly early divergences with a unit the reader saw that the SIM never spawned
+  (U_rec_only: missed / undated opponent plays, often the 27 opp_no_fitting_deal records) and v3 losses where the hand
+  rules' input fixes are not yet covered by a search op (005035 / 021056 MiniPekkaHero hidden naming, 022312 Firecracker,
+  031423 BarbarianHut, 174855 GoldenKnight). Engine fidelity on held-out live matches ~0.68-0.69 vs D1 0.90 / D2 0.98.
+- Laptop copies of the 4 result files: account-3 session scratchpad f9/ (re-pull commands in RECON.md STATUS). Engine track
+  paused (slot -> LEARNER-SPEED); restart point = RECON.md STATUS + this entry.
 # 2026-10-30 ~16:20 EDT -- workers: RECON-4 stopped (FRESH9 frozen, v3 built); LEARNER-SPEED dispatched; 3 slots in use
 
 - RECON-4 (7ec0921 + 2 commits; RECON.md STATUS / s11): FRESH9 frozen BEFORE any change (317 Ranked battles after 10-29 08:28,
