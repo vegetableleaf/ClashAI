@@ -10,11 +10,11 @@ producers OOM on 33308 (125 GB cgroup).
 - Seat: SPEED-DECIDE (account 2 lead's ticket). Pod 33903 only (CPUs 218-225, its shared 4090; tree /workspace/speed2/cb =
   hard-link copy of /workspace/opp/cb + git HEAD de0f05e pipeline/ + pilot/loop + obsid + facade; env /workspace/speed2/env.sh).
   33308 and the box are NOT touched.
-- Step 1 (forward_wait): mechanism MEASURED (section 1). Fix candidates measured: graphs mode, bigger blocks; two server
-  processes per GPU running.
-- Step 2 (producer memory): probe written (speed2/mem_probe.py); needs a pilot actor message (speed2/dump.sh) -- next.
-- Step 3 (multi-GPU learner): not started.
-- Step 4 (learner per-row): not started.
+- Step 1 (forward_wait): mechanism MEASURED (section 1). Fix candidates measured: graphs, bigger blocks, N servers per GPU,
+  GIL switch interval; compare.py with server graphs: see 1c.
+- Step 2 (producer memory): MEASURED (section 2).
+- Step 3 (multi-GPU learner): design + verdict in section 3; NOT prototyped (reason there).
+- Step 4 (learner per-row): section 4: mem_row_cache recommended; warm-up cache designed, premise measured, not built.
 - Restart: `ssh -p 33903 ...; cd /workspace/speed2/cb && . ../env.sh && taskset -c $CPUS $PY -u ../srvshape.py --out
   ../out/X.json --configs 16x21 --mode eager|graphs --seconds 20` (copy speed2/srvshape.py to /workspace/speed2/ first;
   the row fixture scratchpad/gauntlet/L74/speed/results/live_batch1.pt is untracked: scp it from the laptop).
@@ -106,6 +106,56 @@ Reading (a unless marked):
   loop_opp.decide calls cell_fn synchronously, so either one thread per group with a collector barrier, or a two-phase
   split of _fast_group plus threads for the styled groups only); identity = compare.py --server (16/16 identical,
   lp bar 5e-5). Not built in this ticket.
+
+## 2. What holds a producer's memory (speed2/mem_probe.py; res/mem/)
+Method (a): one real loop/producer.py Producer on the pilot's B6 warm-start actor message (pilot.yaml minus opponent G,
+speed2/dump.sh; engine 5e8089a4, tables 16.635.3; 4 Java threads, 8 visible CPUs), forwards on one serve.py graphs (the
+box's path), consecutive run()s. Anon = smaps Anonymous, the number that adds up across processes (torch's libraries
+are file-backed and shared: RSS overstates a producer by ~300 MB; cgroup / OOM counts them once).
+
+| matches in flight | -Xmx, GC | anon GB (wave 0 -> last) | peak RSS GB | JVM committed MB (heap / used / GC native) | run s |
+|---:|---|---|---|---|---:|
+| 16 | 16g, G1 (producer.py default) | 1.06 -> 1.09 (3 waves) | 1.39 | 452 (320 / 83-196 / 63) | 46, 38, 34 |
+| 64 | 16g, G1 | 1.89 -> 2.18 | 2.48 | 1,109 (944 / 228-258 / 87) | 82, 71 |
+| 64 | 2g, G1 | 1.91 -> 1.96 | 2.51 | | 84, 77 |
+| 128 | 16g, G1 | 3.19 | 3.50 | 1,738 (1,552 / 447 / 110) | 125 |
+| 128 | 2g, G1 | 2.95 (3.5 after pickling the results) | 3.21 | | 122 |
+| 16 | 16g, G1, 160 visible CPUs | 1.28 | 1.57 | 711 (352 / 83-164 / 261) | 40, 36 |
+| 64 | 16g, G1, 160 visible CPUs | 2.13 -> 2.24 | 2.72 | 1,164 (800 / 227-329 / 278) | 78, 90 |
+| 16 | 400m, SerialGC, 4 CPUs | 0.90 -> 0.95 | 1.27 | 483 (400 / 91-174 / 1) | 45, 41 |
+| 64 | 700m, SerialGC, 4 CPUs | 1.64 -> 1.73 | 2.00 | 772 (700 / 222-350 / 2) | 98, 88 |
+
+Stage split at 16 matches, G1 (a): import torch 263 MB anon -> Producer built (JVM + tables + capture env + models) 586 MB ->
+after a run 1,064 MB. Results: ~4.5 MB per match pickled (72-80 MB for 16). Fit (a, 16 / 64 / 128, G1, 8 CPUs):
+anon ~= 0.77 GB + 18 MB x matches; the Python side ~530 MB + ~6.4 MB per match, the JVM ~310 MB + 11.5 MB per match
+committed (only ~3.7 MB per match is live: G1 commits ~3.5x the live heap).
+
+Reading:
+- (c) "each producer holds several GB" at 16 matches: 1.1-1.3 GB anon. Several GB is the 128-match producer (3.2 GB).
+- (a) No leak across waves at 16 matches (+30 MB in 3 waves). 64 matches, G1 16g: +290 MB between waves 0 and 1 (not a
+  leak test: 2 waves only; with -Xmx 2g +50 MB).
+- (a) The memory is NOT models (9 policies ~10 MB each, b), NOT the direct buffers (NMT Other 4 MB): it is the
+  fixed ~0.8 GB per process (torch, JVM, tables, env) + per-match rows (Python) + G1's free heap.
+- (a) G1's native memory follows the VISIBLE CPUs: 63 -> 261 MB at 160 (-XX:ActiveProcessorCount), +200 MB per
+  producer. On 33308 / the box with 120-160 visible CPUs that is 128 x 0.2 = 26 GB of nothing.
+- (a) SerialGC + a small heap + ActiveProcessorCount 4: -26% at 16 matches vs the 160-CPU G1 (0.95 vs 1.28 GB) at the
+  same speed (GC 2.4 s of 86 s); at 64 matches Xmx 700m is too tight (-23% memory, but GC 7.6 s and the first wave 98 vs
+  78-82 s). Rule of thumb (b): Xmx ~ 300 MB + 6 MB x matches (twice the live heap).
+
+Totals for 2,048 matches in flight (b, the fit; + learner, rl_royale results + serve.py on top):
+| producers x matches | G1 default, 160 CPUs | SerialGC small heap |
+|---|---:|---:|
+| 128 x 16 | ~164 GB | ~122 GB |
+| 64 x 32 | ~102 GB | ~77 GB |
+| 32 x 64 | ~70 GB | ~55 GB |
+| 16 x 128 | ~54 GB | ~44 GB |
+
+So 100+ producers fit in 125 GB only at ~100 x 16 with the small heap (~95 GB + the rest): (b) tight, 1,600 matches. The
+cheap way to fit a big match count in 125 GB is fewer, fatter producers with MORE JAVA THREADS each (the box's 16 x 128
+ran 4 threads each = 64 threads on 163 CPUs; thread count per producer is untested at 128 matches).
+
+Config (no code, env only; absent = today): `CRFORGE_XMX=450m JAVA_TOOL_OPTIONS="-XX:+UseSerialGC
+-XX:ActiveProcessorCount=4"` for 16-match producers.
 
 ## 3. Multi-GPU learner (design; NOT prototyped -- see the verdict)
 Where the learner's time goes in the pilot (a unless marked):
