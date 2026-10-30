@@ -288,14 +288,14 @@ class GenPilot:
             raise ValueError('observe() must receive reader frames before a memory row')
         t = int(frame["game_tick"])
         mem = getattr(self, "mem", None)
+        mem_model = getattr(getattr(self, "model", None), "mem", None)          # its version / MEM-FULL opts (no model: v1)
         if mem is None or mem.side != side or getattr(self, "_mem_pub", None) is not self.public or (mem.t and t < mem.t[-1]):
-            self.mem, self._mem_pub = MM.MatchMemory(side), self.public
+            self.mem, self._mem_pub = MM.MatchMemory(side, **MM.opts(mem_model)), self.public
         me = next(p for p in frame["players"] if int(p["side"]) == side)
         _, names = deck_of(frame, side)
         tw, al = MM.tower_reads_engine(to_observe(frame, side, names)["episode"]["crown_towers"], side)
         self.mem.observe(t, tw, al, elixir=me["elixir_raw"] / 10000.0, units=public_frame(frame, source="reader")["entities"],
                          plays=list(self.public.plays) + list(self.public.own_events))
-        mem_model = getattr(getattr(self, "model", None), "mem", None)          # its version (no model: v1 rows)
         return self.mem.features(t, self.gid, deck_ids, getattr(mem_model, "version", "v1"))
 
     def stalled(self, frame: Mapping[str, Any], el_int: float) -> bool:

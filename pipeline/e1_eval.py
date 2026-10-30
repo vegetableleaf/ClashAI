@@ -853,7 +853,8 @@ def gen_batch(model, B: dict, idx) -> dict:
         deck = B["deck_card"].cpu().numpy() if torch.is_tensor(B["deck_card"]) else np.asarray(B["deck_card"])
         packed = {k[8:]: v for k, v in B.items() if k.startswith("mem_tab_")}
         m = rows_features(packed, B["mem_row_tab"], B["mem_row_t"], deck, ids, getattr(model.mem, "version", "v1"),
-                          getattr(model.mem, "gid", None))       # v2: the vocabulary model_gen.attach_vocab set
+                          getattr(model.mem, "gid", None),       # v2: the vocabulary model_gen.attach_vocab set
+                          e_max=getattr(model.mem, "e_max", None) or 128)   # MEM-FULL (absent = match_memory.E_MAX)
         dev = B["sc"].device if torch.is_tensor(B["sc"]) else "cpu"
         b.update({k: torch.from_numpy(v).to(dev) for k, v in m.items()})
     return b
@@ -1374,7 +1375,7 @@ class Match:
             raise ValueError("memory v1 needs a feature_version >= 4 policy (the public observation it is built from)")
         tick = int(self._cur[0])
         if getattr(self, "mem", None) is None:
-            self.mem, self._mem_gid = MM.MatchMemory(self.side), policy.gid
+            self.mem, self._mem_gid = MM.MatchMemory(self.side, **MM.opts(policy.model.mem)), policy.gid   # MEM-FULL
         smp = MM.sample_sim(self.state, self.side)
         smp["tick"] = tick
         self.mem.observe(**smp, plays=list(self.public.plays) + list(self.public.own_events))

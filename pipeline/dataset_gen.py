@@ -534,14 +534,14 @@ def build(corpora: list[Path], out: Path, *, grid: str = "lattice", limit: int =
 
 
 # ------------------------------------------------------------------------------------------------------------ memory
-def memory_replay(path: str, card_vocab: list) -> dict[str, Any]:
+def memory_replay(path: str, card_vocab: list, snap: bool = False) -> dict[str, Any]:
     """Plan A memory v1: one native replay (gen_v3.1 recording) -> its two per-side match-memory EVENT TABLES
     (match_memory.MatchMemory.table) from the SAME public inputs the rows use: the opponent's plays = recording_observers'
     PublicObserver (native frames), own plays = ``played_forms`` (accepted card plays with their actual form and the log's
     engine x / y / elixir_before) + the log's own ability presses, samples = every recorded frame (towers, own elixir,
     public_frame 'native' bodies). -> {tag, tables {side: table}, stats} or {path, error}."""
     try:
-        tag, mems, st = replay_memories(path)
+        tag, mems, st = replay_memories(path, snap)
         gid = checkpoint_gid(card_vocab)
         tables = {s: m.table(gid) for s, m in mems.items()}
         st["events"] = {s: int(len(t["tick"])) for s, t in tables.items()}
@@ -550,7 +550,7 @@ def memory_replay(path: str, card_vocab: list) -> dict[str, Any]:
         return {"path": path, "error": f"{type(ex).__name__}: {ex}"}
 
 
-def replay_memories(path: str) -> tuple[str, dict, dict]:
+def replay_memories(path: str, snap: bool = False) -> tuple[str, dict, dict]:
     """memory_replay's inputs for one replay -> (tag, {side: MatchMemory built over the whole match}, stats)."""
     from . import match_memory as MM
     from .native_recording import tag_native_recording
@@ -577,7 +577,7 @@ def replay_memories(path: str) -> tuple[str, dict, dict]:
             samples.append(dict(tick=int(f["tick"]), towers=tw, alive=al,
                                 elixir=float(el[s]) if len(el) == 2 else None, units=u))
         plays = list(observers[s].plays) + [e for e in own + presses if int(e["side"]) == s]
-        mems[s] = MM.build(s, samples, plays)
+        mems[s] = MM.build(s, samples, plays, snap=snap)    # MEM-FULL snap: + SNAP_FIELDS
     return str(rec["tag"]), mems, st
 
 
@@ -585,7 +585,8 @@ def _memory_job(args: tuple) -> dict[str, Any]:
     return memory_replay(*args)
 
 
-def memory_tables(dataset: Path, out: Path, *, workers: int = 4, limit: int = 0, log=sys.stderr) -> dict[str, Any]:
+def memory_tables(dataset: Path, out: Path, *, workers: int = 4, limit: int = 0, log=sys.stderr,
+                  snap: bool = False) -> dict[str, Any]:
     """Plan A memory v1 for a dataset_gen npz (fv >= 4): the per-match event tables of every replay of its corpora (meta
     ``corpora``, read like ``build``) -> ``out`` (npz): tab_<k> (match_memory.pack of the tables, TABLE_KEYS + off),
     table_tag / table_side, row_tab [rows of ``dataset``] (index of the row's (tag, side) table; -1 = none) and meta. A row's
@@ -607,7 +608,7 @@ def memory_tables(dataset: Path, out: Path, *, workers: int = 4, limit: int = 0,
                 seen.add(f.name)
                 files.append(str(f))
     files = files[:limit] if limit else files
-    jobs = [(f, meta["card_vocab"]) for f in files]
+    jobs = [(f, meta["card_vocab"]) + ((True,) if snap else ()) for f in files]   # MEM-FULL snap tables
     if workers > 1:
         with ProcessPoolExecutor(max_workers=workers) as ex:
             res = []
@@ -636,7 +637,8 @@ def memory_tables(dataset: Path, out: Path, *, workers: int = 4, limit: int = 0,
     mmeta = {"kind": "match_memory_tables", "version": MM.VERSION, "dataset": str(dataset), "files": len(files),
              "replays": len(res), "failed": failed, "tables": len(keys), "events": int(packed["off"][-1]),
              "rows": int(len(row_tab)), "rows_with_table": int((row_tab >= 0).sum()), "card_vocab": meta["card_vocab"],
-             "F": MM.F, "S": MM.S, "E_MAX": MM.E_MAX, "fields": list(MM.FIELDS), "groups": list(MM.GROUPS),
+             "F": MM.F_SNAP if snap else MM.F, "S": MM.S, "E_MAX": MM.E_MAX,
+             "fields": list(MM.FIELDS + (MM.SNAP_FIELDS if snap else ())), "groups": list(MM.GROUPS),
              "summary_fields": list(MM.SUMMARY_FIELDS), "card_fields": list(MM.CARD_FIELDS), "stats": dict(st),
              "built": time.strftime("%Y-%m-%d %H:%M:%S"), "seconds": round(time.time() - t0, 1)}
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -660,8 +662,9 @@ def main(argv: Optional[list[str]] = None) -> int:
         mp.add_argument("--out", type=Path, required=True)
         mp.add_argument("--workers", type=int, default=4)
         mp.add_argument("--limit", type=int, default=0)
+        mp.add_argument("--snap", action="store_true", help="MEM-FULL: + the board snapshot per play (match_memory)")
         m = mp.parse_args(argv[1:])
-        print(json.dumps(memory_tables(m.dataset, m.out, workers=m.workers, limit=m.limit), default=str))
+        print(json.dumps(memory_tables(m.dataset, m.out, workers=m.workers, limit=m.limit, snap=m.snap), default=str))
         return 0
     ap = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
     ap.add_argument("--feature-version", type=int, choices=(1, 2, 3, 4, 5), default=1)

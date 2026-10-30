@@ -7,7 +7,9 @@ Grades: (a) measured (number + source), (b) plausible, untested (with the test),
 
 - Step 1 (measure): DONE (section 1). Step 2: Python builder DONE; model / rl_royale / e1_eval / eval_gen / train_memory /
   dataset_gen / live_gen plumbing DONE; Java CfMem + identity harness DONE and identical on 33903; real rl_royale --smoke
-  with the keys on: SMOKE_RESULT. Step 3: encoder change DONE (mem_full, zero-init widen, measured on B0); retraining =
+  with the keys on: SMOKE PASS on 33903 (pilot.yaml minus fastloop, B0 init, memory_e_max 256, memory_board_snap, encoder
+  unfrozen, CPU learner, stored_values off: u0 round trip identical, 2 updates, resume check all True; both updates were
+  the critic-only GAE warm-up, so no PPO policy step ran through the widened encoder: (b) untested). Step 3: encoder change DONE (mem_full, zero-init widen, measured on B0); retraining =
   recipe (section 4), NOT run (needs a pod with the pro replay corpora for the snapshot tables).
 - Restart: read this file. Laptop tests (53 pass, 4 skip = royalegym-only SIM tests):
   `icebow/.venv/Scripts/python.exe -m pytest pipeline/tests/test_memory_full.py pipeline/tests/test_match_memory.py
@@ -22,7 +24,7 @@ Grades: (a) measured (number + source), (b) plausible, untested (with the test),
 - Checklist:
   - [x] measurement scripts + results (`memory/full/`)  -- commit 76d762e
   - [x] `pipeline/match_memory.py` opt-in e_max / snap + golden pin + tests -- commit 76d762e
-  - [x] model_gen `GenModel.mem_full(e_max, snap)` (zero-column widen, `mem.full` buffer only when opt-in, load by content)
+  - [x] model_gen `GenModel.mem_full(e_max, snap)` (zero-column widen, `mem.full` buffer only when opt-in, load by content) -- commit after 3ddaa08
   - [x] rl_royale `memory_e_max` / `memory_board_snap` (validated; absent / null / false = historical hash: tested),
         e1_eval `_memory` + `gen_batch`, rl_royale mem row cache key, eval_gen (pro rows: e_max + zero snapshot columns on
         tables without one), train_memory `--e-max` / `--snap`, dataset_gen `memory --snap`, live_gen memory_rows

@@ -97,9 +97,13 @@ class GenRows(Rows):
         if self.memory is not None:
             from .match_memory import empty_rows, rows_features
             ver = getattr(self, "memory_version", "v1")
-            m = (empty_rows(len(ids), ver) if isinstance(self.memory, str) and self.memory == "empty"
+            em, nf = getattr(self, "memory_e_max", 128), getattr(self, "memory_n_f", None)   # MEM-FULL (absent = E_MAX)
+            m = (empty_rows(len(ids), ver, em, nf or 46) if isinstance(self.memory, str) and self.memory == "empty"
                  else rows_features(self.memory[0], self.memory[1], self.memory[2], self.a["deck_card"], ids, ver,
-                                    getattr(self, "memory_gid", None)))
+                                    getattr(self, "memory_gid", None), e_max=em))
+            if nf and m["mem_ev"].shape[-1] < nf:    # a snap model on tables without the snapshot: its fields unknown (0)
+                m["mem_ev"] = np.concatenate([m["mem_ev"], np.zeros(m["mem_ev"].shape[:-1] + (nf - m["mem_ev"].shape[-1],),
+                                                                     np.float32)], -1)
             b.update({k: torch.from_numpy(v).to(self.dev) for k, v in m.items()})
         return b
 

@@ -655,6 +655,8 @@ def main(argv=None) -> int:
     ap.add_argument("--no-mirror", action="store_true")
     ap.add_argument("--zero-empty", action="store_true", help="the adapter's no-offset form (model_gen MemoryEncoder "
                     "zero_empty): an EMPTY memory adds exactly 0, so no memory-independent offset is learned (skew 10-25)")
+    ap.add_argument("--e-max", type=int, default=0, help="MEM-FULL: memory events read (0 = match_memory.E_MAX)")
+    ap.add_argument("--snap", action="store_true", help="MEM-FULL: + the board snapshot per play (snap tables)")
     ap.add_argument("--val-sample", type=int, default=30000)
     ap.add_argument("--val-every", type=int, default=2000)
     ap.add_argument("--ckpt-every", type=int, default=2000)
@@ -700,6 +702,8 @@ def main(argv=None) -> int:
     model = load_model(a.init, dev, memory=a.memory)[0].eval()
     if a.zero_empty:
         model.mem.register_buffer("zero_empty", torch.ones((), device=dev))
+    if a.e_max or a.snap:                                 # MEM-FULL (memory/MEM_FULL.md 4): saved as mem.full
+        model.mem_full(a.e_max or None, a.snap)
     base = load_model(a.init, dev)[0].eval()
     if getattr(base, "mem", None) is not None:
         raise SystemExit("--init already has memory weights: S3 starts from a model without them")
@@ -715,6 +719,10 @@ def main(argv=None) -> int:
     rows = GenRows(arrs, tr, dev)
     rows.memory, rows.grid = tables, grid
     rows.memory_version, rows.memory_gid = a.memory, gid              # v2: + S1C_FIELDS (the tables' vocabulary)
+    if a.e_max or a.snap:                                 # MEM-FULL: rows at the model's e_max / event width
+        rows.memory_e_max, rows.memory_n_f = model.mem.e_max, model.mem.ev_in.in_features
+        if a.snap and packed["vals"].shape[-1] != model.mem.ev_in.in_features:
+            raise SystemExit("--snap needs --memory-tables built with dataset_gen memory --snap")
     va = rows.view(va_idx)
     if a.trainable == "memory_encoder":                   # S3-aux (freeze_aux re-sets every requires_grad flag)
         return train_aux(a, model, base, rows, va, va_idx, tr, tables, arrs, meta, init_ck, rng, dev, t0)

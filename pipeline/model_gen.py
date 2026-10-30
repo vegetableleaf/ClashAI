@@ -421,6 +421,40 @@ class GenModel(S1Model):
         self.mem.version = version
         return self.mem
 
+    def mem_full(self, e_max: Optional[int] = None, snap: bool = False) -> MemoryEncoder:
+        """MEM-FULL (opt-in, owner 10-30): the memory encoder reads ``e_max`` events (None = match_memory.E_MAX) and, with
+        ``snap``, the SNAP_FIELDS after each event's FIELDS (match_memory F_SNAP). The encoder has no positional input, so a
+        longer history needs no new weight; ``snap`` widens ``mem.ev_in`` with ZERO columns (every output identical until
+        they train). Saved as ``mem.full`` = [e_max, snap] (absent = the defaults, the state dict unchanged); a checkpoint
+        holding it rebuilds the same encoder on load. Idempotent; a snap encoder is never narrowed."""
+        from .match_memory import E_MAX, F, F_SNAP
+        mem = getattr(self, "mem", None)
+        if mem is None:
+            raise ValueError("mem_full needs the memory encoder (memory v1 / v2) first")
+        e_max = int(e_max or E_MAX)
+        if getattr(mem, "snap", False) and not snap:
+            raise ValueError("mem_full: this encoder already reads the board snapshot (snap cannot be turned off)")
+        if snap and mem.ev_in.in_features == F:
+            old = mem.ev_in
+            new = nn.Linear(F_SNAP, old.out_features).to(old.weight.device, old.weight.dtype)
+            with torch.no_grad():
+                new.weight.zero_()
+                new.weight[:, :F] = old.weight
+                new.bias.copy_(old.bias)
+            new.weight.requires_grad_(old.weight.requires_grad)
+            new.bias.requires_grad_(old.bias.requires_grad)
+            mem.ev_in = new
+            mem.cfg[0] = F_SNAP
+        if mem.ev_in.in_features != (F_SNAP if snap else F):
+            raise ValueError(f"mem_full: ev_in reads {mem.ev_in.in_features} floats, snap={snap} needs "
+                             f"{F_SNAP if snap else F}")
+        if "full" in mem._buffers:
+            mem.full.copy_(torch.tensor([e_max, int(snap)]))
+        else:
+            mem.register_buffer("full", torch.tensor([e_max, int(snap)], device=mem.cfg.device))
+        mem.e_max, mem.snap = e_max, bool(snap)
+        return mem
+
     def add_memory_aux(self, h: int = 128) -> MemoryAux:
         """Attach fresh S3-aux heads (``memory_aux: v1``; needs the memory encoder); checkpoints holding ``mem_aux.*``
         weights get them on load. Absent = no key, no parameter: the model, its state dict and outputs unchanged."""
@@ -503,6 +537,8 @@ class GenModel(S1Model):
             if ver is None:
                 raise ValueError(f"memory weights for S={n_sum}: this match_memory has no such version ({N_SUM})")
             self.add_memory(d, layers, heads, version=ver, zero_empty="mem.zero_empty" in state_dict)
+            if "mem.full" in state_dict:                                        # MEM-FULL e_max / snap, by content
+                self.mem_full(int(state_dict["mem.full"][0]), bool(int(state_dict["mem.full"][1])))
             if (n_feat, n_sum) != (self.mem.ev_in.in_features, self.mem.summary[0].in_features - self.d_c):
                 raise ValueError(f"memory weights for F={n_feat}, S={n_sum}: this match_memory has another layout")
         elif strict and getattr(self, "mem", None) is not None and not any(k.startswith("mem.") for k in state_dict):
@@ -510,6 +546,8 @@ class GenModel(S1Model):
             state_dict = {**state_dict, **{"mem." + k: v for k, v in self.mem.state_dict().items()}}
         if getattr(self, "mem", None) is not None and "mem.zero_empty" in state_dict and not hasattr(self.mem, "zero_empty"):
             self.mem.register_buffer("zero_empty", torch.ones((), device=self.cell_emb.device))   # load_model(memory=...)
+        if getattr(self, "mem", None) is not None and "mem.full" in state_dict and "full" not in self.mem._buffers:
+            self.mem_full(int(state_dict["mem.full"][0]), bool(int(state_dict["mem.full"][1])))   # load_model(memory=...)
         if getattr(self, "mem_aux", None) is None and "mem_aux.cfg" in state_dict:      # S3-aux heads, by content
             self.add_memory_aux(int(state_dict["mem_aux.cfg"][4]))
         elif strict and getattr(self, "mem_aux", None) is not None and not any(k.startswith("mem_aux.") for k in state_dict):

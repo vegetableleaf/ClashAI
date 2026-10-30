@@ -2426,7 +2426,8 @@ class MemRowCache:
 
     def rows(self, model, B: dict, idx) -> dict:
         from pipeline.match_memory import MEM_KEYS, rows_features
-        key = (getattr(model.mem, "version", "v1"), getattr(model.mem, "gid", None))
+        key = (getattr(model.mem, "version", "v1"), getattr(model.mem, "gid", None),
+               getattr(model.mem, "e_max", None) or 128)                 # MEM-FULL e_max (absent = E_MAX)
         if self.key is not None and key != self.key:
             return E.gen_batch(model, B, idx)
         ids = idx.cpu().numpy() if torch.is_tensor(idx) else np.asarray(idx)
@@ -2434,7 +2435,7 @@ class MemRowCache:
         if len(miss):
             deck = B["deck_card"].cpu().numpy() if torch.is_tensor(B["deck_card"]) else np.asarray(B["deck_card"])
             packed = {k[8:]: v for k, v in B.items() if k.startswith("mem_tab_")}
-            m = rows_features(packed, B["mem_row_tab"], B["mem_row_t"], deck, miss, key[0], key[1])
+            m = rows_features(packed, B["mem_row_tab"], B["mem_row_t"], deck, miss, key[0], key[1], e_max=key[2])
             if self.arr is None:
                 self.key = key
                 self.arr = {k: np.empty((self.n,) + v.shape[1:], v.dtype) for k, v in m.items()}
@@ -3910,6 +3911,16 @@ def memory_cfg(cfg: dict) -> Optional[str]:
         raise SystemExit(f"memory_zero_empty must be a bool or null, got {cfg['memory_zero_empty']!r}")
     if m is None and (cfg.get("memory_aux") is not None or cfg.get("memory_encoder_frozen") or cfg.get("memory_zero_empty")):
         raise SystemExit("memory_aux / memory_encoder_frozen / memory_zero_empty need memory v1 / v2")
+    # MEM-FULL (owner 10-30, memory/MEM_FULL.md): ``memory_e_max`` = events the memory reads (int >= 1; absent / null =
+    # match_memory.E_MAX 128), ``memory_board_snap: true`` = + the board snapshot per play (match_memory.SNAP_FIELDS; the
+    # encoder's new input columns start at ZERO). Absent / null / false = off, the historical hash.
+    em = cfg.get("memory_e_max")
+    if em is not None and (type(em) is not int or em < 1):
+        raise SystemExit(f"memory_e_max must be null or an int >= 1, got {em!r}")
+    if cfg.get("memory_board_snap") not in (None, False, True):
+        raise SystemExit(f"memory_board_snap must be a bool or null, got {cfg['memory_board_snap']!r}")
+    if m is None and (em is not None or cfg.get("memory_board_snap")):
+        raise SystemExit("memory_e_max / memory_board_snap need memory v1 / v2")
     return m
 
 
@@ -3936,6 +3947,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                               "heroiw_press", "ability_features", "kl_heads", "kl_ref_card", "league_deck_weights",
                               "ot_start_share", "xbow_start_share", "remote_actors", "kl_ref_refresh_every",
                               "tau_phase", "memory", "memory_aux", "memory_encoder_frozen",
+                              "memory_e_max", "memory_board_snap",
                               "memory_zero_empty", "learner_deterministic", "kl_stop_prev", "stored_values",
                               "ent_init_rows", "lazy_refine", "ent_pair_every", "matches_per_update", "micro_batch", "mem_row_cache",
                               "barrel_decoy_sim", "kl_lr_target", "ppo_decoupled", "th_anchor", "gate_baseline",
@@ -4102,6 +4114,10 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "memory_encoder_frozen"}
     if not cfg.get("memory_zero_empty"):                     # zero_empty off (absent / null / false) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "memory_zero_empty"}
+    if cfg.get("memory_e_max") is None:                      # MEM-FULL e_max off (absent / null) = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "memory_e_max"}
+    if not cfg.get("memory_board_snap"):                     # MEM-FULL snapshot off (absent / null / false) = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "memory_board_snap"}
     if cfg.get("tau_phase") is None:                         # 10-23 tau_phase off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "tau_phase"}
     else:                                                     # on: floats, one hash for [.35, .45, .55] and (.35, ...)
@@ -4314,6 +4330,10 @@ class Learner:
             attach_vocab(self.model, self.gen["card_vocab"])  # v2: e1_eval.gen_batch's counter priors
             if cfg.get("memory_zero_empty") and not hasattr(self.model.mem, "zero_empty"):
                 self.model.mem.register_buffer("zero_empty", torch.ones((), device=self.dev))   # saved: actors / snapshots
+            if cfg.get("memory_e_max") is not None or cfg.get("memory_board_snap"):   # MEM-FULL: saved as mem.full
+                self.model.mem_full(cfg.get("memory_e_max"), bool(cfg.get("memory_board_snap")))   # (zero new columns)
+                log(f"[rl] memory_e_max {self.model.mem.e_max}, memory_board_snap {self.model.mem.snap}: "
+                    f"ev_in reads {self.model.mem.ev_in.in_features} floats")
             if cfg.get("memory_aux") == "v1" and getattr(self.model, "mem_aux", None) is None:
                 self.model.add_memory_aux()                   # S3-aux heads (fresh: the init carried none)
             self.mem_frozen = None
@@ -4734,6 +4754,9 @@ class Learner:
                 self._rows = GenRows(arrs, np.arange(len(arrs["y_gate"])), self.dev)
             if getattr(model, "mem", None) is not None:
                 self._rows.memory_version = getattr(model.mem, "version", "v1")   # the empty rows' summary width
+                if "full" in model.mem._buffers:                                    # MEM-FULL: rows at the model's
+                    self._rows.memory_e_max = model.mem.e_max                      # e_max / event width
+                    self._rows.memory_n_f = model.mem.ev_in.in_features
             if getattr(model, "mem", None) is not None and self._rows.memory is None:
                 tabs = self._pro_memory_tables()              # the pro rows' REAL memory: <data stem>_memory_v1.npz
                 if tabs is not None:

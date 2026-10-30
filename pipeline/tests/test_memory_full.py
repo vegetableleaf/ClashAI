@@ -165,3 +165,82 @@ def test_empty_rows_and_opts():
     class Mem:
         e_max, snap = 320, True
     assert M.opts(Mem()) == dict(e_max=320, snap=True)
+
+
+# ------------------------------------------------------------------------------------------------------ model / config
+def _net(seed=0, version='v2'):
+    import torch
+    from pipeline import model_gen as MG
+    from test_memory_s1b import _tiny
+    net = _tiny(True, seed=seed, live=True, version=version)
+    with torch.no_grad():                                   # a trained-looking encoder: every weight nonzero
+        for n, q in net.mem.named_parameters():
+            if not n.startswith('out.'):
+                q.add_(torch.randn_like(q) * 0.05)
+    return net, MG
+
+
+def _mem_out(net, f):
+    import torch
+    t = {k: torch.from_numpy(np.asarray(v)[None]) for k, v in f.items()}
+    with torch.no_grad():
+        return net.mem(t['mem_ev'], t['mem_mask'].bool(), net.emb(t['mem_card'], t['mem_form']), t['mem_summary'],
+                       net.card_id(t['mem_answer'].long()), net.card_id(t['mem_answer'].new_zeros(1).long()))
+
+
+def test_mem_full_widen_is_identity_at_init():
+    """mem_full(256, snap): same outputs on the same events (new ev_in columns zero; the history is length-free).
+    Measured: max |diff| of the memory output, short (<= 128) and long matches (> 128: the longer window is NEW input)."""
+    import copy
+    net, MG = _net()
+    side, sm, plays = rich_match(11)
+    gid = net.gid if hasattr(net, 'gid') else GID
+    m0, m1 = M.build(side, sm, plays), M.build(side, sm, plays, e_max=256, snap=True)
+    wide = copy.deepcopy(net)
+    wide.mem_full(256, True)
+    assert wide.mem.ev_in.in_features == M.F_SNAP and wide.mem.e_max == 256 and wide.mem.snap
+    assert np.array_equal(wide.mem.ev_in.weight[:, :M.F].detach().numpy(), net.mem.ev_in.weight.detach().numpy())
+    assert not wide.mem.ev_in.weight[:, M.F:].any()
+    worst, n = 0.0, 0
+    for t in [s['tick'] for s in sm][::4] + [10 ** 6]:
+        a, b = m0.features(t, gid, DK, 'v2'), m1.features(t, gid, DK, 'v2')
+        if int(b['mem_mask'].sum()) > 128:                                   # only histories 128 also holds whole
+            continue
+        n += 1
+        d = float((_mem_out(net, a) - _mem_out(wide, b)).abs().max())
+        worst = max(worst, d)
+    assert n > 3 and worst < 1e-5, (n, worst)
+    print(f'MEM-FULL widen identity: {n} ticks, max |diff| {worst:.3g}')
+    sd = wide.state_dict()
+    assert sd['mem.full'].tolist() == [256, 1] and sd['mem.cfg'][0] == M.F_SNAP
+    plain = _net()[0]
+    del plain.mem                                                            # a model with no encoder: built by content
+    plain.load_state_dict(sd)
+    assert plain.mem.e_max == 256 and plain.mem.snap and plain.mem.ev_in.in_features == M.F_SNAP
+    assert M.opts(plain.mem) == dict(e_max=256, snap=True)
+    same_arch = _net()[0]                                                    # an encoder WITHOUT full: widened on load
+    same_arch.load_state_dict(sd)
+    assert same_arch.mem.snap and float((_mem_out(same_arch, b) - _mem_out(wide, b)).abs().max()) == 0.0
+    assert 'mem.full' not in net.state_dict()                                # absent = the state dict unchanged
+    try:
+        wide.mem_full(256, False)
+        raise AssertionError('a snap encoder was narrowed')
+    except ValueError:
+        pass
+
+
+def test_config_keys_absent_is_historical_hash():
+    from pipeline import rl_royale as RL
+    from test_memory_s1b import YAML
+    base = RL.load_config(YAML, ['memory=v2'], False)
+    assert RL.config_sha({**base, 'memory_e_max': None, 'memory_board_snap': False}) == RL.config_sha(base)
+    on = RL.load_config(YAML, ['memory=v2', 'memory_e_max=256', 'memory_board_snap=true'], False)
+    assert on['memory_e_max'] == 256 and on['memory_board_snap'] is True
+    assert RL.config_sha(on) != RL.config_sha(base)
+    for bad in (['memory=v2', 'memory_e_max=0'], ['memory=v2', 'memory_board_snap=2'], ['memory_e_max=256'],
+                ['memory_board_snap=true']):
+        try:
+            RL.load_config(YAML, bad, False)
+            raise AssertionError(bad)
+        except SystemExit:
+            pass
