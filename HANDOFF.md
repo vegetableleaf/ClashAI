@@ -1,3 +1,18 @@
+# 2026-10-30 ~20:05 EDT -- arm L GPU-OOM at its first policy update (my --local-forward restart); resumed at micro 512; SAMPLED GATE costs ~7 pp
+
+- (a) abL_b0 CRASHED 23:27 UTC at u0005 = its first large-batch PPO update: `CUDA out of memory ... tried 418 MiB, 183 MiB
+  free` -- --local-forward's 16 producer CUDA contexts (~13 GB) + the learner on one 24 GB 4090. Crash save
+  abL_b0_crash_u0005_1793402825.pt; FINAL written -> pilot_watch read it as a normal finish (bug) and pilot_check exited.
+  Resumed ~23:55 UTC from _latest (= u0005 save) with micro_batch 512 (exact accumulation, half the activations) +
+  PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True, same everything else (run.sh direct, since pilot_arm.sh refuses an
+  existing run). Log before: abL_b0.oom_u0005.log. CHECK the resume reached u0005's policy step.
+- pilot_watch.sh: now alerts on `[rl] CRASH` in the log even when FINAL exists. Watchers + abL check loop relaunched.
+- (a) A/B u0000 checks (sampled gate T .1, iu40 480): abS / abL u0000 = 258/480 = -6.88 pp [-12.18, -1.57] vs CLXIII, with the
+  press head IDENTICAL to CLXIII's (max diff 0.0, presses 1.83 / match vs 1.88). The same weights under the THRESHOLD gate
+  (pilot_box3_u0000_clxhead) = +0.00 exactly. So the trainer's sampled-gate decoder (which also drops live's tau_threatened)
+  costs ~6.9 pp on this policy (b: one suite, one seed). Confirmation running: abS_b0_u0000 under the threshold gate
+  (33903 /workspace/pgate/pthr_abS_u0.res). Bears on the owner's 10-30 decision 2a (deploy the pilot with the sampled gate).
+- Arm S healthy: u9, KL stop at 118-134 steps (~0.021), roll ~204-221 s + upd ~26-29 s = ~14 updates/h.
 # 2026-10-30 ~18:50 EDT -- A/B arms RESTARTED NOW with --local-forward (owner: "restart them now with --local-forward"); 33308 code -> origin c714d63
 
 - Owner OK in chat -> lead stopped both arms by exact PIDs (~22:24 UTC), moved their 50-min runs aside (*_eager: run dir,

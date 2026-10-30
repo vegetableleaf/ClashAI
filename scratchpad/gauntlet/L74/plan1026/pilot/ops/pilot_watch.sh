@@ -8,9 +8,10 @@ PY=icebow/.venv/Scripts/python.exe; STOP=$(dirname "$0")/STOP_PILOT_WATCH; MSG=$
 post() { printf '%s\n' "$1" > "$MSG"; $PY scratchpad/gauntlet/L69/discord/post.py "$MSG" >/dev/null 2>&1; echo "$(date -u +%FT%TZ) $1"; }
 last=""; since=$(date +%s); fails=0; stalled=0
 while [ ! -f "$STOP" ]; do
-  out=$($S "ps -eo args | grep -c '[f]astloop.py.*$RUN'; cat /workspace/loop/pilot/$RUN/FINAL 2>/dev/null || echo none; grep '^\[rl\] u' /workspace/loop/logs/$RUN.log | tail -n 1 | cut -c1-120") || out=""
+  out=$($S "ps -eo args | grep -c '[f]astloop.py.*$RUN'; cat /workspace/loop/pilot/$RUN/FINAL 2>/dev/null || echo none; grep '^\[rl\] u' /workspace/loop/logs/$RUN.log | tail -n 1 | cut -c1-120; grep -m1 '^\[rl\] CRASH' /workspace/loop/logs/$RUN.log | cut -c1-160") || out=""
   if [ -z "$out" ]; then fails=$((fails+1)); [ $fails = 3 ] && post ":rotating_light: $RUN watcher: ssh to $P failed 3x"; sleep 600; continue; fi
-  fails=0; n=$(sed -n 1p <<<"$out"); fin=$(sed -n 2p <<<"$out"); line=$(sed -n 3p <<<"$out"); u=$(grep -oE 'u[0-9]{4}' <<<"$line" | head -1)
+  fails=0; n=$(sed -n 1p <<<"$out"); fin=$(sed -n 2p <<<"$out"); line=$(sed -n 3p <<<"$out"); crash=$(sed -n 4p <<<"$out"); u=$(grep -oE 'u[0-9]{4}' <<<"$line" | head -1)
+  if [ -n "$crash" ]; then post ":rotating_light: $RUN CRASHED on $P: $crash | last $line"; exit 1; fi   # 10-30: a crash also writes FINAL
   if [ "$fin" != none ]; then post "$RUN FINAL: $fin | $line"; exit 0; fi
   if [ "$n" = 0 ]; then                       # 2 misses in a row: run.sh compiles Java before fastloop starts (10-30 false alarm)
     gone=$((${gone:-0}+1)); [ $gone -ge 2 ] && { post ":rotating_light: $RUN process GONE on $P with no FINAL (OOM? check oom_kill). Last: $line"; exit 1; }
