@@ -1,3 +1,15 @@
+# 2026-10-30 ~14:45 EDT -- navigator knows the Social tab (9446f75, live since the 14:19 restart); pilot u0 starts 7 pp BELOW CLXIII
+
+- Owner OK: Social-tab template `social_hdr` (thr .85; 1.0 on the stalled frame, max .654 on 48 other full frames) -> tap the
+  centre Battle tab (380,1520), bounded with Claim All's 6-tap budget. Navigator tests pass (test_ladder_nav, loading
+  recovery); the 6 failures in test_friend_nav are pre-existing `NoModel.model` stubs in ability_head_live.py. Match-boundary
+  restart 14:17 -> 14:19, --check PASS, matches play (32 cards). The raw Social screenshot (friends' names) is NOT committed.
+- Owner: count 155249 / 000242 in RECON numbers (sent to RECON-4).
+- **Pilot check u0000 (a): 257/480 iu40, paired vs CLXIII -7.08 pp [-12.53, -1.64]** -- the pilot STARTS significantly below
+  CLXIII under its deploy decoder (sampled gate T .1 + the refit IW press head). Split running: the same 480 games with the
+  THRESHOLD gate (33903 /workspace/pgate/pthr.sh -> pthr_u0000.res). If the threshold run is ~CLXIII, the sampled gate costs
+  ~7 pp on this suite (PLAN's earlier CLXIII measurement: -0.42 [-5.6, +5.0]); if it is also ~-7, the refit press head is it.
+- Pilot u13 (training win 65-71%, flat); auto_stop window 9 updates. Baseline: iu40 seeds 741200-743000 done, 744000 + e4 running.
 # 2026-10-30 ~14:00 EDT -- LIVE RESTARTED (owner OK: "restart if you still want poller matches"): CLXIII NOLEAK Ranked
 
 - `start_live.sh icebow --no-fast-plays --ranked` after --check PASS (sha 8d328a43, barrel_decoy on, merged_sf); supervisor start
