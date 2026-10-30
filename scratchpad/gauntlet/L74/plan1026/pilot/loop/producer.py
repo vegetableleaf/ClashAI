@@ -428,7 +428,8 @@ class Producer:
         env.reset(decks[0], decks[1], int(spec["seed"]), **kw)
         seed, setup = self._got[-1]
         from pipeline.adaptive_opponents import style_config
-        ocfg = style_config(ocfg, int(spec["seed"]), int(k))
+        if not E.is_timing(opp):                             # = SelfPlayMatch: P2 timing-head opponents play unstyled
+            ocfg = style_config(ocfg, int(spec["seed"]), int(k))
         tag = str(spec["tag"])
         ls = E.SelfPlaySide(env, spec["learner_deck"], L_, tag, k, lcfg, self.model)
         os_ = E.SelfPlaySide(env, spec["opp_deck"], 1 - L_, f"{tag}:opp", k, ocfg, opp)

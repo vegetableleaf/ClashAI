@@ -2322,7 +2322,8 @@ class SelfPlayMatch:
         tag = str(spec["tag"])
         self.learner = SelfPlaySide(env, spec["learner_deck"], L, tag, k, cfg, learner)
         from pipeline.adaptive_opponents import style_config
-        opp_cfg = style_config(opp_cfg, int(spec["seed"]), int(k))
+        if not is_timing(opponent):                          # lead 10-30: P2 timing-head opponents play unstyled
+            opp_cfg = style_config(opp_cfg, int(spec["seed"]), int(k))   # (timing_cfg refuses _opp_style)
         self.opp = SelfPlaySide(env, spec["opp_deck"], 1 - L, f"{tag}:opp", k, opp_cfg, opponent)
         self.learner.other, self.opp.other = self.opp, self.learner
         self.sides = sorted((self.learner, self.opp), key=lambda s: s.side)

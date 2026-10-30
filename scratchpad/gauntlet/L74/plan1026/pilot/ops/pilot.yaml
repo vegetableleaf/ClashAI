@@ -138,6 +138,9 @@ league_external:
 - icebow/data/bench/rl_royale/newsim_base_exp1/newsim_base_exp1_u0015.pt
 - icebow/data/bench/rl_royale/newsim_base_exp2/newsim_base_exp2_u0015.pt
 - icebow/data/bench/rl_royale/rdef_e4/rdef_e4_u0020_barrel2k_cellref_towerref_w2.pt
+# lead 10-30 (owner: pilot on the best opponent once every calibration arm plateaued): arm G u0160 = ftR + opponent RL
+# (beta .003), CLXIII D3 73.3% (best of arms A-H), quick B RMS .30 (= ftR), stripped sha 9f8470a7ee996d03; timing-head seat.
+- icebow/data/pipeline/opp/oplc_ftR_l0003_a10b_u0160.pt
 league_learner_icebow_share: 1.0
 ability_policy: v2
 branch_gate: false
