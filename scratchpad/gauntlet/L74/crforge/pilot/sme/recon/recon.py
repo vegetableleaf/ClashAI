@@ -36,6 +36,7 @@ SLACK = float(os.environ.get('RECON_ELIXIR_SLACK', '0.5'))   # calibration knob 
 REGEN = 1 / 56                            # elixir per tick at 1x (measured: own frames +0.0178 / tick, 3x +0.0537)
 PHASES = (2400, 4800)                     # 2x from tick 2400, 3x from 4800 (fights.elixir_wait)
 PRESS_BACK = 4                            # a press is tried at R in [d - 4, d - 1] (sme_live.GHOST_BACK)
+REDATE = 600                              # a press is re-dated from at most this far after d (TOMB_HERO gaps seen: 253-508)
 VIS_MAX = 2                               # an unseen spell is on the board at most this many ticks
 GRID = 500
 COST = {'shift': 1, 'swap': 1, 'joint': 2, 'point': 2, 'add': 3, 'drop': 3}
@@ -393,11 +394,12 @@ def hypotheses(plan, frames, d, detail, tab, me):
     # point: the observed body point (first listed body of the play), and the +-500 grid for opponent plays
     for i in near:
         c = cmds[i]
-        if c['kind'] != 'play' or tab.is_spell(c['card']):
+        if c['kind'] != 'play':
             continue
-        t0, bx, by = first_seen(frames, c['side'], c['card'], c['x'], c['y'], min(d, c['run'] + 8), 3000)
-        if t0 is not None and math.hypot(bx - c['x'], by - c['y']) >= 300 and zone_ok(tab, c['card'], c['side'], bx, by, towers_down(frames, c['side'], c['run'])):
-            out.append(({'op': 'point', 'i': i, 'x': bx, 'y': by}, COST['point']))
+        if not tab.is_spell(c['card']):           # a spell has no body point; its grid below is the fitter's (172955: Zap)
+            t0, bx, by = first_seen(frames, c['side'], c['card'], c['x'], c['y'], min(d, c['run'] + 8), 3000)
+            if t0 is not None and math.hypot(bx - c['x'], by - c['y']) >= 300 and zone_ok(tab, c['card'], c['side'], bx, by, towers_down(frames, c['side'], c['run'])):
+                out.append(({'op': 'point', 'i': i, 'x': bx, 'y': by}, COST['point']))
         if not c['_src']['own']:
             for dx, dy in itertools.product((-GRID, 0, GRID), repeat=2):
                 if (dx or dy) and zone_ok(tab, c['card'], c['side'], c['x'] + dx, c['y'] + dy,
@@ -418,6 +420,15 @@ def hypotheses(plan, frames, d, detail, tab, me):
                  '_src': {'lo': R, 'hi': R, 'tick': R, 'source': 'recon_add', 'own': c['_src']['own']}}
             for k in add_positions(plan, R):
                 out.append(({'op': 'add', 'pos': k, 'cmd': a}, COST['add']))
+    # repress: a later-extracted press of a play the diff names, re-dated to just before d (the press has no cast state:
+    # the extractor dates it at the cast it sees; hero Tombstone 165724 extracted 940, true 547: TOMB_HERO's class)
+    names = {norm(r[2]) for r in detail if r[2]}
+    for i, c in enumerate(cmds):
+        if c['kind'] == 'ability' and d < c['run'] <= d + REDATE:
+            n = int(c['unit'][3:].split('_')[0])
+            if n < len(cmds) and tab.names_of(cmds[n].get('card', '')) & names:
+                for R in range(max(cmds[n]['run'] + 1, d - PRESS_BACK), d):
+                    out.append(({'op': 'shift', 'i': i, 'run': R}, COST['shift'] + 1))
     # add (a): an unseen spell of the other side whose radius covers every victim of one side
     vic = victims(detail)
     tp = prev_frame(frames, d)

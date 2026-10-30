@@ -137,6 +137,20 @@ def t_victims():
     ok(recon.victims(det + [['S0_elixir', 48163, None, 28163]]) == v, 'victims: an elixir row is no body (001856)')
 
 
+def t_moves():
+    # the fitter's grid on an opponent spell (172955) and the press re-date (165724), on a one-frame board
+    frames = {300: {'E': [], 'P': []}, 311: {'E': [], 'P': []}}
+    p = plan_of([cmd(0, 'Zap', 311, 3475, 8700, lo=311, hi=311)])
+    pts = [(e['x'], e['y']) for e, _ in recon.hypotheses(p, frames, 313, [['U_sim_only', [1, 2617, 11567, 130], 'C:Skeleton', None]], tab, 1) if e['op'] == 'point']
+    ok((2975, 9200) in pts, 'grid: an opponent spell point moves +-500 (the fitter does)')
+    q = plan_of([cmd(0, 'Musketeer', 199, 9500, 9000), cmd(0, '', 940, kind='ability', unit='cmd0_0', lo=940, hi=941)])
+    det = [['U_sim_only', [0, 9500, 9000, 500], 'Musketeer', None]]
+    hs = [e for e, _ in recon.hypotheses(q, frames, 549, det, tab, 1) if e['op'] == 'shift' and e['i'] == 1]
+    ok(sorted(e['run'] for e in hs) == [545, 546, 547, 548], 'repress: a later press of a named play moves to [d - 4, d - 1]')
+    ok(not [e for e, _ in recon.hypotheses(q, frames, 300, det, tab, 1) if e['op'] == 'shift' and e['i'] == 1],
+       'repress: not from further than REDATE ticks')
+
+
 def t_cases():
     import offline
     try:
@@ -146,6 +160,6 @@ def t_cases():
 
 
 if __name__ == '__main__':
-    for f in (t_cycle, t_elixir, t_zone, t_travel, t_edits, t_legal, t_victims, t_cases):
+    for f in (t_cycle, t_elixir, t_zone, t_travel, t_edits, t_legal, t_victims, t_moves, t_cases):
         f()
     print('ok', N[0])

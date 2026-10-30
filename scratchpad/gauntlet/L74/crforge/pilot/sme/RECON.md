@@ -17,6 +17,9 @@ Evidence: `results/live/recon/`. Labels: (a) measured, (b) plausible but unteste
   scratch: delete its `runs/<step>` dir first). Then `python3 recon/r2_prec.py runs/r2_fail/recon_results.jsonl
   runs/r2_abl/ablate.jsonl data/r2/strict_ref.jsonl` (9.2) and `python3 recon/r2_tally.py runs/r2_gate/results.jsonl
   runs/r2_fail/recon_results.jsonl,runs/r2_rest/recon_results.jsonl` (9.3). Codex dispatches: none.
+  **Second pass queued:** generator v2 (spell grid + repress, section 9.2b) in `/workspace/smeR2` (`recon/r2b_drive.sh`, PID
+  on the pod `ps ... r2b_drive`; waits for r2_drive's R2_DONE; log `/workspace/smeR2/runs/r2v2_*.log`). Restart: `cd
+  /workspace/smeR2 && (nohup bash sme/recon/r2b_drive.sh > r2b.out 2>&1 < /dev/null &)`. Do not edit a running driver.
 - **Restart point (10-30 ~14:30 UTC):** laptop part DONE and committed: rules + generator (`recon.py`), 35 planted
   checks (`python -I sme/recon/test_recon.py` -> `ok 35`), the general generator proposes the hand fix on all 6
   hand-rule cases tried (`offline.py`, output `results/live/recon/offline.txt`, section 5), field census of the rules on
@@ -254,3 +257,14 @@ the strict fresh results (F2_fe .. F8_main). Table `prec_vs_strict.txt`, rows `r
   vs TOMB_HERO's 2803, outside the ability's window, so shift never proposes it. Owed: re-date an ability outside its window.
 - (a) 083923: 1814 + 39 torn_hidden + 2 div (first 935) vs the reference 1814 + 41 torn_hidden: 2 frames move torn -> div
   on the flags-off input (strict class unchanged: both fail strict; "exact apart from torn" lost). Cause untested (b).
+### 9.2b Two more generator gaps found on the records the hand rules fix (a; generator v2, 39 planted checks)
+Baseline r2_* runs use the generator before this change; v2 runs are `r2v2_*` in `/workspace/smeR2`.
+- (c for "RECON's point op includes the fitter's"): the fitter also moves OPPONENT SPELL points on the +-500 grid; RECON's point op
+  skipped spells. 172955 (strict exact): gate cmd 4 Zap (3475, 8700) -> (2975, 9200), first div 313 -> 938; RECON base run
+  stays 1093 + 1352 @313, 8 legal, 0 better. Fixed: the grid now covers opponent spells (fitter parity; planted check).
+- (a) **Press re-date, new edit (`repress`, a shift of an ability command):** 4 flags-off losses of the same class as
+  SME_TOMB_HERO: 165724 (press 547 vs extracted 940), 170122 (2122 vs 2630), 175120 (2446 vs 2770), 024716 (2803 vs 3056).
+  The hero Tombstone press has no cast state, so the extractor dates it at the next cast it sees, 253-508 ticks late;
+  the diff names `Tombstone` at d = press + 2. `recon.hypotheses`: an ability command with run in (d, d + REDATE = 600] whose play's
+  card is named by the diff is tried at R in [d - 4, d - 1]. Engine result: section 9.3.
+
