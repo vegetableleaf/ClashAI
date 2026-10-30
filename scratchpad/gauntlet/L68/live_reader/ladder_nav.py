@@ -69,6 +69,7 @@ TARGETS = {                                     # rectangle the tap point must l
     "skip_strikes": (340, 1420, 560, 1530),     # 10-20 lightning-chest strikes screen: "Skip Strikes" (free; replaces nothing)
     "reload": (100, 700, 400, 1100),           # "Connection lost" dialog, NOT the another-device kind        # neutral point: top-centre art on every popup seen so far
     "claim_all": (330, 1415, 570, 1510),        # 10-28: "Rewards" / "Supercell Support" screens: the one orange Claim All button
+    "battle_tab": (300, 1450, 470, 1600),       # 10-30: bottom-bar centre tab (Battle) seen from the Social tab
 }
 # com.mumu.store is stopped as start_live.sh does (its advert overlay). Stopping com.android.vending (Play Store) is
 # NEW here, not in start_live.sh: it closes a store overlay / pending store job over the game; force-stop never installs.
@@ -234,6 +235,8 @@ class Classifier:
             return {"screen": "popup_x", "x": hit["red_x"], "scores": sc}
         if "modes_hdr" in hit:
             return {"screen": "modes", "scores": sc}
+        if "social_hdr" in hit and "battle" not in hit:   # 10-30: the Social tab (stalled live 13:41) -> back to the Battle tab
+            return {"screen": "social", "scores": sc}
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         cards = reward_cards(img, hsv)
         if cards:                                       # "Choose your reward": two cards, pick one
@@ -345,6 +348,10 @@ class LadderNav:
             if self.claims >= self.CLAIM_MAX:
                 return ("stop", f"claim_all tapped {self.CLAIM_MAX} times and the screen is still shown")
             return ("act", "claim_all", scr["claim"])
+        if s == "social":
+            if self.claims >= self.CLAIM_MAX:
+                return ("stop", f"social: Battle tab tapped {self.CLAIM_MAX} times and the Social tab is still shown")
+            return ("act", "battle_tab", (380, 1520))
         if s == "chest_reveal":
             return ("act", "chest_open", (450, 840))
         if s == "results1":                       # 10-20: only an OK -- tap it; the next screen (home -> Battle) queues the match
@@ -418,7 +425,7 @@ class LadderNav:
         elif target == "choose":
             self.chooses += 1
             self.choose_flow = True
-        elif target == "claim_all":
+        elif target in ("claim_all", "battle_tab"):   # one bounded budget for both single-button screens
             self.claims += 1
         elif target == "reward_card":
             self.picked_at = now
@@ -477,7 +484,7 @@ class LadderNavRunner:
     """Device side, same interface as friend_nav.FriendNav: probe() before match 1, run() between matches."""
     POLL_S, COOLDOWN_S, RELAUNCH_WAIT_S = 0.5, 1.5, 15.0
     NAV_SCREENS = {"results", "results1", "chest_reveal", "main", "popup_x", "strikes", "modes", "trophy_road", "choose_reward", "conn_lost",
-                   "content_update", "claim_all"}
+                   "content_update", "claim_all", "social"}
 
     def __init__(self, adb: list[str], dry_run: bool = False, log_dir: Path = HERE, state_path: Path = STATE,
                  wins_today: int | None = None, trophy_log: bool = True, seed: int | None = None, alert=discord_alert):

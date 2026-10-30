@@ -377,6 +377,23 @@
     1600
    ],
    "threshold": 0.85
+  },
+  "social_hdr": {
+   "file": "social_hdr.png",
+   "source": "source_social_tab.png",
+   "box": [
+    78,
+    498,
+    222,
+    550
+   ],
+   "region": [
+    0,
+    400,
+    500,
+    650
+   ],
+   "threshold": 0.85
   }
  }
 }
