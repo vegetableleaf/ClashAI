@@ -1,3 +1,19 @@
+# 2026-10-30 ~16:30 EDT -- u20 check; pilot SWITCH to faster settings armed at u25 (owner: more updates/h, switch at a checkpoint)
+
+- u20 (a, iu40 480, paired vs CLXIII base_iu40): pilot u0020 (sampled gate) 242/480 = -10.21 pp [-15.78, -4.63]; vs u0000
+  -3.12 [-8.65, +2.40] (n.s.). IW presses / match (pod /workspace/pgate/presses.py): CLXIII 1.88, u0000 re-fit 2.73 (threshold) /
+  2.61 (sampled), u0020 2.17 -> the press head is moving toward CLXIII's rate. Running: u0020 + CLXIII's head grafted
+  (threshold) = pthr_u20clx.res -> separates "head still bad" from "trunk adapted negatively".
+- Speed facts (a, 33308 at u18-u20): cgroup 108.8 CPUs but load ~19; 16 producers x ~0.67 core, RSS ~5.6 GB each (cgroup
+  116 GiB = why 64 producers OOMed); 2 serve.py at ~80 % CPU (GIL-bound, SPEED2 s1), GPUs 21-36 %; update wall 776-957 s
+  vs producer wall ~480-525 s (straggler tail); learner 11-28 s; kl_stop ends each update after 29-89 of 512 minibatches.
+- SWITCH armed (33308 PID 190426, /workspace/loop/pilot/switch_fast.sh = tracked pilot/ops/switch_fast.sh; log
+  /workspace/loop/pilot/pilot_box3/switch_fast.log): at pilot_box3_u0025.pt it stops the pilot by exact PIDs (auto_stop kept),
+  copies the log to pilot_box3.33308b_u0025.log, resumes from _latest with 512 matches/update (32 x 16, E=128), --server
+  graphs, CRFORGE_XMX=450m + SerialGC + ActiveProcessorCount=4. RESTORE command in the script. After it: check the first
+  update line, both laptop watchers (FINAL may flash during the kill), and throughput.jsonl.
+- Next speed levers (code, FASTLOOP-FIX's files -> its next ticket): SPEED2 F3 one cell request per producer round (~1.7x on
+  top of graphs, b), F2' model-sharded servers (b), straggler work-stealing (b).
 # 2026-10-30 ~17:00 EDT -- `ability_head_from_init` built (opt-in); owner: the running pilot continues unchanged
 
 - Owner 10-30: build the fix, keep pilot_box3 running from its re-fit head ("starting from a deficit may teach better
