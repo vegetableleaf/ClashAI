@@ -27,7 +27,8 @@ ROW = {"tok": ((64, 14), "<f4"), "mask": ((64,), "|b1"), "sc": ((70,), "<f4"), "
        "deck_card": ((8,), "<i8"), "deck_form": ((8,), "<i8"), "hand_slot": ((4,), "<i8"), "slot_card": ((9,), "<i8"),
        "slot_form": ((9,), "<i8"), "unit_form": ((64,), "|i1"), "opp_past": ((3, 5), "<f4"),
        "opp_cycle": ((8, 4), "<f4"), "projectiles": ((64, 8), "<f4"), "effects": ((32, 6), "<f4"),
-       "own_ability": ((8, 7), "<f4"), "cue": ((64, 22), "<f4")}
+       "own_ability": ((8, 7), "<f4"), "cue": ((64, 22), "<f4"),
+       "tgt": ((64, 8), "<f4"), "tgt_idx": ((64,), "<i8")}                  # TARGET-OBS (CfTgt)
 
 
 def spec_for(model) -> dict:

@@ -28,6 +28,12 @@ git-ignored `icebow/data/reader_targets/`. Tracked code consumes only the per-un
   (git-ignored converter), at `/workspace/tval/reader/`; (4) `target_obs/tval_score.py` via `target_obs/tv_env.sh`.
   Restart: `cd /workspace/tval && bash tv_env.sh python3 tval_score.py /workspace/smeR/runs/tv_fN/results.jsonl
   /workspace/smeR/runs/tv_fN /workspace/smeR/data/freshN/frames reader tv_fN.jsonl` (gate first if tv_fN missing).
+- CFTGT (10-30 ~10:50 EDT, the Java fast-loop builder, M2 owed item (3)): code written + committed (see git log "CFTGT"):
+  `speed/crforge/obsid/CfTgt.java` (target_rows line for line on the facade; CfCue's token match copied verbatim),
+  CfTrain `enableTargets()` + tgt / tgt_idx buffers built in the cue stage right after CfCue, producer.py (`target_obs`
+  on -> enableTargets, `Rows.targets`, batch tgt / tgt_idx for a model with tgt_in, fast_traj), serve.py ROW keys.
+  Absent key: no CfTgt call, no buffer. Pod tree `33903:/workspace/cftgt/cb` (= /workspace/opplearnc/cbd + HEAD code +
+  these files; jbuild_fe364ceb compiled). Exactness (compare.py on a target_obs-on dump) + fast-loop smoke: PENDING.
 - NEXT (owner steps, not started): (1) M1c exact validation (recipe below; SME-REBUILD 18f614a now has rebuild scripts
   for the SME gate on 33903: `crforge/pilot/sme/recon/rebuild_gate.sh`); (2) live wiring in live_gen (lead approval);
   (3) CfTgt Java builder for the fast loop (spec in M2); (4) train with `target_obs: on` from B0 / CLXIII + SIM gate.
