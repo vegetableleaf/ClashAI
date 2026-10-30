@@ -15,10 +15,14 @@ Grades: (a) measured (number + source), (b) plausible but untested, (c) contradi
   4,397 partner rows went through the live decide (producer stats live_rows). Message = an opponent-arm dump
   (oplc_flv0_l01_lr3 u0000: the m10 timing learner) rewritten by `msg_live.py` to the live run's partner keys
   (league_frozen_opponent CLXIII, league_opp_policy live, league_opp_live from oplc_ftR_l0003_live/config.yaml), every job
-  vs that frozen CLXIII.
-- RUNNING at hand-off (33903, CPUs 178-179 only; 240-255 are the production arm's): a 48-job compare (u0005 msg) then the
-  no-live regression (the original u0000 msg, RAW=1, 16 jobs) -> `/workspace/fliv/out/cmp_live_u5_48.{json,log}`,
-  `cmp_raw_u0.{json,log}`. Read: `ssh ... -p 33903 root@157.157.221.29 'head -c 600 /workspace/fliv/out/cmp_live_u5_48.log; head -c 600 /workspace/fliv/out/cmp_raw_u0.log'`.
+  vs that frozen CLXIII. CAVEAT (a, found after): that first msg_live MERGED the old opp spec, so CLXIII kept each job's
+  original opp deck (census decks for the 'init' partner jobs) -- exact on both paths, but fewer Rocket / Log / X-Bow rule
+  rows than the real run. Fixed: msg_live.py now writes production's spec (adaptive_opponents.opponent_pool's frozen entry,
+  opp_deck = rl_royale.ICEBOW_DECK, as sample_matchups); the run below uses it.
+- RUNNING at hand-off (33903, CPUs 178-179 only; 240-255 are the production arm's): a 48-job compare (u0005 msg, the
+  corrected spec: CLXIII on icebow) then the no-live regression (the original u0000 msg, RAW=1, 16 jobs) ->
+  `/workspace/fliv/out/cmp_live2_u5_48.{json,log}`, `cmp_raw_u0.{json,log}`. Read: `ssh ... -p 33903 root@157.157.221.29 'head -c 600 /workspace/fliv/out/cmp_live2_u5_48.log; head -c 600 /workspace/fliv/out/cmp_raw_u0.log'`.
+  Then the smoke (step 2): `ssh ... -p 33903 root@157.157.221.29 'cd /workspace/fliv/cb && setsid nohup bash scratchpad/gauntlet/L74/plan1026/pilot/loop/fliv_smoke.sh fliv_live_smoke 178-179 >/dev/null 2>&1 < /dev/null &'` (log /workspace/fliv/out/fliv_live_smoke.out).
   Rerun: `cd /workspace/fliv/cb && R=/workspace/oplm/cb2/scratchpad/gauntlet/L68/rl; JOBS=48 bash scratchpad/gauntlet/L74/plan1026/pilot/loop/cmp_live.sh $R/oplc_flv0_l01_lr3/fast_msg_u0005.pkl $R/oplc_ftR_l0003_live/config.yaml OUT.json --device cuda --in-flight 8 --matches 8 --threads 2`
   (tree /workspace/fliv/cb = `pilot/loop/fliv_tree.sh`: symlinks to /workspace/oplm/cb2 + its loop dir copied with the
   FAST-LIVEOPP producer / CfTrain applied to cb2's (older) producer; cb2 itself untouched).

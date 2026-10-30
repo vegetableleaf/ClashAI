@@ -1,7 +1,8 @@
 """FAST-LIVEOPP: a compare.py message with the 'live'-policy CLXIII partner (PLATEAU.md's next experiment): a dumped
 opponent-arm fastloop message whose base gets the live config's partner keys (league_frozen_opponent, league_opp_policy
-live, league_opp_live: read from a run's config.yaml) and whose jobs[:N] all play that frozen CLXIII
-(spec opp = {"id", "path", "type": "frozen"}, the type rl_royale.live_opp_cfg merges league_opp_live for).
+live, league_opp_live: read from a run's config.yaml) and whose jobs[:N] all play that frozen CLXIII as rl_royale's
+sample_matchups draws it (spec opp = adaptive_opponents.opponent_pool's frozen entry, type "frozen" = the type
+live_opp_cfg merges league_opp_live for; opp_deck = ICEBOW_DECK). Run from the repo root (imports pipeline).
 
     python msg_live.py MSG.pkl CONFIG.yaml OUT.pkl [--jobs 16]
 """
@@ -31,11 +32,14 @@ def main(argv=None) -> int:
     stale = {k: v for k, v in base.items() if isinstance(v, str) and v.startswith("/workspace/") and not Path(v).exists()}
     if stale:
         raise SystemExit(f"base paths missing on this pod: {stale}")
-    opp = {"id": "frozen_clxiii", "path": cfg["league_frozen_opponent"], "type": "frozen"}
+    from pipeline.adaptive_opponents import opponent_pool
+    from pipeline.rl_royale import ICEBOW_DECK
+    opp = opponent_pool([], cfg, {})[0]                      # production's frozen entry (id "frozen:PATH", no cfg)
     out = []
-    for job in jobs[:a.jobs]:
+    for job in jobs[:a.jobs]:                                # sample_matchups: a frozen opponent plays ICEBOW_DECK
         i, spec, k, *rest = job
-        out.append((i, {**spec, "opp": {**spec["opp"], **opp}}, k, *rest))
+        spec = {**spec, "opp": opp, "opp_deck": ICEBOW_DECK["engine"], "opp_deck_name": ICEBOW_DECK["name"]}
+        out.append((i, spec, k, *rest))
     Path(a.out).write_bytes(pickle.dumps((base, update, sd, out)))
     print({k: base[k] for k in KEYS[:2]}, len(out), "jobs; opp", out[0][1]["opp"])
     return 0
