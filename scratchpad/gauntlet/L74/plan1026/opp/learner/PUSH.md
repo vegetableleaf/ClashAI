@@ -4,14 +4,38 @@ Bar: CLXIII SIM win vs the opponent 30-50% on the D3 block (480 games, seed 7412
 its live stack); v6 B-live RMS <= 0.20; siege facts inside the v6 margins (lock .47 +- .05, zero-lock .12 +- .06,
 P(lock|fail) .36 +- .07). Grades: (a) measured (number + source), (b) plausible untested, (c) contradicted.
 
-## STATUS (2026-10-30 ~20:45 UTC, account 3) -- RESTART POINT
-- Prepared, nothing launched by me. Running elsewhere (not mine, do not duplicate): `oplc_ftR_l0003_live` on 33903 (PID 81255,
-  production, u23 at 20:15 UTC, ~850 s/update -> u40 ~00:30 UTC), its D3 loop = the lead's laptop job (arm_d3_live2.sh).
-- Built (this commit): `boot_opp_pod.sh NEWPORT` (pod bootstrap, below), `arm_d3_card.sh` (= arm_d3.sh + the v6 quick card per
-  block; card step tested on G u160's rows: RMS .30, lock .70, zero .01, plf .60 = the lead's numbers), `launch_arm_prod.sh`
-  opt-in `GPU=` / `ALLOC=` (unset = byte-identical remote command, checked).
-- Waiting on: the new pod's SSH port (lead); the u40 D3 of the live run (~00:30-01:00 UTC); FASTLOOP-FIX (48/48).
-- Codex dispatches: none (design + script writing; nothing menial yet).
+## STATUS (2026-10-30 ~22:00 UTC, account 3) -- RESTART POINT
+Pods: A = `ssh -i ~/.ssh/runpod_clashbot -p 40088 root@213.192.2.118` (3090, quota 31.1 CPUs, EPYC 7H12); B = `-p 40008
+root@213.192.2.110` (3090, 31.1 CPUs, EPYC 7763). Both booted by boot_opp_pod.sh: BOOT OK (all 7 tree digests = 33903's), copy
+293 / 298 s, keys removed from 33903 (grep count 0). Fast-loop tree on both: `/workspace/mfl/cbm` = origin/main 6ebf9ad
+(pipeline + pilot/loop + obsid) over links to cb2 (mfl_tree.sh), facade build `jbuild_mfl` inside it.
+- RUNNING (mine):
+  - Pod A `oplc_ftR_l0003_live_s1f` = the live-partner recipe at seed 1 on the FAST LOOP (origin/main tree), CPUs 0-21, GPU 0.
+    PIDs 5480 (bash) -> 5483 (timeout 48 h) -> 5484 (fastloop.py). Log `/workspace/oplm/logs/oplc_ftR_l0003_live_s1f.out`;
+    ckpts `/workspace/mfl/cbm/icebow/data/bench/rl_royale/oplc_ftR_l0003_live_s1f/` (every 10, cap 400). Stop: `kill 5484`.
+    Launch / resume (+ `--resume`): `HOST=213.192.2.118 TREE=/workspace/mfl/cbm JB=jbuild_mfl bash learner/launch_arm.sh 40088 oplc_ftR_l0003_live_s1f 0-21 /workspace/venvf16/bin/python scratchpad/gauntlet/L74/plan1026/opp/learner/opp_learner_calib_live.yaml beta0=0.003 beta_min=0.003 beta_max=0.003 seed=1`
+  - Laptop D3 loop for it: WMI bash PID 21612 running the copy `C:/Users/benpe/AppData/Local/Temp/claude/C--Users-benpe-ClashBot/5a62561c-4ecc-475a-8651-5d396102522c/scratchpad/arm_d3_s1f.sh`
+    (= arm_d3_card.sh sha 53edd967) `HOST=213.192.2.118 ... oplc_ftR_l0003_live_s1f 40088 40088 22-30 8 0040 .. 0400`, log
+    `.foreman/scratch/opp_push/d3_s1f.log` (D3 on pod A's spare CPUs, 8 workers, ~1.5-2.5 h per block). Stop: touch STOP_ARM_D3
+    in that dir or Stop-Process 21612.
+  - Pod B: style S0b = B-HF closed loop of ftR (both seats ftR, T 1, 3,761 HF test-split tier-A deck pairs, 5e8089a4 /
+    16.635.3, 28 workers): `bhf_pod.sh ftR /workspace/oplm/opp_ft_s0_R_sim.pt 1.0`, PIDs 4782 (bash) -> 4825 (pairs.py), log
+    `/workspace/style/bhf_ftR.out`, rows `/workspace/style/bhf_ftR/` (~2.6 h, done ~00:30 UTC). Resumable: rerun the same command.
+    Jobs rebuilt by `mk_mvm_jobs.py` on 33903 (`/workspace/opppush/mvm_jobs4000.jsonl`, 3,761 rows, sha 6b799f6b; the original
+    4,000-row file sha 1b0afd19 died with 32657). Score after: fetch rows to `.foreman/scratch/opp_push/rows/bhf_ftR`, then
+    `card.py score --name ftR_bhf --sim <ftR D3 rows> --hf-sim .foreman/scratch/opp_push/rows/bhf_ftR --no-c --no-d`.
+- E1 (a): pod B (EPYC 7763, Zen 3) replayed oplc_ftR_l0003_s1_u0040's D3 block: 390 / 480, sorted (end_tick, outcome) list
+  IDENTICAL to 33903's (digest 9deb687d), 20 min at 28 workers. D3 blocks are game-identical across these pods' CPUs.
+- Replicate u0 (a): W/L 41/215 (.160) at seed 1 vs seed 0's 28/228 (.109); GPU 14.3 GB of 24.
+- RUN TYPES: oplc_ftR_l0003_live = PRODUCTION on cb2 (33903); oplc_ftR_l0003_live_s1f = FAST LOOP on origin/main (pod A).
+- Exactness (a): E2 production on pod A, seed 0, u0: W/L 28/228 and w16_batch_u0000.json sha 32a2ae21 = 33903's live run
+  (bit-identical; roll 649 s vs 855 s). E3 fast loop (origin/main tree) seed 0: u0 W/L 28/228, rows 6,555, KL / clip identical;
+  per-field batch shas: 47 of 50 fields identical, only lp_card / lp_cell / lp_old differ (GPU vs CPU forward, ~1e-6 per
+  FASTLOOP-FIX); so u1 diverges numerically (prod 30/226 rows 6,612 KL c/x .0090/.0145; fast 29/227 rows 6,651 .0091/.0154).
+  Reading: fast = production in every decision at u0; past u0 they are different-but-equivalent samples (float noise grows
+  into different draws), far below a seed's effect. Speed (a): fast u0 roll 201 s + upd 36 s, u1 170 + 34 s vs production on
+  the same pod 649 + 36 s (~3x).
+- Codex dispatches: none.
 - LEAD DECISIONS (10-30 ~21:00 UTC): (1) pods = 2 single RTX 3090 pods (ports to come; 24 GB = one production arm per pod).
   (2) arm 2 at u40: lever 3 (`advantage: gae` + critic warm-up, win-only reward) APPROVED if transfer is fixed (training win
   within ~3 pp of D3), smoke first; else lever 4. tower_phat for opponents stays OFF (reward change = owner). (3) STYLE is
