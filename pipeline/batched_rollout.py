@@ -361,7 +361,7 @@ def merge_key(pol):
     if not isinstance(pol, E.GenPolicy):
         return None
     m = pol.model
-    if any(getattr(m, a, None) is not None for a in ("cue_in", "cell_refine", "tower_refine", "mem", "mem_aux")):
+    if any(getattr(m, a, None) is not None for a in ("cue_in", "tgt_in", "cell_refine", "tower_refine", "mem", "mem_aux")):
         return None
     return (int(getattr(m, "feature_version", 1)),) + tuple((n, tuple(v.shape)) for n, v in m.state_dict().items())
 

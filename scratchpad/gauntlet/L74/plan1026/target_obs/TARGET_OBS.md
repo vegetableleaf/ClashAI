@@ -5,15 +5,22 @@ Rule: this file and every tracked file it names are READER-AGNOSTIC. Reader inte
 git-ignored `icebow/data/reader_targets/`. Tracked code consumes only the per-unit interface below.
 
 ## STATUS + restart point (keep current)
-- 10-30 13:45 EDT: started. 14:05 M1 committed (de0f05e). 14:10 M2 + M3 code written, laptop tests 6/6 pass.
+- 10-30 13:45 EDT: started. 14:05 M1 committed (de0f05e). 14:10 M2 + M3 code written, laptop tests pass.
 - 14:05 UTC (10:05 EDT pod clock) two REAL `rl_royale --smoke` runs on 33903 (tree `/workspace/tobs/cb` = pod tree c51efd9
   + origin match_memory + this change, crforge 5e8089a4 plain, tables 16.635.3, config `stepd/cfg/succ48_x_s101.yaml`):
   `tobs_absent` CPUs 186-189, `tobs_on` (`target_obs=on`) CPUs 190-193; logs `/workspace/tobs/logs/<run>.log`, wait for
   `SMOKE PASS`. Restart: `ssh ... -p 33903 'cd /workspace/tobs && setsid nohup ./tobs_smoke.sh tobs_on 190-193 target_obs=on &'`.
-- RESTART POINT if this account stops before the code commit: the shared-file hunks are in the working tree
-  (`pipeline/model_gen.py` encode_gen hook + add_target_in / target_in / load_state_dict; `e1_eval.py`, `rl_royale.py`,
-  `batched_rollout.py`: grep `TARGET-OBS` / `tgt`); MEM-FULL has its own uncommitted hunks in model_gen.py -- commit only
-  the hunks with those markers (origin file + filtered `git diff` hunks, then `safe_commit.sh` REPO_PATH=LOCAL_FILE).
+- 14:25 smoke `tobs_on` try 1 CRASHED at u0 `KeyError('tgt')` (a): `e1_eval.Match` record filter (cfg["record"]) had no
+  GEN_TGT_KEYS -> fixed; re-run as `tobs_on2` (same CPUs). Laptop tests could not see it (no SIM match in them).
+- 14:50 BOTH SMOKES PASS (a): `tobs_absent` config sha b5e2a2bbafef (= the earlier oplc_base1 smoke's sha on the
+  same yaml: the historical hash), `tobs_on2` (target_obs=on) config sha 15a4bbcf919e; both: u0 round trip identical,
+  resume check all True, `SMOKE PASS`. In the smoke only the value head moves (critic warm-up), so the target layers
+  stay 0 there; `test_zero_layers_get_gradients` shows all three get non-zero gradients from real rows.
+- 14:55 M2+M3 code COMMITTED (see git log "TARGET-OBS M2+M3"). Pod tree `/workspace/tobs/cb` kept (1.3 GB; delete when
+  done). No process of mine runs on any pod.
+- NEXT (owner steps, not started): (1) M1c exact validation (recipe below; SME-REBUILD 18f614a now has rebuild scripts
+  for the SME gate on 33903: `crforge/pilot/sme/recon/rebuild_gate.sh`); (2) live wiring in live_gen (lead approval);
+  (3) CfTgt Java builder for the fast loop (spec in M2); (4) train with `target_obs: on` from B0 / CLXIII + SIM gate.
 
 ## Interface (reader-agnostic)
 Per body, in `sim_unit_state.extract`'s schema (SIM: `extract(battle)`; live: `live_unit_state.LiveCues.units(frame, prev)`):
@@ -104,14 +111,20 @@ zero-initialised, added to each unit token's input embedding (the cue_in hook po
 (`tgt_in.weight` in the state dict builds them; a pre-target checkpoint into a model with them zero-fills those keys).
 
 ## Evidence (a)
-- `pipeline/tests/test_target_obs.py`, 6 / 6 pass (live venv `icebow/.venv`, CPU, 31.5 s): CLXIII NOLEAK (fv6, cue_in)
+- `pipeline/tests/test_target_obs.py`, 7 / 7 pass (live venv `icebow/.venv`, CPU, 30 s): CLXIII NOLEAK (fv6, cue_in)
   + zero target layers = CLXIII **bit-identical** (`torch.equal` on gate, card, wait, value, g, cell) on 60 recorded
   live decisions (`live_play_20261026_161448`) with random target rows, with the real live target rows, and without
   them; non-zero weights change g (wired in); all-none rows with non-zero weights = identical (no bias); state-dict round
   trip. Real live rows on those 60 decisions: 135 matched tokens, 68 target edges (all to ENEMY tokens, 0 own-side), 11
   tower targets, 28 tokens targeted by a tower.
 - Config hash absent / null / false == the pre-change rl_royale's (de0f05e) and != on.
-- pyflakes clean on the 5 files (2 pre-existing warnings in e1_eval untouched).
+- pyflakes clean on the 5 files (2 pre-existing warnings in e1_eval untouched). Existing absent-key tests still pass:
+  `test_cue_inputs` TestModel + TestConfig 7 / 7, `test_decide_identity::test_live_recorded_decisions_identical_to_base` 1 / 1.
+- SIM rows on crforge 5e8089a4 (`sim_rows.py 4` on 33903, 4 recorded self-play matches, tiny learner): 1,132 rows,
+  4,308 matched tokens, 1,042 target edges, **0 edges onto the attacker's own side**, 725 tower targets, 640 tokens
+  targeted by a tower, 700 with attack progress > 0. (Live 60 decisions: 135 / 68 / 0 / 11 / 28; other decks and
+  policies, so the rates are not comparable.)
+- Real `rl_royale --smoke` x 2 on 33903 (absent + target_obs=on): PASS (STATUS above).
 
 ## Concerns (graded)
 - (b) SIM / live "acquired" rules differ: the facade keeps a reference within target radius + sight + own radius (+ the

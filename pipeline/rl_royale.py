@@ -52,6 +52,9 @@ by the Learner (not the model's state_dict; zero last layer = the plain critic a
 Step c (``cue_inputs: on``, generalist init, RoyaleSim >= 0.1.35; absent / null / false = unchanged, same config hash;
 L74/cues/STEP_C_SPEC.md): the init gets a ZERO ``GenModel.cue_in`` layer (in the state_dict, so actors / checkpoints /
 evals carry it); a model with it records per-unit-token cue rows (e1_eval ``sim_cue_rows``) and the learner feeds them.
+TARGET-OBS (``target_obs: on``, generalist init; absent / null / false = unchanged, same config hash;
+plan1026/target_obs/TARGET_OBS.md): the init gets the ZERO ``GenModel.tgt_in`` / ``tgt_out`` / ``tgt_back`` layers; a
+model with them records per-unit-token target rows + target token index (pipeline/target_obs.py) and the learner feeds them.
 C1 stage A (``posture_head: true``, gae only, opt-in; absent / null / false = unchanged, same config hash; L74
 reward/REWARD_ARCHITECTURE.md 5 C1): a LEARNED posture z in {defend, balanced, pressure} = a gate-threshold offset
 ``posture_dtau`` (default +0.10 / 0 / -0.10) added to tau for every gate decision of the learner side, re-chosen every
@@ -883,7 +886,7 @@ def branch_row(s, allowed: np.ndarray, p: float, T: float, stalled: bool = False
     played), so ``policy_terms`` recomputes exactly the gate logit x the PPO loss uses."""
     if s._gen_row is not None:
         row = {k: s._gen_row[k] for k in s._gen_row
-               if k in E.GEN_ROW_KEYS + E.GEN_V3_KEYS + E.GEN_V31_KEYS + E.GEN_CUE_KEYS}
+               if k in E.GEN_ROW_KEYS + E.GEN_V3_KEYS + E.GEN_V31_KEYS + E.GEN_CUE_KEYS + E.GEN_TGT_KEYS}
     else:
         tok, mask, sc, past = s._obs
         row = {"tok": tok, "mask": mask, "sc": sc, "past": past}
@@ -2110,6 +2113,8 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
         extra += E.GEN_V31_KEYS
     if gen and "cue" in results[use[0]]["traj"]:                      # step c: the cue rows (a model with cue_in)
         extra += E.GEN_CUE_KEYS
+    if gen and "tgt" in results[use[0]]["traj"]:                      # TARGET-OBS: target rows (a model with tgt_in)
+        extra += E.GEN_TGT_KEYS
     if gen:                                                           # OPP-LEARN: deck_gid / ctx_* (none for others)
         extra += E.opp_row_keys(results[use[0]]["traj"])
     B = {k: cat(lambda j, k=k: results[j]["traj"][k][keep[j]]) for k in TRAJ_KEYS + extra}
@@ -3927,7 +3932,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                 and k not in VALUE_PHI_KEYS and k not in STATE_PHI_KEYS and k not in AO.DEFAULTS
                 and k not in ("league_learner_icebow_share", "learner_pipeline_frac", "league_opp_T", "kl_ref_gate",
                               "critic_ctx", "kl_ref_gate_max_elixir", "kl_ref_gate_target_frac",
-                              "league_exploiters", "cue_inputs", "opp_tower_troops", "live_levels", "league_opp_live",
+                              "league_exploiters", "cue_inputs", "target_obs", "opp_tower_troops", "live_levels", "league_opp_live",
                               "heroiw_press", "ability_features", "kl_heads", "kl_ref_card", "league_deck_weights",
                               "ot_start_share", "xbow_start_share", "remote_actors", "kl_ref_refresh_every",
                               "tau_phase", "memory", "memory_aux", "memory_encoder_frozen",
@@ -3954,6 +3959,8 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
         raise SystemExit(f"learner_deterministic must be a bool or null, got {cfg['learner_deterministic']!r}")
     if cfg.get("cue_inputs") not in (None, False, True):     # step c (yaml "on" = true): absent / null / false = off
         raise SystemExit(f"cue_inputs must be on / off (a bool) or null, got {cfg['cue_inputs']!r}")
+    if cfg.get("target_obs") not in (None, False, True):     # TARGET-OBS (yaml "on" = true): absent / null / false = off
+        raise SystemExit(f"target_obs must be on / off (a bool) or null, got {cfg['target_obs']!r}")
     if smoke and cfg.get("ability_head") not in (None, False) and cfg.get("ability_bc_matches") is None:
         cfg["ability_bc_matches"] = SMOKE_AB_BC                # B6: a smoke-sized warm start (unless set explicitly)
     if cfg.get("stall_elixir") is not None:   # owner 2026-10-07: no anti-stall in training, ever (live has none)
@@ -4111,6 +4118,8 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "critic_ctx"}
     if not cfg.get("cue_inputs"):                            # step c off (absent / null / false) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "cue_inputs"}
+    if not cfg.get("target_obs"):                            # TARGET-OBS off (absent / null / false) = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "target_obs"}
     if cfg.get("kl_ref_gate_max_elixir") is None:            # F6' off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k not in ("kl_ref_gate_max_elixir", "kl_ref_gate_target_frac")}
     elif cfg.get("kl_ref_gate_target_frac") is None:         # F6' frac absent / null = the 0.5 default, one hash
@@ -4288,6 +4297,11 @@ class Learner:
             E.require_cue_runtime()
             if getattr(self.model, "cue_in", None) is None:
                 self.model.add_cue_in()
+        if cfg.get("target_obs"):                             # TARGET-OBS: ZERO target layers on the init (kept if present)
+            if not self.gen:
+                raise SystemExit("target_obs needs a generalist (GenModel) init")
+            if getattr(self.model, "tgt_in", None) is None:
+                self.model.add_target_in()
         if memory_cfg(cfg) is not None:                       # Plan A memory v1 / v2: a ZERO-output memory encoder on the
             if not self.gen or int(self.gen.get("feature_version", 1)) < 4:   # init (kept if the init has one); the
                 raise SystemExit("memory needs a generalist init with feature_version >= 4")   # rollouts then record tables

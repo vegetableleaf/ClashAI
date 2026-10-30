@@ -646,6 +646,7 @@ def sample_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.n
 GEN_V3_KEYS = ("unit_form", "opp_past")
 GEN_V31_KEYS = ('opp_cycle', 'projectiles', 'effects', 'own_ability')
 GEN_CUE_KEYS = ("cue",)                # step c (rl_royale cue_inputs): a model with a cue layer takes them (sim_cue_rows)
+GEN_TGT_KEYS = ("tgt", "tgt_idx")      # TARGET-OBS (rl_royale target_obs): a model with tgt_in takes them (target_obs)
 CUE_MATCH_TILES = 3.0                  # sim_cue_rows: a token takes the nearest same-side SIM body within this (tiles)
 
 
@@ -829,7 +830,8 @@ def th_record(out: list, allowed: np.ndarray, matches: Sequence, hz, card, cell,
 def gen_row_keys(model):
     version = getattr(model, 'feature_version', 1)
     keys = (GEN_ROW_KEYS + (GEN_V3_KEYS if version >= 3 else ()) + (GEN_V31_KEYS if version >= 4 else ())
-            + (GEN_CUE_KEYS if getattr(model, "cue_in", None) is not None else ()) + opp_ctx_keys(model))
+            + (GEN_CUE_KEYS if getattr(model, "cue_in", None) is not None else ())
+            + (GEN_TGT_KEYS if getattr(model, "tgt_in", None) is not None else ()) + opp_ctx_keys(model))
     if getattr(model, "mem", None) is not None:              # Plan A memory v1: the match_memory MEM_KEYS
         from pipeline.match_memory import MEM_KEYS
         keys += MEM_KEYS
@@ -1356,6 +1358,9 @@ class Match:
             self._gen_row.update(sim_v3_features(self, policy))
         if getattr(policy.model, "cue_in", None) is not None:    # step c: the model has a cue layer -> its cue rows
             self._gen_row["cue"] = sim_cue_rows(self)
+        if getattr(policy.model, "tgt_in", None) is not None:    # TARGET-OBS: who targets whom (pipeline/target_obs.py)
+            from pipeline.target_obs import sim_target_rows
+            self._gen_row["tgt"], self._gen_row["tgt_idx"] = sim_target_rows(self)
         if getattr(policy.model, "mem", None) is not None:       # Plan A memory v1: this decision's memory rows
             self._gen_row.update(self._memory(policy, self._gen_row["deck_card"]))
         return self._gen_row
@@ -1626,7 +1631,8 @@ class Match:
             row = {"tok": tok, "mask": mask, "sc": sc, "past": past}
             if self._gen_row is not None:                     # GenPolicy: the generalist's input row (zeroed sc,
                 row = {k: self._gen_row[k] for k in self._gen_row
-                       if k in GEN_ROW_KEYS + GEN_V3_KEYS + GEN_V31_KEYS + GEN_CUE_KEYS + opp_row_keys(self._gen_row)}
+                       if k in GEN_ROW_KEYS + GEN_V3_KEYS + GEN_V31_KEYS + GEN_CUE_KEYS + GEN_TGT_KEYS
+                       + opp_row_keys(self._gen_row)}
             if cfg.get("record_phi"):                         # rl_royale shaping: what Phi needs, own view (True =
                 from pipeline import reward_shaping as RS     # R2 tower_crown, else the step-3 mode's own row)
                 mem = self.__dict__.setdefault("_phi_mem", {})
@@ -1838,6 +1844,9 @@ class Match:
                 out[key] = stack(key).astype(np.float32)
         if tj and "cue" in tj[0]:                            # step c: the cue rows the model saw
             out["cue"] = stack("cue").astype(np.float32)
+        if tj and "tgt" in tj[0]:                            # TARGET-OBS: the target rows the model saw
+            out["tgt"] = stack("tgt").astype(np.float32)
+            out["tgt_idx"] = stack("tgt_idx").astype(np.int64)
         if tj:                                               # OPP-LEARN: an opponent model's context ids + timing labels
             for k in opp_row_keys(tj[0]) + (("th_j", "th_ab") if "th_j" in tj[0] else ()):
                 out[k] = scalar(k, np.int64)

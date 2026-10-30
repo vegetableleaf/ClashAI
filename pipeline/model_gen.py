@@ -372,8 +372,13 @@ class GenModel(S1Model):
         if self.feature_version >= 3:
             tok = torch.cat([tok, b["unit_form"].to(tok.dtype).unsqueeze(-1)], -1)
         cue_in = getattr(self, "cue_in", None)
-        if cue_in is not None and "cue" in b:   # step c: + cue_in(cue) on each unit token's embedding (no bias: 0 -> 0)
-            hook = self.unit_in.register_forward_hook(lambda m, i, o: o + cue_in(b["cue"].to(o.dtype)))
+        tgt = getattr(self, "tgt_in", None) is not None and "tgt" in b
+        if (cue_in is not None and "cue" in b) or tgt:
+            def add(m, i, o):   # step c: + cue_in(cue); TARGET-OBS: + target_in (zero-init, no bias: 0 -> 0)
+                if cue_in is not None and "cue" in b:
+                    o = o + cue_in(b["cue"].to(o.dtype))
+                return self.target_in(o, b) if tgt else o
+            hook = self.unit_in.register_forward_hook(add)
             try:
                 enc = self.encode(tok, b["mask"], self.global_features(b), empty)
             finally:
@@ -446,9 +451,38 @@ class GenModel(S1Model):
         nn.init.zeros_(self.cue_in.weight)
         return self.cue_in
 
+    def add_target_in(self) -> nn.Module:
+        """Attach the TARGET-OBS layers (pipeline/target_obs.py; plan1026/target_obs/TARGET_OBS.md), ZERO-initialised:
+        tgt_in (TGT_N -> d) on each unit token's own target floats, tgt_out (d -> d) = a message from the token it
+        targets, tgt_back (d -> d) = the sum over the tokens targeting it. No bias anywhere: every output is unchanged
+        until they train; checkpoints holding ``tgt_in.weight`` get them on load (the model then takes b["tgt"],
+        b["tgt_idx"])."""
+        from .target_obs import TGT_N
+        dev = self.cell_emb.device
+        self.tgt_in = nn.Linear(TGT_N, self.d, bias=False).to(dev)
+        self.tgt_out = nn.Linear(self.d, self.d, bias=False).to(dev)
+        self.tgt_back = nn.Linear(self.d, self.d, bias=False).to(dev)
+        for m in (self.tgt_in, self.tgt_out, self.tgt_back):
+            nn.init.zeros_(m.weight)
+        return self.tgt_in
+
+    def target_in(self, o: torch.Tensor, b: dict) -> torch.Tensor:
+        """Unit-token embeddings o [B, U, d] + the target terms. idx -1 (none) sends and receives nothing."""
+        idx = b["tgt_idx"].long()
+        has = (idx >= 0).unsqueeze(-1).to(o.dtype)
+        j = idx.clamp(min=0).unsqueeze(-1).expand(-1, -1, o.shape[-1])
+        recv = o.new_zeros(o.shape).scatter_add_(1, j, o * has)          # sum of the tokens targeting each token
+        return o + self.tgt_in(b["tgt"].to(o.dtype)) + self.tgt_out(o.gather(1, j) * has) + self.tgt_back(recv)
+
     def load_state_dict(self, state_dict, strict: bool = True, assign: bool = False):
         # Opt-in by checkpoint CONTENT: every loader (load_model, eval_gen, rl_royale actors, live) goes through here,
         # so a state dict with the refinement builds it; one without leaves the model exactly as before.
+        if "tgt_in.weight" in state_dict and getattr(self, "tgt_in", None) is None:
+            self.add_target_in()
+        elif strict and "tgt_in.weight" not in state_dict and getattr(self, "tgt_in", None) is not None:
+            # a pre-target checkpoint into a model WITH the layers: those keys zero-filled, every other key still strict
+            state_dict = {**state_dict, **{k: torch.zeros_like(v) for k, v in self.state_dict().items()
+                                           if k.startswith(("tgt_in.", "tgt_out.", "tgt_back."))}}
         if "cue_in.weight" in state_dict and getattr(self, "cue_in", None) is None:
             self.add_cue_in()
         elif strict and "cue_in.weight" not in state_dict and getattr(self, "cue_in", None) is not None:
