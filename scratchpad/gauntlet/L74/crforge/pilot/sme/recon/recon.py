@@ -501,4 +501,4 @@ def with_elixir_base(plan, tab, e0):
 def runnable(plan):
     """The plan crforge reads (RECON's bookkeeping fields stripped)."""
     p = {k: v for k, v in plan.items() if not k.startswith('_') and k != 'levels'}
-    return sme_live.runnable(p)
+    return dict(p, cmds=[{k: v for k, v in c.items() if k != '_src'} for c in p['cmds']])   # = sme_live.runnable

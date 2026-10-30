@@ -3,7 +3,7 @@ A rule that real, exactly-replayed matches break is too strict (or measures an e
 
     python -I field_census.py > ../results/live/recon/field_census.txt
 """
-import collections, json, math, os, statistics, sys
+import collections, json, os, statistics, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
