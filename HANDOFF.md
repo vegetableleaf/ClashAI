@@ -1,3 +1,15 @@
+# 2026-10-30 ~17:00 EDT -- `ability_head_from_init` built (opt-in); owner: the running pilot continues unchanged
+
+- Owner 10-30: build the fix, keep pilot_box3 running from its re-fit head ("starting from a deficit may teach better
+  strategies"; lead counterpoint given: the deficit is a worse press head, each extra press costs 2 elixir, so RL's easy path is
+  fixing the head, and the rest of the policy may co-adapt to it -- watch the u20/u40 checks and press counts).
+- pipeline/rl_royale.py: `ability_head_from_init: true` loads rl["ability_head"] (+ ability bc meta) from the init checkpoint and
+  skips the rule warm start; refuses an init without a head; bool / null validated; absent / false = historical hash.
+  Evidence (a, 33903 /workspace/ahfi, tree = /workspace/tobs/cb + this patch): pyflakes clean; real rl_royale --smoke on
+  succ48_x_s101.yaml: on = SMOKE PASS (config sha f7641441374a, log "loaded from the init checkpoint"), u0000 head = init head
+  max diff 0.0; absent = SMOKE PASS with config sha b5e2a2bbafef = the historical hash (tobs_absent). The fast loop runs the same
+  Learner startup, so it covers pilot.yaml runs too (fast-loop smoke with the key not run).
+- Use it in every future run from a checkpoint with a trained head (B0-full v2 RL, the next pilot).
 # 2026-10-30 ~16:00 EDT -- CAUSE FOUND: the pilot's -7.3 pp start = the IW press-head re-fit (every rl_royale run does it)
 
 - (a) u0000 with CLXIII's rl.ability_head + rl.ability grafted in (threshold gate, iu40 480): 291/480, delta +0.00 [+0.00, +0.00]

@@ -3949,7 +3949,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                               "tau_phase", "memory", "memory_aux", "memory_encoder_frozen",
                               "memory_e_max", "memory_board_snap",
                               "memory_zero_empty", "learner_deterministic", "kl_stop_prev", "stored_values",
-                              "ent_init_rows", "lazy_refine", "ent_pair_every", "matches_per_update", "micro_batch", "mem_row_cache",
+                              "ent_init_rows", "lazy_refine", "ability_head_from_init", "ent_pair_every", "matches_per_update", "micro_batch", "mem_row_cache",
                               "barrel_decoy_sim", "kl_lr_target", "ppo_decoupled", "th_anchor", "gate_baseline",
                               "timing_pg") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS and k not in CROWN_KEYS
@@ -4014,6 +4014,8 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                              "kl_ref_gate_max_elixir (pi_prox = the KL anchor's terms = the update-start policy)")
     if cfg.get("lazy_refine") is not None and type(cfg["lazy_refine"]) is not bool:   # LOOP-LRN: absent / null / false = off
         raise SystemExit(f"lazy_refine must be a bool or null, got {cfg['lazy_refine']!r}")
+    if cfg.get("ability_head_from_init") is not None and type(cfg["ability_head_from_init"]) is not bool:
+        raise SystemExit(f"ability_head_from_init must be a bool or null, got {cfg['ability_head_from_init']!r}")
     pe = cfg.get("ent_pair_every")                           # LOOP-LRN paired entropy-floor baseline: absent / null = off
     if pe is not None:
         if type(pe) is not int or pe < 1:
@@ -4091,6 +4093,8 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "ent_init_rows"}
     if not cfg.get("lazy_refine"):                           # LOOP-LRN lazy refine off = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "lazy_refine"}
+    if not cfg.get("ability_head_from_init"):                # 10-30 parent's ability head off = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "ability_head_from_init"}
     if cfg.get("ent_pair_every") is None:                    # LOOP-LRN paired entropy baseline off = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "ent_pair_every"}
     if cfg.get("micro_batch") is None:                       # LEARNER-SCALE accumulation off = the historical hash
@@ -4442,6 +4446,17 @@ class Learner:
         return {"d_g": int(self.model.value_head.in_features), "hidden": ABILITY_HIDDEN, "n_feat": self._ability_n_feat(),
                 **({"features": feats} if feats != "base" else {}),
                 "bc": _py(getattr(self, "ability_bc", None))}
+
+    def _ability_from_init(self) -> None:
+        """ability_head_from_init (10-30, opt-in): load the INIT checkpoint's trained ability head (rl["ability_head"]) instead
+        of re-fitting one by imitating the press rule. Measured 10-30: the re-fit head alone put pilot u0000 at -7.29 pp vs
+        CLXIII (iu40 480; with CLXIII's head grafted back the 480 games were identical). Refuses an init without a head."""
+        rl = (torch.load(self.init_path, map_location="cpu", weights_only=False).get("rl") or {})
+        if "ability_head" not in rl:
+            raise SystemExit(f"ability_head_from_init: {self.init_path} carries no rl['ability_head']")
+        self.ability_head.load_state_dict(rl["ability_head"])        # strict: a shape mismatch refuses the run
+        self.ability_bc = (rl.get("ability") or {}).get("bc")
+        self.log(f"[rl] ability_head: loaded from the init checkpoint {self.init_path.name} (no rule warm start)")
 
     def _ability_warm_start(self) -> None:
         """B6 imitation warm start (fresh run, before the init screen and u0000): ``ability_bc_matches`` rollouts of the
@@ -5605,7 +5620,10 @@ class Learner:
             f"{pa['cell_half_top1']:.4f} card {pa['card_top1']:.4f} gate_bal {pa['gate_bal_acc']:.4f}")
         self.start_actors()
         if getattr(self, "ability_head", None) is not None:   # B6: imitate the press rule before the init screen / u0000
-            self._ability_warm_start()
+            if self.cfg.get("ability_head_from_init"):        # 10-30: keep the parent's head (re-fit cost the pilot -7.3 pp at u0)
+                self._ability_from_init()
+            else:
+                self._ability_warm_start()
         t = time.perf_counter()
         sc = self.screen()
         self.base["init_screen"] = sc["per_key"]
