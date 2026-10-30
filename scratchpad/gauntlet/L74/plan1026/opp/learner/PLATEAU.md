@@ -2,6 +2,33 @@
 
 Grades: (a) measured (number + source), (b) plausible but untested, (c) contradicted by the data.
 
+## STATUS: FAST-LIVEOPP -- the fast loop plays the 'live' CLXIII partner (2026-10-30 ~15:20 UTC; keep current) -- RESTART POINT
+- DONE (code, a): commits 33d1c0c + 9dd1cc8 (9dd1cc8 = 33d1c0c minus another worker's uncommitted TARGET-OBS hunks it swept
+  in; CFTGT's bfc560e then restored both sets). producer.py:702's refusal is gone for a 'live' seat. Design + spec:
+  pilot/loop/LOOP_INT.md "FAST-LIVEOPP".
+- Correction to the section below (c): "Porting = a Java BoardState export" -- the export ALREADY existed: LOOP-CTX's
+  `speed/crforge/obsid/CfCtx.java` + `cf_ctx.py` (2542689, 10-28) = match_kwargs at this exact live option set, identical on
+  45,211 (+44,982 hero) facade seat-rows (`obsid/results/ctx_live*.json`). This ticket only wired it into CfTrain / producer.
+- Exactness (a, 33903 /workspace/fliv/out/cmp_live_b8.json): compare.py, production actor_main vs the fast loop, cuda,
+  8 in flight: **16 / 16 matches identical**, every side's decisions identical (learner timing seat + the CLXIII live seat),
+  ability presses 18 / 29 per side both paths, memory tables 16 / 16; lp max card 8.1e-7, cell 1.2e-6 (bar 1e-5);
+  4,397 partner rows went through the live decide (producer stats live_rows). Message = an opponent-arm dump
+  (oplc_flv0_l01_lr3 u0000: the m10 timing learner) rewritten by `msg_live.py` to the live run's partner keys
+  (league_frozen_opponent CLXIII, league_opp_policy live, league_opp_live from oplc_ftR_l0003_live/config.yaml), every job
+  vs that frozen CLXIII.
+- RUNNING at hand-off (33903, CPUs 178-179 only; 240-255 are the production arm's): a 48-job compare (u0005 msg) then the
+  no-live regression (the original u0000 msg, RAW=1, 16 jobs) -> `/workspace/fliv/out/cmp_live_u5_48.{json,log}`,
+  `cmp_raw_u0.{json,log}`. Read: `ssh ... -p 33903 root@157.157.221.29 'head -c 600 /workspace/fliv/out/cmp_live_u5_48.log; head -c 600 /workspace/fliv/out/cmp_raw_u0.log'`.
+  Rerun: `cd /workspace/fliv/cb && R=/workspace/oplm/cb2/scratchpad/gauntlet/L68/rl; JOBS=48 bash scratchpad/gauntlet/L74/plan1026/pilot/loop/cmp_live.sh $R/oplc_flv0_l01_lr3/fast_msg_u0005.pkl $R/oplc_ftR_l0003_live/config.yaml OUT.json --device cuda --in-flight 8 --matches 8 --threads 2`
+  (tree /workspace/fliv/cb = `pilot/loop/fliv_tree.sh`: symlinks to /workspace/oplm/cb2 + its loop dir copied with the
+  FAST-LIVEOPP producer / CfTrain applied to cb2's (older) producer; cb2 itself untouched).
+- NOT DONE (remaining steps, in order): (1) read the two runs above (bar: N / N identical, raw 16 / 16). (2) a fast-loop
+  smoke of opp_learner_calib_live.yaml (launch_arm.sh ... --smoke, on a tree holding these loop files: SMOKE PASS and the
+  league line = frozen CLXIII). (3) measure s / update vs production's ~880 s (the "~6.5x" is (b): 880 s vs 160-240 s
+  measured for the SAMPLED partner; the live partner adds CfCtx 22 us JVM + ~80 us Python per partner row (LOOP-CTX, a) and
+  its forward runs in the producer, not serve.py). (4) the lead decides whether the running production arm
+  oplc_ftR_l0003_live moves to the fast loop (resume from its checkpoint) -- not touched here.
+
 ## STATUS: the live-partner run (keep current; OPP-LIVEPARTNER, 2026-10-30 14:30 UTC) -- RESTART POINT
 - RUNNING: `oplc_ftR_l0003_live` on 33903, PRODUCTION rl_royale (not the fast loop): timeout PID 81253 -> rl_royale PID
   81255 (+ 20 actor children), CPUs 240-255,180-185, CUDA learner, tree /workspace/oplm/cb2, started 14:24 UTC.

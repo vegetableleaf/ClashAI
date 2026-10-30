@@ -209,6 +209,32 @@ compare; (B) rl_royale / e1_eval opponent-learner keys + tests + smoke (pipeline
   (c) learner-alongside bench within 33553's 62 GB (3 x 256, 2 actors); (d) pilot.yaml on fastloop >= 3 updates on 33308,
   records kept for LOOP-LRN.
 
+## FAST-LIVEOPP: 'live'-policy seats (a frozen opponent with the deployed decision stack; 2026-10-30)
+Why: OPP-PLATEAU's next experiment trains the opponent against CLXIII playing D3's LIVE_OPTIONS stack
+(league_opp_policy live + league_opp_live); the fast loop refused it (`policy 'live': the fast loop samples`).
+Spec -- what production's live decide reads (e1_eval.selfplay_decide live branch: ability_decide, posture_live,
+decision_options.match_kwargs(sides), live_decide_batch) beyond the model row, at this option set (a, code read):
+- the decision's engine BoardState `m._cur[1]` (my frame, look-ahead board): t_sec, my_elixir, my_hand, the 6 towers
+  (hp_frac, alive, lane), every unit (cls, side, x, y, hp_frac, form) -> tau_phase / xbow / dead-lane (enemy alive),
+  rocket_dead_target (princess_dead_state, enemy_body_tiles), tau_threatened (tau_threat_state), log_air (log_air_board),
+  barrel_lane (barrel_goblin_tiles), rocket_value / rocket_tornado (the board itself);
+- the raw state `m.state` at the decision tick: episode.crown_towers (side, type, x, y, hp, max_hp, destroyed) -> lethal
+  (+ rocket_kills_king, lethal_log's record_hp history, lethal_quiet's recently_hit) and entities (log_air ground children);
+- per-match history: princess-dead runs, tau threat state, the HP history, done_plays (landing tick, slot, cell centre);
+- the row's projectile tokens (log_aim log_barrel), the deck names / ids, the per-match decision RNG (match_kwargs' seed).
+All of it = LOOP-CTX's CfCtx.build output (HEAD 36 doubles + 8 sections, CfCtx.java header), identity-tested 10-28.
+Wiring (as built, 33d1c0c / 9dd1cc8): CfTrain.enableCtx(Tables) once; setCtx(i, live0, live1) per job (after setJob);
+reset() gives each live seat a fresh CfCtx.Seat; build() stage 1 runs CfCtx.build on the seat's TrainMatch right after its
+obs into a thread-local scratch, then row r's slot (r * CTX doubles: {n, data}); a Tables miss (-1) rewinds the obs and
+stops the row at stage 1 (Python's _fill runs cf_ctx.fill_missing, the obs re-runs); land(): an accepted play ->
+Seat.played(pendLand, slot, cell). Producer: _ctx_on (cf_ctx.tables / options_for on the first live cfg; one option set
+per JVM), _ctx_kwargs (cf_ctx.decode + cf_ctx.kwargs, match_kwargs' rng_decision_options seeding), _prod_group's live
+branch = selfplay_decide's. A live group never goes to serve.py (live_decide_batch reads enc): in-process forward.
+Opt-in: no 'live' seat = ctx None = no CfCtx call, no buffer (bytes as before). Refused: pipeline_decisions / follow_ups
+on a live seat; gate_decode hazard, rocket_value_lead on / blend, rocket_value_threat on (cf_ctx.options_for).
+Exactness (a): 16 / 16 identical (PLATEAU.md STATUS FAST-LIVEOPP; 33903 /workspace/fliv/out/cmp_live_b8.json).
+Tools: msg_live.py (dumped msg -> live partner msg), cmp_live.sh (compare on 33903's /workspace/fliv/cb), fliv_tree.sh.
+
 ## Design (as built)
 - `CfTrain.java`: N facade matches per producer on T threads. Per match: e1_eval.SelfPlayMatch.due / SelfPlaySide.apply /
   Match._land ported (delayed plays, crforge's 20-tick engine delay, landing before deciding, tail cap, warm-up), every
