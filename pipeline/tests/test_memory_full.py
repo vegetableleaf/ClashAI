@@ -244,3 +244,22 @@ def test_config_keys_absent_is_historical_hash():
             raise AssertionError(bad)
         except SystemExit:
             pass
+
+
+def test_warm_start_copies_encoder_and_keeps_snap_columns_zero(tmp_path):
+    from pipeline.train_memory import _aux_trainable, warm_start
+    import torch
+    old = _net(1)[0]
+    old.add_memory_aux()
+    p = tmp_path / 'old.pt'
+    torch.save({'model': old.state_dict()}, p)
+    new = _net(2)[0]
+    new.mem_full(256, True)
+    new.add_memory_aux()
+    out0 = new.mem.out.weight.detach().clone()
+    assert warm_start(new, p) == sum(_aux_trainable(k) for k, _ in new.named_parameters())
+    w, o = new.state_dict(), old.state_dict()
+    assert torch.equal(w['mem.ev_in.weight'][:, :46], o['mem.ev_in.weight'])
+    assert float(w['mem.ev_in.weight'][:, 46:].abs().max()) == 0
+    assert all(torch.equal(w[k], o[k]) for k, _ in new.named_parameters() if _aux_trainable(k) and k != 'mem.ev_in.weight')
+    assert torch.equal(new.mem.out.weight, out0)          # the coupling stays out of it

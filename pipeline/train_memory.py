@@ -536,11 +536,45 @@ def _brief(ev):
             for k in AUX_HEADS}
 
 
+def table_val_rows(arrs: dict, row_tab: np.ndarray, sample: int = 0) -> np.ndarray:
+    """eval_gen.val_rows restricted to rows with a memory table (same fixed seed-0 subsample rule)."""
+    va = np.where((arrs["split"] == 1) & (row_tab[:len(arrs["split"])] >= 0))[0]
+    if sample and sample < len(va):
+        va = np.sort(np.random.default_rng(0).choice(va, size=sample, replace=False))
+    return va
+
+
+def warm_start(model, path: Path) -> int:
+    """Copy the S3-aux tensors (mem.* minus the coupling mem.out, mem_aux.*) of checkpoint ``path`` into ``model``. A
+    narrower ``mem.ev_in.weight`` (a 46-wide encoder into a snap model) fills the first columns, the snapshot columns stay
+    ZERO (= model_gen.mem_full's widen). Every trainable parameter must come from the file; -> tensors copied."""
+    warm = torch.load(path, map_location="cpu", weights_only=False)["model"]
+    sd = model.state_dict()
+    need = [k for k, _ in model.named_parameters() if _aux_trainable(k)]
+    miss = [k for k in need if k not in warm]
+    if miss:
+        raise SystemExit(f"--mem-warm {path}: no {miss[:5]} (+{max(0, len(miss) - 5)})")
+    n = 0
+    with torch.no_grad():
+        for k in need:
+            t, v = sd[k], warm[k].to(sd[k].device, sd[k].dtype)
+            if t.shape == v.shape:
+                t.copy_(v)
+            elif k == "mem.ev_in.weight" and t.dim() == 2 and t.shape[0] == v.shape[0] and t.shape[1] > v.shape[1]:
+                t.zero_()
+                t[:, :v.shape[1]].copy_(v)
+            else:
+                raise SystemExit(f"--mem-warm {path}: {k} is {tuple(v.shape)}, the model's {tuple(t.shape)}")
+            n += 1
+    return n
+
+
 def train_aux(a, model, base, rows, va, va_idx, tr, tables, arrs, meta, init_ck, rng, dev, t0) -> int:
     from .dataset_gen import checkpoint_gid
     if a.aux != "v1":
         raise SystemExit("--trainable memory_encoder needs --aux v1")
     model.add_memory_aux()
+    n_warm = warm_start(model, a.mem_warm) if a.mem_warm is not None else 0   # MEM-RETRAIN: e.g. B0's encoder
     snap = freeze_aux(model)
     if float(model.mem.out.weight.abs().max()) != 0 or float(model.mem.out.bias.abs().max()) != 0:
         raise SystemExit("the memory coupling mem.out is not zero at start")
@@ -561,6 +595,9 @@ def train_aux(a, model, base, rows, va, va_idx, tr, tables, arrs, meta, init_ck,
             "val_rows": int(len(va_idx)), "steps": steps, "bs": a.bs, "lr": a.lr, "wd": a.wd, "warmup": a.warmup,
             "amp": a.amp, "trainable": "memory_encoder", "aux": a.aux, "n_trainable": int(sum(p.numel() for p in params)),
             "seed": a.seed, "memory": a.memory, "mirror": False, "zero_empty": a.zero_empty, "label_stats": st,
+            **({"mem_warm": str(a.mem_warm), "mem_warm_tensors": n_warm} if a.mem_warm is not None else {}),
+            **({"table_rows_only": True} if a.table_rows_only else {}),
+            **({"e_max": a.e_max, "snap": a.snap} if a.e_max or a.snap else {}),
             "label_coverage": cov,
             # the loss is sum_h loss_h / trivial_h: REG already standardised (weight 1), BIN / CLS divided by H
             "head_weights": {k: (1.0 if k in REG else round(1.0 / st[k]["H"], 5)) for k in AUX_HEADS}}
@@ -657,6 +694,10 @@ def main(argv=None) -> int:
                     "zero_empty): an EMPTY memory adds exactly 0, so no memory-independent offset is learned (skew 10-25)")
     ap.add_argument("--e-max", type=int, default=0, help="MEM-FULL: memory events read (0 = match_memory.E_MAX)")
     ap.add_argument("--snap", action="store_true", help="MEM-FULL: + the board snapshot per play (snap tables)")
+    ap.add_argument("--mem-warm", type=Path, default=None, help="MEM-RETRAIN: S3-aux start = this checkpoint's mem.* / "
+                    "mem_aux.* (e.g. B0); snap columns start at zero")
+    ap.add_argument("--table-rows-only", action="store_true", help="train / val only on rows with a memory table (a "
+                    "--limit subset of the tables)")
     ap.add_argument("--val-sample", type=int, default=30000)
     ap.add_argument("--val-every", type=int, default=2000)
     ap.add_argument("--ckpt-every", type=int, default=2000)
@@ -713,9 +754,11 @@ def main(argv=None) -> int:
     gid = checkpoint_gid(meta["card_vocab"])
     tables = (packed, row_tab, arrs["tick"])
     tr = np.flatnonzero(arrs["split"] == 0)
+    if a.table_rows_only:
+        tr = tr[row_tab[tr] >= 0]
     if a.limit_rows and a.limit_rows < len(tr):
         tr = np.sort(rng.choice(tr, size=a.limit_rows, replace=False))
-    va_idx = val_rows(arrs, a.val_sample)
+    va_idx = val_rows(arrs, a.val_sample) if not a.table_rows_only else table_val_rows(arrs, row_tab, a.val_sample)
     rows = GenRows(arrs, tr, dev)
     rows.memory, rows.grid = tables, grid
     rows.memory_version, rows.memory_gid = a.memory, gid              # v2: + S1C_FIELDS (the tables' vocabulary)
