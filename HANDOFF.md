@@ -1,3 +1,18 @@
+# 2026-10-30 ~14:00 EDT -- LIVE RESTARTED (owner OK: "restart if you still want poller matches"): CLXIII NOLEAK Ranked
+
+- `start_live.sh icebow --no-fast-plays --ranked` after --check PASS (sha 8d328a43, barrel_decoy on, merged_sf); supervisor start
+  13:34:50 EDT. First run stalled: the client sat on the new **Social** tab, which the navigator has no template for ("40
+  tap-throughs and still no known screen"; then "no menu screen in 8 s -- assuming a battle"). One adb tap on the centre Battle
+  tab (380,1520) fixed it; the screen showed vegetableleaf, League 5 = MAIN account. Real matches since: 13:46 (32 plays, LOSS),
+  13:49 (33 plays, WIN), both with own princess 4858.
+- **Bogus result:** overnight.out's `[ladder] result: WIN ... src=towers` at ~13:41 is the 0-play stall run
+  (live_play_20261030_133510.jsonl: played 0, towers null). Exclude it from any live win count (block_verdict / liveops).
+- Owed (live path, needs the owner): a navigator template for the Social tab (tap the centre Battle tab), so a stall there self-heals.
+- RECON-3 DONE (bf92222, RECON.md s10): on the same 151 records + lib, hand-rule gate 142 pass / 132 strict (IN-SAMPLE: its 20
+  flags were written on these failures) vs RECON v2 126 / 119 (v1 123 / 116); 16 gate-only matches, all observation-side (6 =
+  hero Tombstone press unit index); ASSIGN guard PASS per frame on the 5 hidden records. Continued as RECON-4: freeze held-out
+  FRESH9 first, then general ops (press unit + re-bind, own point uncapped, drop/cycle repair, victim-attacker press), then both
+  pipelines on FRESH9. Owner question pending: un-flag 155249 / 000242 (RECON restores their missed play; +2).
 # 2026-10-30 ~13:30 EDT -- ACCOUNT 3: owner decisions; CLXIII gate baseline + periodic pilot checks running; 3 workers
 
 - **Owner 10-30 (account 3):** (1) pilot check = 480 SIM games every 20 updates: YES. (2a) deploy the pilot with its trained
