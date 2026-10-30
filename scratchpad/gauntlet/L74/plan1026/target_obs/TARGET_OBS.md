@@ -47,10 +47,18 @@ git-ignored `icebow/data/reader_targets/`. Tracked code consumes only the per-un
   && (setsid nohup bash chain.sh d > logs/chain_d.out 2>&1 < /dev/null &)'` (new tag = new run names).
 - 11:35 EDT chain b's on-arm SMOKE FAIL (a): producer guard "a model with target layers in a run without target_obs":
   rl_royale's actor_base carries no `target_obs` key. Fix 933d7d0: the producer enables CfTgt when the learner state
-  dict has `tgt_in.weight`. Chain b stopped by PID; **chain c RUNNING** (same recipe, tag c, logs `*_c`).
+  dict has `tgt_in.weight`. Chain b stopped by PID; chain c = same recipe, tag c, logs `*_c`.
+- 12:10 EDT CFTGT RESULT (a), chain c on 33903 (tree = 933d7d0 code, crforge fe364ceb, tables 16.635.3, ref_v0.yaml, CPU):
+  on: fast-loop `rl_royale --smoke target_obs=on` SMOKE PASS (config sha cf723ac91ec8, resume check all True);
+  compare.py on its u0000 message 8 / 8 matches identical, first_div_keys {}, lp maxdiff 0.0. compare.py skips a key one
+  side lacks, so `/workspace/cftgt/tgt_probe.py` (scratch, not tracked) checked it: tgt + tgt_idx in BOTH paths' learner
+  trajs, byte + dtype + shape equal on all 8 (2,388 rows; 6 side 1, 2 side 0): 12,871 known tokens, 6,011 unit edges
+  (idx >= 0 exactly on the flag), 1,836 tower targets, 3,387 frac > 0, 1,559 tower-targets-me.
+  absent: fast-loop smoke SMOKE PASS (config sha 3708e44383a5), compare.py 8 / 8 identical, first_div_keys {}.
+  Pod results: `/workspace/cftgt/cmp_{on,absent}_c.json`, `probe_on_c.json`. No process of mine left running on the pod.
 - NEXT (owner steps, not started): (1) M1c exact validation (recipe below; SME-REBUILD 18f614a now has rebuild scripts
   for the SME gate on 33903: `crforge/pilot/sme/recon/rebuild_gate.sh`); (2) live wiring in live_gen (lead approval);
-  (3) CfTgt Java builder for the fast loop (spec in M2); (4) train with `target_obs: on` from B0 / CLXIII + SIM gate.
+  (3) CfTgt Java builder: DONE (CFTGT above); (4) train with `target_obs: on` from B0 / CLXIII + SIM gate.
 
 ## Interface (reader-agnostic)
 Per body, in `sim_unit_state.extract`'s schema (SIM: `extract(battle)`; live: `live_unit_state.LiveCues.units(frame, prev)`):
@@ -178,7 +186,7 @@ Inferno in 2, 162534 / 173440; they sit in the siege / building rows, not split 
   `rows, idx = live_target_rows(self.cues, raw_frame, prev, tok, mask, side)`; `b["tgt"] = T(rows, torch.float32)`;
   `b["tgt_idx"] = T(idx)`. Until then a tgt checkpoint must not go live (without b["tgt"] its layers are skipped: it
   plays target-blind, silently).
-- **Java fast loop (CfTrain) not built** (no JDK on the laptop; pods busy). What it needs: a `CfTgt.build` beside
+- **Java fast loop: BUILT** (CFTGT in STATUS; the spec it was built from:) a `CfTgt.build` beside
   `speed/crforge/obsid/CfCue.build` that reuses CfCue's token match verbatim (ti / ord-by-uid / argmin loop), records the
   body->token map, then per matched body: `CfCore.acquired(w)` -> entity id -> token index or tower flag, `frac` = CfCue's
   `prog % hs / hs` (0 when idle), dx / dy from the two entities' x / y (seat 1 mirrored), incoming counts over all units
