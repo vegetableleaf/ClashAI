@@ -1,3 +1,19 @@
+# 2026-10-30 ~15:15 EDT -- full-match memory encoder PASSES its aux gate; B0-full v2 built; pilot u0 deficit is NOT the sampled gate
+
+- MEM-RETRAIN-2 (c48c609, f6c481c; MEM_FULL.md s5, a): full warm run on snap_full (3.17M rows, 24,754 steps). 349,264 held-out
+  rows / 1,459 matches, paired match bootstrap: sum_main 3.7052 -> 3.6250 [-0.084, -0.077]; > 128-event rows (11,927) sum_main
+  -0.064 [-0.088, -0.039] (short run's "no gain" CONTRADICTED at full scale); attribution: full history pays only after
+  retraining (new vs new-at-128 -0.036 [-0.055, -0.017]; old encoder fed 256 = nothing). xb_lock BCE was worse (+0.032..+0.067,
+  AUC better = overconfident, 7,770 train labels) -> fixed by one temperature T 1.7312 fit on train only: -0.0738 [-0.097,
+  -0.055] vs old; other heads unchanged (<= 1.4e-9). Gate 4 MET. **B0-full v2** = CLXIII 141 tensors + 51 memory tensors,
+  mem.full [256, 1]: pod 33903 /workspace/memretrain/out/b0_full/b0_full_clxiii_mem256snap_xbtemp.pt sha fc1caf14..., laptop
+  copy C:/Users/benpe/pod_backup_weekend/memretrain/; G-mem-0 max diff exactly 0.0 vs CLXIII (10k rows). Not registered.
+  NEXT (needs FASTLOOP-FIX's keys-on verification + a pod from the owner): RL from B0-full v2 (recipe s4 step 5) + memory
+  ablation gate.
+- Pilot u0000 split (a): THRESHOLD gate 256/480, -7.29 pp [-11.92, -2.66] vs CLXIII (sampled gate gave -7.08) -> the sampled
+  gate is NOT the cause. Running: u0000 with CLXIII's rl.ability_head + rl.ability grafted (`ck/pilot_box3_u0000_clxhead.pt`,
+  threshold gate, /workspace/pgate/pthr_clxhead.res). If ~0, the run's IW press-head re-fit (rl_royale ability warm start)
+  costs ~7 pp at u0 -- a design issue for every future run, not only the pilot.
 # 2026-10-30 ~14:45 EDT -- navigator knows the Social tab (9446f75, live since the 14:19 restart); pilot u0 starts 7 pp BELOW CLXIII
 
 - Owner OK: Social-tab template `social_hdr` (thr .85; 1.0 on the stalled frame, max .654 on 48 other full frames) -> tap the
