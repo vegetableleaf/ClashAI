@@ -5,7 +5,55 @@ Grades: (a) measured (number + source), (b) plausible, untested (with the test),
 
 ## STATUS + RESTART POINT (keep current)
 
-- MEMFULL-LOOP (10-30, closed out at usage 97%): the fast-loop wiring is COMMITTED BUT NOT VERIFIED: do not train on it yet.
+- FASTLOOP-FIX (10-30, account 3; restart point = pilot/loop/LOOP_INT.md STATUS "FASTLOOP-FIX"): the fast loop on
+  origin/main is exact again and plays the live CLXIII partner incl. its rocket_tornado follow-ups.
+  (a) ROOT CAUSE of MEMFULL-LOOP's `AssertionError: (16, 15)`: neither the follow_ups guard (it RAISES, never skips -- (c)
+  for that hypothesis) nor the MEM-FULL change: a thread race in the FAST-LIVEOPP wiring. CfCtx.build's -2 compares the
+  SHARED Names.missing size before / after its unit pass, so another CfTrain pool thread's obs miss fails an innocent
+  'live' row -> CfTrain.ctxRow threw -> the match counted as crashed -> P.run `skipped` (fast 15, prod 16). Evidence: the
+  same msg + origin/main code reran 16 / 16 at --matches 8 --threads 2 (no skip: timing), and at --matches 16 --threads 8
+  (fast only) gave 15 + 1 skipped, first_crash `java.lang.IllegalStateException: CfCtx.build -2: a body without a Names
+  entry after the obs` (33903 /workspace/mfl/out/race_a.log). Fix (CfTrain.ctxRow): rebuild while -2 is not this row's
+  own miss (TrainMatch.missed; -2 returns before any Seat / output write); same settings after: 16 / 16 identical,
+  0 skipped (racefix_a.json).
+  (a) keys-absent identity, origin/main code, a NON-live B0 msg (33308 lint_m1 u0000, B0 vs B0 memory both seats, run
+  under 33903's runtime stamp: compare --runtime-here): 16 / 16 identical, tables 16 / 16, MEM rows 5,257 / 5,257, lp max
+  3.1e-6 (abs_m1_main.json). After the follow-up port (same msg): 16 / 16, 5,257 / 5,257 (fu_m1.json).
+  (a) follow-ups PORTED (CfTrain setFollowUps / followStart / followCheck / landQ / verdict = SelfPlaySide's event-driven
+  _follow_start / _follow_check / _follow_resolved; producer._follow_ups; the guard is gone). Live compare (CLXIII live
+  partner, the corrected msg of cmp_live2_u5_48 + 96 more jobs of the same u0005 source, CPU): 144 / 144 matches identical
+  (48 / 48 on the PLATEAU msg), 0 skipped, 6 follow-up plans (3 fired, 2 cancelled, 1 open at match end), memory tables
+  144 / 144, ability results 144 / 144, lp max 2.9e-6 (bar 1e-5; TF32 off as before). Planted rule test: CfTrain.verdict ==
+  follow_up_verdict on 800 cases, all 8 branches (test_follow_verdict.py).
+  (a) MEM-FULL keys ON (memory_e_max 256 + board snap, mfl.yaml, a real keys-on msg dumped by smoke_mfl.sh): 8 / 8
+  identical (the smoke's msg has 8 jobs), memory tables 8 / 8, MEM rows (mem_h vs the learner rebuild) 2,737 / 2,737,
+  ability 8 / 8 (296 labels) (mflon_cmp.json).
+  (a) smokes: (1) keys ON fast loop (smoke_mfl.sh RUN=mflon_smoke2, mfl.yaml: B0 + memory_e_max 256 + board snap, CPU
+  serve eager + CPU learner, critic_warmup_updates=1 because tower_phat refuses 0): SMOKE PASS, u0001 = a real PPO policy
+  step through the widened encoder (KL g/c/x .0091/.0015/.0023, 20 steps), resume check all True incl. ability head /
+  opt; the u0001 msg compare: 8 / 8, tables 8 / 8, MEM rows 2,768 / 2,768, ability 8 / 8 (1,095 head decisions, 17
+  presses) -> keys-on total 16 / 16 matches, 5,505 / 5,505 MEM rows. (2) opp_learner_calib_live.yaml on the fast loop
+  (smoke_live.sh RUN=fixlive_smoke1, the arm's recipe: ftR init, beta .003, lr 3e-5, th_anchor 10; 1 x 16 CPU): SMOKE
+  PASS, league line `frozen 0.12/8` / `frozen 0.00/8` = the frozen CLXIII partner, resume check all True, freeze_heads ok.
+  (a) speed, the live config, u0000 (64 matches, the same jobs both runs, 33903 under its full cgroup quota):
+  2 producers x 32 matches x 3 Java threads on 10 CPUs: CPU forwards 1,686 s = 137 matches/h (forward 1,587 of 1,629 s
+  per producer: the in-process CPU forward IS the cost; decide_py 30 s, java 8 s); cuda:0 forwards (as launch_arm.sh)
+  80.9 s = 2,849 matches/h, 605 rows/s (per producer forward 44 s, decide_py 17 s, java 6-8 s of ~70 s), 0 skipped.
+  Production arm: 256 matches / update in roll 739-822 s + upd 24-30 s (u0011-u0013) = ~1,180 matches/h on 22 CPUs.
+  (b, projection, untested at that size): 256 matches / update at 2,849/h = ~325 s roll + ~28 s cuda learner = ~350
+  s / update (~2.3x faster than production's ~800 s) on 10 CPUs; more producers on the arm's 22 CPUs should scale until
+  the shared GPU forward / Python decide binds. The earlier "~6.5x" stays (b).
+  NOT done / open: the arm itself was NOT moved (lead's call; it runs production rl_royale on cb2's pipeline, and the
+  verified fast-loop code is origin/main's loop on origin/main's pipeline -- origin/main's producer needs
+  match_memory.opts, which cb2's pipeline may lack: (b) untested); follow-up coverage = 6 plans / 3 fired in 144 live
+  jobs (only rocket_tornado emits follow_ups; no `afford_ticks` / `require_first False` case occurs in production).
+  Restart (33903; trees /workspace/mfl/cbg = origin/main + this work, cb = origin/main + compare.py only):
+  laptop `bash scratchpad/gauntlet/L74/plan1026/pilot/loop/mfl/ship_mfl.sh /workspace/mfl/X.tar /workspace/mfl/cbX` builds a
+  tree; compare `CB=TREE CPUS=.. bash TREE/scratchpad/gauntlet/L74/plan1026/pilot/loop/mfl/cmp_mfl.sh MSG OUT [--skip-jobs K
+  --max-jobs N --runtime-here --fast-only]`; msgs /workspace/mfl/in/ (live144.msg.pkl, lint_m1_u0000.pkl, mflon_u000{0,1}.pkl),
+  /workspace/fliv/out/cmp_live{_b8,2_u5_48}.json.msg.pkl; smokes `CB=TREE bash .../mfl/smoke_live.sh RUN CPUS` (FL / RL / GPU / LD
+  env) and `CB=TREE bash .../mfl/smoke_mfl.sh RUN`; results /workspace/mfl/out/. Nothing of mine left running.
+- MEMFULL-LOOP (10-30, closed out at usage 97%): the fast-loop wiring is (history; superseded by FASTLOOP-FIX above)
   Code: CfTrain enableMemory(t, stride) / 7-arg setMem (per-seat eMax / snap, rows at memStride), producer mem_opts + per-layout
   Rows.memory views (the learner's 256 / snap beside a 128 opponent: the pilot's `init` opponent B0 stays 128 / off, so the
   checklist's "all memory policies share opts" rule would have blocked the pilot), serve.py --mem-full + spec_for per model
