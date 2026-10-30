@@ -40,7 +40,7 @@ OBSID = REPO / "scratchpad/gauntlet/L74/speed/crforge/obsid"
 SPEED = REPO / "scratchpad/gauntlet/L74/speed/crforge"
 CFCORE = REPO / "scratchpad/gauntlet/L74/crforge/facade/CfCore.java"
 JAVA_SRC = [CFCORE, SPEED / "CfSpeed.java"] + [OBSID / f for f in ("CfObsBind.java", "CfOppElixir.java", "CfIdent.java",
-                                                                  "CfCue.java", "CfTgt.java", "CfPubObj.java", "CfMem.java",
+                                                                  "CfCue.java", "CfPubObj.java", "CfMem.java",
                                                                   "CfAbil.java", "CfCtx.java")] + [HERE / "CfTrain.java"]
 # LOOP-IW CfAbil: glibc exp / pow through JDK 17's incubator FFI (byte-exact with production's numpy / math)
 JVM_FLAGS = ("--add-modules=jdk.incubator.foreign", "--enable-native-access=ALL-UNNAMED")
@@ -91,11 +91,6 @@ class Rows:
         self.mem_form = mk((int(C.E_MAX),), np.int64, C.OFF_FORM, (8,))
         self.mem_summary = mk((int(C.S_V2),), np.float32, C.OFF_SUM, (4,))
         self.mem_answer = mk((), np.int64, C.OFF_ANS, ())
-
-    def targets(self, L, n: int) -> None:
-        """TARGET-OBS: CfTrain.tgtB / tgtIdxB views (CfTrain.enableTargets: "tgt" [64, 8] float32, "tgt_idx" [64] int64)."""
-        self.tgt = np.frombuffer(memoryview(L.tgtB), np.float32).reshape(2 * n, 64, 8)
-        self.tgt_idx = np.frombuffer(memoryview(L.tgtIdxB), np.int64).reshape(2 * n, 64)
 
     def abilities(self, L, n: int) -> None:
         """CfTrain.abCmdB / abOptB views (CfTrain.enableAbilities: per row {n commands, n options, (button, cid, uid)
@@ -242,9 +237,6 @@ class Producer:
         # cue rows for every seat (a policy without a cue layer never reads them; the weights, hence cue_in, arrive later)
         self.jc = obs_id.JavaCue(main, E)
         L.cue = self.jc.T
-        self.tgt = bool(base.get("target_obs"))            # TARGET-OBS (rl_royale target_obs on): CfTgt rows, else none
-        if self.tgt:
-            L.enableTargets()
         self.ja = self.ahead = None
         self.ab_mode = 0                                     # the learner seat's CfTrain ability mode this run()
         if env.hero_abilities:                               # LOOP-IW CfAbil: tables from production code (ability_id)
@@ -259,8 +251,6 @@ class Producer:
                               bool(env._iw_never))
         L.start()
         self.v = Rows(L, self.n)
-        if self.tgt:
-            self.v.targets(L, self.n)
         if self.ja is not None:
             self.v.abilities(L, self.n)
         self.serial = 0
@@ -723,10 +713,6 @@ class Producer:
                      "effects": v.effects[idx], "own_ability": v.own_ability[idx], "opp_cycle": v.opp_cycle[idx]}
             if self.jc is not None:
                 batch["cue"] = v.cue[idx]
-            if getattr(model.model, "tgt_in", None) is not None:   # TARGET-OBS: Match.gen_row's sim_target_rows
-                if not self.tgt:
-                    raise RuntimeError("a model with target layers in a run without target_obs (CfTgt off)")
-                batch["tgt"], batch["tgt_idx"] = v.tgt[idx], v.tgt_idx[idx]
             if has_mem(model):                                # Match._memory's MEM_KEYS (CfMem)
                 from pipeline.match_memory import MEM_KEYS
                 for k in MEM_KEYS:
@@ -1107,9 +1093,6 @@ class Producer:
                 out[k] = st(k).astype(np.float32)
         if "cue" in rows:
             out["cue"] = st("cue").astype(np.float32)
-        if "tgt" in rows:                                    # TARGET-OBS: _traj_arrays' tgt / tgt_idx
-            out["tgt"] = st("tgt").astype(np.float32)
-            out["tgt_idx"] = st("tgt_idx").astype(np.int64)
         if s.cfg.get("record_tick"):
             out["tick"] = sc("tick", np.int64)
         if "gate_tau" in rows:

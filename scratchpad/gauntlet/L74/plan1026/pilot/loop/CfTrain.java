@@ -48,12 +48,6 @@ public final class CfTrain implements AutoCloseable {
   public final CfOppElixir.Keys keys = new CfOppElixir.Keys();
   public final CfPubObj.Tables pub = new CfPubObj.Tables();
   public CfCue.Tables cue;                                 // null = the policy has no cue layer
-  // TARGET-OBS (enableTargets; off = no CfTgt call, rows unchanged): per row CfTgt's "tgt" [64 * 8] floats at
-  // r * TGT and "tgt_idx" [64] longs at r * MAX_U, built in the cue stage right after CfCue (same tables, same state)
-  public static final int TGT = 64 * CfTgt.N;
-  public ByteBuffer tgtB, tgtIdxB;
-  FloatBuffer tgtF;
-  LongBuffer tgtIdx;
   public final HashMap<Integer, Integer> gid = new HashMap<>();
   // LOOP-MEM memory v2 (null = no memory model plays here): shared tables, one action Log per core, one CfMem per
   // memory seat per match (production: one MatchMemory per Match), rows at r * CfMem.BYTES in memB
@@ -257,12 +251,6 @@ public final class CfTrain implements AutoCloseable {
     for (int i = 0; i < n; i++) mlog[i] = new CfMem.Log(core[i], t);   // syncs itself on each new battle
     U.get(0).memT = t;
     U.get(0).mlog = mlog;
-  }
-
-  /** TARGET-OBS on (once, before the first step; needs the cue tables): rows get CfTgt's tgt / tgt_idx. */
-  public void enableTargets() {
-    tgtB = direct(2L * n * TGT * 4); tgtIdxB = direct(2L * n * MAX_U * 8);
-    tgtF = tgtB.asFloatBuffer(); tgtIdx = tgtIdxB.asLongBuffer();
   }
 
   /** Hero abilities on (once, before the first step): CfAbil per match on its facade; decisionTicks / liveIW / iwNever
@@ -586,10 +574,6 @@ public final class CfTrain implements AutoCloseable {
     if (st == 2) {
       if (cue != null && !CfCue.build(c, seat, cue, cueSeat[i][seat], tok, r * MAX_U * F, maskB, r * MAX_U, cueF, r * CUE)) {
         meta.put(b + 5, 2); misses.incrementAndGet(); return;
-      }
-      if (tgtF != null) {                                 // TARGET-OBS: Match.gen_row's sim_target_rows (after the cue)
-        if (cue == null) throw new IllegalStateException("target rows need the cue tables (CfTrain.cue)");
-        CfTgt.build(c, seat, cue, tok, r * MAX_U * F, maskB, r * MAX_U, tgtF, r * TGT, tgtIdx, r * MAX_U);
       }
       st = 3;
     }
