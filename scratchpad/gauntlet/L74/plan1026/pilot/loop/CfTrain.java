@@ -99,6 +99,17 @@ public final class CfTrain implements AutoCloseable {
   final boolean[][] jTim, nTim;
   final int[][] jExt, jU, nExt, nU, thSlot;
   final ArrayList<Univ> U = new ArrayList<>();
+  // FAST-LIVEOPP: 'live'-policy seats (decision_options rules: match_kwargs' context). LOOP-CTX's CfCtx.build on the seat's
+  // FacadeMatch right after its obs (stage 1), per row at r * CTX doubles: {n, then build()'s n doubles}; one CfCtx.Seat per
+  // ctx seat per match (production: the SelfPlaySide's princess-dead / tau-threat / record_hp / done_plays state); an
+  // accepted play -> Seat.played (Match._land's landing tick, slot, cell). null ctxT = off (no buffer, no build).
+  public static final int CTX = 8192;
+  public CfCtx.Tables ctxT;
+  public ByteBuffer ctxB;
+  DoubleBuffer ctxD;
+  CfCtx.Seat[][] ctxSeat;
+  boolean[][] jCtx;
+  static final ThreadLocal<DoubleBuffer> CTX_SCRATCH = ThreadLocal.withInitial(() -> direct(8L * 65536).asDoubleBuffer());
 
   /** One card-id table set: the detector keys, public-object tables, memory tables and each match's builders on them. */
   static final class Univ {
@@ -277,6 +288,30 @@ public final class CfTrain implements AutoCloseable {
     return o;
   }
 
+  /** FAST-LIVEOPP: the decide-rule context on (once, before the first step; cf_ctx.tables' Tables). */
+  public void enableCtx(CfCtx.Tables t) {
+    ctxT = t;
+    ctxB = direct(2L * n * CTX * 8);
+    ctxD = ctxB.asDoubleBuffer();
+    ctxSeat = new CfCtx.Seat[n][2]; jCtx = new boolean[n][2];
+  }
+
+  /** Which seats of match i's next job decide with the live rules (call after setJob). */
+  public void setCtx(int i, boolean c0, boolean c1) { jCtx[i][0] = c0; jCtx[i][1] = c1; }
+
+  /** CfCtx.build into a scratch buffer, then row r's slot: n >= 0, or -1 (a Tables key missing: nothing changed). */
+  int ctxRow(TrainMatch x, int i, int seat, int r) {
+    DoubleBuffer sb = CTX_SCRATCH.get();
+    int k = CfCtx.build(ctxT, names, x, seat, ctxSeat[i][seat], sb, 0);
+    if (k == -1) return -1;
+    if (k < 0) throw new IllegalStateException("CfCtx.build " + k + ": a body without a Names entry after the obs");
+    if (k + 1 > CTX) throw new IllegalStateException("CfCtx row of " + k + " doubles > CTX " + CTX);
+    int at = r * CTX;
+    ctxD.put(at, k);
+    for (int j = 0; j < k; j++) ctxD.put(at + 1 + j, sb.get(j));
+    return k;
+  }
+
   /** Which seats of match i's next job decide with a memory model (call after setJob). */
   public void setMem(int i, boolean m0, boolean m1) { jMem[i][0] = m0; jMem[i][1] = m1; }
 
@@ -317,6 +352,8 @@ public final class CfTrain implements AutoCloseable {
         if (jMem[i][s] && u.memT == null) throw new IllegalStateException("a memory seat in universe " + jU[i][s] + " without its tables");
         mem[i][s] = jMem[i][s] ? new CfMem(c, u.memT, u.mlog[i], s) : null;
       }
+    if (ctxT != null)                                     // production: a fresh SelfPlaySide (its rule state) per match
+      for (int s = 0; s < 2; s++) ctxSeat[i][s] = jCtx[i][s] ? new CfCtx.Seat() : null;
     if (ab != null) {                                     // RoyaleSelfPlayEnv.reset: _reset_abilities before the warm-up
       ab[i].reset(jAbSeed[i], "", abDecTicks, abLiveIW, abIwNever);   // tag "": a self-play env has no entry
       abLog[i].clear();
@@ -400,7 +437,7 @@ public final class CfTrain implements AutoCloseable {
   /** Match._land + RoyalePoolEnv._Core.act: the pending play enters the engine (or never: landed false). */
   void land(int i, int s, boolean landed) {
     CfCore c = core[i];
-    int slot = pendSlot[i][s];
+    int slot = pendSlot[i][s], landT = pendLand[i][s] >= 0 ? pendLand[i][s] : c.tick();   // Match._land's land
     pendLand[i][s] = -1;
     tally(i, s, 0);
     if (!landed) { tally(i, s, 2); return; }
@@ -414,6 +451,7 @@ public final class CfTrain implements AutoCloseable {
     int[] r = c.play(s, hs, pendX[i][s], pendY[i][s]);
     if (r[0] != 0) { tally(i, s, 4); return; }
     tally(i, s, 1);
+    if (ctxSeat != null && ctxSeat[i][s] != null) ctxSeat[i][s].played(ctxT, landT, slot, pendCell[i][s]);
     if (ab != null) {                                     // _Core.act v2: _last_play, ability_deployments; public_plays
       ab[i].played(s, cid, t, ENG);
       if (ab[i].heroIds[s].contains(cid)) abLog[i].add(new int[] {1, s, cid});
@@ -537,6 +575,9 @@ public final class CfTrain implements AutoCloseable {
       x.missed = false;
       x.obs(seat, names, tok, r * MAX_U * F, maskB, r * MAX_U, sc, r * S, formB, r * MAX_U);
       if (x.missed) { x.rewind(seat); meta.put(b + 5, 1); misses.incrementAndGet(); return; }
+      if (ctxSeat != null && ctxSeat[i][seat] != null && ctxRow(x, i, seat, r) < 0) {   // a CfCtx Tables miss: the obs
+        x.rewind(seat); meta.put(b + 5, 1); misses.incrementAndGet(); return;           // re-runs after the fill
+      }
       el.put(r, e);                                       // view.my_elixir (pre(): el_int = int of it)
       if (towers) towerRow(c, r);                         // Match.state at the prepare tick (un-extrapolated)
       meta.put(b + 4, c.tick() + h);                      // the view tick (t_sec = view tick * 0.05)
