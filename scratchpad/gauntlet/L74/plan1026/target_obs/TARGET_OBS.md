@@ -18,6 +18,16 @@ git-ignored `icebow/data/reader_targets/`. Tracked code consumes only the per-un
   stay 0 there; `test_zero_layers_get_gradients` shows all three get non-zero gradients from real rows.
 - 14:55 M2+M3 code COMMITTED (see git log "TARGET-OBS M2+M3"). Pod tree `/workspace/tobs/cb` kept (1.3 GB; delete when
   done). No process of mine runs on any pod.
+- **TARGET-VAL (M1c) 10-30 ~15:00 UTC, running.** Pod 33903 CPUs 238-249 (shared with the opponent arm's floating
+  workers, affinity 180-185,240-255: load ~80% there before start). (1) gate re-run on FRESH4/5/6, ASSIGN off (=
+  the byte-identity references), `/workspace/smeR/runs/tv_f{4,5,6}` via `/workspace/smeR/runs/tv_gate.sh` (log
+  `tv_gate.out`); (2) engine dump = SmeRun copy `SME_TGT=2` (`target_obs/patch_smerun.py`; raw ref + `CfCore.acquired`
+  verbatim + attacking + self flags; P rows owner + target), built at `/workspace/tval/build`; sim identical to the gate
+  build on 151109 (6,213 ticks, 0 differing ticks with the new fields stripped; only `CharacterEntity@hash` strings in
+  `ab` differ between ANY two builds, same class file too) (a); (3) reader rows = per-unit interface, made locally
+  (git-ignored converter), at `/workspace/tval/reader/`; (4) `target_obs/tval_score.py` via `target_obs/tv_env.sh`.
+  Restart: `cd /workspace/tval && bash tv_env.sh python3 tval_score.py /workspace/smeR/runs/tv_fN/results.jsonl
+  /workspace/smeR/runs/tv_fN /workspace/smeR/data/freshN/frames reader tv_fN.jsonl` (gate first if tv_fN missing).
 - NEXT (owner steps, not started): (1) M1c exact validation (recipe below; SME-REBUILD 18f614a now has rebuild scripts
   for the SME gate on 33903: `crforge/pilot/sme/recon/rebuild_gate.sh`); (2) live wiring in live_gen (lead approval);
   (3) CfTgt Java builder for the fast loop (spec in M2); (4) train with `target_obs: on` from B0 / CLXIII + SIM gate.
