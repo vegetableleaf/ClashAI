@@ -1,0 +1,4539 @@
+{
+ "ability": {
+  "matches_equal": 16,
+  "matches": 16,
+  "prod": {
+   "ab_sampled": 1744,
+   "ab_press": 32,
+   "ab_cand": 0,
+   "presses_side": [
+    36,
+    33
+   ]
+  },
+  "fast": {
+   "ab_sampled": 1744,
+   "ab_press": 32,
+   "ab_cand": 0,
+   "presses_side": [
+    36,
+    33
+   ]
+  }
+ },
+ "heroiw_press": "live",
+ "sides": [
+  {
+   "tag": "sp0001_00#0",
+   "decisions": [
+    347,
+    0
+   ],
+   "identical": false,
+   "at": 0,
+   "prod": {
+    "tick": 90,
+    "play": false,
+    "slot": -1,
+    "cell": -1,
+    "p": 0.04786317050457001,
+    "why": "wait",
+    "lp": [
+     -5.0289106213895435e-11,
+     0.0,
+     0.0
+    ],
+    "h": {
+     "cue": "9dbf8af7",
+     "deck_card": "f4e2d57b",
+     "deck_form": "a9a0a4da",
+     "effects": "025a14a1",
+     "hand_card": "205b5331",
+     "hand_form": "367267fd",
+     "hand_slot": "9716ebc7",
+     "mask": "c8d7d0ef",
+     "mem_answer": "05fe4057",
+     "mem_card": "60cacbf3",
+     "mem_ev": "a34c9e7c",
+     "mem_form": "5ffe2dbd",
+     "mem_mask": "0ae4f711",
+     "mem_summary": "a66329ce",
+     "next_card": "5bf604df",
+     "next_form": "05fe4057",
+     "opp_cycle": "fc0929af",
+     "opp_past": "f5568d77",
+     "own_ability": "c3b3795c",
+     "past": "f5568d77",
+     "projectiles": "605db3fd",
+     "sc": "504ef34c",
+     "slot_card": "ae735896",
+     "slot_form": "32bd27ed",
+     "tok": "d37c2b39",
+     "unit_form": "c8d7d0ef"
+    },
+    "opp_past": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ]
+    ],
+    "opp_cycle": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ]
+    ]
+   },
+   "fast": null,
+   "prev_prod": null
+  },
+  {
+   "tag": "sp0001_00#1",
+   "decisions": [
+    277,
+    0
+   ],
+   "identical": false,
+   "at": 0,
+   "prod": {
+    "tick": 90,
+    "play": false,
+    "slot": -1,
+    "cell": -1,
+    "p": 0.04786317050457001,
+    "why": "wait",
+    "lp": [
+     -5.0289106213895435e-11,
+     0.0,
+     0.0
+    ],
+    "h": {
+     "cue": "9dbf8af7",
+     "deck_card": "f4e2d57b",
+     "deck_form": "a9a0a4da",
+     "effects": "025a14a1",
+     "hand_card": "205b5331",
+     "hand_form": "367267fd",
+     "hand_slot": "9716ebc7",
+     "mask": "c8d7d0ef",
+     "mem_answer": "05fe4057",
+     "mem_card": "60cacbf3",
+     "mem_ev": "a34c9e7c",
+     "mem_form": "5ffe2dbd",
+     "mem_mask": "0ae4f711",
+     "mem_summary": "a66329ce",
+     "next_card": "5bf604df",
+     "next_form": "05fe4057",
+     "opp_cycle": "fc0929af",
+     "opp_past": "f5568d77",
+     "own_ability": "c3b3795c",
+     "past": "f5568d77",
+     "projectiles": "605db3fd",
+     "sc": "504ef34c",
+     "slot_card": "ae735896",
+     "slot_form": "32bd27ed",
+     "tok": "d37c2b39",
+     "unit_form": "c8d7d0ef"
+    },
+    "opp_past": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ]
+    ],
+    "opp_cycle": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ]
+    ]
+   },
+   "fast": null,
+   "prev_prod": null
+  },
+  {
+   "tag": "sp0001_00#2",
+   "decisions": [
+    460,
+    0
+   ],
+   "identical": false,
+   "at": 0,
+   "prod": {
+    "tick": 90,
+    "play": false,
+    "slot": -1,
+    "cell": -1,
+    "p": 0.04786317050457001,
+    "why": "wait",
+    "lp": [
+     -5.0289106213895435e-11,
+     0.0,
+     0.0
+    ],
+    "h": {
+     "cue": "9dbf8af7",
+     "deck_card": "f4e2d57b",
+     "deck_form": "a9a0a4da",
+     "effects": "025a14a1",
+     "hand_card": "205b5331",
+     "hand_form": "367267fd",
+     "hand_slot": "9716ebc7",
+     "mask": "c8d7d0ef",
+     "mem_answer": "05fe4057",
+     "mem_card": "60cacbf3",
+     "mem_ev": "a34c9e7c",
+     "mem_form": "5ffe2dbd",
+     "mem_mask": "0ae4f711",
+     "mem_summary": "a66329ce",
+     "next_card": "5bf604df",
+     "next_form": "05fe4057",
+     "opp_cycle": "fc0929af",
+     "opp_past": "f5568d77",
+     "own_ability": "c3b3795c",
+     "past": "f5568d77",
+     "projectiles": "605db3fd",
+     "sc": "504ef34c",
+     "slot_card": "ae735896",
+     "slot_form": "32bd27ed",
+     "tok": "d37c2b39",
+     "unit_form": "c8d7d0ef"
+    },
+    "opp_past": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ]
+    ],
+    "opp_cycle": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ]
+    ]
+   },
+   "fast": null,
+   "prev_prod": null
+  },
+  {
+   "tag": "sp0001_00#3",
+   "decisions": [
+    287,
+    0
+   ],
+   "identical": false,
+   "at": 0,
+   "prod": {
+    "tick": 90,
+    "play": false,
+    "slot": -1,
+    "cell": -1,
+    "p": 0.04786317050457001,
+    "why": "wait",
+    "lp": [
+     -5.0289106213895435e-11,
+     0.0,
+     0.0
+    ],
+    "h": {
+     "cue": "9dbf8af7",
+     "deck_card": "f4e2d57b",
+     "deck_form": "a9a0a4da",
+     "effects": "025a14a1",
+     "hand_card": "205b5331",
+     "hand_form": "367267fd",
+     "hand_slot": "9716ebc7",
+     "mask": "c8d7d0ef",
+     "mem_answer": "05fe4057",
+     "mem_card": "60cacbf3",
+     "mem_ev": "a34c9e7c",
+     "mem_form": "5ffe2dbd",
+     "mem_mask": "0ae4f711",
+     "mem_summary": "a66329ce",
+     "next_card": "5bf604df",
+     "next_form": "05fe4057",
+     "opp_cycle": "fc0929af",
+     "opp_past": "f5568d77",
+     "own_ability": "c3b3795c",
+     "past": "f5568d77",
+     "projectiles": "605db3fd",
+     "sc": "504ef34c",
+     "slot_card": "ae735896",
+     "slot_form": "32bd27ed",
+     "tok": "d37c2b39",
+     "unit_form": "c8d7d0ef"
+    },
+    "opp_past": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ]
+    ],
+    "opp_cycle": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ]
+    ]
+   },
+   "fast": null,
+   "prev_prod": null
+  },
+  {
+   "tag": "sp0001_00:opp#1",
+   "decisions": [
+    272,
+    0
+   ],
+   "identical": false,
+   "at": 0,
+   "prod": {
+    "tick": 90,
+    "play": false,
+    "slot": -1,
+    "cell": -1,
+    "p": 0.004030501935631037,
+    "why": "wait",
+    "lp": [
+     -5.648128368375599e-05,
+     0.0,
+     0.0
+    ],
+    "h": {
+     "deck_card": "02ff645e",
+     "deck_form": "79e407bf",
+     "effects": "025a14a1",
+     "hand_card": "2bab6a07",
+     "hand_form": "82d6f21e",
+     "hand_slot": "0795c828",
+     "mask": "c8d7d0ef",
+     "next_card": "6a9e3a33",
+     "next_form": "05fe4057",
+     "opp_cycle": "fc0929af",
+     "opp_past": "f5568d77",
+     "own_ability": "c3b3795c",
+     "past": "f5568d77",
+     "projectiles": "605db3fd",
+     "sc": "504ef34c",
+     "slot_card": "bf1b3c0d",
+     "slot_form": "f56b17ef",
+     "tok": "d37c2b39",
+     "unit_form": "c8d7d0ef"
+    },
+    "opp_past": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ]
+    ],
+    "opp_cycle": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ]
+    ]
+   },
+   "fast": null,
+   "prev_prod": null
+  },
+  {
+   "tag": "sp0001_00:opp#3",
+   "decisions": [
+    271,
+    0
+   ],
+   "identical": false,
+   "at": 0,
+   "prod": {
+    "tick": 90,
+    "play": false,
+    "slot": -1,
+    "cell": -1,
+    "p": 0.004030501935631037,
+    "why": "wait",
+    "lp": [
+     -5.648128368375599e-05,
+     0.0,
+     0.0
+    ],
+    "h": {
+     "deck_card": "02ff645e",
+     "deck_form": "79e407bf",
+     "effects": "025a14a1",
+     "hand_card": "2bab6a07",
+     "hand_form": "82d6f21e",
+     "hand_slot": "0795c828",
+     "mask": "c8d7d0ef",
+     "next_card": "6a9e3a33",
+     "next_form": "05fe4057",
+     "opp_cycle": "fc0929af",
+     "opp_past": "f5568d77",
+     "own_ability": "c3b3795c",
+     "past": "f5568d77",
+     "projectiles": "605db3fd",
+     "sc": "504ef34c",
+     "slot_card": "bf1b3c0d",
+     "slot_form": "f56b17ef",
+     "tok": "d37c2b39",
+     "unit_form": "c8d7d0ef"
+    },
+    "opp_past": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ]
+    ],
+    "opp_cycle": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ]
+    ]
+   },
+   "fast": null,
+   "prev_prod": null
+  },
+  {
+   "tag": "sp0001_01#0",
+   "decisions": [
+    415,
+    0
+   ],
+   "identical": false,
+   "at": 0,
+   "prod": {
+    "tick": 90,
+    "play": false,
+    "slot": -1,
+    "cell": -1,
+    "p": 0.058744169771671295,
+    "why": "wait",
+    "lp": [
+     -4.375463325947626e-10,
+     0.0,
+     0.0
+    ],
+    "h": {
+     "cue": "9dbf8af7",
+     "deck_card": "f4e2d57b",
+     "deck_form": "a9a0a4da",
+     "effects": "025a14a1",
+     "hand_card": "70ee0b31",
+     "hand_form": "8ec1d2d9",
+     "hand_slot": "fb2ef89d",
+     "mask": "c8d7d0ef",
+     "mem_answer": "05fe4057",
+     "mem_card": "60cacbf3",
+     "mem_ev": "a34c9e7c",
+     "mem_form": "5ffe2dbd",
+     "mem_mask": "0ae4f711",
+     "mem_summary": "a66329ce",
+     "next_card": "9eaf45b7",
+     "next_form": "b0aa4b54",
+     "opp_cycle": "fc0929af",
+     "opp_past": "f5568d77",
+     "own_ability": "c3b3795c",
+     "past": "f5568d77",
+     "projectiles": "605db3fd",
+     "sc": "504ef34c",
+     "slot_card": "ae735896",
+     "slot_form": "32bd27ed",
+     "tok": "d37c2b39",
+     "unit_form": "c8d7d0ef"
+    },
+    "opp_past": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ]
+    ],
+    "opp_cycle": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ]
+    ]
+   },
+   "fast": null,
+   "prev_prod": null
+  },
+  {
+   "tag": "sp0001_01#1",
+   "decisions": [
+    470,
+    0
+   ],
+   "identical": false,
+   "at": 0,
+   "prod": {
+    "tick": 90,
+    "play": false,
+    "slot": -1,
+    "cell": -1,
+    "p": 0.058744169771671295,
+    "why": "wait",
+    "lp": [
+     -4.375463325947626e-10,
+     0.0,
+     0.0
+    ],
+    "h": {
+     "cue": "9dbf8af7",
+     "deck_card": "f4e2d57b",
+     "deck_form": "a9a0a4da",
+     "effects": "025a14a1",
+     "hand_card": "70ee0b31",
+     "hand_form": "8ec1d2d9",
+     "hand_slot": "fb2ef89d",
+     "mask": "c8d7d0ef",
+     "mem_answer": "05fe4057",
+     "mem_card": "60cacbf3",
+     "mem_ev": "a34c9e7c",
+     "mem_form": "5ffe2dbd",
+     "mem_mask": "0ae4f711",
+     "mem_summary": "a66329ce",
+     "next_card": "9eaf45b7",
+     "next_form": "b0aa4b54",
+     "opp_cycle": "fc0929af",
+     "opp_past": "f5568d77",
+     "own_ability": "c3b3795c",
+     "past": "f5568d77",
+     "projectiles": "605db3fd",
+     "sc": "504ef34c",
+     "slot_card": "ae735896",
+     "slot_form": "32bd27ed",
+     "tok": "d37c2b39",
+     "unit_form": "c8d7d0ef"
+    },
+    "opp_past": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ]
+    ],
+    "opp_cycle": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ]
+    ]
+   },
+   "fast": null,
+   "prev_prod": null
+  },
+  {
+   "tag": "sp0001_01#2",
+   "decisions": [
+    285,
+    0
+   ],
+   "identical": false,
+   "at": 0,
+   "prod": {
+    "tick": 90,
+    "play": false,
+    "slot": -1,
+    "cell": -1,
+    "p": 0.058744169771671295,
+    "why": "wait",
+    "lp": [
+     -4.375463325947626e-10,
+     0.0,
+     0.0
+    ],
+    "h": {
+     "cue": "9dbf8af7",
+     "deck_card": "f4e2d57b",
+     "deck_form": "a9a0a4da",
+     "effects": "025a14a1",
+     "hand_card": "70ee0b31",
+     "hand_form": "8ec1d2d9",
+     "hand_slot": "fb2ef89d",
+     "mask": "c8d7d0ef",
+     "mem_answer": "05fe4057",
+     "mem_card": "60cacbf3",
+     "mem_ev": "a34c9e7c",
+     "mem_form": "5ffe2dbd",
+     "mem_mask": "0ae4f711",
+     "mem_summary": "a66329ce",
+     "next_card": "9eaf45b7",
+     "next_form": "b0aa4b54",
+     "opp_cycle": "fc0929af",
+     "opp_past": "f5568d77",
+     "own_ability": "c3b3795c",
+     "past": "f5568d77",
+     "projectiles": "605db3fd",
+     "sc": "504ef34c",
+     "slot_card": "ae735896",
+     "slot_form": "32bd27ed",
+     "tok": "d37c2b39",
+     "unit_form": "c8d7d0ef"
+    },
+    "opp_past": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ]
+    ],
+    "opp_cycle": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ]
+    ]
+   },
+   "fast": null,
+   "prev_prod": null
+  },
+  {
+   "tag": "sp0001_01#3",
+   "decisions": [
+    356,
+    0
+   ],
+   "identical": false,
+   "at": 0,
+   "prod": {
+    "tick": 90,
+    "play": false,
+    "slot": -1,
+    "cell": -1,
+    "p": 0.058744169771671295,
+    "why": "wait",
+    "lp": [
+     -4.375463325947626e-10,
+     0.0,
+     0.0
+    ],
+    "h": {
+     "cue": "9dbf8af7",
+     "deck_card": "f4e2d57b",
+     "deck_form": "a9a0a4da",
+     "effects": "025a14a1",
+     "hand_card": "70ee0b31",
+     "hand_form": "8ec1d2d9",
+     "hand_slot": "fb2ef89d",
+     "mask": "c8d7d0ef",
+     "mem_answer": "05fe4057",
+     "mem_card": "60cacbf3",
+     "mem_ev": "a34c9e7c",
+     "mem_form": "5ffe2dbd",
+     "mem_mask": "0ae4f711",
+     "mem_summary": "a66329ce",
+     "next_card": "9eaf45b7",
+     "next_form": "b0aa4b54",
+     "opp_cycle": "fc0929af",
+     "opp_past": "f5568d77",
+     "own_ability": "c3b3795c",
+     "past": "f5568d77",
+     "projectiles": "605db3fd",
+     "sc": "504ef34c",
+     "slot_card": "ae735896",
+     "slot_form": "32bd27ed",
+     "tok": "d37c2b39",
+     "unit_form": "c8d7d0ef"
+    },
+    "opp_past": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ]
+    ],
+    "opp_cycle": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ]
+    ]
+   },
+   "fast": null,
+   "prev_prod": null
+  },
+  {
+   "tag": "sp0001_01:opp#1",
+   "decisions": [
+    470,
+    0
+   ],
+   "identical": false,
+   "at": 0,
+   "prod": {
+    "tick": 90,
+    "play": false,
+    "slot": -1,
+    "cell": -1,
+    "p": 0.02599700540304184,
+    "why": "wait",
+    "lp": [
+     -0.0024540511585763253,
+     0.0,
+     0.0
+    ],
+    "h": {
+     "deck_card": "a2ab30f2",
+     "deck_form": "42f23e2b",
+     "effects": "025a14a1",
+     "hand_card": "dc9e3958",
+     "hand_form": "8ec1d2d9",
+     "hand_slot": "10ccadd5",
+     "mask": "c8d7d0ef",
+     "next_card": "e6af79b1",
+     "next_form": "05fe4057",
+     "opp_cycle": "fc0929af",
+     "opp_past": "f5568d77",
+     "own_ability": "c3b3795c",
+     "past": "f5568d77",
+     "projectiles": "605db3fd",
+     "sc": "504ef34c",
+     "slot_card": "058002f2",
+     "slot_form": "bb206d1a",
+     "tok": "d37c2b39",
+     "unit_form": "c8d7d0ef"
+    },
+    "opp_past": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ]
+    ],
+    "opp_cycle": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ]
+    ]
+   },
+   "fast": null,
+   "prev_prod": null
+  },
+  {
+   "tag": "sp0001_01:opp#3",
+   "decisions": [
+    336,
+    0
+   ],
+   "identical": false,
+   "at": 0,
+   "prod": {
+    "tick": 90,
+    "play": false,
+    "slot": -1,
+    "cell": -1,
+    "p": 0.02599700540304184,
+    "why": "wait",
+    "lp": [
+     -0.0024540511585763253,
+     0.0,
+     0.0
+    ],
+    "h": {
+     "deck_card": "a2ab30f2",
+     "deck_form": "42f23e2b",
+     "effects": "025a14a1",
+     "hand_card": "dc9e3958",
+     "hand_form": "8ec1d2d9",
+     "hand_slot": "10ccadd5",
+     "mask": "c8d7d0ef",
+     "next_card": "e6af79b1",
+     "next_form": "05fe4057",
+     "opp_cycle": "fc0929af",
+     "opp_past": "f5568d77",
+     "own_ability": "c3b3795c",
+     "past": "f5568d77",
+     "projectiles": "605db3fd",
+     "sc": "504ef34c",
+     "slot_card": "058002f2",
+     "slot_form": "bb206d1a",
+     "tok": "d37c2b39",
+     "unit_form": "c8d7d0ef"
+    },
+    "opp_past": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ]
+    ],
+    "opp_cycle": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ]
+    ]
+   },
+   "fast": null,
+   "prev_prod": null
+  },
+  {
+   "tag": "sp0001_02#0",
+   "decisions": [
+    329,
+    0
+   ],
+   "identical": false,
+   "at": 0,
+   "prod": {
+    "tick": 90,
+    "play": false,
+    "slot": -1,
+    "cell": -1,
+    "p": 0.09184685349464417,
+    "why": "wait",
+    "lp": [
+     -5.463926027685259e-08,
+     0.0,
+     0.0
+    ],
+    "h": {
+     "cue": "9dbf8af7",
+     "deck_card": "f4e2d57b",
+     "deck_form": "a9a0a4da",
+     "effects": "025a14a1",
+     "hand_card": "43593c40",
+     "hand_form": "de8a847b",
+     "hand_slot": "859378c1",
+     "mask": "c8d7d0ef",
+     "mem_answer": "05fe4057",
+     "mem_card": "60cacbf3",
+     "mem_ev": "a34c9e7c",
+     "mem_form": "5ffe2dbd",
+     "mem_mask": "0ae4f711",
+     "mem_summary": "a66329ce",
+     "next_card": "fb105ed2",
+     "next_form": "3da89ee2",
+     "opp_cycle": "fc0929af",
+     "opp_past": "f5568d77",
+     "own_ability": "c3b3795c",
+     "past": "f5568d77",
+     "projectiles": "605db3fd",
+     "sc": "504ef34c",
+     "slot_card": "ae735896",
+     "slot_form": "32bd27ed",
+     "tok": "d37c2b39",
+     "unit_form": "c8d7d0ef"
+    },
+    "opp_past": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ]
+    ],
+    "opp_cycle": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ]
+    ]
+   },
+   "fast": null,
+   "prev_prod": null
+  },
+  {
+   "tag": "sp0001_02#1",
+   "decisions": [
+    296,
+    0
+   ],
+   "identical": false,
+   "at": 0,
+   "prod": {
+    "tick": 90,
+    "play": false,
+    "slot": -1,
+    "cell": -1,
+    "p": 0.09184691309928894,
+    "why": "wait",
+    "lp": [
+     -5.463965107537861e-08,
+     0.0,
+     0.0
+    ],
+    "h": {
+     "cue": "9dbf8af7",
+     "deck_card": "f4e2d57b",
+     "deck_form": "a9a0a4da",
+     "effects": "025a14a1",
+     "hand_card": "43593c40",
+     "hand_form": "de8a847b",
+     "hand_slot": "859378c1",
+     "mask": "c8d7d0ef",
+     "mem_answer": "05fe4057",
+     "mem_card": "60cacbf3",
+     "mem_ev": "a34c9e7c",
+     "mem_form": "5ffe2dbd",
+     "mem_mask": "0ae4f711",
+     "mem_summary": "a66329ce",
+     "next_card": "fb105ed2",
+     "next_form": "3da89ee2",
+     "opp_cycle": "fc0929af",
+     "opp_past": "f5568d77",
+     "own_ability": "c3b3795c",
+     "past": "f5568d77",
+     "projectiles": "605db3fd",
+     "sc": "504ef34c",
+     "slot_card": "ae735896",
+     "slot_form": "32bd27ed",
+     "tok": "d37c2b39",
+     "unit_form": "c8d7d0ef"
+    },
+    "opp_past": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ]
+    ],
+    "opp_cycle": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ]
+    ]
+   },
+   "fast": null,
+   "prev_prod": null
+  },
+  {
+   "tag": "sp0001_02#2",
+   "decisions": [
+    400,
+    0
+   ],
+   "identical": false,
+   "at": 0,
+   "prod": {
+    "tick": 90,
+    "play": false,
+    "slot": -1,
+    "cell": -1,
+    "p": 0.09184686839580536,
+    "why": "wait",
+    "lp": [
+     -5.46393906170428e-08,
+     0.0,
+     0.0
+    ],
+    "h": {
+     "cue": "9dbf8af7",
+     "deck_card": "f4e2d57b",
+     "deck_form": "a9a0a4da",
+     "effects": "025a14a1",
+     "hand_card": "43593c40",
+     "hand_form": "de8a847b",
+     "hand_slot": "859378c1",
+     "mask": "c8d7d0ef",
+     "mem_answer": "05fe4057",
+     "mem_card": "60cacbf3",
+     "mem_ev": "a34c9e7c",
+     "mem_form": "5ffe2dbd",
+     "mem_mask": "0ae4f711",
+     "mem_summary": "a66329ce",
+     "next_card": "fb105ed2",
+     "next_form": "3da89ee2",
+     "opp_cycle": "fc0929af",
+     "opp_past": "f5568d77",
+     "own_ability": "c3b3795c",
+     "past": "f5568d77",
+     "projectiles": "605db3fd",
+     "sc": "504ef34c",
+     "slot_card": "ae735896",
+     "slot_form": "32bd27ed",
+     "tok": "d37c2b39",
+     "unit_form": "c8d7d0ef"
+    },
+    "opp_past": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ]
+    ],
+    "opp_cycle": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ]
+    ]
+   },
+   "fast": null,
+   "prev_prod": null
+  },
+  {
+   "tag": "sp0001_02#3",
+   "decisions": [
+    340,
+    0
+   ],
+   "identical": false,
+   "at": 0,
+   "prod": {
+    "tick": 90,
+    "play": false,
+    "slot": -1,
+    "cell": -1,
+    "p": 0.09184686839580536,
+    "why": "wait",
+    "lp": [
+     -5.46393906170428e-08,
+     0.0,
+     0.0
+    ],
+    "h": {
+     "cue": "9dbf8af7",
+     "deck_card": "f4e2d57b",
+     "deck_form": "a9a0a4da",
+     "effects": "025a14a1",
+     "hand_card": "43593c40",
+     "hand_form": "de8a847b",
+     "hand_slot": "859378c1",
+     "mask": "c8d7d0ef",
+     "mem_answer": "05fe4057",
+     "mem_card": "60cacbf3",
+     "mem_ev": "a34c9e7c",
+     "mem_form": "5ffe2dbd",
+     "mem_mask": "0ae4f711",
+     "mem_summary": "a66329ce",
+     "next_card": "fb105ed2",
+     "next_form": "3da89ee2",
+     "opp_cycle": "fc0929af",
+     "opp_past": "f5568d77",
+     "own_ability": "c3b3795c",
+     "past": "f5568d77",
+     "projectiles": "605db3fd",
+     "sc": "504ef34c",
+     "slot_card": "ae735896",
+     "slot_form": "32bd27ed",
+     "tok": "d37c2b39",
+     "unit_form": "c8d7d0ef"
+    },
+    "opp_past": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ]
+    ],
+    "opp_cycle": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ]
+    ]
+   },
+   "fast": null,
+   "prev_prod": null
+  },
+  {
+   "tag": "sp0001_02:opp#1",
+   "decisions": [
+    300,
+    0
+   ],
+   "identical": false,
+   "at": 0,
+   "prod": {
+    "tick": 90,
+    "play": false,
+    "slot": -1,
+    "cell": -1,
+    "p": 0.00104665441904217,
+    "why": "wait",
+    "lp": [
+     -3.7862215457487085e-06,
+     0.0,
+     0.0
+    ],
+    "h": {
+     "deck_card": "feb17fa7",
+     "deck_form": "e7dd7bd9",
+     "effects": "025a14a1",
+     "hand_card": "6aa041ee",
+     "hand_form": "de8a847b",
+     "hand_slot": "1662d352",
+     "mask": "c8d7d0ef",
+     "next_card": "9beb1383",
+     "next_form": "3da89ee2",
+     "opp_cycle": "fc0929af",
+     "opp_past": "f5568d77",
+     "own_ability": "c3b3795c",
+     "past": "f5568d77",
+     "projectiles": "605db3fd",
+     "sc": "504ef34c",
+     "slot_card": "1b5ea383",
+     "slot_form": "83ce7648",
+     "tok": "d37c2b39",
+     "unit_form": "c8d7d0ef"
+    },
+    "opp_past": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ]
+    ],
+    "opp_cycle": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ]
+    ]
+   },
+   "fast": null,
+   "prev_prod": null
+  },
+  {
+   "tag": "sp0001_02:opp#3",
+   "decisions": [
+    335,
+    0
+   ],
+   "identical": false,
+   "at": 0,
+   "prod": {
+    "tick": 90,
+    "play": false,
+    "slot": -1,
+    "cell": -1,
+    "p": 0.0010466548847034574,
+    "why": "wait",
+    "lp": [
+     -3.7862251565407226e-06,
+     0.0,
+     0.0
+    ],
+    "h": {
+     "deck_card": "feb17fa7",
+     "deck_form": "e7dd7bd9",
+     "effects": "025a14a1",
+     "hand_card": "6aa041ee",
+     "hand_form": "de8a847b",
+     "hand_slot": "1662d352",
+     "mask": "c8d7d0ef",
+     "next_card": "9beb1383",
+     "next_form": "3da89ee2",
+     "opp_cycle": "fc0929af",
+     "opp_past": "f5568d77",
+     "own_ability": "c3b3795c",
+     "past": "f5568d77",
+     "projectiles": "605db3fd",
+     "sc": "504ef34c",
+     "slot_card": "1b5ea383",
+     "slot_form": "83ce7648",
+     "tok": "d37c2b39",
+     "unit_form": "c8d7d0ef"
+    },
+    "opp_past": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ]
+    ],
+    "opp_cycle": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ]
+    ]
+   },
+   "fast": null,
+   "prev_prod": null
+  },
+  {
+   "tag": "sp0001_03#0",
+   "decisions": [
+    324,
+    0
+   ],
+   "identical": false,
+   "at": 0,
+   "prod": {
+    "tick": 90,
+    "play": false,
+    "slot": -1,
+    "cell": -1,
+    "p": 0.043654344975948334,
+    "why": "wait",
+    "lp": [
+     -1.91681115426395e-11,
+     0.0,
+     0.0
+    ],
+    "h": {
+     "cue": "9dbf8af7",
+     "deck_card": "f4e2d57b",
+     "deck_form": "a9a0a4da",
+     "effects": "025a14a1",
+     "hand_card": "c27a6d51",
+     "hand_form": "be2229a0",
+     "hand_slot": "4b0d2d60",
+     "mask": "c8d7d0ef",
+     "mem_answer": "05fe4057",
+     "mem_card": "60cacbf3",
+     "mem_ev": "a34c9e7c",
+     "mem_form": "5ffe2dbd",
+     "mem_mask": "0ae4f711",
+     "mem_summary": "a66329ce",
+     "next_card": "78c5b76d",
+     "next_form": "3da89ee2",
+     "opp_cycle": "fc0929af",
+     "opp_past": "f5568d77",
+     "own_ability": "c3b3795c",
+     "past": "f5568d77",
+     "projectiles": "605db3fd",
+     "sc": "504ef34c",
+     "slot_card": "ae735896",
+     "slot_form": "32bd27ed",
+     "tok": "d37c2b39",
+     "unit_form": "c8d7d0ef"
+    },
+    "opp_past": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ]
+    ],
+    "opp_cycle": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ]
+    ]
+   },
+   "fast": null,
+   "prev_prod": null
+  },
+  {
+   "tag": "sp0001_03#1",
+   "decisions": [
+    280,
+    0
+   ],
+   "identical": false,
+   "at": 0,
+   "prod": {
+    "tick": 90,
+    "play": false,
+    "slot": -1,
+    "cell": -1,
+    "p": 0.043654344975948334,
+    "why": "wait",
+    "lp": [
+     -1.91681115426395e-11,
+     0.0,
+     0.0
+    ],
+    "h": {
+     "cue": "9dbf8af7",
+     "deck_card": "f4e2d57b",
+     "deck_form": "a9a0a4da",
+     "effects": "025a14a1",
+     "hand_card": "c27a6d51",
+     "hand_form": "be2229a0",
+     "hand_slot": "4b0d2d60",
+     "mask": "c8d7d0ef",
+     "mem_answer": "05fe4057",
+     "mem_card": "60cacbf3",
+     "mem_ev": "a34c9e7c",
+     "mem_form": "5ffe2dbd",
+     "mem_mask": "0ae4f711",
+     "mem_summary": "a66329ce",
+     "next_card": "78c5b76d",
+     "next_form": "3da89ee2",
+     "opp_cycle": "fc0929af",
+     "opp_past": "f5568d77",
+     "own_ability": "c3b3795c",
+     "past": "f5568d77",
+     "projectiles": "605db3fd",
+     "sc": "504ef34c",
+     "slot_card": "ae735896",
+     "slot_form": "32bd27ed",
+     "tok": "d37c2b39",
+     "unit_form": "c8d7d0ef"
+    },
+    "opp_past": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ]
+    ],
+    "opp_cycle": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ]
+    ]
+   },
+   "fast": null,
+   "prev_prod": null
+  },
+  {
+   "tag": "sp0001_03#2",
+   "decisions": [
+    294,
+    0
+   ],
+   "identical": false,
+   "at": 0,
+   "prod": {
+    "tick": 90,
+    "play": false,
+    "slot": -1,
+    "cell": -1,
+    "p": 0.043654344975948334,
+    "why": "wait",
+    "lp": [
+     -1.91681115426395e-11,
+     0.0,
+     0.0
+    ],
+    "h": {
+     "cue": "9dbf8af7",
+     "deck_card": "f4e2d57b",
+     "deck_form": "a9a0a4da",
+     "effects": "025a14a1",
+     "hand_card": "c27a6d51",
+     "hand_form": "be2229a0",
+     "hand_slot": "4b0d2d60",
+     "mask": "c8d7d0ef",
+     "mem_answer": "05fe4057",
+     "mem_card": "60cacbf3",
+     "mem_ev": "a34c9e7c",
+     "mem_form": "5ffe2dbd",
+     "mem_mask": "0ae4f711",
+     "mem_summary": "a66329ce",
+     "next_card": "78c5b76d",
+     "next_form": "3da89ee2",
+     "opp_cycle": "fc0929af",
+     "opp_past": "f5568d77",
+     "own_ability": "c3b3795c",
+     "past": "f5568d77",
+     "projectiles": "605db3fd",
+     "sc": "504ef34c",
+     "slot_card": "ae735896",
+     "slot_form": "32bd27ed",
+     "tok": "d37c2b39",
+     "unit_form": "c8d7d0ef"
+    },
+    "opp_past": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ]
+    ],
+    "opp_cycle": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ]
+    ]
+   },
+   "fast": null,
+   "prev_prod": null
+  },
+  {
+   "tag": "sp0001_03#3",
+   "decisions": [
+    294,
+    0
+   ],
+   "identical": false,
+   "at": 0,
+   "prod": {
+    "tick": 90,
+    "play": false,
+    "slot": -1,
+    "cell": -1,
+    "p": 0.04365437477827072,
+    "why": "wait",
+    "lp": [
+     -1.9168222564941964e-11,
+     0.0,
+     0.0
+    ],
+    "h": {
+     "cue": "9dbf8af7",
+     "deck_card": "f4e2d57b",
+     "deck_form": "a9a0a4da",
+     "effects": "025a14a1",
+     "hand_card": "c27a6d51",
+     "hand_form": "be2229a0",
+     "hand_slot": "4b0d2d60",
+     "mask": "c8d7d0ef",
+     "mem_answer": "05fe4057",
+     "mem_card": "60cacbf3",
+     "mem_ev": "a34c9e7c",
+     "mem_form": "5ffe2dbd",
+     "mem_mask": "0ae4f711",
+     "mem_summary": "a66329ce",
+     "next_card": "78c5b76d",
+     "next_form": "3da89ee2",
+     "opp_cycle": "fc0929af",
+     "opp_past": "f5568d77",
+     "own_ability": "c3b3795c",
+     "past": "f5568d77",
+     "projectiles": "605db3fd",
+     "sc": "504ef34c",
+     "slot_card": "ae735896",
+     "slot_form": "32bd27ed",
+     "tok": "d37c2b39",
+     "unit_form": "c8d7d0ef"
+    },
+    "opp_past": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ]
+    ],
+    "opp_cycle": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ]
+    ]
+   },
+   "fast": null,
+   "prev_prod": null
+  },
+  {
+   "tag": "sp0001_03:opp#1",
+   "decisions": [
+    296,
+    0
+   ],
+   "identical": false,
+   "at": 0,
+   "prod": {
+    "tick": 90,
+    "play": false,
+    "slot": -1,
+    "cell": -1,
+    "p": 0.0043128179386258125,
+    "why": "wait",
+    "lp": [
+     -6.470726070586266e-05,
+     0.0,
+     0.0
+    ],
+    "h": {
+     "deck_card": "bfbe1db7",
+     "deck_form": "bfdc15c8",
+     "effects": "025a14a1",
+     "hand_card": "c40a67ef",
+     "hand_form": "13323be9",
+     "hand_slot": "1a0e4da8",
+     "mask": "c8d7d0ef",
+     "next_card": "f414232a",
+     "next_form": "05fe4057",
+     "opp_cycle": "fc0929af",
+     "opp_past": "f5568d77",
+     "own_ability": "c3b3795c",
+     "past": "f5568d77",
+     "projectiles": "605db3fd",
+     "sc": "504ef34c",
+     "slot_card": "a6439e3e",
+     "slot_form": "51363a29",
+     "tok": "d37c2b39",
+     "unit_form": "c8d7d0ef"
+    },
+    "opp_past": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ]
+    ],
+    "opp_cycle": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ]
+    ]
+   },
+   "fast": null,
+   "prev_prod": null
+  },
+  {
+   "tag": "sp0001_03:opp#3",
+   "decisions": [
+    301,
+    0
+   ],
+   "identical": false,
+   "at": 0,
+   "prod": {
+    "tick": 90,
+    "play": false,
+    "slot": -1,
+    "cell": -1,
+    "p": 0.0043128179386258125,
+    "why": "wait",
+    "lp": [
+     -6.470726070586266e-05,
+     0.0,
+     0.0
+    ],
+    "h": {
+     "deck_card": "bfbe1db7",
+     "deck_form": "bfdc15c8",
+     "effects": "025a14a1",
+     "hand_card": "c40a67ef",
+     "hand_form": "13323be9",
+     "hand_slot": "1a0e4da8",
+     "mask": "c8d7d0ef",
+     "next_card": "f414232a",
+     "next_form": "05fe4057",
+     "opp_cycle": "fc0929af",
+     "opp_past": "f5568d77",
+     "own_ability": "c3b3795c",
+     "past": "f5568d77",
+     "projectiles": "605db3fd",
+     "sc": "504ef34c",
+     "slot_card": "a6439e3e",
+     "slot_form": "51363a29",
+     "tok": "d37c2b39",
+     "unit_form": "c8d7d0ef"
+    },
+    "opp_past": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ]
+    ],
+    "opp_cycle": [
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ],
+     [
+      0.0,
+      3.0,
+      -1.0,
+      -1.0
+     ]
+    ]
+   },
+   "fast": null,
+   "prev_prod": null
+  },
+  {
+   "tag": "sp0001_00:opp#0",
+   "decisions": 459,
+   "identical": true
+  },
+  {
+   "tag": "sp0001_00:opp#2",
+   "decisions": 668,
+   "identical": true
+  },
+  {
+   "tag": "sp0001_01:opp#0",
+   "decisions": 561,
+   "identical": true
+  },
+  {
+   "tag": "sp0001_01:opp#2",
+   "decisions": 383,
+   "identical": true
+  },
+  {
+   "tag": "sp0001_02:opp#0",
+   "decisions": 437,
+   "identical": true
+  },
+  {
+   "tag": "sp0001_02:opp#2",
+   "decisions": 550,
+   "identical": true
+  },
+  {
+   "tag": "sp0001_03:opp#0",
+   "decisions": 435,
+   "identical": true
+  },
+  {
+   "tag": "sp0001_03:opp#2",
+   "decisions": 381,
+   "identical": true
+  }
+ ],
+ "msg": "../in/pa3_G.pkl",
+ "device": "cuda",
+ "in_flight": 8,
+ "fast_matches": 8,
+ "matches": 16,
+ "identical_matches": 16,
+ "first_div_keys": {},
+ "lp_maxdiff_before_divergence": {
+  "lp_gate": 2.2763419393001527e-05,
+  "lp_card": 5.6918621860191365e-06,
+  "lp_cell": 1.0005091570342017e-05,
+  "p_gate": 7.748603820800781e-07,
+  "ab_lp": 1.6566191423095233e-06,
+  "lp_th": 0.0
+ },
+ "server": "graphs",
+ "v_old": {
+  "rows": 5454,
+  "matches_without_v_old": 0,
+  "wver_mismatch_rows": 0,
+  "v_old_maxdiff": 9.469778260440265e-07
+ },
+ "memory": {
+  "tables": 16,
+  "tables_equal": 16,
+  "table_diff_keys": {},
+  "rows": 0,
+  "rows_equal": 0,
+  "no_hash": 16,
+  "first_row_diff": null
+ },
+ "fast_stats": {
+  "wall_s": 38.96818984800484,
+  "matches": 16,
+  "rounds": 1017,
+  "crashed": 0,
+  "fills": 405,
+  "time": {
+   "java": 4.092591946711764,
+   "fill": 0.39719891210552305,
+   "gather": 0.3229039522120729,
+   "forward_wait": 9.468622504035011,
+   "fwd_rows": 11909,
+   "fwd_calls": 1968,
+   "decide_py": 2.869383476790972,
+   "forward": 16.080943234148435,
+   "cells_wait": 3.7791167463874444,
+   "decide": 33.06884614529554,
+   "start": 0.026529412134550512
+  },
+  "counts": {
+   "fills": 405,
+   "mem_eid_in_other_matches": 8,
+   "mem_eid_shared": 4
+  },
+  "java_engine_core_s": 5.509485923,
+  "java_obs_core_s": 2.042254154,
+  "rows": 11909,
+  "first_crash": null,
+  "follow_ups": [
+   0,
+   0,
+   0
+  ]
+ },
+ "fast_skipped": [],
+ "matches_detail": [
+  {
+   "key": [
+    "sp0001_00",
+    "0",
+    "0",
+    "0"
+   ],
+   "outcome": [
+    "win",
+    "win"
+   ],
+   "end_tick": [
+    4360,
+    4360
+   ],
+   "rows": [
+    347,
+    347
+   ],
+   "plays": [
+    40,
+    40
+   ],
+   "accepted": [
+    36,
+    36
+   ],
+   "opp_plays": [
+    30,
+    30
+   ],
+   "ability": {
+    "ability_presses": [
+     {
+      "0": {
+       "IceWizard": 2
+      },
+      "1": {
+       "Berserker": 1
+      }
+     },
+     {
+      "0": {
+       "IceWizard": 2
+      },
+      "1": {
+       "Berserker": 1
+      }
+     }
+    ],
+    "ability_deployments": [
+     {
+      "0": {
+       "IceWizard": 7
+      },
+      "1": {
+       "Berserker": 2
+      }
+     },
+     {
+      "0": {
+       "IceWizard": 7
+      },
+      "1": {
+       "Berserker": 2
+      }
+     }
+    ],
+    "ability_fallback_generic": [
+     {
+      "IceWizard": 2
+     },
+     {
+      "IceWizard": 2
+     }
+    ],
+    "ability_head": [
+     {
+      "decisions": 130,
+      "presses": 2,
+      "p_mean": 0.0146
+     },
+     {
+      "decisions": 130,
+      "presses": 2,
+      "p_mean": 0.0146
+     }
+    ]
+   },
+   "ability_equal": true,
+   "identical": true,
+   "first_divergence": null
+  },
+  {
+   "key": [
+    "sp0001_00",
+    "1",
+    "0",
+    "0"
+   ],
+   "outcome": [
+    "win",
+    "win"
+   ],
+   "end_tick": [
+    3681,
+    3681
+   ],
+   "rows": [
+    277,
+    277
+   ],
+   "plays": [
+    42,
+    42
+   ],
+   "accepted": [
+    29,
+    29
+   ],
+   "opp_plays": [
+    44,
+    44
+   ],
+   "ability": {
+    "ability_presses": [
+     {
+      "0": {
+       "IceWizard": 1
+      },
+      "1": {
+       "Berserker": 1
+      }
+     },
+     {
+      "0": {
+       "IceWizard": 1
+      },
+      "1": {
+       "Berserker": 1
+      }
+     }
+    ],
+    "ability_deployments": [
+     {
+      "0": {
+       "IceWizard": 6
+      },
+      "1": {
+       "Berserker": 5
+      }
+     },
+     {
+      "0": {
+       "IceWizard": 6
+      },
+      "1": {
+       "Berserker": 5
+      }
+     }
+    ],
+    "ability_fallback_generic": [
+     {
+      "IceWizard": 1
+     },
+     {
+      "IceWizard": 1
+     }
+    ],
+    "ability_head": [
+     {
+      "decisions": 116,
+      "presses": 1,
+      "p_mean": 0.0148
+     },
+     {
+      "decisions": 116,
+      "presses": 1,
+      "p_mean": 0.0148
+     }
+    ]
+   },
+   "ability_equal": true,
+   "identical": true,
+   "first_divergence": null
+  },
+  {
+   "key": [
+    "sp0001_00",
+    "2",
+    "0",
+    "0"
+   ],
+   "outcome": [
+    "win",
+    "win"
+   ],
+   "end_tick": [
+    6217,
+    6217
+   ],
+   "rows": [
+    460,
+    460
+   ],
+   "plays": [
+    77,
+    77
+   ],
+   "accepted": [
+    64,
+    64
+   ],
+   "opp_plays": [
+    53,
+    53
+   ],
+   "ability": {
+    "ability_presses": [
+     {
+      "0": {
+       "IceWizard": 3
+      },
+      "1": {
+       "Berserker": 6
+      }
+     },
+     {
+      "0": {
+       "IceWizard": 3
+      },
+      "1": {
+       "Berserker": 6
+      }
+     }
+    ],
+    "ability_deployments": [
+     {
+      "0": {
+       "IceWizard": 12
+      },
+      "1": {
+       "Berserker": 7
+      }
+     },
+     {
+      "0": {
+       "IceWizard": 12
+      },
+      "1": {
+       "Berserker": 7
+      }
+     }
+    ],
+    "ability_fallback_generic": [
+     {
+      "IceWizard": 3
+     },
+     {
+      "IceWizard": 3
+     }
+    ],
+    "ability_head": [
+     {
+      "decisions": 159,
+      "presses": 3,
+      "p_mean": 0.0101
+     },
+     {
+      "decisions": 159,
+      "presses": 3,
+      "p_mean": 0.0101
+     }
+    ]
+   },
+   "ability_equal": true,
+   "identical": true,
+   "first_divergence": null
+  },
+  {
+   "key": [
+    "sp0001_00",
+    "3",
+    "0",
+    "0"
+   ],
+   "outcome": [
+    "win",
+    "win"
+   ],
+   "end_tick": [
+    3681,
+    3681
+   ],
+   "rows": [
+    287,
+    287
+   ],
+   "plays": [
+    37,
+    37
+   ],
+   "accepted": [
+    31,
+    31
+   ],
+   "opp_plays": [
+    45,
+    45
+   ],
+   "ability": {
+    "ability_presses": [
+     {
+      "0": {},
+      "1": {
+       "Berserker": 1
+      }
+     },
+     {
+      "0": {},
+      "1": {
+       "Berserker": 1
+      }
+     }
+    ],
+    "ability_deployments": [
+     {
+      "0": {
+       "IceWizard": 6
+      },
+      "1": {
+       "Berserker": 6
+      }
+     },
+     {
+      "0": {
+       "IceWizard": 6
+      },
+      "1": {
+       "Berserker": 6
+      }
+     }
+    ],
+    "ability_fallback_generic": [
+     {},
+     {}
+    ],
+    "ability_head": [
+     {
+      "decisions": 97,
+      "presses": 0,
+      "p_mean": 0.0019
+     },
+     {
+      "decisions": 97,
+      "presses": 0,
+      "p_mean": 0.0019
+     }
+    ]
+   },
+   "ability_equal": true,
+   "identical": true,
+   "first_divergence": null
+  },
+  {
+   "key": [
+    "sp0001_01",
+    "0",
+    "1",
+    "0"
+   ],
+   "outcome": [
+    "loss",
+    "loss"
+   ],
+   "end_tick": [
+    5230,
+    5230
+   ],
+   "rows": [
+    415,
+    415
+   ],
+   "plays": [
+    50,
+    50
+   ],
+   "accepted": [
+    47,
+    47
+   ],
+   "opp_plays": [
+    42,
+    42
+   ],
+   "ability": {
+    "ability_presses": [
+     {
+      "0": {
+       "IceWizard": 3
+      },
+      "1": {
+       "Goblinstein": 4
+      }
+     },
+     {
+      "0": {
+       "IceWizard": 3
+      },
+      "1": {
+       "Goblinstein": 4
+      }
+     }
+    ],
+    "ability_deployments": [
+     {
+      "0": {
+       "IceWizard": 7
+      },
+      "1": {
+       "Goblinstein": 5
+      }
+     },
+     {
+      "0": {
+       "IceWizard": 7
+      },
+      "1": {
+       "Goblinstein": 5
+      }
+     }
+    ],
+    "ability_fallback_generic": [
+     {
+      "IceWizard": 3
+     },
+     {
+      "IceWizard": 3
+     }
+    ],
+    "ability_head": [
+     {
+      "decisions": 88,
+      "presses": 3,
+      "p_mean": 0.0804
+     },
+     {
+      "decisions": 88,
+      "presses": 3,
+      "p_mean": 0.0804
+     }
+    ]
+   },
+   "ability_equal": true,
+   "identical": true,
+   "first_divergence": null
+  },
+  {
+   "key": [
+    "sp0001_01",
+    "1",
+    "1",
+    "0"
+   ],
+   "outcome": [
+    "win",
+    "win"
+   ],
+   "end_tick": [
+    6167,
+    6167
+   ],
+   "rows": [
+    470,
+    470
+   ],
+   "plays": [
+    69,
+    69
+   ],
+   "accepted": [
+    64,
+    64
+   ],
+   "opp_plays": [
+    70,
+    70
+   ],
+   "ability": {
+    "ability_presses": [
+     {
+      "0": {
+       "IceWizard": 2
+      },
+      "1": {
+       "Goblinstein": 1
+      }
+     },
+     {
+      "0": {
+       "IceWizard": 2
+      },
+      "1": {
+       "Goblinstein": 1
+      }
+     }
+    ],
+    "ability_deployments": [
+     {
+      "0": {
+       "IceWizard": 12
+      },
+      "1": {
+       "Goblinstein": 8
+      }
+     },
+     {
+      "0": {
+       "IceWizard": 12
+      },
+      "1": {
+       "Goblinstein": 8
+      }
+     }
+    ],
+    "ability_fallback_generic": [
+     {
+      "IceWizard": 2
+     },
+     {
+      "IceWizard": 2
+     }
+    ],
+    "ability_head": [
+     {
+      "decisions": 221,
+      "presses": 2,
+      "p_mean": 0.0156
+     },
+     {
+      "decisions": 221,
+      "presses": 2,
+      "p_mean": 0.0156
+     }
+    ]
+   },
+   "ability_equal": true,
+   "identical": true,
+   "first_divergence": null
+  },
+  {
+   "key": [
+    "sp0001_01",
+    "2",
+    "1",
+    "0"
+   ],
+   "outcome": [
+    "loss",
+    "loss"
+   ],
+   "end_tick": [
+    3681,
+    3681
+   ],
+   "rows": [
+    285,
+    285
+   ],
+   "plays": [
+    38,
+    38
+   ],
+   "accepted": [
+    28,
+    28
+   ],
+   "opp_plays": [
+    23,
+    23
+   ],
+   "ability": {
+    "ability_presses": [
+     {
+      "0": {
+       "IceWizard": 3
+      },
+      "1": {
+       "Goblinstein": 4
+      }
+     },
+     {
+      "0": {
+       "IceWizard": 3
+      },
+      "1": {
+       "Goblinstein": 4
+      }
+     }
+    ],
+    "ability_deployments": [
+     {
+      "0": {
+       "IceWizard": 5
+      },
+      "1": {
+       "Goblinstein": 4
+      }
+     },
+     {
+      "0": {
+       "IceWizard": 5
+      },
+      "1": {
+       "Goblinstein": 4
+      }
+     }
+    ],
+    "ability_fallback_generic": [
+     {
+      "IceWizard": 3
+     },
+     {
+      "IceWizard": 3
+     }
+    ],
+    "ability_head": [
+     {
+      "decisions": 119,
+      "presses": 3,
+      "p_mean": 0.0194
+     },
+     {
+      "decisions": 119,
+      "presses": 3,
+      "p_mean": 0.0194
+     }
+    ]
+   },
+   "ability_equal": true,
+   "identical": true,
+   "first_divergence": null
+  },
+  {
+   "key": [
+    "sp0001_01",
+    "3",
+    "1",
+    "0"
+   ],
+   "outcome": [
+    "loss",
+    "loss"
+   ],
+   "end_tick": [
+    4348,
+    4348
+   ],
+   "rows": [
+    356,
+    356
+   ],
+   "plays": [
+    35,
+    35
+   ],
+   "accepted": [
+    33,
+    33
+   ],
+   "opp_plays": [
+    45,
+    45
+   ],
+   "ability": {
+    "ability_presses": [
+     {
+      "0": {
+       "IceWizard": 5
+      },
+      "1": {}
+     },
+     {
+      "0": {
+       "IceWizard": 5
+      },
+      "1": {}
+     }
+    ],
+    "ability_deployments": [
+     {
+      "0": {
+       "IceWizard": 6
+      },
+      "1": {
+       "Goblinstein": 3
+      }
+     },
+     {
+      "0": {
+       "IceWizard": 6
+      },
+      "1": {
+       "Goblinstein": 3
+      }
+     }
+    ],
+    "ability_fallback_generic": [
+     {
+      "IceWizard": 5
+     },
+     {
+      "IceWizard": 5
+     }
+    ],
+    "ability_head": [
+     {
+      "decisions": 83,
+      "presses": 5,
+      "p_mean": 0.0555
+     },
+     {
+      "decisions": 83,
+      "presses": 5,
+      "p_mean": 0.0555
+     }
+    ]
+   },
+   "ability_equal": true,
+   "identical": true,
+   "first_divergence": null
+  },
+  {
+   "key": [
+    "sp0001_02",
+    "0",
+    "2",
+    "1"
+   ],
+   "outcome": [
+    "loss",
+    "loss"
+   ],
+   "end_tick": [
+    4191,
+    4191
+   ],
+   "rows": [
+    329,
+    329
+   ],
+   "plays": [
+    41,
+    41
+   ],
+   "accepted": [
+    33,
+    33
+   ],
+   "opp_plays": [
+    23,
+    23
+   ],
+   "ability": {
+    "ability_presses": [
+     {
+      "0": {
+       "Valkyrie": 3
+      },
+      "1": {
+       "IceWizard": 3
+      }
+     },
+     {
+      "0": {
+       "Valkyrie": 3
+      },
+      "1": {
+       "IceWizard": 3
+      }
+     }
+    ],
+    "ability_deployments": [
+     {
+      "0": {
+       "Valkyrie": 4
+      },
+      "1": {
+       "IceWizard": 5
+      }
+     },
+     {
+      "0": {
+       "Valkyrie": 4
+      },
+      "1": {
+       "IceWizard": 5
+      }
+     }
+    ],
+    "ability_fallback_generic": [
+     {
+      "IceWizard": 3
+     },
+     {
+      "IceWizard": 3
+     }
+    ],
+    "ability_head": [
+     {
+      "decisions": 62,
+      "presses": 3,
+      "p_mean": 0.0867
+     },
+     {
+      "decisions": 62,
+      "presses": 3,
+      "p_mean": 0.0867
+     }
+    ]
+   },
+   "ability_equal": true,
+   "identical": true,
+   "first_divergence": null
+  },
+  {
+   "key": [
+    "sp0001_02",
+    "1",
+    "2",
+    "1"
+   ],
+   "outcome": [
+    "win",
+    "win"
+   ],
+   "end_tick": [
+    3681,
+    3681
+   ],
+   "rows": [
+    296,
+    296
+   ],
+   "plays": [
+    33,
+    33
+   ],
+   "accepted": [
+    28,
+    28
+   ],
+   "opp_plays": [
+    31,
+    31
+   ],
+   "ability": {
+    "ability_presses": [
+     {
+      "0": {
+       "Valkyrie": 1
+      },
+      "1": {
+       "IceWizard": 1
+      }
+     },
+     {
+      "0": {
+       "Valkyrie": 1
+      },
+      "1": {
+       "IceWizard": 1
+      }
+     }
+    ],
+    "ability_deployments": [
+     {
+      "0": {
+       "Valkyrie": 3
+      },
+      "1": {
+       "IceWizard": 5
+      }
+     },
+     {
+      "0": {
+       "Valkyrie": 3
+      },
+      "1": {
+       "IceWizard": 5
+      }
+     }
+    ],
+    "ability_fallback_generic": [
+     {
+      "IceWizard": 1
+     },
+     {
+      "IceWizard": 1
+     }
+    ],
+    "ability_head": [
+     {
+      "decisions": 110,
+      "presses": 1,
+      "p_mean": 0.0139
+     },
+     {
+      "decisions": 110,
+      "presses": 1,
+      "p_mean": 0.0139
+     }
+    ]
+   },
+   "ability_equal": true,
+   "identical": true,
+   "first_divergence": null
+  },
+  {
+   "key": [
+    "sp0001_02",
+    "2",
+    "2",
+    "1"
+   ],
+   "outcome": [
+    "win",
+    "win"
+   ],
+   "end_tick": [
+    5226,
+    5226
+   ],
+   "rows": [
+    400,
+    400
+   ],
+   "plays": [
+    57,
+    57
+   ],
+   "accepted": [
+    46,
+    46
+   ],
+   "opp_plays": [
+    30,
+    30
+   ],
+   "ability": {
+    "ability_presses": [
+     {
+      "0": {
+       "Valkyrie": 5
+      },
+      "1": {
+       "IceWizard": 3
+      }
+     },
+     {
+      "0": {
+       "Valkyrie": 5
+      },
+      "1": {
+       "IceWizard": 3
+      }
+     }
+    ],
+    "ability_deployments": [
+     {
+      "0": {
+       "Valkyrie": 5
+      },
+      "1": {
+       "IceWizard": 8
+      }
+     },
+     {
+      "0": {
+       "Valkyrie": 5
+      },
+      "1": {
+       "IceWizard": 8
+      }
+     }
+    ],
+    "ability_fallback_generic": [
+     {
+      "IceWizard": 3
+     },
+     {
+      "IceWizard": 3
+     }
+    ],
+    "ability_head": [
+     {
+      "decisions": 87,
+      "presses": 3,
+      "p_mean": 0.0274
+     },
+     {
+      "decisions": 87,
+      "presses": 3,
+      "p_mean": 0.0274
+     }
+    ]
+   },
+   "ability_equal": true,
+   "identical": true,
+   "first_divergence": null
+  },
+  {
+   "key": [
+    "sp0001_02",
+    "3",
+    "2",
+    "1"
+   ],
+   "outcome": [
+    "win",
+    "win"
+   ],
+   "end_tick": [
+    4185,
+    4185
+   ],
+   "rows": [
+    340,
+    340
+   ],
+   "plays": [
+    35,
+    35
+   ],
+   "accepted": [
+    32,
+    32
+   ],
+   "opp_plays": [
+    38,
+    38
+   ],
+   "ability": {
+    "ability_presses": [
+     {
+      "0": {
+       "Valkyrie": 2
+      },
+      "1": {}
+     },
+     {
+      "0": {
+       "Valkyrie": 2
+      },
+      "1": {}
+     }
+    ],
+    "ability_deployments": [
+     {
+      "0": {
+       "Valkyrie": 5
+      },
+      "1": {
+       "IceWizard": 5
+      }
+     },
+     {
+      "0": {
+       "Valkyrie": 5
+      },
+      "1": {
+       "IceWizard": 5
+      }
+     }
+    ],
+    "ability_fallback_generic": [
+     {},
+     {}
+    ],
+    "ability_head": [
+     {
+      "decisions": 94,
+      "presses": 0,
+      "p_mean": 0.0069
+     },
+     {
+      "decisions": 94,
+      "presses": 0,
+      "p_mean": 0.0069
+     }
+    ]
+   },
+   "ability_equal": true,
+   "identical": true,
+   "first_divergence": null
+  },
+  {
+   "key": [
+    "sp0001_03",
+    "0",
+    "3",
+    "0"
+   ],
+   "outcome": [
+    "loss",
+    "loss"
+   ],
+   "end_tick": [
+    4169,
+    4169
+   ],
+   "rows": [
+    324,
+    324
+   ],
+   "plays": [
+    42,
+    42
+   ],
+   "accepted": [
+    35,
+    35
+   ],
+   "opp_plays": [
+    22,
+    22
+   ],
+   "ability": {
+    "ability_presses": [
+     {
+      "0": {},
+      "1": {
+       "Valkyrie": 1
+      }
+     },
+     {
+      "0": {},
+      "1": {
+       "Valkyrie": 1
+      }
+     }
+    ],
+    "ability_deployments": [
+     {
+      "0": {
+       "IceWizard": 6
+      },
+      "1": {
+       "Valkyrie": 1
+      }
+     },
+     {
+      "0": {
+       "IceWizard": 6
+      },
+      "1": {
+       "Valkyrie": 1
+      }
+     }
+    ],
+    "ability_fallback_generic": [
+     {},
+     {}
+    ],
+    "ability_head": [
+     {
+      "decisions": 132,
+      "presses": 0,
+      "p_mean": 0.0133
+     },
+     {
+      "decisions": 132,
+      "presses": 0,
+      "p_mean": 0.0133
+     }
+    ]
+   },
+   "ability_equal": true,
+   "identical": true,
+   "first_divergence": null
+  },
+  {
+   "key": [
+    "sp0001_03",
+    "1",
+    "3",
+    "0"
+   ],
+   "outcome": [
+    "win",
+    "win"
+   ],
+   "end_tick": [
+    3681,
+    3681
+   ],
+   "rows": [
+    280,
+    280
+   ],
+   "plays": [
+    41,
+    41
+   ],
+   "accepted": [
+    28,
+    28
+   ],
+   "opp_plays": [
+    32,
+    32
+   ],
+   "ability": {
+    "ability_presses": [
+     {
+      "0": {
+       "IceWizard": 3
+      },
+      "1": {
+       "Valkyrie": 3
+      }
+     },
+     {
+      "0": {
+       "IceWizard": 3
+      },
+      "1": {
+       "Valkyrie": 3
+      }
+     }
+    ],
+    "ability_deployments": [
+     {
+      "0": {
+       "IceWizard": 5
+      },
+      "1": {
+       "Valkyrie": 4
+      }
+     },
+     {
+      "0": {
+       "IceWizard": 5
+      },
+      "1": {
+       "Valkyrie": 4
+      }
+     }
+    ],
+    "ability_fallback_generic": [
+     {
+      "IceWizard": 3
+     },
+     {
+      "IceWizard": 3
+     }
+    ],
+    "ability_head": [
+     {
+      "decisions": 67,
+      "presses": 3,
+      "p_mean": 0.0196
+     },
+     {
+      "decisions": 67,
+      "presses": 3,
+      "p_mean": 0.0196
+     }
+    ]
+   },
+   "ability_equal": true,
+   "identical": true,
+   "first_divergence": null
+  },
+  {
+   "key": [
+    "sp0001_03",
+    "2",
+    "3",
+    "0"
+   ],
+   "outcome": [
+    "win",
+    "win"
+   ],
+   "end_tick": [
+    3681,
+    3681
+   ],
+   "rows": [
+    294,
+    294
+   ],
+   "plays": [
+    33,
+    33
+   ],
+   "accepted": [
+    29,
+    29
+   ],
+   "opp_plays": [
+    19,
+    19
+   ],
+   "ability": {
+    "ability_presses": [
+     {
+      "0": {
+       "IceWizard": 2
+      },
+      "1": {
+       "Valkyrie": 3
+      }
+     },
+     {
+      "0": {
+       "IceWizard": 2
+      },
+      "1": {
+       "Valkyrie": 3
+      }
+     }
+    ],
+    "ability_deployments": [
+     {
+      "0": {
+       "IceWizard": 5
+      },
+      "1": {
+       "Valkyrie": 3
+      }
+     },
+     {
+      "0": {
+       "IceWizard": 5
+      },
+      "1": {
+       "Valkyrie": 3
+      }
+     }
+    ],
+    "ability_fallback_generic": [
+     {
+      "IceWizard": 2
+     },
+     {
+      "IceWizard": 2
+     }
+    ],
+    "ability_head": [
+     {
+      "decisions": 104,
+      "presses": 2,
+      "p_mean": 0.0308
+     },
+     {
+      "decisions": 104,
+      "presses": 2,
+      "p_mean": 0.0308
+     }
+    ]
+   },
+   "ability_equal": true,
+   "identical": true,
+   "first_divergence": null
+  },
+  {
+   "key": [
+    "sp0001_03",
+    "3",
+    "3",
+    "0"
+   ],
+   "outcome": [
+    "loss",
+    "loss"
+   ],
+   "end_tick": [
+    3681,
+    3681
+   ],
+   "rows": [
+    294,
+    294
+   ],
+   "plays": [
+    33,
+    33
+   ],
+   "accepted": [
+    25,
+    25
+   ],
+   "opp_plays": [
+    30,
+    30
+   ],
+   "ability": {
+    "ability_presses": [
+     {
+      "0": {
+       "IceWizard": 1
+      },
+      "1": {
+       "Valkyrie": 1
+      }
+     },
+     {
+      "0": {
+       "IceWizard": 1
+      },
+      "1": {
+       "Valkyrie": 1
+      }
+     }
+    ],
+    "ability_deployments": [
+     {
+      "0": {
+       "IceWizard": 5
+      },
+      "1": {
+       "Valkyrie": 5
+      }
+     },
+     {
+      "0": {
+       "IceWizard": 5
+      },
+      "1": {
+       "Valkyrie": 5
+      }
+     }
+    ],
+    "ability_fallback_generic": [
+     {
+      "IceWizard": 1
+     },
+     {
+      "IceWizard": 1
+     }
+    ],
+    "ability_head": [
+     {
+      "decisions": 75,
+      "presses": 1,
+      "p_mean": 0.0182
+     },
+     {
+      "decisions": 75,
+      "presses": 1,
+      "p_mean": 0.0182
+     }
+    ]
+   },
+   "ability_equal": true,
+   "identical": true,
+   "first_divergence": null
+  }
+ ]
+}

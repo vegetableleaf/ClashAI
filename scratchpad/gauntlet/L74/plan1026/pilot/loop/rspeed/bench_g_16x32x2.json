@@ -1,0 +1,51 @@
+{
+ "producers": 16,
+ "matches_per_producer": 32,
+ "threads": 2,
+ "devices": "cuda:0",
+ "producers_measured": 16,
+ "window_s": 149.93870306015015,
+ "matches": 656,
+ "matches_per_h": 15750.436356999893,
+ "rows": 527495,
+ "rows_per_s": 3518.0709799016167,
+ "rows_per_match": 804.108231707317,
+ "core_s_per_match": 1.9501735823170732,
+ "cores_busy": 8.532245803718764,
+ "stage_s_sum": {
+  "java": 134.43306039599702,
+  "fill": 4.002360841841437,
+  "start": 2.785525618121028,
+  "decide": 2166.036800937145,
+  "gather": 10.11530155444052,
+  "forward": 524.5042583757313,
+  "forward_wait": 520.0353125758702,
+  "decide_py": 1096.5198234512936,
+  "fwd_rows": 527495,
+  "fwd_calls": 19796
+ },
+ "stage_s_per_match": {
+  "java": 0.2049284457256052,
+  "fill": 0.006101159819880239,
+  "start": 0.004246228076404006,
+  "decide": 3.3018853672822335,
+  "gather": 0.015419667003720307,
+  "forward": 0.7995491743532489,
+  "forward_wait": 0.7927367569754119,
+  "decide_py": 1.6715241211147769,
+  "fwd_rows": 804.108231707317,
+  "fwd_calls": 30.176829268292682
+ },
+ "java_engine_core_s_per_match": 0.23827259101981707,
+ "java_obs_core_s_per_match": 0.07191018391768293,
+ "fwd_rows_per_call": 26.64654475651647,
+ "gpu_util_mean": {
+  "0": 98.6986301369863
+ },
+ "rss_mb_max": 3784.984375,
+ "host": "509ec0e8907e",
+ "nproc": 256,
+ "server": "graphs",
+ "server_cores_busy": 1.6136566626978988,
+ "all_in_core_s_per_match": 2.3189991725446544
+}

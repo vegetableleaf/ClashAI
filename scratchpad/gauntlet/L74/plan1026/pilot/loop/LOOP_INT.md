@@ -47,6 +47,54 @@ Labels: (a) measured, (b) untested, (c) contradicted.
      + SHARDS 3 + graphs 16 / 16, each lp max 2.3e-5, v_old 9.5e-7 (cmp_cells1 / cmp_shards3 / cmp_all3.json; cells_wait > 0
      in fast_stats = the path ran). NOTE msg_p2 turns opp_style off, so compare exercises fast groups only.
   Also: bench.py --local-forward (as fastloop's).
+  4. Steady-state per-GPU numbers (a; bench.py on the pilot's real u0000 message, 512 pilot-pool jobs cloned, 75 s warm +
+     150 s window, --local-forward, CPUs 6-33 under the 27.2-CPU cgroup; rspeed/bench_*.json). matches/h in a window is
+     biased by which matches finish in it (rows / match 534-804), so the comparable number is rows/s, also shown as pilot
+     matches/h at the pilot's 670 rows / match (342,882 / 512). e = eager server, g = graphs, c = FASTLOOP_CELLS1, s =
+     FASTLOOP_SHARDS 3, mps = every process under CUDA MPS (private pipe dir /workspace/rs/mps_pipe, daemon quit after).
+     | bench | producers x matches x threads | in flight | rows/s | = pilot matches/h | raw matches/h | cores producers + servers | all-in core-s / match | nvidia-smi util |
+     |---|---|---:|---:|---:|---:|---|---:|---:|
+     | e_16x32x2 | 16x32x2 | 512 | 3,430 | 18,428 | 15,932 | 8.2 + 1.7 | 2.23 | 97% |
+     | g_16x32x2 | 16x32x2 | 512 | 3,518 | 18,903 | 15,750 | 8.5 + 1.6 | 2.32 | 99% |
+     | gc_16x32x2 | 16x32x2 | 512 | 3,429 | 18,425 | 15,460 | 8.3 + 1.6 | 2.31 | 99% |
+     | gcs_16x32x2 | 16x32x2 | 512 | 3,224 | 17,322 | 14,943 | 8.3 + 3.5 | 2.85 | 99% |
+     | gcs_24x32x1 | 24x32x1 | 768 | 3,699 | 19,878 | 24,929 | 10.8 + 3.6 | 2.09 | 99% |
+     | gcs_8x64x3 | 8x64x3 | 512 | 3,841 | 20,639 | 21,222 | 6.3 + 3.2 | 1.61 | 98% |
+     | mps_g_16x32x2 | 16x32x2 | 512 | 4,874 | 26,190 | 24,089 | 9.2 + 1.7 | 1.63 | 89% |
+     | mps_gcs_24x32x1 | 24x32x1 | 768 | 8,741 | 46,965 | 45,322 | 12.3 + 4.1 | 1.30 | 98% |
+     | mps_gcs_32x32x1 | 32x32x1 | 1,024 | 9,498 | 51,034 | 50,151 | 14.1 + 4.1 | 1.31 | 98% |
+     Reading (a unless marked): WITHOUT MPS every config sits at 3.2-3.8k rows/s whatever the server mode, F3, F2', producer
+     count or matches in flight, with only 8-14 of 27 cores busy: the limit is the GPU shared by 17-27 CUDA contexts
+     (each producer's in-process G forward + the servers) TIME-SLICING (one context at a time; nvidia-smi's ~98% "util"
+     counts that, so it is not evidence of a saturated GPU). F3 / F2' give nothing there ((a): 18.4k / 17.3k vs 18.9k).
+     WITH MPS (contexts share the GPU concurrently): 4.9k rows/s at 16x32x2 (1.39x of the same config), 8.7k at 24x32x1,
+     9.5k at 32x32x1 (+9% for +33% producers: near a knee; which limit binds there is (b): the 3 shard servers at 4.1 cores
+     or the GPU). Not separated yet (b): how much of 4.9k -> 8.7k is F3 + F2' vs the 24 producers (the owed g-vs-gcs pair
+     under MPS). --server graphs alone: no steady-state gain without MPS ((a) 18.9k vs 18.4k), -12% wave time in fastloop
+     (124.5 vs 140.9 s, which includes the ramp); its value needs the MPS pair too.
+  5. PROJECTION (b, from the measured per-GPU numbers above; nothing here ran on more than one GPU):
+     - One RTX PRO 6000 + 27.2 vCPU, MPS, graphs + local-forward + CELLS1 + SHARDS 3, 32 x 32 x 1: ~51k pilot matches/h
+       (9.5k rows/s) using 18.2 cores; GPU memory: server 19.7 GB (graphs pools, 3 shards) + ~0.9 GB per producer + the
+       learner 5.3 GB = ~55 GB of 96. With 32 vCPU per GPU: the CPU is not the limit at this config (18 of 27 cores), so
+       ~51-55k/h per GPU unless the knee moves; more producers (40+) are the first thing to measure there.
+     - 5 x RTX PRO 6000 / 160 vCPU (one producer set + 3 shard servers per GPU, the learner on one of them): rollouts
+       ~5 x 51k = ~255k matches/h IF ~1,000 matches are in flight per GPU (5,000+ in flight; the knee above). CPU ~91 of 160
+       cores. GPU memory fine. Updates/h then depend on matches per update:
+       | matches / update | wave (roll) | learner (steady / critic warm-up) | updates/h sync | with --overlap 1 |
+       |---:|---|---|---:|---:|
+       | 512 | ~10-30 s (only ~100 in flight per GPU: below the knee; NOT measured) | ~8 s / 120 s (a: 120-126 s warm-up here) | ~95-190 | ~120-360 |
+       | 2,048 | ~29 s at 255k/h | ~8-15 s / ~480 s | ~85-95 | ~125 |
+       | 5,120 | ~72 s | ~10-60 s / ~1,200 s | ~30-45 | ~50 |
+       (steady-state learner time from SPEED2 / SCALE.md 6f: 7.0-8.2 s per update at 128-512 matches on a 4090, set by the
+       kl_stop step count; the warm-up = every row x 2 epochs, ~120 s per 512 matches measured here.) So "hundreds of
+       thousands of matches/h" (~250k) and "hundreds of updates/h" (~125) meet at ~2,048 matches / update with overlap on;
+       at 512 matches / update the GPUs cannot be kept busy (too few matches in flight) unless rollouts continue across
+       updates.
+  Codex dispatches: none. Restart: 31892 results in rspeed/ (bench_*.json, chain.log, cmp_*.json, per-run throughput /
+  gpu / loop / train logs, the scripts) and C:/Users/benpe/pod_backup_weekend/pro6000/rs_results_2310.tgz.
+  OPEN on 31892 (after LEARNER-SPEED's block; then the pod can stop): one fastloop pilot run under MPS with --server graphs
+  --local-forward (+ CELLS1 / SHARDS 3) at 512 matches / update = measured matches/h + updates/h incl. the learner (and
+  the MPS g-vs-gcs pair at 32x32x1), folding in LEARNER-SPEED's split_attn / trunk_graph keys (bc2470f) if they are ready.
 - ROLLOUT-SPEED (FASTLOOP-FIX worker, 10-30 late; PARTIAL -- hand-off to a fresh worker recommended, see the list):
   (a) where the pilot's producer wall goes (33308 pilot_box3 throughput.jsonl, read-only; Producer.tm is CUMULATIVE over
   updates, so per-update = the difference of consecutive lines): u0023 producer walls 658 .. 924 s with 128 matches,
