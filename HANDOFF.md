@@ -1,3 +1,57 @@
+# 2026-10-29 ~20:00 EDT -- ACCOUNT-2 CLOSE-OUT (pre-written at 88% weekly usage; final update appended above when done)
+
+START HERE (next account): this entry -> memory `owner-1029-pilot-closeout-plan.md` -> `scratchpad/gauntlet/L74/plan1026/opp/learner/out/lead_d3.log`
+-> `plan1026/PLAN.md` / `HANDOFF_1028.md` for the older background. Grades: (a) measured, (b) plausible/untested, (c) contradicted.
+
+## Owner end-game plan (binding, 10-29)
+1. Opponent calibration arms run until EACH clearly plateaus (best CLXIII D3 win not improved >= 2 pp for >= 50 updates).
+   Watcher: `plan1026/opp/learner/arms_watch.py` (exits on all-plateaued or an arm at CLXIII <= 50%).
+2. Then the PILOT on the best opponent checkpoint (pass the 30-50% bar or not): train on 33308 (LOOP_INT.md "Pilot on
+   33308", `plan1026/pilot/ops/pilot.yaml`), SIM gate vs CLXIII (pooled CI low > 0), then live: 30-match safety trial
+   (auto-revert if <= 5/30 wins or idle-on-threat worse) + 150-match block; keep live only if 95% win lower bound > 32.7%.
+3. Keep the pilot live through trial + block; close out only at 99% usage; stop pods one by one when not needed (copy
+   key results first; `runpodctl stop pod $RUNPOD_POD_ID` from inside a pod with the key in /proc/1/environ works even
+   though `get pod` says Unauthorized). Then await the owner.
+
+## Opponent arms (one change vs arm B = ftR init, beta .03, lr 3e-5, th_anchor 10, partner CLXIII share .6), CLXIII D3 win %
+480 games, seed 741200, tables 16.635.3, crforge 5e8089a4 (from 21:45 UTC; fe364ceb before -- identical except the
+FORCE_IS_GROUND crash). Table version changes D3 by < 0.5 pp (a). ftR start 89.0%.
+| arm | run | pod | D3 by update | state |
+|---|---|---|---|---|
+| A beta .1 | oplc_ftR_l01_a10 | 33308 | 82.9 / 86.0 (u40/80) | stopped u100 |
+| B beta .03 | oplc_ftR_l003_a10 | 33308 | 84.6 80.4 79.8 81.5 79.0 (u40-200) | stopped u218 (plateau) |
+| C beta .01 | oplc_ftR_l001_a10 | 33308 GPU1 | 81.7 80.2 77.5 79.6 76.7 (u80-240) | running (plateau by rule) |
+| D + timing_pg 32 | oplc_ftR_l003_a10_tpg32m | 33308 GPU0 | 82.3 85.8 (u40/80) | running, worse |
+| E partner 1.0 | oplc_ftR_l003_bot100 | 33553 | 77.5 82.5 77.7 77.9 | stopped (plateau), pod stopped |
+| F lr 1e-4 | oplc_ftR_l003_lr1e4 | 33903 | 83.1 84.4 85.2 | stopped (plateau) |
+| G beta .003 | oplc_ftR_l0003_a10b | 30408 | 83.8 76.3 76.9 73.3 (u40-160) | running, BEST, still improving |
+| H beta .001 | oplc_ftR_l0001_a10 | 33903 | 80.0 (u40) | running |
+Human-likeness quick card (v6, 480 games): G u160 RMS .30 (ftR .30), lock .70 (live .47), P(lock|fail) .60 (.36).
+Reading (a): every arm settles at 76-86%; only weaker pulls keep improving; timing_pg (K=32) made D weaker (b: noisy
+timing gradient). D3 loops: `arm_d3.sh` copies run from the scratchpad (never edit a running copy); results append to
+`out/lead_d3.log`; arm launch = `launch_arm.sh` on a pod's /workspace/oplm copy of 33308:/workspace/oplc/cb2.
+
+## Other findings 10-29 (details in the named files)
+- Siege (opp/siege/SIEGE.md): imitation opponents are calibrated per decision; the X-Bow lock gap is whole-board strength
+  (fewer bodies on board, X-Bow longer on towers), not placement (c) and not rare-answer knowledge (c). Reweighting = flat.
+- Rocket fork credit (cf/P4_AUDIT.md section 9): the negative price is the cost of FORCING a Rocket at random affordable
+  moments; Rocket damage itself is priced positive; at chosen moments SIM/live/pros agree no defence cost. Next: Rocket
+  alternative only where the policy's own Rocket prob is high. Tornado-to-king ~0 with cf_redirect_king_tiles 9. PAUSED.
+- Engine (crforge/pilot/sme/SME.md STATUS): pooled fresh FRESH2-8 122/151 (LB .748); almost every traced failure was
+  observation/extraction, ~1/25 engine. Chain PAUSED. Owner direction for the resume: general rules, not edge-case patches
+  -> memory `engine-resume-approach-1029.md` (search-based reconstruction + engine-only metric). SME_HIDDEN_ASSIGN ratified
+  (default on, guard).
+- Learner speed (pilot/lrn/SCALE.md 7f/7g): 128 vs 1,024 matches/update not resolvably different; projection 10-30x.
+- timing_pg + micro_batch KL fix landed (4169f96, 1881673); memory v2 file "mismatch" between pods = CRLF only.
+- Course for the owner: `course/` (73 lessons, 340 exercises; memory `owner-course-1029.md`).
+
+## Pods / live / housekeeping
+- UP: 33308 (arms C, D; pilot target), 33903 (arm H + all D3 evals for C/D/H), 30408 (arm G + its D3). STOPPED 10-29:
+  33553, 33920, 32657 (key results in C:/Users/benpe/ClashBot_pod_backup/; owner to confirm in the dashboard).
+- Live: CLXIII NOLEAK (8d328a43) via `start_live.sh icebow --no-fast-plays --ranked`; poller own_poll.sh; laptop C: drive
+  only ~23 GB free.
+- Owner to-dos: revoke the chat-exposed CR API key; confirm pod stops; `_STALE_to_delete` (26.8 GB).
+
 ## 2026-10-29 ~00:15 EDT -- OVERNIGHT CHECKPOINT (account 2 lead; context near compaction)
 
 - OWNER AUTHORIZATION (10-28 ~22:25, asleep): if opponent v1 meets the pilot bar (v6 B-live RMS <= 0.20, siege facts in

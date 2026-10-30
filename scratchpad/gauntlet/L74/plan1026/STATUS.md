@@ -1,3 +1,6 @@
+# plan1026 STATUS -- START HERE: read `git show HEAD:HANDOFF.md | head -70` (10-29 account-2 close-out entry), then memory owner-1029-pilot-closeout-plan.md.
+# (Everything below this line is the 10-26 status, kept for history.)
+
 # plan1026 STATUS -- start here (updated 2026-10-26 ~14:25 EDT, account 1 handing over)
 
 Read in order: this file -> PLAN.md (owner-approved) -> the HEAD HANDOFF top entries (`git show HEAD:HANDOFF.md | head -80`).
