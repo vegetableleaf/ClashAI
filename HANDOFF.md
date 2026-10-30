@@ -1,3 +1,20 @@
+# 2026-10-30 ~12:30 EDT -- ACCOUNT 3 start: state checked, watchers re-armed (read-only otherwise)
+
+- Pilot `pilot_box3` (33308) SURVIVED its first real policy updates after the OOM resume (a): u0005 (kl_stop after 32
+  minibatches, KL .0276) and u0006 (58 steps, KL .0202) done; training W/L u4 1367/681 (66.8%), u5 1380/668 (67.4%), u6
+  1449/599 (70.7%; one update, SE ~1 pp, so not yet a trend). Learner after warm-up 14-19 s/update (was 860 s); rollout
+  ~860 s -> ~4 updates/h. cgroup limit 116 GiB, usage 98 GiB mid-rollout, oom_kill still 2 (no new kill). auto_stop
+  PID 179581 alive (window restarted at the resume).
+- Laptop watcher (new, survives the session, WMI): `scratchpad/gauntlet/L74/plan1026/pilot/ops/pilot_watch.sh pilot_box3 33308`
+  -> Discord on process gone without FINAL / 75 min without an update / every 10th update / FINAL (then exits). Log
+  `pilot/ops/pilot_watch.log`; stop = touch `pilot/ops/STOP_PILOT_WATCH`.
+- D3 loop for `oplc_ftR_l0003_live` HAD DIED with account 2's session (PID 16372 gone). Re-launched via WMI from a copy in
+  account 3's session scratchpad (`arm_d3_live2.sh`, = arm_d3.sh) for u0040..u0400 -> `opp/learner/out/lead_d3.log`. Arm at u6
+  (16:14 UTC), ~880 s/update -> u40 ~00:30 UTC 10-31.
+- Live: OFF (supervisor ended 10:36 EDT on a STOP file, STOP since removed; hand-run live_play logs 10:43 + 10:56 ended
+  11:03). Not restarted: waiting for the owner. Poller own_poll.sh alive.
+- 33903 still runs account-2 worker jobs with no agent attached: recon r2/r2b drivers + r2_gate, tv_gate (finish on their
+  own), grow_s2 rl_royale --smoke (timeout 3 h), speed2 serve.py (CPU, PID 276099, likely orphaned).
 # 2026-10-30 ~12:05 EDT -- WARNING: fast-loop code on origin/main is UNVERIFIED from 5683a44
 MEMFULL-LOOP changed CfTrain.java, producer.py, serve.py, bench.py, fastloop.py, compare.py; its only compare (keys ABSENT) failed: AssertionError (16, 15) results, cause undiagnosed, so absent-key identity is unproven (MEM_FULL.md STATUS; 33903 /workspace/mfl). FAST-LIVEOPP's origin/main producer / CfTrain were also never compiled as such. The running pilot is unaffected (33308 has its own tree). Do NOT sync loop/ from origin to a pod for training until the raw compare is 16/16 again; last proven trees = 33308 /workspace/loop/cb and 33903 /workspace/oplm/cb2.
 RECON-2 (f6449c5, a): general search, flags off: planted recall 22/25 inside its move set, 0 wrong fixes, 0 phantom adds; pooled 123/151 apart from torn, 116 strict (hand-rule pipeline on the same inputs NOT measured; 122/151 is on older inputs). Still running on 33903, ends on its own: PIDs 153944, 278736 (RECON.md STATUS has the next commands).
