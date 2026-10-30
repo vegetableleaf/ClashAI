@@ -233,7 +233,25 @@ branch = selfplay_decide's. A live group never goes to serve.py (live_decide_bat
 Opt-in: no 'live' seat = ctx None = no CfCtx call, no buffer (bytes as before). Refused: pipeline_decisions / follow_ups
 on a live seat; gate_decode hazard, rocket_value_lead on / blend, rocket_value_threat on (cf_ctx.options_for).
 Exactness (a): 16 / 16 identical (PLATEAU.md STATUS FAST-LIVEOPP; 33903 /workspace/fliv/out/cmp_live_b8.json).
-Tools: msg_live.py (dumped msg -> live partner msg), cmp_live.sh (compare on 33903's /workspace/fliv/cb), fliv_tree.sh.
+Tools: msg_live.py (dumped msg -> live partner msg; --raw = path fix-up only), cmp_live.sh (compare on 33903's
+/workspace/fliv/cb; RAW=1 = the no-live regression), fliv_tree.sh, fliv_smoke.sh.
+Follow-ups (NOT PORTED; producer raises): the corrected 48-job compare is 47 / 48 -- every divergence starts on the decision
+after a `rocket_tornado` play, whose decision carries follow_ups (decision_options.py ~2196: [{slot, cell, after_ticks,
+within_ticks, afford_ticks?, require_first}] from _sim_follow_up). Production = SelfPlaySide/Match.apply ->
+_apply_follow_ups (e1_eval.py:1534-1600). Port spec for CfTrain (per seat, in apply/due, with Python only filling the
+follow-up list at the decision): queue [(land_a = tick + delay, first)]; for each follow-up: due = tick + after, expire = due
++ within; frames t = grid(max(due, tick + FOLLOW_ARRIVAL_TICKS)) step FOLLOW_FRAME_TICKS (grid anchored at the decision
+tick) while t <= expire and the match runs: land every queued play with land tick <= t (the first: landed unless
+terminated / tick < land; Match._land's acceptance = CfTrain.land), advance to t, then follow_up_verdict(tick, due, expire,
+blocked, first_failed = require_first and first landed and refused, slot_changed = the card not in hand (core hand),
+slot_busy, n_out = queued count, have = follow_up_have(elixir_exact, tick, horizon (FOLLOW_AFFORD_TICKS if None),
+outstanding cost), cost) -> fire: queue (max(land_a + max(t - tick - arrival, 0), now + 1), seq) / cancel / wait (blocked
+= why unless "early"); tally fired / cancelled_<why> (result follow_n); then land the rest at their own ticks; next decision
+= tick + de * ((last landing - tick) // de + 1). follow_up_verdict / follow_up_have are pure: port them to Java with a
+planted-case identity test against the Python, or table them. The other seat keeps its own schedule meanwhile? CHECK
+first: production advances the shared env inside ONE side's apply, so the other side's due decisions in that window are
+taken late (run_selfplay_batch prepares all due sides before any apply) -- CfTrain's delayed-play port already matches
+production's ordering for pending plays; the follow-up port must reproduce the same (b, untested).
 
 ## Design (as built)
 - `CfTrain.java`: N facade matches per producer on T threads. Per match: e1_eval.SelfPlayMatch.due / SelfPlaySide.apply /

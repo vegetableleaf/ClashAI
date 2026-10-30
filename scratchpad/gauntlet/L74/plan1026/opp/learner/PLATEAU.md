@@ -3,6 +3,16 @@
 Grades: (a) measured (number + source), (b) plausible but untested, (c) contradicted by the data.
 
 ## STATUS: FAST-LIVEOPP -- the fast loop plays the 'live' CLXIII partner (2026-10-30 ~15:20 UTC; keep current) -- RESTART POINT
+- BOTTOM LINE (a, 15:15 UTC): NOT yet usable for the arm. The board context is exact, but the live stack's rocket_tornado
+  combo returns decisions with `follow_ups` (the 2nd card of Rocket + Tornado), which production plays through
+  Match._apply_follow_ups (e1_eval.py:1534: 2-tick reader frames, follow_up_verdict / follow_up_have on the engine's exact
+  elixir, a landing queue, the next decision after the last landing). CfTrain has no such schedule: the corrected 48-job
+  compare (CLXIII on icebow, `/workspace/fliv/out/cmp_live2_u5_48.json`) = **47 / 48 matches identical**; the 3 diverging
+  sides (sp0005_05 opp#0 + its learner #0, sp0005_07 opp#1) all diverge on the decision right AFTER a `why: rocket_tornado`
+  play (prod next tick 2730 vs fast 2720; 3272 vs 3280). The first msg (census decks) had no combo, hence 16 / 16.
+  Guard committed: producer raises NotImplementedError on a live decision with follow_ups (never silently wrong), so the
+  live config now stops at the first combo. Remaining = port _apply_follow_ups into CfTrain (spec: LOOP_INT.md
+  FAST-LIVEOPP "Follow-ups"), then re-run the 48-job compare (bar 48 / 48).
 - DONE (code, a): commits 33d1c0c + 9dd1cc8 (9dd1cc8 = 33d1c0c minus another worker's uncommitted TARGET-OBS hunks it swept
   in; CFTGT's bfc560e then restored both sets). producer.py:702's refusal is gone for a 'live' seat. Design + spec:
   pilot/loop/LOOP_INT.md "FAST-LIVEOPP".
@@ -19,8 +29,8 @@ Grades: (a) measured (number + source), (b) plausible but untested, (c) contradi
   original opp deck (census decks for the 'init' partner jobs) -- exact on both paths, but fewer Rocket / Log / X-Bow rule
   rows than the real run. Fixed: msg_live.py now writes production's spec (adaptive_opponents.opponent_pool's frozen entry,
   opp_deck = rl_royale.ICEBOW_DECK, as sample_matchups); the run below uses it.
-- RUNNING at hand-off (33903, CPUs 178-179 only; 240-255 are the production arm's): a 48-job compare (u0005 msg, the
-  corrected spec: CLXIII on icebow) then the no-live regression (the original u0000 msg, RAW=1, 16 jobs) ->
+- 48-job compare DONE (47 / 48, above). RUNNING at hand-off (33903, CPUs 178-179 only; 240-255 = the production arm): the
+  no-live regression (the original u0000 msg, RAW=1, 16 jobs; bar 16 / 16) ->
   `/workspace/fliv/out/cmp_live2_u5_48.{json,log}`, `cmp_raw_u0.{json,log}`. Read: `ssh ... -p 33903 root@157.157.221.29 'head -c 600 /workspace/fliv/out/cmp_live2_u5_48.log; head -c 600 /workspace/fliv/out/cmp_raw_u0.log'`.
   Then the smoke (step 2): `ssh ... -p 33903 root@157.157.221.29 'cd /workspace/fliv/cb && setsid nohup bash scratchpad/gauntlet/L74/plan1026/pilot/loop/fliv_smoke.sh fliv_live_smoke 178-179 >/dev/null 2>&1 < /dev/null &'` (log /workspace/fliv/out/fliv_live_smoke.out).
   Rerun: `cd /workspace/fliv/cb && R=/workspace/oplm/cb2/scratchpad/gauntlet/L68/rl; JOBS=48 bash scratchpad/gauntlet/L74/plan1026/pilot/loop/cmp_live.sh $R/oplc_flv0_l01_lr3/fast_msg_u0005.pkl $R/oplc_ftR_l0003_live/config.yaml OUT.json --device cuda --in-flight 8 --matches 8 --threads 2`

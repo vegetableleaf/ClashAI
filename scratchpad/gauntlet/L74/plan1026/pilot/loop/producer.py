@@ -8,7 +8,8 @@ rl_royale.actor_main's self-play branch does per decision with PRODUCTION code: 
 on a batch gathered straight from the JVM's buffers), one forward per policy per round.
 
 Memory v2 (LOOP-MEM's CfMem, both seats, learner and frozen opponents) is wired: MEM_KEYS per row, mem_t per recorded
-row, the learner's end-of-match event table in result["memory"].
+row, the learner's end-of-match event table in result["memory"]. MEM-FULL: each memory policy's own layout (its model's
+match_memory.opts: memory_e_max / memory_board_snap; CfMem's instance layout, rows at CfTrain.memStride).
 Hero abilities (ability_policy v2, forms deck) are wired: LOOP-IW's CfAbil per match in CfTrain (commands / options at
 prepare, the pending queue + recheck + press in _advance_to), the rule for opponents, rl_royale's B6 head for the learner
 (production's ability_decide; label mode = the B6 warm start), own_ability_events -> CfPubObj / CfMem.Log.
@@ -78,19 +79,27 @@ class Rows:
             setattr(self, k, np.frombuffer(memoryview(getattr(L, attr)), dt).reshape((2 * n,) + shape))
         self.res = np.frombuffer(memoryview(L.resB), np.int32).reshape(n, 8)
         self.th = np.frombuffer(memoryview(L.thB), np.int32).reshape(2 * n, int(L.TH))
+        self.memv = {}
 
-    def memory(self, L, n: int) -> None:
-        """MEM_KEYS views of CfTrain.memB (row r at r * CfMem.BYTES, layout CfMem.OFF_*; no copy)."""
-        import jpype
-        C = jpype.JClass("CfMem")
-        mv, B, n2 = memoryview(L.memB), int(C.BYTES), 2 * n
-        mk = (lambda shape, dt, off, inner: np.ndarray((n2,) + shape, dt, buffer=mv, offset=int(off), strides=(B,) + inner))
-        self.mem_ev = mk((int(C.E_MAX), int(C.F)), np.float32, C.OFF_EV, (4 * int(C.F), 4))
-        self.mem_mask = mk((int(C.E_MAX),), np.bool_, C.OFF_MASK, (1,))
-        self.mem_card = mk((int(C.E_MAX),), np.int64, C.OFF_CARD, (8,))
-        self.mem_form = mk((int(C.E_MAX),), np.int64, C.OFF_FORM, (8,))
-        self.mem_summary = mk((int(C.S_V2),), np.float32, C.OFF_SUM, (4,))
-        self.mem_answer = mk((), np.int64, C.OFF_ANS, ())
+    def memory(self, L, n: int, e_max: int, snap: bool) -> dict:
+        """MEM_KEYS views of CfTrain.memB for one memory layout (row r at r * L.memStride; CfMem's instance layout at
+        e_max / snap = obs_id.JavaMem's offsets, CfMem.OFF_* at the defaults; no copy), cached per layout."""
+        if (e_max, snap) not in self.memv:
+            import jpype
+            C = jpype.JClass("CfMem")
+            mv, B, n2 = memoryview(L.memB), int(L.memStride), 2 * n
+            nf, sv = int(C.F_SNAP if snap else C.F), int(C.S_V2)
+            om = e_max * nf * 4
+            off = (om, om + e_max, om + 9 * e_max, om + 17 * e_max, om + 17 * e_max + 4 * sv)   # mask card form sum ans
+            assert int(C.bytes(e_max, snap)) == off[4] + 8 <= B, (e_max, snap, B)
+            if (e_max, snap) == (int(C.E_MAX), False):
+                assert (0,) + off == (C.OFF_EV, C.OFF_MASK, C.OFF_CARD, C.OFF_FORM, C.OFF_SUM, C.OFF_ANS), "CfMem layout"
+            mk = (lambda shape, dt, o, inner: np.ndarray((n2,) + shape, dt, buffer=mv, offset=int(o), strides=(B,) + inner))
+            self.memv[(e_max, snap)] = {
+                "mem_ev": mk((e_max, nf), np.float32, 0, (4 * nf, 4)), "mem_mask": mk((e_max,), np.bool_, off[0], (1,)),
+                "mem_card": mk((e_max,), np.int64, off[1], (8,)), "mem_form": mk((e_max,), np.int64, off[2], (8,)),
+                "mem_summary": mk((sv,), np.float32, off[3], (4,)), "mem_answer": mk((), np.int64, off[4], ())}
+        return self.memv[(e_max, snap)]
 
     def targets(self, L, n: int) -> None:
         """TARGET-OBS: CfTrain.tgtB / tgtIdxB views (CfTrain.enableTargets: "tgt" [64, 8] float32, "tgt_idx" [64] int64)."""
@@ -106,6 +115,13 @@ class Rows:
 
 def has_mem(policy) -> bool:
     return getattr(policy.model, "mem", None) is not None
+
+
+def mem_opts(policy) -> tuple:
+    """MEM-FULL: the policy's memory layout (e_max, snap) = match_memory.opts (no memory / absent keys = 128, False)."""
+    from pipeline import match_memory as MM
+    o = MM.opts(getattr(policy.model, "mem", None))
+    return o["e_max"], o["snap"]
 
 
 def loop_mem(obs_id, main, gid):
@@ -489,7 +505,8 @@ class Producer:
         self.serial += 1
         self.L.setJob(i, self.serial, int(seed) & 0x7FFFFFFF, *a[0], *a[1])
         if self.lmem is not None:
-            self.L.setMem(i, has_mem(sides[0].model), has_mem(sides[1].model))
+            self.L.setMem(i, has_mem(sides[0].model), has_mem(sides[1].model), *mem_opts(sides[0].model),
+                          *mem_opts(sides[1].model))
         if self.ctx is not None:                              # FAST-LIVEOPP: the 'live' seats build CfCtx rows
             self.L.setCtx(i, *[s.cfg["policy"] == "live" for s in sides])
         if self.ja is not None:                               # _reset_abilities (CfTrain.reset): the env seed, seat modes
@@ -642,9 +659,11 @@ class Producer:
             if has_mem(self.model) and getattr(self.net.mem, "version", "v1") != "v2":
                 raise NotImplementedError(f"learner memory {self.net.mem.version}: CfMem ports v2")
             self.lmem = loop_mem(self.obs_id, self.main, self.model.gid)
-            self.L.enableMemory(self.lmem.T)
+            # MEM-FULL: rows wide enough for every memory policy of this first run (ponytail: a later, wider opponent
+            # fails in setMem; allocate for the widest layout up front if that ever happens)
+            C = self.jpype.JClass("CfMem")
+            self.L.enableMemory(self.lmem.T, max(int(C.bytes(*mem_opts(m))) for m in mem_pols))
             self.lmem.slugs(self.env)
-            self.v.memory(self.L, self.n)
         for m in mem_pols:                                    # a memory opponent of another universe: its own CfMem tables
             U = self.univs[self._univ(m)]
             if U.lmem is None and U is not self.univs[0]:
@@ -729,8 +748,9 @@ class Producer:
                 batch["tgt"], batch["tgt_idx"] = v.tgt[idx], v.tgt_idx[idx]
             if has_mem(model):                                # Match._memory's MEM_KEYS (CfMem)
                 from pipeline.match_memory import MEM_KEYS
+                mv = v.memory(self.L, self.n, *mem_opts(model))    # MEM-FULL: this model's layout
                 for k in MEM_KEYS:
-                    batch[k] = getattr(v, k)[idx]
+                    batch[k] = mv[k][idx]
             ids = v.ids[idx]
             for k, a, b in ID_SPLIT:
                 batch[k] = np.ascontiguousarray(ids[:, a:b] if b is not None else ids[:, a])
@@ -907,6 +927,9 @@ class Producer:
                 tau, kw = E.posture_live(sides, enc, c, c["tau"], kw)
                 decisions = E.live_decide_batch(model, enc, heads, p, allowed, stalled, tau=tau, device=c["device"], **kw)
                 self.stats["live_rows"] += len(sides)
+                if any(d.get("follow_ups") for d in decisions):   # rocket_tornado's 2nd card: Match._apply_follow_ups
+                    raise NotImplementedError("a live decision with follow_ups (rocket_tornado combo): CfTrain has no "
+                                              "_apply_follow_ups schedule yet (LOOP_INT.md FAST-LIVEOPP)")
             elif enc is not None:
                 decisions = E.sample_decide_batch(model, enc, heads, p, allowed, stalled, sides, c)
             else:

@@ -12,5 +12,5 @@ PY=/workspace/venvf16/bin/python
 $PY -m pyflakes $L/producer.py $L/msg_live.py || echo "PYFLAKES (see above)"
 $PY -c "import sys; sys.path.insert(0, '$L'); import producer, pathlib, os; producer.compile_java(pathlib.Path(os.environ['CRFORGE_FACADE_BUILD']), pathlib.Path(os.environ['CRFORGE_LIB']))" || exit 1
 MSG=$OUT.msg.pkl                                     # RAW=1: SRC as it is (the no-live regression)
-if [ "${RAW:-0}" = 1 ]; then MSG=$SRC; else $PY $L/msg_live.py "$SRC" "$CFGY" "$MSG" --jobs ${JOBS:-16} || exit 1; fi
+$PY $L/msg_live.py "$SRC" "$CFGY" "$MSG" --jobs ${JOBS:-16} $([ "${RAW:-0}" = 1 ] && echo --raw) || exit 1
 exec timeout ${TMO:-5400} taskset -c ${CPUS:-178-179} $PY -u $L/compare.py "$MSG" "$OUT" "$@" 2>&1 | grep -v "Warning\|self.encoder"

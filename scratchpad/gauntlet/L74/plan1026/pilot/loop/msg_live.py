@@ -23,15 +23,20 @@ def main(argv=None) -> int:
     ap.add_argument("config")
     ap.add_argument("out")
     ap.add_argument("--jobs", type=int, default=16)
+    ap.add_argument("--raw", action="store_true", help="only the path fix-up (the no-live regression msg)")
     a = ap.parse_args(argv)
     base, update, sd, jobs = pickle.loads(Path(a.msg).read_bytes())
     cfg = yaml.safe_load(Path(a.config).read_text())
-    base = {**{k: v for k, v in base.items() if k != "league_exploiters"}, **{k: cfg[k] for k in KEYS}}
+    base0 = dict(base)
     if base.get("opp_init") and not Path(base["opp_init"]).exists():   # the dump pod's absolute path: this tree's copy (sd = its weights)
-        base["opp_init"] = str(Path("opp_ckpt", Path(base["opp_init"]).name).resolve())
+        base0["opp_init"] = str(Path("opp_ckpt", Path(base["opp_init"]).name).resolve())
+    base = {**{k: v for k, v in base0.items() if k != "league_exploiters"}, **{k: cfg[k] for k in KEYS}}
     stale = {k: v for k, v in base.items() if isinstance(v, str) and v.startswith("/workspace/") and not Path(v).exists()}
     if stale:
         raise SystemExit(f"base paths missing on this pod: {stale}")
+    if a.raw:
+        Path(a.out).write_bytes(pickle.dumps((base0, update, sd, jobs[:a.jobs])))
+        return 0
     from pipeline.adaptive_opponents import opponent_pool
     from pipeline.rl_royale import ICEBOW_DECK
     opp = opponent_pool([], cfg, {})[0]                      # production's frozen entry (id "frozen:PATH", no cfg)
