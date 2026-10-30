@@ -82,7 +82,40 @@ Grades: (a) measured (number + source), (b) plausible, untested (with the test),
 - (a) Feeding B0 the full history did not hurt the aux heads: the 17.6% representation shift cost no aux loss (4.4031 -> 4.3617).
 - (b) untested: these aux labels are short-horizon (hand, cycle, next card, next 10 s), so they may not reward 1x-phase events.
   Test: the full-table run below; if > 128 stays flat, add a long-horizon aux target (owner decision, not done here).
-- NEXT (not started, stopped by the lead at usage 97%): full tables `.foreman/scratch/memretrain/snap_full.npz` (laptop PID 29472,
+- RESULT of the FULL warm run (10-30, MEM-RETRAIN-2, a): tables `snap_full.npz` (sha d6222564, 126,786,699 B; failed [], 29,322 tables,
+  rows_with_table 3,517,863) copied to 33903 (sha verified both sides). Run `full_warm` = run.sh full_warm snap_full.npz --epochs 2
+  --lr 3e-4 --warmup 500 --val-bs 128: 3,168,599 train rows, 24,754 steps, 2,361 s, GPU 3.46 GB, coupling zero, policy identity
+  1.5e-5 (base noise 1.1e-5). Checkpoint 33903 `/workspace/memretrain/out/full_warm/mem_best.pt` (= step 24754, sha 4ea21f0c), laptop
+  copy `C:/Users/benpe/pod_backup_weekend/memretrain/full_warm_mem_best.pt`.
+  Compare, ALL 349,264 held-out rows with a table (1,459 matches; 337,337 <= 128 events, 11,927 > 128), paired bootstrap over
+  matches (1,000 draws; AUC 300), `aux_compare_ci.py` -> `memory/full/retrain/cmpci_full.json`, read with `show_cmp_ci.py`
+  (metrics are POOLED per head, not aux_eval's batch mean; point estimates cross-checked against aux_eval: 58 / 58 within 5e-4).
+  sum_main = the 10 heads except the sparse rk_dmg / xb_lock (chosen before the run); sum_all = all 12. Loss, old -> new [CI of new-old]:
+    overall:  sum_main 3.7052 -> 3.6250 [-0.0839, -0.0767]; sum_all 5.2307 -> 5.1731 [-0.0880, -0.0287]; every one of the other 11 heads
+              better with CI excluding 0 (cyc queue_acc .6483 -> .6749, opp_hand auc .9847 -> .9871, opp_next acc .3386 -> .3517, swing r2
+              .4721 -> .4815, rk_dmg r2 .168 -> .210); EXCEPTION xb_lock BCE 1.0225 -> 1.0711 [+0.0315, +0.0672] (n = 1,104 elements,
+              333 matches; its AUC .6619 -> .6698 [+0.0017, +0.0140] and acc .600 -> .611 [-0.005, +0.027] did not get worse).
+    > 128 events (11,927 rows): sum_main 4.3588 -> 4.2950 [-0.0879, -0.0386]; sum_all 5.7125 -> 5.7119 [-0.0972, +0.1024] (flat: the
+              two sparse heads, rk_dmg n=145 / xb_lock n=33, carry ~1.35 of it); CI-significant better: swing, vpe, cyc_el, opp_el10,
+              opp_el_now, opp_hand, cyc, opp_next; threat/rk_dmg better, CI spans 0; commit worse +0.009 [-0.013, +0.032] (ns); xb_lock
+              worse +0.070 [-0.016, +0.170] (ns, 33 elements).
+    attribution on > 128 (sum_main): old256 (B0 weights fed the full history) -0.005 [-0.019, +0.008] (= nothing); new128 (the
+              retrained encoder fed only 128 events) vs old -0.028; new vs new128 -0.036 [-0.055, -0.017] = the extra history pays, but
+              only AFTER retraining; more than half the new-vs-old gain on > 128 is plain retraining / the snapshot.
+  Aux gate 4 (as written: every aux metric not worse overall AND better on > 128 OT rows): NOT met literally, because of ONE metric
+  (xb_lock BCE overall, +0.049, CI excludes 0; 11 of 12 head-losses improve); the > 128 part is met on sum_main with a CI and
+  NOT on sum_all (CI spans 0). Earlier batch-mean number on a 60,000-row sample (cmp_full.json, aux_eval definition, summed): all
+  4.0171 / old256 4.0172 / new 3.9433; <= 128 3.9864 / 3.9864 / 3.9119; > 128 (2,100 rows) 5.2453 / 5.2572 / 5.2562 (flat).
+  (b) untested: why xb_lock BCE worsens (mem_best is picked by summed val loss on 30k rows; 8,874 train labels, 171 val labels in that
+  sample): overconfident calibration with a better ranking; a per-head checkpoint choice or an xb_lock loss weight would be the test.
+  Step 3 done anyway (a file only, nothing registered): B0-full = `/workspace/memretrain/out/b0_full/b0_full_clxiii_mem256snap.pt`
+  (sha 8ad4cbfa74fb696541e87a59ae57d136c8e4a472f4258c7ae74714c3638ec837; 141 CLXIII tensors unchanged + 51 memory tensors incl.
+  mem.full = [256, 1]; builder `memory/full/build_b0_full.py`), laptop copy `C:/Users/benpe/pod_backup_weekend/memretrain/`.
+  G-mem-0 (a): vs CLXIII NOLEAK on 10,000 val rows (351 with > 128 events), CPU: max |diff| gate / card / cell / value and the card /
+  cell log-probs = 0.0 exactly (< 1e-6). Recipe step 5 (RL) NOT started: needs the lead's pod decision.
+  Scripts: `.foreman/scratch/memretrain/cmpci.sh NAME CKPT TABLES [flags]` (CI compare, ~10 min for all val rows, GPU ~3 GB);
+  build: `python scratchpad/gauntlet/L74/memory/full/build_b0_full.py --b0 B0 --enc mem_best.pt --clxiii CLXIII.pt --tables TABLES --out OUT`.
+- (old) NEXT, now DONE: full tables `.foreman/scratch/memretrain/snap_full.npz` (laptop PID 29472,
   was at 14,600 / 14,661; its meta line lands in `snap_full.json`; check `failed` is empty and rows_with_table = 3,517,863).
   `scp` it to `/workspace/memretrain/snap_full.npz`, then on 33903 (~50 min, b: scaled from 0.1 s / step):
   `cd /workspace/memretrain; nohup bash run.sh full_warm /workspace/memretrain/snap_full.npz --epochs 2 --lr 3e-4 --warmup 500 --val-bs 128 > out/full_warm.log 2>&1 &`
