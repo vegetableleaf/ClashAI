@@ -1,3 +1,25 @@
+# 2026-10-30 ~08:50 EDT -- OWNER PRIORITY ITEMS FOR THE NEXT ACCOUNT (added by account 2 before close-out)
+
+1. **Targeting / aggro as model inputs (owner 10-30: "cues a real player sees, extremely important").** Finding (a,
+   Codex audit, LOCAL ONLY `icebow/data/reader_targets/AUDIT.md` -- reader internals never go in tracked files): the live
+   reader's phase-3 frames ALREADY carry per-body attack target references (current target, previous target, attack
+   progress, sequence) and projectiles carry source / target (63,035 references in 3 logs, all resolving to same-frame
+   bodies). The model only uses "has target" / "target is tower" cues today, not WHICH unit. Earlier claim "the reader
+   records no target field" (SIEGE.md) is (c) contradicted. Work: (i) validate reader targets vs the engine's true targets
+   on SME-exact replays (crforge target probe: `plan1026/opp/siege/probe/patch_pod.py` records [uid, team, kind,
+   target_uid] -- sample every tick, not 1 s); (ii) add target identity + attack progress to the observation through ONE
+   path: engine targets in SIM, reader targets live (both = the game's own state, so not privileged); (iii) a
+   function-preserving model expansion (new input weights at 0 = CLXIII-identical at u0); (iv) train. Also aggro pathing
+   (building-only units' path / pull) from the same fields.
+2. **Full-match memory (owner 10-30: "you're limiting the information on purpose").** `pipeline/match_memory.py`
+   `E_MAX = 128` events (newest kept) is a Plan A compute cap (laptop latency), mirrored in the Java fast-loop builder
+   (CfMem) and the live path. Raise it to the whole match (est. a few hundred events; 2 layers x d 64 attention is cheap),
+   add a compressed board snapshot per event (owner asked "on what board state"; today only the current board + each
+   play's 10-s outcome are stored), retrain the memory encoder on the longer history, then exactness tests (Python /
+   Java / live identical) + the memory ablation gate (real vs shuffled memory, CI low > 0).
+3. **Memory encoder unfrozen from 10-30** (owner: freezing "makes no sense"; no measurement showed it hurts):
+   `memory_encoder_frozen=false` with `memory_aux` kept, in the 6x-box pilot `pilot_box3`.
+
 # 2026-10-29 ~20:00 EDT -- ACCOUNT-2 CLOSE-OUT (pre-written at 88% weekly usage; final update appended above when done)
 
 START HERE (next account): this entry -> memory `owner-1029-pilot-closeout-plan.md` -> `scratchpad/gauntlet/L74/plan1026/opp/learner/out/lead_d3.log`
