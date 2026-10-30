@@ -1,3 +1,14 @@
+# 2026-10-30 ~16:20 EDT -- workers: RECON-4 stopped (FRESH9 frozen, v3 built); LEARNER-SPEED dispatched; 3 slots in use
+
+- RECON-4 (7ec0921 + 2 commits; RECON.md STATUS / s11): FRESH9 frozen BEFORE any change (317 Ranked battles after 10-29 08:28,
+  sha 88059ea5). Generator v3 (general ops: press re-date/re-bind/unit index, victim-side press, uncapped own point, broad drop
+  + cycle repair, add next to a same-card body; 56 planted checks). Dev 151 (IN-SAMPLE): gate 142 / v3 136 (138 with
+  155249 + 000242 counted, owner rule) / v2 126. **FRESH9 held-out, hand-rule gate: 122 / 177 pass (CI low 0.627), 117
+  strict** = the dev 94% was in-sample. 35 / 177 flagged by the extractor (27 opp_no_fitting_deal, 8 own_cycle_fail).
+  RECON v3 on FRESH9 + ASSIGN guard: RUNNING unattended on 33903 (/workspace/smeR3 drive_f9.sh PID 600144, CPUs 226-237;
+  F9_DONE in runs/f9_drive.log; restart + r4_report command in RECON.md STATUS). Lead scores it when done.
+- Workers now (cap 3): FASTLOOP-FIX (then ROLLOUT-SPEED), OPP-PUSH, LEARNER-SPEED (SCALE 7e tickets A + B, then the
+  large-batch learning A/B design; doc pilot/lrn/LSPEED.md).
 # 2026-10-30 ~17:30 EDT -- u20 VERDICT: the pilot's policy got WORSE vs CLXIII, not only its press head; opponent push + speed plan
 
 - (a) u20's trunk with CLXIII's press head grafted back (threshold gate, iu40 480): 249/480 = -8.75 pp [-14.12, -3.38] vs
