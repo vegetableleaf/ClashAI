@@ -5,7 +5,7 @@
                                           this tree's live path with CKPT on CPU; --rows also keeps every model input b
     $PY -B $T cmp  BASE.pt GROWN.pt       live-path compare (decision dicts / taps / RNG states, max |log-prob diff| per head;
                                           g: every one of the k copies against the base g)
-    $PY -B $T model BASE_CKPT GROWN_CKPT ROWS.pt [fp32|fp64]
+    $PY -B $T model BASE_CKPT GROWN_CKPT ROWS.pt [fp32|fp64|64v32] [STRIDE]
                                           model level on the recorded inputs: raw logits AND log-probs of gate, card, wait,
                                           value, g and the cell head for EVERY real hand card of the row; argmax actions
     $PY -B $T sym  GROWN_CKPT ROWS.pt     one backward on 16 rows: do the k copies get DIFFERENT gradients (not stuck equal)?
@@ -116,13 +116,15 @@ def cast(b, dtype):
     return {k: (v.to(dtype) if torch.is_tensor(v) and v.is_floating_point() else v) for k, v in b.items()}
 
 
-def model_cmp(base, grown, rows_path, prec='fp32'):
+def model_cmp(base, grown, rows_path, prec='fp32', stride=1):
     import torch
     from pipeline.model_gen import CARD_PAD, card_form_of
     torch.set_num_threads(2)
-    dt = torch.float64 if prec == 'fp64' else torch.float32
-    ma, mb = load(base, dt), load(grown, dt)
-    rows = torch.load(rows_path, weights_only=False)
+    # fp64 / fp32: both sides in that precision; 64v32: base in fp64, grown in fp32 (base == grown gives the fp32 floor)
+    da = torch.float64 if prec in ('fp64', '64v32') else torch.float32
+    db = torch.float64 if prec == 'fp64' else torch.float32
+    ma, mb = load(base, da), load(grown, db)
+    rows = torch.load(rows_path, weights_only=False)[::int(stride)]
     mx = {}
     agree = {'card': 0, 'wait': 0, 'value': 0, 'gate_sign': 0, 'cell': 0}
     n_cell = 0
@@ -133,9 +135,11 @@ def model_cmp(base, grown, rows_path, prec='fp32'):
     t0 = time.time()
     with torch.no_grad():
         for b in rows:
-            b = cast(b, dt)
-            ea, eb = ma.encode_gen(b), mb.encode_gen(b)
-            oa, ob = ma.heads_gen(ea, b), mb.heads_gen(eb, b)
+            ba, bb = cast(b, da), cast(b, db)
+            ea, eb = ma.encode_gen(ba), mb.encode_gen(bb)
+            oa, ob = ma.heads_gen(ea, ba), mb.heads_gen(eb, bb)
+            oa = {k: v.double() for k, v in oa.items()}
+            ob = {k: v.double() for k, v in ob.items()}
             for k in ('gate', 'value'):
                 upd(k + '_logit', (oa[k] - ob[k]).abs().max())
             for k in ('card', 'wait'):
@@ -148,12 +152,13 @@ def model_cmp(base, grown, rows_path, prec='fp32'):
             upd('value_logp', (torch.log_softmax(oa['value'], -1) - torch.log_softmax(ob['value'], -1)).abs().max())
             agree['value'] += int(oa['value'].argmax() == ob['value'].argmax())
             agree['gate_sign'] += int((oa['gate'] > 0) == (ob['gate'] > 0))
-            upd('g', g_diff(ea['g'], eb['g']))
+            upd('g', g_diff(ea['g'].double(), eb['g'].double()))
             hand = b['hand_card'][0]
+            b = ba
             for c in hand[hand != CARD_PAD]:
                 card = c.view(1)
                 form = card_form_of(b['deck_card'], b['deck_form'], card)
-                la, lb = ma.cell_logits_gen(ea, card, form), mb.cell_logits_gen(eb, card, form)
+                la, lb = ma.cell_logits_gen(ea, card, form).double(), mb.cell_logits_gen(eb, card, form).double()
                 upd('cell_logit', (la - lb).abs().max())
                 upd('cell_logp', (torch.log_softmax(la, -1) - torch.log_softmax(lb, -1)).abs().max())
                 agree['cell'] += int(la.argmax() == lb.argmax())
