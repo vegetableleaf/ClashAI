@@ -51,17 +51,19 @@ def main():
     ap.add_argument("--block-max", type=int, default=512)
     ap.add_argument("--max-batch", type=int, default=2048)
     ap.add_argument("--mode", default="eager")
+    ap.add_argument("--no-learner", action="store_true", help="F2' shard: the frozen opponents only (--learner = arch only)")
     ap.add_argument("--mem-full", default="", help="MEM-FULL E_MAX,SNAP: the learner's memory_e_max / memory_board_snap "
                     "(rl_royale widens the init the same way: model_gen mem_full; absent = the init's layout)")
     a = ap.parse_args()
     from pipeline import e1_eval as E
     from pipeline.policy_server import PolicyServer
     models = []
-    pol, _ = E.load_policy(REPO / a.learner if not Path(a.learner).is_absolute() else a.learner, a.device)
-    if a.mem_full:
-        e_max, snap = (int(v) for v in a.mem_full.split(","))
-        pol.model.mem_full(e_max, bool(snap))
-    models.append({"name": "learner", "policy": pol, "spec": spec_for(pol), "block_max": a.block_max, "watch": a.watch})
+    if not a.no_learner:
+        pol, _ = E.load_policy(REPO / a.learner if not Path(a.learner).is_absolute() else a.learner, a.device)
+        if a.mem_full:
+            e_max, snap = (int(v) for v in a.mem_full.split(","))
+            pol.model.mem_full(e_max, bool(snap))
+        models.append({"name": "learner", "policy": pol, "spec": spec_for(pol), "block_max": a.block_max, "watch": a.watch})
     for p in a.opp:
         pol, _ = E.load_policy(REPO / p, a.device)
         if E.is_timing(pol):                             # P2 timing head: the producer forwards it in-process
@@ -69,8 +71,13 @@ def main():
         models.append({"name": p, "policy": pol, "spec": spec_for(pol), "block_max": a.block_max})
     Path(a.listen).parent.mkdir(parents=True, exist_ok=True)
     Path(a.listen).unlink(missing_ok=True)
+    # graphs (ROLLOUT-SPEED): capture every model x copy x bucket NOW, before any producer or server thread runs (a
+    # lazy capture mid-run raced the server's other threads / memory pressure and its failure poisoned the shared pool);
+    # the warm rows' values do not matter (the graph is the shape's kernel sequence). eager: start() as before.
+    warm = {m["name"]: {k: (np.ones if np.dtype(dt) == np.bool_ else np.zeros)((1, *shape), dt)
+                        for k, (shape, dt) in m["spec"].items()} for m in models} if a.mode == "graphs" else None
     S = PolicyServer(models, device=a.device, max_batch=a.max_batch, mode=a.mode, listen=a.listen,
-                     block_max=a.block_max).start()
+                     block_max=a.block_max).start(warm)
     Path(a.listen + ".ready").write_text("ok\n")
     while True:
         time.sleep(30)

@@ -41,6 +41,12 @@ BUCKETS = (64, 128, 256, 512, 1024, 2048, 4096, 8192)
 BUCKETS_FINE = (64, 128, 192, 256, 384, 512, 768, 1024, 1280, 1536, 1792, 2048, 2560, 3072, 3584, 4096)
 
 
+# ROLLOUT-SPEED: a graph pool that a FAILED capture left 'recording' -> its replacement. torch 2.11's capture_end raises
+# before it ends the pool's allocation, so every later capture into that pool fails ("beginAllocateToPool: already
+# recording to mempool_id"): the pilot's poisoned-pool cascade. Forward._capture moves on to the replacement.
+_POOL_NEXT: dict = {}
+
+
 def bucket(n: int, buckets=BUCKETS) -> int:
     for b in buckets:
         if n <= b:
@@ -97,6 +103,7 @@ class Forward:
         self.amp = (lambda: torch.autocast("cuda", dtype=torch.bfloat16)) if precision == "bf16" else contextlib.nullcontext
         self.last_graph = False
         self.pool = pool                # a graph memory pool shared with other Forwards (PolicyServer: one per server)
+        self.frozen = False             # PolicyServer._warm captured every bucket: a missing one runs eager, never captured
         if mode == "graphs":                                       # the one host copy inside the CLXIII forward
             from pipeline import tower_refine
             _graph_safe_tower_features(torch.zeros(1, 70, device=device))
@@ -143,15 +150,17 @@ class Forward:
         with torch.no_grad(), self.amp():
             B = bucket(n, self.buckets) if self.pad else n
             self.last_graph = self.mode == "graphs" and B <= self.graph_max
+            if self.last_graph:
+                if B not in self.graphs and not self.frozen:
+                    self.graphs[B] = self._capture(arrs, B)          # None: the capture failed, eager from now on
+                self.last_graph = self.graphs.get(B) is not None
             if not self.last_graph:
                 b = {k: torch.from_numpy(arrs[k][:n]).to(self.device, non_blocking=True) for k in self.keys}
                 if B > n:                        # fixed shapes: pad to the bucket (rows = copies of row 0, dropped)
                     b = {k: torch.cat([v, v[:1].expand(B - n, *v.shape[1:])]) for k, v in b.items()}
                 enc, heads = self.fn(b)
                 return self._post(enc, heads, b, n)
-            g = self.graphs.get(B)
-            if g is None:
-                g = self.graphs[B] = self._capture(arrs, B)
+            g = self.graphs[B]
             stat, out = g["in"], g["out"]
             for k in self.keys:
                 src = torch.from_numpy(arrs[k][:n])
@@ -169,9 +178,21 @@ class Forward:
             for _ in range(3):                                   # warm-up on a side stream (cuBLAS workspaces)
                 self.fn(stat)
         torch.cuda.current_stream().wait_stream(s)
+        while self.pool in _POOL_NEXT:
+            self.pool = _POOL_NEXT[self.pool]
+        prev = torch.cuda.current_stream()
         graph = torch.cuda.CUDAGraph()
-        with torch.cuda.graph(graph, pool=self.pool, capture_error_mode="thread_local"):     # a server's other threads keep running
-            out = self.fn(stat)
+        try:
+            with torch.cuda.graph(graph, pool=self.pool, capture_error_mode="thread_local"):     # a server's other threads keep running
+                out = self.fn(stat)
+        except Exception as exc:                 # noqa: BLE001 -- never leave the pool recording, never cascade
+            torch.cuda.set_stream(prev)          # graph.__exit__ raised before it restored the stream
+            if self.pool is not None:
+                new = torch.cuda.graph_pool_handle()
+                _POOL_NEXT[self.pool] = new
+                self.pool = new
+            print(f"[policy_server] graph capture of bucket {B} failed, that bucket runs eager: {exc!r:.300}", flush=True)
+            return None
         return {"in": stat, "out": out, "graph": graph}
 
     def cell_logits(self, enc, n: int):
@@ -417,6 +438,10 @@ class Client:
     def forward(self, blocks) -> list:
         """``blocks`` = [(model name or index, rows dict, n)], at most one per model -> [Fwd] in the same order. All
         are sent before any answer is awaited, so the server batches them with the other producers' blocks."""
+        return self.forward_recv(self.forward_send(blocks))
+
+    def forward_send(self, blocks) -> list:
+        """forward's first half (MultiClient: every shard's blocks go out before any answer is awaited) -> mis."""
         if self.view is None:
             self._attach()
         mis = [self._mi(m) for m, _, _ in blocks]
@@ -428,6 +453,9 @@ class Client:
             for k, v in self.view[mi].items():
                 v[:n] = rows[k][:n]
             self.conn.send(("fwd", mi, int(n)))
+        return mis
+
+    def forward_recv(self, mis) -> list:
         got = {}
         for _ in mis:
             _, mi, bid, ver, heads, p = self._recv()
@@ -437,6 +465,12 @@ class Client:
     def cells(self, f: Fwd, ids, slots) -> np.ndarray:
         """decide's ``cell_logits(ids, slots)`` for rows ``ids`` of block ``f`` -> float32 [len(ids), N_CELLS]."""
         self.conn.send(("cell", f.bid, np.asarray(ids, np.int64), np.asarray(slots, np.int64)))
+        return self._recv()
+
+    def cells_multi(self, parts) -> list:
+        """SPEED2 F3: several ``cells`` calls in ONE message and one reply. ``parts`` = [(Fwd, ids, slots), ...] (any
+        blocks of this producer's current forwards) -> [float32 [len(ids), N_CELLS], ...] in the same order."""
+        self.conn.send(("cells", [(f.bid, np.asarray(ids, np.int64), np.asarray(slots, np.int64)) for f, ids, slots in parts]))
         return self._recv()
 
     def ability(self, f: Fwd, ids, feat) -> np.ndarray:
@@ -488,6 +522,62 @@ class Client:
         if self._shm is not None:
             self.view = None
             self._shm.close()
+
+
+class MultiClient:
+    """SPEED2 F2' (ROLLOUT-SPEED): one Client per MODEL-SHARDED server (each serves a subset of the models, so their
+    forwards run in parallel processes); Client's interface for the producer. A block goes to the server holding its
+    model; a Fwd's cells / ability / done go to the server that produced it."""
+
+    def __init__(self, clients: list):
+        self.cs, self.models, self.of, self._sh = clients, {}, {}, {}
+        for j, c in enumerate(clients):
+            for name in c.models:
+                if name in self.models:
+                    raise ValueError(f"model {name} on two shards")
+                self.models[name] = len(self.models)
+                self.of[name] = j
+
+    def forward(self, blocks) -> list:
+        by: dict = {}
+        for b in blocks:
+            by.setdefault(self.of[b[0]], []).append(b)
+        sent = {j: self.cs[j].forward_send(bs) for j, bs in by.items()}
+        got = {}
+        for j, bs in by.items():
+            for b, f in zip(bs, self.cs[j].forward_recv(sent[j])):
+                self._sh[id(f)] = j
+                got[b[0]] = f
+        return [got[b[0]] for b in blocks]
+
+    def cells(self, f, ids, slots):
+        return self.cs[self._sh[id(f)]].cells(f, ids, slots)
+
+    def ability(self, f, ids, feat):
+        return self.cs[self._sh[id(f)]].ability(f, ids, feat)
+
+    def cells_multi(self, parts) -> list:
+        by: dict = {}
+        for n, (f, ids, slots) in enumerate(parts):
+            by.setdefault(self._sh[id(f)], []).append((n, f, ids, slots))
+        for j, pp in by.items():                          # every shard's request out first, then the replies
+            self.cs[j].conn.send(("cells", [(f.bid, np.asarray(i, np.int64), np.asarray(s, np.int64)) for _, f, i, s in pp]))
+        out = [None] * len(parts)
+        for j, pp in by.items():
+            for (n, *_), x in zip(pp, self.cs[j]._recv()):
+                out[n] = x
+        return out
+
+    def done(self, fs):
+        by: dict = {}
+        for f in fs:
+            by.setdefault(self._sh.pop(id(f)), []).append(f)
+        for j, ff in by.items():
+            self.cs[j].done(ff)
+
+    def close(self):
+        for c in self.cs:
+            c.close()
 
 
 def connect(address, authkey: bytes = AUTHKEY) -> Client:
@@ -626,6 +716,7 @@ class PolicyServer:
                     arr = {key: torch.from_numpy(v).pin_memory().numpy() for key, v in arr.items()}
                 out = c.fwd(arr, B)
                 (out[2] if out[2] is not None else next(iter(out[1].values()))).cpu()
+            c.fwd.frozen = True                 # every bucket <= max_batch is captured now: no capture mid-run
 
     def close(self):
         self._stop = True
@@ -780,6 +871,8 @@ class PolicyServer:
                         self._cv.notify()
                 elif msg[0] in ("cell", "ab"):
                     self._cq.put((msg[0], msg[1], i, msg[2], msg[3]))
+                elif msg[0] == "cells":                  # Client.cells_multi: answered as ONE reply
+                    self._cq.put(("cells", None, i, msg[1], None))
                 elif msg[0] == "done":
                     with self._lock:
                         self._release(msg[1], i)
@@ -929,37 +1022,52 @@ class PolicyServer:
                     break
             t0 = time.perf_counter()
             by: dict = {}
-            for kind, bid, i, x, y in reqs:
-                by.setdefault((kind, bid), []).append((i, x, y))
+            multi: dict = {}                             # cells_multi: (client, request no.) -> its parts' outputs
+            for q, (kind, bid, i, x, y) in enumerate(reqs):
+                if kind == "cells":
+                    multi[(i, q)] = [None] * len(x)
+                    for j, (b, ids, slots) in enumerate(x):
+                        by.setdefault(("cell", b), []).append((i, ids, slots, (i, q, j)))
+                else:
+                    by.setdefault((kind, bid), []).append((i, x, y, None))
             for (kind, bid), rr in by.items():
                 try:
                     with self._lock:
                         b = self._batches[bid]
-                    ids = np.concatenate([x + b["off"][i] for i, x, _ in rr])
+                    ids = np.concatenate([x + b["off"][i] for i, x, _, _ in rr])
                     stream = torch.cuda.stream(self._cs) if self._cs is not None else contextlib.nullcontext()
                     with torch.no_grad(), stream:
                         c = b["c"]
                         if kind == "cell":
-                            out = c.fwd.cell_logits(b["enc"], b["n"])(ids, np.concatenate([y for _, _, y in rr]))
+                            out = c.fwd.cell_logits(b["enc"], b["n"])(ids, np.concatenate([y for _, _, y, _ in rr]))
                             out = out.float().cpu().numpy()
                         elif c.ability is None:
                             raise RuntimeError("ability call: this weight version carried no ability head")
                         else:
                             g = b["enc"]["g"]
                             out = c.ability(g[torch.as_tensor(ids, device=g.device)],
-                                            torch.as_tensor(np.concatenate([y for _, _, y in rr]), device=g.device))
+                                            torch.as_tensor(np.concatenate([y for _, _, y, _ in rr]), device=g.device))
                             out = out.double().cpu().numpy()
                 except BaseException as exc:                   # noqa: BLE001 -- the waiting producers get it
-                    for i, _, _ in rr:
+                    for i, _, _, t in rr:
+                        if t is not None:
+                            multi[t[:2]] = ("err", repr(exc))
+                            continue
                         with contextlib.suppress(BrokenPipeError, OSError):
                             self.conns[i].send(("err", repr(exc)))
                     continue
                 S["cell_calls"] += 1
                 o = 0
-                for i, x, _ in rr:
-                    with contextlib.suppress(BrokenPipeError, OSError):
-                        self.conns[i].send(out[o:o + len(x)])
+                for i, x, _, t in rr:
+                    if t is None:
+                        with contextlib.suppress(BrokenPipeError, OSError):
+                            self.conns[i].send(out[o:o + len(x)])
+                    elif isinstance(multi[t[:2]], list):
+                        multi[t[:2]][t[2]] = out[o:o + len(x)]
                     o += len(x)
+            for (i, _), outs in multi.items():
+                with contextlib.suppress(BrokenPipeError, OSError):
+                    self.conns[i].send(outs)
             S["cell_s"] += time.perf_counter() - t0
 
 

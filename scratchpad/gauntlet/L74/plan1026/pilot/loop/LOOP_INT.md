@@ -3,6 +3,50 @@
 Labels: (a) measured, (b) untested, (c) contradicted.
 
 ## STATUS (keep current; 2026-10-28 ~18:30 EDT, re-dispatch on account 2)
+- ROLLOUT-SPEED (account 3, 10-30 night; restart point = this bullet). Pod 31892 (RTX PRO 6000 96 GB, cgroup 27.2 CPUs,
+  runs on CPUs 6-33), tree /workspace/rs/cb (hard-link copy of /workspace/loop/cb + this commit's loop files), env
+  /workspace/rs/env.sh, launcher /workspace/rs/fl.sh RUN CPUS "FASTLOOP ARGS" [k=v] (pilot.yaml + n_actors=2 screen_entries=1),
+  chain /workspace/rs/chain.sh; results copied to C:/Users/benpe/pod_backup_weekend/pro6000/ (31892 is stopped after this).
+  1. --local-forward at pilot scale (a; pilot.yaml, B0 + the 8-opponent pool incl. G = oplc_ftR_l0003_a10b_u0160 (timing
+     head, in-process), 16 producers x 32 matches x 2 threads = 512 matches / update, one serve.py eager; same seed, so the
+     same jobs: u0000 342,882 rows in every arm). compare.py --server eager --local-forward on 31892 first: 16 / 16
+     identical, lp max 2.3e-5, v_old 9.5e-7, wver 0 mismatches (out/lf_on_31892.json).
+     | arm | u0000 wave s | matches/h | producer wall min/med/max s | GPU util mean | GPU MiB total (per producer) |
+     |---|---:|---:|---|---:|---|
+     | OFF (G on producer CPU) | 218.4 | 8,439 | 165.7 / 180.3 / 217.9 | 25% | 7,146 (producers 0) |
+     | ON --local-forward | 140.9 (u0001 142.4) | 13,079 (12,941) | 125.2 / 133.5 / 140.4 | 97% (92%) | 21,977 (744-920 each) |
+     | ON + --server graphs | 124.5 / 126.7 / 123.6 (u0-u2) | 14,809 / 14,545 / 14,909 | 107.9 / 118.5 / 123.8 | 95-99% | 39,063-40,879 (server 19.7 GB) |
+     Per producer, u0000: OFF forward 71-124 s + forward_wait 63-69 s + decide_py 17-22 s + java 4.5-9 s; ON forward 17-28 s,
+     forward_wait 71-75 s, decide_py 23-27 s; ON+graphs forward 21-35 s, forward_wait 29-32 s, decide_py 44-53 s (the per-group
+     cell round trips are counted in decide_py: with graphs they are the largest stage, F3's target). (a) --local-forward =
+     1.55x on this pod (not the 2.5-3x expected from 33308: here G's CPU forward is a smaller share; (c) for "2.5-3x" as a
+     general number), and the straggler spread shrinks from 52 s to 15 s. Learner (critic warm-up, 512 matches) 120-126 s
+     per update on the same GPU. (b) GPU util ~97% with 17 CUDA contexts time-slicing one GPU is not proof of saturation:
+     MPS (nvidia-cuda-mps-control) is the untested next lever.
+  2. --server graphs FIXED (a). Root cause: serve.py never pre-captured (srvshape.py / srv_bench.py, which never crashed,
+     call PolicyServer.start(warm=...)), so graphs were captured LAZILY mid-run in the forward thread while the cell / watch
+     threads ran (the watch thread's push does torch.cuda.synchronize + foreach H2D copies; 33308's 4090 was also shared with
+     the learner = allocator pressure); any illegal call there fails the capture (b for which one exactly: the 33308 log is
+     off limits). The cascade (a, reproduced, pool_probe.py on 33903, torch 2.11): ANY failed capture leaves its pool
+     'recording' (capture_end raises before it ends the pool's allocation), every later capture into it fails with
+     "beginAllocateToPool: already recording", and torch._C._cuda_endAllocateToPool does not clear it; a FRESH pool captures
+     and replays correctly. Fix: serve.py --mode graphs captures every model x copy x bucket at start (before producers and
+     server threads; warm rows by spec), Forward.frozen = no capture mid-run (a missing bucket runs eager), and a failed
+     capture restores the thread's stream, moves the shared pool to a fresh handle (_POOL_NEXT) and marks that bucket eager
+     with a logged warning. Planted test test_graph_guard.py (33903 4090): PASS on the fix, raises on the old code.
+     Proof: (a) fastloop --server graphs --local-forward, 16 producers, pilot pool, B6 + u0000-u0002 (3 learner pushes, both
+     copies), 0 capture failures, numbers in the table; (b) compare.py --server graphs --local-forward 16 / 16 identical,
+     lp max 2.3e-5 (bar 5e-5), v_old 9.5e-7, wver 0 (out/cmp_graphs_lf.json).
+  3. F3 BUILT (opt-in env FASTLOOP_CELLS1=1; absent = per-group cell calls as before): producer._fast_gen (the old
+     _fast_group body as a generator that yields its one cell request; _fast_group drives it, same ops) -> every fast server
+     group draws gate + card, ONE Client.cells_multi message carries all groups' (bid, ids, slots), the server's cell thread
+     answers it as ONE reply (styled _prod_group groups keep their own calls). F2' BUILT (opt-in env FASTLOOP_SHARDS=S):
+     bench.start_servers starts S servers per device (srv{g}.sock = learner only, srv{g}.s{j}.sock = opps[j-1::S-1], serve.py
+     --no-learner), producer uses policy_server.MultiClient (forward_send to every shard, then forward_recv; cells / ability /
+     done to the producing shard). compare.py --local-forward on 31892 (a): CELLS1 eager 16 / 16, SHARDS 3 eager 16 / 16, CELLS1
+     + SHARDS 3 + graphs 16 / 16, each lp max 2.3e-5, v_old 9.5e-7 (cmp_cells1 / cmp_shards3 / cmp_all3.json; cells_wait > 0
+     in fast_stats = the path ran). NOTE msg_p2 turns opp_style off, so compare exercises fast groups only.
+  Also: bench.py --local-forward (as fastloop's).
 - ROLLOUT-SPEED (FASTLOOP-FIX worker, 10-30 late; PARTIAL -- hand-off to a fresh worker recommended, see the list):
   (a) where the pilot's producer wall goes (33308 pilot_box3 throughput.jsonl, read-only; Producer.tm is CUMULATIVE over
   updates, so per-update = the difference of consecutive lines): u0023 producer walls 658 .. 924 s with 128 matches,

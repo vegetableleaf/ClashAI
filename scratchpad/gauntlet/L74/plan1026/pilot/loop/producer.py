@@ -290,7 +290,13 @@ class Producer:
         self._raw = RoyaleSelfPlayEnv.raw                    # production's raw() (the capture env's is stubbed)
         if server:                                           # LOOP-SRV PolicyServer (serve.py) at this address
             from pipeline.policy_server import connect
-            self.cl = connect(server)
+            sh = int(os.environ.get("FASTLOOP_SHARDS", "1"))   # SPEED2 F2' (opt-in): bench.start_servers' shards
+            if sh > 1:
+                from pipeline.policy_server import MultiClient
+                self.cl = MultiClient([connect(server)] + [connect(server.replace(".sock", f".s{j}.sock"))
+                                                           for j in range(1, sh)])
+            else:
+                self.cl = connect(server)
 
     # ------------------------------------------------------------------------------------------------ tables
     def _fill(self) -> int:
@@ -782,6 +788,7 @@ class Producer:
             self.tm["forward_wait"] += time.perf_counter() - f0
             self.tm["fwd_rows"] += sum(b[2] for b in blocks)
             self.tm["fwd_calls"] += 1
+        pend = []                                            # CELLS1: fast server groups waiting for their cells
         for idx, sides, model, c, batch, keys, name, srv in work:
             self._abil_in(idx, sides)
             if srv:
@@ -810,7 +817,11 @@ class Producer:
                 if c.get("ability"):                         # ability_decide's head on the server (the block's g)
                     head = (lambda f_: lambda gi, ft: torch.from_numpy(cl.ability(f_, gi.numpy(), ft.numpy())))(f)
                     abx = ({"g": torch.arange(len(idx))}, {**c, "ability": {**c["ability"], "head": head}})
-                self._fast_group(model, c, sides, idx, batch, keys, heads, p, hand, cell_fn, vold, f.ver // 2, abx)
+                if CELLS1:                                   # SPEED2 F3: draw gate + card now, cells after ONE request
+                    g = self._fast_gen(model, c, sides, idx, batch, keys, heads, p, hand, vold, f.ver // 2, abx)
+                    pend.append((g, f, next(g, None)))
+                else:
+                    self._fast_group(model, c, sides, idx, batch, keys, heads, p, hand, cell_fn, vold, f.ver // 2, abx)
                 self.tm["decide_py"] += time.perf_counter() - d0
                 continue
             f0 = time.perf_counter()
@@ -832,6 +843,21 @@ class Producer:
                 continue
             self._prod_group(model, c, sides, idx, batch, keys, enc, heads, p, hand,
                              model_cell_logits(model, enc, heads["card"].device))
+            self.tm["decide_py"] += time.perf_counter() - d0
+        if pend:                                             # every group's rows are its own sides: their rng order holds
+            c0 = time.perf_counter()
+            ask = [(f, *req) for g, f, req in pend if req is not None]
+            got = iter(self.cl.cells_multi(ask) if ask else [])
+            self.tm["cells_wait"] += time.perf_counter() - c0
+            d0 = time.perf_counter()
+            for g, f, req in pend:
+                if req is not None:
+                    try:
+                        g.send(torch.from_numpy(next(got)))
+                    except StopIteration:
+                        pass
+                    else:
+                        raise RuntimeError("_fast_gen asked for cells twice")
             self.tm["decide_py"] += time.perf_counter() - d0
         if fs:
             self.cl.done(list(fs.values()))
@@ -1013,7 +1039,17 @@ class Producer:
     # ------------------------------------------------------------------------------------------------ fast decide
     def _fast_group(self, model, c, sides, idx, batch, keys, heads, p, hand, cell_fn, v_old=None, wver=None,
                     abx=None) -> None:
-        """Match.pre + e1_eval.sample_decide_batch + decision_options.decide (decode 'sample', no rules) + _record for one
+        """_fast_gen with its one cell request answered by ``cell_fn`` at once (the sequential form)."""
+        g = self._fast_gen(model, c, sides, idx, batch, keys, heads, p, hand, v_old, wver, abx)
+        req = next(g, None)
+        if req is not None:
+            try:
+                g.send(cell_fn(*req))
+            except StopIteration:
+                pass
+
+    def _fast_gen(self, model, c, sides, idx, batch, keys, heads, p, hand, v_old=None, wver=None, abx=None):
+        """A generator: yields once (ids, slots) when rows play, and takes their cell logits by send(). Match.pre + e1_eval.sample_decide_batch + decision_options.decide (decode 'sample', no rules) + _record for one
         policy group, vectorised where the arithmetic allows it and EXACT: the same torch ops on the same batch, every
         draw from the row's own rng in production's order (gate, card, cell), numpy Generator.choice reproduced as its
         own cdf / searchsorted('right') on one uniform. compare.py asserts it against production (actor_main)."""
@@ -1058,7 +1094,7 @@ class Producer:
             for r in play_idx:
                 lp_card[r] = math.log(card_probs[r, slots[r]])
             with torch.no_grad():
-                cel = cell_fn(list(map(int, play_idx)), [int(slots[r]) for r in play_idx])
+                cel = yield (list(map(int, play_idx)), [int(slots[r]) for r in play_idx])
                 cell_probs = torch.softmax(cel.double() / T, dim=-1).cpu().numpy()
             cells[play_idx] = self._choice(cell_probs, [rngs[r] for r in play_idx])
             for j, r in enumerate(play_idx):
@@ -1180,6 +1216,9 @@ def server_version(update: int, ability: bool) -> int:
     warm start (no head) and u0000's rollout (head) are both update 0 with different heads; the server only loads a newer
     version. Traj wver = version // 2 = the update."""
     return 2 * int(update) + int(bool(ability))
+# SPEED2 F3 (ROLLOUT-SPEED, opt-in): with --server, the fast groups' cell requests of a round go to serve.py as ONE
+# message (policy_server Client.cells_multi) instead of one round trip per model group; absent = per group, as before
+CELLS1 = bool(os.environ.get("FASTLOOP_CELLS1"))
 MEMHASH = bool(os.environ.get("FASTLOOP_MEMHASH"))           # compare.py only: per-row MEM_KEYS hashes in the traj
 
 

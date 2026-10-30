@@ -54,18 +54,24 @@ def start_servers(base, update, sd, jobs, devices, mode, block_max, root="/dev/s
         torch.save({"version": v, "state_dict": msd}, wd / f"learner.v{v:08d}.pt")
         (wd / "learner.latest").write_text(str(v))
     opps = sorted({j[1]["opp"]["path"] for j in jobs})
-    servers = []
+    S = int(os.environ.get("FASTLOOP_SHARDS", "1"))      # SPEED2 F2' (opt-in): S model-sharded servers per device:
+    servers = []                                          # srv{g}.sock = the learner only, srv{g}.s{j}.sock = opps[j-1::S-1]
     for g, dv in enumerate(devices):
-        addr = f"{root}/srv{g}.sock"
-        Path(addr + ".ready").unlink(missing_ok=True)
-        servers.append(subprocess.Popen([sys.executable, str(HERE / "serve.py"), "--listen", addr, "--device", dv,
-                                         "--watch", str(wd), "--learner", base["init_path"] if "init_path" in base
-                                         else opps[0], "--block-max", str(block_max), "--mode", mode, "--opp", *opps]
-                                        + (["--mem-full", base["mem_full"]] if base.get("mem_full") else [])))
-        while not Path(addr + ".ready").exists():
-            if servers[-1].poll() is not None:
-                raise SystemExit("serve.py exited")
-            time.sleep(1)
+        for j in range(S):
+            addr = f"{root}/srv{g}.sock" if j == 0 else f"{root}/srv{g}.s{j}.sock"
+            sub = opps if S == 1 else [] if j == 0 else opps[j - 1::S - 1]
+            if j and not sub:
+                raise SystemExit(f"FASTLOOP_SHARDS {S}: shard {j} has no opponent ({len(opps)} opponents)")
+            Path(addr + ".ready").unlink(missing_ok=True)
+            servers.append(subprocess.Popen([sys.executable, str(HERE / "serve.py"), "--listen", addr, "--device", dv,
+                                             "--watch", str(wd), "--learner", base["init_path"] if "init_path" in base
+                                             else opps[0], "--block-max", str(block_max), "--mode", mode, "--opp", *sub]
+                                            + (["--mem-full", base["mem_full"]] if base.get("mem_full") else [])
+                                            + (["--no-learner"] if j else [])))
+            while not Path(addr + ".ready").exists():
+                if servers[-1].poll() is not None:
+                    raise SystemExit("serve.py exited")
+                time.sleep(1)
     return servers
 
 
@@ -79,7 +85,7 @@ def worker(k, a, base, update, sd, jobs, q):
 
 def _worker(k, a, base, update, sd, jobs, q):
     from producer import Producer
-    dev = "cpu" if a.server else a.devices.split(",")[k % len(a.devices.split(","))]
+    dev = "cpu" if a.server and not a.local_forward else a.devices.split(",")[k % len(a.devices.split(","))]
     srv = f"/dev/shm/loop/srv{k % len(a.devices.split(','))}.sock" if a.server else None
     P = Producer({**base, "actor_device": dev}, a.matches, a.threads, dev, Path(a.build), k, server=srv)
     last = [0.0]
@@ -111,6 +117,8 @@ def main():
     ap.add_argument("--jobs", type=int, default=100000, help="jobs per producer (more than the window needs)")
     ap.add_argument("--build", default=os.environ.get("CRFORGE_FACADE_BUILD", str(HERE / "jbuild")))
     ap.add_argument("--server", default=None, help="eager | graphs: forwards on serve.py (LOOP-SRV), one per device")
+    ap.add_argument("--local-forward", action="store_true", help="with --server: in-process forwards (timing heads) on the "
+                    "producer's --devices entry, as fastloop --local-forward (absent = CPU)")
     a = ap.parse_args()
     base, update, sd, jobs = pickle.loads(Path(a.msg).read_bytes())
     base = {**base, "actor_device": a.devices.split(",")[0]}
