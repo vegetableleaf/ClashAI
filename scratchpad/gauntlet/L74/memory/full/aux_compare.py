@@ -6,7 +6,8 @@
         --tables TABLES.npz --data DATA.npz --out OUT.json [--val-sample 0] [--bs 512] [--device cuda]
 
 Both use the NEW run's label_stats (the same normalisation) and the same val rows (split 1, rows with a table). The old
-encoder reads the snap tables through mem_full(128, snap): zero new columns = its own output (MEM_FULL section 4).
+encoder reads the snap tables through mem_full(128, snap): zero new columns = its own output (MEM_FULL section 4);
+old256 = the same untrained weights fed the full history (what the RL-only path starts from).
 A row's history length = its event count at e_max 256 (memory mask), exact below the cap (max 229 pro, section 1)."""
 import argparse
 import json
@@ -81,7 +82,7 @@ def main():
         g = {"rows": int(len(ids))}
         if len(ids):
             v = rows.view(ids)
-            for tag, model, em in (("old", old, 128), ("new", new, new.mem.e_max)):
+            for tag, model, em in (("old", old, 128), ("old256", old, 256), ("new", new, new.mem.e_max)):
                 v.memory_e_max, v.memory_n_f = em, model.mem.ev_in.in_features
                 with torch.no_grad():
                     g[tag] = brief(aux_eval(model, base, v, lab, st, bs=a.bs))

@@ -72,6 +72,25 @@ Grades: (a) measured (number + source), (b) plausible, untested (with the test),
   `/workspace/memretrain/run.sh NAME TABLES [train_memory flags]`, outputs `/workspace/memretrain/out/NAME/`.
   Keep `--val-bs 128`: at val bs 512 the process peaked at 5.7 GB (over the 4 GB budget; that run was stopped by PID).
 
+- Result of the short run (s3k_warm, a): warm from B0, 3,000 replays, 638,662 train rows, 2 epochs (4,988 steps), lr 3e-4, val
+  bs 128, GPU peak 3,466 MiB, 588 s. Coupling zero, policy identical to base within GPU noise. Same 62,436 held-out rows
+  (`memory/full/retrain/cmp_s3k.json`), summed aux loss, old (128) / old256 (B0 weights untrained, full history) / new:
+  all 3.8340 / 3.8333 / 3.8306; <= 128 (60,114 rows) 3.8197 / 3.8197 / 3.8190; > 128 (2,322 rows) 4.4031 / 4.3617 / 4.4192.
+  > 128 per head old -> new: swing r2 .194 -> .200, commit .478 -> .460, cyc queue_acc .632 -> .636, opp_next .385 -> .379;
+  no CI computed, and rk_dmg (22) / xb_lock (2) are too few rows to read. So gate 4 is NOT met on this subset: no measured gain
+  on the > 128 rows, and the untrained old256 beats the trained new there. A subset run, not a verdict on the full retrain.
+- (a) Feeding B0 the full history did not hurt the aux heads: the 17.6% representation shift cost no aux loss (4.4031 -> 4.3617).
+- (b) untested: these aux labels are short-horizon (hand, cycle, next card, next 10 s), so they may not reward 1x-phase events.
+  Test: the full-table run below; if > 128 stays flat, add a long-horizon aux target (owner decision, not done here).
+- NEXT (not started, stopped by the lead at usage 97%): full tables `.foreman/scratch/memretrain/snap_full.npz` (laptop PID 29472,
+  was at 14,600 / 14,661; its meta line lands in `snap_full.json`; check `failed` is empty and rows_with_table = 3,517,863).
+  `scp` it to `/workspace/memretrain/snap_full.npz`, then on 33903 (~50 min, b: scaled from 0.1 s / step):
+  `cd /workspace/memretrain; nohup bash run.sh full_warm /workspace/memretrain/snap_full.npz --epochs 2 --lr 3e-4 --warmup 500 --val-bs 128 > out/full_warm.log 2>&1 &`
+  then `bash cmp.sh full /workspace/memretrain/out/full_warm/mem_best.pt /workspace/memretrain/snap_full.npz --bs 128 --val-sample 60000`
+  (read with `.foreman/scratch/memretrain/show_cmp.py`), then recipe steps 3-5 of section 4.
+  Copies of run.sh / cmp.sh: `.foreman/scratch/memretrain/`. Checkpoint: `/workspace/memretrain/out/s3k_warm/mem_best.pt`.
+- Codex dispatches: none.
+
 ## 1. How often does E_MAX = 128 truncate? (a)
 
 Event = every play / ability press of both sides + debounced tower damage + tower falls (match_memory.MatchMemory.table).
