@@ -878,6 +878,8 @@ def _init_worker(args: dict) -> None:
         learner_cfg['tap_slow'] = E.parse_tap_slow(args['tap_slow'])
     if args.get('decision_options'):
         learner_cfg.update(args['decision_options'])
+    if args.get('gate_sample'):                             # GATE-SAMPLE: the trainer's sampled gate (match_kwargs)
+        learner_cfg['gate_sample'] = float(args['gate_sample'])
     if args.get('learner_policy', 'live') == 'sample':   # 10-13: rl_royale's rollout sampler for OUR side (actor_cfg)
         learner_cfg.update(policy='sample', T=float(args['learner_T']),
                            sample_heads=tuple(args.get('learner_sample_heads', ('gate', 'card', 'cell'))),
@@ -1097,6 +1099,10 @@ def main(argv=None) -> int:
                          "e1_eval.SelfPlaySide; needs the live delay; frame grid, <= 2 outstanding); default off = unchanged")
     ap.add_argument("--pipeline-tau-delta", type=float, default=0.0,
                     help="with --pipeline-decisions: added to the play-gate threshold while a play is pending (default 0)")
+    ap.add_argument("--gate-sample", type=float, default=0.0, metavar="T",
+                    help="GATE-SAMPLE 10-30: our gate = the trainer's Bernoulli(sigmoid((z - logit tau) / T)) (tau = the phase "
+                         "tau, decision_options.decide gate_sample; live --gate-sample), one seeded stream per match (cfg "
+                         "'gate_sample'); needs decision options, no --pipeline-decisions; 0 = the threshold gate (unchanged)")
     ap.add_argument("--record-plays", action="store_true",
                     help="each match line gets own_plays [decision tick, landing tick, card, accepted, elixir seen]")
     ap.add_argument("--hero-abilities", action="store_true",
@@ -1172,6 +1178,11 @@ def main(argv=None) -> int:
         ap.error('--learner-policy sample is the plain RL rollout sampler; it takes no decision options')
     if decision_active and a.arms != 'plain':
         ap.error('decision options require --arms plain; search experiments are separate')
+    if a.gate_sample and not (math.isfinite(a.gate_sample) and a.gate_sample > 0 and decision_active
+                              and not a.pipeline_decisions and a.learner_policy == 'live'):
+        # ponytail: no per-time exponent in the SIM: a SIM wait advances exactly decide_every (10) ticks = the pilot's
+        # trained step, so k = 1 on every row; fast plays (decisions while pending) would break that -> refused
+        ap.error('--gate-sample T needs T > 0, decision options, --learner-policy live and no --pipeline-decisions')
     if a.probe_xbow_focus and (a.arms != 'plain' or a.learner_policy != 'live'):
         ap.error('--probe-xbow-focus needs --arms plain and --learner-policy live')
     if a.ability_policy == "v2" and not a.hero_abilities:
@@ -1216,6 +1227,8 @@ def main(argv=None) -> int:
              "forms_mode": a.forms_mode, "hero_abilities": a.hero_abilities, "ability_policy": a.ability_policy, "scorer": a.scorer, "census": a.census}
     if decision_active:
         wargs['decision_options'] = decision_cfg
+    if a.gate_sample:
+        wargs['gate_sample'] = float(a.gate_sample)
     if a.behaviour_telemetry:
         wargs['behaviour_telemetry'] = True
     if a.opp_policy != "live":
@@ -1260,7 +1273,7 @@ def main(argv=None) -> int:
         E.parse_tap_loss(a.tap_loss)                         # fail before any worker starts
     if a.tap_slow is not None:
         E.parse_tap_slow(a.tap_slow)
-    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads', 'learner_T_gate') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k != 'ability_head_decode' or v != 'greedy') and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays', 'probe_xbow_focus', 'ability_stats', 'live_levels', 'habit_log', 'spell_log', 'crown_log', 'record_board') or v) and (k not in ('opp_decide_every', 'opp_reaction_ticks', 'opp_tower_troops', 'opp_tau', 'tap_loss', 'tap_slow', 'probe_xbow_start') or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
+    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads', 'learner_T_gate') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k != 'ability_head_decode' or v != 'greedy') and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'gate_sample', 'record_plays', 'probe_xbow_focus', 'ability_stats', 'live_levels', 'habit_log', 'spell_log', 'crown_log', 'record_board') or v) and (k not in ('opp_decide_every', 'opp_reaction_ticks', 'opp_tower_troops', 'opp_tau', 'tap_loss', 'tap_slow', 'probe_xbow_start') or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
                                                 "gen_sha256": sha256(REPO / a.gen), "opp_gen_sha256": opp_sha,
                                                 "s1_sha256": sha256(REPO / a.s1),
                                                 "tau_plain": TAU_PLAIN, "tau_opp": TAU_OPP, "crown_w": CROWN_W,

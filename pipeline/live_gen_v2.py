@@ -85,12 +85,17 @@ class FollowUpPlanner:
 
 
 class GenPilot(FollowUpPlanner, LegacyGenPilot):
-    def __init__(self, *args, decision_options=None, decision_seed=0, public_audit=False, gate_sample=0.0, **kwargs):
+    def __init__(self, *args, decision_options=None, decision_seed=0, public_audit=False, gate_sample=0.0,
+                 gate_sample_step_ticks=0, **kwargs):
         super().__init__(*args, **kwargs)
         self.gate_sample = float(gate_sample)   # live --gate-sample T (pilot 10-28): > 0 = the trainer's sampled gate at T
         if not (self.gate_sample >= 0 and np.isfinite(self.gate_sample)):
             raise ValueError('gate_sample must be finite and >= 0 (0 = off)')
         self.gate_seed, self.rng_gate, self.last_gate_draw = None, None, None
+        self.gate_sample_step_ticks = int(gate_sample_step_ticks)   # GATE-SAMPLE 10-30: > 0 = per unit of time (gate_step)
+        if self.gate_sample_step_ticks < 0 or (self.gate_sample_step_ticks and not self.gate_sample > 0):
+            raise ValueError('gate_sample_step_ticks needs gate_sample > 0 (0 = one trainer draw per decision)')
+        self._gate_prev = None                  # (game tick, sampled WAIT) of the previous decision this match
         self.decision_options = decision_options or DecisionOptions()
         if self.gate_sample > 0 and not self.decision_options.active:
             raise ValueError('gate_sample needs decision options active (the unified decide; tau_phase as the trainer)')
@@ -151,6 +156,7 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
         if getattr(self, "gate_sample", 0.0) > 0:                # its own per-match stream: rng_decisions' draws stay as without it
             self.gate_seed = int(np.random.SeedSequence([self.decision_seed, self.match_index, 0x6A7E]).generate_state(1)[0])
             self.rng_gate = np.random.default_rng(self.gate_seed)
+            self._gate_prev = None
         self._public_audit_snapshot = None
         self._hazard_prev = None
         self._threat_state = None
@@ -340,12 +346,18 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
             if self.rng_gate is None:
                 raise ValueError('gate_sample: reset_match() before the first decision (the per-match gate seed)')
             ctx.update(gate_sample=gs, gate_rngs=[self.rng_gate])
+            if getattr(self, 'gate_sample_step_ticks', 0):   # per unit of time: k from this match's previous decision
+                from .decision_options import gate_step
+                ctx['gate_steps'] = [gate_step(getattr(self, '_gate_prev', None), int(frame['game_tick']),
+                                               self.gate_sample_step_ticks)]
         res = decide({'card': out['card'], **({'gate': out['gate']} if gs > 0 else {})}, [p],
                      allowed[None], np.array([bool(stalled)]), tau=self.gate_tau,
                      options=options, rngs=[self.rng_decisions], cell_logits=cell_logits, card_names=[names],
                      cell_guard=guard, follow_up=follow_up, trace=trace, choose=choose_cells, **ctx)[0]
         tr = trace[0]
         self.last_gate_draw = tr.get('gate_sample')     # live_play logs it ('gate_draw' events); None = no draw
+        if getattr(self, 'gate_sample_step_ticks', 0):
+            self._gate_prev = (int(frame['game_tick']), self.last_gate_draw is not None and not self.last_gate_draw['fire'])
         if not allowed.any():
             if hazard_on:
                 self._hazard_prev = (tick, False)

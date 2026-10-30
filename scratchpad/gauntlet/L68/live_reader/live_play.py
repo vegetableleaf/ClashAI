@@ -602,6 +602,10 @@ def main() -> int:
                     help="pilot 10-28: > 0 = the play / no-play gate is Bernoulli(sigmoid((z - logit tau) / T)) as the trainer's "
                          "pilot decode (decision_options.decide decode 'sample', T_gate = T, tau = the phase tau), from a "
                          "per-match seeded stream; every draw is logged ('gate_draw' events with the seed). 0 = off (unchanged)")
+    ap.add_argument("--gate-sample-step-ticks", type=int, default=0, metavar="N",
+                    help="GATE-SAMPLE 10-30, with --gate-sample: per unit of time, N = the trainer's decide_every (pilot 10): "
+                         "fire with 1 - (1 - p_b)^k, k = game ticks since the previous decision / N after a sampled wait, else 1 "
+                         "(decision_options.gate_step; k in the gate_draw events). 0 = one trainer draw per decision (unchanged)")
     ap.add_argument("--iw-press-head-decode", choices=("greedy", "sample"), default="greedy",
                     help="with --iw-press head: greedy = press iff p > 0.5 (default, unchanged); sample = Bernoulli(p) "
                          "as the head was trained (RL rollouts), from a seeded rng (ability_head_live.SAMPLE_SEED)")
@@ -916,7 +920,9 @@ def load_pilot(a, decision_cfg, ckpt=None):
                      **({"predict_drops": True} if getattr(a, "predict_drops", False) else {}),
                      **({"own_effects": True} if getattr(a, "own_effects", False) else {}),
                      **({"hero_ability_spec": a.hero_ability_spec} if getattr(a, "hero_ability_spec", "off") != "off" else {}),
-                     **({"gate_sample": a.gate_sample} if getattr(a, "gate_sample", 0.0) > 0 else {}))
+                     **({"gate_sample": a.gate_sample} if getattr(a, "gate_sample", 0.0) > 0 else {}),
+                     **({"gate_sample_step_ticks": a.gate_sample_step_ticks}
+                        if getattr(a, "gate_sample_step_ticks", 0) > 0 else {}))
     pilot.legal_guard = not getattr(a, 'no_legal_guard', False)
     if getattr(a, "identity_ext", "off") == "on":   # default: the class's False = off, the model input unchanged
         pilot.identity_ext = True
@@ -1038,6 +1044,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
       **({"predict_drops": True} if getattr(a, "predict_drops", False) else {}),
       **({"own_effects": True} if getattr(a, "own_effects", False) else {}),
       **({"gate_sample": a.gate_sample} if getattr(a, "gate_sample", 0.0) > 0 else {}),
+      **({"gate_sample_step_ticks": a.gate_sample_step_ticks} if getattr(a, "gate_sample_step_ticks", 0) > 0 else {}),
       fast_input=bool(getattr(a, "fast_input", False)), tap_gap_ms=getattr(a, "tap_gap_ms", 50),
       ui_guard=not getattr(a, "no_ui_guard", False), deploy_end=DEPLOY_END,
       afford_ticks=getattr(pilot, "afford_ticks", None), early_release_margin=getattr(a, "early_release_margin", None),
@@ -1255,6 +1262,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                 if getattr(pilot, 'gate_sample', 0.0) > 0:  # --gate-sample: the warm-up's draw is not a decision -> re-seed
                     import numpy as np
                     pilot.rng_gate = np.random.default_rng(pilot.gate_seed)
+                    pilot._gate_prev = None                  # nor is its wait (--gate-sample-step-ticks)
                 warmed = True
             if tick < UI_READY_MIN_TICK:
                 continue

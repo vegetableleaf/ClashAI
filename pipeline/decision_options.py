@@ -453,6 +453,19 @@ def hazard_play(p, step_s, rng):
     return bool(rng.random() < -math.expm1(-float(gate_rate(p)) * float(step_s)))
 
 
+GATE_STEP_CAP = 4.0     # trainer steps (= live_gen_v2.HAZARD_STEP_CAP_S 2 s at the pilot's 10-tick step)
+
+
+def gate_step(prev, tick, step_ticks):
+    """GATE-SAMPLE (live --gate-sample-step-ticks): the per-unit-of-time exponent k of decide's ``gate_steps``. The trainer
+    draws once per ``step_ticks`` of waiting (SIM Match.apply: a wait advances decide_every ticks; the first decision of a
+    match or after a play is one draw), so k = game ticks since the previous decision / step_ticks when that decision was
+    a sampled WAIT, else 1; capped at GATE_STEP_CAP. ``prev`` = (tick, waited) of the previous decision or None."""
+    if prev is None or not prev[1] or tick <= prev[0]:
+        return 1.0
+    return min(tick - prev[0], GATE_STEP_CAP * step_ticks) / step_ticks
+
+
 def threat_on(options):
     return options.gate_hazard_threatened > 0 or options.gate_hazard_threat_radius > 0
 
@@ -2024,7 +2037,7 @@ def decide(heads, p, allowed, stalled, *, tau, options, rngs, cell_logits, card_
            sampler=None, cell_guard=None, follow_up=None, trace=None, choose=None,
            t_sec=None, enemy_alive=None, grid=None, projectiles=None, barrel_id=None, step_s=None, elixir=None,
            enemy_units=None, lethal=None, threatened=None, rocket_boards=None, tau_threat=None, tau_delta=None,
-           log_air_boards=None, rocket_value=None, barrel_goblins=None, gate_sample=0.0, gate_rngs=None):
+           log_air_boards=None, rocket_value=None, barrel_goblins=None, gate_sample=0.0, gate_rngs=None, gate_steps=None):
     """THE decision (plan1026 Pillar 3 P1). SIM eval / forks (``decide_batch``), live (``live_gen_v2.GenPilot.decide``)
     and training rollouts (``e1_eval.sample_decide_batch``, decode 'sample') all run this one function; the callers only
     build the per-row context. Rows are independent (each draws only from its own rng); per row, in order:
@@ -2032,7 +2045,8 @@ def decide(heads, p, allowed, stalled, *, tau, options, rngs, cell_logits, card_
          sample: Bernoulli(sigmoid((z - logit tau) / T_gate)) from ``sampler['rngs'][r]`` (stalled = forced play).
          greedy + ``gate_sample`` T > 0 (live --gate-sample, pilot 10-28): that same draw at T from ``gate_rngs[r]``, with
          z = ``heads['gate']`` and tau = the phase tau (+ tau_delta) -- the trainer's tau_r; tau_threatened and the hazard
-         draw do not apply (the trainer has neither). The draw goes to ``trace`` as 'gate_sample'.
+         draw do not apply (the trainer has neither). The draw goes to ``trace`` as 'gate_sample'. ``gate_steps`` (per
+         row, optional; live --gate-sample-step-ticks): fire with 1 - (1 - p_b)^k, k = ``gate_step`` (per unit of time).
       2. the finishers (lethal_rocket / lethal_log, lethal_quiet's skip): gate, card and cell.
       3. greedy only: rocket_value / rocket_tornado (the combo's second card via ``follow_up``).
       4. card: choose_slot (greedy) | categorical at T (sample); cell: choose_cells with every option (greedy) |
@@ -2090,6 +2104,12 @@ def decide(heads, p, allowed, stalled, *, tau, options, rngs, cell_logits, card_
         z_gate = heads['gate'].detach().cpu().numpy().astype(np.float64).reshape(n)
         with np.errstate(over='ignore'):
             p_b = 1.0 / (1.0 + np.exp(-(z_gate - logit_tau) / float(gate_sample)))
+        if gate_steps is not None:                  # GATE-SAMPLE 10-30 per unit of time: k = trainer steps waited (gate_step);
+            k = np.asarray(gate_steps, dtype=np.float64).reshape(n)   # k 1 = one trainer draw = p_b exactly
+            if not (np.isfinite(k).all() and (k > 0).all()):
+                raise ValueError('gate_steps must be finite and > 0')
+            with np.errstate(divide='ignore', invalid='ignore'):
+                p_b = np.where(k == 1.0, p_b, -np.expm1(k * np.log1p(-p_b)))   # 1 - (1 - p_b)^k
         playing = any_allowed & stalled
         for r in np.flatnonzero(any_allowed & ~stalled):
             u = float(gate_rngs[r].random())
@@ -2097,6 +2117,8 @@ def decide(heads, p, allowed, stalled, *, tau, options, rngs, cell_logits, card_
             if tr is not None:
                 tr[r]['gate_sample'] = dict(u=u, p_b=float(p_b[r]), z=float(z_gate[r]), tau=float(tau[r]),
                                             T=float(gate_sample), fire=bool(playing[r]))
+                if gate_steps is not None:
+                    tr[r]['gate_sample']['k'] = float(k[r])
         tau, base_tau = np.broadcast_to(tau, n), np.broadcast_to(base_tau, n)
     else:
         base_tau = tau = gate_taus(options, tau, t_sec, n)
@@ -2355,6 +2377,12 @@ def match_kwargs(matches):
                 [seed, int(cfg.get('decision_seed', 0))]))
         rngs.append(match.rng_decision_options)
     out = dict(decision_options=options, rngs=rngs, card_names=[list(m.deck.cards) for m in matches])
+    if cfg.get('gate_sample'):                      # GATE-SAMPLE (search_s0 --gate-sample T): the trainer's sampled gate,
+        for match in matches:                       # one seeded stream per match (rng_decision_options' draws unchanged)
+            if not hasattr(match, 'rng_gate_sample'):
+                match.rng_gate_sample = np.random.default_rng(np.random.SeedSequence(
+                    [obs_seed('gate_sample:' + match.tag, match.k), int(cfg.get('decision_seed', 0))]))
+        out.update(gate_sample=float(cfg['gate_sample']), gate_rngs=[m.rng_gate_sample for m in matches])
     if cfg.get('pipeline_tau_delta') and any(getattr(m, 'pend', None) for m in matches):   # only while a play is pending
         out['tau_delta'] = [float(cfg['pipeline_tau_delta']) if getattr(m, 'pend', None) else 0.0 for m in matches]
     if options.gate_decode != 'threshold':

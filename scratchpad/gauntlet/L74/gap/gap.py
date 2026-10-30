@@ -206,12 +206,16 @@ def main():
     ap.add_argument('--runtime', default='20261012-linux', help='ROYALE_RUNTIME for the workers (10-16: 20261016-linux = 0.1.35)')
     ap.add_argument('--levels', choices=('none', 'all16'), default='none',
                     help='all16: both sides cards and towers at level 16, clamped to each card range; none = unchanged')
+    ap.add_argument('--gate-sample', type=float, default=0.0, metavar='T',
+                    help='GATE-SAMPLE 10-30: D3 decides the gate as the trainer (search_s0 --gate-sample T: '
+                         'Bernoulli(sigmoid((z - logit tau) / T)), per-match seeded); 0 = the threshold gate (unchanged)')
     a = ap.parse_args()
     opp = opp_flags(a.opp_decide_every, a.opp_reaction_ticks)
+    extra = a.extra.split() + (['--gate-sample', repr(a.gate_sample)] if a.gate_sample > 0 else [])
     if not a.summarize_only:
         plan = prepare(a.out/'inputs', a.ckpt, a.seed_start, a.opp_ckpt, a.opp_T, a.census_file)
         for arm in a.arms.split(','):
-            run_arm(arm, plan, a.out/'inputs', a.out/arm, a.python, a.workers, a.iw_form, a.iw_press, a.extra.split(),
+            run_arm(arm, plan, a.out/'inputs', a.out/arm, a.python, a.workers, a.iw_form, a.iw_press, extra,
                     tuple(x for x in a.drop.split(',') if x), opp, a.runtime, a.levels)
     summarize(a.out)
 

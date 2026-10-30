@@ -6,6 +6,7 @@
 # GATE_LIB / GATE_TABLES / GATE_FACADE (crforge build: gate a candidate and its CLXIII baseline on the SAME jars + tables).
 # PILOT-GATE 10-30 (opt-in; unset = unchanged): GATE_EV (rows root, default /workspace/d2/ev), GATE_GAP (the gap.py to run;
 # plan1026/pilot/gate/gap_chunks.py + GAP_CHUNKS=N = a dry run of N x 12 games per block). See plan1026/pilot/GATE_AND_LIVE.md.
+# GATE-SAMPLE 10-30 (opt-in; unset = unchanged): GATE_SAMPLE=T -> gap.py --gate-sample T (D3 gate = the trainer's sampled gate).
 E=$1; TAG=$2; MODE=$3; CPUS=$4; W=$5; shift 5
 CB=${GATE_CB:-/workspace/d2/cb}; PYX=${GATE_PY:-/workspace/venvf16/bin/python}; G=${GATE_CKPT:-icebow/data/models/ICEBOW/ICEBOW_Mark_CLXIII_NOLEAK.pt}
 cd $CB || exit 1
@@ -24,7 +25,7 @@ for S in "$@"; do
   [ "$(grep -c '"outcome"' $D/D3/matches.jsonl 2>/dev/null)" = 480 ] && continue
   rm -rf $D; mkdir -p $(dirname $D); echo "$(date -u +%FT%TZ) $TAG $S start"
   taskset -c $CPUS "$PYX" ${GATE_GAP:-scratchpad/gauntlet/L74/gap/gap.py} --ckpt $G --out $D --arms D3 --seed-start $S --runtime fin16-linux \
-    --python "$PYX" --census-file scratchpad/gauntlet/L74/mix/decks_live_eval.json --workers $W --levels all16 "${OA[@]}" \
+    --python "$PYX" --census-file scratchpad/gauntlet/L74/mix/decks_live_eval.json --workers $W --levels all16 "${OA[@]}" ${GATE_SAMPLE:+--gate-sample $GATE_SAMPLE} \
     --extra="$EX $XF" > $D.log 2>&1 < /dev/null || echo "GAP EXIT $? $TAG $S"
   echo "$(date -u +%FT%TZ) $TAG $S rows $(grep -c '"outcome"' $D/D3/matches.jsonl 2>/dev/null)"
 done
