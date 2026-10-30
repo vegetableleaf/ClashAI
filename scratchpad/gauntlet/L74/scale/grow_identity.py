@@ -78,6 +78,15 @@ def g_diff(gb, gg):
     return max(float((gg[..., c * d:(c + 1) * d] - gb).abs().max()) for c in range(k))
 
 
+def strip_p(x):
+    """A decision dict without its logged probability floats (p_play, also inside follow_ups): what was DONE."""
+    if isinstance(x, dict):
+        return {k: strip_p(v) for k, v in x.items() if k != 'p_play'}
+    if isinstance(x, list):
+        return [strip_p(v) for v in x]
+    return x
+
+
 def cmp(pa, pb):
     import torch
     a, b = (torch.load(p, weights_only=False) for p in (pa, pb))
@@ -86,6 +95,7 @@ def cmp(pa, pb):
     same_d = sum(x['d'] == y['d'] for x, y in zip(a['rec'], b['rec']))
     same_tap = sum(x['tap'] == y['tap'] for x, y in zip(a['rec'], b['rec']))
     same_rng = sum(x['rng'] == y['rng'] for x, y in zip(a['rec'], b['rec']))
+    same_act = sum(strip_p(x['d']) == strip_p(y['d']) for x, y in zip(a['rec'], b['rec']))   # every field but logged p_play
     diff, cells = {}, 0
     for ha, hb in zip(a['heads'], b['heads']):
         assert ha['heads'].keys() == hb['heads'].keys(), (ha['heads'].keys(), hb['heads'].keys())
@@ -99,9 +109,10 @@ def cmp(pa, pb):
             diff['cell'] = max(diff.get('cell', 0.0), float((x - y).abs().max()))
     plays = sum(x['tap'] is not None for x in a['rec'])
     print(f'{a["ckpt"]} vs {b["ckpt"]} (cpu): {n} decisions ({plays} plays), cell-head calls {cells}; decision dicts '
-          f'{same_d}/{n}, taps {same_tap}/{n}, RNG states {same_rng}/{n}; max |diff| (log-probs; value / g raw) '
+          f'{same_d}/{n}, ACTIONS (dicts minus the logged p_play floats) {same_act}/{n}, taps {same_tap}/{n}, RNG states '
+          f'{same_rng}/{n}; max |diff| (log-probs; value / g raw) '
           + ', '.join(f'{k} {v:.3g}' for k, v in sorted(diff.items())))
-    return same_d == same_tap == same_rng == n
+    return same_act == same_rng == n
 
 
 def load(ckpt, dtype):
@@ -167,7 +178,7 @@ def model_cmp(base, grown, rows_path, prec='fp32', stride=1):
     print(f'{prec}: {n} recorded rows, {n_cell} cell-head calls (every real hand card), {time.time() - t0:.0f} s; max |diff| '
           + ', '.join(f'{k} {v:.3g}' for k, v in sorted(mx.items())) + '; argmax agree ' +
           ', '.join(f'{k} {v}/{n_cell if k == "cell" else n}' for k, v in agree.items()))
-    return mx, agree
+    return mx, agree, n, n_cell
 
 
 def Fn_logsig(x):
@@ -233,8 +244,12 @@ if __name__ == '__main__':
         run(args[0], args[1], '--rows' in args)
     elif cmd == 'cmp':
         sys.exit(0 if cmp(*args) else 1)
-    elif cmd == 'model':
-        model_cmp(*args)
+    elif cmd == 'model':                 # exit 1 unless every argmax agrees and (fp64) every |diff| <= 1e-5
+        mx, agree, n, n_cell = model_cmp(*args)
+        ok = (all(v == (n_cell if k == 'cell' else n) for k, v in agree.items())
+              and (len(args) < 4 or args[3] != 'fp64' or max(mx.values()) <= 1e-5))
+        print('GROW_IDENTITY', 'PASS' if ok else 'FAIL')
+        sys.exit(0 if ok else 1)
     elif cmd == 'sym':
         sym(*args)
     elif cmd == 'lat':
