@@ -2471,7 +2471,11 @@ def policy_terms(model, B: dict, idx, tau: float, T: float, value: bool = False,
     if "hand_card" in B:
         pol = E.GenPolicy(model, (), {"ctx": dict.fromkeys(model.opp["ctx_tokens"], 0)} if E.opp_ctx_keys(model)
                           else None)                         # OPP-LEARN: heads_t only (the rows carry their ctx ids)
-        enc, heads = pol.heads_t(gen_rows(model, B, idx))
+        if getattr(model, "trunk_graph", None):               # LEARNER-SPEED B: the trunk as a CUDA graph (learner only)
+            from pipeline.learner_graph import heads_t as graph_heads_t
+            enc, heads = graph_heads_t(pol, gen_rows(model, B, idx))
+        else:
+            enc, heads = pol.heads_t(gen_rows(model, B, idx))
         cell_of = pol.cell_logits
     else:
         tok, mask, sc, past = B["tok"][idx], B["mask"][idx], B["sc"][idx], B["past"][idx]
@@ -3951,7 +3955,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                               "tau_phase", "memory", "memory_aux", "memory_encoder_frozen",
                               "memory_e_max", "memory_board_snap",
                               "memory_zero_empty", "learner_deterministic", "kl_stop_prev", "stored_values",
-                              "ent_init_rows", "lazy_refine", "ability_head_from_init", "ent_pair_every", "matches_per_update", "micro_batch", "mem_row_cache", "critic_warmup_minibatch",
+                              "ent_init_rows", "lazy_refine", "ability_head_from_init", "ent_pair_every", "matches_per_update", "micro_batch", "mem_row_cache", "critic_warmup_minibatch", "split_attn", "trunk_graph",
                               "barrel_decoy_sim", "kl_lr_target", "ppo_decoupled", "th_anchor", "gate_baseline",
                               "timing_pg") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS and k not in CROWN_KEYS
@@ -4029,6 +4033,11 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
         raise SystemExit(f"mem_row_cache must be a bool or null, got {cfg['mem_row_cache']!r}")
     if mi is not None and (type(mi) is not int or mi < 1):
         raise SystemExit(f"micro_batch must be null or an int >= 1, got {mi!r}")
+    if cfg.get("split_attn") is not None and type(cfg["split_attn"]) is not bool:   # LEARNER-SPEED A: absent / null / false = off
+        raise SystemExit(f"split_attn must be a bool or null, got {cfg['split_attn']!r}")
+    tg = cfg.get("trunk_graph")                              # LEARNER-SPEED B: absent / null = off
+    if tg is not None and (type(tg) is not int or tg < 1):
+        raise SystemExit(f"trunk_graph must be null or an int >= 1 (the graphed row count), got {tg!r}")
     cw = cfg.get("critic_warmup_minibatch")                  # A/B 10-30: warm-up minibatch; absent / null = minibatch
     if cw is not None and (type(cw) is not int or cw < 1):
         raise SystemExit(f"critic_warmup_minibatch must be null or an int >= 1, got {cw!r}")
@@ -4104,6 +4113,10 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "ent_pair_every"}
     if cfg.get("micro_batch") is None:                       # LEARNER-SCALE accumulation off = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "micro_batch"}
+    if cfg.get("trunk_graph") is None:                       # LEARNER-SPEED B trunk graph off = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "trunk_graph"}
+    if not cfg.get("split_attn"):                            # LEARNER-SPEED A split attention off = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "split_attn"}
     if cfg.get("critic_warmup_minibatch") is None:           # A/B 10-30 warm-up minibatch off = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "critic_warmup_minibatch"}
     if cfg.get("ppo_decoupled") is None:                     # LOOP-ASYNC decoupled PPO off = the historical hash
@@ -4378,10 +4391,18 @@ class Learner:
                 raise SystemExit("lazy_refine needs a generalist (GenModel) init")   # gates run it off (LRN.md)
             self.model.lazy_refine = True
             log("[rl] lazy_refine: cell_refine / tower_refine cell features on the played rows only (model + refs)")
+        if cfg.get("split_attn"):                             # LEARNER-SPEED A: grad-path attention without the packed
+            from pipeline.learner_attn import use_split_attn  # in_proj select glue (no-grad forwards unchanged)
+            log(f"[rl] split_attn: {use_split_attn(self.model)} attention modules (model + refs)")
         self.ref = copy.deepcopy(self.model).eval()
         for p in self.ref.parameters():
             p.requires_grad_(False)
         self.ref_init = self.ref                              # W16: stays the init when kl_ref_refresh_every moves self.ref
+        if cfg.get("trunk_graph") is not None:                # LEARNER-SPEED B: AFTER the ref copies (the refs run no-grad)
+            if not self.gen:
+                raise SystemExit("trunk_graph needs a generalist (GenModel) init")
+            self.model.trunk_graph = int(cfg["trunk_graph"])
+            log(f"[rl] trunk_graph: the trunk of {self.model.trunk_graph}-row grad forwards replays as a CUDA graph")
         self.gate_ref = self._load_gate_ref(ick) if cfg.get("kl_ref_gate") is not None else None   # F6
         self.card_ref = self._load_gate_ref(ick, "kl_ref_card") if cfg.get("kl_ref_card") is not None else None   # K1
         if adv_cfg(cfg)["shaping"] in ("value_phi", "live_phi"):            # lever C: the frozen Phi net, loaded once from FILE
