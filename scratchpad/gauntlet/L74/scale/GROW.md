@@ -12,6 +12,12 @@ Labels: (a) measured (number + source), (b) plausible, untested, (c) contradicte
   icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt icebow/data/bench/grow/b0_grow_d256_l10.pt --d 256 --layers 10`.
 - Recorded rows (local, 79 MB): `.foreman/scratch/grow/id/b0_cpu.rows.pt` (+ `b0_cpu.pt` = B0's live replay). Rebuild:
   `... grow_identity.py run icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt .foreman/scratch/grow/id/b0_cpu.pt --rows` (~3 min).
+- GROW-SMOKE (10-30, in progress; pod 33903, CPUs 154-161, GPU budget ~4 GB; scripts `scale/smoke/`, tree /workspace/grow/cb, logs
+  /workspace/grow/out/RUN.log): grown init copied (sha 673dd261 checked). Config = pilot.yaml minus fastloop minus the
+  oplc_ftR opponent line (that checkpoint is on neither 33903 nor the laptop). Restart: `bash /workspace/grow/run_rl.sh RUN 154-157
+  /workspace/grow/b0_grow_d256_l10.pt learner_device=cuda stored_values=false` (smoke) and `bash /workspace/grow/ppo_arm.sh RUN CPUS
+  INIT LR` (PPO arm). Rebuild the tree with grow_tree.sh + producer.compile_java into /workspace/grow/jbuild. Two config facts (a):
+  stored_values needs the fast loop's v_old (plain rl_royale: stored_values=false); tower_phat refuses critic_warmup_updates=0.
 - OWED: (1) laptop-GPU latency (not run: live CLXIII plays on the laptop GPU, COMMON forbids a second GPU job; command in
   section 4); (2) a real `rl_royale --smoke` on a pod with the grown init (no trainer code changed, but the rule stands for a new
   init shape); (3) the RL comparison itself (section 5). No Codex dispatch was used.
