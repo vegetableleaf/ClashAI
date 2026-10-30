@@ -38,6 +38,7 @@ def main():
     ap.add_argument("--max-jobs", type=int, default=0)
     ap.add_argument("--skip-jobs", type=int, default=0, help="drop the first K jobs (split one msg over parallel runs)")
     ap.add_argument("--fast-only", action="store_true", help="the fast loop only: its stats + skipped jobs (crash probe)")
+    ap.add_argument("--local-forward", action="store_true", help="server mode: in-process forwards on --device (fastloop's)")
     ap.add_argument("--server", default=None, help="eager | graphs: fast-loop forwards on serve.py (LOOP-SRV)")
     ap.add_argument("--init", default="icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt",
                     help="server mode: the learner architecture checkpoint (the run's init; fastloop passes cfg init)")
@@ -63,7 +64,7 @@ def main():
         servers = start_servers({**base, "init_path": a.init, "mem_full": mf}, update, sd, jobs, [a.device], a.server,
                                 max(a.matches, 64), "/dev/shm/loopcmp")
         srv = "/dev/shm/loopcmp/srv0.sock"
-    P = Producer(base, a.matches, a.threads, "cpu" if srv else a.device,
+    P = Producer(base, a.matches, a.threads, a.device if (a.local_forward or not srv) else "cpu",
                  Path(__import__("os").environ["CRFORGE_FACADE_BUILD"]), server=srv)
     from pipeline import e1_eval as E
     import hashlib

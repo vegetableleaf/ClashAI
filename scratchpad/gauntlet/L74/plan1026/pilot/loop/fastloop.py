@@ -31,13 +31,15 @@ REPO = HERE.parents[5]
 sys.path.insert(0, str(REPO))
 
 
-def producer_main(aid, base: dict, n: int, threads: int, device: str, build: str, in_q, out_q, server=None) -> None:
+def producer_main(aid, base: dict, n: int, threads: int, device: str, build: str, in_q, out_q, server=None,
+                  local: bool = False) -> None:
     """aid = (producer index, generation). FASTLOOP_CRASH_TEST=p (recovery test only): each run, with probability p,
     the process kills itself with SIGSEGV after its first round (the libtorch-in-JVM failure RX-X23 saw)."""
     try:
         sys.path.insert(0, str(HERE))
         from producer import Producer
-        P = Producer(base, n, threads, "cpu" if server else device, Path(build), aid[0], server=server)
+        # --local-forward: the forwards that stay in-process with --server (timing heads, 'live' seats) on ``device``
+        P = Producer(base, n, threads, device if (local or not server) else "cpu", Path(build), aid[0], server=server)
         out_q.put(("ready", aid, os.getpid()))
     except Exception:
         out_q.put(("error", aid, traceback.format_exc()))
@@ -121,7 +123,8 @@ class FastPool:
         q = self.ctx.Queue()
         srv = f"{self.srv_root}/srv{k % len(self.devs)}.sock" if self.a.server else None
         p = self.ctx.Process(target=producer_main, args=((k, self.gen[k]), self.base, self.a.matches, self.a.threads,
-                                                         self.devs[k % len(self.devs)], self.a.build, q, self.out_q, srv),
+                                                         self.devs[k % len(self.devs)], self.a.build, q, self.out_q, srv,
+                                                         bool(self.a.local_forward)),
                              daemon=True)
         p.start()
         self.in_qs[k], self.procs[k] = q, p
@@ -331,6 +334,9 @@ def main() -> int:
     ap.add_argument("--build", default=str(HERE / "jbuild"))
     ap.add_argument("--out", default=None, help="extra dir for throughput.jsonl / STOP / FINAL (LOOP-OPS)")
     ap.add_argument("--server", default=None, help="eager | graphs: forwards on LOOP-SRV serve.py, one per device")
+    ap.add_argument("--local-forward", action="store_true",
+                    help="with --server: the producers' in-process forwards (timing-head / 'live' groups, which never go to "
+                         "serve.py) run on the producer's --devices entry instead of its CPU (absent = CPU, as before)")
     ap.add_argument("--overlap", type=int, choices=(0, 1), default=None,
                     help="OVERLAP.md: 1 = the next wave plays while the learner trains (one version stale); 0 = its "
                          "synchronous control (same matchup stream); absent = production's alternating loop")

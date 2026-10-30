@@ -3,6 +3,49 @@
 Labels: (a) measured, (b) untested, (c) contradicted.
 
 ## STATUS (keep current; 2026-10-28 ~18:30 EDT, re-dispatch on account 2)
+- ROLLOUT-SPEED (FASTLOOP-FIX worker, 10-30 late; PARTIAL -- hand-off to a fresh worker recommended, see the list):
+  (a) where the pilot's producer wall goes (33308 pilot_box3 throughput.jsonl, read-only; Producer.tm is CUMULATIVE over
+  updates, so per-update = the difference of consecutive lines): u0023 producer walls 658 .. 924 s with 128 matches,
+  ~86k rows and ~670 rounds EACH; the FastPool wave = the slowest producer (928 vs 924 s; u0022 775 vs 773). Per
+  producer, u0022 -> u0023: in-process `forward` 436 s (fastest) .. 707 s (slowest), forward_wait (serve.py) 112-117 s,
+  decide_py 76-87 s, java 14-20 s. The in-process forward = the timing-head opponent G (oplc_ftR_l0003_a10b_u0160: never
+  sent to serve.py) on the producer's CPU (fastloop gives producers device "cpu" under --server). So (a) the biggest
+  cost and the straggler spread are that CPU forward under CPU contention, not the server wait (SPEED2's F3 target) and
+  not match-length tails (equal rounds). Work stealing cannot help a single wave (jobs = slots: 2,048 = 16 x 128, and
+  512 = 32 x 16 in the lead's new config).
+  BUILT (opt-in, absent = CPU as before): fastloop.py / compare.py `--local-forward`: with --server, the producers'
+  in-process forwards (timing-head / 'live' groups) run on the producer's --devices entry. (a) compare.py --server eager
+  --local-forward --device cuda on lint_pa3 u0001 + G as every 2nd opponent (msg_p2.py, 16 jobs, 8 G seats; 33903
+  /workspace/mfl/out/lf_on.json): 16 / 16 matches identical, all 8 G seats' decisions identical (the other 24 sides use
+  the fast decide, which compare's trace does not see), v_old 5,513 rows max 8.2e-7, wver 0 mismatches, MEM rows
+  5,513 / 5,513, ability 16 / 16, lp max gate 1.1e-5 card 3.3e-6 cell 9.9e-6 (server bar 5e-5). The control without
+  the flag (G forwarded on CPU while production runs it on cuda): lf_off.json (was still running at hand-off).
+  (b) expected effect: the pilot's ~440-710 s of CPU forward per producer becomes ~1,300 small GPU forwards (~5-30 ms
+  each) -> producer wall ~260-300 s instead of 660-920 s, i.e. ~2.5-3x shorter rollouts, and most of the straggler
+  spread goes with it. Cost (b): one CUDA context + the G / opponent copies per producer (~0.5-1 GB GPU each: 32
+  producers = 16-32 GB over the GPUs; fine on a 96 GB PRO 6000, tight on a 24 GB 4090 that also holds a server). NOT
+  measured at pilot scale (33903 = correctness only; the clean bench pod 31892 was not used).
+  `--server graphs` CRASH (lead report, 33308 log pilot_box3.log l.151-290), diagnosis (a, from the log): the FIRST
+  failure is `cudaErrorStreamCaptureUnsupported` ("operation not permitted when stream is capturing") inside a capture
+  (policy_server._capture -> _lazy_heads -> encode_gen's card_id embedding: the op where the async error surfaced, not
+  necessarily its cause); that capture aborts with `cudaErrorStreamCaptureInvalidated`, and EVERY later capture into the
+  server's shared graph pool then fails with `beginAllocateToPool: already recording to mempool_id`: the aborted
+  capture leaves the shared pool in recording state (a poisoned-pool cascade). So "two captures at once" is (c) for the
+  cascade (one fwd thread captures); the first failure's cause is (b): a CUDA API call illegal during capture, from the
+  caching allocator (cudaFree / event query under memory pressure: 9 models x lazy buckets + 32 producers' batches on a
+  GPU shared with the learner) or from another server thread (cell / watch) despite thread_local mode. NOT fixed.
+  Fix candidates (b): capture every model x bucket at server start, before producers connect and before the cell /
+  watch threads do GPU work, after torch.cuda.synchronize(); serialize any later (new-version) capture with the cell
+  and watch threads' GPU work under one lock; on a failed capture never reuse the shared pool (fresh
+  graph_pool_handle(), or run that bucket eager) so one failure cannot cascade. Proof owed: a multi-producer harness
+  (bench.py --server graphs, 9-model pilot pool, many producers) + compare.py --server graphs 16 / 16.
+  NOT DONE (for the next worker): SPEED2 F3 (one cell request per producer round; note the server's _cell_loop
+  groups requests by (kind, bid) and answers each conn in GROUP order, so a producer must NOT pipeline several plain
+  `cell` sends -- F3 needs one multi-block message answered as one reply), F2' (model-sharded servers), continuous
+  rollouts across updates (the only straggler fix that helps a single wave), overlap: already BUILT (5b91944,
+  OVERLAP.md) and its preconditions hold in pilot.yaml (--server, stored_values true, kl_ref_refresh_every 1), but its
+  A/B failed the owner's "not worse per update" bar until ppo_decoupled (built 10-28) is evaluated; per-GPU matches/h on
+  the 31892 PRO 6000 + the 5-GPU projection.
 - FASTLOOP-FIX (10-30, account 3; restart point = this bullet): the fast loop on
   origin/main is exact again and plays the live CLXIII partner incl. its rocket_tornado follow-ups.
   (a) ROOT CAUSE of MEMFULL-LOOP's `AssertionError: (16, 15)`: neither the follow_ups guard (it RAISES, never skips -- (c)
