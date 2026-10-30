@@ -1,3 +1,34 @@
+# 2026-10-30 ~13:15 EDT -- ACCOUNT-2 FINAL CLOSE-OUT (for account 3). Read this entry, then the 08:50 priority entry below it.
+
+Grades: (a) measured, (b) plausible/untested, (c) contradicted. Memory: `session-end-2026-10-30.md`, `owner-1029-pilot-closeout-plan.md`.
+
+## What is RUNNING (account 3 monitors these)
+| what | where | how to check | stop |
+|---|---|---|---|
+| **Pilot `pilot_box3`** (B0 = CLXIII + memory v2, encoder UNFROZEN, G u160 in the pool, 2,048 matches/update, crforge 5e8089a4) | pod 33308 (`ssh -i ~/.ssh/runpod_clashbot -p 33308 root@157.157.221.29`); tree /workspace/loop/cb; log /workspace/loop/logs/pilot_box3.log (box part: pilot_box3.box.log); ckpts /workspace/loop/cb/icebow/data/bench/rl_royale/pilot_box3/ | `grep "^\[rl\] u" LOG | tail`; ~3 updates/h (rollout ~1,000 s, 16 producers x 128; 64 producers OOM the 125 GB cgroup) | auto_stop.py (PID 179581) writes /workspace/loop/pilot/pilot_box3/STOP at **50 updates without improvement** (rolling-10 training win, >= 0.5 pp); owner dropped the hour cap; max_updates 1000 = outer cap. Resume: GATE_AND_LIVE.md |
+| **Opponent arm `oplc_ftR_l0003_live`** (G recipe + CLXIII partner on D3's LIVE decision stack = the plateau fix) | pod 33903 (`-p 33903`), PRODUCTION rl_royale (fast loop refuses 'live' partner), PID 81255, log /workspace/oplm/logs/oplc_ftR_l0003_live.out, ~910 s/update | its D3 every 40 updates: laptop bash PID 16372 (scratchpad copy arm_d3_live.sh) -> `scratchpad/gauntlet/L74/plan1026/opp/learner/out/lead_d3.log`; u40 ~00:10-00:30 UTC 10-31 | success = D3 opp win >= G at u80 (23.8%) / u160 (26.7%); PLATEAU.md STATUS |
+| TARGET-VAL gate re-runs (FRESH4 rest + FRESH5/6) | 33903 PIDs 94169 / 94171, /workspace/smeR/runs/tv_gate.out | scoring commands in TARGET_OBS.md M1c-R | finishes on its own |
+| Live CLXIII | laptop MuMu; supervisor ended 10:36 EDT 10-30; a live_play log started 10:43 (owner by hand?) | `tail scratchpad/gauntlet/L70/live/supervisor.log` | start: `bash scratchpad/gauntlet/L70/live/start_live.sh icebow --no-fast-plays --ranked` |
+| Battle-log poller | laptop crapi/own_poll.sh | crapi/data/own_battlelog.jsonl | -- |
+| Owner's course server (optional) | laptop | `course/.venv/Scripts/python.exe course/server.py` | -- |
+Pods UP: **33308, 33903**. STOPPED (owner confirm in dashboard): 33553, 33920, 32657, 30408, the 6x RTX PRO 6000 box (74.2.96.197:12801). Backups: C:/Users/benpe/ClashBot_pod_backup/, C:/Users/benpe/pod_backup_weekend/loop/. LESSON: back up gate CODE trees too before stopping a pod (the SME gate was lost with 32657 and rebuilt on 33903 /workspace/smeR). Stop a pod from inside: `runpodctl stop pod $RUNPOD_POD_ID` with RUNPOD_API_KEY from /proc/1/environ (works although `get pod` says Unauthorized). Laptop C: drive ~23 GB free.
+
+## After the pilot stops (owner rule): SIM gate -> 30-match trial -> 150-match block
+`scratchpad/gauntlet/L74/plan1026/pilot/GATE_AND_LIVE.md` (PILOT-GATE d85266f): copy-paste commands; dry run on u0000 worked; SIM gate deterministic. Decisions owed:
+- trained gate is SAMPLED (T .1); SIM gate + live default to the threshold. GATE-SAMPLE (8835bed, aaa1ad2, e0b1e6d) added opt-in `--gate-sample T` to gap.py/search_s0 (GATE_SAMPLE=T in gate.sh) and live (`--gate-sample-step-ticks`); identity 1,511/1,511 recorded rows. Recommended: gate AND deploy with the sampled gate. Caveat: trial30/deploy_ckpt auto-revert swaps only the ckpt (restore LIVE_OPTIONS by hand).
+- trial30.sh keeps only at >= 16/30; owner rule = revert <= 5/30 -> `trial30_minwins.patch` (opt-in MIN_WINS, not applied).
+- registry.json holds an uncommitted CLXIV entry; commit with CLXV. Run the CLXIII gate baseline (3,840 games) before the pilot ends.
+- 150-block keep: >= 61/150 wins (95% LB > 32.7%).
+
+## Results today (10-30)
+- Opponent plateau EXPLAINED (OPP-PLATEAU 7b10f26, a): RL keeps improving vs its sampled CLXIII partner, but D3 = .053 + .51 x training win (r .78, 24 ckpts) -> partner mismatch; KL stop never fired; step size / entropy / beta < .03 / tables ruled out (c). Fix running (above). Seed check of G's recipe: D3 u40 opp 18.7% (G 16.3%).
+- Engine, owner's general-rules direction WORKS (ENGINE-RECON 4024a03.., SME-REBUILD 18f614a..3c08ec9, a): one engine-scored search (recon/recon_search.py, beam 4, hard rules: 4-card cycle, elixir, zones, travel) reaches the hand-rule result on 8/9 hand-rule cases, hand edit rank 1 each time; gate rebuilt byte-identical on 33903 /workspace/smeR. RECON-2 measuring recall / precision (see its final note below if it landed).
+- Targeting (TARGET-OBS a52b0e4..edc302c, TARGET-VAL 1e0a00f, 04e0a5a, a): `pipeline/target_obs.py` + zero-init model layers (CLXIII-identical) + `target_obs` key (absent = hash), smokes PASS; reader acquired target = engine 98.12% on 71,052 exact frames, 99.83% with one shared-rule fix in live_unit_state.py (NEEDS OWNER OK; live path). Live wiring (~4 lines in live_gen) also needs owner OK. CFTGT worker on the Java fast-loop builder.
+- Box speed (a): 6x RTX PRO 6000 at 128 producers = 49.9k matches/h but GPUs ~20% (model 1.76M = CPU-bound Python decide + 1-GPU learner, warm-up 380 s/update); owner: too costly -> moved to 33308. SPEED-DECIDE worker on forward_wait / producer memory / multi-GPU learner.
+- Arm G analysis (WHERE_G.md, a): +15.6 pp opponent gain [11.0, 20.2], mostly offence (tower dmg 4,040 -> 5,597 HP), vs Hog / other decks; none vs Drill / Goblin Giant / X-Bow / 3M.
+
+## Workers at close (final notes appended above this entry if they landed): MEM-FULL (MEM_FULL.md), SPEED-DECIDE (lrn/SPEED2.md), GROW-10M (scale/GROW.md), RECON-2 (RECON.md), FAST-LIVEOPP (PLATEAU.md / LOOP_INT.md), CFTGT (TARGET_OBS.md). Each keeps a STATUS + restart point in its doc.
+
 # 2026-10-30 ~08:50 EDT -- OWNER PRIORITY ITEMS FOR THE NEXT ACCOUNT (added by account 2 before close-out)
 
 1. **Targeting / aggro as model inputs (owner 10-30: "cues a real player sees, extremely important").** Finding (a,
