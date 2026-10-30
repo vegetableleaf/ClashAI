@@ -1,0 +1,58 @@
+type        n  invisible restored alt_fix not_fixed error | inverse rank1 / in top4 / listed (visible plants)
+drop_zap    4          0        3       0         1     0 | 3 / 3 / 3 of 4
+drop_spell  7          0        0       0         7     0 | 0 / 0 / 0 of 7
+drop_troop  8          0        6       0         2     0 | 6 / 6 / 6 of 8
+shift       8          1        7       0         0     0 | 7 / 7 / 7 of 7
+swap        5          4        1       0         0     0 | 1 / 1 / 1 of 1
+point_opp   8          3        5       0         0     0 | 5 / 5 / 5 of 5
+point_own   8          3        1       4         0     0 | 1 / 1 / 1 of 5
+021310 drop_zap restored first None rank [0, 1986, 1] add_err [0, 0] | plant drop_zap Zap s0 run 1984 (12922,17231) -> {'i': 24} | edits ['add s0 Zap R1984 (12922,17231) pos24']
+021310 drop_spell not_fixed first 1877 rank None add_err None | plant drop_spell BarbLog s0 run 1874 (14500,14500) -> {'i': 21} | edits []
+021310 drop_troop restored first None rank [0, 2449, 1] add_err [0, 0] | plant drop_troop MiniPekka s0 run 2447 (4499,20500) -> {'i': 26} | edits ['add s0 MiniPekka R2447 (4499,20500) pos26']
+021310 shift invisible first None rank None add_err None | plant shift Zap s0 run 1984 (12922,17231) -> {'i': 24, 'run': 1985} | edits []
+021310 point_opp restored first None rank [0, 1093, 1] add_err None | plant point_opp Bats s0 run 1091 (1527,14500) -> {'i': 15, 'x': 2027, 'y': 14500} | edits ['point s0 Bats {"x": 1527, "y": 14500}']
+021310 point_own invisible first None rank None add_err None | plant point_own Tesla s1 run 1902 (9000,21000) -> {'i': 22, 'x': 9700, 'y': 21000} | edits []
+024716 drop_zap restored first None rank [0, 1399, 1] add_err [0, 0] | plant drop_zap Zap s0 run 1397 (14479,24739) -> {'i': 16} | edits ['add s0 Zap R1397 (14479,24739) pos16']
+024716 drop_spell not_fixed first 1298 rank None add_err None | plant drop_spell GoblinCurse s0 run 1296 (15500,23500) -> {'i': 14} | edits []
+024716 drop_troop not_fixed first 469 rank None add_err None | plant drop_troop Barbarians s0 run 468 (8499,6500) -> {'i': 3} | edits []
+024716 shift restored first None rank [0, 1403, 1] add_err None | plant shift Log s1 run 1401 (15500,25500) -> {'i': 17, 'run': 1402} | edits ['shift s1 Log {"run": 1401}']
+024716 point_opp restored first None rank [0, 2990, 1] add_err None | plant point_opp Phoenix s0 run 2988 (3500,14500) -> {'i': 38, 'x': 4000, 'y': 14500} | edits ['point s0 Phoenix {"x": 3500, "y": 14500}']
+024716 point_own alt_fix first None rank None add_err None | plant point_own Skeletons s1 run 2791 (16500,26500) -> {'i': 33, 'x': 17200, 'y': 26500} | edits ['point s1 Skeletons {"x": 16500, "y": 26514}']
+031310 drop_zap restored first 3624 rank [0, 3312, 1] add_err [-1, 40] | plant drop_zap Zap s0 run 3311 (14900,23812) -> {'i': 50} | edits ['add s0 Zap R3310 (14940,23806) pos50']
+031310 drop_spell not_fixed first 2554 rank None add_err None | plant drop_spell GoblinBarrel s0 run 2553 (14500,25500) -> {'i': 32} | edits []
+031310 drop_troop restored first 3624 rank [0, 412, 1] add_err [0, 0] | plant drop_troop Witch s0 run 411 (9500,500) -> {'i': 3} | edits ['add s0 Witch R411 (9500,500) pos3']
+031310 shift restored first None rank [0, 3240, 1] add_err None | plant shift GoblinBarrel s0 run 3237 (14500,25500) -> {'i': 47, 'run': 3239} | edits ['shift s0 GoblinBarrel {"run": 3237}']
+031310 swap invisible first None rank None add_err None | plant swap GoblinBarrel s0 run 3237 (14500,25500) -> {'i': 47, 'j': 48} | edits []
+031310 point_opp invisible first None rank None add_err None | plant point_opp Bomber s0 run 727 (1499,14500) -> {'i': 10, 'x': 1999, 'y': 14500} | edits []
+031310 point_own invisible first None rank None add_err None | plant point_own Tesla s1 run 2451 (9000,22000) -> {'i': 27, 'x': 9700, 'y': 22000} | edits []
+151109 drop_spell not_fixed first 4848 rank None add_err None | plant drop_spell Snowball s0 run 4846 (15500,16500) -> {'i': 99} | edits []
+151109 drop_troop restored first None rank [0, 2794, 1] add_err [0, 0] | plant drop_troop Bomber s0 run 2793 (17500,11500) -> {'i': 42} | edits ['add s0 Bomber R2793 (17500,11500) pos42']
+151109 shift restored first None rank [0, 3549, 1] add_err None | plant shift Log s1 run 3548 (3500,29500) -> {'i': 66, 'run': 3547} | edits ['shift s1 Log {"run": 3548}']
+151109 swap invisible first None rank None add_err None | plant swap Log s1 run 924 (3500,24500) -> {'i': 13, 'j': 14} | edits []
+151109 point_opp restored first None rank [0, 2692, 1] add_err None | plant point_opp Knight s0 run 2691 (9500,8500) -> {'i': 41, 'x': 10000, 'y': 8500} | edits ['point s0 Knight {"x": 9500, "y": 8500}']
+151109 point_own restored first None rank [0, 5148, 1] add_err None | plant point_own Xbow s1 run 5147 (15500,19500) -> {'i': 110, 'x': 16200, 'y': 19500} | edits ['point s1 Xbow {"x": 15500, "y": 19500}']
+220244 drop_spell not_fixed first 853 rank None add_err None | plant drop_spell BarbLog s1 run 852 (1500,31500) -> {'i': 9} | edits []
+220244 drop_troop not_fixed first 5241 rank None add_err None | plant drop_troop Bats s1 run 5238 (16473,17500) -> {'i': 109} | edits []
+220244 shift restored first None rank [0, 3663, 1] add_err None | plant shift Log s0 run 3661 (3500,11500) -> {'i': 60, 'run': 3662} | edits ['shift s0 Log {"run": 3661}']
+220244 swap invisible first None rank None add_err None | plant swap Balloon s1 run 4317 (8500,17500) -> {'i': 77, 'j': 78} | edits []
+220244 point_opp restored first None rank [0, 3703, 1] add_err None | plant point_opp Balloon s1 run 3701 (8500,17500) -> {'i': 62, 'x': 9000, 'y': 17500} | edits ['point s1 Balloon {"x": 8500, "y": 17500}']
+220244 point_own alt_fix first None rank None add_err None | plant point_own Knight s0 run 3051 (7500,14500) -> {'i': 46, 'x': 8200, 'y': 14500} | edits ['point s0 Knight {"x": 7499, "y": 14500}']
+222707 drop_spell not_fixed first 2660 rank None add_err None | plant drop_spell Fireball s1 run 2658 (12500,7500) -> {'i': 31} | edits []
+222707 drop_troop restored first 3391 rank [0, 3023, 1] add_err [0, 0] | plant drop_troop Musketeer s1 run 3021 (9500,23499) -> {'i': 37} | edits ['add s1 Musketeer R3021 (9500,23499) pos37']
+222707 shift restored first None rank [0, 869, 1] add_err None | plant shift Log s1 run 867 (13500,17500) -> {'i': 9, 'run': 868} | edits ['shift s1 Log {"run": 867}']
+222707 swap restored first None rank [0, 2582, 1] add_err None | plant swap DarkPrince s1 run 2561 (8499,11499) -> {'i': 28, 'j': 29} | edits ['swap Knight s0 <-> DarkPrince s1 @2561']
+222707 point_opp invisible first None rank None add_err None | plant point_opp Musketeer s1 run 1384 (5499,17499) -> {'i': 14, 'x': 5999, 'y': 17499} | edits []
+222707 point_own invisible first None rank None add_err None | plant point_own Tesla s0 run 932 (9000,10000) -> {'i': 11, 'x': 9700, 'y': 10000} | edits []
+235834 drop_zap not_fixed first 663 rank None add_err [3949, 6882] | plant drop_zap Zap s0 run 662 (8900,21500) -> {'i': 10} | edits []
+235834 drop_troop restored first None rank [0, 2824, 1] add_err [0, 0] | plant drop_troop Witch s0 run 2823 (9500,500) -> {'i': 37} | edits ['add s0 Witch R2823 (9500,500) pos37']
+235834 shift restored first None rank [0, 2486, 1] add_err None | plant shift Log s1 run 2484 (3500,23500) -> {'i': 32, 'run': 2485} | edits ['shift s1 Log {"run": 2484}']
+235834 swap invisible first None rank None add_err None | plant swap SkeletonBalloon s0 run 3101 (1557,14456) -> {'i': 45, 'j': 46} | edits []
+235834 point_opp invisible first None rank None add_err None | plant point_opp Witch s0 run 361 (8499,500) -> {'i': 3, 'x': 8999, 'y': 500} | edits []
+235834 point_own alt_fix first None rank None add_err None | plant point_own Knight s1 run 2855 (2500,17500) -> {'i': 38, 'x': 3200, 'y': 17500} | edits ['point s1 Knight {"x": 2499, "y": 17499}']
+201103 drop_spell not_fixed first 715 rank None add_err None | plant drop_spell BarbLog s1 run 714 (2500,17500) -> {'i': 11} | edits []
+201103 drop_troop restored first None rank [0, 2812, 1] add_err [0, 0] | plant drop_troop MovingCannon s1 run 2811 (499,18499) -> {'i': 35} | edits ['add s1 MovingCannon R2811 (499,18499) pos35']
+201103 shift restored first None rank [0, 3028, 1] add_err None | plant shift Rocket s0 run 3026 (3500,16500) -> {'i': 39, 'run': 3027} | edits ['shift s0 Rocket {"run": 3026}']
+201103 point_opp restored first None rank [0, 2942, 1] add_err None | plant point_opp Mortar s1 run 2941 (3500,19500) -> {'i': 38, 'x': 4000, 'y': 19500} | edits ['point s1 Mortar {"x": 3500, "y": 19500}']
+201103 point_own alt_fix first None rank None add_err None | plant point_own Skeletons s0 run 2583 (8500,500) -> {'i': 28, 'x': 9200, 'y': 500} | edits ['point s0 Skeletons {"x": 8499, "y": 532}']
+
+start 1793370968 end 1793371325

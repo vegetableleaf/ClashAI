@@ -5,6 +5,13 @@ cases, `field_census.py` the rules on every frozen fresh input, `recon_search.py
 Evidence: `results/live/recon/`. Labels: (a) measured, (b) plausible but untested, (c) contradicted.
 
 ## STATUS (keep current)
+- **RECON-2 (10-30, section 9). Restart point:** item 2 planted recall DONE (a): 49 plants on the 8 exact recon plans;
+  in the move set's classes 22 / 25 restored exactly, inverse edit rank 1 of the first round every time it was listed,
+  0 wrong fixes; outside it by design: drop of a visible spell 0 / 7, own point 1 / 5 (+ 4 equivalent body-point fixes).
+  Bug fixed: sticky ability skip in recon_search (43f23fe). Items 3-4 queued: laptop re-extraction of FRESH2-8 flags
+  off / on (`recon/r2_regen.sh`, `.foreman/scratch/recon2/{off,on}/`), then `recon/r2_sets.py` -> pod
+  `/workspace/smeR/data/r2/`, then `nohup bash /workspace/smeR/sme/recon/r2_drive.sh &` (restartable; skips done steps),
+  then `recon/r2_tally.py` (section 9.3). Codex dispatches: none.
 - **Restart point (10-30 ~14:30 UTC):** laptop part DONE and committed: rules + generator (`recon.py`), 35 planted
   checks (`python -I sme/recon/test_recon.py` -> `ok 35`), the general generator proposes the hand fix on all 6
   hand-rule cases tried (`offline.py`, output `results/live/recon/offline.txt`, section 5), field census of the rules on
@@ -187,3 +194,34 @@ Flags-off frozen inputs, beam 4, all ops, 3 threads per match. "Round" = the sea
 Pod 33903 `/workspace/smeR` (code `sme/`, data `data/fresh{4,5,6}`, runs `runs/`). Nothing of mine is running.
 If /workspace is wiped: redo the recipe (steps 1-4, ~5 min). Next, in order: section 7 item 2 (planted recall), item 3
 (precision on every failing record, flags off), the elixir-diff implication gap (001856), the first_seen re-dating (165155).
+
+## 9. RECON-2: planted recall, precision, pooled exactness (10-30, evidence `results/live/recon/r2/`)
+### 9.1 Planted recall (section 7 item 2; a). `recon/plant_recall.py`, pod runs `pr2_f{4,5,6}`, 6.0 min wall at 12 CPUs
+Start = the 8 EXACT final plans of section 8 (rs1_f4 x4, rs1_f5, rs1_f6 x2, op2_f4 201103). One plant per type per match
+(sha-seeded pick, run in [300, end - 500]), search (beam 4, all ops) from the planted plan. invisible = the planted plan
+is still exact; restored = the planted command is back (drop: same card + side re-added within 2 ticks / 300 units) AND
+the match exact; alt_fix = exact with a different edit. `plant_summary.txt`, rows `plant_results.jsonl`.
+| plant | n | invisible | restored | alt_fix | not fixed | inverse edit rank 1 when listed |
+|---|---|---|---|---|---|---|
+| shift (another tick of the window) | 8 | 1 | 7 | 0 | 0 | 7 / 7 |
+| point_opp (+-500 x) | 8 | 3 | 5 | 0 | 0 | 5 / 5 |
+| swap (same-tick pair) | 5 | 4 | 1 | 0 | 0 | 1 / 1 |
+| drop_troop (opponent troop) | 8 | 0 | 6 | 0 | 2 | 6 / 6 |
+| drop_zap (spell on board <= 2 ticks) | 4 | 0 | 3 | 0 | 1 | 3 / 3 (one at R -1, 40 units: still exact) |
+| drop_spell (Log, Fireball, Snowball, BarbLog, GoblinBarrel, GoblinCurse) | 7 | 0 | 0 | 0 | 7 | never generated (by design) |
+| point_own (+700 x) | 8 | 3 | 1 | 4 | 0 | 1 / 1 |
+- (a) **Inside the move set: 22 / 25 visible plants restored, all exact, the inverse edit rank 1 in the first round each
+  time; 0 plants "fixed" by a different edit.** The 3 misses generate the inverse but nothing beats d by HEAL:
+  235834 Zap R662 (8900, 21500) on our X-Bow: victim centroid +-500 grid misses the truth by >= 510 units (34 legal,
+  0 better); 220244 Bats R5238 (5 reader-only Bats; 44 legal, 0 better); 024716 Barbarians R468. Cause of the 3 (b).
+- (a) Outside the move set by design: a dropped VISIBLE spell is never re-added (the visible rule admits only spells on
+  the board <= 2 ticks; add (b) adds bodies only): 0 / 7. A missed visible spell is a reader failure the extractor has
+  not shown so far (b); an add (c) "spell the reader saw but no play explains" is owed only if a census finds one.
+- (a) Own point: 4 / 5 are fixed with the first-listed BODY point, 1-32 units from the planted tap (7499 vs 7500, ...):
+  equivalent placements, exact. Own taps are not on the +-500 grid by design.
+- (a) **Bug found and fixed in scope (43f23fe):** `sme_live.base_run` turns the press of a refused play into a skip IN
+  PLACE; recon_search's children inherited it, so a drop that broke the opponent's cycle (hero play refused) and was
+  re-added still ran without the hero press. `recon_search.full_run` retries such presses. Red -> green: 031310
+  drop_troop / drop_zap first div 3624 -> exact, 222707 drop_troop 3391 -> exact; every other plant identical
+  (`plant_summary_prefix.txt` = the run before the fix).
+
