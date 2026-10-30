@@ -12,6 +12,12 @@ REVERT if <= 5/30 wins or idle-on-threat worse; then a 150-match block, KEEP onl
   without improvement (hours arg 9999); pilot.yaml `max_updates: 1000` is the outer cap. FINAL marker + checkpoint land in
   /workspace/loop/pilot/pilot_box3/ (FINAL = the last numbered checkpoint
   /workspace/loop/cb/icebow/data/bench/rl_royale/pilot_box3/pilot_box3_uNNNN.pt).
+- GATE-SAMPLE 10-30 ~12:00 EDT (8835bed + aaa1ad2, opt-in, absent = byte-identical): the SIM gate can now decode
+  the pilot's TRAINED gate (gap.py --gate-sample T / gate.sh GATE_SAMPLE=T) and live can apply it per unit of time
+  (--gate-sample-step-ticks 10) and deploy it from LIVE_OPTIONS; commands + open items: "Sampled-gate variant" below.
+  Evidence (a): test_gate_sample_identity 6/6 (trainer decode == SIM / live decode with the same draws on 1,511 recorded
+  live gate rows; GenPilot replay 1,511 draws 0 differ, per decision and per time); test_decide_identity 5/5 before and
+  after; laptop SIM smoke absent = HEAD code 4/4 rows, sampled run deterministic 4/4. Nothing of GATE-SAMPLE is running.
 - NEXT (in this order): (0) start the CLXIII BASE rows now (step 1a; they do not depend on the pilot); (1) when FINAL exists,
   candidate rows + score (1b-1c); (2) the lead / owner decides the two open questions in "Decisions owed" (gate decode and
   trial30 bar); (3) live trial (step 2); (4) block (step 3); (5) bookkeeping (step 4).
@@ -24,12 +30,70 @@ REVERT if <= 5/30 wins or idle-on-threat worse; then a 150-match block, KEEP onl
    = what the commands below do, consistent SIM <-> live, no new code; (B) deploy with `--gate-sample 0.1` = an opt-in
    search_s0 flag first (eval edit: pyflakes + absent-key identity) AND a LIVE_OPTIONS change for the pilot only, and the
    revert must restore LIVE_OPTIONS too (deploy_ckpt.sh swaps only the checkpoint). Recommendation: (A) (one change at a time).
+   **GATE-SAMPLE 10-30: (B) now has its code** (opt-in, absent = byte-identical): see "Sampled-gate variant" below for the
+   gate + deploy commands and what is still open. (c) correction: the LOOP-OPS README line "deploy = add `--gate-sample 0.1`
+   to LIVE_OPTIONS" did NOT work before this ticket: live_options refused the file (argparse exit 2, lo_check.py).
 2. **trial30.sh bar.** trial30.sh keeps a model iff wins >= 16/30 (the 10-22 rule vs CLX's 52%) AND idle <= base + 0.05. The
    owner's 10-29 pilot rule is REVERT iff <= 5/30 (keep >= 6/30). Run as is, trial30.sh would auto-revert a pilot at 6-15 wins.
    Ready, NOT applied (live tooling; lead's call): `git apply scratchpad/gauntlet/L74/plan1026/pilot/gate/trial30_minwins.patch`
    adds opt-in `MIN_WINS` / `IDLE_TOL` (unset = 16 / 0.05 = byte-identical behaviour; `git apply --check` passes on c51efd9;
    the patched awk with MIN_WINS=6, w 7, idle .20 vs .16 prints 1 = keep (a)). "Idle worse" = trial30's established
    `cand <= base + 0.05` (live-trial-30 memory); a strict "cand <= base" is IDLE_TOL=0.
+
+## Sampled-gate variant (decision 1 = B; GATE-SAMPLE 10-30: 8835bed + aaa1ad2, all opt-in, absent = byte-identical)
+What exists (evidence in STATUS above):
+- (a) The three paths already shared ONE `decision_options.decide`: training (`e1_eval.sample_decide_batch`, decode
+  'sample'), SIM (`decide_batch` <- search_s0 D3 via `match_kwargs`), live (`live_gen_v2.GenPilot.decide`). The sampled
+  gate in the greedy decode = `decide(gate_sample=T, gate_rngs=...)` (63b0693): the trainer's formula, tau = the phase tau
+  (+ tau_delta); tau_threatened and the hazard draw do NOT apply under it (the trainer has neither), finishers / barrel_lane
+  / rocket rules still do.
+- SIM: `search_s0 --gate-sample T` = `gap.py --gate-sample T` = gate.sh `GATE_SAMPLE=T` -> cfg `gate_sample` -> match_kwargs
+  gives decide the gate T + ONE stream per match, seed SeedSequence([obs_seed('gate_sample:'+tag, k), decision_seed])
+  (rng_decision_options untouched). Refused with --pipeline-decisions / without decision options. No per-time exponent in
+  the SIM: a SIM wait advances exactly decide_every 10 ticks = the pilot's step (pilot.yaml decide_every 10) and a play's
+  next decision is one draw, so k = 1 on every SIM row (a, structural: e1_eval Match.apply). The D3 job dirs' run.json
+  carry `"gate_sample": T` only when set.
+- Live: `live_play --gate-sample T` (per-match seed SeedSequence([decision_seed, match, 0x6A7E]), every draw a 'gate_draw'
+  event with the seed) + `--gate-sample-step-ticks N` (default 0 = one trainer draw per decision): k = ticks since the
+  previous decision / N when that one was a sampled WAIT, else 1 (first decision, after a play / no draw), cap 4 (2 s);
+  fire iff u < 1 - (1 - p_b)^k; k is in the gate_draw event. Both flags are now LIVE_OPTIONS-deployable (aaa1ad2; before
+  it the file refused them). (a) Live cadence on the 4 recorded CLXIII logs: 1,511 gate rows, k = 1 on 1,264, k < 1 on 119
+  (2-8-tick gaps), k > 1 on 128 (mostly 11-12 ticks), mean k .968: per-decision live over-samples a little at the short gaps;
+  the effect on a model's fire rate is (b) small, unmeasured.
+
+Gate commands, sampled variant (same env + seeds as step 1; BASE stays CLXIII with the threshold gate = what is live, so
+the comparison is "each model under its own deploy decoder"):
+- Sync the code to the gate tree first (it is c51efd9 = the pilot's code; these files changed since only by opt-in hunks):
+  `git -c core.autocrlf=false archive --format=tar aaa1ad2 pipeline/decision_options.py pipeline/search_s0.py pipeline/live_options.py scratchpad/gauntlet/L74/gap/gap.py scratchpad/gauntlet/L74/plan1026/d2g/gate.sh | ssh -o BatchMode=yes -i ~/.ssh/runpod_clashbot -p 33903 root@157.157.221.29 "cd /workspace/pgate/cb && tar xf - --unlink-first"`
+  Check (owed, not run): `GATE_GAP=scratchpad/gauntlet/L74/plan1026/pilot/gate/gap_chunks.py GAP_CHUNKS=1` BASE iu40 on one
+  seed = the 10-30 dry-run rows (repeat.sh's comparison) -> absent flag unchanged on the pod tree.
+- 1b'. CANDIDATE: step 1b with `GATE_SAMPLE=0.1` added and tags `cands_e4` / `cands_iu40` (out /workspace/pgate/cands.out);
+  1c with `cands_*` in place of `cand_*`. Optional: BASE with GATE_SAMPLE=0.1 (`bases_*`) = both models at the same decoder
+  (separates "the RL helped" from "the sampled gate helped"); costs another 3,840 games.
+- (a) laptop smoke (royale venv, search_s0 plain, gen_s0 vs gen, 4 seeds, D3 subset): --gate-sample 0.1 ran, rows differ
+  from the threshold run 4/4, a re-run gives 4/4 identical rows (seeded per match).
+
+Live commands (lead / owner only; never a worker):
+- Back up, then append to LIVE_OPTIONS for the pilot only:
+  `cp scratchpad/gauntlet/L70/live/LIVE_OPTIONS scratchpad/gauntlet/L70/live/LIVE_OPTIONS.pre_clxv && printf ' --gate-sample 0.1 --gate-sample-step-ticks 10\n' >> scratchpad/gauntlet/L70/live/LIVE_OPTIONS`
+- Offline check: step 2.3 (`CKPT=<CLXV> start_live.sh icebow --no-fast-plays --ranked --check`) -> LIVE_CHECK_PASS whose
+  live_options.from_file shows gate_sample 0.1 + gate_sample_step_ticks 10. (a) the same --check through live_play.py
+  directly (CLXIII, CPU, merged-reader env) passes with such a file. After the first live match:
+  `grep -c '"event": "gate_draw"' <newest live_play_*.jsonl>` > 0 and the events carry seed and k.
+- REVERT must restore LIVE_OPTIONS too: `cp scratchpad/gauntlet/L70/live/LIVE_OPTIONS.pre_clxv scratchpad/gauntlet/L70/live/LIVE_OPTIONS`
+  BEFORE the deploy_ckpt.sh CLXIII line (step 2.5); deploy_ckpt.sh / trial30.sh swap only the checkpoint, so trial30's
+  automatic REVERT would leave CLXIII running with the sampled gate (see open item 2).
+
+Still open (restart point):
+1. (b) start_live.sh --check with the edited LIVE_OPTIONS was not run (start_live.sh is live tooling; a worker
+   must not run it); live_play.py --check directly passed (above).
+2. trial30.sh / deploy_ckpt.sh do not restore LIVE_OPTIONS on REVERT: a LIVE_OPTIONS backup/restore hook is needed if the
+   sampled gate is deployed through trial30 (live tooling: lead's call), else revert by hand as above.
+3. livecal.LIVE (the SIM config generated from LIVE_OPTIONS, PLAN P1) skips EXTRA_LIVE_FLAGS, so a deployed --gate-sample is
+   NOT picked up by gap.py automatically and livecal's live_options_diff does not refuse a gate mismatch: pass GATE_SAMPLE by
+   hand. Closing this = livecal reading gate_sample from LIVE_OPTIONS (not done; one change at a time).
+4. The pod sync + absent re-check above; a flag-on rate check with the PILOT checkpoint
+   (`pilot/ops/gate_sample_check.py <pilot ckpt> 0.1 0,1,2 OUT.json`; 10-28 ran it with CLXIII only).
 
 ## Findings from the dry run (10-30)
 - (a) The gate runs a memory model on crforge 5e8089a4 + tables 16.635.3 end to end: pilot_box3_u0000 (sha 3218c3a9) played
