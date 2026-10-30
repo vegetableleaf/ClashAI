@@ -29,8 +29,9 @@ Grades: (a) measured (number + source), (b) plausible but untested, (c) contradi
   original opp deck (census decks for the 'init' partner jobs) -- exact on both paths, but fewer Rocket / Log / X-Bow rule
   rows than the real run. Fixed: msg_live.py now writes production's spec (adaptive_opponents.opponent_pool's frozen entry,
   opp_deck = rl_royale.ICEBOW_DECK, as sample_matchups); the run below uses it.
-- 48-job compare DONE (47 / 48, above). RUNNING at hand-off (33903, CPUs 178-179 only; 240-255 = the production arm): the
-  no-live regression (the original u0000 msg, RAW=1, 16 jobs; bar 16 / 16) ->
+- 48-job compare DONE (47 / 48, above). No-live regression DONE (a): original u0000 msg, RAW=1, 16 jobs: 16 / 16 identical,
+  tables 16 / 16, lp max 8.1e-7 (no 'live' seat = unchanged). Nothing of mine left running on 33903 (used CPUs 178-179 only;
+  250-255 were 100% busy with the production arm, whose STATUS range is 240-255). Files:
   `/workspace/fliv/out/cmp_live2_u5_48.{json,log}`, `cmp_raw_u0.{json,log}`. Read: `ssh ... -p 33903 root@157.157.221.29 'head -c 600 /workspace/fliv/out/cmp_live2_u5_48.log; head -c 600 /workspace/fliv/out/cmp_raw_u0.log'`.
   Then the smoke (step 2): `ssh ... -p 33903 root@157.157.221.29 'cd /workspace/fliv/cb && setsid nohup bash scratchpad/gauntlet/L74/plan1026/pilot/loop/fliv_smoke.sh fliv_live_smoke 178-179 >/dev/null 2>&1 < /dev/null &'` (log /workspace/fliv/out/fliv_live_smoke.out).
   Rerun: `cd /workspace/fliv/cb && R=/workspace/oplm/cb2/scratchpad/gauntlet/L68/rl; JOBS=48 bash scratchpad/gauntlet/L74/plan1026/pilot/loop/cmp_live.sh $R/oplc_flv0_l01_lr3/fast_msg_u0005.pkl $R/oplc_ftR_l0003_live/config.yaml OUT.json --device cuda --in-flight 8 --matches 8 --threads 2`
