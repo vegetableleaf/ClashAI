@@ -28,10 +28,11 @@ def key_of(plan):
     return hashlib.sha1(json.dumps(recon.runnable(plan), sort_keys=True).encode()).hexdigest()
 
 
-def search(rec, frames, out, beam=4, ops=None):
+def search(rec, frames, out, beam=4, ops=None, start=None):
+    """start: a plan to search from instead of the base plan (plant_recall.py: an exact plan with one planted error)."""
     me, end = rec['my_side'], max(frames)
     tab = recon.Tab()
-    plan = recon.base_plan(rec, frames)
+    plan = start or recon.base_plan(rec, frames)
     e0 = recon.start_elixir(frames, plan, me, tab)
     recon.with_elixir_base(plan, tab, e0)
     work = os.path.join(out, 'work')
@@ -65,13 +66,14 @@ def search(rec, frames, out, beam=4, ops=None):
                 k = sme_live.objective(sme_live.analyse(ob, frames, me, lo, hi), hi, skip)
                 if k[0] > d + (HEAL if e['op'] in STRUCT else 0):
                     better.append((k, -cost, e, p))
+            better.sort(key=lambda b: b[:2], reverse=True)   # stable: better[0] = the max(...) the log named before
             log.append({'round': rnd, 'd': d, 'legal': len(hs), 'refused': dict(why), 'better': len(better),
-                        'best': better and [max(better, key=lambda b: b[:2])[0], recon.describe(m['plan'], max(better, key=lambda b: b[:2])[2])]})
+                        'best': better and [better[0][0], recon.describe(m['plan'], better[0][2])],
+                        'top': [recon.describe(m['plan'], b[2]) for b in better[:40]]})
             if not better:
                 m = dict(m, given_up=m['given_up'] + [d])
                 cands.append((full_key(m), m))
                 continue
-            better.sort(key=lambda b: b[:2], reverse=True)
             for k, nc, e, p in better[:beam]:
                 seen.add(key_of(p))
                 o2, an2 = sme_live.base_run(p, frames, me, end, work, log)
@@ -103,7 +105,8 @@ def full_key(m):
 
 
 def do_match(args):
-    rec, frames_path, out, beam, ops = args
+    rec, frames_path, out, beam, ops = args[:5]
+    start = args[5] if len(args) > 5 else None
     mo = os.path.join(out, rec['match'])
     os.makedirs(mo, exist_ok=True)
     try:
@@ -114,7 +117,7 @@ def do_match(args):
                     if h['last'] < t <= h['end']:
                         frames[t].setdefault('H', []).append([h['side'], h['name'], (h['track'] or {}).get(str(t))]
                                                              + ([sme_live.hidden_ref(h['track'], t)] if sme_live.HIDDEN_ASSIGN else []))
-        best, plan, log = search(rec, frames, mo, beam, ops)
+        best, plan, log = search(rec, frames, mo, beam, ops, start)
         if best is None:
             res = {'match': rec['match'], 'error': 'base plan failed', 'log': log}
         else:
