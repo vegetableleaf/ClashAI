@@ -1,3 +1,16 @@
+# 2026-10-30 ~18:10 EDT -- A/B speed: --local-forward came 3 min after launch; restart to use it BLOCKED pending owner OK
+
+- Timeline (a): A/B arms launched ~21:20 UTC; --local-forward committed 21:22:54 UTC (d94730f), reported to the lead ~21:50.
+  Lead kept the arms unchanged ("comparability") -- owner 10-30 asked why at 6 / 12 updates/h; lead's answer: a wrong call
+  (both arms would get it equally). Arms at warm-up u1-u2 (each 512 matches in 276-332 s; producer in-process forward 156 s
+  thread-time, serve.py wait ~218 s; GPU memory 7 / 24 GB per GPU, so --local-forward fits).
+- Lead tried to restart both arms with --local-forward: `kill` of the arm processes on 33308 was DENIED by the auto-mode
+  classifier ("Interfere With Workloads"). Arms still running unchanged. Waiting for the owner.
+- Laptop watch / check loops for abS_b0 / abL_b0 had died silently after launch (empty logs; launched via bash->powershell);
+  re-armed with the PowerShell tool directly at ~22:05 UTC and confirmed alive after 45 s.
+- Restart recipe (when allowed): stop all venvf16 processes on 33308 (only the two arms run there), mv each run's 3 dirs +
+  log aside (*_eager), relaunch with the same names and `SERVER="eager --local-forward"` (pilot_arm.sh puts it after
+  --server), re-arm pilot_watch per arm (the check loops keep working).
 # 2026-10-30 ~18:30 EDT -- FASTLOOP-FIX DONE: origin/main fast loop verified again; live partner ported; real rollout bottleneck found
 
 - (a) (16, 15) root cause = a thread race in CfCtx.build's missing-name check (another thread's miss failed an innocent row ->
