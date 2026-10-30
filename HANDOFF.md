@@ -1,3 +1,12 @@
+# 2026-10-30 ~17:05 EDT -- NEW PODS (owner rented 10-30); pods UP now: 33308, 33903, 40088, 40008, 31892
+
+| pod | ssh (key ~/.ssh/runpod_clashbot; the owner's "id_ed25519" does not exist on the laptop) | hardware (cgroup) | owner of the work |
+|---|---|---|---|
+| 3090 A | `ssh -i ~/.ssh/runpod_clashbot -p 40088 root@213.192.2.118` | RTX 3090 24 GB, 31.1 CPUs, 116 GiB, 300 GB, EPYC 7H12 | OPP-PUSH strength arms |
+| 3090 B | `ssh -i ~/.ssh/runpod_clashbot -p 40008 root@213.192.2.110` | RTX 3090 24 GB, 31.1 CPUs, 116 GiB, 300 GB, EPYC 7763 | OPP-PUSH style track |
+| PRO 6000 | `ssh -i ~/.ssh/runpod_clashbot -p 31892 root@81.27.69.178` | RTX PRO 6000 Blackwell 96 GB, 27.2 CPUs, 116 GiB, 100 GB, EPYC 9554 | speed benches: LEARNER-SPEED (boots it, CPUs 0-5) + FASTLOOP-FIX rollout benches; lock /workspace/BENCH_LOCK |
+Hosts differ from 157.157.221.29: scripts that hard-code the host get an opt-in HOST parameter. 5x PRO 6000 NOT rented: lead's
+measured reason (6x box GPUs 16-39 %, CPU-side Python bound); rent when a single-PRO-6000 projection shows >= ~80 % use.
 # 2026-10-30 ~16:45 EDT -- ENGINE HELD-OUT RESULT (FRESH9, frozen before any change): general search = hand rules
 
 - (a) r4_report on 33903 /workspace/smeR3 runs (driver ended F9_DONE): FRESH9 177 unique matches, as extracted (flagged =
