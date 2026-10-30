@@ -4903,7 +4903,8 @@ class Learner:
             if AO.mode(self.cfg.get("opp_style", "off")) == "on":
                 for r in sorted(res, key=lambda r: (r["league"]["tag"], r["k"])):
                     self.log.json({"event": "opponent_style", "update": u, "tag": r["league"]["tag"],
-                                   "k": r["k"], "opp": r["league"]["opp"]["id"], "style": r["opp_style"]})
+                                   "k": r["k"], "opp": r["league"]["opp"]["id"],
+                                   "style": r.get("opp_style")})   # None: a P2 timing-head opponent plays unstyled
             return res, {"picked": [], "actors": st, "skipped": len(skipped),
                          "league": [{"opp": sp["opp"]["id"], "learner_deck": sp["learner_deck_name"],
                                      "opp_deck": sp["opp_deck_name"], "side": sp["learner_side"],
