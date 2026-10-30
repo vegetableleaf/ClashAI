@@ -1,3 +1,21 @@
+# 2026-10-30 ~17:30 EDT -- PILOT REPLACED by the S / L learning A/B from B0 (owner); u25 graphs switch FAILED
+
+- u25 switch (switch_fast.sh) fired 20:57 UTC but every producer crashed at start: `beginAllocateToPool: already recording to
+  mempool_id` in policy_server.py:173 (graphs-mode capture into a shared pool under concurrent first requests, b). pilot_box3
+  dead from 20:58; NOT restarted (owner: replace with the A/B). Bug sent to FASTLOOP-FIX (graphs stays off until compare.py
+  --server graphs passes under the 9-model pool). pilot_box3 last checkpoints u0020 / u0025 on 33308; log copy
+  pilot_box3.33308b_u0025.log. auto_stop PID 179581 killed; laptop pilot_box3 watch + check loops stopped.
+- 33308 tree patched (opt-in keys, absent = unchanged): ba9caab ability_head_from_init, 96fda93 critic_warmup_minibatch
+  (LEARNER-SPEED; smokes on 33903: absent = hash b5e2a2bbafef; arm L warm-up bit-identical to S). Backups
+  /workspace/loop/rl_royale.py.pre_ahfi / .pre_cwm.
+- A/B RUNNING on 33308 (pilot_arm.sh, eager server, 16 producers x 32 = 512 matches/update, E=128, n_actors 4, save_every 5,
+  memory_encoder_frozen false, ability_head_from_init true, mem_row_cache true, CRFORGE_XMX 700m + SerialGC):
+  - arm S `abS_b0`: GPU 0, CPUs 0-53, pilot.yaml learner (minibatch 256), config sha b1affeaf810e.
+  - arm L `abL_b0`: GPU 1, CPUs 54-107, + minibatch 65536 micro_batch 1024 critic_warmup_minibatch 256 lr 2.0e-5 ppo_epochs 2,
+    config sha faf89cb51635. CHECK the first policy update's per-step KL (lead rule: lower lr if a step > ~0.03).
+  Logs /workspace/loop/logs/ab{S,L}_b0.log; ckpts icebow/data/bench/rl_royale/ab{S,L}_b0/. Metric = learning per WALL HOUR.
+- Laptop (WMI): pilot_watch.sh + pilot_check.sh per arm (logs pilot/ops/watch_ab*.log, pilot/gate/check_ab*.log; Discord).
+  pchk.sh: abL_* checks on 33903 CPUs 0-15 (CLXIII baseline DONE 19:49 UTC), others 16-31.
 # 2026-10-30 ~17:05 EDT -- NEW PODS (owner rented 10-30); pods UP now: 33308, 33903, 40088, 40008, 31892
 
 | pod | ssh (key ~/.ssh/runpod_clashbot; the owner's "id_ed25519" does not exist on the laptop) | hardware (cgroup) | owner of the work |

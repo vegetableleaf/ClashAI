@@ -3,10 +3,11 @@
 # ck/N.pt under its TRAINED sampled gate (T .1), paired with CLXIII's base_iu40_741200 rows (threshold gate = what is live).
 # Same env as GATE_AND_LIVE.md step 1. CPUs 16-31, 16 workers. Prints one result line. Driven by pilot_check.sh on the laptop.
 N=$1; P=/workspace/pgate; cd $P/cb || exit 1
+C=16-31; case $N in abL_*) C=0-15 ;; esac           # A/B 10-30: arm L's checks on CPUs 0-15 (baseline done), others 16-31
 export GATE_CB=$P/cb GATE_PY=/workspace/venvf16/bin/python GATE_LIB=/workspace/crforge_main/5e8089a4/plain/lib \
   GATE_TABLES=/workspace/oplm/tables/16.635.3 GATE_FACADE=$P/facade GATE_EV=$P/ev CRFORGE_BARREL_DECOY_SIM=1 CRFORGE_XMX=1g \
   JAVA_TOOL_OPTIONS="-XX:+UseSerialGC -XX:ActiveProcessorCount=1" GATE_SAMPLE=0.1 GATE_CKPT=$P/ck/$N.pt
-bash scratchpad/gauntlet/L74/plan1026/d2g/gate.sh crforge pchk_$N iu40 16-31 16 741200 > $P/pchk_$N.out 2>&1
+bash scratchpad/gauntlet/L74/plan1026/d2g/gate.sh crforge pchk_$N iu40 $C 16 741200 > $P/pchk_$N.out 2>&1
 cd $P && /workspace/venvf16/bin/python -c '
 import sys
 from pair_both import load, delta
