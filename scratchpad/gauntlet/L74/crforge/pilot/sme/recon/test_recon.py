@@ -134,6 +134,7 @@ def t_victims():
            ['T_rec_only', [1, 3500, 25500, 4781], 'tower', [0, 0, 77]]]           # live 77 lower at the SIM point
     v = recon.victims(det)
     ok((1, 12301, 16825) in v and (1, 3500, 25500) in v and len(v) == 2, 'victims: vanished + damaged, not moved')
+    ok(recon.victims(det + [['S0_elixir', 48163, None, 28163]]) == v, 'victims: an elixir row is no body (001856)')
 
 
 def t_cases():

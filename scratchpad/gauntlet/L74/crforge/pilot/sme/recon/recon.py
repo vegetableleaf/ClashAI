@@ -323,6 +323,8 @@ def victims(detail):
     within 300 units, and live bodies at the SIM body's point with less hp."""
     out = []
     for kind, x, _, near in detail:
+        if not isinstance(x, (list, tuple)):
+            continue                              # S*_elixir rows carry a number, not a body (SME-REBUILD: 201103, 001856)
         if len(x) > 3 and x[3] < 0:
             continue                              # the reader's hp -1 placeholder says nothing about damage
         if kind in ('U_sim_only', 'T_sim_only') and (near is None or abs(near[0]) + abs(near[1]) > 300):
