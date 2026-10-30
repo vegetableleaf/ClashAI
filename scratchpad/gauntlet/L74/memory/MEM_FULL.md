@@ -115,6 +115,20 @@ Grades: (a) measured (number + source), (b) plausible, untested (with the test),
   cell log-probs = 0.0 exactly (< 1e-6). Recipe step 5 (RL) NOT started: needs the lead's pod decision.
   Scripts: `.foreman/scratch/memretrain/cmpci.sh NAME CKPT TABLES [flags]` (CI compare, ~10 min for all val rows, GPU ~3 GB);
   build: `python scratchpad/gauntlet/L74/memory/full/build_b0_full.py --b0 B0 --enc mem_best.pt --clxiii CLXIII.pt --tables TABLES --out OUT`.
+- xb_lock iteration (10-30, lead decision: iterate, do not waive; a): encoder, hidden layer and every other head frozen; only the
+  xb_lock output row of mem_aux.glob changes (`memory/full/fit_xb_lock.py`, hidden h computed once: 7,770 train / 1,104 val labelled
+  rows; the val rows were never used to fit or to stop; early stop on a held-in train split rep % 5 == 0). BCE/H on the 1,104 val
+  elements: old 1.0225, full_warm 1.0711, (A) row refit 0.9599, (B) temperature T = 1.7312 (logit / T) 0.9487.
+  Full paired-bootstrap compare on the same 349,264 rows (`retrain/cmpci_xbtemp.json`, `cmpci_xbfit.json`): xb_lock BCE new - old
+  (B) -0.0738 [-0.0966, -0.0545], (A) -0.0626 [-0.0944, -0.0361] -> bar (CI not above 0) met by both; (B) auc .6698 (+.0079
+  [+.0017, +.0140]), acc .6114 (+.0118 [-.0048, +.0270]); on > 128 (33 elements, 24 matches) loss -0.035 [-0.154, +0.084] (ns).
+  Every other head: max |point diff| vs cmpci_full.json 1.4e-9 (B) / 1.2e-9 (A) = float noise. Gate 4 is now MET (every aux metric
+  not worse overall; > 128 rows better on sum_main with a CI; sum_all on > 128 still spans 0 only because of the 33-element xb_lock
+  and 145-element rk_dmg terms).
+  Chosen: (B). Checkpoint `/workspace/memretrain/out/full_warm/mem_best_xbtemp.pt` (sha 57915a09...). B0-full v2 =
+  `/workspace/memretrain/out/b0_full/b0_full_clxiii_mem256snap_xbtemp.pt`, sha fc1caf14cca0c89a7b2ed22d615e5ed5c0f06b5162b30cc828c77aae197d5eb0
+  (supersedes sha 8ad4cbfa above); G-mem-0 again exactly 0.0 on the same 10,000 rows (351 > 128). Laptop copies with these shas in
+  `C:/Users/benpe/pod_backup_weekend/memretrain/`. RL (step 5) still not started.
 - (old) NEXT, now DONE: full tables `.foreman/scratch/memretrain/snap_full.npz` (laptop PID 29472,
   was at 14,600 / 14,661; its meta line lands in `snap_full.json`; check `failed` is empty and rows_with_table = 3,517,863).
   `scp` it to `/workspace/memretrain/snap_full.npz`, then on 33903 (~50 min, b: scaled from 0.1 s / step):
