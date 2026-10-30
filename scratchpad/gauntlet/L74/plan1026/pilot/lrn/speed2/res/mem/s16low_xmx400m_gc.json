@@ -1,0 +1,196 @@
+{
+ "xmx": "400m",
+ "stages": [
+  {
+   "stage": "import torch",
+   "t": 0.0,
+   "Rss": 511.9,
+   "Pss_Anon": 262.8,
+   "Pss_File": 8.8,
+   "Anonymous": 262.8
+  },
+  {
+   "stage": "message loaded",
+   "t": 0.0,
+   "Rss": 520.4,
+   "Pss_Anon": 271.4,
+   "Pss_File": 8.8,
+   "Anonymous": 271.4,
+   "msg_mb": 8.6
+  },
+  {
+   "stage": "Producer built (JVM + tables + capture env)",
+   "t": 9.1,
+   "Rss": 829.3,
+   "Pss_Anon": 536.5,
+   "Pss_File": 10.5,
+   "Anonymous": 536.5,
+   "jvm": {
+    "heap_committed_mb": 387,
+    "heap_used_mb": 112,
+    "heap_max_mb": 387,
+    "nonheap_committed_mb": 18,
+    "gc": [
+     [
+      "Copy",
+      0,
+      0
+     ],
+     [
+      "MarkSweepCompact",
+      3,
+      118
+     ]
+    ],
+    "pools_used_mb": {
+     "CodeHeap 'non-nmethods'": 1,
+     "Metaspace": 9,
+     "Tenured Gen": 14,
+     "CodeHeap 'profiled nmethods'": 3,
+     "Eden Space": 98,
+     "Survivor Space": 0,
+     "Compressed Class Space": 1,
+     "CodeHeap 'non-profiled nmethods'": 1
+    }
+   }
+  },
+  {
+   "stage": "after run() 0",
+   "t": 53.7,
+   "Rss": 1200.9,
+   "Pss_Anon": 901.5,
+   "Pss_File": 10.3,
+   "Anonymous": 901.5,
+   "run_s": 44.5,
+   "peak_rss_mb": 1185.5,
+   "matches": 16,
+   "jvm": {
+    "heap_committed_mb": 387,
+    "heap_used_mb": 174,
+    "heap_max_mb": 387,
+    "nonheap_committed_mb": 39,
+    "gc": [
+     [
+      "Copy",
+      9,
+      107
+     ],
+     [
+      "MarkSweepCompact",
+      15,
+      1829
+     ]
+    ],
+    "pools_used_mb": {
+     "CodeHeap 'non-nmethods'": 1,
+     "Metaspace": 17,
+     "Tenured Gen": 68,
+     "CodeHeap 'profiled nmethods'": 9,
+     "Eden Space": 106,
+     "Survivor Space": 0,
+     "Compressed Class Space": 2,
+     "CodeHeap 'non-profiled nmethods'": 7
+    }
+   },
+   "opp_models": 8,
+   "time": {
+    "java": 5.864128594752401,
+    "fill": 1.526795248617418,
+    "gather": 0.5437079186085612,
+    "forward_wait": 18.749228501576,
+    "fwd_rows": 10275,
+    "fwd_calls": 552,
+    "decide_py": 13.554406758747064,
+    "decide": 33.6796615794301
+   }
+  },
+  {
+   "stage": "results pickled 0",
+   "t": 54.1,
+   "Rss": 1273.7,
+   "Pss_Anon": 974.2,
+   "Pss_File": 10.3,
+   "Anonymous": 974.2,
+   "results_mb": 72.2,
+   "per_match_mb": 4.51
+  },
+  {
+   "stage": "results freed + gc 0",
+   "t": 54.4,
+   "Rss": 1201.5,
+   "Pss_Anon": 902.0,
+   "Pss_File": 10.3,
+   "Anonymous": 902.0
+  },
+  {
+   "stage": "after run() 1",
+   "t": 95.7,
+   "Rss": 1248.2,
+   "Pss_Anon": 948.8,
+   "Pss_File": 10.7,
+   "Anonymous": 948.8,
+   "run_s": 41.3,
+   "peak_rss_mb": 1273.7,
+   "matches": 16,
+   "jvm": {
+    "heap_committed_mb": 387,
+    "heap_used_mb": 91,
+    "heap_max_mb": 387,
+    "nonheap_committed_mb": 40,
+    "gc": [
+     [
+      "Copy",
+      21,
+      301
+     ],
+     [
+      "MarkSweepCompact",
+      18,
+      2395
+     ]
+    ],
+    "pools_used_mb": {
+     "CodeHeap 'non-nmethods'": 1,
+     "Metaspace": 17,
+     "Tenured Gen": 86,
+     "CodeHeap 'profiled nmethods'": 9,
+     "Eden Space": 4,
+     "Survivor Space": 0,
+     "Compressed Class Space": 2,
+     "CodeHeap 'non-profiled nmethods'": 8
+    }
+   },
+   "opp_models": 8,
+   "time": {
+    "java": 10.358594878809527,
+    "fill": 1.5703099482925609,
+    "gather": 1.1632044109283015,
+    "forward_wait": 39.06103606079705,
+    "fwd_rows": 21546,
+    "fwd_calls": 1089,
+    "decide_py": 28.00845563027542,
+    "decide": 69.82778163906187
+   }
+  },
+  {
+   "stage": "results pickled 1",
+   "t": 95.9,
+   "Rss": 1328.6,
+   "Pss_Anon": 1029.2,
+   "Pss_File": 10.7,
+   "Anonymous": 1029.2,
+   "results_mb": 80.3,
+   "per_match_mb": 5.02
+  },
+  {
+   "stage": "results freed + gc 1",
+   "t": 96.1,
+   "Rss": 1248.4,
+   "Pss_Anon": 948.9,
+   "Pss_File": 10.7,
+   "Anonymous": 948.9
+  }
+ ],
+ "serve": "graphs",
+ "nmt": "243900:\n\nNative Memory Tracking:\n\n(Omitting categories weighting less than 1KB)\n\nTotal: reserved=1839617KB, committed=495101KB\n       malloc: 29965KB #117051\n       mmap:   reserved=1809652KB, committed=465136KB\n\n-                 Java Heap (reserved=409600KB, committed=409600KB)\n                            (mmap: reserved=409600KB, committed=409600KB) \n \n-                     Class (reserved=1049241KB, committed=2585KB)\n                            (classes #3773)\n                            (  instance classes #3441, array classes #332)\n                            (malloc=665KB #12897) (at peak) \n                            (mmap: reserved=1048576KB, committed=1920KB) \n                            (  Metadata:   )\n                            (    reserved=65536KB, committed=16448KB)\n                            (    used=16168KB)\n                            (    waste=280KB =1.70%)\n                            (  Class space:)\n                            (    reserved=1048576KB, committed=1920KB)\n                            (    used=1636KB)\n                            (    waste=284KB =14.80%)\n \n-                    Thread (reserved=20536KB, committed=2544KB)\n                            (thread #20)\n                            (stack: reserved=20480KB, committed=2488KB)\n                            (malloc=35KB #124) (peak=43KB #128) \n                            (arena=22KB #38) (peak=431KB #28)\n \n-                      Code (reserved=249268KB, committed=22804KB)\n                            (malloc=1580KB #7605) (peak=1624KB #7478) \n                            (mmap: reserved=247688KB, committed=21224KB) \n \n-                        GC (reserved=1363KB, committed=1363KB)\n                            (malloc=23KB #79) (peak=1768KB #516) \n                            (mmap: reserved=1340KB, committed=1340KB) \n \n-                  Compiler (reserved=263KB, committed=263KB)\n                            (malloc=99KB #435) (peak=128KB #435) \n                            (arena=165KB #5) (peak=65590KB #20)\n \n-                  Internal (reserved=402KB, committed=398KB)\n                            (malloc=362KB #7874) (peak=398KB #7870) \n                            (mmap: reserved=40KB, committed=36KB) \n \n-                     Other (reserved=1290KB, committed=1290KB)\n                            (malloc=1290KB #39) (peak=1291KB #42) \n \n-                    Symbol (reserved=3953KB, committed=3953KB)\n                            (malloc=3529KB #84448) (peak=3529KB #84449) \n                            (arena=424KB #1) (at peak)\n \n-    Native Memory Tracking (reserved=1854KB, committed=1854KB)\n                            (malloc=25KB #435) (at peak) \n                            (tracking overhead=1829KB)\n \n-        Shared class space (reserved=16384KB, committed=12072KB)\n                            (mmap: reserved=16384KB, committed=12072KB) \n \n-               Arena Chunk (reserved=19500KB, committed=19500KB)\n                            (malloc=19500KB #667) (peak=65994KB #1615) \n \n-                    Module (reserved=172KB, committed=172KB)\n                            (malloc=172KB #1318) (peak=172KB #1320) \n \n-                 Safepoint (reserved=8KB, committed=8KB)\n                            (mmap: reserved=8KB, committed=8KB) \n \n-           Synchronization (reserved=82KB, committed=82KB)\n                            (malloc=82KB #934) (at peak) \n \n-            Serviceability (reserved=1KB, committed=1KB)\n                            (malloc=1KB #6) (at peak) \n \n-                 Metaspace (reserved=65699KB, committed=16611KB)\n                            (malloc=163KB #168) (at peak) \n                            (mmap: reserved=65536KB, committed=16448KB) \n \n-      String Deduplication (reserved=1KB, committed=1KB)\n                            (malloc=1KB #8) (at peak) \n \n-           Object Monitors (reserved=1KB, committed=1KB)\n                            (malloc=1KB #4) (peak=12KB #58) \n \n"
+}

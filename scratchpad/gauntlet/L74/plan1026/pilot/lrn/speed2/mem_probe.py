@@ -61,6 +61,8 @@ def main():
     ap.add_argument("--jobs", type=int, default=16)
     ap.add_argument("--serve", default=None, help="eager | graphs: start one serve.py on cuda:0 for the producer")
     ap.add_argument("--waves", type=int, default=1)
+    ap.add_argument("--init", default="icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt",
+                    help="--serve: the learner architecture checkpoint (the run's init; repo-relative)")
     ap.add_argument("--build", default=os.environ.get("CRFORGE_FACADE_BUILD"))
     a = ap.parse_args()
     st = {"xmx": os.environ.get("CRFORGE_XMX", "16g"), "stages": []}
@@ -81,7 +83,7 @@ def main():
     if a.serve:
         _, _, sd0, _ = pickle.loads(Path(a.msg).read_bytes())
         root = f"/dev/shm/speed2_mem_{os.getpid()}"
-        servers = start_servers({**base, "init_path": base.get("init_path", base.get("init"))}, update, sd0, jobs,
+        servers = start_servers({**base, "init_path": a.init}, update, sd0, jobs,
                                 ["cuda:0"], a.serve, a.matches, root)
         srv, st["serve"] = f"{root}/srv0.sock", a.serve
         del sd0
