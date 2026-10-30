@@ -1,3 +1,27 @@
+# 2026-10-30 ~13:30 EDT -- ACCOUNT 3: owner decisions; CLXIII gate baseline + periodic pilot checks running; 3 workers
+
+- **Owner 10-30 (account 3):** (1) pilot check = 480 SIM games every 20 updates: YES. (2a) deploy the pilot with its trained
+  SAMPLED gate (T .1): YES. (2b) trial30 MIN_WINS patch: YES (applied). (2c) reader target-filter fix: HOLD until a
+  target-aware model exists (CLXIII reads target cues; check recorded-match identity first). (2d) target_obs live wiring: HOLD.
+  (3) worker order approved. (4) start the CLXIII baseline: YES. Max 3 workers (memory account3-max-3-workers). Owner offers
+  more pods if needed. Live restart: NOT answered yet -> live stays OFF.
+- Gate (details GATE_AND_LIVE.md STATUS): aaa1ad2 synced to 33903 /workspace/pgate/cb; absent check 12/12 identical (a);
+  baseline 3,840 games RUNNING (base_run.sh, CPUs 0-15); pilot checks armed (laptop WMI `pilot/gate/pilot_check.sh` -> pod
+  `pchk.sh`, CPUs 16-31; log pilot/gate/pilot_check.log + Discord). trial30.sh: MIN_WINS / IDLE_TOL (patch) + RESTORE_OPTIONS.
+- Pilot at u10 (17:20 UTC): training wins u6-u10 70.7 / 65.0 / 69.8 / 69.0 / 66.7% (noise ~1 pp per update; no trend).
+- Workers (subagents of this session; each keeps its doc's STATUS restartable):
+  - FASTLOOP-FIX (Opus): root-cause the MEMFULL-LOOP (16, 15) compare (lead's untested guess: FAST-LIVEOPP's follow_ups guard
+    skipping a combo job in that live-partner message), port follow-ups into CfTrain (48/48), keys-on compare + smoke, then
+    report; does NOT move the production arm. 33903 CPUs 162-169, 178-179. Docs MEM_FULL.md / PLATEAU.md / LOOP_INT.md.
+  - MEM-RETRAIN-2 (Sonnet): snap_full.npz DONE on the laptop (29,322 tables, 3,517,863 rows, 0 failed) -> 33903 full warm run
+    + cmp with CIs; if gate 4 passes, graft B0-full + G-mem-0; stops before RL. CPUs 146-153. Doc MEM_FULL.md section 5.
+  - RECON-3 (Sonnet): R2_DONE hit -> r2_prec / r2_tally / assign_guard, then v2 (r2b, waiting) -> hand rules vs general search
+    on the same inputs; proposes the next round, starts nothing long. CPUs 226-237. Doc RECON.md.
+- Finding (a, not changed): the SIM gate's decision options pass `--card-levels Rocket=16 Log=15` (gate.sh EX) while live
+  LIVE_OPTIONS has `Log=16`. Same for base and candidate (pairing fair), but the gate's lethal-Log rule uses Log 15 stats.
+  Left as is for comparability with the agreed procedure; owner informed.
+- 33903 CPU quota 54.4 is oversubscribed while everything runs (arm 22 + gate 16 + checks 16 + workers ~28): the arm's
+  rollouts slow down until the baseline ends.
 # 2026-10-30 ~12:30 EDT -- ACCOUNT 3 start: state checked, watchers re-armed (read-only otherwise)
 
 - Pilot `pilot_box3` (33308) SURVIVED its first real policy updates after the OOM resume (a): u0005 (kl_stop after 32

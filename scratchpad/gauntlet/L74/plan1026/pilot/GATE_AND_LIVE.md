@@ -18,6 +18,16 @@ REVERT if <= 5/30 wins or idle-on-threat worse; then a 150-match block, KEEP onl
   Evidence (a): test_gate_sample_identity 6/6 (trainer decode == SIM / live decode with the same draws on 1,511 recorded
   live gate rows; GenPilot replay 1,511 draws 0 differ, per decision and per time); test_decide_identity 5/5 before and
   after; laptop SIM smoke absent = HEAD code 4/4 rows, sampled run deterministic 4/4. Nothing of GATE-SAMPLE is running.
+- **Account 3, 10-30 ~17:25 UTC (owner decisions 10-30: BOTH "Decisions owed" settled = (B) sampled-gate deploy + MIN_WINS=6).**
+  (a) aaa1ad2's 5 files synced into /workspace/pgate/cb (shas = aaa1ad2; old files in /workspace/pgate/pre_aaa1ad2/); absent
+  check: CLXIII iu40 1 chunk 12/12 rows identical to the dry run (`abase_iu40` vs `dbase_iu40`, rows_eq.py); u0000 with
+  GATE_SAMPLE=0.1 runs and differs 0/12 from the threshold rows. trial30_minwins.patch APPLIED + opt-in `RESTORE_OPTIONS=FILE`
+  in trial30.sh (copied over LIVE_OPTIONS before the auto-revert = open item 2 below closed). Step 1a RUNNING:
+  /workspace/pgate/base_run.sh (iu40 first, then e4; CPUs 0-15, W 16; log base.out; BASE_DONE at the end). Pilot checks
+  (owner OK): laptop `pilot/gate/pilot_check.sh` (WMI) -> pod `pchk.sh` = 480 iu40 games of u0000, u0020, u0040 ... under
+  GATE_SAMPLE=0.1 paired with base_iu40_741200 (CPUs 16-31); results in pilot/gate/pilot_check.log + Discord.
+  Candidate gate at FINAL = the "Sampled-gate variant" commands (1b' with GATE_SAMPLE=0.1). Live deploy = append the
+  gate-sample flags (backup LIVE_OPTIONS.pre_clxv) and run trial30 with `MIN_WINS=6 RESTORE_OPTIONS=scratchpad/gauntlet/L70/live/LIVE_OPTIONS.pre_clxv`.
 - NEXT (in this order): (0) start the CLXIII BASE rows now (step 1a; they do not depend on the pilot); (1) when FINAL exists,
   candidate rows + score (1b-1c); (2) the lead / owner decides the two open questions in "Decisions owed" (gate decode and
   trial30 bar); (3) live trial (step 2); (4) block (step 3); (5) bookkeeping (step 4).
