@@ -27,6 +27,9 @@ root@213.192.2.110` (3090, 31.1 CPUs, EPYC 7763). Both booted by boot_opp_pod.sh
 - E1 (a): pod B (EPYC 7763, Zen 3) replayed oplc_ftR_l0003_s1_u0040's D3 block: 390 / 480, sorted (end_tick, outcome) list
   IDENTICAL to 33903's (digest 9deb687d), 20 min at 28 workers. D3 blocks are game-identical across these pods' CPUs.
 - Replicate u0 (a): W/L 41/215 (.160) at seed 1 vs seed 0's 28/228 (.109); GPU 14.3 GB of 24.
+- LEAD 10-30 ~22:10 UTC: arm 2 goes on POD B's GPU (fast loop), started only AFTER the style B-HF run finishes (~00:30 UTC; never
+  overlap them on pod B's 31 CPUs); its lever = the u40 read (gae + critic warm-up if training win is within ~3 pp of D3, else
+  lever 4). Re-imitation plan REPLACED by the closed-loop diagnostic (calibration / sealed blocks stay untouched).
 - RUN TYPES: oplc_ftR_l0003_live = PRODUCTION on cb2 (33903); oplc_ftR_l0003_live_s1f = FAST LOOP on origin/main (pod A).
 - Exactness (a): E2 production on pod A, seed 0, u0: W/L 28/228 and w16_batch_u0000.json sha 32a2ae21 = 33903's live run
   (bit-identical; roll 649 s vs 855 s). E3 fast loop (origin/main tree) seed 0: u0 W/L 28/228, rows 6,555, KL / clip identical;
