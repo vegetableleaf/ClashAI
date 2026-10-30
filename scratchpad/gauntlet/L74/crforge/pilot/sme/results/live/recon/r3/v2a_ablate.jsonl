@@ -1,0 +1,1 @@
+{"match": "live_play_20261029_024716", "with": {"counts": {"exact": 1326, "div": 438}, "first": 2805, "frames": 1764}, "adds": [{"cmd": 16, "side": 0, "kind": "play", "card": "Zap", "run": 1397, "x": 14479, "y": 24739, "without": {"counts": {"exact": 623, "div": 1141}, "first": 1399, "frames": 1764}, "verdict": "needed"}]}

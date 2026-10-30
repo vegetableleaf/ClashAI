@@ -5,11 +5,14 @@ cases, `field_census.py` the rules on every frozen fresh input, `recon_search.py
 Evidence: `results/live/recon/`. Labels: (a) measured, (b) plausible but untested, (c) contradicted.
 
 ## STATUS (keep current)
-- **CLOSE-OUT 10-30 ~11:50 EDT (lead, usage 97%). Measured so far: section 9.1, 9.2, 9.3. NOT measured: the hand-rule number on the
-  same inputs + lib (r2_gate), the ASSIGN guard, every v2 engine result.** Still running unattended on 33903 CPUs 226-237
-  (end by themselves): r2_drive.sh PID 153944 (r2_gate, then ASSIGN off), r2b_drive.sh PID 278736 (v2). Next worker: when
-  `grep R2_DONE /workspace/smeR/runs/r2_drive.log` and `grep R2B_DONE /workspace/smeR2/runs/r2b_drive.log` hit, run the
-  r2_prec / r2_tally lines below, with r2v2_a + r2v2_b as the RECON results for v2, and `f1fix/assign_guard.py` on the gate.
+- **RECON-3 (10-30 ~13:40 EDT, section 10): the missing comparison is MEASURED. Nothing of mine is running.** Both pod drivers
+  ended (R2_DONE, R2B_DONE). Hand-rule gate (20 flags, same raw logs, same lib 5e8089a4): **142 / 151 pass apart from torn
+  (0.940, CP low 0.898), 132 strict**; RECON v1 123 / 116; RECON v2 126 / 119 (0.834, CP low 0.777). The gate wins 16 matches,
+  RECON wins 0 (paired sign p < 0.0001). **The gate number is IN-SAMPLE (every hand rule was written on these records): not a
+  gate number; a held-out FRESH9 is the real test.** ASSIGN guard (gate, per frame) PASS. The 16 gate-only matches map to named
+  generator gaps (10.3). Diagnostic (patched input, a): the Tombstone press with unit index 2 lets repress fix 5 of the 6
+  hero-Tombstone matches (the 6th needs a re-bind). Report: `python3 recon/r3_report.py` (usage in the file). Evidence
+  `results/live/recon/r3/`. Next round: 10.5. Codex dispatches: none. Earlier close-out (11:50 EDT) is superseded.
 - **RECON-2 (10-30, section 9). Restart point:** item 2 planted recall DONE (a): 49 plants on the 8 exact recon plans;
   in the move set's classes 22 / 25 restored exactly, inverse edit rank 1 of the first round every time it was listed,
   0 wrong fixes; outside it by design: drop of a visible spell 0 / 7, own point 1 / 5 (+ 4 equivalent body-point fixes).
@@ -272,7 +275,7 @@ Baseline r2_* runs use the generator before this change; v2 runs are `r2v2_*` in
   The hero Tombstone press has no cast state, so the extractor dates it at the next cast it sees, 253-508 ticks late;
   the diff names `Tombstone` at d = press + 2. `recon.hypotheses`: an ability command with run in (d, d + REDATE = 600] whose play's
   card is named by the diff is tried at R in [d - 4, d - 1]. Engine result: section 9.3.
-### 9.3 Pooled exactness (PARTIAL; a for the RECON baseline, the comparison itself is NOT measured yet)
+### 9.3 Pooled exactness (RECON baseline; the comparison with the hand-rule gate is section 10)
 - (a) RECON baseline (generator before v2, flags off, lib 5e8089a4, ASSIGN on, 151 scored strict-fresh matches):
   **123 / 151 pass apart from torn, 116 strict**; 3 records the flags-off extractor flags (155249, 000242 own_cycle_fail,
   031310 opp_no_fitting_deal) count as not passing. Rows `r2_recon_base_results.jsonl.gz`.
@@ -281,3 +284,92 @@ Baseline r2_* runs use the generator before this change; v2 runs are `r2v2_*` in
 - (b) untested: the fair number = r2_gate (all 20 flags, same extractor + lib); v2 should recover 172955 + the TOMB_HERO class.
 - ASSIGN off / guard: not run yet (r2_gate_a0, r2_recon_a0, r2v2_a0 queued; the guard needs cls_ticks, which recon results lack).
 
+
+## 10. RECON-3: hand-rule gate vs RECON on the same inputs and lib (10-30, evidence `results/live/recon/r3/`; a unless marked)
+Setup as section 9: the 151 scored strict-fresh FRESH2-8 matches, one lib (5e8089a4 tickprobe), one env (`recon/runR.sh`), ASSIGN on.
+Gate = `sme_live.py all` on the flags-ON re-extraction (`data/r2/on_all.jsonl`, 20 fresh_prep flags); RECON = `recon_search.py` on the
+flags-OFF re-extraction (v29 extractor only). v1 = r2_fail + r2_rest (generator before v2); v2 = r2v2_a (the 33 records v1 left not strictly
+exact) + r2v2_b (the other 118; no exact match lost). Tool: `python3 recon/r3_report.py GATE V1a,V1b V2a,V2b [GATE_A0 RC_A0 V2_A0]`
+(output `r3_report.txt`). Class as r2_tally: pass = strictly exact or exact apart from torn; a match the extractor flags counts as not passing.
+### 10.1 Pooled (one-sided 95% Clopper-Pearson lower bounds)
+| pipeline | pass apart from torn | strict |
+|---|---:|---:|
+| hand-rule gate (flags on) | **142 / 151 = 0.940 (low 0.898)** | 132 (0.874, low 0.821) |
+| RECON v1 (flags off) | 123 (0.815, low 0.755) | 116 (0.768, low 0.705) |
+| RECON v2 (flags off) | 126 (0.834, low 0.777) | 119 (0.788, low 0.726) |
+| reference: strict fresh, frozen inputs of each scoring day | 122 (0.808, low 0.748) | 122 |
+Unflagged only (3 records the flags-off extractor flags: 155249, 000242, 031310): v2 126 / 148 (0.851), strict 119 / 148 (0.804). Paired exact
+sign tests (matches passing in only one pipeline): gate vs v2 **16 : 0** (p < 0.0001; strict 13 : 0, p = 0.0002), gate vs v1 19 : 0, v1 vs v2 0 : 3 (p = 0.25).
+- (a) **The 142 / 151 is in-sample.** Every one of the 20 flags was written after tracing a failure on FRESH2-8 or dev, so 142 vs the
+  reference 122 measures how many failures the rules were built to fix, not how well they generalise. The held-out figure for the
+  hand-rule pipeline is still the frozen-day 122 / 151. FRESH9 (not frozen: it needs the Ranked battles after FRESH8's last log 082745
+  on 10-29) is the only fair test of gate vs RECON. RECON is partly in-sample too (the 8 cases of section 8 shaped its operators), far less.
+- (c) "RECON >= the hand rules on the same inputs" is contradicted: 126 vs 142 (16 : 0). Its gain over the 122 reference is 4 matches.
+### 10.2 Recall, precision, ASSIGN guard, v2 vs v1
+- Planted recall (section 9.1, unchanged): 22 / 25 visible plants restored inside the move set, inverse edit rank 1, 0 wrong fixes; 0 / 7 outside it (a dropped visible spell).
+- Precision: v1 kept 5 adds on the failing records, ablation 5 / 5 needed (9.2). v2 keeps 7 adds on the 151 (Zap: 024716, 235834, 021310, 080149; IceWizard: 142334,
+  155249, 000242) and 23 structural edits on 22 records. Ablation of the two new ones (`ice_ablate.jsonl`, this worker): IceWizard R5464 (155249) and R4996 (000242)
+  **needed**; 024716's Zap R1397 needed (`v2a_ablate.jsonl`). **7 / 7 needed, 0 phantom adds.** No add or drop kept on a record the search did not fix.
+- v2 vs v1: **+3, 0 lost** (172955 2630 / 2630, 023843 1765 / 1765, 044249 1766 / 1766: all from the opponent-spell +-500 grid = fitter parity). The repress
+  edit fixed 0 of its 4 targets (10.3). No record gets worse from v1 to v2.
+- ASSIGN guard, **gate, per frame (`f1fix/assign_guard.py`, the 5 reader-hidden records, SME_CLS_TICKS): PASS**: 0 OFF-exact frames lost, frame counts equal, no class worse.
+  210016 improves 28 div + 16 torn_hidden -> 44 torn_hidden (class 0 -> 1); 083923, 173440, 042050, 062715 identical (`assign_guard_gate.txt`).
+  RECON on the same 5: counts and class identical ASSIGN off vs on in v1 and v2 (210016 stays 44 div both ways: the flags-off input names the hidden body Golem,
+  not Golemite, so ASSIGN has no window to use). A per-frame check on RECON was NOT done: recon results carry no cls_ticks (b: a small addition to recon_search).
+### 10.3 Why the 16 gate-only matches fail in RECON v2 (a: flags-on vs flags-off input diff `recon/r3_onoff.py`, the v2 search logs)
+| gap in the generator's hypothesis space | matches | what the hand rule did | why the search does not find it |
+|---|---|---|---|
+| hero Tombstone press | 100341, 145600, 165724, 170122, 175120, 024716 (6) | TOMB_HERO: ability dated to the swap, `unit_index` 2 | repress shifts the cast_seen ability but keeps its unit `cmdN_0` (the extractor writes no unit_index; the hand rule hard-codes TOMB_UNIT = 2, mech_rules.py:719): 165724 round 0 = 4 legal shifts, 0 better. **Diagnostic (a): the same flags-off records with only `unit_index` 2 added (`recon/r3_unit_test.py`): repress then makes 100341, 145600, 170122, 175120 and 024716 (with its Zap add) strictly exact (`unit2_results.jsonl`, ~5 min at 6 CPUs). 165724 reaches 1959 + 219 div, first 4079: its 3rd press (extracted 4481, true 4077) is bound to the later Tombstone play (4333), so the range R >= 4334 > d is empty; it needs a re-bind to the earlier play** |
+| own point far from the tap | 141254 (3,162 units), 142926 (7,615) (+ 075729, a gate failure too, 11.6 tiles) | OWN_SPAWN / BODYPT: the first listed body | the own-point op looks for a body only within 3000 units (9.2) |
+| phantom play the diff does not name | 130148 (2 opponent Zaps; the diff is a tower hp row), 031310 (a Zap at 3680 breaks the opponent cycle: opp_fitting_deals 0 -> 6144 without it) | ZAP_CHAIN1 / removal | drop is limited to plays implicated by the names in the diff; a tower row names no card; there is no cycle-repair edit |
+| unseen press found from a victim | 091720 (Boss Bandit press, BB_RISE) | adds an ability from "rise without buff" | press needs the pressing card implicated by the diff; the diff names our Knight (the victim) |
+| elixir-only diff / ability drop | 001856 (own press at 3157 never resolved), 230352 (two false gk_dash casts) | OWN_PENDCAST, GK_WALK drop them | an elixir-only diff implicates nothing; drop covers plays only |
+| child of a living same-card body | 101018 (second Goblinstein) | NEAR_BIGGER2 | add (b) skips a card some near command already plays |
+| reader-hidden annotation, not an input edit | 210016 (window named Golem, Golemite with HIDDEN_CHILD), 083923 | HIDDEN_CHILD | 210016: a comparator-side name for a body the reader dropped. 083923: reader_hidden and plays identical flags off vs on; 2 frames (935, 951) are div in RECON and torn_hidden in the gate after the same-looking round-2 shift (gate new_first 3131, RECON 935): a scoring-path difference, cause untested (b) |
+(a) None of the 16 needs an engine change: with the hand rule's input the gate is strictly exact (or exact apart from torn) on all 16.
+### 10.4 First divergence of every match not passing in v2 (23 failures + the 2 flagged-exact)
+obs = our extraction / observation (a: an input change makes the gate exact, or SME.md traced it); eng? = engine or body position, untraced (b).
+| match | gate | v2 (first div) | first diff row | class and trace |
+|---|---|---|---|---|
+| 083923 | pass 1814 + 41 torn | 1814 + 39 torn + 2 div (935) | MiniPekkaHero SIM-only in a hidden window | obs, scoring-path gap (b) |
+| 091720 | strict | 2860 + 170 (3519) | our Knight_EV1 vs Knight hp | obs: unseen Boss Bandit press (a) |
+| 100341, 145600, 165724, 170122, 175120 | strict | exact 1384 / 579 / 197 / 986 / 1147 (2930, 1308, 549, 2124, 2448) | Tombstone rows (the SIM keeps the passive monster) | obs: press dated late, no unit_index (a; diagnostic 10.3) |
+| 024716 | strict | 1326 + 438 (2805) | Tombstone rows | obs: same class, press 3056 vs 2803 (a) |
+| 101018 | strict | 2905 + 121 (5968) | Goblinstein reader-only | obs: child test dropped a real second play (a) |
+| 123045 | fail 809 + 1726 (1768) | same | Witch skeletons / Golden Knight 2-60 units off | **eng? (b)**: Witch pushes on a dashing GK (SME.md), untraced |
+| 130148 | strict | 1626 + 141 (3404) | tower hp 77 | obs: 2 phantom Zaps (a) |
+| 141254 | pass (8 torn_late) | 1442 + 1586 (3044) | Hog / Firecracker / BarbLog reader-only | obs: own Knight tap 3 tiles off (a) |
+| 142926 | fail 2038 + 8 div (581) | 56 + 1701 (254) | BlowdartGoblin 258, Knight 7,615 off | obs: own tap point (a); the gate's remainder = client lag, own Skeletons 10 ticks early (b) |
+| 165155 | fail 2319 + 706 (4811) | 2309 + 719 (4791) | Hog Rider SIM-only | obs: reader double-labelled tick 4811 (a, lead: no scoring change) + the zone rule refuses the fitter's Hog move (20 ticks worse than the gate) |
+| 210016 | pass 1953 + 44 torn_hidden | 1953 + 44 div (2068) | Golemite SIM-only | obs: the reader dropped a Golemite, window named Golem (a) |
+| 230352 | fail 1429 + 710 (3002) | 379 + 1383 (914) | Golden Knight 118 / 124 off | obs: false dash cast (a); the gate's remainder = reader listing lag 7 ticks (a, owner: no comparator rule) |
+| 001856 | strict | 1503 + 126 (3159) | own elixir only | obs: unresolved own press (a) |
+| 031310 | strict (v2 flagged opp_no_fitting_deal) | 48 + 1716 (246) | Archer reader-only | obs: phantom Zap breaks the cycle (a) |
+| 063025 | fail 188 + 1577 (153) | same | SuspiciousBush reader-only | obs: bush play missed, goblins taken for it (a; extractor fix owed, fails in both) |
+| 071306 | fail 2799 + 233 (5473) | same | our Skeletons SIM-only, DarkMagicAOE, elixir | untraced (b) |
+| 073232 | fail 2037 + 3 div (3312) | same | opponent Knight 33 / 49 units off | **eng? (b)**: body position, untraced |
+| 074143 | fail 1680 + 83 (1572) | same | evolved Witch SIM-only at (9500, 31000) | **eng? (b)**: back-edge spawn, untraced |
+| 075729 | fail 1460 + 251 (2917) | 1378 + 333 (2917) | Skeletons 10,700 units off | obs: own placement 11.6 tiles from the tap (a); BODYPT3 on the gate: 1556 + 155 (3272) |
+| 155249, 000242 | strict | exact, flagged own_cycle_fail | - | not a divergence: RECON's `add IceWizard` restores the missed own play (ablation: needed); the extractor's flag stays. Un-flagging a record whose final plan passes the cycle rule is the lead's call (+2 pass if allowed) |
+(a) 18 of the 23 sit in the observation layer with a gate fix or a traced cause, 1 (083923) is observation with an unexplained scoring path (b), and
+**4 are untraced (b): 123045, 073232, 074143 are body-position / movement suspects (engine or reader), 071306 is untraced.** 3 to 4 of 23 matches the earlier ~1 in 25 engine count;
+none of the 4 is among the 16 where RECON trails the gate.
+### 10.5 Proposed next round (b until run; the lead decides; nothing started)
+1. **Press unit and re-bind (generator only, ~1 h with planted checks, then a 6-match rerun of ~5 min at 6 CPUs).** Make the unit an edit dimension (try the unit indices
+   the card has, instead of the extractor's 0 and the hand rule's hard-coded 2) and let repress re-bind the ability to an earlier play of the same card and side.
+   Expected: +6 pass and +6 strict on the 6 Tombstone matches (5 measured with the patched input, a) -> v2 = 132 / 151 (low 0.821), strict 125 (low 0.769).
+2. **Own point without the 3000-unit cap:** candidates = every body of the card first listed in the play's window, zone rule kept; 141254, 142926, 075729; expected +1 to +2 pass.
+3. **Drop beyond the diff's names + cycle repair:** for a diff naming no card (tower hp row, elixir-only, a base plan that fails the cycle) propose dropping each opponent play
+   / ability in [d - WIN, d], when the base cycle fails each play whose removal restores a fitting deal, and let drop cover ability casts: 130148, 031310, 001856 (+3);
+   230352 moves its first div 914 -> 3002 but still fails.
+4. **Press from the victim's attacker** (091720) and **add (b) next to a living same-card body** (101018): +2.
+   Steps 1-4 together (b): about 139 / 151, within ~3 matches of the gate's 142; the rest is the reader-hidden annotation (210016, 083923), an observation record, not a search
+   edit: keep HIDDEN_CHILD as an extractor annotation (lead call).
+5. **The decisive measurement: FRESH9, held out.** Freeze the Ranked battles after 082745 on 10-29 (>= ~20 needed; live play is off, so the pool is what exists; count not checked), run the
+   20-flag gate and RECON (steps 1-4 frozen BEFORE the run) on the same inputs, ASSIGN off and on + guard. Cost: laptop extraction (the 196-record regen took 27 min at 2 workers,
+   so ~5-10 min for ~25) + ~10 min per pipeline on 12 CPUs. Without it every "RECON reaches parity" claim is in-sample, exactly like the hand rules' 142.
+6. Smaller owed: `cls_ticks` in recon results (per-frame ASSIGN guard on RECON); the 083923 scoring-path gap (feed the gate's round-2 plan through RECON's scoring); re-date a
+   first_seen play to a legal tap (165155).
+Restart for this section: `python3 recon/r3_report.py` on the pod files (`/workspace/smeR/runs/{r2_gate,r2_fail,r2_rest,r2_gate_a0,r2_recon_a0}`, `/workspace/smeR2/runs/{r2v2_a,r2v2_b,r2v2_a0}`;
+laptop copies `.foreman/scratch/recon3/in/`). Diagnostic: `recon/r3_unit_test.py` builds the patched inputs; run `R=/workspace/smeR2 CPUS=226-231 WORKERS=2 SME_THREADS=3 bash sme/recon/runR.sh
+r3_unit2 recon <ABSOLUTE inputs path> /workspace/smeR/data/allframes` (runR cds, so a relative path fails).
