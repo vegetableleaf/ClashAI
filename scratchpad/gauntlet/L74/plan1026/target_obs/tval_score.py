@@ -78,20 +78,23 @@ def score(m, obs, frames, rd, res):
             k = klass(e)
             sh = mp(prev_acq.get(r[4])) if r[4] in prev_acq else None
             prev_acq[r[4]] = r[6]
-            for met, ev, rv in (('raw', e[12], mp(r[5])), ('acq', e[13], mp(r[6]))):
+            mets = [('raw', e[12], mp(r[5])), ('acq', e[13], mp(r[6]))]
+            if len(r) > 9:  # acq2 = a PROPOSED reader-side rule (the reader rows' 10th column), scored the same way
+                mets.append(('acq2', e[13], mp(r[9])))
+            for met, ev, rv in mets:
                 ok = ev == rv
                 inc(f'{met}|{k}|n'); inc(f'{met}|{k}|ok', ok)
+                if met != 'raw' and (ev != -1 or rv != -1):
+                    inc(f'{met}_active|{k}|n'); inc(f'{met}_active|{k}|ok', ok)
                 if met == 'acq':
                     acq_rows.append((e, rv))
-                    if ev != -1 or rv != -1:
-                        inc(f'acq_active|{k}|n'); inc(f'acq_active|{k}|ok', ok)
                     if sh is not None:
                         inc('ctl_shift|n'); inc('ctl_shift|ok', ev == sh)
                 if ok:
                     continue
                 if rv == 'U':
                     why = 'tgt_unpaired'
-                elif met == 'acq' and e[12] == mp(r[5]):
+                elif met != 'raw' and e[12] == mp(r[5]):
                     why = 'acq_filter_eng_keeps' if ev != -1 and rv == -1 else \
                           'acq_filter_rd_keeps' if ev == -1 else 'acq_filter_other'
                 elif ev in tower_ids and rv == -1:

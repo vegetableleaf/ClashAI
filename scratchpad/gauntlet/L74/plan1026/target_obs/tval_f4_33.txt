@@ -1,0 +1,172 @@
+== cohort all: matches 33 exact frames 71052 body rows paired 763607/763702 proj paired 59740/59970
+raw|ALL                        643383 / 763607   0.8426  CI [0.8302, 0.8558]  matches 33
+acq|ALL                        749242 / 763607   0.9812  CI [0.9654, 0.9929]  matches 33
+acq_active|ALL                 231057 / 245422   0.9415  CI [0.8969, 0.9767]  matches 33
+acq2|ALL                       762305 / 763607   0.9983  CI [0.9977, 0.9988]  matches 33
+acq2_active|ALL                234077 / 235379   0.9945  CI [0.9926, 0.9961]  matches 33
+acq2_active|air                 10772 / 10779    0.9994  CI [0.9975, 1.0000]  matches 18
+acq2_active|bld_only            17861 / 17861    1.0000  CI [1.0000, 1.0000]  matches 30
+acq2_active|building            13809 / 13810    0.9999  CI [0.9997, 1.0000]  matches 32
+acq2_active|siege               16761 / 16762    0.9999  CI [0.9998, 1.0000]  matches 32
+acq2_active|tower               44506 / 44546    0.9991  CI [0.9976, 1.0000]  matches 33
+acq2_active|troop              130368 / 131621   0.9905  CI [0.9873, 0.9932]  matches 33
+acq2|air                        15430 / 15437    0.9995  CI [0.9982, 1.0000]  matches 18
+acq2|bld_only                   22727 / 22727    1.0000  CI [1.0000, 1.0000]  matches 30
+acq2|building                   37046 / 37047    1.0000  CI [0.9999, 1.0000]  matches 32
+acq2|siege                      24457 / 24458    1.0000  CI [0.9999, 1.0000]  matches 32
+acq2|tower                     416441 / 416481   0.9999  CI [0.9997, 1.0000]  matches 33
+acq2|troop                     246204 / 247457   0.9949  CI [0.9932, 0.9964]  matches 33
+acq_active|air                  10615 / 10779    0.9848  CI [0.9794, 0.9896]  matches 18
+acq_active|bld_only             17616 / 17861    0.9863  CI [0.9797, 0.9919]  matches 30
+acq_active|building             13809 / 15570    0.8869  CI [0.7679, 0.9999]  matches 32
+acq_active|siege                16761 / 16762    0.9999  CI [0.9998, 1.0000]  matches 32
+acq_active|tower                44535 / 52713    0.8449  CI [0.6808, 0.9999]  matches 33
+acq_active|troop               127721 / 131737   0.9695  CI [0.9656, 0.9732]  matches 33
+acq|air                         15273 / 15437    0.9894  CI [0.9861, 0.9925]  matches 18
+acq|bld_only                    22482 / 22727    0.9892  CI [0.9843, 0.9935]  matches 30
+acq|building                    35286 / 37047    0.9525  CI [0.8971, 1.0000]  matches 32
+acq|siege                       24457 / 24458    1.0000  CI [0.9999, 1.0000]  matches 32
+acq|tower                      408303 / 416481   0.9804  CI [0.9506, 1.0000]  matches 33
+acq|troop                      243441 / 247457   0.9838  CI [0.9819, 0.9856]  matches 33
+ctl_rot                         78625 / 232381   0.3383  CI [0.3146, 0.3616]  matches 33
+ctl_shift                      729657 / 759386   0.9609  CI [0.9452, 0.9731]  matches 33
+raw|air                         15423 / 15437    0.9991  CI [0.9965, 1.0000]  matches 18
+raw|bld_only                    22727 / 22727    1.0000  CI [1.0000, 1.0000]  matches 30
+raw|building                    37046 / 37047    1.0000  CI [0.9999, 1.0000]  matches 32
+raw|siege                       24457 / 24458    1.0000  CI [0.9999, 1.0000]  matches 32
+raw|tower                      296341 / 416481   0.7115  CI [0.6923, 0.7341]  matches 33
+raw|troop                      247389 / 247457   0.9997  CI [0.9995, 0.9999]  matches 33
+src|proj_attack                 49347 / 49348    1.0000  CI [0.9999, 1.0000]  matches 33
+src|proj_spell                      0 / 10392    0.0000  CI [0.0000, 0.0000]  matches 33
+tgt|proj_attack                 49344 / 49348    0.9999  CI [0.9998, 1.0000]  matches 33
+tgt|proj_spell                  10392 / 10392    1.0000  CI [1.0000, 1.0000]  matches 33
+-- disagreement classes
+  120157 raw|why|eng_tower_rd_none
+   10043 acq|why|acq_filter_rd_keeps
+    4236 acq|why|acq_filter_eng_keeps
+    1216 acq2|why|acq_filter_eng_keeps
+      41 raw|why|tgt_unpaired
+      41 acq|why|tgt_unpaired
+      41 acq2|why|tgt_unpaired
+      21 raw|why|rd_none
+      21 acq|why|rd_none
+      21 acq2|why|rd_none
+      19 acq|why|eng_tower_rd_none
+      19 acq2|why|eng_tower_rd_none
+       2 raw|why|timing+1
+       2 acq|why|timing+1
+       2 acq2|why|timing+1
+       1 raw|why|timing-2
+       1 acq|why|timing-2
+       1 acq2|why|timing-2
+       1 raw|why|timing-4
+       1 acq|why|timing-4
+       1 acq2|why|timing-4
+       1 raw|why|timing-6
+       1 acq|why|timing-6
+       1 acq2|why|timing-6
+== cohort strict: matches 26 exact frames 61031 body rows paired 663812/663907 proj paired 51608/51723
+raw|ALL                        556079 / 663812   0.8377  CI [0.8248, 0.8517]  matches 26
+acq|ALL                        650039 / 663812   0.9793  CI [0.9598, 0.9928]  matches 26
+acq_active|ALL                 202005 / 215778   0.9362  CI [0.8843, 0.9764]  matches 26
+acq2|ALL                       662674 / 663812   0.9983  CI [0.9976, 0.9989]  matches 26
+acq2_active|ALL                204602 / 205740   0.9945  CI [0.9925, 0.9963]  matches 26
+acq2_active|air                  9352 / 9359     0.9993  CI [0.9970, 1.0000]  matches 15
+acq2_active|bld_only            15941 / 15941    1.0000  CI [1.0000, 1.0000]  matches 24
+acq2_active|building            12316 / 12316    1.0000  CI [1.0000, 1.0000]  matches 26
+acq2_active|siege               14767 / 14767    1.0000  CI [1.0000, 1.0000]  matches 26
+acq2_active|tower               38645 / 38685    0.9990  CI [0.9972, 1.0000]  matches 26
+acq2_active|troop              113581 / 114672   0.9905  CI [0.9870, 0.9935]  matches 26
+acq2|air                        13231 / 13238    0.9995  CI [0.9979, 1.0000]  matches 15
+acq2|bld_only                   20510 / 20510    1.0000  CI [1.0000, 1.0000]  matches 24
+acq2|building                   32819 / 32819    1.0000  CI [1.0000, 1.0000]  matches 26
+acq2|siege                      21500 / 21500    1.0000  CI [1.0000, 1.0000]  matches 26
+acq2|tower                     361021 / 361061   0.9999  CI [0.9997, 1.0000]  matches 26
+acq2|troop                     213593 / 214684   0.9949  CI [0.9931, 0.9965]  matches 26
+acq_active|air                   9232 / 9359     0.9864  CI [0.9812, 0.9908]  matches 15
+acq_active|bld_only             15724 / 15941    0.9864  CI [0.9792, 0.9926]  matches 24
+acq_active|building             12316 / 14076    0.8750  CI [0.7467, 1.0000]  matches 26
+acq_active|siege                14767 / 14767    1.0000  CI [1.0000, 1.0000]  matches 26
+acq_active|tower                38674 / 46852    0.8255  CI [0.6414, 0.9999]  matches 26
+acq_active|troop               111292 / 114783   0.9696  CI [0.9650, 0.9735]  matches 26
+acq|air                         13111 / 13238    0.9904  CI [0.9870, 0.9933]  matches 15
+acq|bld_only                    20293 / 20510    0.9894  CI [0.9842, 0.9942]  matches 24
+acq|building                    31059 / 32819    0.9464  CI [0.8844, 1.0000]  matches 26
+acq|siege                       21500 / 21500    1.0000  CI [1.0000, 1.0000]  matches 26
+acq|tower                      352883 / 361061   0.9774  CI [0.9415, 1.0000]  matches 26
+acq|troop                      211193 / 214684   0.9837  CI [0.9815, 0.9857]  matches 26
+ctl_rot                         68135 / 204742   0.3328  CI [0.3081, 0.3580]  matches 26
+ctl_shift                      632636 / 660093   0.9584  CI [0.9388, 0.9724]  matches 26
+raw|air                         13224 / 13238    0.9989  CI [0.9959, 1.0000]  matches 15
+raw|bld_only                    20510 / 20510    1.0000  CI [1.0000, 1.0000]  matches 24
+raw|building                    32819 / 32819    1.0000  CI [1.0000, 1.0000]  matches 26
+raw|siege                       21500 / 21500    1.0000  CI [1.0000, 1.0000]  matches 26
+raw|tower                      253391 / 361061   0.7018  CI [0.6824, 0.7254]  matches 26
+raw|troop                      214635 / 214684   0.9998  CI [0.9996, 0.9999]  matches 26
+src|proj_attack                 43076 / 43077    1.0000  CI [0.9999, 1.0000]  matches 26
+src|proj_spell                      0 / 8531     0.0000  CI [0.0000, 0.0000]  matches 26
+tgt|proj_attack                 43073 / 43077    0.9999  CI [0.9998, 1.0000]  matches 26
+tgt|proj_spell                   8531 / 8531     1.0000  CI [1.0000, 1.0000]  matches 26
+-- disagreement classes
+  107677 raw|why|eng_tower_rd_none
+   10038 acq|why|acq_filter_rd_keeps
+    3670 acq|why|acq_filter_eng_keeps
+    1073 acq2|why|acq_filter_eng_keeps
+      41 raw|why|tgt_unpaired
+      41 acq|why|tgt_unpaired
+      41 acq2|why|tgt_unpaired
+      12 raw|why|rd_none
+      12 acq|why|rd_none
+      12 acq2|why|rd_none
+       9 acq|why|eng_tower_rd_none
+       9 acq2|why|eng_tower_rd_none
+       1 raw|why|timing-2
+       1 acq|why|timing-2
+       1 acq2|why|timing-2
+       1 raw|why|timing-4
+       1 acq|why|timing-4
+       1 acq2|why|timing-4
+       1 raw|why|timing-6
+       1 acq|why|timing-6
+       1 acq2|why|timing-6
+-- top detail (metric, class, attacker class, attacker, engine target, reader target)
+114848 ('raw', 'eng_tower_rd_none', 'tower', 'KingTower', 'PrincessTower', '-1')
+6153 ('src', 'proj', 'proj_spell', 'LogProjectileRolling', '0', '-1')
+4891 ('acq', 'acq_filter_rd_keeps', 'tower', 'DaggerDuchess', '-1', 'PrincessTower')
+2864 ('acq', 'acq_filter_rd_keeps', 'tower', 'ChefTower', '-1', 'PrincessTower')
+2584 ('raw', 'eng_tower_rd_none', 'tower', 'KingTower', 'DaggerDuchess', '-1')
+1530 ('src', 'proj', 'proj_spell', 'FirecrackerExplosion', '0', '-1')
+1484 ('acq', 'acq_filter_rd_keeps', 'building', 'TombstoneHero_visual_dummy', '-1', 'PrincessTower')
+1366 ('raw', 'eng_tower_rd_none', 'tower', 'KingTower', 'ChefTower', '-1')
+1331 ('raw', 'eng_tower_rd_none', 'tower', 'ChefTowerKing', 'PrincessTower', '-1')
+1026 ('src', 'proj', 'proj_spell', 'Cannon_EV1_barrage_projectile', '0', '-1')
+734 ('acq', 'acq_filter_eng_keeps', 'troop', 'Skeleton', 'PrincessTower', '-1')
+577 ('acq', 'acq_filter_eng_keeps', 'troop', 'IceWizardHeroFloatingCube', 'PrincessTower', '-1')
+376 ('src', 'proj', 'proj_spell', 'BarbLogProjectileRolling', '0', '-1')
+371 ('acq', 'acq_filter_rd_keeps', 'tower', 'ChefTower', '-1', 'KingTower')
+339 ('acq', 'acq_filter_eng_keeps', 'troop', 'Knight', 'PrincessTower', '-1')
+320 ('acq', 'acq_filter_eng_keeps', 'troop', 'IceWizardHero', 'PrincessTower', '-1')
+315 ('src', 'proj', 'proj_spell', 'FirecrackerExplosion_EV1', '0', '-1')
+310 ('acq2', 'acq_filter_eng_keeps', 'troop', 'IceWizardHeroFloatingCube', 'PrincessTower', '-1')
+310 ('acq', 'acq_filter_eng_keeps', 'troop', 'TombstoneHeroSkeleton', 'PrincessTower', '-1')
+235 ('acq', 'acq_filter_rd_keeps', 'building', 'TombstoneHero_broken_visual_dummy', '-1', 'PrincessTower')
+212 ('acq', 'acq_filter_eng_keeps', 'troop', 'BowlerHero', 'PrincessTower', '-1')
+210 ('src', 'proj', 'proj_spell', 'BarbLogHeroProjectileRolling', '0', '-1')
+156 ('acq2', 'acq_filter_eng_keeps', 'troop', 'TombstoneHeroSkeleton', 'PrincessTower', '-1')
+129 ('acq', 'acq_filter_eng_keeps', 'troop', 'Knight_EV1', 'PrincessTower', '-1')
+98 ('acq', 'acq_filter_eng_keeps', 'troop', 'Witch_EV1_Skeleton_Interval', 'PrincessTower', '-1')
+97 ('acq2', 'acq_filter_eng_keeps', 'troop', 'BowlerHero', 'PrincessTower', '-1')
+65 ('acq', 'acq_filter_eng_keeps', 'bld_only', 'IceGolemite', 'PrincessTower', '-1')
+65 ('acq', 'acq_filter_eng_keeps', 'air', 'Minion', 'PrincessTower', '-1')
+52 ('acq', 'acq_filter_eng_keeps', 'air', 'Bat', 'PrincessTower', '-1')
+49 ('acq', 'acq_filter_eng_keeps', 'troop', 'Skeleton_EV1', 'PrincessTower', '-1')
+47 ('acq2', 'acq_filter_eng_keeps', 'troop', 'Witch_EV1_Skeleton_Interval', 'PrincessTower', '-1')
+47 ('acq2', 'acq_filter_eng_keeps', 'troop', 'TombstoneHeroSkeleton', 'IceWizardHero', '-1')
+43 ('acq', 'acq_filter_rd_keeps', 'troop', 'Skeleton', '-1', 'Tesla')
+41 ('acq', 'acq_filter_rd_keeps', 'building', 'TombstoneHero_visual_dummy', '-1', 'KingTower')
+41 ('acq', 'acq_filter_rd_keeps', 'tower', 'DaggerDuchess', '-1', 'KingTower')
+38 ('acq', 'acq_filter_eng_keeps', 'troop', 'Pekka', 'PrincessTower', '-1')
+37 ('acq', 'acq_filter_eng_keeps', 'troop', 'DeliveryRecruit', 'PrincessTower', '-1')
+37 ('acq', 'acq_filter_eng_keeps', 'troop', 'BowlerHero', 'Xbow', '-1')
+36 ('acq', 'acq_filter_eng_keeps', 'troop', 'Firecracker', 'PrincessTower', '-1')
+36 ('acq', 'acq_filter_eng_keeps', 'troop', 'IceWizardHeroFloatingCube', 'KingTower', '-1')
