@@ -242,9 +242,7 @@ class Producer:
         # cue rows for every seat (a policy without a cue layer never reads them; the weights, hence cue_in, arrive later)
         self.jc = obs_id.JavaCue(main, E)
         L.cue = self.jc.T
-        self.tgt = bool(base.get("target_obs"))            # TARGET-OBS (rl_royale target_obs on): CfTgt rows, else none
-        if self.tgt:
-            L.enableTargets()
+        self.tgt = False                                    # TARGET-OBS: CfTgt rows once the learner has target layers (run)
         self.ja = self.ahead = None
         self.ab_mode = 0                                     # the learner seat's CfTrain ability mode this run()
         if env.hero_abilities:                               # LOOP-IW CfAbil: tables from production code (ability_id)
@@ -259,8 +257,6 @@ class Producer:
                               bool(env._iw_never))
         L.start()
         self.v = Rows(L, self.n)
-        if self.tgt:
-            self.v.targets(L, self.n)
         if self.ja is not None:
             self.v.abilities(L, self.n)
         self.serial = 0
@@ -606,6 +602,10 @@ class Producer:
         self.want_ver = server_version(update if ver is None else ver, bool(asd)) if self.cl is not None else None
         self.net.load_state_dict(msd)
         self.net.eval()
+        if not self.tgt and "tgt_in.weight" in msd:           # TARGET-OBS (rl_royale target_obs on: the init got the layers;
+            self.tgt = True                                   # actor_base carries no target_obs key): CfTgt rows from now on
+            self.L.enableTargets()
+            self.v.targets(self.L, self.n)
         cfg = R.actor_cfg(base, "rollout", self.aid, self.dev)
         self.ab_mode = 0                                      # actor_main.mk_cfg's B6 branch, then the CfTrain seat mode
         if "ability" in cfg:
