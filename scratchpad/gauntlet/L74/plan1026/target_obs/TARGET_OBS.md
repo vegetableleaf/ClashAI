@@ -34,6 +34,13 @@ git-ignored `icebow/data/reader_targets/`. Tracked code consumes only the per-un
   on -> enableTargets, `Rows.targets`, batch tgt / tgt_idx for a model with tgt_in, fast_traj), serve.py ROW keys.
   Absent key: no CfTgt call, no buffer. Pod tree `33903:/workspace/cftgt/cb` (= /workspace/opplearnc/cbd + HEAD code +
   these files; jbuild_fe364ceb compiled). Exactness (compare.py on a target_obs-on dump) + fast-loop smoke: PENDING.
+  1974fbf was cut on a stale base and reverted FAST-LIVEOPP's hunks; bfc560e restores them (net vs f79166f = CFTGT only).
+- 11:05 EDT RUNNING on 33903 CPUs 170-177: `/workspace/cftgt/chain.sh b` = for arm on / absent: fast-loop `rl_royale
+  --smoke` (ref_v0.yaml, `target_obs=on` for arm on, FASTLOOP_DUMP) then compare.py on its `fast_msg_u0000.pkl`
+  (`/workspace/cftgt/cmp_{on,absent}_b.json`). Logs `/workspace/cftgt/logs/{cftgt_fl_on_b,cftgt_fl_absent_b}.log`, rc
+  lines `logs/chain_b.rc` (CHAIN_DONE at the end). Launcher `/workspace/cftgt/fl.sh` (= opp/learner/fl_pod.sh fixed to
+  this tree; NOT /workspace/opplearnc/fl.sh, which hard-codes the cbc tree). Restart: `ssh ... -p 33903 'cd /workspace/cftgt
+  && (setsid nohup bash chain.sh c > logs/chain_c.out 2>&1 < /dev/null &)'` (new tag = new run names).
 - NEXT (owner steps, not started): (1) M1c exact validation (recipe below; SME-REBUILD 18f614a now has rebuild scripts
   for the SME gate on 33903: `crforge/pilot/sme/recon/rebuild_gate.sh`); (2) live wiring in live_gen (lead approval);
   (3) CfTgt Java builder for the fast loop (spec in M2); (4) train with `target_obs: on` from B0 / CLXIII + SIM gate.
