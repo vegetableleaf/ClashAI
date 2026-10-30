@@ -143,6 +143,10 @@ measured numbers say the rollout, not the learner, bounds the pilot. The warm-up
 - Critic warm-up trunk cache (NOT built; b): in u0-u4 only value_head trains and the policy / trunk / anchor / init are
   all frozen, so per update each row needs ONE trunk forward instead of ~3.1 (2 epochs of policy_terms + R.fill's
   anchor forward + 1/8 ent_ref), and every one of the ~5,280 steps reduces to value_head(g[idx]) plus monitors from
-  cached per-row terms. Expected ~3x on a warm-up update (~380 -> ~130 s; ~20 min per run). Exactness: g / lp of a row
-  computed in a 256-row batch are row-independent at a fixed shape (b: to be checked bitwise), so epoch 0 can be
-  bit-identical; epoch-1 rows and the last partial minibatch differ by batch-shape fp32 noise (micro_batch's bar).
+  cached per-row terms. Expected ~3x on a warm-up update (~380 -> ~130 s; ~20 min per run). Exactness premise MEASURED (a;
+  speed2/rowinv.py, res/rowinv.json; B0, 33903 4090, fp32, TF32 off, deterministic algorithms): at a FIXED batch
+  shape a row's g, gate logit and value are bitwise independent of its batch companions and of its position (128 / 128
+  rows bit-equal between two different 256-row batches); at another shape (128 or 192 rows vs 256) they differ by
+  1-3e-6 (fp32 kernel choice). So a cache computed at the minibatch shape (256, plus each epoch's tail minibatch at its
+  own size) can be BIT-IDENTICAL to today's warm-up, not just within micro_batch's bar. (The card logits compare as NaN
+  because of the -inf masked slots; not a difference.)

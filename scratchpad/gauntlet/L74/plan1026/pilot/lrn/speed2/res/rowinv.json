@@ -1,0 +1,53 @@
+{
+ "device": "cuda",
+ "torch": "2.11.0+cu128",
+ "shape256_g": {
+  "max_abs": 0.0,
+  "rows_bit_equal": 128
+ },
+ "shape256_gate": {
+  "max_abs": 0.0,
+  "rows_bit_equal": 128
+ },
+ "shape256_card": {
+  "max_abs": NaN,
+  "rows_bit_equal": 0
+ },
+ "shape256_value": {
+  "max_abs": 0.0,
+  "rows_bit_equal": 128
+ },
+ "shape128_vs256_g": {
+  "max_abs": 1.1920928955078125e-06,
+  "rows_bit_equal": 0
+ },
+ "shape128_vs256_gate": {
+  "max_abs": 1.9073486328125e-06,
+  "rows_bit_equal": 19
+ },
+ "shape128_vs256_card": {
+  "max_abs": NaN,
+  "rows_bit_equal": 0
+ },
+ "shape128_vs256_value": {
+  "max_abs": 2.86102294921875e-06,
+  "rows_bit_equal": 0
+ },
+ "shape192_vs256_g": {
+  "max_abs": 9.5367431640625e-07,
+  "rows_bit_equal": 0
+ },
+ "shape192_vs256_gate": {
+  "max_abs": 1.6689300537109375e-06,
+  "rows_bit_equal": 15
+ },
+ "shape192_vs256_card": {
+  "max_abs": NaN,
+  "rows_bit_equal": 0
+ },
+ "shape192_vs256_value": {
+  "max_abs": 2.384185791015625e-06,
+  "rows_bit_equal": 0
+ },
+ "n_common": 128
+}

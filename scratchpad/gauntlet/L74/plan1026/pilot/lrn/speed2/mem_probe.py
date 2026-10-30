@@ -1,9 +1,11 @@
 """SPEED2 (2): what holds a fast-loop producer's GB. One loop/producer.py Producer in this process (CPU, in-process
 forwards unless --server ADDR), RSS (smaps_rollup: anon / file) after each stage, the JVM's own accounting (heap
 committed / used, non-heap, GC count + seconds; NMT summary when JAVA_TOOL_OPTIONS has -XX:NativeMemoryTracking=summary),
-the Python heap of the recorded rows, and a 1 s RSS sampler during one run() of --jobs jobs on --matches slots.
+the pickled results, and a 1 s RSS sampler during --waves consecutive run()s of --jobs jobs on --matches slots (the
+producer persists across updates in fastloop). --serve MODE: forwards on one serve.py (bench.start_servers, cuda:0) as
+on the box; else CPU in-process forwards.
 
-  python mem_probe.py MSG.pkl OUT.json --matches 16 --threads 4 --jobs 16 [--server /dev/shm/loop/srv0.sock]
+  python mem_probe.py MSG.pkl OUT.json --matches 16 --threads 4 --jobs 16 [--waves 3] [--serve graphs]
 (run.sh's env; CRFORGE_XMX sets -Xmx)"""
 import argparse
 import json
@@ -57,7 +59,8 @@ def main():
     ap.add_argument("--matches", type=int, default=16)
     ap.add_argument("--threads", type=int, default=4)
     ap.add_argument("--jobs", type=int, default=16)
-    ap.add_argument("--server", default=None)
+    ap.add_argument("--serve", default=None, help="eager | graphs: start one serve.py on cuda:0 for the producer")
+    ap.add_argument("--waves", type=int, default=1)
     ap.add_argument("--build", default=os.environ.get("CRFORGE_FACADE_BUILD"))
     a = ap.parse_args()
     st = {"xmx": os.environ.get("CRFORGE_XMX", "16g"), "stages": []}
@@ -72,9 +75,17 @@ def main():
     base, update, sd, jobs = pickle.loads(Path(a.msg).read_bytes())
     mark("message loaded", msg_mb=round(Path(a.msg).stat().st_size / 2**20, 1))
     del sd
-    from bench import clone_jobs
+    from bench import clone_jobs, start_servers
     from producer import Producer
-    P = Producer({**base, "actor_device": "cpu"}, a.matches, a.threads, "cpu", Path(a.build), 0, server=a.server)
+    srv, servers = None, []
+    if a.serve:
+        _, _, sd0, _ = pickle.loads(Path(a.msg).read_bytes())
+        root = f"/dev/shm/speed2_mem_{os.getpid()}"
+        servers = start_servers({**base, "init_path": base.get("init_path", base.get("init"))}, update, sd0, jobs,
+                                ["cuda:0"], a.serve, a.matches, root)
+        srv, st["serve"] = f"{root}/srv0.sock", a.serve
+        del sd0
+    P = Producer({**base, "actor_device": "cpu"}, a.matches, a.threads, "cpu", Path(a.build), 0, server=srv)
     mark("Producer built (JVM + tables + capture env)", jvm=jvm())
     _, update, sd, _ = pickle.loads(Path(a.msg).read_bytes())
     peak, stop = [0.0], threading.Event()
@@ -83,17 +94,21 @@ def main():
         while not stop.wait(1.0):
             peak[0] = max(peak[0], mem()["Rss"])
     threading.Thread(target=sampler, daemon=True).start()
-    w = time.time()
-    res, skipped, stats = P.run(update, sd, clone_jobs(jobs, a.jobs, 0))
-    stop.set()
-    mark("after run()", run_s=round(time.time() - w, 1), peak_rss_mb=peak[0], matches=len(res), jvm=jvm(),
-         opp_models=len(P.opp_cache), time=stats["time"])
-    r = pickle.dumps(res)
-    mark("results pickled", results_mb=round(len(r) / 2**20, 1), per_match_mb=round(len(r) / 2**20 / max(1, len(res)), 2))
-    del res, r
     import gc
-    gc.collect()
-    mark("results freed + gc", jvm=jvm())
+    for wv in range(a.waves):
+        w = time.time()
+        res, skipped, stats = P.run(update, sd, clone_jobs(jobs, a.jobs, wv))
+        mark(f"after run() {wv}", run_s=round(time.time() - w, 1), peak_rss_mb=peak[0], matches=len(res), jvm=jvm(),
+             opp_models=len(P.opp_cache), time=stats["time"])
+        r = pickle.dumps(res)
+        mark(f"results pickled {wv}", results_mb=round(len(r) / 2**20, 1),
+             per_match_mb=round(len(r) / 2**20 / max(1, len(res)), 2))
+        del res, r
+        gc.collect()
+        mark(f"results freed + gc {wv}")
+    stop.set()
+    for s_ in servers:
+        s_.terminate()
     st["nmt"] = nmt()
     Path(a.out).write_text(json.dumps(st, indent=1))
 
