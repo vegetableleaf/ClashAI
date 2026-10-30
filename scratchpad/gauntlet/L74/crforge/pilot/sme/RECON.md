@@ -8,10 +8,15 @@ Evidence: `results/live/recon/`. Labels: (a) measured, (b) plausible but unteste
 - **RECON-2 (10-30, section 9). Restart point:** item 2 planted recall DONE (a): 49 plants on the 8 exact recon plans;
   in the move set's classes 22 / 25 restored exactly, inverse edit rank 1 of the first round every time it was listed,
   0 wrong fixes; outside it by design: drop of a visible spell 0 / 7, own point 1 / 5 (+ 4 equivalent body-point fixes).
-  Bug fixed: sticky ability skip in recon_search (43f23fe). Items 3-4 queued: laptop re-extraction of FRESH2-8 flags
-  off / on (`recon/r2_regen.sh`, `.foreman/scratch/recon2/{off,on}/`), then `recon/r2_sets.py` -> pod
-  `/workspace/smeR/data/r2/`, then `nohup bash /workspace/smeR/sme/recon/r2_drive.sh &` (restartable; skips done steps),
-  then `recon/r2_tally.py` (section 9.3). Codex dispatches: none.
+  Bug fixed: sticky ability skip in recon_search (43f23fe). Items 3-4 RUNNING (10-30 ~11:10 EDT): laptop re-extraction
+  of the 196 RNG-free FRESH2-8 records DONE (`recon/r2_regen.sh` -> `.foreman/scratch/recon2/{off,on}/`, 27 min at 2
+  workers; flags-on FRESH7 11 / 11 and FRESH8 19 / 20 plays identical to the frozen inputs, the 1 = ZD_SINGLE, a), sets
+  by `recon/r2_sets.py` on the pod in `/workspace/smeR/data/r2/` (shas `results/live/recon/r2/sets_sha.txt`), queue
+  `/workspace/smeR/sme/recon/r2_drive.sh` running (log `runs/r2_drive.log`; restart = `cd /workspace/smeR && nohup bash
+  sme/recon/r2_drive.sh > runs/r2_drive.log 2>&1 &`, skips steps whose log says done; a half-done step restarts from
+  scratch: delete its `runs/<step>` dir first). Then `python3 recon/r2_prec.py runs/r2_fail/recon_results.jsonl
+  runs/r2_abl/ablate.jsonl data/r2/strict_ref.jsonl` (9.2) and `python3 recon/r2_tally.py runs/r2_gate/results.jsonl
+  runs/r2_fail/recon_results.jsonl,runs/r2_rest/recon_results.jsonl` (9.3). Codex dispatches: none.
 - **Restart point (10-30 ~14:30 UTC):** laptop part DONE and committed: rules + generator (`recon.py`), 35 planted
   checks (`python -I sme/recon/test_recon.py` -> `ok 35`), the general generator proposes the hand fix on all 6
   hand-rule cases tried (`offline.py`, output `results/live/recon/offline.txt`, section 5), field census of the rules on
