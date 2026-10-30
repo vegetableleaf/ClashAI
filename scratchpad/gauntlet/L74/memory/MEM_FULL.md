@@ -36,7 +36,24 @@ Grades: (a) measured (number + source), (b) plausible, untested (with the test),
         policies of one JVM must share MM.opts (else NotImplementedError, one memB layout). Then LOOP-INT's identity
         (rec_identity / mem rows) with the keys on. NOT done: untested loop code is not shipped.
   - [x] live_replay.py identity with the options: 1,787 / 1,787 (section 3)
-  - [ ] retraining (section 4) + gates
+  - [ ] retraining (section 4) + gates: IN PROGRESS, section 5
+
+## 5. MEM-RETRAIN (10-30): tables + warm-start training (restart point)
+
+- Facts that changed the recipe: the replay corpora are ONLY on the laptop (`scratchpad/gauntlet/ext/corpus_*`, ~14 GB; 33903
+  has 17 GB free, so they were not copied); `memory_tables` keeps every event (E_MAX only applies at read time), so a snap
+  table is not tied to 256. Build on the laptop, ship the npz (25 MB for 3,000 replays). (a)
+- Build cost (a): 0.30 s / replay single worker (20 replays, 6.1 s); 3,000 replays with 3 workers 390 s, 25.0 MB, 6,000
+  tables, 639,172 events (sha256 b5b3cb99, `.foreman/scratch/memretrain/snap3k.npz`, on the pod `/workspace/memretrain/snap3k.npz`).
+  `--limit` = the first N sorted files, so this subset is corpus s0 + part of s1 (a deck-mix bias, same for both encoders);
+  the val split comes from the dataset, so its val rows are held out for the old encoder too.
+- Code: train_memory `--mem-warm CKPT` (copy mem.* minus mem.out + mem_aux.*, 46-wide ev_in into the first columns),
+  `--table-rows-only` (train / val only rows with a table), `--val-bs` (default 512 = as before); test
+  `test_warm_start_copies_encoder_and_keeps_snap_columns_zero`. train_memory otherwise refuses an init with mem.* weights, so
+  --init stays the RAW net the S3-aux encoder was trained on (u0075, sha 3eda9d23), --mem-warm = B0.
+- Pod 33903 (CPUs 146-153 only): tree `/workspace/memretrain/rl` (= memfull tree + HEAD's *.py), runner
+  `/workspace/memretrain/run.sh NAME TABLES [train_memory flags]`, outputs `/workspace/memretrain/out/NAME/`.
+  Keep `--val-bs 128`: at val bs 512 the process peaked at 5.7 GB (over the 4 GB budget; that run was stopped by PID).
 
 ## 1. How often does E_MAX = 128 truncate? (a)
 

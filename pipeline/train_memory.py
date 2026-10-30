@@ -638,9 +638,9 @@ def train_aux(a, model, base, rows, va, va_idx, tr, tables, arrs, meta, init_ck,
                       "s_per_step": round((time.time() - tl) / max(step - sl, 1), 4)})
                 tl, sl = time.time(), step
             if len(va_idx) and (step % a.val_every == 0 or step == steps):
-                ev_m = aux_eval(model, base, va, lab, st)
+                ev_m = aux_eval(model, base, va, lab, st, a.val_bs)
                 va.memory = "empty"                           # the same heads with an EMPTY memory: what memory adds
-                ev_z = aux_eval(model, base, va, lab, st)
+                ev_z = aux_eval(model, base, va, lab, st, a.val_bs)
                 va.memory = tables
                 hist.append({"step": step, "memory": ev_m, "zeroed": ev_z})
                 emit({"step": step, "val_loss": {"memory": round(ev_m["loss"], 5), "zeroed": round(ev_z["loss"], 5)},
@@ -698,6 +698,7 @@ def main(argv=None) -> int:
                     "mem_aux.* (e.g. B0); snap columns start at zero")
     ap.add_argument("--table-rows-only", action="store_true", help="train / val only on rows with a memory table (a "
                     "--limit subset of the tables)")
+    ap.add_argument("--val-bs", type=int, default=512, help="aux val batch (a smaller one caps GPU memory)")
     ap.add_argument("--val-sample", type=int, default=30000)
     ap.add_argument("--val-every", type=int, default=2000)
     ap.add_argument("--ckpt-every", type=int, default=2000)
