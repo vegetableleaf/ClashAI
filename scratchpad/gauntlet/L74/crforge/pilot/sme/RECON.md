@@ -10,9 +10,13 @@ Evidence: `results/live/recon/`. Labels: (a) measured, (b) plausible but unteste
   hand-rule cases tried (`offline.py`, output `results/live/recon/offline.txt`, section 5), field census of the rules on
   FRESH4-8 (`results/live/recon/field_census.txt`, section 4), the engine-scored beam search `recon_search.py` with a
   stub-engine loop test (`python -I sme/recon/test_search_dry.py` -> `ok 12`).
-- **NOT done: no engine run.** No crforge on the laptop; the SME gate tree (32657 `/workspace/pilot/f1fix/sme11f`) is
-  gone (32657 refuses SSH; TARGET_OBS.md M1c: SME pods stopped, /workspace wiped). 33903 has JDK + the 5e8089a4 tickprobe
-  lib but no gate code and only tables 16.402.22 under crforge_cache (14:00 UTC load 5, quota 54.4 CPUs). Next: section 7.
+- **SME-REBUILD (10-30 ~14:25 UTC): gate rebuilt on 33903 and ENGINE-SCORED (section 8).** Gate tree
+  `/workspace/smeR/sme` from tracked 18f614a reproduces F4_fe / F5_main / F6_main byte-identically (a). RECON search
+  (beam 4, all ops) on the flags-off frozen inputs: **8 / 9 hand-rule cases reach the hand-rule result with the hand
+  edit at rank 1 of its round (the 6 of section 5 + 024716 ZAP_DOT + 201103 RASCAL_EDGE2); 001856 (OWN_PENDCAST) not:
+  an elixir-only diff generates no edit (a).** 165155 ends 20 ticks before the gate (zone rule vs the fitter's off-zone
+  Hog grid move, a). Fitter move set (`--ops shift,point --beam 1`) = F*_main on 3 / 3 (a). Restart: section 8.
+- Previous: no engine run (the SME gate tree on 32657 `/workspace/pilot/f1fix/sme11f` was lost with /workspace).
 - Codex dispatches: none. pyflakes not installed on the laptop (plain or icebow/.venv): `py_compile` + a manual
   unused-import pass only; run pyflakes on the pod before relying on it.
 
@@ -123,3 +127,63 @@ Not shown yet: that the ENGINE keeps each fix (section 7, item 1).
    RECON alone. Only then retire flags (each retirement = byte-identical scored outcome or better, planted checks kept).
 5. Small owed rule work: drop for ability casts (GK_WALK); trace the 2 unflagged elixir breaks (223547 -1.66, 203126
    -0.57); a census of the visible rule.
+
+## 8. SME-REBUILD: the gate rebuilt on 33903 and the search engine-scored (10-30, evidence `results/live/recon/rebuild/`)
+### Recipe (a: run as written)
+1. Laptop: `git -c core.autocrlf=false archive <commit>:scratchpad/gauntlet/L74/crforge/pilot/sme | ssh ... 'tar -x -C
+   /workspace/smeR/sme'` (LF; plain `git archive` is CRLF here). sme_live.py md5 86cd7fab = the ENG-FIX4 gate copy.
+   `sme.py` reads `SME_TABLES` since 18f614a (absent = the old 16.402.22 default; this was the one sme11f-only line).
+2. Laptop: `cd sme/engfix && tar -c freshN/{inputs_rngfree.jsonl,frames,prep.txt} | ssh ... 'tar -x -C /workspace/smeR/data'`
+   (ownership warnings only). Check: `sha256sum inputs_rngfree.jsonl` and `cat $(ls frames) | sha256sum` = prep.txt
+   (FRESH4 4ef8ce16 / b50dd9e5, FRESH5 00ea1059 / 0835bc29, FRESH6 20ac8e69 / 0c01b4c4: all equal).
+3. Pod: `bash /workspace/smeR/sme/recon/rebuild_gate.sh` = copy tables 16.635.3 from /workspace/oplm/tables to
+   /workspace/crforge_cache/tables (sha 1243a2df = prep.txt), sha-check the 5e8089a4 tickprobe lib, javac `build/`
+   (SmeRun.java) + `build_snap/` (bp/SnapRun2.java), `sme.py selftest` ok.
+4. Pod: `CPUS=226-237 WORKERS=n SME_THREADS=m ONLY=a,b bash sme/recon/runR.sh RUN gate|recon INPUTS FRAMES [VAR=val]`
+   = f1fix/runH.sh's env + SME_BANNER_GIVEN=1 (ASSIGN on; trailing `SME_HIDDEN_ASSIGN=0` = off); recon extra args in
+   `RARGS`. Output `/workspace/smeR/runs/RUN{,.log}`.
+### Byte identity (a; `id{4,5,6}_results.jsonl`, `recon/idcmp.py`), ASSIGN off as the references
+| match | rebuilt gate | reference | shared fields equal |
+|---|---|---|---|
+| FRESH4 151109 | 2767 + 264 div, first 925 | F4_fe same | 24 / 24 (only the newer `cls_ticks` differs) |
+| FRESH5 021310 | 1660 + 105, first 1986 | F5_main same | 24 / 24 |
+| FRESH6 031310 | 2102 + 40, first 3954 | F6_main same | 24 / 24 |
+Includes first_detail, the fitter's repair log, plants (0 missed), overfit and deal checks. Wall 41-68 s per match (4 threads).
+### Engine-scored RECON search (a; `rs1_*`, `op*_f4_*`, `fp_*`; summaries `recon/recon_sum.py`, `recon/recon_rank.py`)
+Flags-off frozen inputs, beam 4, all ops, 3 threads per match. "Round" = the search round at the hand rule's divergence.
+| case (hand rule) | RECON result | hand-rule result | hand edit rank 1 in its round? | legal / beat d there | window runs + full runs (whole match) | wall |
+|---|---|---|---|---|---|---|
+| FRESH5 021310 (ZAP_DEAD) | 1765 / 1765 | 1765 | yes: add Zap R1984 (12922, 17231) | 18 / 14 | 173 + <= 19 | 94 s |
+| FRESH4 151109 (SPELL_KING) | 3031 / 3031 | 3031 | yes: joint Log, Snowball -> 924 | 12 / 1 | 107 + <= 8 | 65 s |
+| FRESH6 031310 (SAMETICK_GEN) | 2142 / 2142 | 2142 | yes: swap MegaKnight <-> Knight @3931 | 25 / 1 | 53 + <= 6 | 48 s |
+| FRESH4 235834 (TOWER_ZAP + TZ_REACH) | 2271 / 2271 | 2271 | yes: add Zap R4611 (14500, 25500) | 19 / 7 | 72 + <= 10 | 67 s |
+| FRESH4 220244 (OWN_BODYPT) | 3025 / 3025 | 3025 | yes: point Knight (2499, 13500) | 1 / 1 | 194 + <= 19 | 141 s |
+| FRESH4 222707 (OWN_BODYPT) | 1766 / 1766 | 1766 | yes: point Knight (1499, 10500) | 2 / 1 | 57 + <= 8 | 47 s |
+| FRESH6 024716 (ZAP_DOT; section 5 called it "no hand fix": stale (c), SME.md ENG-FIX5 built ZAP_DOT, probe Zap (14480, 24740) R 1397 / 1398) | 1764 / 1764 | 1764 | yes: add Zap R1397 (14479, 24739) | 18 / 18 | 71 + <= 14 | 87 s |
+| FRESH4 201103 (RASCAL_EDGE2) | 1702 / 1702 | 1702 | yes: point Rascals (9527, 31131) | 9 / 1 | 118 + <= 8 | 51 s |
+| FRESH4 001856 (OWN_PENDCAST) | 1503 + 126, first 3159 (= gate) | 1629 | **no: 0 edits generated** | 0 / 0 | 33 + <= 7 | 30 s |
+- (a) **8 / 9 hand-rule cases reproduced by the general search, hand edit at rank 1 every time.** The other edits in each
+  final plan are shifts the gate's fitter also makes (base plan = sme_live.plan_from without the fitter).
+- (a) **Gap: an elixir-only divergence generates nothing.** 001856's diff at 3159 is `S0_elixir` alone (no body), so no
+  command is implicated and the press op (OWN_PENDCAST's class: an unresolved own press) never fires. Owed: implicate the
+  side's ability-card plays (and their presses) from an elixir diff.
+- (a) **Discrimination is weak on adds:** 14 / 18 (021310) and 18 / 18 (024716) of the legal Zap adds beat d in the
+  window; the cheapest-cost tie-break picked the hand point. The full-match result confirms the pick, but precision
+  (section 7 item 3) is still untested.
+- (a) Fitter move set `--ops shift,point --beam 1` = F*_main counts on 021310 (1660 + 105 @1986), 024716 (623 + 1141 @1399),
+  031310 (2102 + 40 @3954).
+- Other open FRESH4 failures (no hand rule): 210016 1953 + 44 @2068 and 230352 379 + 1383 @914 = the gate (no edit kept;
+  230352 = the owner's no-rule listing lag: no phantom fix, a). **165155 is 20 ticks WORSE than the gate (c for "RECON >=
+  fitter")**: 2309 + 719 @4791 vs 2319 + 706 @4811. The gate's fitter moved the opponent Hog Rider (extracted from its
+  first-seen body, (15332, 14889), on OUR half, no tower down) +500 / +500; RECON's zone rule refuses that point (and the
+  extracted one), so only a drop is proposed (refused by the cycle). The real fix is to re-date a first_seen play to a
+  legal tap (b, owed).
+- (c) 223547 / 203126 are not failures: exact in F4_fe (3014 / 3014, 1764 / 1764); they are only the two unflagged
+  opponent-elixir breaks of section 4. Not searched.
+- Bug fixed in scope: `recon.victims` crashed (TypeError) on `S*_elixir` diff rows (201103, 001856); planted check, ok 36.
+- Cost (a): 33-194 window runs + <= 6-19 full runs per match; wall 47-141 s per match at 3 threads = ~1-2.5x the gate's
+  41-68 s at 4 threads. No snapshot fork needed at this scale.
+### Restart
+Pod 33903 `/workspace/smeR` (code `sme/`, data `data/fresh{4,5,6}`, runs `runs/`). Nothing of mine is running.
+If /workspace is wiped: redo the recipe (steps 1-4, ~5 min). Next, in order: section 7 item 2 (planted recall), item 3
+(precision on every failing record, flags off), the elixir-diff implication gap (001856), the first_seen re-dating (165155).

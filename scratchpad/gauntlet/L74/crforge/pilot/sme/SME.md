@@ -2441,6 +2441,11 @@ no match after FRESH1's freeze is scored.
 Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted.
 
 ## STATUS (keep current)
+- **SME-REBUILD 10-30 (a): THE GATE NOW LIVES ON 33903 `/workspace/smeR`** (32657 / 30408 trees lost). Rebuilt from the
+  tracked tree (18f614a: `recon/rebuild_gate.sh`, run with `recon/runR.sh` = runH.sh's env + SME_BANNER_GIVEN=1, lib
+  5e8089a4 tickprobe, tables 16.635.3 sha 1243a2df, CPUs 226-237 only). Byte-identical to F4_fe / F5_main / F6_main on
+  151109, 021310, 031310 (24 / 24 shared result fields). Recipe + restart: RECON.md section 8. RECON engine search: 8 / 9
+  hand-rule cases reproduced at rank 1 (001856 not), RECON.md section 8.
 - **LEAD 10-29 ~11:00: ENGINE CHAIN PAUSED for usage (owner priority = pilot live, then close-out); restart from the ENG-FIX5 restart point below. Decisions: 230352 reader listing lag (play listed 7 ticks late) gets NO comparator rule (owner: never loosen the comparator) -- it stays a failure; 063025 bush-goblins fix stays owed. FRESH8 13/19 torn-excl (LB .470), pooled FRESH2-8 122/151 (.808, LB .748).**
 - **GATE DEFAULT (owner 10-29): SME_HIDDEN_ASSIGN ON; every gate run also runs ASSIGN off and passes `f1fix/assign_guard.py` (FAIL-to-report otherwise). Pooled strict-fresh FRESH2-8: 122 / 151 (0.808, CP lower 0.748), ASSIGN on = off (FRESH8 13 / 19, guard PASS). D1 / D2 NOT met.**
 - **FRESH2 (a):** 22/28 unflagged exact apart from torn (95% CP lower 0.620), strictly exact 21/28 (0.581); identical on
