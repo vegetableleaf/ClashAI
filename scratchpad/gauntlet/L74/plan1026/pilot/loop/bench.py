@@ -60,7 +60,8 @@ def start_servers(base, update, sd, jobs, devices, mode, block_max, root="/dev/s
         Path(addr + ".ready").unlink(missing_ok=True)
         servers.append(subprocess.Popen([sys.executable, str(HERE / "serve.py"), "--listen", addr, "--device", dv,
                                          "--watch", str(wd), "--learner", base["init_path"] if "init_path" in base
-                                         else opps[0], "--block-max", str(block_max), "--mode", mode, "--opp", *opps]))
+                                         else opps[0], "--block-max", str(block_max), "--mode", mode, "--opp", *opps]
+                                        + (["--mem-full", base["mem_full"]] if base.get("mem_full") else [])))
         while not Path(addr + ".ready").exists():
             if servers[-1].poll() is not None:
                 raise SystemExit("serve.py exited")

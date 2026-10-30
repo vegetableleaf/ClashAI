@@ -47,7 +47,12 @@ def main():
     servers, srv = [], None
     if a.server:
         from bench import start_servers
-        servers = start_servers({**base, "init_path": a.init}, update, sd, jobs, [a.device], a.server, max(a.matches, 64), "/dev/shm/loopcmp")
+        import io
+        import torch
+        mf = torch.load(io.BytesIO(sd), map_location="cpu").get("mem.full")   # MEM-FULL: the message's learner layout
+        mf = ",".join(str(int(x)) for x in mf) if mf is not None else ""
+        servers = start_servers({**base, "init_path": a.init, "mem_full": mf}, update, sd, jobs, [a.device], a.server,
+                                max(a.matches, 64), "/dev/shm/loopcmp")
         srv = "/dev/shm/loopcmp/srv0.sock"
     P = Producer(base, a.matches, a.threads, "cpu" if srv else a.device,
                  Path(__import__("os").environ["CRFORGE_FACADE_BUILD"]), server=srv)
@@ -111,7 +116,8 @@ def main():
                     "ability_equal": all(norm(p.get(k)) == norm(f.get(k)) for k in AB_RESULT),
                     "identical": first is None and len(tp["played"]) == len(tf["played"]), "first_divergence": first})
     vchk = vold_check(base, sd, fast, update, a.device, P.model.gid) if a.server else None
-    mchk = mem_check(prod, fast, P.model.gid)
+    from producer import mem_opts
+    mchk = mem_check(prod, fast, P.model.gid, mem_opts(P.model)[0])   # MEM-FULL: the learner's e_max
     sides = []                                           # the first diverging decision of every side (learner + opp)
     for tag in sorted(set(trace["prod"]) | set(trace["fast"])):
         P_, F_ = trace["prod"].get(tag, []), trace["fast"].get(tag, [])
@@ -157,7 +163,7 @@ def abil_summary(prod, fast):
     return out
 
 
-def mem_check(prod, fast, gid):
+def mem_check(prod, fast, gid, e_max=128):
     """Memory models: each match's learner event table (result["memory"], rl_royale's mem_tab_*) byte-identical, and every
     learner row's rollout MEM_KEYS (fast traj mem_h, FASTLOOP_MEMHASH=1) == the learner's rebuild from PRODUCTION's table
     (match_memory.rows_features on mem_t / deck_card, as e1_eval.gen_batch; LOOP-MEM measured rebuild == rollout)."""
@@ -198,7 +204,7 @@ def mem_check(prod, fast, gid):
             continue
         n = len(t["mem_t"])
         rf = MM.rows_features(MM.pack([p["memory"]]), np.zeros(n, np.int64), np.asarray(t["mem_t"], np.int64),
-                              np.asarray(t["deck_card"], np.int64), np.arange(n), "v2", gid)
+                              np.asarray(t["deck_card"], np.int64), np.arange(n), "v2", gid, e_max=e_max)
         for i in range(n):
             h = hashlib.sha1(b"".join(np.ascontiguousarray(rf[k][i]).tobytes() for k in MM.MEM_KEYS)).hexdigest()
             out["rows"] += 1
@@ -234,7 +240,8 @@ def vold_check(base, sd, fast, update, device, gid=None, bs=512):
             from pipeline import match_memory as MM
             n_ = len(t["mem_t"])
             mrows = MM.rows_features(MM.pack([r["memory"]]), np.zeros(n_, np.int64), np.asarray(t["mem_t"], np.int64),
-                                     np.asarray(t["deck_card"], np.int64), np.arange(n_), "v2", gid)
+                                     np.asarray(t["deck_card"], np.int64), np.arange(n_), "v2", gid,
+                                     e_max=MM.opts(net.mem)["e_max"])   # MEM-FULL
         for i in range(0, len(t["played"]), bs):
             with torch.no_grad():
                 b = {k: torch.from_numpy(np.ascontiguousarray((mrows if k in mrows else t)[k][i:i + bs])).to(device)

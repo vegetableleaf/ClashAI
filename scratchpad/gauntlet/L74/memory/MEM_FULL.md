@@ -5,6 +5,22 @@ Grades: (a) measured (number + source), (b) plausible, untested (with the test),
 
 ## STATUS + RESTART POINT (keep current)
 
+- MEMFULL-LOOP (10-30, closed out at usage 97%): the fast-loop wiring is COMMITTED BUT NOT VERIFIED: do not train on it yet.
+  Code: CfTrain enableMemory(t, stride) / 7-arg setMem (per-seat eMax / snap, rows at memStride), producer mem_opts + per-layout
+  Rows.memory views (the learner's 256 / snap beside a 128 opponent: the pilot's `init` opponent B0 stays 128 / off, so the
+  checklist's "all memory policies share opts" rule would have blocked the pilot), serve.py --mem-full + spec_for per model
+  (needed: pilot_arm.sh runs --server eager and policy_server's load is strict), bench / fastloop pass it, compare.py e_max,
+  msg_memfull.py (widens a message's sd; handles a plain GenModel learner only, NOT an `opp_init` learner message).
+  Measured: (c) the only compare run FAILED before any row check: `AssertionError: (16, 15)` at compare.py's
+  len(prod) == len(fast) on /workspace/fliv/out/cmp_live_b8.json.msg.pkl --device cpu (keys absent; 33903 /workspace/mfl/out/abs_b8.log).
+  Cause NOT diagnosed; (b) candidates: HEAD's FAST-LIVEOPP follow_ups guard / a skipped job (this message = live partner
+  + opp_init learner, the reference ran another code base) -- or my change. Keys-on exactness and the fastloop smoke: NOT run.
+  Restart: 33903 /workspace/mfl: tree `cb` (mfl_tree.sh from mfl.tar, rebuild the tar from HEAD), `cmp_mfl.sh MSG OUT [args]`
+  (CPUs 162-169, FASTLOOP_MEMHASH=1), `smoke_mfl.sh RUN` + `mfl.yaml` (keys on, CPU serve + learner, critic_warmup_updates=0,
+  FASTLOOP_DUMP=1 = a real keys-on message whose `init` opponent exercises mixed layouts). Next: (1) find why 16 vs 15
+  (print `skipped` from P.run; try a raw non-live B0 message: ref_mem lives on 33308, dump one on 33903 with smoke_mfl.sh
+  without the keys); first set cb/icebow/data -> /workspace/icebow_data (cb2's icebow has no b0); (2) keys-absent identity,
+  (3) keys-on compare (16 matches, memory tables + mem_h rows + traj keys), (4) smoke. Nothing of mine runs on 33903.
 - Step 1 (measure): DONE (section 1). Step 2: Python builder DONE; model / rl_royale / e1_eval / eval_gen / train_memory /
   dataset_gen / live_gen plumbing DONE; Java CfMem + identity harness DONE and identical on 33903; real rl_royale --smoke
   with the keys on: SMOKE PASS on 33903 (pilot.yaml minus fastloop, B0 init, memory_e_max 256, memory_board_snap, encoder
@@ -29,6 +45,7 @@ Grades: (a) measured (number + source), (b) plausible, untested (with the test),
         e1_eval `_memory` + `gen_batch`, rl_royale mem row cache key, eval_gen (pro rows: e_max + zero snapshot columns on
         tables without one), train_memory `--e-max` / `--snap`, dataset_gen `memory --snap`, live_gen memory_rows
   - [x] Java CfMem per-instance eMax / snap + obs_id `--mem-full`; identity on 33903 (section 3)
+  - [ ] pilot fast loop: WIRED, NOT VERIFIED (top of this section; the spec below is superseded on one point: per-seat layouts).
   - [ ] pilot fast loop (CfTrain / producer.py): memB stride and the MEM views are fixed at CfMem.BYTES / E_MAX / F.
         Spec: `CfTrain.enableMemory(t, eMax, snap)` overload storing memBytes = CfMem.bytes(eMax, snap); every
         `new CfMem(c, u.memT, u.mlog[i], s)` -> the 6-arg form; `features(deck, memB, r * memBytes)`; producer

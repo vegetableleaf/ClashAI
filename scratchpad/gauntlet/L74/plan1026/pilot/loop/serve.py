@@ -34,8 +34,10 @@ ROW = {"tok": ((64, 14), "<f4"), "mask": ((64,), "|b1"), "sc": ((70,), "<f4"), "
 def spec_for(model) -> dict:
     from pipeline import e1_eval as E
     from pipeline import match_memory as MM
-    row = {**ROW, "mem_ev": ((MM.E_MAX, MM.F), "<f4"), "mem_mask": ((MM.E_MAX,), "|b1"), "mem_card": ((MM.E_MAX,), "<i8"),
-           "mem_form": ((MM.E_MAX,), "<i8"), "mem_summary": ((MM.S_V2,), "<f4"), "mem_answer": ((), "<i8")}   # CfMem rows
+    o = MM.opts(getattr(model.model, "mem", None))      # MEM-FULL: the model's e_max / snap (absent = 128 / off)
+    em, nf = o["e_max"], MM.F_SNAP if o["snap"] else MM.F
+    row = {**ROW, "mem_ev": ((em, nf), "<f4"), "mem_mask": ((em,), "|b1"), "mem_card": ((em,), "<i8"),
+           "mem_form": ((em,), "<i8"), "mem_summary": ((MM.S_V2,), "<f4"), "mem_answer": ((), "<i8")}   # CfMem rows
     return {k: row[k] for k in E.gen_row_keys(model.model)}
 
 
@@ -49,11 +51,16 @@ def main():
     ap.add_argument("--block-max", type=int, default=512)
     ap.add_argument("--max-batch", type=int, default=2048)
     ap.add_argument("--mode", default="eager")
+    ap.add_argument("--mem-full", default="", help="MEM-FULL E_MAX,SNAP: the learner's memory_e_max / memory_board_snap "
+                    "(rl_royale widens the init the same way: model_gen mem_full; absent = the init's layout)")
     a = ap.parse_args()
     from pipeline import e1_eval as E
     from pipeline.policy_server import PolicyServer
     models = []
     pol, _ = E.load_policy(REPO / a.learner if not Path(a.learner).is_absolute() else a.learner, a.device)
+    if a.mem_full:
+        e_max, snap = (int(v) for v in a.mem_full.split(","))
+        pol.model.mem_full(e_max, bool(snap))
     models.append({"name": "learner", "policy": pol, "spec": spec_for(pol), "block_max": a.block_max, "watch": a.watch})
     for p in a.opp:
         pol, _ = E.load_policy(REPO / p, a.device)

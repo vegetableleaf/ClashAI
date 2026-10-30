@@ -87,7 +87,7 @@ class FastPool:
             from bench import start_servers
             import torch
             torch.backends.cudnn.allow_tf32 = torch.backends.cuda.matmul.allow_tf32 = False
-            self.servers = start_servers({**self.base, "init_path": a.init}, -1, None, jobs, self.devs, a.server,
+            self.servers = start_servers({**self.base, "init_path": a.init, "mem_full": a.mem_full}, -1, None, jobs, self.devs, a.server,
                                          a.matches, str(self.srv_root), push=False)
         for k in range(a.producers):
             self._spawn(k)
@@ -342,6 +342,8 @@ def main() -> int:
     ci = rl_argv.index("--config") + 1
     cfg = yaml.safe_load(Path(rl_argv[ci]).read_text())
     a.init = cfg["init"]                                  # the server's learner architecture (weights come per update)
+    em, sn = cfg.get("memory_e_max"), cfg.get("memory_board_snap")   # MEM-FULL: rl_royale widens the init (serve.py too)
+    a.mem_full = f"{em or 128},{int(bool(sn))}" if em is not None or sn else ""
     if "fastloop" in cfg:                                 # pilot.yaml's block: this script's business, not rl_royale's
         stripped = Path(a.out or R.RUN_ROOT) / f"{run_name}.fastloop_stripped.yaml"
         stripped.parent.mkdir(parents=True, exist_ok=True)

@@ -56,7 +56,8 @@ public final class CfTrain implements AutoCloseable {
   LongBuffer tgtIdx;
   public final HashMap<Integer, Integer> gid = new HashMap<>();
   // LOOP-MEM memory v2 (null = no memory model plays here): shared tables, one action Log per core, one CfMem per
-  // memory seat per match (production: one MatchMemory per Match), rows at r * CfMem.BYTES in memB
+  // memory seat per match (production: one MatchMemory per Match), rows at r * memStride in memB (MEM-FULL: each seat's
+  // CfMem has its model's eMax / snap layout, CfMem.bytes(eMax, snap) <= memStride; the defaults = CfMem.BYTES)
   public CfMem.Tables memT;
   // record_phi tower_phat (reward_shaping.tower_phat_record): per row the crown towers raw() lists (state()'s alive
   // TowerEntity bodies): [count, then per tower side, king (0/1), hp, max_hp] at r * TWR ints; off unless towers
@@ -68,6 +69,9 @@ public final class CfTrain implements AutoCloseable {
   CfMem.Log[] mlog;
   CfMem[][] mem;
   boolean[][] jMem;
+  public int memStride = CfMem.BYTES;
+  int[][] jMemE;
+  boolean[][] jMemSnap;
   // LOOP-IW hero abilities (null = hero_abilities off; ability_policy v2): per match a CfAbil = royale_env's press state
   // (_ability_pending, _ability_uid, _last_play, the IW observers); per seat its mode: 0 RULE (ability_commands: an
   // opponent), 1 LABEL (the rule + ability_options(side, rule): rl_royale's warm start), 2 HEAD (ability_options(side,
@@ -250,10 +254,16 @@ public final class CfTrain implements AutoCloseable {
   public void start() { for (int i = 0; i < n; i++) id[i].gid.putAll(gid); }
 
   /** Memory v2 on (once, before the first step): rows get MEM_KEYS from CfMem when setMem marks their seat. */
-  public void enableMemory(CfMem.Tables t) {
+  public void enableMemory(CfMem.Tables t) { enableMemory(t, CfMem.BYTES); }
+
+  /** MEM-FULL: rows at r * stride (>= every memory seat's CfMem.bytes(eMax, snap); setMem's 7-argument form). */
+  public void enableMemory(CfMem.Tables t, int stride) {
     memT = t;
-    memB = direct(2L * n * CfMem.BYTES);
+    memStride = stride;
+    memB = direct(2L * n * stride);
     mlog = new CfMem.Log[n]; mem = new CfMem[n][2]; jMem = new boolean[n][2];
+    jMemE = new int[n][2]; jMemSnap = new boolean[n][2];
+    for (int[] e : jMemE) java.util.Arrays.fill(e, CfMem.E_MAX);
     for (int i = 0; i < n; i++) mlog[i] = new CfMem.Log(core[i], t);   // syncs itself on each new battle
     U.get(0).memT = t;
     U.get(0).mlog = mlog;
@@ -313,7 +323,14 @@ public final class CfTrain implements AutoCloseable {
   }
 
   /** Which seats of match i's next job decide with a memory model (call after setJob). */
-  public void setMem(int i, boolean m0, boolean m1) { jMem[i][0] = m0; jMem[i][1] = m1; }
+  public void setMem(int i, boolean m0, boolean m1) { setMem(i, m0, m1, CfMem.E_MAX, false, CfMem.E_MAX, false); }
+
+  /** MEM-FULL: + each seat's memory layout (its model's match_memory.opts: e_max, snap; 128 / false = the defaults). */
+  public void setMem(int i, boolean m0, boolean m1, int e0, boolean s0, int e1, boolean s1) {
+    if ((m0 && CfMem.bytes(e0, s0) > memStride) || (m1 && CfMem.bytes(e1, s1) > memStride))
+      throw new IllegalArgumentException("memory layout wider than memStride " + memStride);
+    jMem[i][0] = m0; jMem[i][1] = m1; jMemE[i][0] = e0; jMemE[i][1] = e1; jMemSnap[i][0] = s0; jMemSnap[i][1] = s1;
+  }
 
   /** A memory seat's CfMem of match i (its table() at the end = rl_royale's result["memory"], obs_id.JavaMem.java_table). */
   public CfMem memOf(int i, int s) { return mem[i][s]; }
@@ -350,7 +367,7 @@ public final class CfTrain implements AutoCloseable {
       for (int s = 0; s < 2; s++) {
         Univ u = U.get(jU[i][s]);
         if (jMem[i][s] && u.memT == null) throw new IllegalStateException("a memory seat in universe " + jU[i][s] + " without its tables");
-        mem[i][s] = jMem[i][s] ? new CfMem(c, u.memT, u.mlog[i], s) : null;
+        mem[i][s] = jMem[i][s] ? new CfMem(c, u.memT, u.mlog[i], s, jMemE[i][s], jMemSnap[i][s]) : null;
       }
     if (ctxT != null)                                     // production: a fresh SelfPlaySide (its rule state) per match
       for (int s = 0; s < 2; s++) ctxSeat[i][s] = jCtx[i][s] ? new CfCtx.Seat() : null;
@@ -611,7 +628,7 @@ public final class CfTrain implements AutoCloseable {
       if (!mm.observe(opp)) { meta.put(b + 5, 6); misses.incrementAndGet(); return; }
       int[] deck = new int[8];
       for (int k = 0; k < 8; k++) deck[k] = (int) idsL.get(r * IDS + 14 + k);   // the row's deck_card
-      mm.features(deck, memB, r * CfMem.BYTES);
+      mm.features(deck, memB, r * memStride);
     }
     st = 7;
     if (ab != null && !abilities(i, seat, r)) { meta.put(b + 5, 7); misses.incrementAndGet(); return; }
