@@ -5,6 +5,11 @@ cases, `field_census.py` the rules on every frozen fresh input, `recon_search.py
 Evidence: `results/live/recon/`. Labels: (a) measured, (b) plausible but untested, (c) contradicted.
 
 ## STATUS (keep current)
+- **CLOSE-OUT 10-30 ~11:50 EDT (lead, usage 97%). Measured so far: section 9.1, 9.2, 9.3. NOT measured: the hand-rule number on the
+  same inputs + lib (r2_gate), the ASSIGN guard, every v2 engine result.** Still running unattended on 33903 CPUs 226-237
+  (end by themselves): r2_drive.sh PID 153944 (r2_gate, then ASSIGN off), r2b_drive.sh PID 278736 (v2). Next worker: when
+  `grep R2_DONE /workspace/smeR/runs/r2_drive.log` and `grep R2B_DONE /workspace/smeR2/runs/r2b_drive.log` hit, run the
+  r2_prec / r2_tally lines below, with r2v2_a + r2v2_b as the RECON results for v2, and `f1fix/assign_guard.py` on the gate.
 - **RECON-2 (10-30, section 9). Restart point:** item 2 planted recall DONE (a): 49 plants on the 8 exact recon plans;
   in the move set's classes 22 / 25 restored exactly, inverse edit rank 1 of the first round every time it was listed,
   0 wrong fixes; outside it by design: drop of a visible spell 0 / 7, own point 1 / 5 (+ 4 equivalent body-point fixes).
@@ -236,7 +241,7 @@ the match exact; alt_fix = exact with a different edit. `plant_summary.txt`, row
 ### 9.2 Precision on the failing records, flags OFF (section 7 item 3; a). Pod run `r2_fail` (37 records, ~15 min at 12 CPUs)
 Inputs = the CURRENT extractor with none of the 20 fresh_prep SME_* flags (regen_fresh.sh's v29 set only; `recon/r2_regen.sh`),
 on the 37 strict-fresh records of FRESH2-8 that are not strictly exact (29 with div frames + 8 torn-only). Reference =
-the strict fresh results (F2_fe .. F8_main). Table `prec_vs_strict.txt`, rows `r2_fail_results.jsonl.gz`, ablation
+the strict fresh results (F2_fe .. F8_main). Table `prec_vs_strict.txt`, rows `r2_recon_base_results.jsonl.gz`, ablation
 `ablate_fail.jsonl` (`recon/ablate.py`: remove each kept add from the final plan, re-score the whole match).
 - (a) **vs strict: 10 made exact, 1 improved, 23 same, 3 worse.** Made exact: 110715 (own X-Bow point (1500, 19500), the
   open FRESH2 "X-Bow 1 tile off" failure: no hand rule), 142334 (add own IceWizard R1691), 151109, 201103, 220244, 222707,
@@ -267,4 +272,12 @@ Baseline r2_* runs use the generator before this change; v2 runs are `r2v2_*` in
   The hero Tombstone press has no cast state, so the extractor dates it at the next cast it sees, 253-508 ticks late;
   the diff names `Tombstone` at d = press + 2. `recon.hypotheses`: an ability command with run in (d, d + REDATE = 600] whose play's
   card is named by the diff is tried at R in [d - 4, d - 1]. Engine result: section 9.3.
+### 9.3 Pooled exactness (PARTIAL; a for the RECON baseline, the comparison itself is NOT measured yet)
+- (a) RECON baseline (generator before v2, flags off, lib 5e8089a4, ASSIGN on, 151 scored strict-fresh matches):
+  **123 / 151 pass apart from torn, 116 strict**; 3 records the flags-off extractor flags (155249, 000242 own_cycle_fail,
+  031310 opp_no_fitting_deal) count as not passing. Rows `r2_recon_base_results.jsonl.gz`.
+- Reference only, NOT a fair comparison: strict fresh 122 / 151 was scored on frozen inputs with the flags of its day and before
+  SME_BANNER_GIVEN, so it is not the hand-rule pipeline of today (004719 exact in RECON is that gate fix, not RECON).
+- (b) untested: the fair number = r2_gate (all 20 flags, same extractor + lib); v2 should recover 172955 + the TOMB_HERO class.
+- ASSIGN off / guard: not run yet (r2_gate_a0, r2_recon_a0, r2v2_a0 queued; the guard needs cls_ticks, which recon results lack).
 
