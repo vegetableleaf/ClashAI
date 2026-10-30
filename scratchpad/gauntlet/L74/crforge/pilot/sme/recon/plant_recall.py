@@ -15,7 +15,7 @@ Plant types (one per type per match when a candidate exists; candidate picked by
   point_own   move one of our troop plays' point by +700 x (or -700); outside the grid by design (first-seen point only)
 Outcomes: invisible (the planted plan is still exact), restored (the planted command's truth is back: same run / point /
 order; for a drop, the same card and side re-added within 2 ticks and 300 units), alt_fix (exact, truth not restored),
-not_fixed. Rank: the first round whose ranked list (log 'top') holds the inverse edit, and its position there."""
+not_fixed; restored_inexact = restored but the match is not exact. Rank: the first round whose ranked list (log 'top') holds the inverse edit, and its position there."""
 import argparse, hashlib, json, math, os, random, sys
 from concurrent.futures import ProcessPoolExecutor
 
@@ -112,7 +112,7 @@ def judge(typ, truth, final, exact, edits):
     else:
         back = any(same(c, t) for c in cs)
     if back:
-        return 'restored', err
+        return ('restored' if exact else 'restored_inexact'), err
     return ('alt_fix' if exact else 'not_fixed'), err
 
 
@@ -160,7 +160,7 @@ def job(args):
 
 def summary(out):
     rows = [json.loads(l) for l in open(os.path.join(out, 'plant_results.jsonl'))]
-    print('type        n  invisible restored alt_fix not_fixed error | inverse rank1 / in top4 / listed (visible plants)')
+    print('type        n  invisible restored restored_inexact alt_fix not_fixed error | inverse rank1 / in top4 / listed (visible plants)')
     for typ in TYPES:
         rs = [r for r in rows if r['type'] == typ]
         if not rs:
@@ -168,8 +168,8 @@ def summary(out):
         v = lambda k: sum(r.get('verdict') == k for r in rs)
         vis = [r for r in rs if r.get('verdict') not in ('invisible', None)]
         rk = [r['inverse_rank'] for r in vis if r.get('inverse_rank')]
-        print('%-10s %2d  %9d %8d %7d %9d %5d | %d / %d / %d of %d' % (
-            typ, len(rs), v('invisible'), v('restored'), v('alt_fix'), v('not_fixed'), sum('error' in r for r in rs),
+        print('%-10s %2d  %9d %8d %16d %7d %9d %5d | %d / %d / %d of %d' % (
+            typ, len(rs), v('invisible'), v('restored'), v('restored_inexact'), v('alt_fix'), v('not_fixed'), sum('error' in r for r in rs),
             sum(x[2] == 1 for x in rk), sum(x[2] <= 4 for x in rk), len(rk), len(vis)))
     for r in rows:
         print(r['match'][-6:], r['type'], r.get('verdict') or r.get('error'), 'first', r.get('first_div'), 'rank', r.get('inverse_rank'),

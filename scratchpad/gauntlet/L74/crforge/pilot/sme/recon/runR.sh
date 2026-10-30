@@ -7,7 +7,7 @@
 RUN=$1; TOOL=$2; IN=$3; FR=$4; shift 4
 R=${R:-/workspace/smeR}; S=$R/sme; O=$R/runs/$RUN; mkdir -p $O
 T=/workspace/crforge_cache/tables/16.635.3
-case $TOOL in gate) P="sme_live.py all";; recon) P="recon/recon_search.py all $RARGS";; plant) P="recon/plant_recall.py $RARGS";; *) echo bad tool; exit 2;; esac
+case $TOOL in gate) P="sme_live.py all";; recon) P="recon/recon_search.py all $RARGS";; plant) P="recon/plant_recall.py $RARGS";; ablate) P="recon/ablate.py $RARGS";; *) echo bad tool; exit 2;; esac
 cd $S && env SME_TABLES=$T SME_TORN_STEP=1 SME_STEP_CLOCK=1 SME_TORN_CMD3=1 SME_KIND_T=1 SME_BP_MIXPH=1 SME_BP_SNAP=1 \
   SME_SNAP_CLASS=SnapRun2 SME_SNAP_BUILD=$S/build_snap SME_BP_FITNEXT=1 SME_MECH_CROSS=1 SME_HIDDEN=1 SME_BANNER=1 \
   SME_LATE9=1 SME_MADE9=1 SME_LIB=/workspace/crforge_main/5e8089a4/tickprobe/lib SME_BUILD=$S/build SME_HP_PLACEHOLDER=1 \

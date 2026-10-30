@@ -28,6 +28,21 @@ def key_of(plan):
     return hashlib.sha1(json.dumps(recon.runnable(plan), sort_keys=True).encode()).hexdigest()
 
 
+def full_run(plan, frames, me, end, work, log):
+    """sme_live.base_run, but an ability base_run turned into a skip (its play was refused in THAT plan) is tried again
+    in every later plan: base_run's skip is in place and was inherited by every child, so an edit that un-refuses the
+    play (e.g. restores the cycle) still ran without the press (RECON-2: 031310 / 222707 planted drops, hero press)."""
+    for c in plan['cmds']:
+        if c['kind'] == 'skip' and c.get('_src', {}).get('run_skip'):
+            c['kind'] = 'ability'
+    before = {id(c) for c in plan['cmds'] if c['kind'] == 'skip'}
+    o, an = sme_live.base_run(plan, frames, me, end, work, log)
+    for c in plan['cmds']:
+        if c['kind'] == 'skip' and id(c) not in before:
+            c['_src'] = dict(c.get('_src', {}), run_skip=True)
+    return o, an
+
+
 def search(rec, frames, out, beam=4, ops=None, start=None):
     """start: a plan to search from instead of the base plan (plant_recall.py: an exact plan with one planted error)."""
     me, end = rec['my_side'], max(frames)
@@ -37,7 +52,7 @@ def search(rec, frames, out, beam=4, ops=None, start=None):
     recon.with_elixir_base(plan, tab, e0)
     work = os.path.join(out, 'work')
     log = []
-    o, an = sme_live.base_run(plan, frames, me, end, work, log)
+    o, an = full_run(plan, frames, me, end, work, log)
     if o is None:
         return None, plan, log
     members = [dict(plan=plan, o=o, an=an, edits=[], cost=0, given_up=[])]
@@ -76,7 +91,7 @@ def search(rec, frames, out, beam=4, ops=None, start=None):
                 continue
             for k, nc, e, p in better[:beam]:
                 seen.add(key_of(p))
-                o2, an2 = sme_live.base_run(p, frames, me, end, work, log)
+                o2, an2 = full_run(p, frames, me, end, work, log)
                 if o2 is not None:
                     m2 = dict(plan=p, o=o2, an=an2, edits=m['edits'] + [recon.describe(m['plan'], e)], cost=m['cost'] - nc,
                               given_up=list(m['given_up']))
