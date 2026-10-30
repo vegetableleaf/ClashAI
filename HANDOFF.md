@@ -1,3 +1,15 @@
+# 2026-10-30 ~16:00 EDT -- CAUSE FOUND: the pilot's -7.3 pp start = the IW press-head re-fit (every rl_royale run does it)
+
+- (a) u0000 with CLXIII's rl.ability_head + rl.ability grafted in (threshold gate, iu40 480): 291/480, delta +0.00 [+0.00, +0.00]
+  = all 480 games identical to CLXIII. Same u0000 with its own re-fit head: -7.29 [-11.92, -2.66]. So the whole deficit is the
+  press head. Mechanism (code read, rl_royale.py 4446 / 5607): the Learner owns the ability head (not in the model state dict)
+  and never loads the init checkpoint's head; a fresh run re-fits it by imitating the press RULE (`_ability_warm_start`,
+  ability_bc_matches rollouts; pilot 14,512 rows). `ability_bc_matches: 0` keeps the untrained P0 head instead -- there is no
+  option to keep the init's head. Dry run: re-fit head pressed 66 vs CLXIII 50 (p_mean .0169 vs .0131).
+- Consequence (b): every run since B6 started from a press head that is NOT its parent's -- a run-to-run noise source of
+  several pp at u0, and the pilot trains from a 7 pp handicap (RL also trains the head; whether it recovers = the u20/u40 checks).
+- Proposed fix (not built; owner asked): opt-in `ability_head_from_init: true` (load rl.ability_head / rl.ability from the init
+  checkpoint, skip the warm start; absent = unchanged), pyflakes + smoke, then decide whether to restart the pilot from B0 with it.
 # 2026-10-30 ~15:15 EDT -- full-match memory encoder PASSES its aux gate; B0-full v2 built; pilot u0 deficit is NOT the sampled gate
 
 - MEM-RETRAIN-2 (c48c609, f6c481c; MEM_FULL.md s5, a): full warm run on snap_full (3.17M rows, 24,754 steps). 349,264 held-out
