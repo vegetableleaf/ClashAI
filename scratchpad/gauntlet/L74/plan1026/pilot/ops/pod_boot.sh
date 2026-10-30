@@ -78,6 +78,13 @@ export ROYALE_RUNTIME=fin16-linux ROYALE_ENGINE=crforge ROYALE_HEROIW_FORM=hero 
 # LOOP-IW (LOOP_IW.md 55fe195): every JVM gets the incubator FFI (CfAbil.EXACT = glibc exp / pow, byte-exact abilities)
 export JAVA_TOOL_OPTIONS="--add-modules=jdk.incubator.foreign --enable-native-access=ALL-UNNAMED"
 unset ROYALE_HEROIW_PRESS
+# LEARNER-SPEED 10-30 (31892, EPYC 9554): on an AVX-512 host numpy's AVX512 exp (9,320 / 200,000) and OpenBLAS's AVX512 dot
+# order (10,833 / 20,000) differ from 33308 (Zen2) and the gate below fails; these two settings select 33308's paths (gate PASS
+# there, a). Hosts without avx512f are unchanged.
+if grep -qw avx512f /proc/cpuinfo; then
+  export NPY_DISABLE_CPU_FEATURES=X86_V4,AVX512_ICL OPENBLAS_CORETYPE=ZEN
+  log "AVX-512 host: NPY_DISABLE_CPU_FEATURES=$NPY_DISABLE_CPU_FEATURES OPENBLAS_CORETYPE=$OPENBLAS_CORETYPE (33308's numpy / BLAS paths)"
+fi
 cp $W/in/pilot.yaml $R/pilot.yaml
 cd $CB
 # exactness gate on THIS machine before any rollout (an unseen CPU, e.g. AVX512, must not quietly break byte-exactness):
