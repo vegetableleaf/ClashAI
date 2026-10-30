@@ -40,8 +40,8 @@ OBSID = REPO / "scratchpad/gauntlet/L74/speed/crforge/obsid"
 SPEED = REPO / "scratchpad/gauntlet/L74/speed/crforge"
 CFCORE = REPO / "scratchpad/gauntlet/L74/crforge/facade/CfCore.java"
 JAVA_SRC = [CFCORE, SPEED / "CfSpeed.java"] + [OBSID / f for f in ("CfObsBind.java", "CfOppElixir.java", "CfIdent.java",
-                                                                  "CfCue.java", "CfPubObj.java", "CfMem.java",
-                                                                  "CfAbil.java")] + [HERE / "CfTrain.java"]
+                                                                  "CfCue.java", "CfTgt.java", "CfPubObj.java", "CfMem.java",
+                                                                  "CfAbil.java", "CfCtx.java")] + [HERE / "CfTrain.java"]
 # LOOP-IW CfAbil: glibc exp / pow through JDK 17's incubator FFI (byte-exact with production's numpy / math)
 JVM_FLAGS = ("--add-modules=jdk.incubator.foreign", "--enable-native-access=ALL-UNNAMED")
 UNSUPPORTED_CFG = ("posture", "spell_track", "crown_track", "habit_track", "record_ctx",
@@ -91,6 +91,11 @@ class Rows:
         self.mem_form = mk((int(C.E_MAX),), np.int64, C.OFF_FORM, (8,))
         self.mem_summary = mk((int(C.S_V2),), np.float32, C.OFF_SUM, (4,))
         self.mem_answer = mk((), np.int64, C.OFF_ANS, ())
+
+    def targets(self, L, n: int) -> None:
+        """TARGET-OBS: CfTrain.tgtB / tgtIdxB views (CfTrain.enableTargets: "tgt" [64, 8] float32, "tgt_idx" [64] int64)."""
+        self.tgt = np.frombuffer(memoryview(L.tgtB), np.float32).reshape(2 * n, 64, 8)
+        self.tgt_idx = np.frombuffer(memoryview(L.tgtIdxB), np.int64).reshape(2 * n, 64)
 
     def abilities(self, L, n: int) -> None:
         """CfTrain.abCmdB / abOptB views (CfTrain.enableAbilities: per row {n commands, n options, (button, cid, uid)
@@ -237,6 +242,9 @@ class Producer:
         # cue rows for every seat (a policy without a cue layer never reads them; the weights, hence cue_in, arrive later)
         self.jc = obs_id.JavaCue(main, E)
         L.cue = self.jc.T
+        self.tgt = bool(base.get("target_obs"))            # TARGET-OBS (rl_royale target_obs on): CfTgt rows, else none
+        if self.tgt:
+            L.enableTargets()
         self.ja = self.ahead = None
         self.ab_mode = 0                                     # the learner seat's CfTrain ability mode this run()
         if env.hero_abilities:                               # LOOP-IW CfAbil: tables from production code (ability_id)
@@ -251,6 +259,8 @@ class Producer:
                               bool(env._iw_never))
         L.start()
         self.v = Rows(L, self.n)
+        if self.tgt:
+            self.v.targets(L, self.n)
         if self.ja is not None:
             self.v.abilities(L, self.n)
         self.serial = 0
@@ -259,6 +269,7 @@ class Producer:
         self.progress = None                                 # bench.py: called after every round with the totals
         self.cl, self.opp_name, self.want_ver = None, {}, None
         self.lmem = None                                     # loop_mem(): CfMem tables once a memory model plays
+        self.ctx = None                                      # FAST-LIVEOPP: (CfCtx.Tables, options) once a 'live' seat plays
         # card-id universes (CfTrain.addUniverse): 0 = the learner's gid tables above; one more per other opponent gid
         self.univs = [SimpleNamespace(gid=self.model.gid, main=main, pub=pub, keys=L.keys, T=L.pub, lmem=None)]
         self.univ_of = {gid_key(self.model.gid): 0}
@@ -284,6 +295,9 @@ class Producer:
         if self.ja is not None:
             k += len(self.ja.T.missing)
             self.ja.fill(self.env)                         # P: / N: keys, the IW observers' keys, their make_play rows
+        if self.ctx is not None:                           # FAST-LIVEOPP: CfCtx's (king, my tower max_hp) -> Rocket damage
+            import cf_ctx
+            k += cf_ctx.fill_missing(self.ctx[0])
         for U in self.univs[1:]:                           # an opponent's own card-id tables, filled the same way
             k += self._resolve_keys(U.keys, U.main)
             CP = self.jpype.JClass("CfPubObj")
@@ -480,6 +494,8 @@ class Producer:
         self.L.setJob(i, self.serial, int(seed) & 0x7FFFFFFF, *a[0], *a[1])
         if self.lmem is not None:
             self.L.setMem(i, has_mem(sides[0].model), has_mem(sides[1].model))
+        if self.ctx is not None:                              # FAST-LIVEOPP: the 'live' seats build CfCtx rows
+            self.L.setCtx(i, *[s.cfg["policy"] == "live" for s in sides])
         if self.ja is not None:                               # _reset_abilities (CfTrain.reset): the env seed, seat modes
             if not self.ja.ranges and hasattr(env, "_hero_ranges"):
                 self.ja.fill_ranges(env)                      # JavaAbil.reset: the first env reset that had heroes
@@ -635,6 +651,7 @@ class Producer:
                 U.lmem = loop_mem(self.obs_id, U.main, U.gid)
                 self.L.enableMemoryU(self.univ_of[gid_key(U.gid)], U.lmem.T)
                 U.lmem.slugs(self.env)
+        self._ctx_on([c for _, c in opps.values()] + [cfg])
         todo = list(R.rollout_jobs(jobs, update, base.get("learner_pipeline_frac", 0), base["seed"]))[::-1]
         live: dict = {}                                       # match slot -> its record
         results, skipped, st = [], [], Counter()
@@ -699,13 +716,17 @@ class Producer:
             idx = np.array([r for r, _ in members])
             sides = [s for _, s in members]
             model, c = sides[0].model, sides[0].cfg
-            if c["policy"] != "sample":
-                raise NotImplementedError(f"policy {c['policy']!r}: the fast loop samples (learner and league)")
+            if c["policy"] not in ("sample", "live") or (c["policy"] == "live" and self.ctx is None):
+                raise NotImplementedError(f"policy {c['policy']!r}: the fast loop samples or plays 'live' (CfCtx)")
             batch = {"tok": v.tok[idx], "mask": v.mask[idx].astype(bool), "sc": v.sc[idx], "past": v.past[idx],
                      "unit_form": v.unit_form[idx], "opp_past": v.opp_past[idx], "projectiles": v.projectiles[idx],
                      "effects": v.effects[idx], "own_ability": v.own_ability[idx], "opp_cycle": v.opp_cycle[idx]}
             if self.jc is not None:
                 batch["cue"] = v.cue[idx]
+            if getattr(model.model, "tgt_in", None) is not None:   # TARGET-OBS: Match.gen_row's sim_target_rows
+                if not self.tgt:
+                    raise RuntimeError("a model with target layers in a run without target_obs (CfTgt off)")
+                batch["tgt"], batch["tgt_idx"] = v.tgt[idx], v.tgt_idx[idx]
             if has_mem(model):                                # Match._memory's MEM_KEYS (CfMem)
                 from pipeline.match_memory import MEM_KEYS
                 for k in MEM_KEYS:
@@ -720,7 +741,9 @@ class Producer:
                 for k in oi[0]:
                     batch[k] = np.array([o[k] for o in oi], dtype=np.int64)
             name = "learner" if model is self.model else self.opp_name.get(id(model))
-            srv = self.cl is not None and name in self.cl.models and not E.is_timing(model)   # timing: in-process
+            # timing / live: in-process (live_decide_batch reads enc). ponytail: a live partner's forward runs on the producer's
+            # device, not the server; route it to serve.py (enc + cells there) if that forward shows up in the profile
+            srv = self.cl is not None and name in self.cl.models and not E.is_timing(model) and c["policy"] != "live"
             work.append((idx, sides, model, c, batch, E.gen_row_keys(model.model), name, srv))
         self.tm["gather"] += time.perf_counter() - g0
         fs = {}
@@ -878,6 +901,12 @@ class Producer:
                                             {k: x.cpu() for k, x in heads.items()}, p, allowed, stalled,   # loop_opp: CPU rows
                                             lambda rows, slots: cell_fn(list(map(int, rows)), list(map(int, slots))))
                 self.stats["styled_rows"] += len(sides)
+            elif c["policy"] == "live" and enc is not None:   # selfplay_decide's live branch, match_kwargs from CfCtx
+                kw = self._ctx_kwargs(sides, idx, c)
+                E.ability_decide(sides, enc, c)
+                tau, kw = E.posture_live(sides, enc, c, c["tau"], kw)
+                decisions = E.live_decide_batch(model, enc, heads, p, allowed, stalled, tau=tau, device=c["device"], **kw)
+                self.stats["live_rows"] += len(sides)
             elif enc is not None:
                 decisions = E.sample_decide_batch(model, enc, heads, p, allowed, stalled, sides, c)
             else:
@@ -899,6 +928,44 @@ class Producer:
                         s._th_issue = (int(v.meta[r, 3]), int(d["slot"]), *s.ep.cell_center(d["cell"], s.cfg["grid"]))
                 else:
                     a[:] = (0, -1, -1, 0, 0, 0, 0, int(d.get("th_tick", 0)) if isinstance(s.env, ThEnv) else 0)
+
+    def _ctx_on(self, cfgs) -> None:
+        """FAST-LIVEOPP: CfCtx on (once per JVM) when a seat plays policy 'live'; one options / grid set per JVM (CfCtx's
+        Tables carry lethal_quiet's window and the grid's cell offset)."""
+        live = [c for c in cfgs if c["policy"] == "live"]
+        if not live:
+            return
+        sys.path.insert(0, str(OBSID))
+        import cf_ctx
+        for c in live:
+            if c.get("pipeline_decisions") or c.get("follow_ups"):
+                raise NotImplementedError("a 'live' seat with pipeline_decisions / follow_ups")
+            key = (cf_ctx.options_for(c), c["grid"])         # options_for refuses what CfCtx does not build
+            if self.ctx is None:
+                self.ctx = (cf_ctx.tables(self.env.names, c["grid"], key[0]), *key)
+                self.L.enableCtx(self.ctx[0])
+                self.v.ctx = np.frombuffer(memoryview(self.L.ctxB), np.float64).reshape(2 * self.n, int(self.L.CTX))
+            elif key != self.ctx[1:]:
+                raise NotImplementedError("two 'live' option sets in one producer (CfCtx.Tables are per JVM)")
+
+    def _ctx_kwargs(self, sides, idx, c) -> dict:
+        """decision_options.match_kwargs(sides) from the rows' CfCtx context (LOOP-CTX cf_ctx.kwargs: identical on 45,211
+        facade seat-rows at the live config); the per-match decision stream is match_kwargs' own (rng_decision_options)."""
+        import cf_ctx
+        from pipeline.e1_eval import obs_seed
+        rows = []
+        for j, s in enumerate(sides):
+            r = int(idx[j])
+            rows.append(cf_ctx.decode(self.v.ctx[r, 1:1 + int(self.v.ctx[r, 0])].tolist()))
+            if not hasattr(s, "rng_decision_options"):       # match_kwargs' seeding, verbatim
+                s.rng_decision_options = np.random.default_rng(np.random.SeedSequence(
+                    [obs_seed("decision_options:" + s.tag, s.k), int(c.get("decision_seed", 0))]))
+            if getattr(s, "pending", None) is not None or getattr(s, "pend", None):
+                raise RuntimeError("a 'live' seat with a pending play (pipeline_decisions is refused)")
+        return cf_ctx.kwargs(rows, options=self.ctx[1], grid=c["grid"], card_names=[list(s.deck.cards) for s in sides],
+                             card_ids=[list(s.deck.card_ids) for s in sides], sides=[int(s.side) for s in sides],
+                             pending=[False] * len(sides), rngs=[s.rng_decision_options for s in sides],
+                             projectiles=[s._gen_row.get("projectiles") for s in sides])
 
     # ------------------------------------------------------------------------------------------------ fast decide
     def _fast_group(self, model, c, sides, idx, batch, keys, heads, p, hand, cell_fn, v_old=None, wver=None,
@@ -1040,6 +1107,9 @@ class Producer:
                 out[k] = st(k).astype(np.float32)
         if "cue" in rows:
             out["cue"] = st("cue").astype(np.float32)
+        if "tgt" in rows:                                    # TARGET-OBS: _traj_arrays' tgt / tgt_idx
+            out["tgt"] = st("tgt").astype(np.float32)
+            out["tgt_idx"] = st("tgt_idx").astype(np.int64)
         if s.cfg.get("record_tick"):
             out["tick"] = sc("tick", np.int64)
         if "gate_tau" in rows:
