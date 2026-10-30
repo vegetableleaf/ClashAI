@@ -230,3 +230,27 @@ the match exact; alt_fix = exact with a different edit. `plant_summary.txt`, row
   drop_troop / drop_zap first div 3624 -> exact, 222707 drop_troop 3391 -> exact; every other plant identical
   (`plant_summary_prefix.txt` = the run before the fix).
 
+### 9.2 Precision on the failing records, flags OFF (section 7 item 3; a). Pod run `r2_fail` (37 records, ~15 min at 12 CPUs)
+Inputs = the CURRENT extractor with none of the 20 fresh_prep SME_* flags (regen_fresh.sh's v29 set only; `recon/r2_regen.sh`),
+on the 37 strict-fresh records of FRESH2-8 that are not strictly exact (29 with div frames + 8 torn-only). Reference =
+the strict fresh results (F2_fe .. F8_main). Table `prec_vs_strict.txt`, rows `r2_fail_results.jsonl.gz`, ablation
+`ablate_fail.jsonl` (`recon/ablate.py`: remove each kept add from the final plan, re-score the whole match).
+- (a) **vs strict: 10 made exact, 1 improved, 23 same, 3 worse.** Made exact: 110715 (own X-Bow point (1500, 19500), the
+  open FRESH2 "X-Bow 1 tile off" failure: no hand rule), 142334 (add own IceWizard R1691), 151109, 201103, 220244, 222707,
+  235834, 021310, 080149 (add Zap R514 = SME_ZD_SINGLE's fix, 184 + 1582 -> 1766 / 1766), 004719 (no input edit: the gate's
+  SME_BANNER_GIVEN, so not a RECON win). Improved: 024716 (623 -> 1326 exact, first 1399 -> 2805).
+- (a) **Kept adds: 5, and the full-match ablation says all 5 are needed** (without each: 021310 1660 + 105, 024716 /
+  235834 / 142334 / 080149 likewise back to the failing count). **0 phantom adds kept.** No add / drop was kept on a
+  record the search did not improve. So no tightening of the add scoring was needed on this set (the HEAL 20 rule +
+  the full-match ranking already reject them). Kept POINT edits without a gain: 063025 Rascals, 074143 BattleRam
+  (counts = the reference; their need is untested, b).
+- (a) **The 3 worse are hand rules RECON does not cover yet** (diff of flags-off vs frozen inputs, `.foreman/scratch/recon2/diffm.py`):
+  031310: the v29 extractor adds a phantom opponent Zap at 3680 (15000, 24568) that one of the 20 flags removes; it breaks
+  the cycle fit (flag opp_no_fitting_deal), crforge runs a wrong deal, first div 246 (48 exact vs 2102). RECON's drop
+  only targets plays implicated at d. Owed: a cycle-repair edit (when a side fails the cycle at base, propose dropping /
+  re-dating the play whose removal restores the fit). 075729: own Knight at the tap (2500, 14500) vs the hand rule's
+  (8499, 500) (OWN_SPAWN / OWN_BODYPT); the own-point op looks for a body only within 3000 units (1378 vs 1460 exact).
+  165155: the zone rule (section 8; 2309 vs 2319). And 024716's remaining gap (2805): the hero Tombstone press at 3056
+  vs TOMB_HERO's 2803, outside the ability's window, so shift never proposes it. Owed: re-date an ability outside its window.
+- (a) 083923: 1814 + 39 torn_hidden + 2 div (first 935) vs the reference 1814 + 41 torn_hidden: 2 frames move torn -> div
+  on the flags-off input (strict class unchanged: both fail strict; "exact apart from torn" lost). Cause untested (b).

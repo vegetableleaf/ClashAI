@@ -1,0 +1,39 @@
+20261028_083923 same       recon {'exact': 1814, 'torn_hidden': 39, 'div': 2} 935 | ref {'exact': 1814, 'torn_hidden': 41} None | kept [] | ablate [] | flags 
+20261028_091720 same       recon {'exact': 2860, 'div': 170} 3519 | ref {'exact': 2860, 'div': 170} 3519 | kept [] | ablate [] | flags 
+20261028_100341 same       recon {'exact': 1384, 'div': 374} 2930 | ref {'exact': 1384, 'div': 374} 2930 | kept [] | ablate [] | flags 
+20261028_101018 same       recon {'exact': 2905, 'div': 121} 5968 | ref {'exact': 2905, 'div': 121} 5968 | kept [] | ablate [] | flags 
+20261028_110715 made exact recon {'exact': 2660} None | ref {'exact': 2165, 'div': 495} 4505 | kept ['point s1 Xbow {"x": 1500, "y": 19500}'] | ablate [] | flags 
+20261028_123045 same       recon {'exact': 809, 'div': 1643} 1768 | ref {'exact': 809, 'div': 1643} 1768 | kept [] | ablate [] | flags 
+20261028_130148 same       recon {'exact': 1626, 'div': 141} 3404 | ref {'exact': 1626, 'div': 141} 3404 | kept [] | ablate [] | flags 
+20261028_141254 same       recon {'exact': 1442, 'torn_late': 8, 'div': 1586} 3044 | ref {'exact': 1442, 'torn_late': 8, 'div': 1586} 3044 | kept [] | ablate [] | flags 
+20261028_142334 made exact recon {'exact': 1763} None | ref {'exact': 767, 'div': 996} 1693 | kept ['add s1 IceWizard R1691 (11500,17499) pos20'] | ablate [('IceWizard', 1691, 'needed')] | flags 
+20261028_142926 same       recon {'exact': 56, 'div': 1701} 254 | ref {'exact': 56, 'div': 1701} 254 | kept [] | ablate [] | flags 
+20261028_145600 same       recon {'exact': 579, 'div': 2090} 1308 | ref {'exact': 579, 'div': 2090} 1308 | kept [] | ablate [] | flags 
+20261028_151109 made exact recon {'exact': 3031} None | ref {'exact': 2767, 'div': 264} 925 | kept ['joint Log->924, Snowball->924'] | ablate [] | flags 
+20261028_155011 same       recon {'exact': 1377, 'torn_late': 2} None | ref {'exact': 1377, 'torn_late': 2} None | kept [] | ablate [] | flags 
+20261028_165155 worse      recon {'exact': 2309, 'div': 719} 4791 | ref {'exact': 2319, 'div': 706} 4811 | kept [] | ablate [] | flags 
+20261028_173440 same       recon {'exact': 1741, 'torn_hidden': 25} None | ref {'exact': 1741, 'torn_hidden': 25} None | kept [] | ablate [] | flags 
+20261028_174451 same       recon {'exact': 1766, 'torn_late': 1} None | ref {'exact': 1766, 'torn_late': 1} None | kept [] | ablate [] | flags 
+20261028_181730 same       recon {'exact': 1762, 'torn_late': 3} None | ref {'exact': 1762, 'torn_late': 3} None | kept [] | ablate [] | flags 
+20261028_201103 made exact recon {'exact': 1702} None | ref {'exact': 735, 'div': 967} 1606 | kept ['point s1 Rascals {"x": 9527, "y": 31131}'] | ablate [] | flags 
+20261028_210016 same       recon {'exact': 1953, 'div': 44} 2068 | ref {'exact': 1953, 'div': 44} 2068 | kept [] | ablate [] | flags 
+20261028_220244 made exact recon {'exact': 3025} None | ref {'exact': 1611, 'div': 295} 3374 | kept ['point s0 Knight {"x": 2499, "y": 13500}'] | ablate [] | flags 
+20261028_222707 made exact recon {'exact': 1766} None | ref {'exact': 1596, 'div': 170} 1653 | kept ['point s0 Knight {"x": 1499, "y": 10500}'] | ablate [] | flags 
+20261028_230352 same       recon {'exact': 379, 'div': 1383} 914 | ref {'exact': 379, 'div': 1383} 914 | kept [] | ablate [] | flags 
+20261028_235834 made exact recon {'exact': 2271} None | ref {'exact': 2230, 'div': 41} 4612 | kept ['add s0 Zap R4611 (14500,25500) pos76'] | ablate [('Zap', 4611, 'needed')] | flags 
+20261029_001856 same       recon {'exact': 1503, 'div': 126} 3159 | ref {'exact': 1503, 'div': 126} 3159 | kept [] | ablate [] | flags 
+20261029_004719 made exact recon {'exact': 1780} None | ref {'exact': 1210, 'div': 570} 2573 | kept [] | ablate [] | flags 
+20261029_021310 made exact recon {'exact': 1765} None | ref {'exact': 1660, 'div': 105} 1986 | kept ['add s0 Zap R1984 (12922,17231) pos24'] | ablate [('Zap', 1984, 'needed')] | flags 
+20261029_024716 improved   recon {'exact': 1326, 'div': 438} 2805 | ref {'exact': 623, 'div': 1141} 1399 | kept ['add s0 Zap R1397 (14479,24739) pos16'] | ablate [('Zap', 1397, 'needed')] | flags 
+20261029_031310 worse      recon {'exact': 48, 'div': 1716} 246 | ref {'exact': 2102, 'div': 40} 3954 | kept [] | ablate [] | flags ['0:opp_no_fitting_deal:0']
+20261029_042050 same       recon {'exact': 1136, 'torn_hidden': 93} None | ref {'exact': 1136, 'torn_hidden': 93} None | kept [] | ablate [] | flags 
+20261029_062715 same       recon {'exact': 1519, 'torn_hidden': 92} None | ref {'exact': 1519, 'torn_hidden': 92} None | kept [] | ablate [] | flags 
+20261029_063025 same       recon {'exact': 188, 'div': 1577} 153 | ref {'exact': 188, 'div': 1577} 153 | kept ['point s0 Rascals {"x": 9527, "y": 869}'] | ablate [] | flags 
+20261029_065705 same       recon {'exact': 1922, 'torn_late': 1} None | ref {'exact': 1922, 'torn_late': 1} None | kept [] | ablate [] | flags 
+20261029_071306 same       recon {'exact': 2799, 'div': 233} 5473 | ref {'exact': 2799, 'div': 233} 5473 | kept [] | ablate [] | flags 
+20261029_073232 same       recon {'exact': 2037, 'div': 3, 'torn_late': 7} 3312 | ref {'exact': 2037, 'div': 3, 'torn_late': 7} 3312 | kept [] | ablate [] | flags 
+20261029_074143 same       recon {'exact': 1680, 'div': 83, 'torn_late': 1} 1572 | ref {'exact': 1680, 'div': 83, 'torn_late': 1} 1572 | kept ['point s1 BattleRam {"x": 15660, "y": 16810}'] | ablate [] | flags 
+20261029_075729 worse      recon {'exact': 1378, 'div': 333} 2917 | ref {'exact': 1460, 'div': 251} 2917 | kept [] | ablate [] | flags 
+20261029_080149 made exact recon {'exact': 1766} None | ref {'exact': 184, 'div': 1582} 516 | kept ['add s1 Zap R514 (2971,13421) pos7'] | ablate [('Zap', 514, 'needed')] | flags 
+records 37 {'made exact': 10, 'improved': 1, 'same': 23, 'worse': 3, 'error': 0}
+kept adds (ablation): {'needed': 5, 'unneeded': 0, 'harmful': 0, 'error': 0}
