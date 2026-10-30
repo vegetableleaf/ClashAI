@@ -1,0 +1,8 @@
+oplc_ftR_l0001_a10           D3 u40-u120 n3: +1.8 +- 0.5 pp/100u | train vs partner u40-u135: +6.6 +- 1.8 pp/100u
+oplc_ftR_l0003_a10b          D3 u40-u240 n5: +2.0 +- 2.6 pp/100u | train log not on disk
+oplc_ftR_l001_a10            D3 u40-u320 n8: +2.4 +- 0.7 pp/100u | train vs partner u40-u334: +3.3 +- 0.3 pp/100u
+oplc_ftR_l003_a10            D3 u80-u200 n4: +0.7 +- 1.4 pp/100u | train vs partner u40-u218: +2.4 +- 0.7 pp/100u
+oplc_ftR_l003_a10_tpg32m     D3 u40-u160 n4: +3.2 +- 3.5 pp/100u | train vs partner u40-u171: +4.7 +- 1.0 pp/100u
+oplc_ftR_l003_bot100         D3 u40-u160 n4: +0.9 +- 3.2 pp/100u | train log not on disk
+oplc_ftR_l003_lr1e4          D3 u40-u120 n3: -2.6 +- 0.3 pp/100u | train vs partner u40-u126: +5.6 +- 1.8 pp/100u
+oplc_ftR_l01_a10             D3 u40-u80 n2: +nan +- nan pp/100u | train vs partner u40-u100: -1.9 +- 3.4 pp/100u

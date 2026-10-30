@@ -1,0 +1,29 @@
+oplc_ftR_l0001_a10           u040 train_bot 0.262 (n 3184) train_init 0.614 klx 0.24  D3_opp 0.200  gap +0.062
+oplc_ftR_l0001_a10           u080 train_bot 0.287 (n 3148) train_init 0.612 klx 0.53  D3_opp 0.210  gap +0.076
+oplc_ftR_l0001_a10           u120 train_bot 0.322 (n 3052) train_init 0.631 klx 0.86  D3_opp 0.215  gap +0.108
+oplc_ftR_l0003_a10b: no train log on disk (pod down)
+oplc_ftR_l001_a10            u040 train_bot 0.249 (n 3044) train_init 0.576 klx 0.25  D3_opp 0.169  gap +0.081
+oplc_ftR_l001_a10            u080 train_bot 0.271 (n 3092) train_init 0.626 klx 0.47  D3_opp 0.183  gap +0.087
+oplc_ftR_l001_a10            u120 train_bot 0.309 (n 3064) train_init 0.605 klx 0.59  D3_opp 0.198  gap +0.111
+oplc_ftR_l001_a10            u160 train_bot 0.330 (n 3092) train_init 0.631 klx 0.68  D3_opp 0.225  gap +0.105
+oplc_ftR_l001_a10            u200 train_bot 0.335 (n 3060) train_init 0.624 klx 0.91  D3_opp 0.204  gap +0.131
+oplc_ftR_l001_a10            u240 train_bot 0.337 (n 3192) train_init 0.632 klx 1.00  D3_opp 0.233  gap +0.104
+oplc_ftR_l001_a10            u280 train_bot 0.349 (n 3112) train_init 0.618 klx 1.10  D3_opp 0.256  gap +0.093
+oplc_ftR_l001_a10            u320 train_bot 0.355 (n 3036) train_init 0.602 klx 1.19  D3_opp 0.219  gap +0.136
+oplc_ftR_l003_a10            u080 train_bot 0.247 (n 3012) train_init 0.602 klx 0.23  D3_opp 0.196  gap +0.052
+oplc_ftR_l003_a10            u120 train_bot 0.240 (n 3032) train_init 0.613 klx 0.30  D3_opp 0.202  gap +0.038
+oplc_ftR_l003_a10            u160 train_bot 0.273 (n 2988) train_init 0.608 klx 0.37  D3_opp 0.185  gap +0.087
+oplc_ftR_l003_a10            u200 train_bot 0.272 (n 3080) train_init 0.588 klx 0.41  D3_opp 0.210  gap +0.062
+oplc_ftR_l003_a10_tpg32m     u040 train_bot 0.228 (n 2980) train_init 0.592 klx 0.16  D3_opp 0.177  gap +0.051
+oplc_ftR_l003_a10_tpg32m     u080 train_bot 0.249 (n 3016) train_init 0.585 klx 0.22  D3_opp 0.142  gap +0.107
+oplc_ftR_l003_a10_tpg32m     u120 train_bot 0.284 (n 3096) train_init 0.619 klx 0.28  D3_opp 0.213  gap +0.071
+oplc_ftR_l003_a10_tpg32m     u160 train_bot 0.296 (n 3048) train_init 0.612 klx 0.35  D3_opp 0.196  gap +0.100
+oplc_ftR_l003_bot100: no train log on disk (pod down)
+oplc_ftR_l003_lr1e4          u040 train_bot 0.210 (n 2956) train_init 0.542 klx 0.33  D3_opp 0.169  gap +0.041
+oplc_ftR_l003_lr1e4          u080 train_bot 0.244 (n 2996) train_init 0.557 klx 0.53  D3_opp 0.156  gap +0.088
+oplc_ftR_l003_lr1e4          u120 train_bot 0.269 (n 2596) train_init 0.579 klx 0.63  D3_opp 0.148  gap +0.121
+oplc_ftR_l01_a10             u040 train_bot 0.209 (n 3128) train_init 0.561 klx 0.08  D3_opp 0.171  gap +0.038
+oplc_ftR_l01_a10             u080 train_bot 0.197 (n 3152) train_init 0.565 klx 0.09  D3_opp 0.140  gap +0.058
+init ftR: u0 train_bot pooled over 6 arms 0.141 (n 936); D3_opp 53/480 = 0.110
+OLS D3_opp = 0.053 + 0.51 x train_bot  (n 24, r 0.78)
+slope through the init point: mean (D3-0.110) / (train-0.141) = 0.62
