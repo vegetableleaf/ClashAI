@@ -5,22 +5,36 @@ Grades: (a) measured (number + source), (b) plausible, untested (with the test),
 
 ## STATUS + RESTART POINT (keep current)
 
-- Step 1 (measure): DONE. Step 2 Python builder: DONE (opt-in, tests green). Step 2 model / rl_royale / e1_eval / live
-  plumbing: see the checklist below. Step 2 Java CfMem: see below. Step 3 encoder: recipe in section 4.
-- Restart: read this file top to bottom; the checklist says what is committed. Tests:
-  `icebow/.venv/Scripts/python.exe -m pytest pipeline/tests/test_memory_full.py pipeline/tests/test_match_memory.py -q`
-- Checklist (commit after each):
-  - [x] measurement scripts + results (`memory/full/`)
-  - [x] `pipeline/match_memory.py`: `MatchMemory(side, e_max=128, snap=False)`, `build(.., e_max, snap)`,
-        `features_at / rows_features(.., e_max=128)`, `empty_rows(n, version, e_max, n_f)`, `opts(mem)`, SNAP_FIELDS,
-        mirror; golden pin `pipeline/tests/mem_full_golden.json` + `test_memory_full.py` (8 tests)
-  - [ ] model_gen: `MemoryEncoder` e_max / snap (buffer `mem.full` only when opt-in), `widen` of an existing encoder
-        (new ev_in columns zero = identical outputs), load by content
-  - [ ] rl_royale keys `memory_e_max` / `memory_board_snap` (absent = historical hash), e1_eval `_memory` / `gen_batch`,
-        rl_royale mem row cache, train_memory, eval_gen, dataset_gen tables, live_gen memory_rows: all read `MM.opts(model.mem)`
-  - [ ] Java CfMem: per-instance eMax / snap + identity on pod 33903 (CPUs 194-201)
-  - [ ] pilot loop (CfTrain stride / producer views) for a non-default layout
-  - [ ] real `rl_royale --smoke` on a pod with the keys on
+- Step 1 (measure): DONE (section 1). Step 2: Python builder DONE; model / rl_royale / e1_eval / eval_gen / train_memory /
+  dataset_gen / live_gen plumbing DONE; Java CfMem + identity harness DONE and identical on 33903; real rl_royale --smoke
+  with the keys on: SMOKE_RESULT. Step 3: encoder change DONE (mem_full, zero-init widen, measured on B0); retraining =
+  recipe (section 4), NOT run (needs a pod with the pro replay corpora for the snapshot tables).
+- Restart: read this file. Laptop tests (53 pass, 4 skip = royalegym-only SIM tests):
+  `icebow/.venv/Scripts/python.exe -m pytest pipeline/tests/test_memory_full.py pipeline/tests/test_match_memory.py
+  pipeline/tests/test_memory_s1b.py pipeline/tests/test_memory_aux.py pipeline/tests/test_memory_zero_empty.py
+  pipeline/tests/test_train_memory.py pipeline/tests/test_learner_fast_cache.py -q -p no:warnings`
+- Shared-tree hunks: `memory/full/mem_full_patch.py` holds every plumbing hunk with exact anchors (`apply` = working tree,
+  `commit OUTDIR` = origin/main's file + only these hunks; other workers had uncommitted edits in the same files).
+- Pod 33903 (CPUs 194-201 only): tree `/workspace/memfull/rl`, scripts `/workspace/memfull/run_id.sh NAME CPUS N [--mem-full 256,1]`
+  (identity harness) and `/workspace/memfull/smoke_rl.sh RUN [overrides]` (rl_royale --smoke, CPU learner; the GPU is
+  full); results `/workspace/memfull/out/`; smoke run dirs `/workspace/icebow_data/bench/rl_royale/memfull_smoke_on*`
+  (mine, deletable). `/workspace/cfspeed/decks.tsv` = mine (top-16 live decks, the census file lived on the dead 32657).
+- Checklist:
+  - [x] measurement scripts + results (`memory/full/`)  -- commit 76d762e
+  - [x] `pipeline/match_memory.py` opt-in e_max / snap + golden pin + tests -- commit 76d762e
+  - [x] model_gen `GenModel.mem_full(e_max, snap)` (zero-column widen, `mem.full` buffer only when opt-in, load by content)
+  - [x] rl_royale `memory_e_max` / `memory_board_snap` (validated; absent / null / false = historical hash: tested),
+        e1_eval `_memory` + `gen_batch`, rl_royale mem row cache key, eval_gen (pro rows: e_max + zero snapshot columns on
+        tables without one), train_memory `--e-max` / `--snap`, dataset_gen `memory --snap`, live_gen memory_rows
+  - [x] Java CfMem per-instance eMax / snap + obs_id `--mem-full`; identity on 33903 (section 3)
+  - [ ] pilot fast loop (CfTrain / producer.py): memB stride and the MEM views are fixed at CfMem.BYTES / E_MAX / F.
+        Spec: `CfTrain.enableMemory(t, eMax, snap)` overload storing memBytes = CfMem.bytes(eMax, snap); every
+        `new CfMem(c, u.memT, u.mlog[i], s)` -> the 6-arg form; `features(deck, memB, r * memBytes)`; producer
+        `Views.memory` reads eMax / nf / bytes from L (offsets = obs_id JavaMem's formula); producer.loop_mem: all memory
+        policies of one JVM must share MM.opts (else NotImplementedError, one memB layout). Then LOOP-INT's identity
+        (rec_identity / mem rows) with the keys on. NOT done: untested loop code is not shipped.
+  - [x] live_replay.py identity with the options: 1,787 / 1,787 (section 3)
+  - [ ] retraining (section 4) + gates
 
 ## 1. How often does E_MAX = 128 truncate? (a)
 
@@ -71,12 +85,66 @@ build proved = the live path 2013/2013); outputs `memory/full/pro_counts.json`, 
 
 ## 3. Java CfMem + live (identity)
 
-(pending; see the checklist)
+- CfMem.java: per-instance `eMax` / `snap` (new constructor `CfMem(core, T, log, seat, eMax, snap)`; the 4-arg one = 128 /
+  off), instance row layout `offMask .. bytes` (= the static OFF_* / BYTES at the defaults), `CfMem.bytes(eMax, snap)`,
+  `snapshot(i)` = MatchMemory._snap (same sample, same body order, same value rule `value()`), F_SNAP-wide `table()`.
+- obs_id.py (the LOOP-MEM identity harness): `--mem-full E,SNAP` widens the memory model (`mem_full`), JavaMem builds its
+  CfMem with the model's `MM.opts`, views at the instance layout, the learner-rebuild check passes the rollout's e_max.
+- Identity on pod 33903 (CPUs 194-201, tree `/workspace/memfull/rl` = 76d762e pipeline + these hunks, B0 =
+  `/workspace/icebow_data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt`, crforge 5e8089a4, 2 census matches, decks =
+  the top-16 live decks, `/workspace/cfspeed/decks.tsv` made from memory/decks_live_train_beat3_cx3.json):
+  - absent (defaults, modified Java + Python): all 29 row keys IDENTICAL on 1,674 seat-rows, 4 / 4 tables identical in
+    all 12 TABLE_KEYS, learner rebuild 1,674 / 1,674 (a) (`out/smoke_default.json`).
+  - `--mem-full 256,1`: the 6 MEM keys IDENTICAL Java vs Python on 1,674 seat-rows (mem_ev 256 x 70), 4 / 4 tables
+    identical (vals 70 wide), snapshot columns nonzero on 5.9k-51.8k rows each (a) (`out/smoke_full.json`); learner
+    rebuild 1,674 / 1,674 (a; the first run showed 0 / 1,674 because the HARNESS rebuilt at e_max 128 -- fixed in obs_id; production gen_batch / the row cache pass the model e_max).
+- Live path: `live_gen.GenPilot.memory_rows` builds `MatchMemory(side, **MM.opts(model.mem))`: a checkpoint without
+  `mem.full` (CLXIII, every current model) = the defaults = unchanged (a: code; the opts of a model without the buffer are
+  128 / off, test_empty_rows_and_opts). Live play itself is not touched (no live_play / LIVE_OPTIONS change).
+- Live-path identity with the options (a): `MEMFULL=256,1 research/ext/Royale/.venv/Scripts/python.exe -B -X utf8
+  scratchpad/gauntlet/L74/memory/live_replay.py LOGS` (live_replay.py: env MEMFULL gives its GenPilot a model whose mem
+  carries e_max / snap; the reference = MM.build with the same options) on 4 live logs of 10-30 (3 with 151-170 events,
+  1 with 51): **1,787 / 1,787 decisions identical** (live GenPilot.memory_rows vs the offline build), features_at(table)
+  1,787 / 1,787 (`.foreman/scratch/memfull_live_replay.out`). Defaults on the same logs: 1,787 / 1,787 too.
+- Live cost (a, laptop CPU, same 4 logs): memory_rows median 1.93-2.23 ms with 256 + snap vs 1.37-1.50 ms at the
+  defaults on the 150+-event matches (p90 4.3-4.7 vs 3.4-3.6 ms); the 51-event match 1.10 vs 0.97 ms. Small next to the
+  ~100 ms live decision.
 
 ## 4. Encoder: what the S3-aux encoder needs, and the retraining recipe
 
-(pending)
+**What it needs to accept the longer history and the snapshot (a, code + measurement):**
+- No new parameter for the length: MemoryEncoder has no positional embedding (time enters as the `ago_60` / `t_300`
+  fields), padding is masked in attention, mean and pool. `model_gen.GenModel.mem_full(e_max, snap)` = the whole change:
+  `snap` widens `mem.ev_in` 46 -> 70 inputs with the new 24 columns at ZERO (old columns copied), `mem.cfg[0]` = 70, buffer
+  `mem.full` = [e_max, snap] (absent = the state dict unchanged); load builds it by content (test_mem_full_widen_is_identity_at_init).
+- B0 measured (memory/full/widen_b0.py, laptop CPU): histories <= 128 events: max |mem.rep diff| 3.6e-7 (float noise of
+  the longer padded tensor, not bit-identical); policy outputs bit-identical at u0 because B0's coupling mem.out is 0.
+  Histories > 128 events (129 rows): mem.rep moves by 17.6% (L2, mean; max 23.3%) -- the frozen encoder now pools over
+  events it never saw at training (masked mean over up to 256 events, a longer-than-trained input). (a)
+- Consequence: with `memory_encoder_frozen: true` the long-history OT rows get an OUT-OF-DISTRIBUTION representation (b:
+  harm untested; the coupling would have to learn on it). The pilot now runs `memory_encoder_frozen: false` (owner 10-30),
+  so RL can adapt the encoder, but the aux heads (memory_aux v1) were fit on <= 128 events and on no snapshot. Hence:
+
+**Retraining recipe (S3-aux v1 recipe, ONE change: full memory; train_memory flags `--e-max` / `--snap` added):**
+1. Pro tables with the snapshot: `python -m pipeline.dataset_gen memory --dataset icebow/data/pipeline/gen_dataset_v32_fv5.npz
+   --out icebow/data/pipeline/gen_dataset_v32_fv5_memory_v1_snap.npz --workers N --snap` (the 10-25 build: 14,661 replays;
+   a pod with the replay corpora; laptop test first with `--limit 20`).
+2. Encoder from scratch with the S3-aux targets unchanged (AUX_OWN swing / vpe / cycle classes / cycle elixir per own deck
+   card, opponent in-hand, opponent next card, AUX_GLOB opp_el10 / opp_el_now / threat / commit / xb_lock / rk_dmg; the
+   labels are built from the same tables, causal): `python -m pipeline.train_memory --init <CLXIII NOLEAK> --memory v2
+   --memory-tables <snap tables> --trainable memory_encoder --aux v1 --zero-empty --e-max 256 --snap --out-dir ...`
+   (other flags as the 10-25 S3-aux run: lr 1e-3, bs 256, 2 epochs; check the S3-aux run's args in its checkpoint meta).
+3. Graft into B0 the way build_b0.py did (CLXIII tensors unchanged + the new mem.* / mem_aux.* tensors, coupling 0) ->
+   B0-full. Gate G-mem-0: B0-full vs CLXIII log-probs on 10k recorded rows (< 1e-6; coupling 0 makes it exact).
+4. Aux gates vs the 128 encoder on the SAME val rows: every aux metric not worse overall, and better on OT rows with >
+   128 events (the rows the old window truncated: 17.2% of pro OT decisions) -- that is where the full history must pay.
+5. RL: pilot recipe + `memory: v2, memory_aux: v1, memory_encoder_frozen: false, memory_zero_empty: true,
+   memory_e_max: 256, memory_board_snap: true`, init B0-full; then the memory ablation gate (real vs shuffled memory,
+   paired, CI low > 0) and the usual SIM gate vs CLXIII.
+- Cheaper alternative if the pro rebuild is blocked: start RL from B0 widened (`memory_e_max: 256, memory_board_snap:
+  true` on the B0 init) -- identical policy at u0, snapshot weights at zero, the unfrozen encoder learns both from RL only
+  (b: slower credit than aux pretraining; the aux heads still train beside it with memory_aux v1).
 
 ## Ledger of Codex dispatches
 
-(none yet)
+None. The measurement scripts, hunks and identity runs were short and decided semantics (layouts, causality, identity); no menial bulk task came up that Codex would have saved usage on.

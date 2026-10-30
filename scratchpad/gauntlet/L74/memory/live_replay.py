@@ -34,12 +34,22 @@ VOCAB = json.loads(str(np.load(REPO / 'icebow/data/pipeline/gen_dataset_v32_fv5.
 FA = []                                                          # per match: (features_at rows identical, rows)
 
 
+# MEM-FULL (memory/MEM_FULL.md): env MEMFULL=E_MAX,SNAP (e.g. 256,1) = the same identity with the full-memory options
+FULL = (dict(zip(('e_max', 'snap'), (int(v) for v in __import__('os').environ['MEMFULL'].split(','))))
+        if __import__('os').environ.get('MEMFULL') else {})
+if FULL:
+    FULL['snap'] = bool(FULL['snap'])
+
+
 def pilot():
     p = GenPilot.__new__(GenPilot)                               # the memory path only: no checkpoint, no device
     p.feature_version, p.public, p.public_battle, p.opp, p.own_fx, p.past = 6, None, None, None, None, []
     p.frames = collections.deque(maxlen=30)
     from pipeline.dataset_gen import checkpoint_gid
     p.gid = checkpoint_gid(VOCAB)
+    if FULL:                                                     # MEM-FULL: a model whose encoder reads e_max / snap
+        import types
+        p.model = types.SimpleNamespace(mem=types.SimpleNamespace(version='v1', **FULL))
     return p
 
 
@@ -110,7 +120,7 @@ def main():
         for q in plays:
             if int(q['side']) == side and not q.get('ability'):
                 q['form'] = fmap.get((int(q['tick']), card_key(q['card'])))
-        ref = MM.build(side, ref_in['samples'], plays)
+        ref = MM.build(side, ref_in['samples'], plays, **FULL)
         bad = []
         for t, f in got.items():
             r = ref.features(t, gp.gid, deck)
@@ -120,7 +130,7 @@ def main():
         same_n += len(got) - len(bad)
         ticks = sorted(got)                                        # storage path: the end-of-match table + features_at
         t0 = time.perf_counter()
-        fa = MM.features_at(gp.mem.table(gp.gid), ticks, deck)
+        fa = MM.features_at(gp.mem.table(gp.gid), ticks, deck, e_max=FULL.get('e_max', MM.E_MAX))
         fa_ms = (time.perf_counter() - t0) * 1e3
         fa_bad = sum(not all(np.array_equal(fa[k][i], got[t][k]) for k in MM.MEM_KEYS) for i, t in enumerate(ticks))
         FA.append((len(ticks) - fa_bad, len(ticks)))

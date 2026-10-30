@@ -494,12 +494,16 @@ class JavaMem:
         T.regenBp, T.regenRate, T.regenCum = D(bp.tolist()), D(rate.tolist()), D(cum.tolist())
         self.slug_of, self.unit_of, self.cid_ready = {}, {}, False
         BB = jpype.JClass("java.nio.ByteBuffer")
-        self.buf = BB.allocateDirect(int(C.BYTES)).order(jpype.JClass("java.nio.ByteOrder").nativeOrder())
+        o = MM.opts(policy.model.mem)                    # MEM-FULL: the model's e_max / snap (absent = 128 / off)
+        self.e_max, self.snap = o["e_max"], o["snap"]
+        em, nf = self.e_max, MM.F_SNAP if self.snap else MM.F
+        self.buf = BB.allocateDirect(int(C.bytes(em, self.snap))).order(jpype.JClass("java.nio.ByteOrder").nativeOrder())
         mv = memoryview(self.buf)
         fb = (lambda dt, off, n: np.frombuffer(mv, dt, n, off))
-        self.view = {"mem_ev": fb(np.float32, C.OFF_EV, 128 * 46).reshape(128, 46), "mem_mask": fb(np.uint8, C.OFF_MASK, 128),
-                     "mem_card": fb(np.int64, C.OFF_CARD, 128), "mem_form": fb(np.int64, C.OFF_FORM, 128),
-                     "mem_summary": fb(np.float32, C.OFF_SUM, C.S_V2), "mem_answer": fb(np.int64, C.OFF_ANS, 1)}
+        om = em * nf * 4                                 # CfMem's instance layout (= OFF_* at the defaults)
+        self.view = {"mem_ev": fb(np.float32, 0, em * nf).reshape(em, nf), "mem_mask": fb(np.uint8, om, em),
+                     "mem_card": fb(np.int64, om + em, em), "mem_form": fb(np.int64, om + 9 * em, em),
+                     "mem_summary": fb(np.float32, om + 17 * em, C.S_V2), "mem_answer": fb(np.int64, om + 17 * em + 4 * C.S_V2, 1)}
         self.Int = jpype.JArray(jpype.JInt)
         self.stats = dict(plays=0, presses=0, form_mismatch=0, play_tick_mismatch=0, tables=0, table_rows=0,
                           rebuild_rows=0, rebuild_equal=0, late=0)
@@ -565,6 +569,7 @@ class JavaMem:
                     COUNTER_LIFT=MM.COUNTER_LIFT, CHILD_VALUE=H.CHILD_VALUE, TILES_X=TILES_X, TILES_Y=TILES_Y, F=MM.F)
         bad = {k: (v, getattr(C, k)) for k, v in want.items() if getattr(C, k) != v}
         assert not bad, bad
+        assert (C.SNAP_N, C.F_SNAP) == (len(MM.SNAP_FIELDS), MM.F_SNAP), "MEM-FULL snapshot width"
         assert [str(s) for s in C.FIELDS] == list(MM.FIELDS), "FIELDS order"
         assert [tuple(float(v) for v in r) for r in C.TOWER_XY] == [tuple(map(float, r)) for r in MM.TOWER_XY]
         del R                                             # DELAY: play_tick_mismatch checks it on every play
@@ -642,7 +647,8 @@ class JavaMem:
         self.slugs(env)
         j = s.__dict__.get("_loopmem")
         if j is None:
-            j = s._loopmem = self.C(env.core._cf, self.T, self.log(env), seat)
+            j = s._loopmem = (self.C(env.core._cf, self.T, self.log(env), seat) if (self.e_max, self.snap) == (128, False)
+                              else self.C(env.core._cf, self.T, self.log(env), seat, self.e_max, self.snap))
             s._loopmem_rows = []
         opp = env.core._obsid_match.opp(seat, self.main.keys)
         n_obs, n_feat = int(j.nanosObserve), int(j.nanosFeatures)
@@ -681,7 +687,7 @@ class JavaMem:
         out = {}
         for k, dt in self.TABLE_DT:
             a = np.array(getattr(b, self.TABLE_FIELD.get(k, k)), dtype=dt)
-            out[k] = a.reshape(n, self.MM.F) if k == "vals" else a.reshape(n, len(self.MM.GROUPS)) if k == "res" else a
+            out[k] = a.reshape(n, -1) if k == "vals" else a.reshape(n, len(self.MM.GROUPS)) if k == "res" else a   # F or F_SNAP
         return out
 
     def compare_table(self, side) -> None:
@@ -710,7 +716,7 @@ class JavaMem:
             ticks = np.array([t for t, _, _ in rows], np.int64)
             decks = np.stack([d for _, d, _ in rows])
             f = MM.rows_features(MM.pack([prod]), np.zeros(len(rows), np.int64), ticks, decks, np.arange(len(rows)),
-                                 "v2", side._mem_gid)
+                                 "v2", side._mem_gid, e_max=self.e_max)   # MEM-FULL: the rollout's e_max
             for i, (_, _, h) in enumerate(rows):
                 hi = hashlib.sha1(b"".join(np.ascontiguousarray(f[k][i]).tobytes() for k in MM.MEM_KEYS)).digest()
                 self.stats["rebuild_rows"] += 1
@@ -804,6 +810,7 @@ def main():
     ap.add_argument("--pairs", default="", help="census pair indices (comma list, repeats allowed); default the first --n")
     ap.add_argument("--hero-abilities", action="store_true", help="S3b-3d: env presses ability buttons by its rule "
                     "(RoyaleSelfPlayEnv hero_abilities, ability_policy generic): exercises own_ability after a press")
+    ap.add_argument("--mem-full", default="", help="MEM-FULL: E_MAX,SNAP (e.g. 256,1) = the memory model's mem_full")
     ap.add_argument("--build", default=str(HERE / "build"))
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
@@ -819,6 +826,9 @@ def main():
 
     assert ENGINE == "crforge", ENGINE
     model, info = E.load_policy(CLXIII)
+    if a.mem_full:                                      # MEM-FULL identity: the memory model widened (zero new columns)
+        e_max, snap = (int(v) for v in a.mem_full.split(","))
+        model.model.mem_full(e_max, bool(snap))
     BUILDERS.append(JavaMain())
     BUILDERS[0].opp_spells, BUILDERS[0].gid = bool(a.opp_spells), model.gid
     ident = JavaIdent(model)

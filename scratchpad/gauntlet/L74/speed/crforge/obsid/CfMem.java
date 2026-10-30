@@ -47,6 +47,12 @@ public final class CfMem {
    *  mem_card i64 [128], mem_form i64 [128], mem_summary f32 [114], mem_answer i64. */
   public static final int OFF_EV = 0, OFF_MASK = E_MAX * F * 4, OFF_CARD = OFF_MASK + E_MAX, OFF_FORM = OFF_CARD + 8 * E_MAX,
       OFF_SUM = OFF_FORM + 8 * E_MAX, OFF_ANS = OFF_SUM + 4 * S_V2, BYTES = OFF_ANS + 8;
+  /** MEM-FULL (opt-in, match_memory MatchMemory(side, e_max, snap)): SNAP_N = len(SNAP_FIELDS) floats after F per event;
+   *  the row layout of an instance is the same order with its eMax / nf (offMask .. bytes); the defaults = OFF_* / BYTES. */
+  public static final int SNAP_N = 24, F_SNAP = F + SNAP_N;
+  public static int bytes(int eMax, boolean snap) { return eMax * (snap ? F_SNAP : F) * 4 + eMax + 16 * eMax + 4 * S_V2 + 8; }
+  public final int eMax, nf, offMask, offCard, offForm, offSum, offAns, bytes;
+  public final boolean snap;
   static final int PENDING = 0, NONE_ANS = 1, FOUND = 2;
 
   // ---------------------------------------------------------------- tables (shared; obs_id.py fills them from production)
@@ -173,6 +179,7 @@ public final class CfMem {
     boolean mine, xyK, elK, mgK, isXb, isRk;
     double x = -1.0, y = -1.0, el, mg, cost, lost = Double.NaN;
     int[] reach;                                   // X-Bow: reach princesses (TOWER index), null = unknown
+    double[] sn;                                   // MEM-FULL snapshot (SNAP_N), null = none (no sample before the play)
     double[] gC, xC, rC;                           // cached outcomes (window closed): {enemy, own, value} / {locked, dmg} / {tower, value}
     // this events() call
     double[] g, xb, rk;
@@ -216,7 +223,16 @@ public final class CfMem {
   Ev[] vis = new Ev[64], on = new Ev[64];
   int nv, non;
 
-  public CfMem(CfCore core, Tables t, Log log, int seat) { this.core = core; this.T = t; this.log = log; this.seat = seat; reset(); }
+  public CfMem(CfCore core, Tables t, Log log, int seat) { this(core, t, log, seat, E_MAX, false); }
+
+  public CfMem(CfCore core, Tables t, Log log, int seat, int eMax, boolean snap) {
+    this.core = core; this.T = t; this.log = log; this.seat = seat;
+    this.eMax = eMax; this.snap = snap; nf = snap ? F_SNAP : F;
+    offMask = eMax * nf * 4; offCard = offMask + eMax; offForm = offCard + 8 * eMax; offSum = offForm + 8 * eMax;
+    offAns = offSum + 4 * S_V2; bytes = offAns + 8;
+    evRow = new float[eMax * nf];
+    reset();
+  }
 
   /** A new match (the loop resets a battle in place). */
   public void reset() {
@@ -371,6 +387,7 @@ public final class CfMem {
     if (e.mine && i >= 0) { e.elK = true; e.el = sel[i]; }
     e.cost = ab ? T.sAbCost[slug] : T.sCost[slug];
     e.i0 = Math.max(i, 0);
+    if (snap && i >= 0) e.sn = snapshot(i);
     if (slug == T.xbow && !ab) {                                   // reach: alive enemy princesses within XB_REACH
       e.isXb = true;
       int j = bisectRight(tp) - 1;
@@ -396,6 +413,28 @@ public final class CfMem {
     }
     insert(e);
     return true;
+  }
+
+  /** match_memory.MatchMemory._snap(i): per side x zone the valued bodies / 10 and their value / 10 (sums in the sample's
+   *  body order), the 6 tower HP fractions, hp known (SIM: always), bodies known. */
+  double[] snapshot(int i) {
+    double[] v = new double[SNAP_N];
+    for (int j = 0; j < 6; j++) v[16 + j] = shp[6 * i + j];
+    v[22] = 1.0;
+    double[] u = units.get(i);
+    if (u == null) throw new IllegalStateException("CfMem: bodies of sample " + i + " were dropped (snapshot of a late play?)");
+    v[23] = 1.0;
+    int[] n = new int[8];
+    for (int j = 0; j < u.length; j += 7) {
+      int rel = (int) u[j + 1];
+      double val = value((int) u[j + 2], u[j + 3], u[j + 4], rel, i);
+      if (Double.isNaN(val)) continue;
+      int c = 4 * rel + (u[j + 6] < .5 ? 2 : 0) + (u[j + 5] >= .5 ? 1 : 0);
+      n[c]++;
+      v[2 * c + 1] += val;
+    }
+    for (int c = 0; c < 8; c++) { v[2 * c] = n[c] / 10.0; v[2 * c + 1] = v[2 * c + 1] / 10; }
+    return v;
   }
 
   static int cmp(Ev a, Ev b) {                                     // match_memory._order
@@ -587,6 +626,7 @@ public final class CfMem {
       return;
     }
     v[o + COST10] = (float) (e.cost / 10);
+    if (snap && e.sn != null) for (int k = 0; k < SNAP_N; k++) v[o + F + k] = (float) e.sn[k];
     if (e.g != null) {
       v[o + OUT_DONE] = 1f;
       if (!Double.isNaN(e.g[0]) && !Double.isNaN(e.g[1])) { v[o + OUT_EN] = (float) e.g[0]; v[o + OUT_OWN] = (float) e.g[1]; v[o + OUT_TK] = 1f; }
@@ -613,7 +653,7 @@ public final class CfMem {
   }
 
   // ---------------------------------------------------------------- features(t)
-  final float[] evRow = new float[E_MAX * F];
+  final float[] evRow;                                             // eMax x nf
   final float[] sum = new float[S_V2];
 
   /** MatchMemory.features(t, gid, deck, 'v2') at the last observe's tick into {@code out} at {@code off} (layout OFF_*).
@@ -623,20 +663,20 @@ public final class CfMem {
     final int t = lastT;
     events(t, false);
     Arrays.fill(evRow, 0f);
-    int nr = Math.min(nv, E_MAX);
-    for (int r = 0; r < nr; r++) row(vis[nv - 1 - r], t, evRow, r * F);
+    int nr = Math.min(nv, eMax);
+    for (int r = 0; r < nr; r++) row(vis[nv - 1 - r], t, evRow, r * nf);
     floats(out, off + OFF_EV, evRow);
-    for (int r = 0; r < E_MAX; r++) {
+    for (int r = 0; r < eMax; r++) {
       Ev e = r < nr ? vis[nv - 1 - r] : null;
-      out.put(off + OFF_MASK + r, (byte) (e != null ? 1 : 0));
-      out.putLong(off + OFF_CARD + 8 * r, e != null && e.slug >= 0 ? T.sGid[e.slug] : 0);
-      out.putLong(off + OFF_FORM + 8 * r, e != null && e.slug >= 0 ? e.form : FORM_PAD);
+      out.put(off + offMask + r, (byte) (e != null ? 1 : 0));
+      out.putLong(off + offCard + 8 * r, e != null && e.slug >= 0 ? T.sGid[e.slug] : 0);
+      out.putLong(off + offForm + 8 * r, e != null && e.slug >= 0 ? e.form : FORM_PAD);
     }
     long ans = summary(t, deck);
     double[] f = s1c(t);
     for (int i = 0; i < N_S1C; i++) sum[S + i] = (float) f[i];
-    floats(out, off + OFF_SUM, sum);
-    out.putLong(off + OFF_ANS, ans);
+    floats(out, off + offSum, sum);
+    out.putLong(off + offAns, ans);
     rows++;
     events += nv;
     maxEvents = Math.max(maxEvents, nv);
@@ -653,7 +693,7 @@ public final class CfMem {
   /** Cost probe (steady-state JIT): features() at the last tick {@code reps} times into a scratch buffer; ns per call.
    *  Repeating it changes nothing a later row reads (every outcome it shows is cached already). */
   public long benchFeatures(int[] deck, int reps) {
-    ByteBuffer b = ByteBuffer.allocateDirect(BYTES).order(java.nio.ByteOrder.nativeOrder());
+    ByteBuffer b = ByteBuffer.allocateDirect(bytes).order(java.nio.ByteOrder.nativeOrder());
     long r0 = rows, e0 = events, n0 = nanosFeatures, t0 = System.nanoTime();
     for (int i = 0; i < reps; i++) features(deck, b, 0);
     long ns = (System.nanoTime() - t0) / Math.max(reps, 1);
@@ -890,15 +930,15 @@ public final class CfMem {
     Table b = new Table();
     b.n = n;
     b.tick = new int[n]; b.vis = new int[n]; b.res = new int[6 * n]; b.card = new int[n]; b.ansCard = new int[n];
-    b.vals = new float[F * n]; b.form = new byte[n]; b.flag = new byte[n];
+    b.vals = new float[nf * n]; b.form = new byte[n]; b.flag = new byte[n];
     b.xbDmg = new double[n]; b.rkTl = new double[n]; b.swing = new double[n]; b.vpe = new double[n];
     for (int i = 0; i < n; i++) vis[i].pos = i;
     for (int i = 0; i < n; i++) {
       Ev d = vis[i];
       b.tick[i] = d.tick;
       b.vis[i] = Math.max(d.tick + 1, d.seen);
-      row(d, d.tick, b.vals, F * i);
-      b.vals[F * i + AGO] = 0f;
+      row(d, d.tick, b.vals, nf * i);
+      b.vals[nf * i + AGO] = 0f;
       boolean card = d.slug >= 0;
       b.card[i] = card ? T.sGid[d.slug] : 0;
       b.form[i] = (byte) (card ? d.form : FORM_PAD);
