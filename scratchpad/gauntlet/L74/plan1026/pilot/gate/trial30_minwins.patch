@@ -1,0 +1,19 @@
+--- a/scratchpad/gauntlet/L74/deploy/trial30.sh	2026-10-30 09:56:41.553733000 -0400
++++ b/scratchpad/gauntlet/L74/deploy/trial30.sh	2026-10-30 09:56:41.777955500 -0400
+@@ -5,6 +5,7 @@
+ # env (LOOP-OPS 10-28; unset = unchanged): BASE_CK / BASE_SHA / BASE_LABEL = the model to compare with and revert to (CLX);
+ # NO_DEPLOY=1 = live was started BY HAND (start_live.sh icebow --no-fast-plays --ranked after --check): no deploy, no automatic
+ # revert -- the script only counts the 30 results and logs KEEP / FAIL.
++# MIN_WINS / IDLE_TOL (PILOT-GATE 10-30, opt-in; unset = 16 / 0.05 = unchanged): owner 10-29 pilot bar = MIN_WINS=6 (revert iff <= 5/30).
+ cd /c/Users/benpe/ClashBot || exit 1
+ CK=$1; SHA=$2; NAME=$3; F=scratchpad/gauntlet/L70/live/overnight.out; L=scratchpad/gauntlet/L74/deploy/trial30_$NAME.log
+ CLX=${BASE_CK:-icebow/data/models/ICEBOW/ICEBOW_Mark_CLX_PARITY_grafted.pt}; CLXSHA=${BASE_SHA:-5d212358322eb0dd}; BL=${BASE_LABEL:-CLX}
+@@ -19,7 +20,7 @@
+   | grep "idle >= 4 s with elixir" | sed -E 's/.*\| ([0-9.]+) \| ([0-9.]+) .*/\1 \2/')
+ log "idle-on-threat $BL / $NAME: $idle"
+ set -- $idle; base=${1:-0}; cand=${2:-9}
+-ok=$(awk -v w=$w -v b=$base -v c=$cand 'BEGIN{print (w >= 16 && c <= b + 0.05) ? 1 : 0}')
++ok=$(awk -v w=$w -v b=$base -v c=$cand -v m=${MIN_WINS:-16} -v t=${IDLE_TOL:-0.05} 'BEGIN{print (w >= m && c <= b + t) ? 1 : 0}')
+ if [ "$ok" = 1 ]; then log "KEEP $NAME (passes the trial)"; exit 0; fi
+ [ -n "${NO_DEPLOY:-}" ] && { log "FAIL $NAME: REVERT NEEDED to $BL ($CLX) by the start_live.sh procedure (NO_DEPLOY: live untouched)"; exit 1; }
+ grep -q "$(basename $CK)" scratchpad/gauntlet/L70/live/CKPT_OVERRIDE || { log "CKPT_OVERRIDE changed meanwhile; no revert"; exit 0; }

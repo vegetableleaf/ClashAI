@@ -4,6 +4,8 @@
 # facade refuses them) on BOTH engines; --record-plays / --record-board dropped (output only).
 # env (LOOP-OPS 10-28; unset = the values above): GATE_CKPT (the gated checkpoint, default CLXIII NOLEAK), GATE_CB, GATE_PY,
 # GATE_LIB / GATE_TABLES / GATE_FACADE (crforge build: gate a candidate and its CLXIII baseline on the SAME jars + tables).
+# PILOT-GATE 10-30 (opt-in; unset = unchanged): GATE_EV (rows root, default /workspace/d2/ev), GATE_GAP (the gap.py to run;
+# plan1026/pilot/gate/gap_chunks.py + GAP_CHUNKS=N = a dry run of N x 12 games per block). See plan1026/pilot/GATE_AND_LIVE.md.
 E=$1; TAG=$2; MODE=$3; CPUS=$4; W=$5; shift 5
 CB=${GATE_CB:-/workspace/d2/cb}; PYX=${GATE_PY:-/workspace/venvf16/bin/python}; G=${GATE_CKPT:-icebow/data/models/ICEBOW/ICEBOW_Mark_CLXIII_NOLEAK.pt}
 cd $CB || exit 1
@@ -18,10 +20,10 @@ if [ "$MODE" = iu40 ]; then
 fi
 sha256sum $G
 for S in "$@"; do
-  D=/workspace/d2/ev/$TAG/${TAG}_${S}
+  D=${GATE_EV:-/workspace/d2/ev}/$TAG/${TAG}_${S}
   [ "$(grep -c '"outcome"' $D/D3/matches.jsonl 2>/dev/null)" = 480 ] && continue
   rm -rf $D; mkdir -p $(dirname $D); echo "$(date -u +%FT%TZ) $TAG $S start"
-  taskset -c $CPUS "$PYX" scratchpad/gauntlet/L74/gap/gap.py --ckpt $G --out $D --arms D3 --seed-start $S --runtime fin16-linux \
+  taskset -c $CPUS "$PYX" ${GATE_GAP:-scratchpad/gauntlet/L74/gap/gap.py} --ckpt $G --out $D --arms D3 --seed-start $S --runtime fin16-linux \
     --python "$PYX" --census-file scratchpad/gauntlet/L74/mix/decks_live_eval.json --workers $W --levels all16 "${OA[@]}" \
     --extra="$EX $XF" > $D.log 2>&1 < /dev/null || echo "GAP EXIT $? $TAG $S"
   echo "$(date -u +%FT%TZ) $TAG $S rows $(grep -c '"outcome"' $D/D3/matches.jsonl 2>/dev/null)"
