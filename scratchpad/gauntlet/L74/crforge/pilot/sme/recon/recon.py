@@ -39,7 +39,13 @@ PRESS_BACK = 4                            # a press is tried at R in [d - 4, d -
 REDATE = 600                              # a press is re-dated from at most this far after d (TOMB_HERO gaps seen: 253-508)
 VIS_MAX = 2                               # an unseen spell is on the board at most this many ticks
 GRID = 500
-COST = {'shift': 1, 'swap': 1, 'joint': 2, 'point': 2, 'add': 3, 'drop': 3}
+COST = {'shift': 1, 'swap': 1, 'joint': 2, 'point': 2, 'add': 3, 'drop': 3, 'repress': 2}
+PRESS_UNITS = (0, 1, 2)                   # RECON-4: the unit of a card an ability press can name (cmdN_u); the extractor writes 0,
+                                          # the hand rule TOMB_HERO hard-codes 2 -- here the engine picks it
+BIRTH_REACH = 600                         # RECON-4: a body is NEW when no body of its card was within this of it one frame earlier
+BIRTH_WIN = (-2, 24)                      # ... and first listed within these ticks of the play's run
+REBIND = 2                                # RECON-4: a press is re-bound to one of the latest REBIND plays of its card before it
+CLUSTER = 1500                            # new bodies within this of each other are one formation (one play)
 ELIXIR_FREE = {'elixircollector', 'elixirgolem'}   # ponytail: decks that make elixir skip the bank rule (no model)
 
 
@@ -263,6 +269,8 @@ def apply_edit(plan, e):
             cmds[int(i)].update(run=R, given=R - 20)
     elif op == 'point':
         cmds[e['i']].update(x=e['x'], y=e['y'])
+    elif op == 'repress':                        # an ability press re-dated and re-bound (play n, unit u)
+        cmds[e['i']].update(run=e['run'], given=e['run'] - 20, unit='cmd%d_%d' % (e['n'], e['u']))
     elif op == 'swap':
         i, j = e['i'], e['j']
         cmds[i], cmds[j] = cmds[j], cmds[i]
@@ -276,7 +284,7 @@ def apply_edit(plan, e):
         k = e['pos']
         cmds.insert(k, dict(e['cmd']))
         ids.insert(k, None)
-    if op in ('shift', 'joint', 'add'):          # keep run order; a stable sort keeps same-tick order
+    if op in ('shift', 'joint', 'add', 'repress'):  # keep run order; a stable sort keeps same-tick order
         order = sorted(range(len(cmds)), key=lambda k: cmds[k]['run'])
         cmds, ids = [cmds[k] for k in order], [ids[k] for k in order]
     new_of = {old: k for k, old in enumerate(ids) if old is not None}
@@ -335,6 +343,13 @@ def victims(detail):
     return out
 
 
+def overhit(detail):
+    """(side, x, y) of bodies the SIM damaged and the live game did not: a SIM-only row whose live twin sits at its point with
+    more hp (RECON-4, 091720: our Knight 392 lower in the SIM because a hit landed that did not in the game)."""
+    return [(r[1][0], r[1][1], r[1][2]) for r in detail if r[0] == 'U_sim_only' and isinstance(r[1], (list, tuple))
+            and r[3] and r[3][0] == r[3][1] == 0 and len(r[3]) > 2 and r[3][2] > 0]
+
+
 def prev_frame(frames, d):
     return max((t for t in frames if t < d), default=d - 1)
 
@@ -352,6 +367,30 @@ def first_seen(frames, side, card, x, y, d, reach=1500):
     if first:
         x, y = round(sum(e[1] for e in first) / len(first)), round(sum(e[2] for e in first) / len(first))
     return t0, x, y
+
+
+def born_points(frames, side, card, run):
+    """RECON-4 (own point without a distance cap): where the bodies of (side, card) NEW around run were first listed, one point
+    per formation. New = first listed in run + BIRTH_WIN with no body of that card within BIRTH_REACH one frame earlier. -> [(x, y)]"""
+    ts = sorted(frames)
+    for k, t in enumerate(ts):
+        if k == 0 or not (run + BIRTH_WIN[0] <= t <= run + BIRTH_WIN[1]):
+            continue
+        bodies = lambda u: [e for e in frames[u]['E'] if e[0] == side and sme.card_name(e[3]) == card]   # noqa: E731
+        old = bodies(ts[k - 1])
+        new = [e for e in bodies(t) if all(math.hypot(e[1] - o[1], e[2] - o[2]) > BIRTH_REACH for o in old)]
+        if not new:
+            continue
+        groups = []
+        for e in new:
+            for g in groups:
+                if math.hypot(e[1] - g[0][1], e[2] - g[0][2]) <= CLUSTER:
+                    g.append(e)
+                    break
+            else:
+                groups.append([e])
+        return [(round(sum(e[1] for e in g) / len(g)), round(sum(e[2] for e in g) / len(g))) for g in groups]
+    return []
 
 
 def add_cmd(plan, side, card, R, x, y, lo, hi):
@@ -400,35 +439,73 @@ def hypotheses(plan, frames, d, detail, tab, me):
             t0, bx, by = first_seen(frames, c['side'], c['card'], c['x'], c['y'], min(d, c['run'] + 8), 3000)
             if t0 is not None and math.hypot(bx - c['x'], by - c['y']) >= 300 and zone_ok(tab, c['card'], c['side'], bx, by, towers_down(frames, c['side'], c['run'])):
                 out.append(({'op': 'point', 'i': i, 'x': bx, 'y': by}, COST['point']))
+        for bx, by in born_points(frames, c['side'], c['card'], c['run']):   # RECON-4: no distance cap
+            if math.hypot(bx - c['x'], by - c['y']) >= 300 and zone_ok(tab, c['card'], c['side'], bx, by, towers_down(frames, c['side'], c['run'])) \
+                    and not any(k != i and o.get('card') == c['card'] and o['side'] == c['side'] and o['kind'] == 'play'
+                                and abs(o['run'] - c['run']) <= BIRTH_WIN[1] and math.hypot(bx - o['x'], by - o['y']) < 300
+                                for k, o in enumerate(cmds)):
+                out.append(({'op': 'point', 'i': i, 'x': bx, 'y': by}, COST['point'] + 1))
         if not c['_src']['own']:
             for dx, dy in itertools.product((-GRID, 0, GRID), repeat=2):
                 if (dx or dy) and zone_ok(tab, c['card'], c['side'], c['x'] + dx, c['y'] + dy,
                                                      towers_down(frames, c['side'], c['run'])):
                     out.append(({'op': 'point', 'i': i, 'x': c['x'] + dx, 'y': c['y'] + dy}, COST['point'] + 1))
-    # drop: an implicated opponent play (own plays are taps the bot made)
-    for i in imp:
-        if not cmds[i]['_src']['own']:
-            out.append(({'op': 'drop', 'i': i}, COST['drop']))
-    # press: an ability press of the side's latest play of an implicated card that has one (hero / champion)
-    for i in imp:
+    # drop (RECON-4): an opponent play (own plays are taps the bot made) or an ability press of either side near d; the diff's names
+    # only rank them (implicated first): a tower hp row or an elixir-only row names no card (130148, 001856, 230352)
+    dropped = set()
+    for i in near:
         c = cmds[i]
-        if not tab.ability_cost(c['card']) or any(k > i and cmds[k].get('card') == c['card'] and cmds[k]['side'] == c['side']
-                                                  for k in range(len(cmds))):
+        if c['kind'] == 'ability' or (c['kind'] == 'play' and not c['_src']['own']):
+            dropped.add(i)
+            out.append(({'op': 'drop', 'i': i}, COST['drop'] + (0 if i in imp else 1)))
+    # drop: cycle repair -- a side whose play sequence breaks the cycle (our deal known, theirs: any of 8!): each opponent play
+    # whose removal restores a fitting deal, wherever it is (031310: a phantom Zap at 3680 made the whole match run a wrong deal)
+    for s_ in (0, 1):
+        if s_ != me and not cycle_ok(plan, s_):
+            for i, c in enumerate(cmds):
+                if c['side'] == s_ and c['kind'] == 'play' and i not in dropped:
+                    q = apply_edit(plan, {'op': 'drop', 'i': i})
+                    if q is not None and cycle_ok(q, s_):
+                        out.append(({'op': 'drop', 'i': i}, COST['drop']))
+    # press (RECON-4: the unit is an edit dimension): an ability press of the latest play of a card that has one, for the cards the
+    # diff names, and for the other side's ability cards alive at d when the diff shows a victim of that side (091720: the
+    # Boss Bandit's press, the diff names our Knight)
+    tp0 = prev_frame(frames, d)
+    pressers = set(imp)
+    for v, _, _ in victims(detail) + overhit(detail):
+        for i, c in enumerate(cmds):
+            if c['kind'] == 'play' and c['side'] == 1 - v and c['run'] <= d and tp0 in frames and any(
+                    e[0] == c['side'] and sme.card_name(e[3]) == c['card'] for e in frames[tp0]['E']):
+                pressers.add(i)
+    for i in sorted(pressers):
+        c = cmds[i]
+        if c['kind'] != 'play' or not tab.ability_cost(c['card']) or any(
+                k > i and cmds[k].get('card') == c['card'] and cmds[k]['side'] == c['side'] and cmds[k]['kind'] == 'play'
+                for k in range(len(cmds))):
             continue
         for R in range(max(c['run'] + 1, d - PRESS_BACK), d):
-            a = {'kind': 'ability', 'given': R - 20, 'run': R, 'side': c['side'], 'unit': 'cmd%d_0' % i,
-                 '_src': {'lo': R, 'hi': R, 'tick': R, 'source': 'recon_add', 'own': c['_src']['own']}}
-            for k in add_positions(plan, R):
-                out.append(({'op': 'add', 'pos': k, 'cmd': a}, COST['add']))
-    # repress: a later-extracted press of a play the diff names, re-dated to just before d (the press has no cast state:
-    # the extractor dates it at the cast it sees; hero Tombstone 165724 extracted 940, true 547: TOMB_HERO's class)
+            for u in PRESS_UNITS:
+                a = {'kind': 'ability', 'given': R - 20, 'run': R, 'side': c['side'], 'unit': 'cmd%d_%d' % (i, u),
+                     '_src': {'lo': R, 'hi': R, 'tick': R, 'source': 'recon_add', 'own': c['_src']['own']}}
+                for k in add_positions(plan, R):
+                    out.append(({'op': 'add', 'pos': k, 'cmd': a}, COST['add'] + (u != 0)))
+    # repress (RECON-4: re-bound, unit chosen): a later-extracted press of a card the diff names, re-dated to just before d, bound
+    # to any earlier play of that card and side (the press has no cast state: the extractor dates it at the cast it sees, binds
+    # it to the newest play and writes no unit; hero Tombstone 165724: extracted 940 / bound to the play at 4333, true 4077 / the play at 3433)
     names = {norm(r[2]) for r in detail if r[2]}
     for i, c in enumerate(cmds):
         if c['kind'] == 'ability' and d < c['run'] <= d + REDATE:
-            n = int(c['unit'][3:].split('_')[0])
-            if n < len(cmds) and tab.names_of(cmds[n].get('card', '')) & names:
-                for R in range(max(cmds[n]['run'] + 1, d - PRESS_BACK), d):
-                    out.append(({'op': 'shift', 'i': i, 'run': R}, COST['shift'] + 1))
+            n0, u0 = (int(x) for x in c['unit'][3:].split('_'))
+            if n0 < len(cmds) and tab.names_of(cmds[n0].get('card', '')) & names:
+                card, side = cmds[n0]['card'], cmds[n0]['side']
+                plays = [k for k, o in enumerate(cmds) if o['kind'] == 'play' and o['card'] == card and o['side'] == side]
+                for R in range(d - PRESS_BACK, d):
+                    for n in dict.fromkeys([n0] + [k for k in plays if cmds[k]['run'] < R][-REBIND:]):
+                        if cmds[n]['run'] >= R:
+                            continue
+                        for u in dict.fromkeys((u0,) + PRESS_UNITS):
+                            out.append(({'op': 'repress', 'i': i, 'run': R, 'n': n, 'u': u},
+                                        COST['repress'] + (u != u0) + (n != n0)))
     # add (a): an unseen spell of the other side whose radius covers every victim of one side
     vic = victims(detail)
     tp = prev_frame(frames, d)
@@ -463,15 +540,24 @@ def hypotheses(plan, frames, d, detail, tab, me):
             continue
         s = x[0]
         card = name if name in plan['decks'][s] else None
-        if card is None or any(cmds[i]['card'] == card and cmds[i]['side'] == s for i in near if cmds[i]['kind'] == 'play'):
+        if card is None:
             continue
+        # two anchors for the missing play: where the body chain leads back to (first_seen: a body listed for many ticks) and the
+        # body's own row at d (the first divergence is the tick it appears when it was not listed before; RECON-4, 101018: the
+        # chain led into an older same-card body)
         t0, bx, by = first_seen(frames, s, card, x[1], x[2], d)
-        if t0 is None or not zone_ok(tab, card, s, bx, by, towers_down(frames, s, t0)):
-            continue
-        tp0 = prev_frame(frames, t0)
-        for R in range(tp0 - 1, t0):
-            for k in add_positions(plan, R):
-                out.append(({'op': 'add', 'pos': k, 'cmd': add_cmd(plan, s, card, R, bx, by, tp0 - 1, t0 - 1)}, COST['add']))
+        for t0_, bx_, by_ in dict.fromkeys([(t0, bx, by), (d, x[1], x[2])]):
+            if t0_ is None or not zone_ok(tab, card, s, bx_, by_, towers_down(frames, s, t0_)):
+                continue
+            # a missing play unless a play of that card and side runs where the body was born (a living same-card body no
+            # longer blocks it)
+            if any(cmds[i].get('card') == card and cmds[i]['side'] == s and cmds[i]['kind'] == 'play' and t0_ - 12 <= cmds[i]['run'] <= t0_ + 1
+                   for i in range(len(cmds))):
+                continue
+            tp0 = prev_frame(frames, t0_)
+            for R in range(tp0 - 1, t0_):
+                for k in add_positions(plan, R):
+                    out.append(({'op': 'add', 'pos': k, 'cmd': add_cmd(plan, s, card, R, bx_, by_, tp0 - 1, t0_ - 1)}, COST['add']))
     return out
 
 
@@ -499,6 +585,8 @@ def cmd_side(plan, e):
 
 def describe(plan, e):
     c = e['cmd'] if e['op'] == 'add' else plan['cmds'][int(e.get('i', next(iter(e.get('runs', {0: 0})))))]
+    if e['op'] == 'repress':
+        return 'repress s%d cmd%d_%d R%d (was %s)' % (c['side'], e['n'], e['u'], e['run'], c['unit'])
     tag = '%s s%d %s' % (e['op'], c['side'], c.get('card', c.get('unit')))
     if e['op'] == 'add' and c['kind'] == 'ability':
         n = int(c['unit'][3:].split('_')[0])

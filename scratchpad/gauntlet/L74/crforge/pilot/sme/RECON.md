@@ -383,3 +383,14 @@ r3_unit2 recon <ABSOLUTE inputs path> /workspace/smeR/data/allframes` (runR cds,
 - Pipelines frozen against it: the 20-flag gate (fresh_prep.sh flags + SME_ZD_SINGLE) as of bf92222, and RECON v3 = generator v2 (bf92222) plus the operators
   of 11.2, whose code is committed before FRESH9 is run. No FRESH9 number may change a rule; a FRESH9 failure is reported, not fixed, in this round.
 - Scored set = the RNG-free subset (as FRESH2-8); both re-extractions (flags on for the gate, flags off for RECON) from the same raw logs.
+### 11.2 Generator v3 (code frozen at this commit, BEFORE any FRESH9 run; FRESH9 inputs extracted but not scored)
+- FRESH9 extraction (laptop, 2 workers, `recon/r4_prep.sh`): 317 battles -> 179 RNG-free records (scored set), flags-on inputs sha256[:16] 0d0aeb6a03357912
+  (`inputs_rngfree.jsonl`), flags-off inputs dcfe2ef45b32f144 (`inputs_all.jsonl` of the same 179), frames 177 files. Files in git-ignored `.foreman/scratch/recon4/f9/`.
+- New operators in `recon.py` (all general, no per-match rule; planted checks `test_recon.py::t_r4`, `ok 56`): `repress` (re-date a late press, re-bind it to one of the
+  latest 2 earlier plays of its card, unit index chosen from 0/1/2 by the engine); press add with the unit dimension, also for the other side's ability cards alive at d when
+  the SIM landed a hit the game did not (`overhit`); own point from bodies NEW at the play's run (`born_points`, window -2..+24 ticks, formation clusters, no distance cap);
+  drop of any opponent play or any ability press near d (names only rank), plus cycle repair (each opponent play whose removal restores a fitting deal); add (b) no longer
+  blocked by a living same-card body (only a play running at the body's birth blocks it) and also anchored at the first-divergence row. `cls_ticks` is now in recon results.
+- Dev check (in-sample, 16 gap matches, `v3_t16`/`v3_t3`): 13 of 16 reach the gate result (100341, 145600, 165724, 170122, 175120, 024716 Tombstone; 130148, 031310, 001856
+  drops; 142926 = gate; 101018 add; 075729 1711/1711, better than the gate's 1460); still failing: 083923 (scoring path), 091720, 141254.
+- Owner 10-30: the two flagged-exact records 155249, 000242 are COUNTED for RECON from now on; reports give both counts. The gate numbers are unchanged.

@@ -142,6 +142,8 @@ def do_match(args):
             res = {'match': rec['match'], 'flags': rec['flags'], 'frames': an['frames'], 'counts': an['counts'],
                    'first_div': an['first'], 'first_detail': sme_live.describe_first(by, frames, me, an['first']),
                    'edits': best['edits'], 'edit_cost': best['cost'], 'given_up': best['given_up'], 'log': log}
+            if sme_live.CLS_TICKS:   # RECON-4 (SME_CLS_TICKS=1): every non-exact frame by class, for the ASSIGN off / on frame guard
+                res['cls_ticks'] = {c: sorted(t for t, x in an['cls'].items() if x == c) for c in sorted(set(an['cls'].values()) - {'exact'})}
             if sme_live.PLANTS:
                 import plant_suite
                 res['plants'] = plant_suite.run(plan, frames, me, an, best['o'], os.path.join(mo, 'work'))

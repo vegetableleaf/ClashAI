@@ -143,12 +143,91 @@ def t_moves():
     p = plan_of([cmd(0, 'Zap', 311, 3475, 8700, lo=311, hi=311)])
     pts = [(e['x'], e['y']) for e, _ in recon.hypotheses(p, frames, 313, [['U_sim_only', [1, 2617, 11567, 130], 'C:Skeleton', None]], tab, 1) if e['op'] == 'point']
     ok((2975, 9200) in pts, 'grid: an opponent spell point moves +-500 (the fitter does)')
-    q = plan_of([cmd(0, 'Musketeer', 199, 9500, 9000), cmd(0, '', 940, kind='ability', unit='cmd0_0', lo=940, hi=941)])
+    # RECON-4 repress: bound to the NEWEST play with no unit (the extractor), true press earlier, on an earlier play, unit 2 (Tombstone)
+    q = plan_of([cmd(0, 'Musketeer', 199, 9500, 9000), cmd(0, 'Musketeer', 400, 9500, 9000),
+                 cmd(0, '', 940, kind='ability', unit='cmd1_0', lo=940, hi=941)])
     det = [['U_sim_only', [0, 9500, 9000, 500], 'Musketeer', None]]
-    hs = [e for e, _ in recon.hypotheses(q, frames, 549, det, tab, 1) if e['op'] == 'shift' and e['i'] == 1]
-    ok(sorted(e['run'] for e in hs) == [545, 546, 547, 548], 'repress: a later press of a named play moves to [d - 4, d - 1]')
-    ok(not [e for e, _ in recon.hypotheses(q, frames, 300, det, tab, 1) if e['op'] == 'shift' and e['i'] == 1],
-       'repress: not from further than REDATE ticks')
+    hs = [e for e, _ in recon.hypotheses(q, frames, 549, det, tab, 1) if e['op'] == 'repress']
+    ok({e['run'] for e in hs} == {545, 546, 547, 548}, 'repress: a later press of a named card moves to [d - 4, d - 1]')
+    ok(any(e['run'] == 547 and e['n'] == 0 and e['u'] == 2 for e in hs), 'repress: re-bound to the earlier play with unit 2')
+    r = recon.apply_edit(q, {'op': 'repress', 'i': 2, 'run': 547, 'n': 0, 'u': 2})
+    ok([c['run'] for c in r['cmds']] == [199, 400, 547] and r['cmds'][2]['unit'] == 'cmd0_2', 'repress applies: run, play, unit')
+    ok(not [e for e, _ in recon.hypotheses(q, frames, 300, det, tab, 1) if e['op'] == 'repress'], 'repress: not from further than REDATE ticks')
+    ok(not [e for e in hs if cmd_run(q, e['n']) >= e['run']], 'repress: only plays that ran before the press')
+
+
+def cmd_run(p, n):
+    return p['cmds'][n]['run']
+
+
+def card_id(name):
+    recon.sme.card_name(26000000)
+    return next(k for k, v in recon.sme._NAMES.items() if v == name)
+
+
+def t_r4():
+    """RECON-4 operators, each with its plant, on one-frame boards (no engine)."""
+    kn = card_id('Knight')
+    fr = {100: {'E': [], 'P': []}, 102: {'E': [[1, 5499, 24499, kn, 600, 14]], 'P': []}}
+    # own point without a cap: a Knight tap at (2500, 17500), the body is first listed 7,600 units away
+    p = plan_of([cmd(1, 'Knight', 101, 2500, 17500, own=True, lo=100, hi=102)])
+    pts = [(e['x'], e['y']) for e, _ in recon.hypotheses(p, fr, 110, [['U_sim_only', [1, 2500, 17500, 600], 'C:Knight', None]], tab, 1) if e['op'] == 'point']
+    ok((5499, 24499) in pts, 'own point: the body born at the play, 7,600 units from the tap (no 3000 cap)')
+    fr2 = {100: {'E': [[1, 5400, 24400, kn, 600, 14]], 'P': []}, 102: fr[102]}
+    pts = [(e['x'], e['y']) for e, _ in recon.hypotheses(p, fr2, 110, [], tab, 1) if e['op'] == 'point']
+    ok((5499, 24499) not in pts, 'own point: a body that was already there is not a birth')
+    p2 = plan_of([cmd(1, 'Knight', 101, 2500, 17500, own=True, lo=100, hi=102), cmd(1, 'Knight', 101, 5500, 24500, own=True, lo=100, hi=102)])
+    pts = [(e['x'], e['y']) for e, _ in recon.hypotheses(p2, fr, 110, [], tab, 1) if e['op'] == 'point' and e['i'] == 0]
+    ok((5499, 24499) not in pts, 'own point: a body another play of the card explains is not offered')
+    # drop beyond the named plays: a tower hp row names no card
+    tower = [['T_sim_only', [0, 3500, 6500, 486], 'T:PrincessTower', [0, 0, 77]], ['T_rec_only', [0, 3500, 6500, 563], 'tower', [0, 0, -77]]]
+    p = plan_of([cmd(0, 'Zap', 3402, 3000, 7700, lo=3402, hi=3403), cmd(1, 'Knight', 3400, 9000, 20000, own=True),
+                 cmd(1, '', 3390, kind='ability', unit='cmd1_0', own=True)])
+    ds = {e['i'] for e, _ in recon.hypotheses(p, {}, 3404, tower, tab, 1) if e['op'] == 'drop'}
+    ok(0 in ds and 2 in ds, 'drop: an opponent play and an own ability press near d, though the diff names neither')
+    ok(1 not in ds, 'drop: never an own tap')
+    # cycle repair: a phantom play far from d that breaks the opponent cycle
+    seq = ['Knight', 'Zap', 'Fireball', 'Musketeer', 'Knight']
+    p = plan_of([cmd(0, c, 100 + 100 * k) for k, c in enumerate(seq)])
+    ok(not recon.cycle_ok(p, 0), 'cycle repair: the planted sequence breaks the cycle')
+    ds = {e['i'] for e, _ in recon.hypotheses(p, {}, 3000, [], tab, 1) if e['op'] == 'drop'}
+    ok(4 in ds and 1 not in ds and 2 not in ds, 'cycle repair: drops that restore a fitting deal only (the phantom Knight yes, the Zap no)')
+    # press from the victim's attacker: the diff names our Knight; the opponent IceWizard (has a press) is alive at d
+    ic = card_id('IceWizard')
+    fr = {290: {'E': [[0, 9000, 20000, ic, 500, 14]], 'P': []}, 300: {'E': [], 'P': []}}
+    p = plan_of([cmd(0, 'IceWizard', 100, 9000, 14000)])
+    p['decks'] = [['IceWizard'] + DECK0[1:], DECK1]
+    vic = [['U_sim_only', [1, 9000, 16000, 600], 'C:Knight', None]]
+    prs = [e for e, _ in recon.hypotheses(p, fr, 300, vic, tab, 1) if e['op'] == 'add' and e['cmd']['kind'] == 'ability']
+    ok(prs and {e['cmd']['unit'] for e in prs} == {'cmd0_0', 'cmd0_1', 'cmd0_2'}, 'press from the victim: the attacker side\'s alive ability card, every unit')
+    fr = {290: {'E': [], 'P': []}, 300: {'E': [], 'P': []}}
+    ok(not [e for e, _ in recon.hypotheses(p, fr, 300, vic, tab, 1) if e['op'] == 'add' and e['cmd']['kind'] == 'ability'],
+       'press from the victim: not when the card is not on the board')
+    # add (b) beside a living same-card body: a Knight born at 102, the only Knight play ran long before
+    kn = card_id('Knight')
+    fr = {100: {'E': [[1, 3000, 24000, kn, 600, 14]], 'P': []}, 102: {'E': [[1, 3000, 24000, kn, 600, 14], [1, 12500, 24500, kn, 600, 14]], 'P': []}}
+    p = plan_of([cmd(1, 'Knight', 20, 3000, 24000, own=True)])
+    det = [['U_rec_only', [1, 12500, 24500, 600], 'Knight', None]]
+    adds = [e for e, _ in recon.hypotheses(p, fr, 110, det, tab, 1) if e['op'] == 'add' and e['cmd']['kind'] == 'play']
+    ok(adds and all(abs(e['cmd']['x'] - 12500) < 100 for e in adds), 'add (b): a live same-card body no longer blocks a missing play')
+    # anchored at the divergence: the chain of a walking body leads back into an older body; the row's own point is offered too
+    fr = {100: {'E': [[1, 12000, 24000, kn, 600, 14]], 'P': []}, 102: {'E': [[1, 12000, 24000, kn, 600, 14], [1, 12500, 24500, kn, 600, 14]], 'P': []}}
+    p = plan_of([cmd(1, 'Knight', 20, 12000, 24000, own=True)])
+    adds = [e for e, _ in recon.hypotheses(p, fr, 102, det, tab, 1) if e['op'] == 'add' and e['cmd']['kind'] == 'play']
+    ok(any(e['cmd']['run'] == 101 and e['cmd']['x'] == 12500 for e in adds), 'add (b): anchored at the first-divergence row (R = d - 1)')
+    # a hit the SIM landed and the game did not: the other side's ability card on the board gets a press (091720)
+    over = [['U_rec_only', [1, 6499, 23499, 2076], 'Knight', [0, 0, -392]], ['U_sim_only', [1, 6499, 23499, 1684], 'C:Knight_EV1', [0, 0, 392]]]
+    ok(recon.overhit(over) == [(1, 6499, 23499)] and recon.victims(over) == [], 'overhit: the SIM-lower twin is found, victims() stays empty')
+    ic = card_id('IceWizard')
+    fr = {290: {'E': [[0, 9000, 20000, ic, 500, 14]], 'P': []}, 300: {'E': [], 'P': []}}
+    p = plan_of([cmd(0, 'IceWizard', 100, 9000, 14000)])
+    p['decks'] = [['IceWizard'] + DECK0[1:], DECK1]
+    ok([e for e, _ in recon.hypotheses(p, fr, 300, over, tab, 1) if e['op'] == 'add' and e['cmd']['kind'] == 'ability'],
+       'press from an overhit: the attacker side\'s alive ability card gets a press')
+    fr = {100: {'E': [[1, 3000, 24000, kn, 600, 14]], 'P': []}, 102: {'E': [[1, 3000, 24000, kn, 600, 14], [1, 12500, 24500, kn, 600, 14]], 'P': []}}
+    p = plan_of([cmd(1, 'Knight', 20, 3000, 24000, own=True), cmd(1, 'Knight', 101, 12500, 24500, own=True)])
+    ok(not [e for e, _ in recon.hypotheses(p, fr, 110, det, tab, 1) if e['op'] == 'add' and e['cmd']['kind'] == 'play'],
+       'add (b): a play running at the body\'s birth explains it')
 
 
 def t_cases():
@@ -160,6 +239,6 @@ def t_cases():
 
 
 if __name__ == '__main__':
-    for f in (t_cycle, t_elixir, t_zone, t_travel, t_edits, t_legal, t_victims, t_moves, t_cases):
+    for f in (t_cycle, t_elixir, t_zone, t_travel, t_edits, t_legal, t_victims, t_moves, t_r4, t_cases):
         f()
     print('ok', N[0])
