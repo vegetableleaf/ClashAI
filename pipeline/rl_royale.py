@@ -3161,6 +3161,8 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
     N = len(B["A"])
     dev = B["A"].device
     mb = int(cfg["minibatch"])
+    if vf is not None and not vf["policy"] and cfg.get("critic_warmup_minibatch") is not None:
+        mb = int(cfg["critic_warmup_minibatch"])              # A/B 10-30: the critic warm-up's own minibatch (absent = minibatch)
     if "lp_th" in B:                                          # OPP-LEARN-D timing_pg: the play-only batch's step count
         mb = -(-N // max(1, -(-int(B["played"].sum()) // mb)))   # (minibatches of ~mb play rows + their share of slot rows)
         N_th = int((B["w_th"] > 0).sum())
@@ -3949,7 +3951,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                               "tau_phase", "memory", "memory_aux", "memory_encoder_frozen",
                               "memory_e_max", "memory_board_snap",
                               "memory_zero_empty", "learner_deterministic", "kl_stop_prev", "stored_values",
-                              "ent_init_rows", "lazy_refine", "ability_head_from_init", "ent_pair_every", "matches_per_update", "micro_batch", "mem_row_cache",
+                              "ent_init_rows", "lazy_refine", "ability_head_from_init", "ent_pair_every", "matches_per_update", "micro_batch", "mem_row_cache", "critic_warmup_minibatch",
                               "barrel_decoy_sim", "kl_lr_target", "ppo_decoupled", "th_anchor", "gate_baseline",
                               "timing_pg") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS and k not in CROWN_KEYS
@@ -4027,6 +4029,9 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
         raise SystemExit(f"mem_row_cache must be a bool or null, got {cfg['mem_row_cache']!r}")
     if mi is not None and (type(mi) is not int or mi < 1):
         raise SystemExit(f"micro_batch must be null or an int >= 1, got {mi!r}")
+    cw = cfg.get("critic_warmup_minibatch")                  # A/B 10-30: warm-up minibatch; absent / null = minibatch
+    if cw is not None and (type(cw) is not int or cw < 1):
+        raise SystemExit(f"critic_warmup_minibatch must be null or an int >= 1, got {cw!r}")
     ka = cfg.get("kl_lr_target")                             # LEARNER-SCALE KL-adaptive lr: absent / null = off
     if ka is not None and (isinstance(ka, bool) or not isinstance(ka, (int, float)) or not (math.isfinite(ka) and ka > 0)):
         raise SystemExit(f"kl_lr_target must be null or a finite number > 0, got {ka!r}")
@@ -4099,6 +4104,8 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "ent_pair_every"}
     if cfg.get("micro_batch") is None:                       # LEARNER-SCALE accumulation off = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "micro_batch"}
+    if cfg.get("critic_warmup_minibatch") is None:           # A/B 10-30 warm-up minibatch off = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "critic_warmup_minibatch"}
     if cfg.get("ppo_decoupled") is None:                     # LOOP-ASYNC decoupled PPO off = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "ppo_decoupled"}
     if not cfg.get("mem_row_cache"):                         # LEARNER-SCALE MEM row cache off = the historical hash
