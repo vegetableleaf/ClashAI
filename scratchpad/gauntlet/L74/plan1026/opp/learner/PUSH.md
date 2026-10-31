@@ -4,29 +4,43 @@ Bar: CLXIII SIM win vs the opponent 30-50% on the D3 block (480 games, seed 7412
 its live stack); v6 B-live RMS <= 0.20; siege facts inside the v6 margins (lock .47 +- .05, zero-lock .12 +- .06,
 P(lock|fail) .36 +- .07). Grades: (a) measured (number + source), (b) plausible untested, (c) contradicted.
 
-## STATUS (2026-10-30 ~22:00 UTC, account 3) -- RESTART POINT
+## STATUS (2026-10-31 ~11:00 UTC, account 3) -- RESTART POINT
 Pods: A = `ssh -i ~/.ssh/runpod_clashbot -p 40088 root@213.192.2.118` (3090, quota 31.1 CPUs, EPYC 7H12); B = `-p 40008
-root@213.192.2.110` (3090, 31.1 CPUs, EPYC 7763). Both booted by boot_opp_pod.sh: BOOT OK (all 7 tree digests = 33903's), copy
-293 / 298 s, keys removed from 33903 (grep count 0). Fast-loop tree on both: `/workspace/mfl/cbm` = origin/main 6ebf9ad
-(pipeline + pilot/loop + obsid) over links to cb2 (mfl_tree.sh), facade build `jbuild_mfl` inside it.
-- RUNNING (mine):
-  - Pod A `oplc_ftR_l0003_live_s1f` = the live-partner recipe at seed 1 on the FAST LOOP (origin/main tree), CPUs 0-21, GPU 0.
-    PIDs 5480 (bash) -> 5483 (timeout 48 h) -> 5484 (fastloop.py). Log `/workspace/oplm/logs/oplc_ftR_l0003_live_s1f.out`;
-    ckpts `/workspace/mfl/cbm/icebow/data/bench/rl_royale/oplc_ftR_l0003_live_s1f/` (every 10, cap 400). Stop: `kill 5484`.
-    Launch / resume (+ `--resume`): `HOST=213.192.2.118 TREE=/workspace/mfl/cbm JB=jbuild_mfl bash learner/launch_arm.sh 40088 oplc_ftR_l0003_live_s1f 0-21 /workspace/venvf16/bin/python scratchpad/gauntlet/L74/plan1026/opp/learner/opp_learner_calib_live.yaml beta0=0.003 beta_min=0.003 beta_max=0.003 seed=1`
-  - Laptop D3 loop for it: WMI bash PID 21612 running the copy `C:/Users/benpe/AppData/Local/Temp/claude/C--Users-benpe-ClashBot/5a62561c-4ecc-475a-8651-5d396102522c/scratchpad/arm_d3_s1f.sh`
-    (= arm_d3_card.sh sha 53edd967) `HOST=213.192.2.118 ... oplc_ftR_l0003_live_s1f 40088 40088 22-30 8 0040 .. 0400`, log
-    `.foreman/scratch/opp_push/d3_s1f.log` (D3 on pod A's spare CPUs, 8 workers, ~1.5-2.5 h per block). Stop: touch STOP_ARM_D3
-    in that dir or Stop-Process 21612.
-  - Pod B: style S0b = B-HF closed loop of ftR (both seats ftR, T 1, 3,761 HF test-split tier-A deck pairs, 5e8089a4 /
-    16.635.3, 28 workers): `bhf_pod.sh ftR /workspace/oplm/opp_ft_s0_R_sim.pt 1.0`, PIDs 4782 (bash) -> 4825 (pairs.py), log
-    `/workspace/style/bhf_ftR.out`, rows `/workspace/style/bhf_ftR/` (~2.6 h, done ~00:30 UTC). Resumable: rerun the same command.
-    Jobs rebuilt by `mk_mvm_jobs.py` on 33903 (`/workspace/opppush/mvm_jobs4000.jsonl`, 3,761 rows, sha 6b799f6b; the original
-    4,000-row file sha 1b0afd19 died with 32657). Score after: fetch rows to `.foreman/scratch/opp_push/rows/bhf_ftR`, then
-    `card.py score --name ftR_bhf --sim <ftR D3 rows> --hf-sim .foreman/scratch/opp_push/rows/bhf_ftR --no-c --no-d`.
-- E1 (a): pod B (EPYC 7763, Zen 3) replayed oplc_ftR_l0003_s1_u0040's D3 block: 390 / 480, sorted (end_tick, outcome) list
-  IDENTICAL to 33903's (digest 9deb687d), 20 min at 28 workers. D3 blocks are game-identical across these pods' CPUs.
-- Replicate u0 (a): W/L 41/215 (.160) at seed 1 vs seed 0's 28/228 (.109); GPU 14.3 GB of 24.
+root@213.192.2.110` (3090, 31.1 CPUs, EPYC 7763). Both booted by boot_opp_pod.sh (BOOT OK). Fast-loop trees: pods A / B
+`/workspace/mfl/cbm`, 33903 `/workspace/mfl/cbopp`; all = origin/main 6ebf9ad (pipeline + pilot/loop + obsid) over links to cb2
+(mfl_tree.sh), facade build `jbuild_mfl` inside (pods' copy has CRLF from a laptop archive -- harmless for fresh runs, E3 exact
+at u0; 33903's is LF, built with `git -c core.autocrlf=false archive`, needed for --resume of a cb2 run).
+- RUNNING (mine), all FAST LOOP:
+  - 33903 `oplc_ftR_l0003_live` (seed 0) MOVED from production at u85 (10:22 UTC): production stopped by PID 81255 after u84's
+    latest.pt, its 20 orphaned actors 81286-81305 stopped by exact PID (kill_orphans), fast-loop resume accepted ("changed config
+    n_actors 20 -> 1", resumed at update 85). PIDs 1602460 (bash) -> 1602463 (timeout 48 h) -> 1602464 (fastloop.py), CPUs
+    240-255,180-185. u85 roll 214 s + upd 25 s (production u84: 1,114 + 26 s). Run dirs now REAL in the fast tree
+    (`/workspace/mfl/cbopp/icebow/data/bench/rl_royale/oplc_ftR_l0003_live/`, `.../L68/rl/oplc_ftR_l0003_live/`) with cb2's old
+    paths as symlinks to them (rl_royale refuses to write through a link that leaves its tree: the first resume crashed at the u85
+    save, nothing written; latest.pt stayed u84; the train_log may hold a duplicate u85 row). The lead's D3 loop still finds the
+    checkpoints at cb2's path. Log `/workspace/oplm/logs/oplc_ftR_l0003_live.out` (launch_arm.sh truncates it: the production
+    log u0-u84 is gone; per-update rows stay in train_log.jsonl; the crash log = `.crash1.out`). Stop `kill 1602464`. Resume:
+    `TREE=/workspace/mfl/cbopp JB=jbuild_mfl bash learner/launch_arm.sh 33903 oplc_ftR_l0003_live 240-255,180-185 /workspace/venvf16/bin/python scratchpad/gauntlet/L74/plan1026/opp/learner/opp_learner_calib_live.yaml beta0=0.003 beta_min=0.003 beta_max=0.003 --resume`
+  - Pod A `oplc_ftR_l0003_live_s1f` (seed 1), CPUs 0-21: PIDs 5480 -> 5483 -> 5484 (stop `kill 5484`), log
+    `/workspace/oplm/logs/oplc_ftR_l0003_live_s1f.out`, ckpts `/workspace/mfl/cbm/icebow/data/bench/rl_royale/oplc_ftR_l0003_live_s1f/`;
+    u202 at 09:55 UTC (~215 s / update). Resume: `HOST=213.192.2.118 TREE=/workspace/mfl/cbm JB=jbuild_mfl bash learner/launch_arm.sh 40088 oplc_ftR_l0003_live_s1f 0-21 /workspace/venvf16/bin/python scratchpad/gauntlet/L74/plan1026/opp/learner/opp_learner_calib_live.yaml beta0=0.003 beta_min=0.003 beta_max=0.003 seed=1 --resume`
+  - Pod B `oplc_ftR_l0003_live_gae` = ARM 2 (lever 3): opp_learner_calib_live_gae.yaml, seed 0, init `/workspace/oplm/opp_ftR_vfit12.pt`
+    (sha 47afe8cc) = ftR with a PRE-FIT value head: run gae_vfit1 (12 critic-only updates at lr 1e-3, vf_trunk_grad false;
+    ev .02 -> .38-.47, V 0 -> -0.77, advantage mean -0.45 -> 0.00); same_policy.py: 220 of 222 tensors identical to ftR (max |d|
+    0), only value_head.{weight,bias} differ. CPUs 0-21, PIDs 8955 -> 8958 -> 8959 (stop `kill 8959`), log
+    `/workspace/oplm/logs/oplc_ftR_l0003_live_gae.out`. Resume: `HOST=213.192.2.110 TREE=/workspace/mfl/cbm JB=jbuild_mfl bash learner/launch_arm.sh 40008 oplc_ftR_l0003_live_gae 0-21 /workspace/venvf16/bin/python scratchpad/gauntlet/L74/plan1026/opp/learner/opp_learner_calib_live_gae.yaml beta0=0.003 beta_min=0.003 beta_max=0.003 init=/workspace/oplm/opp_ftR_vfit12.pt --resume`
+    Why the pre-fit (a): the first gae smoke (gae_smoke2, warm-up 1, lr 3e-5) left V at +-0.002, ev .02-.05 and advantages
+    UNCENTERED (mean -0.36 to -0.55: the opponent loses ~85%), which would push every taken action down -- not launched as is.
+  - Laptop D3 loops (WMI; copies of arm_d3_card.sh in my scratchpad dir `C:/Users/benpe/AppData/Local/Temp/claude/C--Users-benpe-ClashBot/5a62561c-4ecc-475a-8651-5d396102522c/scratchpad/`),
+    every eval on 33903 (CPUs free since the gate's BASE_DONE 10-30 19:49), each followed by the v6 quick card:
+    s1f a = PID 76528 (`arm_d3_s1f_a.sh`, CPUs 32-88, 28 workers, u0040 0120 0200 0280 0360, log `.foreman/scratch/opp_push/d3_s1f_a.log`);
+    s1f b = PID 108312 (`arm_d3_s1f_b.sh`, CPUs 89-145, u0080 0160 0240 0320 0400, `d3_s1f_b.log`);
+    gae = PID 26324 (`arm_d3_gae.sh`, CPUs 0-31, u0040 .. 0400, `d3_gae.log`). Env per loop: HOST=<arm pod> EHOST=157.157.221.29
+    SROOT=/workspace/mfl/cbm. Stop: touch STOP_ARM_D3 in that dir (stops all three) or Stop-Process PID.
+    (The first s1f loop, PID 21612, waited on cb2's path while the run wrote to the fast tree, then vanished with an empty log: a
+    D3 gap of ~12 h on s1f; fixed by SROOT.)
+- Done on pod B: style S0b B-HF run (bhf_pod.sh ftR, 3,741 of 3,761 games); E1.
+- E1 (a): pod B (EPYC 7763) replayed oplc_ftR_l0003_s1_u0040's D3 block: 390 / 480, game-identical to 33903's (digest 9deb687d).
 - LEAD 10-30 ~22:10 UTC: arm 2 goes on POD B's GPU (fast loop), started only AFTER the style B-HF run finishes (~00:30 UTC; never
   overlap them on pod B's 31 CPUs); its lever = the u40 read (gae + critic warm-up if training win is within ~3 pp of D3, else
   lever 4). Re-imitation plan REPLACED by the closed-loop diagnostic (calibration / sealed blocks stay untouched).
@@ -127,4 +141,40 @@ re-imitating the timing head on CLXIII-era rows would target a difference of ~0.
   opponent pocket / our-half play, SIM (G rows, --record-board) vs live humans (calibration block, analysis only).
 
 ## Rounds (ledger)
-(none yet)
+### Round 1 (2026-10-31 ~11:00 UTC): live-stack partner, 2 seeds, u40 / u80 (a)
+D3 = CLXIII wins / 480 (opponent win %); training win vs the live partner over the 20 updates around the checkpoint.
+
+| run | ckpt | D3 CLXIII W | opp win | training win (window) | train - D3 | quick RMS | lock / zero / P(lock|fail) |
+|---|---|---|---|---|---|---|---|
+| oplc_ftR_l0003_live (seed 0, production) | u40 | 377 | 21.5% | .200 (u30-49) | -1.5 pp | .30 | .75 / .00 / .67 |
+| | u80 | 376 | 21.7% | .254 (u70-83) | +3.7 pp | .37 | .75 / .01 / .66 |
+| oplc_ftR_l0003_live_s1f (seed 1, fast) | u40 | 393 | 18.1% | .212 (u30-49) | +3.1 pp | .31 | .73 / .01 / .63 |
+| | u80 | 372 | 22.5% | .262 (u70-89) | +3.7 pp | .41 | .73 / .01 / .64 |
+| G (sampled partner, ref) | u40 / u80 | 402 / 366 | 16.3 / 23.8% | - | (+4 to +8 at u40 in that regime) | - / .28 | - / .71 / .58 |
+
+- Transfer: fixed at u40 (pooled gap +0.8 pp) and much better than the sampled-partner regime (old fit predicts D3 18.5% at
+  training .258; measured 22.1%), but a +3.7 pp gap reopens by u80 in BOTH seeds (D3 SE ~1.9 pp per block): on the edge of the
+  ~3 pp rule. D3 u40 -> u80: seed 0 flat (+0.2), seed 1 +4.4.
+- Success marks at u80: below G's best block (23.8%) and G's u80-u240 mean (23.3%) in both seeds (21.7 / 22.5%; ~1 SE). At u40
+  above G (21.5 / 18.1 vs 16.3%).
+- s1f training win per 20 updates: .140 .208 .225 .256 .281 .307 .307 .302 .293 .319 (u0 .. u199): a training plateau at ~.30
+  after u100 (the noisy-update / large-batch question below).
+- STYLE COST (a): the live partner rewards deep aggression. s1f u80 vs ftR: pocket_share +.23 -> +.99, our_half +.07 -> +.73,
+  troop_depth +.01 -> -.68, own_half -.43 -> -.78 (seed 0 u80: pocket +1.09, our_half +.64); RMS .30 -> .41 / .37. Siege facts
+  NOT improved (lock .73-.75 vs ftR .78; G .70): the strength comes from pushing into CLXIII's half, not from stopping X-Bows.
+- Decision taken: arm 2 = lever 3 (gae + pre-fit critic) on pod B, despite the +3.7 pp edge case, because (i) u40 transfer is
+  fixed in both seeds and u80 is within 1 SE of 3 pp, (ii) the binding problem visible in s1f is the training plateau (~.30),
+  which lever 3 targets, (iii) lever 4 is mostly not available in the fast loop (own_effects / afford_ticks / G2 taps are refused
+  there; the D3 census file is a different format from league_decks).
+
+### Style track S0b / S0c (2026-10-31, a): most of the B-live error is the CLXIII-in-SIM environment, not the opponent
+- B-HF (ftR in both seats on 3,741 HF test deck pairs, no CLXIII, no live reader; HF humans 7,522 sides): RMS 0.20 (B-live 0.30).
+  The big B-live errors vanish there: react_lift +.50 -> -.08, spell_depth +.65 -> +.15, push_mean -.45 -> -.04, own_half -.42 ->
+  +.20, bridge +.36 -> -.16. Kept: gap_p10 -.62 -> -.41 (a real closed-loop timing error); new in B-HF: ppm_ot -.53, react_3s -.35.
+- CLXIII's own cadence, live (calibration block, 856) vs SIM (ftR D3, 480): 11.2 vs 9.3 plays / min, median gap 3.8 vs 4.7 s
+  (style_s0c.py): CLXIII plays 17% fewer cards in SIM. react_lift / react_s are measured against OUR plays, so a slower SIM CLXIII
+  inflates them with no opponent error (b: the mechanism; the size match is untested).
+- Reading: the B-live RMS <= .20 bar is mostly limited by CLXIII's SIM stack (and possibly the live reader), which the opponent
+  cannot fix; the opponent's own human-likeness on HF pairs is RMS .20. Next (b): (1) a cadence-matched B-live (stats conditioned
+  on our play rate, or CLXIII with the live tap rate) to size the environment share; (2) S1 exploit check on pocket / our_half
+  (now the largest RL-made errors).
