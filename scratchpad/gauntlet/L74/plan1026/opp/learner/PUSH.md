@@ -20,20 +20,31 @@ root@213.192.2.110` (3090, 31.1 CPUs, EPYC 7763). Both booted by boot_opp_pod.sh
 `/workspace/mfl/cbm`, 33903 `/workspace/mfl/cbopp`; all = origin/main 6ebf9ad (pipeline + pilot/loop + obsid) over links to cb2
 (mfl_tree.sh), facade build `jbuild_mfl` inside (pods' copy has CRLF from a laptop archive -- harmless for fresh runs, E3 exact
 at u0; 33903's is LF, built with `git -c core.autocrlf=false archive`, needed for --resume of a cb2 run).
-- RUNNING (mine), all FAST LOOP:
-  - 33903 `oplc_ftR_l0003_live` (seed 0) MOVED from production at u85 (10:22 UTC): production stopped by PID 81255 after u84's
-    latest.pt, its 20 orphaned actors 81286-81305 stopped by exact PID (kill_orphans), fast-loop resume accepted ("changed config
-    n_actors 20 -> 1", resumed at update 85). PIDs 1602460 (bash) -> 1602463 (timeout 48 h) -> 1602464 (fastloop.py), CPUs
-    240-255,180-185. u85 roll 214 s + upd 25 s (production u84: 1,114 + 26 s). Run dirs now REAL in the fast tree
-    (`/workspace/mfl/cbopp/icebow/data/bench/rl_royale/oplc_ftR_l0003_live/`, `.../L68/rl/oplc_ftR_l0003_live/`) with cb2's old
-    paths as symlinks to them (rl_royale refuses to write through a link that leaves its tree: the first resume crashed at the u85
-    save, nothing written; latest.pt stayed u84; the train_log may hold a duplicate u85 row). The lead's D3 loop still finds the
-    checkpoints at cb2's path. Log `/workspace/oplm/logs/oplc_ftR_l0003_live.out` (launch_arm.sh truncates it: the production
-    log u0-u84 is gone; per-update rows stay in train_log.jsonl; the crash log = `.crash1.out`). Stop `kill 1602464`. Resume:
-    `TREE=/workspace/mfl/cbopp JB=jbuild_mfl bash learner/launch_arm.sh 33903 oplc_ftR_l0003_live 240-255,180-185 /workspace/venvf16/bin/python scratchpad/gauntlet/L74/plan1026/opp/learner/opp_learner_calib_live.yaml beta0=0.003 beta_min=0.003 beta_max=0.003 --resume`
-  - Pod A `oplc_ftR_l0003_live_s1f` (seed 1), CPUs 0-21: PIDs 5480 -> 5483 -> 5484 (stop `kill 5484`), log
-    `/workspace/oplm/logs/oplc_ftR_l0003_live_s1f.out`, ckpts `/workspace/mfl/cbm/icebow/data/bench/rl_royale/oplc_ftR_l0003_live_s1f/`;
-    u202 at 09:55 UTC (~215 s / update). Resume: `HOST=213.192.2.118 TREE=/workspace/mfl/cbm JB=jbuild_mfl bash learner/launch_arm.sh 40088 oplc_ftR_l0003_live_s1f 0-21 /workspace/venvf16/bin/python scratchpad/gauntlet/L74/plan1026/opp/learner/opp_learner_calib_live.yaml beta0=0.003 beta_min=0.003 beta_max=0.003 seed=1 --resume`
+- RUNNING (mine, 2026-10-31 ~12:20 UTC), all FAST LOOP, D3 loops ON THE PODS (pod_d3_loop.sh; two laptop WMI loops died silently):
+  - ARM 3 pod A `oplc_ftR_l0003_live_lb` = live recipe at seed 1 (paired with s1f) + LARGE-BATCH (opp_learner_calib_live_lb.yaml:
+    minibatch 16384 = the whole update, micro_batch 256) + lr 1.4e-4 from the equal-KL probe (lb_probe.sh, fresh Adam, update 0,
+    same batch: lr 2e-4 -> step 1 KL .0228 / update .0385; 5e-4 -> step 1 .128 (stopped); 1.4e-4 -> step 1 .0114 / update .0193;
+    base mb-256 lr 3e-5 update 0 = .0094). Batch + lr = ONE recipe change. CPUs 0-21, PIDs 9509 -> 9512 -> 9513 (stop: kill
+    9513, then its producers: `pgrep -P 9513` captured first -- killed fast loops leave orphaned producers holding the GPU).
+    Resume: `HOST=213.192.2.118 TREE=/workspace/mfl/cbm JB=jbuild_mfl bash learner/launch_arm.sh 40088 oplc_ftR_l0003_live_lb 0-21 /workspace/venvf16/bin/python scratchpad/gauntlet/L74/plan1026/opp/learner/opp_learner_calib_live_lb.yaml beta0=0.003 beta_min=0.003 beta_max=0.003 seed=1 lr=1.4e-4 --resume`
+    D3: pod A PID 10485 `pod_d3_loop.sh oplc_ftR_l0003_live_lb /workspace/mfl/cbm /workspace/oplm/cbe 22-30 8 0040..0400`, log
+    `/workspace/oplm/d3/oplc_ftR_l0003_live_lb.d3.log` (~2 h per block at 8 workers).
+  - ARM 2 pod B `oplc_ftR_l0003_live_gae` (gae + pre-fit critic; details below). D3: pod B PID 9869 (same loop, 22-30, 8 workers),
+    log `/workspace/oplm/d3/oplc_ftR_l0003_live_gae.d3.log`.
+  - ARM 4 33903 `oplc_ftR_l0003_d3env` (PUSH-70 item A: D3 conditions; opp_learner_calib_live_d3env.yaml, seed 0, smoke PASS:
+    "895 census decks"). Started by `/workspace/opppush/switch_arm4.sh switch` (PID 1612451, log /workspace/oplm/logs/switch_arm4.out):
+    waits for oplc_ftR_l0003_live_u0120.pt, then stops the seed-0 live run (fastloop 1602464 + its children captured first) and
+    launches arm 4 on CPUs 240-255,180-185 + GPU (log /workspace/oplm/logs/oplc_ftR_l0003_d3env.out, ckpts
+    /workspace/mfl/cbopp/icebow/data/bench/rl_royale/oplc_ftR_l0003_d3env/). D3: 33903 PID 1612691 (`pod_d3_loop.sh ...
+    /workspace/mfl/cbopp /workspace/opp/cb 32-145 28`), log `/workspace/oplm/d3/oplc_ftR_l0003_d3env.d3.log`.
+    The lead's laptop D3 loop for oplc_ftR_l0003_live will wait forever after u120 (that run stops): the lead stops it.
+  - Quick cards: run by hand at milestones (laptop, card.py --no-c --no-d on rows fetched from /workspace/oplm/d3/rows/NAME).
+- STOPPED: s1f at u225 (11:25 UTC) for arm 3; the seed-0 live run at u120 (automatic, for arm 4).
+- Seed-0 live run history (for the record): moved from production at u85 (10:22 UTC): production stopped by PID 81255 after u84's
+  latest.pt, its 20 orphaned actors 81286-81305 stopped by exact PID, fast-loop resume accepted ("changed config n_actors 20 -> 1").
+  Run dirs are REAL in /workspace/mfl/cbopp with cb2's old paths as symlinks to them (rl_royale refuses to write through a link
+  that leaves its tree: the first resume crashed at the u85 save, nothing written). launch_arm.sh truncated its log (u0-u84 rows
+  stay in train_log.jsonl). u85 on the fast loop: 214 + 25 s vs production 1,114 + 26 s.
   - Pod B `oplc_ftR_l0003_live_gae` = ARM 2 (lever 3): opp_learner_calib_live_gae.yaml, seed 0, init `/workspace/oplm/opp_ftR_vfit12.pt`
     (sha 47afe8cc) = ftR with a PRE-FIT value head: run gae_vfit1 (12 critic-only updates at lr 1e-3, vf_trunk_grad false;
     ev .02 -> .38-.47, V 0 -> -0.77, advantage mean -0.45 -> 0.00); same_policy.py: 220 of 222 tensors identical to ftR (max |d|
@@ -41,20 +52,12 @@ at u0; 33903's is LF, built with `git -c core.autocrlf=false archive`, needed fo
     `/workspace/oplm/logs/oplc_ftR_l0003_live_gae.out`. Resume: `HOST=213.192.2.110 TREE=/workspace/mfl/cbm JB=jbuild_mfl bash learner/launch_arm.sh 40008 oplc_ftR_l0003_live_gae 0-21 /workspace/venvf16/bin/python scratchpad/gauntlet/L74/plan1026/opp/learner/opp_learner_calib_live_gae.yaml beta0=0.003 beta_min=0.003 beta_max=0.003 init=/workspace/oplm/opp_ftR_vfit12.pt --resume`
     Why the pre-fit (a): the first gae smoke (gae_smoke2, warm-up 1, lr 3e-5) left V at +-0.002, ev .02-.05 and advantages
     UNCENTERED (mean -0.36 to -0.55: the opponent loses ~85%), which would push every taken action down -- not launched as is.
-  - Laptop D3 loops (WMI; copies of arm_d3_card.sh in my scratchpad dir `C:/Users/benpe/AppData/Local/Temp/claude/C--Users-benpe-ClashBot/5a62561c-4ecc-475a-8651-5d396102522c/scratchpad/`),
-    every eval on 33903 (CPUs free since the gate's BASE_DONE 10-30 19:49), each followed by the v6 quick card:
-    s1f a = PID 76528 (`arm_d3_s1f_a.sh`, CPUs 32-88, 28 workers, u0040 0120 0200 0280 0360, log `.foreman/scratch/opp_push/d3_s1f_a.log`);
-    s1f b = PID 108312 (`arm_d3_s1f_b.sh`, CPUs 89-145, u0080 0160 0240 0320 0400, `d3_s1f_b.log`);
-    gae = PID 26324 (`arm_d3_gae.sh`, CPUs 0-31, u0040 .. 0400, `d3_gae.log`). Env per loop: HOST=<arm pod> EHOST=157.157.221.29
-    SROOT=/workspace/mfl/cbm. Stop: touch STOP_ARM_D3 in that dir (stops all three) or Stop-Process PID.
-    (The first s1f loop, PID 21612, waited on cb2's path while the run wrote to the fast tree, then vanished with an empty log: a
-    D3 gap of ~12 h on s1f; fixed by SROOT.)
 - Done on pod B: style S0b B-HF run (bhf_pod.sh ftR, 3,741 of 3,761 games); E1.
 - E1 (a): pod B (EPYC 7763) replayed oplc_ftR_l0003_s1_u0040's D3 block: 390 / 480, game-identical to 33903's (digest 9deb687d).
 - LEAD 10-30 ~22:10 UTC: arm 2 goes on POD B's GPU (fast loop), started only AFTER the style B-HF run finishes (~00:30 UTC; never
   overlap them on pod B's 31 CPUs); its lever = the u40 read (gae + critic warm-up if training win is within ~3 pp of D3, else
   lever 4). Re-imitation plan REPLACED by the closed-loop diagnostic (calibration / sealed blocks stay untouched).
-- RUN TYPES: oplc_ftR_l0003_live = PRODUCTION on cb2 (33903); oplc_ftR_l0003_live_s1f = FAST LOOP on origin/main (pod A).
+- RUN TYPES: oplc_ftR_l0003_live = PRODUCTION on cb2 u0-u84, FAST LOOP (cbopp) u85-u120; every other run = FAST LOOP.
 - Exactness (a): E2 production on pod A, seed 0, u0: W/L 28/228 and w16_batch_u0000.json sha 32a2ae21 = 33903's live run
   (bit-identical; roll 649 s vs 855 s). E3 fast loop (origin/main tree) seed 0: u0 W/L 28/228, rows 6,555, KL / clip identical;
   per-field batch shas: 47 of 50 fields identical, only lp_card / lp_cell / lp_old differ (GPU vs CPU forward, ~1e-6 per
@@ -86,6 +89,28 @@ at u0; 33903's is LF, built with `git -c core.autocrlf=false archive`, needed fo
    peak 8.5 GB: one arm per 24 GB card, `GPU=1` for a second card, or two per card with `ALLOC=expandable_segments:True` (b));
    D3 per arm: a scratch COPY of `arm_d3_card.sh` (new name each) `RUN NP NP CPUS 30 0040 0080 ...`, started by WMI on the laptop.
    Fast loop (after FASTLOOP-FIX passes): copy FASTLOOP-FIX's loop tree too (not in boot_opp_pod.sh yet).
+
+## PUSH-70 plan (owner 10-31): opponent win 70% (CLXIII 30%) at B-live RMS <= .20 -- ranked by evidence, then cost
+Where we stand (a): every RL recipe so far tops out at D3 opponent win ~22% with single-block spikes to ~27% (G 26.7% u160, s1f
+26.9% u160); the strength it finds is deep pushing (pocket_share +.99, our_half +.73 at s1f u80) with NO siege gain (lock .71-.75
+vs live .47). 70% is ~3x today's level; no single lever below has evidence of that size, so the plan stacks them.
+Context (b): live humans beat live CLXIII far more often than any SIM opponent does (ftR 11%, best arm ~27%), and SIM CLXIII plays
+17% fewer cards than live (S0c) -- part of the strength gap may be the SIM environment too; RECON-7 (pace parity) lands -> re-score
+ftR / G u160 / s1f u160 strength AND style on the parity build before reading any arm against 70%.
+
+| # | item | evidence | expected effect | how style is protected | cost | status |
+|---|---|---|---|---|---|---|
+| A | train under D3's conditions: live census decks (decks_live_eval, 895 decks) + CLXIII Log 15 | (a) the train-vs-D3 gap reopens to +10 pp by u200 (s1f train .319, D3 .219) although the partner plays D3's stack | D3 -> the training level (~+5-10 pp, b) | style-neutral (no objective change) | config; smoke PASS | **ARM 4 (33903), starts at the seed-0 run's u120** |
+| B | large-batch PPO (minibatch = whole batch, micro 256, lr 1.4e-4 by equal-KL probe) | (a) for OUR model: pilot2_L learned (+6.9 pp) where mb-256 drifted (-15 pp); opponent: s1f training plateaus at ~.30 after u100 | faster / cleaner training per update (b) | same pull (beta .003) | running | ARM 3 (pod A) |
+| C | gae + pre-fit critic (win-only reward) | (b) noise-dominated update (no critic; mixed groups .44-.66) | lower-variance advantages (b) | same pull; vf_trunk_grad false | running | ARM 2 (pod B) |
+| D | decode-time search over the policy's OWN top-k (fork the engine per decision, k ~4 candidates, short rollouts with the policy, pick by tower-HP / P_hat) | (b) search is the classic way to add strength without training drift; fork machinery exists (cf_credit / SIM forks in the fast loop) | the largest potential toward 70% (b, untested) | every played action is one the imitation model already rates top-k, at the timing head's own times (timing untouched); measure the drift on the quick card | HIGH: a new opponent decode path in gap.py + ~k x the D3 cost; first an eval-only prototype on ftR | design next |
+| E | style-constrained RL: a stronger pull on the CELL head only (placement), card head free | (a) the RL style cost is placement (pocket / our_half / troop_depth / own_half carry RMS .30 -> .41); (a) one beta for card+cell did not hold placement (our_half u80 .19 / .32 / .26 at beta .1 / .03 / .003) | keeps placement near ftR while card choice learns; strength may fall if it lives in placement | the cell pull IS the protection | MEDIUM: opt-in trainer key (beta per head) + smoke | after A / B / C read |
+| F | league / population partners (CLXIII + CLXV LARGEBATCH + pilot2 checkpoints, each on its live stack) | (b) the opponent overfits its training conditions (A's gap); a varied partner set generalises -- but D3 scores vs CLXIII only, so a population dilutes the target | robustness for the pilot's use; D3 effect unclear | neutral | config if those checkpoints run the live stack | after A |
+| G | per-stat moment matching on the 25 v6 stats as a reward term | (b) | holds style directly | it is the protection | reward change = owner; per-match stats are noisy | not proposed now |
+| H | timing head in PPO | (a) arm D null on D3 | small | risk to timing stats | - | low |
+| I | bigger model / more human data | (c) unchanged by the new goal: capacity not binding (training still rises), 3 data reweightings flat on strength, and ftR's own style is already RMS .20 on B-HF | none | - | - | dropped from the plan (not discarded: revisit if A-E stall with training flat) |
+
+Read-out: arms 2 / 3 / 4 at u40 / u80 / u160 (D3 + quick card + training-vs-D3 gap); keep the best one, stack the next item on it.
 
 ## Lever list (ranked by evidence; each = one change; how it keeps human-likeness)
 Reference (a): G (beta .003) D3 opponent win u40-u240 16.2 / 23.8 / 23.1 / 26.7 / 21.9 (288 games) / 21.2%: u160 is its best of
@@ -162,6 +187,14 @@ D3 = CLXIII wins / 480 (opponent win %); training win vs the live partner over t
 | | u80 | 372 | 22.5% | .262 (u70-89) | +3.7 pp | .41 | .73 / .01 / .64 |
 | G (sampled partner, ref) | u40 / u80 | 402 / 366 | 16.3 / 23.8% | - | (+4 to +8 at u40 in that regime) | - / .28 | - / .71 / .58 |
 
+| oplc_ftR_l0003_live_s1f | u120 | 371 | 22.7% | - | - | .30 | .74 / .01 / .65 |
+| | u160 | 351 | 26.9% | - | - | .29 | .71 / .01 / .59 |
+| | u200 | 375 | 21.9% | .319 (u180-199) | +10.0 pp | .35 | .71 / .01 / .60 |
+- s1f STOPPED at u225 (11:25 UTC, kill 5484 + its 2 orphaned producers 5557 / 5558 by exact PID; its 2 D3 loops stopped) for
+  arm 3. Its D3 series 18.1 / 22.5 / 22.7 / 26.9 / 21.9% = G's shape (G 16.3 / 23.8 / 23.1 / 26.7 / 21.9 / 21.2%): a u160 peak
+  equal to G's best, then back to ~22%; u160 is the first live-partner block at G's best (26.9 vs 26.7%) and its style is the
+  ftR level (RMS .29). At u200 the training-vs-D3 gap is back to +10 pp (training .319): the transfer gap REOPENS with
+  training, as in the sampled-partner regime, only later.
 - Transfer: fixed at u40 (pooled gap +0.8 pp) and much better than the sampled-partner regime (old fit predicts D3 18.5% at
   training .258; measured 22.1%), but a +3.7 pp gap reopens by u80 in BOTH seeds (D3 SE ~1.9 pp per block): on the edge of the
   ~3 pp rule. D3 u40 -> u80: seed 0 flat (+0.2), seed 1 +4.4.
