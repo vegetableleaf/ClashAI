@@ -255,6 +255,8 @@ def t_r5():
     ok(recon.cycle_ok(full_plan, 0), 'the rotation is a legal cycle')
     cut = plan_of([dict(c) for c in cmds if c['run'] != zap2], deal0=list(range(8)))
     ok(not recon.cycle_ok(cut, 0), 'with the Zap deleted the sequence fits no deal')
+    ok(recon.ghostable(tab, 'Zap') and not any(recon.ghostable(tab, c) for c in ('Log', 'Rage', 'RoyalDelivery', 'Fireball', 'Mirror', 'Poison', 'Heal', 'Rocket', 'Tornado')),
+       'only Zap is ghostable (every other spell leaves an object the reader lists)')
     towers = [[0, 9000, 3000, -1, 7728, 12], [0, 3500, 6500, -1, 4858, 13], [0, 14500, 6500, -1, 4858, 13],
               [1, 9000, 29000, -1, 7728, 12], [1, 3500, 25500, -1, 4858, 13], [1, 14500, 25500, -1, 4858, 13]]
     frames = {t: {'t': t, 'E': towers + [[1, 9000, 20000, 0, 800, 14]], 'P': [], 'A': [], 'el': 50000, 'hand': None} for t in range(100, 4000, 2)}

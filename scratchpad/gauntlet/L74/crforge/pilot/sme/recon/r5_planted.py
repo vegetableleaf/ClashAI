@@ -48,7 +48,7 @@ def main():
         seq = [p['deck_index'] for p in pl]
         if not cyc.fits(seq):
             continue
-        spells = [i for i, c in enumerate(deck) if c and tab.is_spell(c)]
+        spells = [i for i, c in enumerate(deck) if c and recon.ghostable(tab, c)]
         for j, p in enumerate(pl):
             if p['deck_index'] not in spells:
                 continue

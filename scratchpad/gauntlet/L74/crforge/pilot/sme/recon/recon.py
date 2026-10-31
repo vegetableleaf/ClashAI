@@ -635,6 +635,13 @@ CYC_CAP = int(os.environ.get('RECON_CYC_CAP', '24'))   # engine-scored repairs p
 GHOST_MARGIN = 1000       # a no-effect spell lands this far (plus its radius) from every listed body / tower
 
 
+def ghostable(tab, card):
+    """A card whose unseen play can be modelled as a no-effect ghost: the RECON visibility rule (a spell on the board <= VIS_MAX ticks, no
+    flight, not a roller, nothing summoned) = Zap. Every other spell leaves an area, a projectile or units the reader would list."""
+    life = tab.area_life_ticks(card)
+    return tab.is_spell(card) and not tab.projectile(card) and life is not None and life <= VIS_MAX
+
+
 def seq_of(plan, side):
     """[(run, command index)] of the side's play commands whose card is a deck card, in plays_of's order."""
     deck = plan['decks'][side]
@@ -705,7 +712,7 @@ def cycle_repairs(plan, frames, side, tab, e0, cap=CYC_CAP, end=None):
     seq = [deck.index(plan['cmds'][k]['card']) for _, k in sq]
     if cyc.fits(seq):
         return []
-    spells = [i for i, c in enumerate(deck) if c and tab.is_spell(c)]
+    spells = [i for i, c in enumerate(deck) if c and ghostable(tab, c)]
     mir = deck.index('Mirror') if 'Mirror' in deck else None
     cost, reps = cyc.repairs(seq, ins_cards=spells, mirror=mir, allow_drop=True, cap=CYC_POOL, max_cost=CYC_MAX_COST)
     if cost is None:
@@ -783,7 +790,8 @@ def collections_defaultdict_list():
 
 # ------------------------------------------------------------------ RECON-5: our own taps (the bot's action log) restore missed own plays
 TAP_MATCH = 120           # a tap and an extracted play of the same card within this many ticks of tap + own_delay are one play
-TAP_WIN = (-2, 3)         # an own_tap play's tick is tap + own_delay + {-2..3} on 12,543 matched plays (point = the tap's point on all)
+TAP_WIN = (-3, 25)        # matched own_tap plays run at tap + own_delay + {-2..3} (12,543 plays, point = the tap's point on all); the UNMATCHED taps ran up to ~20 later
+                          # (RECON.md 12.4: +18, +18, +7 where the engine confirmed the run), so the window is wide and the engine picks the tick
 
 
 def unmatched_taps(rec, plan, me):
