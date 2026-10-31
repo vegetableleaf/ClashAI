@@ -15,7 +15,7 @@ export PYTHONPATH=$W/cb ROYALE_RUNTIME=fin16-linux ROYALE_ENGINE=crforge ROYALE_
   MKL_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1 RL_BATCH_SHA=1 CRFORGE_BARREL_DECOY_SIM=1 CRFORGE_XMX=1g \
   CRFORGE_LIB=/workspace/crforge_main/5e8089a4/plain/lib CRFORGE_TABLES=/workspace/crforge_cache/tables/16.635.3 \
   CRFORGE_FACADE_BUILD=/workspace/pgate/facade JAVA_TOOL_OPTIONS="-XX:+UseSerialGC -XX:ActiveProcessorCount=1" \
-  CF_DUMP=$W/logs/$RUN.jsonl
+  CF_DUMP=${CF_DUMP_DIR:-$W/logs}/$RUN.jsonl
 CFP=${CFP:-"{iw_pressed: 1.0, iw_press: 0.03, rocket_played: 1.0, rocket: 0.01, wincon: 0.05, rocket_tornado: 0.3, rocket_cycle: 0.5, tornado_redirect: 0.004, xbow_after_fail: 0.05, siege: 0.0, xbow: 0.0, idle_full: 0.0, log_bait: 0.0, random: 0.0}"}
 MAXU=${MAXU:-2}
 setsid nohup taskset -c $CPUS timeout ${TIMEOUT_S:-28800} /workspace/venvf16/bin/python -u -m pipeline.rl_royale --run $RUN \

@@ -3,13 +3,14 @@
 Owner ask 10-31: the model must learn to use Rocket and the Hero Ice Wizard ability at the right moments. Lead's diagnosis to
 test: the SIM prices both as losses. Labels: (a) measured (number + source), (b) plausible, untested, (c) contradicted.
 
-## STATUS (keep current) -- 2026-10-31 ~15:25 UTC: DONE_WITH_CONCERNS, nothing of mine running
-- Step 0 DONE (section 1). Step 1 DONE: spa1 (CLXIII's head, sections 3.1 / 4), spa2 (CLXV's head, section 3.2). Step 2: Rocket
-  landing artifact found + fixed (section 2); IW: no loss at CLXIII's own press moments, but an added press is NOT priced positive
-  even on > 6-elixir pushes for CLXV (section 3.2): candidate wrong sign vs the doctrine, causes listed, not yet isolated.
-  Step 3: IW triggers built, smoke-tested in a real policy update (33308 GPU 1, section 5); the opt-in config
-  cf/simprice_train.yaml is BLOCKED for the press-restoration goal (on CLXV it would push presses DOWN further) until 3.2's
-  valuable-class sign is resolved. Rocket family stays OFF (no positive class except the finishing Rocket).
+## STATUS (keep current) -- 2026-10-31 ~17:55 UTC: round 2 DONE_WITH_CONCERNS, nothing of mine running
+- ROUND 2 (coordinator 10-31, section 8): match-end IW audit on CLXV (490271e5) + p2init, valuable class (>= 6 elixir in the
+  freeze target); opt-in cf_iw_block_ticks (no freeze for 200 ticks in the no-press copy) + cf_iw_min_elixir (c95368e, sp_smoke7
+  SMOKE PASS). Result: at match end the press is ~0 for BOTH heads (CLXV +0.009 [-0.055, +0.082] n 474; p2init -0.017, clean
+  no-freeze contrast -0.028 [-0.080, +0.023] n 307); CLXV's 45-s critic price is negative (-0.038 all / -0.050 held) and sits
+  +0.054 [-0.011, +0.123] below its own match end. Stop rule NOT reached (half-width 0.068 / 0.059; the disk-full crash lost one
+  96-match run).
+- Round 1 (sections 1-7): live counts; Rocket landing artifact (cf_alt_afford); IW and Rocket audits; config BLOCKED.
 - Real smokes: sp_smoke6 (33903, rl_royale --smoke, pilot2.yaml + every SIMPRICE key, critic warm-up) SMOKE PASS 14:47 UTC;
   sp_train2 (33308 GPU 1, simprice_train.yaml, critic_warmup_updates 1 -> u1 = a policy step with the iw alternative rows in the
   ability loss) SMOKE PASS 15:10 UTC. Pod tests pipeline/tests/test_cf_credit.py 43 pass / 3 skip; laptop 38 pass / 8 skip.
@@ -23,6 +24,7 @@ test: the SIM prices both as losses. Labels: (a) measured (number + source), (b)
   /workspace/simprice/cb = /workspace/loop/cb hard links + HEAD pipeline + the edits. Logs /workspace/simprice/logs/ (both pods).
   Data on the laptop (gitignored): cf/data/spa1_u0.jsonl (128 matches), cf/data/spa2_u0.jsonl (127).
 - Restart an audit: `ssh -p 33903 ... 'cd /workspace/simprice && MAXU=1 ./simprice_run.sh RUN 166-169,194-201 10 [init=...]'`
+  (round 2: CF_DUMP_DIR=/dev/shm/simprice puts the dump in RAM -- 33903 disk filled 10-31; CLXV init = cb/icebow/data/bench/rl_royale/b0/clxv_u34.pt 490271e5)
   (MAXU 1 + kill after logs/RUN.jsonl appears: the CPU learner's critic step takes > 25 min and blocks the actors; E / G / CFP
   env overrides; memwatch guard 118 GB). Tables: `python -B simprice_audit.py data/RUN.jsonl` (IW), `python -B p4_audit.py
   data/RUN.jsonl` (Rocket family). Stop: exact PIDs (the rl_royale --run RUN process whose cwd is /workspace/simprice/cb + its
@@ -175,11 +177,58 @@ SIM init screen of p2init refused/m 1.248 (702 matches) vs live 0.275 (421 match
 (00ca929: 11.6% -> 1.3% of attempts). Not an rl_royale / cf key here yet; the audits above ran without it (cf_alt_afford keeps
 the forced alternatives clean, the continuations still see the strict gate).
 
+## 8. Round 2: the IW press sign at match end, valuable moments, CLXV vs p2init, with / without a no-freeze window (a)
+Setup: pod 33903, crforge 5e8089a4 plain + tables 16.635.3, pilot2.yaml pool (deviation: the league "init" opponent = the audited
+policy), K 2 CRN continuations, BOTH run to the match end (cf_horizon_by iw_* 7000; q = the discounted match result, no critic),
+critic Q also read on the same forks at 300 / 900 ticks (cf_horizon_sweep), iw triggers p 1.0 at every decision whose freeze
+target holds >= 6 elixir of troops (cf_iw_min_elixir 6; the class the doctrine names; the "nothing to freeze" / small-target
+classes are in sections 3.1 / 3.2: negative at 45 s, ~0 to negative at the end). dQ = Q(press) - Q(no press), +-1 = a win,
+90% match-cluster CI (simprice_audit.py; data gitignored: cf/data/spb_clxv2.jsonl, spb_clxv3.jsonl, spb_p2i.jsonl,
+spc_p2i_blk.jsonl).
+- Window (engine tables 16.635.3): the press's cube IceWizardHero_IceCube lives <= 5,000 ms (cube_lifetime_timer; killed 2 s
+  after no target is left), freeze aura radius 2.5 t linked to the cube, then IceWizardHero_SlowBuff (-30%); with the 26-tick
+  input delay and the 400 ms cube deploy delay one press acts for ~26 + 8 + 100 + ~50 ticks -> block 200 ticks (10 s). Check:
+  hold-branch first accepted press within 200 ticks 0 / 118 and 0 / 496 forks with the block (66 / 118, 102 / 496 without).
+
+| policy, run | samples / matches | match end, all | own presses (iw_pressed) | held moments (iw_press) | > 6 elixir | win condition | critic 900 / 300 (all) |
+|---|---|---|---|---|---|---|---|
+| CLXV (spb_clxv2 + 3) | 474 / 87 | **+0.009 [-0.055, +0.082]** | +0.041 [-0.075, +0.170] (26) | +0.008 [-0.061, +0.085] (448) | +0.032 [-0.049, +0.111] (337) | -0.025 [-0.105, +0.059] (291) | -0.038 [-0.074, -0.000] / -0.035 [-0.050, -0.020] |
+| p2init, no block (spb_p2i) | 307 / 65 | -0.017 [-0.077, +0.040] | +0.097 [-0.006, +0.208] (59) | -0.044 [-0.110, +0.027] (248) | -0.009 [-0.081, +0.065] (215) | -0.016 [-0.076, +0.045] (234) | -0.023 [-0.052, +0.008] / -0.016 [-0.029, -0.003] |
+| p2init, block 200 (spc_p2i_blk) | 307 / 65 (same roots) | **-0.028 [-0.080, +0.023]** | +0.071 [-0.041, +0.181] (59) | -0.051 [-0.114, +0.014] (248) | -0.033 [-0.097, +0.034] (215) | -0.019 [-0.072, +0.036] (234) | -0.031 [-0.064, +0.002] / -0.015 [-0.030, +0.001] |
+
+- Paired (identical 307 roots, the two p2init runs): no-block - block +0.011 [-0.013, +0.034]: denying the hold branch its later
+  press does not hurt it, so "press now vs a moment later" and "freeze vs no freeze for 10 s" price the same (~0) in the SIM.
+- Stop rule (valuable-class CI half-width <= 0.05): NOT reached. CLXV 0.068 at n 474 / 87 matches, p2init 0.059 at n 307 / 65.
+  Why: match-end outcomes are +-1 per continuation (reliability SNR of the end value 0.55 CLXV iw_press, ~0.1 p2init), the 3-h
+  budget, and the first CLXV run (96 matches, spb_clxv) died writing its dump when 33903's disk filled at ~16:30 UTC. About 1.9x
+  (CLXV) / 1.4x (p2init) more samples would reach 0.05 (~2 more 48-match runs on 14 actors, ~1 h).
+- What the freeze does on the board (press - no press, cf_diag snapshots, princess units: 1.0 = one princess tower, 4,858 HP):
+  own princess HP lost at 15 s: p2init block -0.021 [-0.036, -0.006] (~100 HP saved), CLXV -0.030 [-0.047, -0.016] (clxv2) /
+  -0.012 (clxv3); by 45 s the saving is gone (-0.003 / +0.000 / -0.014) and the FOE loses less (-0.029 p2init block, -0.055 CLXV
+  clxv2 at 45 s): the 2 elixir comes out of our offence. The freeze works mechanically; its net value at these moments is ~0.
+
+### 8.1 Which cause the data points to (round-2 question 3)
+- (a) critic mis-valuation: YES for CLXV's 45-s price, NO for p2init. On the same CLXV samples the critic reads -0.038 (900) /
+  -0.035 (300) where the match end reads +0.009; paired end - critic900 +0.045 [-0.015, +0.109] (all), +0.054 [-0.011, +0.123]
+  (held moments): the critic under-prices CLXV's presses by ~0.05 (the 90% CI touches 0 at its lower end). p2init: end -
+  critic900 +0.011 [-0.049, +0.069] (critic consistent). Plainly: CLXV's negative press price at 45 s (round 1: -0.065) is mostly
+  its critic; at the match end the press is NOT positive either, it is ~0. The critic explains "negative", not a hidden "positive".
+- (c) CLXV continuation not using the freeze: contradicted as the cause of a negative price. At held valuable moments CLXV's
+  match-end price (+0.008) is no worse than p2init's (-0.044, -0.051 with the block).
+- (b) engine: not shown wrong, not cleared. The freeze saves ~100-150 HP over 15 s on >= 6-elixir pushes and costs offence
+  later; tables match live where checked (cost 2.0, -100% freeze, -30% slow, cube <= 5 s), SME divergences on IW cube rows 3 / 82.
+  The size of the saving has no live reference yet; that comparison is the one remaining check before calling the SIM's ~0
+  "right" or "a wrong sign".
+- For training: fork credit for the press read at 300-900 ticks would carry CLXV's critic bias (pushes presses down); read at the
+  match end it is ~0 for both heads (no push either way; end SNR 0.55 / ~0.1 is too low for credit). Neither restores presses.
+  The decision stays the lead's / owner's: the SIM does not price the press as a loss at match end, but it does not reward it.
+
 ## 7. Next steps (in order)
-1. IW valuable-class sign (3.2): run iw_press only (p 0.2) on CLXV with cf_audit_p 1.0 (terminal for every sample) and on p2init
-   with K 3: does a press with > 6 elixir / a win condition in the freeze turn positive at the end? Then test causes 1-3.
-2. Hold-window variant (b, not built): an iw_hold that also blocks re-presses for N ticks in the fork (opt-in key; one inert line
-   in e1_eval.ability_decide) = "freeze vs no freeze at all" at CLXIII's press moments (today's iw_pressed is "now vs a moment later").
+1. DONE in round 2 (section 8). Remaining: ~2 more 48-match runs per policy for the 0.05 half-width; a live reference for the
+   freeze's HP saving (live reader buffs IceWizardHero_FreezeBuff on enemy units + their tower damage over 15 s, vs the SIM's
+   ~100-150 HP): the one check that separates "SIM right (press ~ 0)" from "engine under-powers the freeze".
+2. DONE (cf_iw_block_ticks, c95368e). For CLXV the critic bias (8.1) is the training-side item: a critic refit on states after
+   presses, or match-end returns for the iw triggers once their SNR allows.
 3. Rocket: re-run the audit with RECON-7's tap_hold in the continuations once it is a training key, and with an opponent
    calibrated on X-Bow defence (OPP-PUSH); the finishing-Rocket class (+0.14, n 7) needs ~100 samples to be a usable signal.
 4. Production: Java forks (JAVA_FORKS.md) or cf rows under micro_batch before any fork credit can train at pilot2 scale.
