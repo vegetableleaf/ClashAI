@@ -154,10 +154,13 @@ def main():
     ab = abil_summary(prod, fast) if any("ability_presses" in r for r in prod) else None
     out = {"ability": ab, "heroiw_press": __import__("os").environ.get("ROYALE_HEROIW_PRESS"), "sides": out_sides, "msg": a.msg, "device": a.device, "in_flight": a.in_flight, "fast_matches": a.matches, "matches": len(rep),
            "identical_matches": sum(r["identical"] for r in rep), "first_div_keys": keys_bad,
-           "lp_maxdiff_before_divergence": lp_max, "server": a.server, "v_old": vchk, "memory": mchk, "fast_stats": st, "fast_skipped": skipped, "matches_detail": rep}
+           "lp_maxdiff_before_divergence": lp_max, "server": a.server, "v_old": vchk, "memory": mchk, "fast_stats": st, "fast_skipped": skipped, "matches_detail": rep,
+           # PILOT2: which traj keys the row check covered (a key one side lacks is skipped, e.g. tgt / tgt_idx)
+           "traj_keys": {"both": sorted(set(prod[0]["traj"]) & set(fast[0]["traj"])) if rep else [],
+                         "one_side": sorted(set(prod[0]["traj"]) ^ set(fast[0]["traj"])) if rep else []}}
     Path(a.out).write_text(json.dumps(out, indent=1, default=str))
     print(json.dumps({k: out[k] for k in ("matches", "identical_matches", "first_div_keys", "lp_maxdiff_before_divergence",
-                                          "v_old", "memory", "ability")}))
+                                          "v_old", "memory", "ability", "traj_keys")}))
 
 
 def norm(x):
