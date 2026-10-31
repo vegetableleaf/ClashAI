@@ -3,24 +3,31 @@
 Owner ask 10-31: the model must learn to use Rocket and the Hero Ice Wizard ability at the right moments. Lead's diagnosis to
 test: the SIM prices both as losses. Labels: (a) measured (number + source), (b) plausible, untested, (c) contradicted.
 
-## STATUS (keep current)
-- Step 0 DONE (section 1). Step 1: spa1 DONE (CLXIII's head, sections 3.1 / 4); spa2 RUNNING (CLXV's head). Step 3: opt-in
-  config cf/simprice_train.yaml written; training smoke on 33308 GPU 1 pending.
-- Real smoke: sp_smoke6 (rl_royale --smoke, pilot2.yaml + every SIMPRICE key on, iw triggers p 1.0 / 0.2) SMOKE PASS 14:47 UTC;
-  pod tests pipeline/tests/test_cf_credit.py 43 pass / 3 skip (engine tests included); laptop 38 pass / 8 skip.
-- Code (committed): pipeline/cf_credit.py (opt-in triggers iw_pressed / iw_press, opt-in
+## STATUS (keep current) -- 2026-10-31 ~15:25 UTC: DONE_WITH_CONCERNS, nothing of mine running
+- Step 0 DONE (section 1). Step 1 DONE: spa1 (CLXIII's head, sections 3.1 / 4), spa2 (CLXV's head, section 3.2). Step 2: Rocket
+  landing artifact found + fixed (section 2); IW: no loss at CLXIII's own press moments, but an added press is NOT priced positive
+  even on > 6-elixir pushes for CLXV (section 3.2): candidate wrong sign vs the doctrine, causes listed, not yet isolated.
+  Step 3: IW triggers built, smoke-tested in a real policy update (33308 GPU 1, section 5); the opt-in config
+  cf/simprice_train.yaml is BLOCKED for the press-restoration goal (on CLXV it would push presses DOWN further) until 3.2's
+  valuable-class sign is resolved. Rocket family stays OFF (no positive class except the finishing Rocket).
+- Real smokes: sp_smoke6 (33903, rl_royale --smoke, pilot2.yaml + every SIMPRICE key, critic warm-up) SMOKE PASS 14:47 UTC;
+  sp_train2 (33308 GPU 1, simprice_train.yaml, critic_warmup_updates 1 -> u1 = a policy step with the iw alternative rows in the
+  ability loss) SMOKE PASS 15:10 UTC. Pod tests pipeline/tests/test_cf_credit.py 43 pass / 3 skip; laptop 38 pass / 8 skip.
+- Code (dfe4b33): pipeline/cf_credit.py (opt-in triggers iw_pressed / iw_press, opt-in
   cf_alt_afford, cf_diag refusal record), pipeline/e1_eval.py (one stored attribute, _ab_cmd), pipeline/rl_royale.py (cf_append:
   an iw alternative row carries the opposite press + the decision's press weight; inert without the iw triggers),
   pipeline/tests/test_cf_credit.py (TestIwPress, TestAltAfford). Tools: simprice_live.py, simprice_audit.py, simprice_run.sh,
-  p4_audit.py (+ princess_hp split).
-- Pod 33903 tree /workspace/simprice/cb = HEAD d77316e code + the edits above (+ artifacts: pgate/cb hard links, p2init
-  cdde779a, G u0160 9f8470a7, gen_dataset_v32_fv5_memory_v1 a0ecce38). My CPUs 162-169, 194-201. Logs /workspace/simprice/logs/.
-- Running: spa2 (CPUs 166-169, 194-201, 10 actors, MAXU 1, init pilot2_Lc_u0080 ec4c10f5, seed 2031): kill after its u0 dump.
-- Restart the audit: `ssh -p 33903 ... 'cd /workspace/simprice && ./simprice_run.sh RUN 162-169,194-201 14'` (MAXU / E / CFP env
-  overrides; returns at once; memwatch guard 118 GB). Tables: `python -B simprice_audit.py logs/RUN.jsonl [--from-update 1]`
-  (IW), `python -B p4_audit.py logs/RUN.jsonl --from-update 1` (Rocket family). Stop: exact PIDs (pgrep -n -f "rl_royale --run
-  RUN", then its children).
-- Codex dispatches: none yet.
+  p4_audit.py (+ princess_hp split), simprice_train.yaml.
+- Pod 33903 tree /workspace/simprice/cb = HEAD d77316e code + the edits (+ artifacts: pgate/cb hard links, p2init cdde779a,
+  G u0160 9f8470a7, gen_dataset_v32_fv5_memory_v1 a0ecce38, pilot2_Lc_u0080 ec4c10f5 in rl_royale/b0/). Pod 33308 tree
+  /workspace/simprice/cb = /workspace/loop/cb hard links + HEAD pipeline + the edits. Logs /workspace/simprice/logs/ (both pods).
+  Data on the laptop (gitignored): cf/data/spa1_u0.jsonl (128 matches), cf/data/spa2_u0.jsonl (127).
+- Restart an audit: `ssh -p 33903 ... 'cd /workspace/simprice && MAXU=1 ./simprice_run.sh RUN 166-169,194-201 10 [init=...]'`
+  (MAXU 1 + kill after logs/RUN.jsonl appears: the CPU learner's critic step takes > 25 min and blocks the actors; E / G / CFP
+  env overrides; memwatch guard 118 GB). Tables: `python -B simprice_audit.py data/RUN.jsonl` (IW), `python -B p4_audit.py
+  data/RUN.jsonl` (Rocket family). Stop: exact PIDs (the rl_royale --run RUN process whose cwd is /workspace/simprice/cb + its
+  children). Cost: ~45 min per 128 matches on 10 throttled actors (33903 load 30-140).
+- Codex dispatches: none (the work was diagnosis + design; runs were short and needed live decisions).
 
 ## 1. Step 0: live counts (a; simprice_live.py, live_play_*.jsonl events `confirmed` / `ability` / `ability_confirmed`)
 The lead's grep returned zeros because the play event is `confirmed` {name, intended [x, y]} and the press events are `ability`
@@ -95,8 +102,40 @@ learner's warm-up step took > 25 min, run stopped after the u0 dump). 466 IW sam
   where the head held costs -0.06 (45 s) / -0.26 (end). That is the doctrine's sign (2 elixir for nothing), not a wrong sign.
 - (b) Why pilot2 then lowered presses 1.86 -> 0.48 / match: the GAE gradient pushes down the empty presses (correctly) and nothing
   holds up the useful ones (their GAE / fork value vs pressing a moment later is ~0), so the head's whole P(press) drifts down; the
-  live count (CLXV 0.31 / match) says it went below the useful level. Test: spa2 (CLXV's own head, critic adapted): is a forced
-  press at CLXV's held moments with a valuable freeze target positive? If yes, fork credit (iw_press) corrects the drift.
+  live count (CLXV 0.31 / match) says it went below the useful level. spa2 (3.2) answered the test: on CLXV a forced press at
+  a held moment is NOT positive even with a valuable freeze target, so fork credit as built would not restore presses.
+
+### 3.2 spa2 (127 matches, u0): CLXV's own head (pilot2_Lc_u0080 ec4c10f5, critic adapted over 80 updates) (a)
+Same setup, IW-focused triggers (iw_pressed 1.0, iw_press 0.05). Deviation: the league's "init" opponent is then CLXV-lineage
+itself (pilot2's is p2init). CLXV pressed 31 times in 127 matches (0.24 / match; live 0.31); P(press) < 0.02 at 598 / 625 button
+decisions. Forced press - hold at CLXV's held moments (the hold branch re-presses in only 10% of forks: a clean press vs no press):
+| moment (iw_press, CLXV held) | n | 45 s | terminal (audited) |
+|---|---|---|---|
+| all | 594 | -0.065 [-0.086, -0.045] | +0.005 [-0.109, +0.118] (166) |
+| nothing in the freeze | 291 | -0.053 [-0.083, -0.022] | -0.010 (90) |
+| freeze target 3-6 elixir | 103 | -0.103 [-0.152, -0.053] | +0.342 [+0.088, +0.618] (24) |
+| freeze target > 6 elixir | 80 | -0.046 [-0.107, +0.022] | -0.147 [-0.301, -0.003] (24) |
+| win condition in the freeze | 94 | -0.076 [-0.150, -0.000] | -0.132 [-0.285, +0.002] (26) |
+| cube on my half, target > 3 elixir | 77 | -0.034 [-0.105, +0.042] | -0.005 (25) |
+Horizon sweep 150 / 300 / 450 / 600: -0.046 / -0.040 / -0.041 / -0.049 (all CIs below 0). Reliability SNR 0.75 (900); critic
+slope (within-sample, terminal on horizon) 0.53 +- 0.19 (n 133): BELOW the PLAN band [0.7, 1.3], and the 45-s and terminal reads
+disagree in sign on two classes (3-6 elixir: -0.10 vs +0.34; > 6: -0.05 vs -0.15).
+Reading: (a) on CLXV the SIM prices one more press at its held moments slightly negative at 45 s and ~0 at the match end, with no
+target class robustly positive. Against the doctrine ("press the freeze on a real push") the > 6-elixir / win-condition classes are
+a candidate WRONG SIGN (b): ~0 to negative where a defender would expect positive. Fork credit on CLXV with these triggers would
+push its presses further DOWN, so it must stay off for the press-restoration goal until the cause is found. Candidate causes, in
+the order to test (none measured yet):
+1. critic / horizon: slope 0.53 and sign flips between 45 s and the end -> the critic misvalues post-press states (CLXV rarely
+   presses: those states are off its training distribution). Test: the same samples at a longer audited horizon (cf_audit_p 1.0
+   on iw_press only) or with p2init's critic (spa1: iw_pressed slope 1.11 in band).
+2. continuation: CLXV's policy may not exploit a freeze it would not have pressed (no follow-up into the frozen push). Test:
+   forced press with the p2init continuation on CLXV-like states (swap continuation weights in the fork).
+3. engine: the hero IW cube / freeze in crforge. Tables match live (ManaCost 2 = live's measured 2.0 from the elixir drop;
+   IceWizardHero_FreezeBuff -100% speed / hit speed, then IceWizardHero_SlowBuff -30%); SME: 3 of 82 failing records first
+   diverge on hero IW cube / ability rows (RECON.md 13.1) -> mostly faithful (b). Test: a scenario fork (push of N elixir into
+   our princess, press vs no press) compared with the live reader's freeze durations.
+4. alternative spec: "press now" is the head's cube target; a human presses when the push is in reach of the princess + Tesla.
+   The freeze features say where the cube lands (cube on my half: -0.03 / ~0), so the spec is not obviously wrong (b).
 
 ## 4. Step 1: Rocket audit on the current SIM (spa1 u0, cf_alt_afford on, drift aim, 128 matches; `p4_audit.py`) (a)
 | alternative - the policy's action | n | 45 s |
@@ -114,3 +153,33 @@ did not choose is priced negative in every class except the finishing Rocket; th
 The "lone Golem" (expected -) and "hog-like with Tesla out of cycle" (expected +) do not separate (both -0.14). (b) Open causes
 from s9 (not re-tested here): the opponent's X-Bow defence (SIM lock .73-.78 vs live .47 inflates the displaced X-Bow line the
 Rocket's 6 elixir costs), and the chosen-vs-forced estimand.
+
+## 5. Step 3: fork credit for the IW press in a real training update (a) + what blocks a production run
+- sp_train2 (pod 33308 GPU 1, CPUs 108-111, `rl_royale --smoke --config cf/simprice_train.yaml critic_warmup_updates=1
+  learner_device=cuda`, iw_pressed 1.0 / iw_press 0.3): u0 warm-up, u1 a real policy step (KL g/c/x .0073 / .0004 / .0006,
+  kl_stop at minibatch 6), ability head deciding (856 decisions, l_ab monitor live), cf 50 samples -> 50 alternative rows (one per
+  iw sample: the same card action with the opposite press; its card term cancels the decision row's, its press term carries the
+  fork advantage), reliability SNR 1.16 (iw_press) / 1.02 (iw_pressed) at the 300-tick horizon, fork cost 1.57 fork ticks per
+  match tick (IW triggers only). Resume check incl. ability_head / ability_opt PASS. SMOKE PASS.
+- Config: cf/simprice_train.yaml = pilot2.yaml minus stored_values / mem_row_cache / split_attn / trunk_graph / ppo_decoupled +
+  cf_credit with iw_pressed 1.0, iw_press 0.05, horizon 300 for both, K 2, shrink by batch reliability, cf_alt_afford, Rocket
+  family 0. BLOCKED (section 3.2): do not run it to restore presses before the valuable-class sign is resolved.
+- Production blockers (b, from code): the fast loop (pilot2's trainer) has no forks (JAVA_FORKS.md is a design note), and
+  rl_royale refuses cf rows with micro_batch (the pilot2_L recipe uses micro_batch 256/512) -> today fork credit trains only on
+  the slow Python path.
+
+## 6. Related engine finding (for RECON-7, already being fixed there)
+(a) crforge refuses a play whose elixir is short at the ISSUE tick (+6), live holds the tap ~22 ticks (latency/afford_arrival.txt):
+SIM init screen of p2init refused/m 1.248 (702 matches) vs live 0.275 (421 matches 10-30 / 10-31, 2.5% of plays); in spa1's forks
+"not_enough_elixir" is the dominant refusal (3,291 in 1,756 chosen forks over 45 s). RECON-7 landed the opt-in `tap_hold`
+(00ca929: 11.6% -> 1.3% of attempts). Not an rl_royale / cf key here yet; the audits above ran without it (cf_alt_afford keeps
+the forced alternatives clean, the continuations still see the strict gate).
+
+## 7. Next steps (in order)
+1. IW valuable-class sign (3.2): run iw_press only (p 0.2) on CLXV with cf_audit_p 1.0 (terminal for every sample) and on p2init
+   with K 3: does a press with > 6 elixir / a win condition in the freeze turn positive at the end? Then test causes 1-3.
+2. Hold-window variant (b, not built): an iw_hold that also blocks re-presses for N ticks in the fork (opt-in key; one inert line
+   in e1_eval.ability_decide) = "freeze vs no freeze at all" at CLXIII's press moments (today's iw_pressed is "now vs a moment later").
+3. Rocket: re-run the audit with RECON-7's tap_hold in the continuations once it is a training key, and with an opponent
+   calibrated on X-Bow defence (OPP-PUSH); the finishing-Rocket class (+0.14, n 7) needs ~100 samples to be a usable signal.
+4. Production: Java forks (JAVA_FORKS.md) or cf rows under micro_batch before any fork credit can train at pilot2 scale.

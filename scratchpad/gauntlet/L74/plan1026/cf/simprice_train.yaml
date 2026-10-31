@@ -3,6 +3,8 @@
 # Changes vs pilot2.yaml, each named: stored_values / mem_row_cache / split_attn / trunk_graph / ppo_decoupled REMOVED
 # (cf_credit refuses stored_values; the others are fast-loop / graph learner speed keys); the cf block at the end.
 # NOT for the fast loop (no forks there, JAVA_FORKS.md) and NOT with micro_batch (rl_royale refuses cf rows with it).
+# BLOCKED for the press-restoration goal (SIMPRICE.md 3.2: on CLXV the forced press is priced -0.065 at 45 s, ~0 at the end,
+# not positive even with > 6 elixir in the freeze): this config would push presses further DOWN until that sign is resolved.
 # Rocket family OFF here (SIMPRICE.md section 4: no state class where a forced Rocket is priced positive except finishing);
 # to include it set e.g. rocket_played 0.5 / rocket 0.0009 / wincon 0.008 (P_DEFAULT) in cf_p -- an owner / lead decision.
 # PILOT2 (account 3, 10-31; owner): every change since CLXIII in one checkpoint, full speed stack. Base = pilot/ops/pilot.yaml
