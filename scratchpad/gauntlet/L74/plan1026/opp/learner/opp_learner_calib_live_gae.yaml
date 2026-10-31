@@ -1,0 +1,100 @@
+# OPP-PUSH arm 2 (lead-approved 10-30: lever 3): = opp_learner_calib_live.yaml with ONE change: the advantage estimator.
+# advantage gae (gamma .999 / lambda .95 defaults) with a critic on the opponent's (untrained) value head: 5 value-only warm-up
+# updates, vf_trunk_grad false (the value loss trains only the value head, so the policy trunk sees the same gradients as
+# match_loo's: PPO + the pull). Reward unchanged: win-only, shaping none (tower_phat for opponents = owner's call).
+# PLATEAU.md next experiment (OPP-PLATEAU 10-30): = opp_learner_calib.yaml with the CLXIII partner on gap.py D3's
+# LIVE_OPTIONS decision stack (fast-loop-supported subset; own_effects / afford_ticks / follow_up_taps / G2 taps are
+# refused by producer.UNSUPPORTED_CFG and stay off) via league_frozen_opponent (100% CLXIII on icebow, = arm E's share)
+# + league_opp_policy live + league_opp_live. Why: D3 opp-win = 0.05 + 0.51 x training win vs the sampled T .5
+# partner (24 checkpoints, r .78): half of every training gain is lost against the stack D3 scores.
+# OPP-LEARN-C calibration run (plan1026/opp/OPP_LEARNER.md section "Calibration"): the P2 opponent (v1 _sim.pt via
+# `init=`) RL'd for STRENGTH with a fixed pull lambda (`beta0=L beta_min=L beta_max=L`, L in {0.03, 0.1, 0.3}),
+# timing + ability heads frozen, win-only reward; partners 60% bot = CLXIII in the deployed / pilot decode on icebow
+# (league_exploiters, T .5, T_gate .1, tau .35, tau_phase), 40% the frozen human-model init at T 1 on census decks.
+# Checkpoints every 5 updates carry opp / opp_sim / memory (e1_eval.load_policy plays them): each is scored by
+# learner/calib_eval.sh (CLXIII SIM win rate + v6 level B quick stats). Stop = the first checkpoint with CLXIII 30-50%
+# and quick stats at least as human as v1's start. kl_cell_stop 5.0: the guard's KL stop (always armed at a fixed
+# beta) left only for runaways; the human-likeness check is the real stop. The rest = opp_learner_bot_smoke.yaml.
+init: opp_ckpt/opp_m10_s0_sim.pt
+pool: icebow/data/ghost_pool/pool_env_v1.jsonl
+proagree_data: icebow/data/pipeline/s1_dataset.npz
+proagree_rows: 0
+proagree_data_gen: icebow/data/pipeline/gen_dataset_v32_fv5.npz
+noise_off: all
+opp_elixir: counter
+action_delay_ticks: 26
+extrapolate_ticks: 26
+hero_abilities: true
+ability_policy: v2
+heroiw_press: live
+forms_mode: deck
+league: true
+league_decks: icebow/data/rltest/decks_rl.json
+league_specialist: icebow/data/models/ICEBOW/ICEBOW_Mark_CLXIII_NOLEAK.pt
+league_opp_policy: live
+league_mix: {latest: 0.0, older: 0.0, init: 1.0, s1: 0.0}
+league_snapshot_every: 100000
+league_snapshot_keep: 4
+league_icebow_share: 0.0
+league_learner_icebow_share: 0.0
+league_deck_alpha: 1.0
+league_deck_floor: 0.0
+E: 64
+G: 4
+adv_clip: 2.0
+advantage: gae
+shaping: none
+n_actors: 48
+in_flight: 8
+actor_device: cpu
+actor_threads: 1
+actor_timeout_s: 3600
+T: 1.0
+tau: 0.35
+afford_mask: true
+stall_elixir: null
+stall_seconds: 12
+obs: live
+decide_every: 10
+learner_device: cpu
+lr: 1.0e-5
+grad_clip: 0.5
+ppo_epochs: 2
+minibatch: 256
+clip: 0.2
+beta0: 0.1
+beta_min: 0.1
+beta_max: 0.1
+kl_target: 0.1
+leash: max
+freeze_heads: [timing, ability]
+seed: 0
+max_updates: 200
+save_every: 5
+proagree_every: 100000
+screen_every: 100000
+screen_entries: 0
+screen_seeds: [0]
+stop_consecutive: 2
+plays_lo: 0.6
+plays_hi: 1.6
+kl_cell_stop: 5.0
+kl_gate_stop: 0.1
+tripwire_cell_pp: 1.0
+hard_cell_pp: 3.0
+hard_card_pp: 3.0
+hard_gate_bal: 0.05
+screen_stop_pp: -10.0
+entropy_floor_frac: 0.5
+outlived_pp: 15.0
+low_delivered_pp: 10.0
+ghost_refusal_x: 2.0
+league_frozen_opponent: icebow/data/models/ICEBOW/ICEBOW_Mark_CLXIII_NOLEAK.pt
+league_opp_live: {barrel_lane: 'on', card_levels: [Rocket=16, Log=16], lethal_log: 'on', lethal_quiet: 1.0,
+  lethal_rocket: ot_behind, log_aim: log_barrel, log_air: block, rocket_dead_target: block, rocket_tornado: only,
+  rocket_tornado_lone: combo, rocket_tornado_order: either, rocket_tornado_window: measured, rocket_value: 9.0,
+  rocket_value_hitbox: edge, rocket_value_mode: damage, spell_aim: rocket_area, tau_phase: [0.35, 0.45, 0.55],
+  tau_threatened: 0.2, tornado_river: full, xbow_class: class_sample, xbow_class_floor: 0.3, xbow_dead_lane: block,
+  tau: 0.35}
+critic_warmup_updates: 5
+vf_trunk_grad: false
