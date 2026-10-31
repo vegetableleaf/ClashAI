@@ -4292,6 +4292,48 @@
     }
    ],
    "registered": "2026-10-25T08:44"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 164,
+   "word": "MEMORY",
+   "name": "ICEBOW Mark CLXIV: MEMORY",
+   "run": "mem_e_s107",
+   "parent": "ICEBOW Mark CLXIII: NOLEAK",
+   "change": "Plan A memory v2 + per-card aux encoder + rocket_cycle + king_redirect + X-Bow cost, u50 (drift clean); gate vs CLXIII pooled +0.34 pp [-1.56, +2.24] (tie); owner-requested live trial 10-26",
+   "created": "2026-10-26T01:43",
+   "eval": "",
+   "live": "",
+   "files": [
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/night1025/mem_e_s107u50/rlarm_mem_e_s107_u0050_grafted.pt",
+     "sha256": "c5be96a63536790467cb2dcb32e03c3b70a1b94e3ccaa2daa3963aebf1444625",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLXIV_MEMORY.pt"
+    }
+   ],
+   "registered": "2026-10-26T09:23"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 165,
+   "word": "LARGEBATCH",
+   "name": "ICEBOW Mark CLXV: LARGEBATCH",
+   "run": "pilot2_L",
+   "parent": "ICEBOW Mark CLXIII: NOLEAK",
+   "change": "pilot2 arm L (account 3, 10-31): B0-full v2 (CLXIII + full-match memory e_max 256 + board snapshot) + target_obs inputs + CLXIII press head, NO hard-coded decision rules in training (live keeps only the lethal Log finisher), trained sampled gate T .1 at tau 0.35; large-batch PPO (minibatch 65536, micro 512, lr 2e-5, 2 epochs, kl_stop 0.02), 512 matches/update, full speed stack on 1x RTX PRO 6000; update 34 (run crashed at u35 on a GPU OOM). Ice Wizard presses 0.57/match in SIM (CLXIII 1.86) -- watch live.",
+   "created": "2026-10-30T23:36",
+   "eval": "SIM gate vs CLXIII on the stripped live stack (base2), 3,840 paired: e4 +2.14 [-0.50,+4.77], iu40 +4.64 [+1.86,+7.41], pooled +3.39 [+1.47,+5.30] PASS; vs its own start iu40 +9.79 [+4.18,+15.40]",
+   "live": "",
+   "files": [
+    {
+     "path": "icebow/data/bench/rl_royale/pilot2_L/pilot2_L_u0034.pt",
+     "sha256": "490271e5fccc2a210698dd042e1c8c71f14c06e24c7b5938c6c1fc81e4701c4e",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLXV_LARGEBATCH.pt"
+    }
+   ],
+   "registered": "2026-10-31T02:25"
   }
  ],
  "unmarked": [

@@ -1,3 +1,18 @@
+# 2026-10-31 ~02:30 EDT -- ICEBOW Mark CLXV: LARGEBATCH PASSED THE SIM GATE -> 30-match LIVE TRIAL STARTED (owner's overnight rule)
+
+- (a) fullgate2.sh pilot2_L_latest (= pilot2_L after update 34) vs base2 (CLXIII on the stripped live stack), 3,840 paired games,
+  sampled gate T .1: e4 +2.14 [-0.50, +4.77]; iu40 +4.64 [+1.86, +7.41]; POOLED +3.39 [+1.47, +5.30] -> PASS. iu40 seed-741200 checks:
+  u20 +3.75, u30 +5.00, latest +6.67 [+1.00, +12.33]; vs its own start +6.88 / +8.12 / +9.79 [+4.18, +15.40].
+- Registered ICEBOW Mark CLXV: LARGEBATCH = icebow/data/bench/rl_royale/pilot2_L/pilot2_L_u0034.pt (copy of the laptop backup
+  pilot2_L_latest.pt), sha 490271e5fccc2a21, link icebow/data/models/ICEBOW/ICEBOW_Mark_CLXV_LARGEBATCH.pt (registry.json / REGISTRY.md
+  modified, to commit with the CLXIV entry).
+- Deploy (LIVE-TGT recipe): LIVE_OPTIONS backed up as LIVE_OPTIONS.pre_CLXV (the stripped file) + appended `--gate-sample 0.1
+  --gate-sample-step-ticks 10`; live_play --check PASS (gate_sample 0.1 / step 10, targets true, acq_rule engine, lethal_rocket log).
+  trial30 (WMI pid 49548): MIN_WINS=6 RESTORE_OPTIONS=LIVE_OPTIONS.pre_CLXV BASE_CK=CLXIII NOLEAK BASE_SHA=8d328a43bf09fb7e; deploy at
+  overnight.out line 86212 (02:26 EDT). KEEP iff >= 6/30 wins AND idle-on-threat <= CLXIII + 0.05; REVERT = restore the stripped
+  options + CLXIII. Log scratchpad/gauntlet/L74/deploy/trial30_CLXV.log. Then the 150-match block (keep iff Wilson LB > 32.7%;
+  note: 32.7% was CLXIII WITH the old rules).
+- Watch: Ice Wizard presses 0.57 / match in SIM (CLXIII 1.86) -- SIM priced pressing negative before; check live presses.
 # 2026-10-31 ~01:40 EDT -- PILOT2: S plateau-stopped (u60, pod stopped); L CRASHED at u35 (GPU OOM on a producer restart; pod stopped)
 
 - pilot2_S: auto_stop at u60 (best10 @ u9), FINAL pilot2_S_u0060.pt, last check u0060 -18.33 [-24.20, -12.46] vs base2; watcher copied

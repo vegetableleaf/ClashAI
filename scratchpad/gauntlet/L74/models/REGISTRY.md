@@ -12,7 +12,7 @@ Owner rule 2026-10-17: every model checkpoint is named **"[DECK] Mark [Roman num
 
 Original files are never moved or renamed. Each Mark has NTFS hard links (zero extra space, sha256-verified) under `icebow/data/models/<DECK>/` named `<DECK>_Mark_<ROMAN>_<WORD>.pt` (`_grafted.pt` = the grafted twin that live play loads). `register_ckpt.py --name PATH` prints any file's Mark name.
 
-## ICEBOW (163 Marks)
+## ICEBOW (165 Marks)
 
 | Mark | file(s) (path, sha256[:12]) | run id | parent Mark | change detail | created | key eval vs its baseline | live periods |
 |---|---|---|---|---|---|---|---|
@@ -179,6 +179,8 @@ Original files are never moved or renamed. Each Mark has NTFS hard links (zero e
 | **ICEBOW Mark CLXI: FIN15** | model: `icebow/data/bench/rl_royale/rlarm_tn_base_s75/rlarm_tn_base_s75_u0130_grafted.pt` 686b245ae184 | rlarm_tn_base_s75 | ICEBOW Mark CLX: PARITY | tonight-10-20 base recipe, seed 75, u130 on fin15; owner 10-21 interim live (not a gate pass) | 2026-10-21T14:24 | calibrated opp vs CLX: std +3.44 [-0.27,+7.15], fresh +4.27 [+0.54,+8.00]; E4 opp: std +3.44 [-0.11,+6.99], fresh -3.44 [-7.23,+0.35] | - |
 | **ICEBOW Mark CLXII: LONG** | model: `icebow/data/bench/rl_royale/rlarm_tn_long_e1i_s74/rlarm_tn_long_e1i_s74_u0100.pt` 921cc4d00caf<br>grafted: `icebow/data/bench/rl_royale/rlarm_tn_long_e1i_s74/rlarm_tn_long_e1i_s74_u0100_grafted.pt` 8af4b5601565 | rlarm_tn_long_e1i_s74 | ICEBOW Mark CLX: PARITY | 500-update long run (E1 bait 2.5x + W14 I u40 exploiter + moving KL anchor 50) at u100; fin15 (pre-10-19-patch stats); owner 10-22: new model live ASAP | 2026-10-22T12:01 | pooled vs CLX: E4 +1.15 [-1.39, +3.68]; vs I u40 +6.82 [+4.03, +9.62] (trained vs I u40 at 30% share) | - |
 | **ICEBOW Mark CLXIII: NOLEAK** | model: `icebow/data/models/ICEBOW/succ48_o_s91_u0075_grafted.pt` 8d328a43bf09 | succ48_o_s91_u0075 | ICEBOW Mark CLX: PARITY | CLX + leak penalty + gate T .3; plays without the forced play | 2026-10-25T08:44 | G3 vs CLX-with-forced-play: E4 +0.3 pp [-2.4,+2.9], cal I u40 0.0; leak 13.8 vs 12.3 s; trade +0.43 vs +0.16 | - |
+| **ICEBOW Mark CLXIV: MEMORY** | model: `C:/Users/benpe/pod_backup_weekend/night1025/mem_e_s107u50/rlarm_mem_e_s107_u0050_grafted.pt` c5be96a63536 (pod backup only) | mem_e_s107 | ICEBOW Mark CLXIII: NOLEAK | Plan A memory v2 + per-card aux encoder + rocket_cycle + king_redirect + X-Bow cost, u50 (drift clean); gate vs CLXIII pooled +0.34 pp [-1.56, +2.24] (tie); owner-requested live trial 10-26 | 2026-10-26T01:43 |  | - |
+| **ICEBOW Mark CLXV: LARGEBATCH** | model: `icebow/data/bench/rl_royale/pilot2_L/pilot2_L_u0034.pt` 490271e5fccc | pilot2_L | ICEBOW Mark CLXIII: NOLEAK | pilot2 arm L (account 3, 10-31): B0-full v2 (CLXIII + full-match memory e_max 256 + board snapshot) + target_obs inputs + CLXIII press head, NO hard-coded decision rules in training (live keeps only the lethal Log finisher), trained sampled gate T .1 at tau 0.35; large-batch PPO (minibatch 65536, micro 512, lr 2e-5, 2 epochs, kl_stop 0.02), 512 matches/update, full speed stack on 1x RTX PRO 6000; update 34 (run crashed at u35 on a GPU OOM). Ice Wizard presses 0.57/match in SIM (CLXIII 1.86) -- watch live. | 2026-10-30T23:36 | SIM gate vs CLXIII on the stripped live stack (base2), 3,840 paired: e4 +2.14 [-0.50,+4.77], iu40 +4.64 [+1.86,+7.41], pooled +3.39 [+1.47,+5.30] PASS; vs its own start iu40 +9.79 [+4.18,+15.40] | - |
 
 ## Bait (3 Marks)
 

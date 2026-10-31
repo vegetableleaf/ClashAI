@@ -1,2 +1,3 @@
 --own-effects --iw-press-pstar 0.03 --fast-input --tap-gap-ms 0 --afford-ticks 23 --extrapolate 24 --hero-ability-spec supplement --early-release-margin 8 --identity-ext on --lethal-rocket log --lethal-log on --lethal-quiet 1.0 --card-levels Rocket=16 Log=16 --follow-up-taps --log-frames --capture-p3 --cue-inputs on --iw-press head --iw-press-head-decode sample
 --barrel-decoy on
+--gate-sample 0.1 --gate-sample-step-ticks 10
