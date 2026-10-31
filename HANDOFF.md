@@ -1,3 +1,16 @@
+# 2026-10-30 ~21:30 EDT -- owner asleep: overnight rules; old A/B gracefully stopped; SIM gate moved to 33308; CLXIII re-baseline queued
+
+- Owner (before sleep): keep 33308 for other work (stop only pods idle for long); continue pilot2; <= 3 workers on PLAN.md pillars,
+  targeted only; if a tonight checkpoint passes the SIM gate vs RE-BASELINED CLXIII (stripped live options) -> immediately put the
+  best on a live trial (trial30 MIN_WINS=6 + RESTORE_OPTIONS; register the Mark; Discord). memory overnight-2026-10-31-pilot2.md.
+- Old A/B (abS_b0 u32 / abL_b0 u18, superseded by pilot2): process kill DENIED by the auto-mode classifier -> graceful STOP files
+  written in /workspace/loop/pilot/ab{S,L}_b0/ (owner-approved stop; the run saves + FINAL). Laptop watchers / checks for them stopped.
+- SIM gate on 33308 (current code): /workspace/loop/cb got origin's gap / livecal / heroiw / mix / memory / d2g/gate.sh / target_obs +
+  the stripped LIVE_OPTIONS (backup /workspace/loop/cb_gate_pre_b1a71c5.tar); eval dir /workspace/pgate2 (facade compiled from
+  HEAD CfCore.java, pair_both / presses / rows_eq). base2_run.sh: waits for 0 fastloop processes, then CLXIII base2_iu40 + base2_e4,
+  4 seeds, CPUs 0-95, W 96 -> BASE2_DONE. The old 33903 gate tree (c51efd9) cannot load mem-full / target_obs checkpoints.
+- PILOT2-BUILD asked to prove the SIM gate runs a mem-full + target_obs checkpoint (p2init_iu40 on 33308 CPUs 96-107, identical to
+  CLXIII under the threshold gate) and to report run names / ckpt dirs for the check loops.
 # 2026-10-30 ~21:10 EDT -- OWNER: all live decision rules removed except lethal Log; pilot2 on 2x RTX PRO 6000 (every change since CLXIII)
 
 - Owner 10-31 ~01:40 UTC: "Remove every hardcoded live rule except lethal log finisher. It will tank current live performance but
