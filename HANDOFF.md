@@ -1,3 +1,8 @@
+# 2026-10-31 ~13:40 EDT -- FREEZE-LIVE dispatched (owner OK): does crforge under-power the Hero IW freeze?
+- Subagent (sonnet, ~3 h): (1) do exact RECON records with IW presses also match HP through the freeze window; (2) live
+  vs SIM princess-HP saving after presses on >= 6-elixir pushes with one estimator; (3) RECON replays if needed. No engine
+  or trainer change. Results -> SIMPRICE.md section 9. Pod 33903 CPUs 226-237, outputs in /dev/shm.
+
 # 2026-10-31 ~13:30 EDT -- SIMPRICE round 2 (c95368e, ee92d82; SIMPRICE.md section 8): IW press on >= 6-elixir pushes ~0 at match end
 - Match-end dQ (press - no press, 90% CI): CLXV +0.009 [-0.055, +0.082] (474 samples / 87 matches); p2init -0.017
   [-0.077, +0.040]; with a 200-tick no-press block -0.028 (block vs no block +0.011, n.s.). CLXV's -0.065 at 45 s is
