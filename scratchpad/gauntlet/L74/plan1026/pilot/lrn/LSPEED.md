@@ -3,9 +3,9 @@
 Labels: (a) measured (number + source), (b) plausible, untested, (c) contradicted. Owner constraints: fp32, TF32 off,
 kl_stop_prev 0.02 per update, no KL leash. Inputs: SCALE.md 2 / 6b / 7b / 7e (where a step's time goes), SPEED2.md 4.
 
-## STATUS (keep current; LEARNER-SPEED, account 3, 10-30 ~22:40 UTC)
-- Commits: 96fda93 critic_warmup_minibatch (+ this doc); c065306 pod_boot.sh AVX-512 numpy / OpenBLAS paths; A + B: the
-  commit that carries this STATUS (split_attn, trunk_graph, tests, lspeed/ scripts).
+## STATUS (keep current; LEARNER-SPEED, account 3, 10-31 ~00:45 UTC)
+- Commits: 96fda93 critic_warmup_minibatch (+ this doc); c065306 pod_boot.sh AVX-512 numpy / OpenBLAS paths; bc2470f
+  split_attn + trunk_graph (tests, lspeed/ scripts); the results commit carrying this STATUS (sections 4-6).
 - Pods:
   - 33903 (CPUs 146-153, shared 4090 <= 6 GB). Trees = hard-link copies of /workspace/speed2/cb with pipeline/ replaced
     (never edit a file in place: rm + cp): cb = origin 7fd5721 pipeline (reference smokes); cbn = + critic_warmup_minibatch;
@@ -16,8 +16,11 @@ kl_stop_prev 0.02 per update, no KL leash. Inputs: SCALE.md 2 / 6b / 7b / 7e (wh
     artifacts / exact gate; no loop). My bench tree /workspace/lspeed/cb (copy of /workspace/loop/cb + my pipeline files),
     env /workspace/lspeed/env.sh (CPUs 0-5), records /workspace/lspeed/rec/, outputs /workspace/lspeed/out/. GPU timings take
     /workspace/BENCH_LOCK (`/workspace/lspeed/locked.sh TAG CMD`). Block queued: `locked.sh ... bench_block.sh` (section 4).
-- RUNNING (33903): overlap A/B v3 (section 6): `cd /workspace/lspeed && setsid nohup bash ov3_queue.sh "1028 2029" >
-  logs/ov3.out 2>&1 < /dev/null &` (resumable: finished runs have ov3/<run>.done); outputs /workspace/lspeed/ov3/.
+- Nothing of mine is running. 31892 DONE (results lspeed/out, scripts lspeed/pod31892; copies in
+  C:/Users/benpe/pod_backup_weekend/pro6000/). Overlap v3 DONE (section 6; restart: `cd /workspace/lspeed && setsid
+  nohup bash ov3_queue.sh "1028 2029" > logs/ov3.out 2>&1 < /dev/null &`, finished runs skipped via ov3/<run>.done).
+- Next (proposed): the full ticket B (padded played-row buckets, monitors out of the step) for the remaining ~30% launch
+  idle at mb 256 (section 5); dedicated learner cores in the overlap stack (section 6).
 - Codex dispatches: none.
 
 ## 1. critic_warmup_minibatch (A/B arm L)
@@ -102,17 +105,78 @@ clip and Adam stay eager and unchanged; an epoch's tail minibatch (other size) r
   (config 20057a9f14c1, "[rl] trunk_graph: ..."); the final code (bugs 2 + 3 fixed): lsp_gpu_graph3 SMOKE PASS (same config).
 - Speed: section 4.
 
-## 4. Real-row benches (31892 RTX PRO 6000; lspeed/step_bench.py; rows from lspeed/gen_recs.py)
+## 4. Real-row benches (31892 RTX PRO 6000; lspeed/step_bench.py; rows from lspeed/gen_recs.py; outputs lspeed/out/)
 Rows (a): rl_royale's own CPU actors on 33903, pilot_noG.yaml (= pilot.yaml minus opponent G), B0, T_gate 0.1:
-res_e32g4.pkl 128 matches (sha 5382c1cd...) + res_e96g4_s2.pkl 384 matches, seed 2029 (79f811af...) = 512 matches.
+res_e32g4.pkl 128 matches (sha 5382c1cd...) + res_e96g4_s2.pkl 384 matches, seed 2029 (79f811af...) = 512 matches
+(158,713 rows, 14.0% played). Learner as the pilot's: lazy_refine, memory v2 frozen, ability head, mem_row_cache, fp32,
+TF32 off, deterministic. A timed step = minibatch_loss + backward + clip + Adam with the lazy anchor prefilled (SCALE 7e).
+- Identity on real rows (a): split_attn 138 / 138 gradient tensors bitwise; trunk_graph 136 / 138 (card_id 5.7e-8,
+  form_id 7.9e-8 relative), global 1.4e-9; one whole kl_stop update: identical steps (37 / 67) and KLs in all 4 arms.
+- Step time, mb 256 (a; quiet pod, both arm orders, 60 steps; q256_*.json; the block's first run overlapped another
+  bench's CPU load and is not used):
+  | arm | ms / step (order A, order B) | kernels / step | kernel ms / step |
+  |---|---|---:|---:|
+  | base | 57.4, 63.5 | 3,865 | 40.4-41.3 |
+  | split_attn | 61.8, 61.2 | 3,709 | 37.4-37.9 |
+  | trunk_graph | 56.4, 56.6 | 4,034 | 40.8-41.8 |
+  | both | 52.6, 50.6 (1.16x) | 3,878 | 37.1-38.1 |
+  At 256 rows the step is launch-bound (kernel time ~2/3 of wall): split_attn's fewer kernels do not shorten it alone;
+  the trunk graph removes the trunk's launches only (+170 kernels: static-input copies + the fresh-grad foreach);
+  together 1.16x.
+- Step time, mb 1,024 (a; step_mb1024.json): base 169.8 ms (89% kernel-busy), split_attn 144.5 (1.18x), trunk_graph 167.0
+  (1.02x), both 142.6 (1.19x). GPU-bound: the graph cannot help; split_attn's kernel time (151.6 -> 127.7 ms) is the gain.
+- Whole update, 512 matches, fresh Adam (a; upd_S512 / upd_L512.json; cold MemRowCache, anchor filled inside):
+  - S (mb 256, lr 1e-5): 37 steps, stop KL 0.0212; 5.41 s base -> 4.67 s both (1.16x).
+  - L (65536 / micro 1024, lr 2e-5): 6 steps, no stop; 83.9 s base -> 73.8 s both (1.14x); peak 10.9 GB.
+  - Outside ppo_update in this bench: collate 1.9 s, to_device + gae_batch 20 s (b: the pilot's stored v_old skips most
+    of gae_batch's forward).
+- Arm-L lr (a; upd_L512_lr*.json = fresh Adam on 512 matches; warm_probe.json = two consecutive updates on 256-match
+  halves, Adam carried; KL to the anchor after k steps, gate + card + cell, each on that minibatch's own rows):
+  | lr | fresh Adam, 512 matches | update 1, 256 matches | update 2 (warmed Adam), 256 matches |
+  |---|---|---|---|
+  | 2e-5 | 0.0149, 0.0097, 0.0060, 0.0057, 0.0058 (6 steps, no stop) | 0.0058, 0.0091, 0.0060 | 0.0012, 0.0075, 0.0120 |
+  | 3e-5 | 0.0305 -> stop (1.5x) | 0.0126, 0.0212 -> stop | 0.0079, 0.0495 -> stop (one step +0.042) |
+  | 4e-5 | 0.0492 -> stop | 0.0215 -> stop | 0.0433 -> stop |
+  | 5.5e-5 | 0.0815 -> stop | - | - |
+  Decision (lead rule): 2e-5 is the only measured lr with no single step over the cap, fresh or warmed; 3e-5 / 4e-5
+  overshoot in steady state too, so no ramp. (b) At 512 matches (6 steps) the warmed update should land near the cap.
 
-## 5. Ticket C: the learning A/B (owner 10-30: APPROVED, replaces the pilot; the lead launches it on 33308)
-- Arms (both B0 + ability_head_from_init true + mem_row_cache true, pilot.yaml otherwise, 512 matches / update, same
-  opponents, side by side on 33308 = one 4090 + 54 CPUs + ~55 GB each):
-  - S = pilot.yaml (minibatch 256, lr 1e-5);
-  - L = minibatch 65536, micro_batch 1024, critic_warmup_minibatch 256 (warm-up = S's, bit for bit: section 1), lr 2.0e-5,
-    ppo_epochs 2. lr evidence: SCALE 3b (1.6e-4 = KL 0.638 in one fresh-Adam step, 32x the cap), SCALE 5 (65k at
-    <= 2e-5: 4 steps, cap never fired, KL <= 0.008, T 0.3). Unmeasured (b): fixed lr at T_gate 0.1 -> the lead reads L's
-    first policy update's per-step KL and lowers lr if the first step exceeds ~0.03.
-- Score: learning per WALL HOUR = paired 480-game iu40 checks vs CLXIII at matched wall times (pilot/gate/pchk.sh), plus
-  training win rate per update; L pays ~4-6 min of learner per update (section 4), S ~3-15 s.
+## 5. Ticket C: the learning A/B and the learner projection
+- A/B (owner 10-30: APPROVED, replaces the pilot; the lead runs it on 33308). Full-stack restart lines (sent 10-31):
+  - S = pilot.yaml + mem_row_cache=true split_attn=true trunk_graph=256;
+  - L = minibatch=65536 micro_batch=1024 critic_warmup_minibatch=256 lr=2e-5 ppo_epochs=2 mem_row_cache=true
+    split_attn=true trunk_graph=1024 (warm-up = S's bit for bit: section 1; lr: section 4);
+  - both B0 + ability_head_from_init true; with fastloop --overlap 1: + ppo_decoupled=2.0 (section 6).
+  - Score: learning per WALL HOUR = paired 480-game iu40 checks vs CLXIII at matched wall times (pilot/gate/pchk.sh) +
+    training win rate per update.
+- Learner s/update (a = measured on the PRO 6000; b = projected), learner only:
+  | | 512 matches | 1,024 matches |
+  |---|---|---|
+  | S policy update, base / A+B | 5.4 / 4.7 s (a) | ~5.4 / ~4.7 s (b: steps to the cap do not grow with M, SCALE 6f) |
+  | S critic warm-up update (every row x 2 epochs at ~52 ms) | ~64 s (b) | ~128 s (b) |
+  | L policy update, base / A+B (6 / ~12 steps) | 84 / 74 s (a) | ~168 / ~148 s (b, rows x 2) |
+  | + collate / to_device in this bench | ~2 + <= 20 s (a, upper bound) | ~4 + <= 40 s (b) |
+  -> learner-only bound on updates / h: S ~500-750 (any M); L ~45 at 512, ~22 at 1,024 (b). In the synchronous loop the
+  rollout wave adds its own time; with overlap the period is max(wave, learner) (section 6).
+- What is left (b, from the kernel shares above): at mb 256 the A+B step is still ~30% launch idle (37 ms of kernels in
+  52 ms) -> the full ticket B (padded played-row buckets + monitors out of the step, the whole loss as graphs) can give
+  <= ~1.4x more; at 1,024+ rows the step is kernel-bound (89%), so only fewer / faster kernels help.
+
+## 6. Overlap A/B v3 (lead 10-30: arm-L learner settings; 33903; lspeed/ov3/)
+Setup: = LOOP-ASYNC v2 (OVERLAP.md: ref_pilot_noiw, 128 matches / update, 8 updates, critic warm-up 1, 2 producers x 64,
+server eager) with minibatch 32768, micro_batch 256 (exact accumulation, sized for the 6 GB GPU share), lr 2e-5,
+critic_warmup_minibatch 256, mem_row_cache, ppo_decoupled 2.0 on BOTH modes; seeds 1028 / 2029; held-out = the other
+seed's u0 batch (ab_eval.py). Tables: ov3/TABLE.txt, ov3/eval_s*.json.
+- (a) Steps: 4 per policy update in every run; the cap never fires (no steps-to-cap signal at this size).
+- (a) Held-out KL from B0 at u8 (gate / card / cell; sum): s1028 m0 .0319 / .0188 / .0077 (.0584), m1 .0188 / .0246 / .0108
+  (.0542, 0.93x); s2029 m0 .0148 / .0167 / .0109 (.0424), m1 .0148 / .0296 / .0170 (.0614, 1.45x).
+- (a) No saw-tooth: m1's summed KL to B0 rises every update (s1028 .016 .018 .023 .032 .037 .048 .054; s2029 .009 .015
+  .027 .032 .039 .049 .061); single-head gate dips of one update occur in both modes.
+- (a) Stale rows: is_maxdev_first 0.85-9.8, <= 0.43% truncated at c 2; clip_frac at mode 0's level.
+- (b) J: all arms within ~1 se; m1 points above m0 on both seeds (+0.0015 vs +0.0008, +0.0017 vs +0.0005).
+- (a) Speed: s1028 m1 21.6 min vs m0 27.4 (1.27x: the ~55 s learner hides under the ~137 s wave); s2029 m1 28.4 vs 26.8
+  (0.94x: waves 197-275 s and learner 64-100 s at u2-u5). (b) On 33903 the learner and the producers share the same 8 CPUs,
+  so in mode 1 the learner's CPU work (memory-row features, launches) slows the wave. The full stack needs dedicated
+  learner cores.
+- Verdict: the owner's bar (not worse per update: movement, no saw-tooth) holds at arm-L settings to these metrics'
+  resolution.

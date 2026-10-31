@@ -125,13 +125,26 @@ def main():
             pc = {**cfg, "minibatch": pmb, "kl_stop_prev": 0.02, "lr": lr, **({"micro_batch": a.micro} if a.micro else {})}
             Rz2 = R.LazyRef(L.ref, B, cfg["tau"], cfg["T"], T_gate=cfg.get("T_gate"))
             B["_mem_cache"] = R.MemRowCache(N)                # cold, as at an update's start
+            kls, name = [], "accum_backward" if a.micro and a.micro < pmb else "minibatch_loss"
+            orig = getattr(R, name)
+
+            def rec(*args, **kw):                             # each minibatch's KL to the anchor BEFORE its step
+                loss, st = orig(*args, **kw)
+                if kw.get("kl_w") is None:
+                    kls.append([st["kl_gate"], st["kl_card"], st["kl_cell"]])
+                return loss, st
+            setattr(R, name, rec)
             torch.cuda.synchronize(); t0 = time.perf_counter()
-            u = R.ppo_update(m2, o2, B, Rz2, pc, 0.0, np.random.default_rng(1), vf=vf,
-                             ability={"head": ab2, "opt": ao2, "ent_coef": float(cfg["ability_ent_coef"])})
+            try:
+                u = R.ppo_update(m2, o2, B, Rz2, pc, 0.0, np.random.default_rng(1), vf=vf,
+                                 ability={"head": ab2, "opt": ao2, "ent_coef": float(cfg["ability_ent_coef"])})
+            finally:
+                setattr(R, name, orig)
             torch.cuda.synchronize()
             r["ppo"] = {"minibatch": pmb, "micro": a.micro, "lr": lr, "steps": u["steps"], "kl_stop": u.get("kl_stop"),
                         "s": time.perf_counter() - t0, "kl": [u["kl_gate"], u["kl_card"], u["kl_cell"]],
-                        "nonfinite": u["nonfinite"], "peak_gb": torch.cuda.max_memory_allocated() / 2 ** 30}
+                        "nonfinite": u["nonfinite"], "peak_gb": torch.cuda.max_memory_allocated() / 2 ** 30,
+                        "kl_pre_step": kls}                   # [gate, card, cell] before minibatch k = after k steps
             m2 = ab2 = o2 = ao2 = Rz2 = None
         out["arms"][arm] = r
         print(f"[bench] {arm}: {json.dumps(r)}", flush=True)

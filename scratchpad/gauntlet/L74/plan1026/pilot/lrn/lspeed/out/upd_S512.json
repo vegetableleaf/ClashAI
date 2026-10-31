@@ -1,0 +1,69 @@
+{
+ "rows": 158713,
+ "matches": 512,
+ "played_frac": 0.1403728723526001,
+ "mb": 256,
+ "arms": {
+  "base": {
+   "ppo": {
+    "minibatch": 256,
+    "micro": null,
+    "lr": 1e-05,
+    "steps": 37,
+    "kl_stop": {
+     "epoch": 0,
+     "minibatch": 37,
+     "kl": 0.021205368300471865,
+     "steps": 37
+    },
+    "s": 5.4071084869792685,
+    "kl": [
+     0.005898338910967428,
+     0.0014921135103500645,
+     0.0015709425842541527
+    ],
+    "nonfinite": null,
+    "peak_gb": 4.968911647796631
+   }
+  },
+  "both": {
+   "ppo": {
+    "minibatch": 256,
+    "micro": null,
+    "lr": 1e-05,
+    "steps": 37,
+    "kl_stop": {
+     "epoch": 0,
+     "minibatch": 37,
+     "kl": 0.021205368300471865,
+     "steps": 37
+    },
+    "s": 4.668433695915155,
+    "kl": [
+     0.005898338910967428,
+     0.0014921135103500645,
+     0.0015709425842541527
+    ],
+    "nonfinite": null,
+    "peak_gb": 4.971830368041992
+   }
+  }
+ },
+ "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+ "collate_s": 1.901897791074589,
+ "to_device_gae_s": 20.09207329095807,
+ "args": {
+  "res": "[PosixPath('/workspace/lspeed/rec/res_e32g4.pkl'), PosixPath('/workspace/lspeed/rec/res_e96g4_s2.pkl')]",
+  "config": "scratchpad/gauntlet/L74/plan1026/pilot/lrn/lspeed/pilot_noG.yaml",
+  "mb": "256",
+  "steps": "20",
+  "arms": "base,both",
+  "ppo": "True",
+  "ppo_mb": "None",
+  "micro": "None",
+  "ppo_lr": "None",
+  "no_step": "True",
+  "out": "/workspace/lspeed/out/upd_S512.json",
+  "overrides": "[]"
+ }
+}

@@ -1,0 +1,78 @@
+{
+ "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+ "torch": "2.11.0+cu128",
+ "results": [
+  {
+   "enc": "trunk",
+   "rows": 256,
+   "torch_ms": 22.012351989746094,
+   "split_ms": 18.615519523620605,
+   "speedup": 1.1824731489129467,
+   "torch_kernels": 426,
+   "split_kernels": 322,
+   "torch_kernel_ms": 21.92744899999999,
+   "split_kernel_ms": 18.478365999999994,
+   "bitwise_equal": true
+  },
+  {
+   "enc": "trunk",
+   "rows": 1024,
+   "torch_ms": 92.68783950805664,
+   "split_ms": 71.53046417236328,
+   "speedup": 1.2957813231116677,
+   "torch_kernels": 474,
+   "split_kernels": 370,
+   "torch_kernel_ms": 92.81237200000014,
+   "split_kernel_ms": 71.72422800000002,
+   "bitwise_equal": true
+  },
+  {
+   "enc": "trunk",
+   "rows": 4096,
+   "torch_ms": 363.0674133300781,
+   "split_ms": 271.0876007080078,
+   "speedup": 1.339299224242805,
+   "torch_kernels": 473,
+   "split_kernels": 369,
+   "torch_kernel_ms": 360.5759509999996,
+   "split_kernel_ms": 272.20704900000004,
+   "bitwise_equal": true
+  },
+  {
+   "enc": "memory",
+   "rows": 256,
+   "torch_ms": 6.685840129852295,
+   "split_ms": 7.0450239181518555,
+   "speedup": 0.949015958998506,
+   "torch_kernels": 219,
+   "split_kernels": 167,
+   "torch_kernel_ms": 3.734476000000005,
+   "split_kernel_ms": 3.4178520000000066,
+   "bitwise_equal": true
+  },
+  {
+   "enc": "memory",
+   "rows": 1024,
+   "torch_ms": 13.634063720703125,
+   "split_ms": 11.072527885437012,
+   "speedup": 1.2313415564873074,
+   "torch_kernels": 243,
+   "split_kernels": 191,
+   "torch_kernel_ms": 13.423769000000002,
+   "split_kernel_ms": 10.98777099999999,
+   "bitwise_equal": true
+  },
+  {
+   "enc": "memory",
+   "rows": 4096,
+   "torch_ms": 61.586416244506836,
+   "split_ms": 48.29848098754883,
+   "speedup": 1.2751211836327438,
+   "torch_kernels": 243,
+   "split_kernels": 191,
+   "torch_kernel_ms": 61.87118800000003,
+   "split_kernel_ms": 48.63209200000005,
+   "bitwise_equal": true
+  }
+ ]
+}

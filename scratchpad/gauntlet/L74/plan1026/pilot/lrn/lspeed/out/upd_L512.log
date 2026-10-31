@@ -1,0 +1,11 @@
+/workspace/lspeed/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+[rl] memory_encoder_frozen: 45 memory encoder / aux tensors (223051 params) frozen; mem.out trains
+[rl] lazy_refine: cell_refine / tower_refine cell features on the played rows only (model + refs)
+Picked up JAVA_TOOL_OPTIONS: --add-modules=jdk.incubator.foreign --enable-native-access=ALL-UNNAMED
+WARNING: Using incubator modules: jdk.incubator.foreign
+[bench] rows 158713 played 0.140 mb 1024
+[bench] base: {"ppo": {"minibatch": 65536, "micro": 1024, "lr": 2e-05, "steps": 6, "kl_stop": null, "s": 83.92105724196881, "kl": [0.0033090310353832125, 0.0010850955030237742, 0.0014185585202460523], "nonfinite": null, "peak_gb": 10.817475318908691}}
+/workspace/loop/venv/lib/python3.12/site-packages/torch/autograd/graph.py:869: UserWarning: The AccumulateGrad node's stream does not match the stream of the node that produced the incoming gradient. This may incur unnecessary synchronization and break CUDA graph capture if the AccumulateGrad node's stream is the default stream. This mismatch is caused by an AccumulateGrad node created prior to the current iteration being kept alive. This can happen if the autograd graph is still being kept alive by tensors such as the loss, or if you are using DDP, which will stash a reference to the node. To resolve the mismatch, delete all references to the autograd graph or ensure that DDP initialization is performed under the same stream as subsequent forwards. If the mismatch is intentional, you can use torch.autograd.graph.set_warn_on_accumulate_grad_stream_mismatch(False) to suppress this warning. (Triggered internally at /pytorch/torch/csrc/autograd/input_buffer.cpp:240.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[bench] both: {"ppo": {"minibatch": 65536, "micro": 1024, "lr": 2e-05, "steps": 6, "kl_stop": null, "s": 73.79472877201624, "kl": [0.0033090310353832125, 0.0010850955030237742, 0.0014185585202460523], "nonfinite": null, "peak_gb": 10.881954669952393}}

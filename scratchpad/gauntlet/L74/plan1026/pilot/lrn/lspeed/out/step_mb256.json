@@ -1,0 +1,181 @@
+{
+ "rows": 39081,
+ "matches": 128,
+ "played_frac": 0.1420639157295227,
+ "mb": 256,
+ "arms": {
+  "base": {
+   "speed": {
+    "ms_median": 62.40211095428094,
+    "ms_p10": 55.776894150767475,
+    "ms_p90": 64.33967095799744,
+    "kernels_per_step": 3865.6666666666665,
+    "kernel_ms_per_step": 40.12183033333343,
+    "peak_gb": 2.7164320945739746
+   },
+   "ppo": {
+    "minibatch": 256,
+    "micro": null,
+    "lr": 1e-05,
+    "steps": 67,
+    "kl_stop": {
+     "epoch": 0,
+     "minibatch": 67,
+     "kl": 0.021384963743005952,
+     "steps": 67
+    },
+    "s": 8.34268152504228,
+    "kl": [
+     0.00438388275503331,
+     0.0020778875781423583,
+     0.0018789682347908516
+    ],
+    "nonfinite": null,
+    "peak_gb": 2.8693628311157227
+   }
+  },
+  "attn": {
+   "identity": {
+    "loss_bitwise": true,
+    "loss_rel": 0.0,
+    "same_tensors": true,
+    "bitwise_tensors": "138/138",
+    "worst_rel": 0.0,
+    "worst_tensor": "patch_pos",
+    "global_rel": 0.0,
+    "nonbitwise": {}
+   },
+   "speed": {
+    "ms_median": 78.16003100015223,
+    "ms_p10": 76.18604934541509,
+    "ms_p90": 79.7520286636427,
+    "kernels_per_step": 3709.3333333333335,
+    "kernel_ms_per_step": 36.83245999999998,
+    "peak_gb": 2.7249889373779297
+   },
+   "ppo": {
+    "minibatch": 256,
+    "micro": null,
+    "lr": 1e-05,
+    "steps": 67,
+    "kl_stop": {
+     "epoch": 0,
+     "minibatch": 67,
+     "kl": 0.021384963743005952,
+     "steps": 67
+    },
+    "s": 7.9229199880501255,
+    "kl": [
+     0.00438388275503331,
+     0.0020778875781423583,
+     0.0018789682347908516
+    ],
+    "nonfinite": null,
+    "peak_gb": 2.87020206451416
+   }
+  },
+  "graph": {
+   "identity": {
+    "loss_bitwise": true,
+    "loss_rel": 0.0,
+    "same_tensors": true,
+    "bitwise_tensors": "136/138",
+    "worst_rel": 7.937886437048292e-08,
+    "worst_tensor": "form_id.weight",
+    "global_rel": 1.4386722786711112e-09,
+    "nonbitwise": {
+     "card_id.weight": 5.70568410296346e-08,
+     "form_id.weight": 7.937886437048292e-08
+    }
+   },
+   "speed": {
+    "ms_median": 72.94701301725581,
+    "ms_p10": 70.66170000471175,
+    "ms_p90": 75.1656387699768,
+    "kernels_per_step": 4034.6666666666665,
+    "kernel_ms_per_step": 40.41977166666666,
+    "peak_gb": 2.7040305137634277
+   },
+   "ppo": {
+    "minibatch": 256,
+    "micro": null,
+    "lr": 1e-05,
+    "steps": 67,
+    "kl_stop": {
+     "epoch": 0,
+     "minibatch": 67,
+     "kl": 0.021384963743005952,
+     "steps": 67
+    },
+    "s": 7.931506347027607,
+    "kl": [
+     0.00438388275503331,
+     0.0020778875781423583,
+     0.0018789682347908516
+    ],
+    "nonfinite": null,
+    "peak_gb": 2.983290195465088
+   }
+  },
+  "both": {
+   "identity": {
+    "loss_bitwise": true,
+    "loss_rel": 0.0,
+    "same_tensors": true,
+    "bitwise_tensors": "136/138",
+    "worst_rel": 7.937886437048292e-08,
+    "worst_tensor": "form_id.weight",
+    "global_rel": 1.4386722786711112e-09,
+    "nonbitwise": {
+     "card_id.weight": 5.70568410296346e-08,
+     "form_id.weight": 7.937886437048292e-08
+    }
+   },
+   "speed": {
+    "ms_median": 69.1017605131492,
+    "ms_p10": 67.775549297221,
+    "ms_p90": 70.71340237744153,
+    "kernels_per_step": 3877.6666666666665,
+    "kernel_ms_per_step": 37.07858399999995,
+    "peak_gb": 2.8309836387634277
+   },
+   "ppo": {
+    "minibatch": 256,
+    "micro": null,
+    "lr": 1e-05,
+    "steps": 67,
+    "kl_stop": {
+     "epoch": 0,
+     "minibatch": 67,
+     "kl": 0.021384963743005952,
+     "steps": 67
+    },
+    "s": 7.691130970022641,
+    "kl": [
+     0.00438388275503331,
+     0.0020778875781423583,
+     0.0018789682347908516
+    ],
+    "nonfinite": null,
+    "peak_gb": 3.110243320465088
+   }
+  }
+ },
+ "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+ "collate_s": 0.5908115629572421,
+ "to_device_gae_s": 5.362761418917216,
+ "args": {
+  "res": "[PosixPath('/workspace/lspeed/rec/res_e32g4.pkl')]",
+  "config": "scratchpad/gauntlet/L74/plan1026/pilot/lrn/lspeed/pilot_noG.yaml",
+  "mb": "256",
+  "steps": "30",
+  "arms": "base,attn,graph,both",
+  "ppo": "True",
+  "ppo_mb": "None",
+  "micro": "None",
+  "ppo_lr": "None",
+  "no_step": "False",
+  "out": "/workspace/lspeed/out/step_mb256.json",
+  "overrides": "[]"
+ }
+}

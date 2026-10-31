@@ -1,0 +1,9 @@
+22:24:23 start lsp_ov3_s1028_m0; mem 83710701568; gpu 13597 MiB
+22:51:45 end lsp_ov3_s1028_m0 rc 0
+22:51:45 start lsp_ov3_s1028_m1; mem 84782112768; gpu 13597 MiB
+23:13:21 end lsp_ov3_s1028_m1 rc 0
+23:13:21 start lsp_ov3_s2029_m0; mem 85726208000; gpu 13597 MiB
+23:40:07 end lsp_ov3_s2029_m0 rc 0
+23:40:07 start lsp_ov3_s2029_m1; mem 86741704704; gpu 13597 MiB
+00:08:28 end lsp_ov3_s2029_m1 rc 0
+00:27:46 QUEUE DONE

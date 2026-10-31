@@ -1,0 +1,101 @@
+{
+ "rows": 39081,
+ "matches": 128,
+ "played_frac": 0.1420639157295227,
+ "mb": 256,
+ "arms": {
+  "both": {
+   "speed": {
+    "ms_median": 50.64029153436422,
+    "ms_p10": 48.61617616843432,
+    "ms_p90": 63.2619408890605,
+    "kernels_per_step": 3878.6666666666665,
+    "kernel_ms_per_step": 38.0625750000003,
+    "peak_gb": 2.6651124954223633
+   }
+  },
+  "graph": {
+   "identity": {
+    "loss_bitwise": true,
+    "loss_rel": 0.0,
+    "same_tensors": true,
+    "bitwise_tensors": "138/138",
+    "worst_rel": 0.0,
+    "worst_tensor": "patch_pos",
+    "global_rel": 0.0,
+    "nonbitwise": {}
+   },
+   "speed": {
+    "ms_median": 56.61189102102071,
+    "ms_p10": 56.080934940837324,
+    "ms_p90": 57.86418196512386,
+    "kernels_per_step": 4034.6666666666665,
+    "kernel_ms_per_step": 41.75344799999998,
+    "peak_gb": 2.7677855491638184
+   }
+  },
+  "attn": {
+   "identity": {
+    "loss_bitwise": true,
+    "loss_rel": 0.0,
+    "same_tensors": true,
+    "bitwise_tensors": "136/138",
+    "worst_rel": 7.937886437048292e-08,
+    "worst_tensor": "form_id.weight",
+    "global_rel": 1.4386722786683922e-09,
+    "nonbitwise": {
+     "card_id.weight": 5.705683747692092e-08,
+     "form_id.weight": 7.937886437048292e-08
+    }
+   },
+   "speed": {
+    "ms_median": 61.162742029409856,
+    "ms_p10": 60.95508011057973,
+    "ms_p90": 61.58118591411039,
+    "kernels_per_step": 3709.3333333333335,
+    "kernel_ms_per_step": 37.942833999999706,
+    "peak_gb": 2.9333176612854004
+   }
+  },
+  "base": {
+   "identity": {
+    "loss_bitwise": true,
+    "loss_rel": 0.0,
+    "same_tensors": true,
+    "bitwise_tensors": "136/138",
+    "worst_rel": 7.937886437048292e-08,
+    "worst_tensor": "form_id.weight",
+    "global_rel": 1.4386722786683922e-09,
+    "nonbitwise": {
+     "card_id.weight": 5.705683747692092e-08,
+     "form_id.weight": 7.937886437048292e-08
+    }
+   },
+   "speed": {
+    "ms_median": 63.543736992869526,
+    "ms_p10": 63.27613617759198,
+    "ms_p90": 64.04522842494771,
+    "kernels_per_step": 3865.3333333333335,
+    "kernel_ms_per_step": 41.32286566666634,
+    "peak_gb": 2.9327988624572754
+   }
+  }
+ },
+ "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+ "collate_s": 0.5638649530010298,
+ "to_device_gae_s": 5.393075073021464,
+ "args": {
+  "res": "[PosixPath('/workspace/lspeed/rec/res_e32g4.pkl')]",
+  "config": "scratchpad/gauntlet/L74/plan1026/pilot/lrn/lspeed/pilot_noG.yaml",
+  "mb": "256",
+  "steps": "60",
+  "arms": "both,graph,attn,base",
+  "ppo": "False",
+  "ppo_mb": "None",
+  "micro": "None",
+  "ppo_lr": "None",
+  "no_step": "False",
+  "out": "/workspace/lspeed/out/q256_both_graph_attn_base.json",
+  "overrides": "[]"
+ }
+}

@@ -1,0 +1,14 @@
+/workspace/lspeed/cb/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+[rl] memory_encoder_frozen: 45 memory encoder / aux tensors (223051 params) frozen; mem.out trains
+[rl] lazy_refine: cell_refine / tower_refine cell features on the played rows only (model + refs)
+Picked up JAVA_TOOL_OPTIONS: --add-modules=jdk.incubator.foreign --enable-native-access=ALL-UNNAMED
+WARNING: Using incubator modules: jdk.incubator.foreign
+/workspace/loop/venv/lib/python3.12/site-packages/torch/autograd/graph.py:869: UserWarning: The AccumulateGrad node's stream does not match the stream of the node that produced the incoming gradient. This may incur unnecessary synchronization and break CUDA graph capture if the AccumulateGrad node's stream is the default stream. This mismatch is caused by an AccumulateGrad node created prior to the current iteration being kept alive. This can happen if the autograd graph is still being kept alive by tensors such as the loss, or if you are using DDP, which will stash a reference to the node. To resolve the mismatch, delete all references to the autograd graph or ensure that DDP initialization is performed under the same stream as subsequent forwards. If the mismatch is intentional, you can use torch.autograd.graph.set_warn_on_accumulate_grad_stream_mismatch(False) to suppress this warning. (Triggered internally at /pytorch/torch/csrc/autograd/input_buffer.cpp:240.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[warm] lr 2e-05 update 1: steps 4 stop None KL after k steps [0.0, 0.00579, 0.00909, 0.00602]
+[warm] lr 2e-05 update 2: steps 4 stop None KL after k steps [0.0, 0.00117, 0.00745, 0.01201]
+[warm] lr 3e-05 update 1: steps 2 stop {'epoch': 1, 'minibatch': 0, 'kl': 0.021170357677926542, 'steps': 2} KL after k steps [0.0, 0.01258, 0.02117]
+[warm] lr 3e-05 update 2: steps 2 stop {'epoch': 1, 'minibatch': 0, 'kl': 0.04952862079883795, 'steps': 2} KL after k steps [0.0, 0.00791, 0.04953]
+[warm] lr 4e-05 update 1: steps 1 stop {'epoch': 0, 'minibatch': 1, 'kl': 0.021530628069143968, 'steps': 1} KL after k steps [0.0, 0.02153]
+[warm] lr 4e-05 update 2: steps 1 stop {'epoch': 0, 'minibatch': 1, 'kl': 0.043338272335862835, 'steps': 1} KL after k steps [0.0, 0.04334]

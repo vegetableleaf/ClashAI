@@ -1,0 +1,59 @@
+{
+ "rows": 158713,
+ "matches": 512,
+ "played_frac": 0.1403728723526001,
+ "mb": 1024,
+ "arms": {
+  "both": {
+   "ppo": {
+    "minibatch": 65536,
+    "micro": 1024,
+    "lr": 5.5e-05,
+    "steps": 1,
+    "kl_stop": {
+     "epoch": 0,
+     "minibatch": 1,
+     "kl": 0.08148884266542639,
+     "steps": 1
+    },
+    "s": 46.11531153100077,
+    "kl": [
+     5.948898320345712e-13,
+     2.5232684842527616e-13,
+     1.846768371783431e-12
+    ],
+    "nonfinite": null,
+    "peak_gb": 10.531254768371582,
+    "kl_pre_step": [
+     [
+      5.948898320345712e-13,
+      2.5232684842527616e-13,
+      1.846768371783431e-12
+     ],
+     [
+      0.06361573445253678,
+      0.013428632646208956,
+      0.004444475566680653
+     ]
+    ]
+   }
+  }
+ },
+ "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+ "collate_s": 1.7071540780598298,
+ "to_device_gae_s": 20.8050163439475,
+ "args": {
+  "res": "[PosixPath('/workspace/lspeed/rec/res_e32g4.pkl'), PosixPath('/workspace/lspeed/rec/res_e96g4_s2.pkl')]",
+  "config": "scratchpad/gauntlet/L74/plan1026/pilot/lrn/lspeed/pilot_noG.yaml",
+  "mb": "1024",
+  "steps": "20",
+  "arms": "both",
+  "ppo": "True",
+  "ppo_mb": "65536",
+  "micro": "1024",
+  "ppo_lr": "5.5e-05",
+  "no_step": "True",
+  "out": "/workspace/lspeed/out/upd_L512_lr5.5e-5.json",
+  "overrides": "[]"
+ }
+}
