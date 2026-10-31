@@ -1,0 +1,151 @@
+# 174855: SIM Golden Knight every tick (buffs, targeting reference) next to the REC rows; plan 1 = the gate plan as extracted (press at 3037), plan 2 = the press dropped. Tornado = our Tornado at (6500,21500) (REC-A rows)
+## as extracted (press run 3037)
+SIM t3034 id5000049 (5055,17159) hp 1630 sp 0 buffs [] tgt -1 
+SIM t3035 id5000049 (5055,17159) hp 1630 sp 0 buffs [] tgt -1 
+   REC t3035 side 0 (5055,17159) hp 1630
+SIM t3036 id5000049 (5028,17212) hp 1630 sp 59 buffs [] tgt 5000003 T KingTower (9000,29000) hp 7044 d 12439
+SIM t3037 id5000049 (4993,17259) hp 1630 sp 59 buffs [] tgt 5000003 T KingTower (9000,29000) hp 7044 d 12405
+   SIM-A t3037 Tornado side 1 (6500,21500) countdown 1000
+   REC t3037 side 0 (4993,17259) hp 1630
+   REC-A t3037 side 1 (6500,21500) id 28000012
+SIM t3038 id5000049 (4944,17292) hp 1630 sp 59 buffs [Tornado] tgt 5000003 T KingTower (9000,29000) hp 7044 d 12390
+   SIM-A t3038 Tornado side 1 (6500,21500) countdown 950
+SIM t3039 id5000049 (4948,17591) hp 1630 sp 299 buffs [Tornado|GoldenKnightCharge] tgt 5000003 T KingTower (9000,29000) hp 7044 d 12107
+   SIM-A t3039 Tornado side 1 (6500,21500) countdown 900
+   REC t3039 side 0 (4997,17555) hp 1630
+   REC-A t3039 side 1 (6500,21500) id 28000012
+SIM t3040 id5000049 (4966,17893) hp 1630 sp 303 buffs [Tornado|GoldenKnightCharge] tgt 5000003 T KingTower (9000,29000) hp 7044 d 11816
+   SIM-A t3040 Tornado side 1 (6500,21500) countdown 850
+SIM t3041 id5000049 (4974,18182) hp 1630 sp 289 buffs [Tornado|GoldenKnightCharge] tgt 5000003 T KingTower (9000,29000) hp 7044 d 11542
+   SIM-A t3041 Tornado side 1 (6500,21500) countdown 800
+   REC t3041 side 0 (5083,18051) hp 1630
+   REC-A t3041 side 1 (6500,21500) id 28000012
+SIM t3042 id5000049 (4997,18476) hp 1630 sp 295 buffs [Tornado|GoldenKnightCharge] tgt 5000003 T KingTower (9000,29000) hp 7044 d 11259
+   SIM-A t3042 Tornado side 1 (6500,21500) countdown 750
+SIM t3043 id5000049 (5011,18755) hp 1630 sp 279 buffs [Tornado|GoldenKnightCharge] tgt 5000003 T KingTower (9000,29000) hp 7044 d 10994
+   SIM-A t3043 Tornado side 1 (6500,21500) countdown 700
+   REC t3043 side 0 (5165,18530) hp 1630
+   REC-A t3043 side 1 (6500,21500) id 28000012
+SIM t3044 id5000049 (5042,19039) hp 1630 sp 286 buffs [Tornado|GoldenKnightCharge] tgt 5000003 T KingTower (9000,29000) hp 7044 d 10718
+   SIM-A t3044 Tornado side 1 (6500,21500) countdown 650
+SIM t3045 id5000049 (5063,19304) hp 1630 sp 266 buffs [Tornado|GoldenKnightCharge] tgt 5000003 T KingTower (9000,29000) hp 7044 d 10464
+   SIM-A t3045 Tornado side 1 (6500,21500) countdown 600
+   REC t3045 side 0 (5257,19001) hp 1630
+   REC-A t3045 side 1 (6500,21500) id 28000012
+SIM t3046 id5000049 (5104,19574) hp 1630 sp 273 buffs [Tornado|GoldenKnightCharge] tgt 5000003 T KingTower (9000,29000) hp 7044 d 10199
+   SIM-A t3046 Tornado side 1 (6500,21500) countdown 550
+SIM t3047 id5000049 (5137,19822) hp 1630 sp 250 buffs [Tornado|GoldenKnightCharge] tgt 5000003 T KingTower (9000,29000) hp 7044 d 9957
+   SIM-A t3047 Tornado side 1 (6500,21500) countdown 500
+   REC t3047 side 0 (5352,19446) hp 1630
+   REC-A t3047 side 1 (6500,21500) id 28000012
+SIM t3048 id5000049 (5191,20075) hp 1630 sp 259 buffs [Tornado|GoldenKnightCharge] tgt 5000003 T KingTower (9000,29000) hp 7044 d 9703
+   SIM-A t3048 Tornado side 1 (6500,21500) countdown 450
+SIM t3049 id5000049 (5240,20303) hp 1496 sp 233 buffs [Tornado|GoldenKnightCharge] tgt 5000003 T KingTower (9000,29000) hp 7044 d 9474
+   SIM-A t3049 Tornado side 1 (6500,21500) countdown 400
+   REC t3049 side 0 (5466,19880) hp 1496
+   REC-A t3049 side 1 (6500,21500) id 28000012
+SIM t3050 id5000049 (5287,20500) hp 1496 sp 203 buffs [Tornado|GoldenKnightCharge] tgt 5000003 T KingTower (9000,29000) hp 7044 d 9275
+   SIM-A t3050 Tornado side 1 (6500,21500) countdown 350
+SIM t3051 id5000049 (5270,20636) hp 1496 sp 137 buffs [Tornado|GoldenKnightCharge] tgt 5000003 T KingTower (9000,29000) hp 7044 d 9158
+   SIM-A t3051 Tornado side 1 (6500,21500) countdown 300
+   REC t3051 side 0 (5588,20264) hp 1496
+   REC-A t3051 side 1 (6500,21500) id 28000012
+SIM t3052 id5000049 (5344,20821) hp 1496 sp 199 buffs [Tornado|GoldenKnightCharge] tgt 5000003 T KingTower (9000,29000) hp 7044 d 8958
+   SIM-A t3052 Tornado side 1 (6500,21500) countdown 250
+SIM t3053 id5000049 (5223,20854) hp 1496 sp 125 buffs [Tornado|GoldenKnightCharge] tgt 5000003 T KingTower (9000,29000) hp 7044 d 8979
+   SIM-A t3053 Tornado side 1 (6500,21500) countdown 200
+SIM t3054 id5000049 (5145,20914) hp 1496 sp 98 buffs [Tornado|GoldenKnightCharge] tgt 5000003 T KingTower (9000,29000) hp 7044 d 8957
+   SIM-A t3054 Tornado side 1 (6500,21500) countdown 150
+   REC t3054 side 0 (5558,20460) hp 1496
+   REC-A t3054 side 1 (6500,21500) id 28000012
+SIM t3055 id5000049 (5108,21016) hp 1496 sp 109 buffs [Tornado|GoldenKnightCharge] tgt 5000003 T KingTower (9000,29000) hp 7044 d 8882
+   SIM-A t3055 Tornado side 1 (6500,21500) countdown 100
+SIM t3056 id5000049 (5058,21107) hp 1496 sp 104 buffs [Tornado|GoldenKnightCharge] tgt 5000003 T KingTower (9000,29000) hp 7044 d 8822
+   SIM-A t3056 Tornado side 1 (6500,21500) countdown 50
+   REC t3056 side 0 (5465,20505) hp 1496
+   REC-A t3056 side 1 (6500,21500) id 28000012
+SIM t3057 id5000049 (5020,21192) hp 1496 sp 93 buffs [Tornado|GoldenKnightCharge] tgt 5000003 T KingTower (9000,29000) hp 7044 d 8763
+   SIM-A t3057 Tornado side 1 (6500,21500) countdown 0
+SIM t3058 id5000049 (5046,21309) hp 1496 sp 120 buffs [GoldenKnightCharge] tgt 5000003 T KingTower (9000,29000) hp 7044 d 8647
+   REC t3058 side 0 (5373,20549) hp 1496
+SIM t3059 id5000049 (5028,21406) hp 1496 sp 99 buffs [GoldenKnightCharge] tgt 5000003 T KingTower (9000,29000) hp 7044 d 8570
+SIM t3060 id5000049 (4850,21485) hp 1496 sp 195 buffs [GoldenKnightCharge] tgt 5000003 T KingTower (9000,29000) hp 7044 d 8584
+   REC t3060 side 0 (5305,20604) hp 1496
+SIM t3061 id5000049 (4799,21593) hp 1496 sp 119 buffs [GoldenKnightCharge] tgt 5000003 T KingTower (9000,29000) hp 7044 d 8515
+SIM t3062 id5000049 (4748,21701) hp 1496 sp 119 buffs [GoldenKnightCharge] tgt 5000003 T KingTower (9000,29000) hp 7044 d 8447
+   REC t3062 side 0 (5196,20644) hp 1496
+## press dropped
+SIM t3034 id5000049 (5055,17159) hp 1630 sp 0 buffs [] tgt -1 
+SIM t3035 id5000049 (5055,17159) hp 1630 sp 0 buffs [] tgt -1 
+   REC t3035 side 0 (5055,17159) hp 1630
+SIM t3036 id5000049 (5028,17212) hp 1630 sp 59 buffs [] tgt 5000003 T KingTower (9000,29000) hp 7044 d 12439
+SIM t3037 id5000049 (4993,17259) hp 1630 sp 59 buffs [] tgt 5000003 T KingTower (9000,29000) hp 7044 d 12405
+   SIM-A t3037 Tornado side 1 (6500,21500) countdown 1000
+   REC t3037 side 0 (4993,17259) hp 1630
+   REC-A t3037 side 1 (6500,21500) id 28000012
+SIM t3038 id5000049 (4958,17306) hp 1630 sp 59 buffs [Tornado] tgt 5000003 T KingTower (9000,29000) hp 7044 d 12372
+   SIM-A t3038 Tornado side 1 (6500,21500) countdown 950
+SIM t3039 id5000049 (4997,17555) hp 1630 sp 252 buffs [Tornado] tgt 5000003 T KingTower (9000,29000) hp 7044 d 12124
+   SIM-A t3039 Tornado side 1 (6500,21500) countdown 900
+   REC t3039 side 0 (4997,17555) hp 1630
+   REC-A t3039 side 1 (6500,21500) id 28000012
+SIM t3040 id5000049 (5042,17806) hp 1630 sp 255 buffs [Tornado] tgt 5000003 T KingTower (9000,29000) hp 7044 d 11873
+   SIM-A t3040 Tornado side 1 (6500,21500) countdown 850
+SIM t3041 id5000049 (5083,18051) hp 1630 sp 248 buffs [Tornado] tgt 5000003 T KingTower (9000,29000) hp 7044 d 11628
+   SIM-A t3041 Tornado side 1 (6500,21500) countdown 800
+   REC t3041 side 0 (5083,18051) hp 1630
+   REC-A t3041 side 1 (6500,21500) id 28000012
+SIM t3042 id5000049 (5120,18288) hp 1630 sp 240 buffs [Tornado] tgt 5000003 T KingTower (9000,29000) hp 7044 d 11393
+   SIM-A t3042 Tornado side 1 (6500,21500) countdown 750
+SIM t3043 id5000049 (5165,18530) hp 1630 sp 246 buffs [Tornado] tgt 5000003 T KingTower (9000,29000) hp 7044 d 11150
+   SIM-A t3043 Tornado side 1 (6500,21500) countdown 700
+   REC t3043 side 0 (5165,18530) hp 1630
+   REC-A t3043 side 1 (6500,21500) id 28000012
+SIM t3044 id5000049 (5206,18764) hp 1630 sp 238 buffs [Tornado] tgt 5000003 T KingTower (9000,29000) hp 7044 d 10916
+   SIM-A t3044 Tornado side 1 (6500,21500) countdown 650
+SIM t3045 id5000049 (5257,19001) hp 1630 sp 242 buffs [Tornado] tgt 5000003 T KingTower (9000,29000) hp 7044 d 10676
+   SIM-A t3045 Tornado side 1 (6500,21500) countdown 600
+   REC t3045 side 0 (5257,19001) hp 1630
+   REC-A t3045 side 1 (6500,21500) id 28000012
+SIM t3046 id5000049 (5305,19229) hp 1630 sp 233 buffs [Tornado] tgt 5000003 T KingTower (9000,29000) hp 7044 d 10446
+   SIM-A t3046 Tornado side 1 (6500,21500) countdown 550
+SIM t3047 id5000049 (5352,19446) hp 1630 sp 222 buffs [Tornado] tgt 5000003 T KingTower (9000,29000) hp 7044 d 10226
+   SIM-A t3047 Tornado side 1 (6500,21500) countdown 500
+   REC t3047 side 0 (5352,19446) hp 1630
+   REC-A t3047 side 1 (6500,21500) id 28000012
+SIM t3048 id5000049 (5409,19669) hp 1630 sp 230 buffs [Tornado] tgt 5000003 T KingTower (9000,29000) hp 7044 d 9998
+   SIM-A t3048 Tornado side 1 (6500,21500) countdown 450
+SIM t3049 id5000049 (5466,19880) hp 1496 sp 219 buffs [Tornado] tgt 5000003 T KingTower (9000,29000) hp 7044 d 9780
+   SIM-A t3049 Tornado side 1 (6500,21500) countdown 400
+   REC t3049 side 0 (5466,19880) hp 1496
+   REC-A t3049 side 1 (6500,21500) id 28000012
+SIM t3050 id5000049 (5525,20079) hp 1496 sp 208 buffs [Tornado] tgt 5000003 T KingTower (9000,29000) hp 7044 d 9573
+   SIM-A t3050 Tornado side 1 (6500,21500) countdown 350
+SIM t3051 id5000049 (5588,20264) hp 1496 sp 195 buffs [Tornado] tgt 5000003 T KingTower (9000,29000) hp 7044 d 9378
+   SIM-A t3051 Tornado side 1 (6500,21500) countdown 300
+   REC t3051 side 0 (5588,20264) hp 1496
+   REC-A t3051 side 1 (6500,21500) id 28000012
+SIM t3052 id5000049 (5656,20437) hp 1496 sp 186 buffs [Tornado] tgt 5000003 T KingTower (9000,29000) hp 7044 d 9192
+   SIM-A t3052 Tornado side 1 (6500,21500) countdown 250
+SIM t3053 id5000049 (5601,20431) hp 1496 sp 55 buffs [Tornado] tgt 5000003 T KingTower (9000,29000) hp 7044 d 9218
+   SIM-A t3053 Tornado side 1 (6500,21500) countdown 200
+SIM t3054 id5000049 (5558,20460) hp 1496 sp 52 buffs [Tornado] tgt 5000003 T KingTower (9000,29000) hp 7044 d 9207
+   SIM-A t3054 Tornado side 1 (6500,21500) countdown 150
+   REC t3054 side 0 (5558,20460) hp 1496
+   REC-A t3054 side 1 (6500,21500) id 28000012
+SIM t3055 id5000049 (5512,20483) hp 1496 sp 51 buffs [Tornado] tgt 5000003 T KingTower (9000,29000) hp 7044 d 9203
+   SIM-A t3055 Tornado side 1 (6500,21500) countdown 100
+SIM t3056 id5000049 (5465,20505) hp 1496 sp 52 buffs [Tornado] tgt 5000003 T KingTower (9000,29000) hp 7044 d 9201
+   SIM-A t3056 Tornado side 1 (6500,21500) countdown 50
+   REC t3056 side 0 (5465,20505) hp 1496
+   REC-A t3056 side 1 (6500,21500) id 28000012
+SIM t3057 id5000049 (5419,20527) hp 1496 sp 51 buffs [Tornado] tgt 5000003 T KingTower (9000,29000) hp 7044 d 9198
+   SIM-A t3057 Tornado side 1 (6500,21500) countdown 0
+SIM t3058 id5000049 (5373,20549) hp 1496 sp 51 buffs [] tgt 5000003 T KingTower (9000,29000) hp 7044 d 9196
+   REC t3058 side 0 (5373,20549) hp 1496
+SIM t3059 id5000049 (5479,20698) hp 1496 sp 183 buffs [] tgt 5000003 T KingTower (9000,29000) hp 7044 d 9017
+SIM t3060 id5000049 (5305,20604) hp 1496 sp 198 buffs [] tgt 5000003 T KingTower (9000,29000) hp 7044 d 9173
+   REC t3060 side 0 (5305,20604) hp 1496
+SIM t3061 id5000049 (5246,20612) hp 1496 sp 60 buffs [] tgt 5000003 T KingTower (9000,29000) hp 7044 d 9189
+SIM t3062 id5000049 (5196,20644) hp 1496 sp 59 buffs [] tgt 5000003 T KingTower (9000,29000) hp 7044 d 9181
+   REC t3062 side 0 (5196,20644) hp 1496

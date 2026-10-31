@@ -1,0 +1,20 @@
+GK presses 99 {'ok': 77, 'fixed_by_shift': 5, 'upstream_divergence': 7, 'no_frames': 7, 'fixed_by_drop': 2, 'open': 1} records 26
+  gk_dash 80 ok 66
+  gk_buff 12 ok 11
+records 26 with no first divergence 18 of 26
+not OK as extracted:
+  261030_134929 cmd 19 gk_dash tick 1673 run 1673 (window 1671-1673)  n 33 asis 3 drop 3 -> shift ['1657', '1658', '1659', '1660', '1661', '1662', '1663', '1664', '1665', '1666', '1667', '1668', '1669', '1670']
+  261030_143358 cmd 8 gk_dash tick 546 run 546 (window 546-546)  n 32 asis 0 drop 0 -> upstream: the record already diverges at 155, before this press
+  261030_143358 cmd 27 gk_dash tick 2363 run 2363 (window 2363-2363)  n 33 asis 0 drop 0 -> upstream: the record already diverges at 155, before this press
+  261031_080315 cmd 22 gk_dash tick 1842 run 1842 (window 1841-1842)  n 31 asis 30 drop 3 -> shift ['1841']
+  261031_080315 cmd 48 gk_dash tick 3593 run 3593 (window 3592-3593)  n 18 asis 0 drop 0 -> upstream: the record already diverges at 2854, before this press
+  261029_174855 cmd 35 gk_dash tick 3037 run 3037 (window 3036-3037)  n 21 asis 3 drop 21 -> drop
+  261029_220240 cmd 72 gk_dash tick 4582 run 4582 (window 4581-4582)  n 16 asis 12 drop 3 -> shift ['4581']
+  261029_220240 cmd 94 gk_dash tick 5228 run 5228 (window 5227-5228)  n 33 asis 3 drop 3 -> shift ['5227']
+  261029_220240 cmd 116 gk_dash tick 5886 run 5886 (window 5885-5886)  n 33 asis 0 drop 0 -> upstream: the record already diverges at 3827, before this press
+  261029_220240 cmd 118 gk_buff tick 5929 run 5929 (window 5929-5929)  n 32 asis 0 drop 0 -> upstream: the record already diverges at 3827, before this press
+  261028_123045 cmd 22 gk_dash tick 1766 run 1766 (window 1765-1766)  n 33 asis 3 drop 27 -> open (best shift 1756 27/33, drop 27)
+  261028_123045 cmd 59 gk_dash tick 3742 run 3742 (window 3741-3742)  n 33 asis 2 drop 2 -> shift ['3741']
+  261028_123045 cmd 80 gk_dash tick 4773 run 4773 (window 4772-4773)  n 33 asis 0 drop 16 -> upstream: the record already diverges at 1768, before this press
+  261028_230352 cmd 10 gk_dash tick 912 run 912 (window 911-912)  n 6 asis 3 drop 6 -> drop
+  261028_230352 cmd 39 gk_dash tick 3046 run 3046 (window 3045-3046)  n 32 asis 0 drop 0 -> upstream: the record already diverges at 914, before this press

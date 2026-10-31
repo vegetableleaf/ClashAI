@@ -1,0 +1,65 @@
+# 220240: SIM Golden Knight every tick next to the REC rows; as extracted (no press) and with a press added at 3824 (p220240_add)
+## as extracted (no press for the GK play cmd 54)
+SIM t3820 id5000066 (3892,15396) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1638 d 2474
+SIM t3821 id5000066 (3892,15396) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1638 d 2474
+   REC t3821 side 0 (3892,15396) hp 2303
+SIM t3822 id5000066 (3892,15396) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1638 d 2474
+   REC t3822 side 0 (3892,15396) hp 2303
+SIM t3823 id5000066 (3892,15396) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1638 d 2474
+SIM t3824 id5000066 (3892,15396) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1638 d 2474
+SIM t3825 id5000066 (3892,15396) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1638 d 2474
+   REC t3825 side 0 (3892,15396) hp 2303
+SIM t3826 id5000066 (3892,15396) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1638 d 2474
+SIM t3827 id5000066 (3892,15396) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1638 d 2474
+   REC t3827 side 0 (4068,15571) hp 2303
+SIM t3828 id5000066 (3892,15396) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1638 d 2474
+SIM t3829 id5000066 (3892,15396) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1638 d 2474
+   REC t3829 side 0 (3916,15939) hp 2303
+SIM t3830 id5000066 (3892,15396) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1638 d 2474
+SIM t3831 id5000066 (3892,15396) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1638 d 2474
+   REC t3831 side 0 (3612,16675) hp 2303
+SIM t3832 id5000066 (3892,15396) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1638 d 2474
+SIM t3833 id5000066 (3892,15396) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1638 d 2474
+   REC t3833 side 0 (3365,17273) hp 2303
+SIM t3834 id5000066 (3892,15396) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1638 d 2474
+SIM t3835 id5000066 (3892,15396) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1638 d 2474
+   REC t3835 side 0 (3365,17273) hp 2303
+SIM t3836 id5000066 (3892,15396) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1638 d 2474
+SIM t3837 id5000066 (3892,15396) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1638 d 2474
+   REC t3837 side 0 (3365,17273) hp 2303
+SIM t3838 id5000066 (3892,15396) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1369 d 2474
+SIM t3839 id5000066 (3892,15396) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1369 d 2474
+   REC t3839 side 0 (3365,17273) hp 2303
+SIM t3840 id5000066 (3892,15396) hp 2205 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1369 d 2474
+## press added at 3824
+SIM t3820 id5000066 (3892,15396) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1638 d 2474
+SIM t3821 id5000066 (3892,15396) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1638 d 2474
+   REC t3821 side 0 (3892,15396) hp 2303
+SIM t3822 id5000066 (3892,15396) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1638 d 2474
+   REC t3822 side 0 (3892,15396) hp 2303
+SIM t3823 id5000066 (3892,15396) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1638 d 2474
+SIM t3824 id5000066 (3892,15396) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1638 d 2474
+SIM t3825 id5000066 (3892,15396) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1638 d 2474
+   REC t3825 side 0 (3892,15396) hp 2303
+SIM t3826 id5000066 (4068,15571) hp 2303 sp 248 buffs [IceWizardHeroSlow|GoldenKnightCharge] tgt 5000065 C Knight_EV1 (5503,17274) hp 1103 d 2226
+SIM t3827 id5000066 (4068,15571) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1103 d 2226
+   REC t3827 side 0 (4068,15571) hp 2303
+SIM t3828 id5000066 (4068,15571) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000062 C Xbow (2500,19500) hp 712 d 4230
+SIM t3829 id5000066 (3916,15939) hp 2303 sp 398 buffs [IceWizardHeroSlow] tgt 5000062 C Xbow (2500,19500) hp 707 d 3832
+   REC t3829 side 0 (3916,15939) hp 2303
+SIM t3830 id5000066 (3764,16307) hp 2303 sp 398 buffs [IceWizardHeroSlow] tgt 5000062 C Xbow (2500,19500) hp 703 d 3434
+SIM t3831 id5000066 (3612,16675) hp 2303 sp 398 buffs [IceWizardHeroSlow] tgt 5000062 C Xbow (2500,19500) hp 244 d 3035
+   REC t3831 side 0 (3612,16675) hp 2303
+SIM t3832 id5000066 (3460,17043) hp 2303 sp 398 buffs [IceWizardHeroSlow] tgt 5000062 C Xbow (2500,19500) hp 240 d 2637
+SIM t3833 id5000066 (3365,17273) hp 2303 sp 249 buffs [IceWizardHeroSlow] tgt -1 
+   REC t3833 side 0 (3365,17273) hp 2303
+SIM t3834 id5000066 (3365,17273) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt -1 
+SIM t3835 id5000066 (3365,17273) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt -1 
+   REC t3835 side 0 (3365,17273) hp 2303
+SIM t3836 id5000066 (3365,17273) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt -1 
+SIM t3837 id5000066 (3365,17273) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1103 d 2138
+   REC t3837 side 0 (3365,17273) hp 2303
+SIM t3838 id5000066 (3365,17273) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1103 d 2138
+SIM t3839 id5000066 (3365,17273) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1103 d 2138
+   REC t3839 side 0 (3365,17273) hp 2303
+SIM t3840 id5000066 (3365,17273) hp 2303 sp 0 buffs [IceWizardHeroSlow] tgt 5000065 C Knight_EV1 (5503,17274) hp 1103 d 2138

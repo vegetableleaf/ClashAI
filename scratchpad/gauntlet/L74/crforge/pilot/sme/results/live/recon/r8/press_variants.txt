@@ -1,0 +1,56 @@
+# RECON-8: the Golden Knight press of the three failing records, variants scored against the REC frames (r8_press.py; per variant: GK-only exactness over the REC frames of the window; --full = the whole-record comparator analyse + reclassify)
+# RUN 0 = the plan as it is; RUN -1 = the press dropped; RUN R = the press moved to run tick R (given = R - 20); --add = a NEW ability naming the GK play appended.
+## 174855 (FRESH9) gate plan, cmd 35 = the gk_dash press at 3037 (a Tornado pull read as a dash)
+run 0 exact frames 9 | 3021:ok 3023:ok 3025:ok 3027:ok 3029:ok 3031:ok 3033:ok 3035:ok 3037:ok 3039:(-49,36) 3041:(-109,131) 3043:(-154,225) 3045:(-194,303) 3047:(-215,376) 3049:(-226,423) 3051:(-318,372) 3054:(-413,454) 3056:(-407,602) 3058:(-327,760) 3060:(-455,881) 3062:(-448,1057) 3064:(-450,1209) 3065:(-433,1291) 3067:(-427,1425) 3069:(-367,1563) 3071:(-265,1699) 3073:(-182,1830) 3075:-
+   full: {"frames": 1742, "counts": {"exact": 1696, "div": 46}, "first": 3039, "missing_in_sim": 0}
+run -1 exact frames 27 | 3021:ok 3023:ok 3025:ok 3027:ok 3029:ok 3031:ok 3033:ok 3035:ok 3037:ok 3039:ok 3041:ok 3043:ok 3045:ok 3047:ok 3049:ok 3051:ok 3054:ok 3056:ok 3058:ok 3060:ok 3062:ok 3064:ok 3065:ok 3067:ok 3069:ok 3071:ok 3073:ok 3075:-
+   full: {"frames": 1742, "counts": {"exact": 1742}, "first": null, "missing_in_sim": 0}
+run 3039 exact frames 10 | 3021:ok 3023:ok 3025:ok 3027:ok 3029:ok 3031:ok 3033:ok 3035:ok 3037:ok 3039:ok 3041:(-49,37) 3043:(-124,118) 3045:(-166,208) 3047:(-192,296) 3049:(-209,358) 3051:(-219,395) 3054:(-391,422) 3056:(-390,572) 3058:(-229,751) 3060:(-466,851) 3062:(-455,1029) 3064:(-453,1182) 3065:(-436,1265) 3067:(-428,1399) 3069:(-367,1538) 3071:(-265,1674) 3073:(-182,1805) 3075:-
+   full: {"frames": 1742, "counts": {"exact": 1697, "div": 45}, "first": 3041, "missing_in_sim": 0}
+## 134929 (FRESH10) v3 recon plan, cmd 19 = the gk_dash press at 1673 (extracted window 1671-1673; the GK is frozen until 1669)
+run 0 exact frames 7 | 1661:ok 1663:ok 1665:ok 1667:ok 1669:ok 1671:ok 1672:ok 1675:(388,-71) 1677:(341,-175) 1679:(231,-261) 1681:(134,-136) 1683:(134,-136) 1685:(134,-136) 1687:(134,-136) 1689:(134,-136) 1691:(134,-136) 1693:(134,-136) 1695:(134,-136) 1697:(134,-136) 1699:(134,-136)
+   full: {"frames": 1887, "counts": {"exact": 1857, "div": 30}, "first": 1675, "missing_in_sim": 0}
+run 1664 exact frames 20 | 1661:ok 1663:ok 1665:ok 1667:ok 1669:ok 1671:ok 1672:ok 1675:ok 1677:ok 1679:ok 1681:ok 1683:ok 1685:ok 1687:ok 1689:ok 1691:ok 1693:ok 1695:ok 1697:ok 1699:ok
+   full: {"frames": 1887, "counts": {"exact": 1887}, "first": null, "missing_in_sim": 0}
+run 1665 exact frames 20 | 1661:ok 1663:ok 1665:ok 1667:ok 1669:ok 1671:ok 1672:ok 1675:ok 1677:ok 1679:ok 1681:ok 1683:ok 1685:ok 1687:ok 1689:ok 1691:ok 1693:ok 1695:ok 1697:ok 1699:ok
+   full: {"frames": 1887, "counts": {"exact": 1887}, "first": null, "missing_in_sim": 0}
+run 1666 exact frames 20 | 1661:ok 1663:ok 1665:ok 1667:ok 1669:ok 1671:ok 1672:ok 1675:ok 1677:ok 1679:ok 1681:ok 1683:ok 1685:ok 1687:ok 1689:ok 1691:ok 1693:ok 1695:ok 1697:ok 1699:ok
+   full: {"frames": 1887, "counts": {"exact": 1887}, "first": null, "missing_in_sim": 0}
+run 1667 exact frames 20 | 1661:ok 1663:ok 1665:ok 1667:ok 1669:ok 1671:ok 1672:ok 1675:ok 1677:ok 1679:ok 1681:ok 1683:ok 1685:ok 1687:ok 1689:ok 1691:ok 1693:ok 1695:ok 1697:ok 1699:ok
+   full: {"frames": 1887, "counts": {"exact": 1887}, "first": null, "missing_in_sim": 0}
+run 1668 exact frames 20 | 1661:ok 1663:ok 1665:ok 1667:ok 1669:ok 1671:ok 1672:ok 1675:ok 1677:ok 1679:ok 1681:ok 1683:ok 1685:ok 1687:ok 1689:ok 1691:ok 1693:ok 1695:ok 1697:ok 1699:ok
+   full: {"frames": 1887, "counts": {"exact": 1887}, "first": null, "missing_in_sim": 0}
+run 1669 exact frames 20 | 1661:ok 1663:ok 1665:ok 1667:ok 1669:ok 1671:ok 1672:ok 1675:ok 1677:ok 1679:ok 1681:ok 1683:ok 1685:ok 1687:ok 1689:ok 1691:ok 1693:ok 1695:ok 1697:ok 1699:ok
+   full: {"frames": 1887, "counts": {"exact": 1887}, "first": null, "missing_in_sim": 0}
+run 1670 exact frames 20 | 1661:ok 1663:ok 1665:ok 1667:ok 1669:ok 1671:ok 1672:ok 1675:ok 1677:ok 1679:ok 1681:ok 1683:ok 1685:ok 1687:ok 1689:ok 1691:ok 1693:ok 1695:ok 1697:ok 1699:ok
+   full: {"frames": 1887, "counts": {"exact": 1887}, "first": null, "missing_in_sim": 0}
+run 1671 exact frames 6 | 1661:ok 1663:ok 1665:ok 1667:ok 1669:ok 1671:ok 1672:(1,28) 1675:(-311,41) 1677:(-251,127) 1679:(-112,36) 1681:(-57,-208) 1683:(-57,-208) 1685:(-57,-208) 1687:(-57,-208) 1689:(-57,-208) 1691:(-57,-208) 1693:(-57,-208) 1695:(-57,-208) 1697:(-57,-208) 1699:(-57,-208)
+   full: {"frames": 1887, "counts": {"exact": 1856, "div": 31}, "first": 1672, "missing_in_sim": 0}
+run 1672 exact frames 7 | 1661:ok 1663:ok 1665:ok 1667:ok 1669:ok 1671:ok 1672:ok 1675:(34,-30) 1677:(32,-37) 1679:(18,-47) 1681:(11,-49) 1683:(11,-49) 1685:(11,-49) 1687:(11,-49) 1689:(11,-49) 1691:(11,-49) 1693:(11,-49) 1695:(11,-49) 1697:(11,-49) 1699:(11,-49)
+   full: {"frames": 1887, "counts": {"exact": 1857, "div": 30}, "first": 1675, "missing_in_sim": 0}
+run 1674 exact frames 7 | 1661:ok 1663:ok 1665:ok 1667:ok 1669:ok 1671:ok 1672:ok 1675:(750,-95) 1677:(669,-297) 1679:(479,-471) 1681:(234,-143) 1683:(234,-143) 1685:(234,-143) 1687:(234,-143) 1689:(234,-143) 1691:(234,-143) 1693:(234,-143) 1695:(234,-143) 1697:(234,-143) 1699:(234,-143)
+   full: {"frames": 1887, "counts": {"exact": 1641, "div": 246}, "first": 1675, "missing_in_sim": 0}
+## 220240 (FRESH9) cyc recon plan, a press ADDED naming the GK play cmd 54 (the extractor emitted none: the 100-tick gate after a fake burst at 3756 hid the dash at 3827)
+run 0 exact frames 13 | 3801:ok 3803:ok 3805:ok 3807:ok 3809:ok 3811:ok 3813:ok 3815:ok 3817:ok 3819:ok 3821:ok 3822:ok 3825:ok 3827:(-176,-175) 3829:(-24,-543) 3831:(280,-1279) 3833:(527,-1877) 3835:(527,-1877) 3837:(527,-1877) 3839:(527,-1877) 3841:(527,-1877) 3843:(527,-1877) 3845:(527,-1877) 3847:(527,-1877) 3849:(527,-1877) 3851:(527,-1877) 3853:(527,-1877) 3855:(527,-1877) 3857:(527,-1877) 3859:(527,-1877) 3861:(527,-1877) 3863:(527,-1877) 3865:(527,-1877) 3867:(527,-1877) 3869:(527,-1877)
+   full: {"frames": 3017, "counts": {"exact": 1835, "div": 1182}, "first": 3827, "missing_in_sim": 0}
+run 3821 exact frames 31 | 3801:ok 3803:ok 3805:ok 3807:ok 3809:ok 3811:ok 3813:ok 3815:ok 3817:ok 3819:ok 3821:ok 3822:ok 3825:(176,175) 3827:(-304,736) 3829:(-456,1104) 3831:(-247,598) 3833:ok 3835:ok 3837:ok 3839:ok 3841:ok 3843:ok 3845:ok 3847:ok 3849:ok 3851:ok 3853:ok 3855:ok 3857:ok 3859:ok 3861:ok 3863:ok 3865:ok 3867:ok 3869:ok
+   full: {"frames": 3001, "counts": {"exact": 1839, "div": 1162}, "first": 3825, "missing_in_sim": 16}
+run 3822 exact frames 31 | 3801:ok 3803:ok 3805:ok 3807:ok 3809:ok 3811:ok 3813:ok 3815:ok 3817:ok 3819:ok 3821:ok 3822:ok 3825:(176,175) 3827:(-152,368) 3829:(-304,736) 3831:(-247,598) 3833:ok 3835:ok 3837:ok 3839:ok 3841:ok 3843:ok 3845:ok 3847:ok 3849:ok 3851:ok 3853:ok 3855:ok 3857:ok 3859:ok 3861:ok 3863:ok 3865:ok 3867:ok 3869:ok
+   full: {"frames": 3017, "counts": {"exact": 2240, "div": 777}, "first": 3825, "missing_in_sim": 0}
+run 3823 exact frames 32 | 3801:ok 3803:ok 3805:ok 3807:ok 3809:ok 3811:ok 3813:ok 3815:ok 3817:ok 3819:ok 3821:ok 3822:ok 3825:(176,175) 3827:ok 3829:(-152,368) 3831:(-152,368) 3833:ok 3835:ok 3837:ok 3839:ok 3841:ok 3843:ok 3845:ok 3847:ok 3849:ok 3851:ok 3853:ok 3855:ok 3857:ok 3859:ok 3861:ok 3863:ok 3865:ok 3867:ok 3869:ok
+   full: {"frames": 3017, "counts": {"exact": 2248, "div": 769}, "first": 3825, "missing_in_sim": 0}
+run 3824 exact frames 35 | 3801:ok 3803:ok 3805:ok 3807:ok 3809:ok 3811:ok 3813:ok 3815:ok 3817:ok 3819:ok 3821:ok 3822:ok 3825:ok 3827:ok 3829:ok 3831:ok 3833:ok 3835:ok 3837:ok 3839:ok 3841:ok 3843:ok 3845:ok 3847:ok 3849:ok 3851:ok 3853:ok 3855:ok 3857:ok 3859:ok 3861:ok 3863:ok 3865:ok 3867:ok 3869:ok
+   full: {"frames": 3017, "counts": {"exact": 2282, "div": 735}, "first": 4586, "missing_in_sim": 0}
+run 3825 exact frames 32 | 3801:ok 3803:ok 3805:ok 3807:ok 3809:ok 3811:ok 3813:ok 3815:ok 3817:ok 3819:ok 3821:ok 3822:ok 3825:ok 3827:ok 3829:(152,-368) 3831:(152,-368) 3833:(95,-230) 3835:ok 3837:ok 3839:ok 3841:ok 3843:ok 3845:ok 3847:ok 3849:ok 3851:ok 3853:ok 3855:ok 3857:ok 3859:ok 3861:ok 3863:ok 3865:ok 3867:ok 3869:ok
+   full: {"frames": 3017, "counts": {"exact": 2056, "div": 961}, "first": 3829, "missing_in_sim": 0}
+run 3826 exact frames 31 | 3801:ok 3803:ok 3805:ok 3807:ok 3809:ok 3811:ok 3813:ok 3815:ok 3817:ok 3819:ok 3821:ok 3822:ok 3825:ok 3827:(-176,-175) 3829:(152,-368) 3831:(304,-736) 3833:(247,-598) 3835:ok 3837:ok 3839:ok 3841:ok 3843:ok 3845:ok 3847:ok 3849:ok 3851:ok 3853:ok 3855:ok 3857:ok 3859:ok 3861:ok 3863:ok 3865:ok 3867:ok 3869:ok
+   full: {"frames": 3017, "counts": {"exact": 1841, "div": 1176}, "first": 3827, "missing_in_sim": 0}
+## 220240 after the 3824 press: the next GK chain (extracted press 4582, window 4581-4582), cmd 72 of the patched plan
+run 0 exact frames 16 | 4571:ok 4573:ok 4575:ok 4577:ok 4578:ok 4580:ok 4582:ok 4584:ok 4586:(-80,-390) 4588:(-80,-390) 4590:ok 4592:(392,-71) 4594:(392,-72) 4597:ok 4599:ok 4601:ok 4603:ok 4605:ok 4607:ok 4609:ok 4611:- 4613:- 4615:- 4617:- 4619:- 4621:- 4623:- 4625:- 4627:- 4629:- 4631:- 4633:- 4635:- 4637:- 4638:-
+   full: {"frames": 3017, "counts": {"exact": 2282, "div": 735}, "first": 4586, "missing_in_sim": 0}
+run 4580 exact frames 15 | 4571:ok 4573:ok 4575:ok 4577:ok 4578:ok 4580:ok 4582:(250,5) 4584:ok 4586:(80,390) 4588:(50,244) 4590:ok 4592:(-392,72) 4594:(-392,72) 4597:ok 4599:ok 4601:ok 4603:ok 4605:ok 4607:ok 4609:ok 4611:- 4613:- 4615:- 4617:- 4619:- 4621:- 4623:- 4625:- 4627:- 4629:- 4631:- 4633:- 4635:- 4637:- 4638:-
+   full: {"frames": 3017, "counts": {"exact": 2282, "div": 735}, "first": 4582, "missing_in_sim": 0}
+run 4581 exact frames 20 | 4571:ok 4573:ok 4575:ok 4577:ok 4578:ok 4580:ok 4582:ok 4584:ok 4586:ok 4588:ok 4590:ok 4592:ok 4594:ok 4597:ok 4599:ok 4601:ok 4603:ok 4605:ok 4607:ok 4609:ok 4611:- 4613:- 4615:- 4617:- 4619:- 4621:- 4623:- 4625:- 4627:- 4629:- 4631:- 4633:- 4635:- 4637:- 4638:-
+   full: {"frames": 3017, "counts": {"exact": 2294, "div": 723}, "first": 4747, "missing_in_sim": 0}
+run 4582 exact frames 16 | 4571:ok 4573:ok 4575:ok 4577:ok 4578:ok 4580:ok 4582:ok 4584:ok 4586:(-80,-390) 4588:(-80,-390) 4590:ok 4592:(392,-71) 4594:(392,-72) 4597:ok 4599:ok 4601:ok 4603:ok 4605:ok 4607:ok 4609:ok 4611:- 4613:- 4615:- 4617:- 4619:- 4621:- 4623:- 4625:- 4627:- 4629:- 4631:- 4633:- 4635:- 4637:- 4638:-
+   full: {"frames": 3017, "counts": {"exact": 2282, "div": 735}, "first": 4586, "missing_in_sim": 0}

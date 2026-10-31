@@ -1,0 +1,89 @@
+# 134929: SIM Golden Knight every tick next to the REC rows; as extracted (press 1673) and with the press at 1668 (the GK is frozen by the Ice Wizard until 1669; any press 1664-1670 gives the same SIM)
+## as extracted (press run 1673)
+SIM t1662 id5000018 (13248,18320) hp 2135 sp 0 buffs [IceWizardHero_FreezeBuff] tgt -1 
+SIM t1663 id5000018 (13245,18321) hp 2135 sp 3 buffs [IceWizardHero_FreezeBuff] tgt -1 
+   REC t1663 side 0 (13245,18321) hp 2135
+SIM t1664 id5000018 (13243,18322) hp 2135 sp 2 buffs [IceWizardHero_FreezeBuff] tgt -1 
+SIM t1665 id5000018 (13241,18323) hp 2135 sp 2 buffs [IceWizardHero_FreezeBuff] tgt -1 
+   REC t1665 side 0 (13241,18323) hp 2135
+SIM t1666 id5000018 (13239,18324) hp 2135 sp 2 buffs [IceWizardHero_FreezeBuff] tgt -1 
+SIM t1667 id5000018 (13238,18325) hp 2135 sp 1 buffs [IceWizardHero_FreezeBuff] tgt -1 
+   REC t1667 side 0 (13238,18325) hp 2135
+SIM t1668 id5000018 (13237,18326) hp 1962 sp 1 buffs [IceWizardHero_FreezeBuff] tgt -1 
+SIM t1669 id5000018 (13236,18326) hp 1611 sp 1 buffs [IceWizardHero_FreezeBuff] tgt -1 
+   REC t1669 side 0 (13236,18326) hp 1611
+SIM t1670 id5000018 (13236,18327) hp 1611 sp 1 buffs [] tgt -1 
+SIM t1671 id5000018 (13193,18319) hp 1611 sp 44 buffs [IceWizardHero_SlowBuff] tgt -1 
+   REC t1671 side 0 (13193,18319) hp 1611
+SIM t1672 id5000018 (13153,18308) hp 1611 sp 41 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 1358 d 4273
+   REC t1672 side 0 (13153,18308) hp 1611
+SIM t1673 id5000018 (13111,18301) hp 1611 sp 43 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 1354 d 4258
+SIM t1674 id5000018 (13079,18329) hp 1611 sp 43 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 1350 d 4218
+SIM t1675 id5000018 (12679,18355) hp 1611 sp 401 buffs [IceWizardHero_SlowBuff|GoldenKnightCharge] tgt 5000022 C Tesla (11000,22000) hp 1347 d 4013
+   REC t1675 side 0 (12291,18426) hp 1611
+SIM t1676 id5000018 (12295,18462) hp 1611 sp 399 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 1343 d 3767
+SIM t1677 id5000018 (11943,18649) hp 1611 sp 399 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 1339 d 3481
+   REC t1677 side 0 (11602,18824) hp 1611
+SIM t1678 id5000018 (11639,18908) hp 1611 sp 399 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 1335 d 3157
+SIM t1679 id5000018 (11402,19231) hp 1611 sp 401 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 1332 d 2798
+   REC t1679 side 0 (11171,19492) hp 1611
+SIM t1680 id5000018 (11250,19600) hp 1611 sp 399 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 793 d 2412
+SIM t1681 id5000018 (11250,19600) hp 1611 sp 0 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 789 d 2412
+   REC t1681 side 0 (11116,19736) hp 1611
+SIM t1682 id5000018 (11250,19600) hp 1611 sp 0 buffs [IceWizardHero_SlowBuff] tgt -1 
+SIM t1683 id5000018 (11250,19600) hp 1611 sp 0 buffs [IceWizardHero_SlowBuff] tgt -1 
+   REC t1683 side 0 (11116,19736) hp 1438
+SIM t1684 id5000018 (11250,19600) hp 1438 sp 0 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 778 d 2412
+SIM t1685 id5000018 (11250,19600) hp 1438 sp 0 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 774 d 2412
+   REC t1685 side 0 (11116,19736) hp 1438
+SIM t1686 id5000018 (11250,19600) hp 1438 sp 0 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 770 d 2412
+SIM t1687 id5000018 (11250,19600) hp 1438 sp 0 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 766 d 2412
+   REC t1687 side 0 (11116,19736) hp 1438
+SIM t1688 id5000018 (11250,19600) hp 1438 sp 0 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 763 d 2412
+SIM t1689 id5000018 (11250,19600) hp 1438 sp 0 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 759 d 2412
+   REC t1689 side 0 (11116,19736) hp 1438
+SIM t1690 id5000018 (11250,19600) hp 1438 sp 0 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 755 d 2412
+## press moved to 1668
+SIM t1662 id5000018 (13248,18320) hp 2135 sp 0 buffs [IceWizardHero_FreezeBuff] tgt -1 
+SIM t1663 id5000018 (13245,18321) hp 2135 sp 3 buffs [IceWizardHero_FreezeBuff] tgt -1 
+   REC t1663 side 0 (13245,18321) hp 2135
+SIM t1664 id5000018 (13243,18322) hp 2135 sp 2 buffs [IceWizardHero_FreezeBuff] tgt -1 
+SIM t1665 id5000018 (13241,18323) hp 2135 sp 2 buffs [IceWizardHero_FreezeBuff] tgt -1 
+   REC t1665 side 0 (13241,18323) hp 2135
+SIM t1666 id5000018 (13239,18324) hp 2135 sp 2 buffs [IceWizardHero_FreezeBuff] tgt -1 
+SIM t1667 id5000018 (13238,18325) hp 2135 sp 1 buffs [IceWizardHero_FreezeBuff] tgt -1 
+   REC t1667 side 0 (13238,18325) hp 2135
+SIM t1668 id5000018 (13237,18326) hp 1962 sp 1 buffs [IceWizardHero_FreezeBuff] tgt -1 
+SIM t1669 id5000018 (13236,18326) hp 1611 sp 1 buffs [IceWizardHero_FreezeBuff] tgt -1 
+   REC t1669 side 0 (13236,18326) hp 1611
+SIM t1670 id5000018 (13236,18327) hp 1611 sp 1 buffs [] tgt -1 
+SIM t1671 id5000018 (13193,18319) hp 1611 sp 44 buffs [IceWizardHero_SlowBuff] tgt -1 
+   REC t1671 side 0 (13193,18319) hp 1611
+SIM t1672 id5000018 (13153,18308) hp 1611 sp 41 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 1358 d 4273
+   REC t1672 side 0 (13153,18308) hp 1611
+SIM t1673 id5000018 (13083,18354) hp 1611 sp 84 buffs [IceWizardHero_SlowBuff|GoldenKnightCharge] tgt 5000022 C Tesla (11000,22000) hp 1354 d 4199
+SIM t1674 id5000018 (12683,18347) hp 1611 sp 400 buffs [IceWizardHero_SlowBuff|GoldenKnightCharge] tgt 5000022 C Tesla (11000,22000) hp 1350 d 4022
+SIM t1675 id5000018 (12291,18426) hp 1611 sp 400 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 1347 d 3800
+   REC t1675 side 0 (12291,18426) hp 1611
+SIM t1676 id5000018 (11924,18587) hp 1611 sp 401 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 1343 d 3535
+SIM t1677 id5000018 (11602,18824) hp 1611 sp 400 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 1339 d 3232
+   REC t1677 side 0 (11602,18824) hp 1611
+SIM t1678 id5000018 (11343,19131) hp 1611 sp 402 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 1335 d 2889
+SIM t1679 id5000018 (11171,19492) hp 1611 sp 400 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 1332 d 2513
+   REC t1679 side 0 (11171,19492) hp 1611
+SIM t1680 id5000018 (11116,19736) hp 1611 sp 250 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 793 d 2266
+SIM t1681 id5000018 (11116,19736) hp 1611 sp 0 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 789 d 2266
+   REC t1681 side 0 (11116,19736) hp 1611
+SIM t1682 id5000018 (11116,19736) hp 1611 sp 0 buffs [IceWizardHero_SlowBuff] tgt -1 
+SIM t1683 id5000018 (11116,19736) hp 1438 sp 0 buffs [IceWizardHero_SlowBuff] tgt -1 
+   REC t1683 side 0 (11116,19736) hp 1438
+SIM t1684 id5000018 (11116,19736) hp 1438 sp 0 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 778 d 2266
+SIM t1685 id5000018 (11116,19736) hp 1438 sp 0 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 774 d 2266
+   REC t1685 side 0 (11116,19736) hp 1438
+SIM t1686 id5000018 (11116,19736) hp 1438 sp 0 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 770 d 2266
+SIM t1687 id5000018 (11116,19736) hp 1438 sp 0 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 766 d 2266
+   REC t1687 side 0 (11116,19736) hp 1438
+SIM t1688 id5000018 (11116,19736) hp 1438 sp 0 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 763 d 2266
+SIM t1689 id5000018 (11116,19736) hp 1438 sp 0 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 759 d 2266
+   REC t1689 side 0 (11116,19736) hp 1438
+SIM t1690 id5000018 (11116,19736) hp 1438 sp 0 buffs [IceWizardHero_SlowBuff] tgt 5000022 C Tesla (11000,22000) hp 755 d 2266

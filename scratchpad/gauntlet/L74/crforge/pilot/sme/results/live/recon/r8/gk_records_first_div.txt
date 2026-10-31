@@ -1,0 +1,26 @@
+live_play_20261028_112825 None {"exact": 3007} runs/d49_cyc2
+live_play_20261029_003649 None {"exact": 3048} runs/d49_cyc2
+live_play_20261030_134929 1675 {"exact": 1857, "div": 30} runs/f10_v3
+live_play_20261030_140450 None {"exact": 2177} runs/f10_cyc_aff
+live_play_20261030_143358 155 {"exact": 2, "div": 1763} runs/f10_cyc_aff
+live_play_20261030_163314 None {"exact": 3019, "torn_mixed": 1} runs/f10_v3
+live_play_20261031_021011 None {"exact": 1766} runs/f11_v3
+live_play_20261031_044420 None {"exact": 1765} runs/f12_v3
+live_play_20261031_074856 None {"exact": 3032} runs/f12_v3
+live_play_20261031_080315 2854 {"exact": 1347, "torn_mixed": 3, "div": 722} runs/f12_v3
+live_play_20261029_101523 3624 {"exact": 2365, "torn_hidden": 38, "div": 59} runs/f9_cyc_aff
+live_play_20261029_103220 None {"exact": 3007} runs/f9_v3
+live_play_20261029_113915 None {"exact": 2010} runs/f9_v3
+live_play_20261029_122258 None {"exact": 1765} runs/f9_v3
+live_play_20261029_122644 None {"exact": 1765} runs/f9_v3
+live_play_20261029_174855 3039 {"exact": 1439, "div": 274} runs/f9_v3
+live_play_20261029_220240 3827 {"exact": 1835, "div": 1182} runs/f9_cyc_aff
+live_play_20261030_080409 None {"exact": 1814} runs/f9_v3
+live_play_20261028_123045 1768 {"exact": 809, "div": 1643} runs/r2_fail
+live_play_20261028_131515 None {"exact": 2264} runs/r2_rest
+live_play_20261028_230352 914 {"exact": 379, "div": 1383} runs/r2_fail
+live_play_20261029_021629 None {"exact": 3029} runs/r2_rest
+live_play_20261029_030932 None {"exact": 1958} runs/r2_rest
+live_play_20261029_052724 None {"exact": 2468} runs/r2_rest
+live_play_20261029_065350 None {"exact": 1765} runs/r2_rest
+live_play_20261029_075016 None {"exact": 1830} runs/r2_rest

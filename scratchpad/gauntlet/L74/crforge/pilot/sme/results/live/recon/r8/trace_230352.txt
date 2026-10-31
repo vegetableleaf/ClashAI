@@ -1,0 +1,48 @@
+# 230352: SIM GK every tick next to the REC rows, press as extracted (912) then dropped
+## as extracted
+SIM t904 id5000012 (13082,18733) hp 165 sp 0 buffs [] tgt 5000013 C Knight (10969,21847) hp 777 d 3763
+   REC t904 side 0 (13082,18733) hp 165
+SIM t905 id5000012 (13045,18779) hp 165 sp 59 buffs [] tgt 5000013 C Knight (10994,21793) hp 777 d 3645
+SIM t906 id5000012 (13068,18834) hp 165 sp 60 buffs [] tgt 5000013 C Knight (11029,21745) hp 777 d 3554
+   REC t906 side 0 (13068,18834) hp 165
+SIM t907 id5000012 (13049,18890) hp 165 sp 59 buffs [] tgt 5000013 C Knight (11064,21697) hp 777 d 3437
+SIM t908 id5000012 (13019,18941) hp 165 sp 59 buffs [] tgt 5000013 C Knight (11099,21649) hp 777 d 3319
+   REC t908 side 0 (13019,18941) hp 165
+SIM t909 id5000012 (12989,18992) hp 165 sp 59 buffs [] tgt 5000013 C Knight (11134,21601) hp 777 d 3201
+SIM t910 id5000012 (12933,19011) hp 165 sp 59 buffs [] tgt 5000013 C Knight (11169,21553) hp 777 d 3094
+   REC t910 side 0 (12933,19011) hp 165
+SIM t911 id5000012 (12883,19042) hp 67 sp 59 buffs [Rage] tgt 5000013 C Knight (11184,21496) hp 777 d 2984
+SIM t912 id5000012 (12817,19083) hp 67 sp 78 buffs [Rage] tgt 5000013 C Knight (11189,21437) hp 491 d 2862
+   REC t912 side 0 (12817,19083) hp 67
+SIM t913 id5000012 (12767,19142) hp 67 sp 77 buffs [Rage] tgt 5000013 C Knight (11245,21419) hp 491 d 2738
+SIM t914 id5000012 (12599,19325) hp 67 sp 248 buffs [Rage|GoldenKnightCharge] tgt 5000013 C Knight (11281,21372) hp 4 d 2434
+   REC t914 side 0 (12717,19201) hp 67
+SIM t915 id5000012 (12599,19325) hp 67 sp 0 buffs [Rage] tgt 5000013 C Knight (11281,21372) hp 4 d 2434
+SIM t916 id5000012 (12599,19325) hp 67 sp 0 buffs [Rage] tgt -1 
+   REC t916 side 0 (12667,19260) hp 67
+SIM t917 id5000012 (12599,19325) hp 67 sp 0 buffs [Rage] tgt -1 
+   REC t918 side 0 (12667,19260) hp 67
+## press dropped
+SIM t904 id5000012 (13082,18733) hp 165 sp 0 buffs [] tgt 5000013 C Knight (10969,21847) hp 777 d 3763
+   REC t904 side 0 (13082,18733) hp 165
+SIM t905 id5000012 (13045,18779) hp 165 sp 59 buffs [] tgt 5000013 C Knight (10994,21793) hp 777 d 3645
+SIM t906 id5000012 (13068,18834) hp 165 sp 60 buffs [] tgt 5000013 C Knight (11029,21745) hp 777 d 3554
+   REC t906 side 0 (13068,18834) hp 165
+SIM t907 id5000012 (13049,18890) hp 165 sp 59 buffs [] tgt 5000013 C Knight (11064,21697) hp 777 d 3437
+SIM t908 id5000012 (13019,18941) hp 165 sp 59 buffs [] tgt 5000013 C Knight (11099,21649) hp 777 d 3319
+   REC t908 side 0 (13019,18941) hp 165
+SIM t909 id5000012 (12989,18992) hp 165 sp 59 buffs [] tgt 5000013 C Knight (11134,21601) hp 777 d 3201
+SIM t910 id5000012 (12933,19011) hp 165 sp 59 buffs [] tgt 5000013 C Knight (11169,21553) hp 777 d 3094
+   REC t910 side 0 (12933,19011) hp 165
+SIM t911 id5000012 (12883,19042) hp 67 sp 59 buffs [Rage] tgt 5000013 C Knight (11184,21496) hp 777 d 2984
+SIM t912 id5000012 (12817,19083) hp 67 sp 78 buffs [Rage] tgt 5000013 C Knight (11189,21437) hp 491 d 2862
+   REC t912 side 0 (12817,19083) hp 67
+SIM t913 id5000012 (12767,19142) hp 67 sp 77 buffs [Rage] tgt 5000013 C Knight (11245,21419) hp 491 d 2738
+SIM t914 id5000012 (12717,19201) hp 67 sp 77 buffs [Rage] tgt 5000013 C Knight (11294,21386) hp 491 d 2607
+   REC t914 side 0 (12717,19201) hp 67
+SIM t915 id5000012 (12667,19260) hp 67 sp 77 buffs [Rage] tgt 5000013 C Knight (11343,21353) hp 491 d 2476
+SIM t916 id5000012 (12667,19260) hp 67 sp 0 buffs [Rage] tgt 5000013 C Knight (11343,21353) hp 491 d 2476
+   REC t916 side 0 (12667,19260) hp 67
+SIM t917 id5000012 (12667,19260) hp 67 sp 0 buffs [Rage] tgt 5000013 C Knight (11343,21353) hp 491 d 2476
+SIM t918 id5000012 (12667,19260) hp 67 sp 0 buffs [Rage] tgt 5000013 C Knight (11343,21353) hp 491 d 2476
+   REC t918 side 0 (12667,19260) hp 67
