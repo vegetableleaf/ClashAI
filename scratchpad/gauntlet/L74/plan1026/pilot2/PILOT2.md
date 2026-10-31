@@ -3,6 +3,39 @@
 Labels: (a) measured (number + source), (b) plausible, untested, (c) contradicted.
 
 ## STATUS (keep current)
+- **pilot2_Lc = pilot2_L CONTINUED on 33308 (L-RESUME, 10-31 07:05 UTC, RUNNING).** TRUE resume (rl_royale --resume): the
+  laptop's pilot2_L_latest.pt (after update 34, sha 490271e5fccc2a21 = Mark CLXV) copied as pilot2_Lc_latest.pt -> log
+  "resumed at update 35, beta 0.0" (optimizer, update counter, rng, kl_ref, guards restored; the stored run name is not checked).
+  Same recipe as L (pilot2.yaml + minibatch 65536, lr 2e-5, ppo_epochs 2, ppo_decoupled 2.0, overlap 1, 512 matches / update);
+  "RESUME with a changed config" = exactly {max_updates 600 -> 200, trunk_graph 512 -> 256, micro_batch 512 -> 256} (micro =
+  exact gradient accumulation; trunk_graph = the graphed row count, follows micro). Fit to one 4090: SERVER=eager (no graph
+  pools), FASTLOOP_SHARDS 1, LOCAL_FWD=0 (producers make no CUDA context; their timing-head forwards on CPU), GPU 0 only
+  (CUDA_VISIBLE_DEVICES=0; GPU 1 untouched, 1 MiB). Tree /workspace/loopL (setup_Lc.sh: copy of the lead's /workspace/loop/cb
+  with pipeline/ + scratchpad/gauntlet/L74/ from 7c9af63 (training code == 930adf2's), 85 artifacts from the store by sha,
+  init p2init.pt sha cdde779a); the lead's /workspace/loop/cb + /workspace/pgate2 untouched.
+  - (a) u0035 (first policy update after the resume): W/L/D 396/116 (77.3%), 6 steps, kl_stop no, KL g/c/x .0012/.0002/.0005
+    (L u0030-34: .0005-.0009 / .0001-.0003 / .0002-.0004), rollout 321 s (server-bound, eager: 1,069 rows/s vs L's ~3,000),
+    learner 212 s (L 120 s on the PRO 6000) -> ~5.5 min / update (b: ~15 h to u200 without a plateau stop).
+  - (a) GPU 0 peak 13,026 / 24,564 MiB through the rollout + the u0035 learner step (2 s samples): learner 9,108, eager server
+    3,876, MPS 30 -> 11.5 GB headroom (>= 3 GB rule met). RAM: cgroup rss 48.3 GB at u0035 (24 producers ~2.1 GB each, learner
+    4.9 GB, server 3.0 GB) of the 116 GiB cap shared with the lead's gate (cgroup oom_kill counter 2 = before this run).
+  - CPUs: producers + server on 0-104, learner 105-107; while any gap.py runs (the lead's SIM gate) the pinner moves the
+    producers + server to 96-104 within 30 s (arm.sh PCPUS_BUSY), so with the gate on 0-95 we stay under the 108.8-CPU quota.
+  - Stop: auto_stop (patience 50 from the resume, 0.5 pp, 48 h cap) or max_updates 200. Graceful stop by hand:
+    `ssh ... -p 33308 root@157.157.221.29 touch /workspace/loopL/p2/pilot2_Lc/STOP`.
+  - PIDs (33308): sh 226864, main 226866, auto_stop 226884, pinner 226885, server 226936. Log /workspace/loopL/p2/pilot2_Lc/loop.log;
+    checkpoints /workspace/loopL/cb/icebow/data/bench/rl_royale/pilot2_Lc/ (u0040, u0050, ...: save_every 10).
+  - Laptop watcher (WMI bash 112384): `POD_W=/workspace/loopL NO_STOP=1 bash scratchpad/gauntlet/L74/plan1026/pilot2/watch.sh Lc
+    pilot2_Lc 33308 33308 root@157.157.221.29` -> C:/Users/benpe/pod_backup_weekend/pilot2/Lc/ (every u%20, sha-checked; FINAL /
+    crash: copy + Discord, NEVER stops 33308). Stop it: touch STOP_Lc there.
+  - Lead's checks: pilot/gate/pilot_check2.sh starts at u0020 (it would wait forever: Lc's first numbered checkpoint is u0040).
+  - Restart after a crash (pod): `cd /workspace/loopL/cb && P2ENV=/workspace/loopL/cb/scratchpad/gauntlet/L74/plan1026/pilot2/envL.sh
+    SERVER=eager LOCAL_FWD=0 PCPUS=0-104 PCPUS_BUSY=96-104 LCPUS=105-107 PRODUCERS=24 MATCHES=22 bash
+    $PWD/scratchpad/gauntlet/L74/plan1026/pilot2/arm.sh pilot2_Lc minibatch=65536 micro_batch=256 critic_warmup_minibatch=256
+    lr=2.0e-5 ppo_epochs=2 trunk_graph=256 max_updates=200 --resume`, then re-arm the watcher (it exits on a crash).
+  - Rebuild trap (a): `git archive` on the laptop (core.autocrlf true) wrote CRLF files -> the runtime stamp (CfCore.java,
+    body_map.json, fin16 manifest hashes) differed and --resume refused. Build CODE_TGZ with
+    `git -c core.autocrlf=false archive --format=tar.gz -o code.tgz <sha> pipeline scratchpad/gauntlet/L74`.
 - 10-31 01:30 UTC pods booted with loop_pod.sh (ENTRY=-c, no loop): POD1 arm S `ssh -i ~/.ssh/runpod_clashbot -p 29153
   root@81.27.69.177` (RunPod id dlkk6eevgt9yhv), POD2 arm L `-p 28263` (id 8cq6fx8mbv0ynf). 86 artifacts sha-verified, EXACT_GATE
   PASS on both (EPYC 9554, AVX-512 paths). Code on both = origin 930adf2 (then later commits, see below).
