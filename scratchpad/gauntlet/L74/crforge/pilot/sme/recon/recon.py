@@ -812,7 +812,7 @@ def restore_taps(rec, plan, me, taps=None):
         return None
     p, what = plan, []
     for t in taps:
-        R = t['tick'] + rec['own_delay']
+        R = int(round(t['tick'] + rec['own_delay']))        # own_delay / tap ticks can be floats in the record (RECON-5 dev: 3 records)
         c = add_cmd(p, me, t['name'], R, t['x'], t['y'], R + TAP_WIN[0], R + TAP_WIN[1])
         c['_src'].update(own=True, source='own_tap', tap_restore=True)
         p = apply_edit(p, {'op': 'add', 'pos': next(iter(add_positions(p, R))), 'cmd': c})

@@ -70,6 +70,8 @@ def search(rec, frames, out, beam=4, ops=None, start=None):
         for sd in (0, 1):
             if sd != me and not plan['_cycle_base'][sd]:
                 seq = [plan['decks'][sd].index(plan['cmds'][k]['card']) for _, k in recon.seq_of(plan, sd)]
+                ident = dict(plan, cmds=[dict(c) for c in plan['cmds']], deals=list(plan['deals']))      # v3's own start (the identity deal) stays a candidate: no regression by construction
+                inits.append(('identity deal (v3 start)', 0, ident))
                 plan['deals'][sd], ran = recon.best_prefix_deal(seq)
                 for desc, c, pp in recon.cycle_repairs(plan, frames, sd, tab, e0):
                     inits.append((desc, c, pp))
@@ -88,7 +90,7 @@ def search(rec, frames, out, beam=4, ops=None, start=None):
             if o2 is None:
                 cl.append([desc, None])
                 continue
-            m2 = dict(plan=pp, o=o2, an=an2, edits=[desc], cost=c * recon.COST['add'], given_up=[])
+            m2 = dict(plan=pp, o=o2, an=an2, edits=[] if c == 0 else [desc], cost=c * recon.COST['add'], given_up=[])
             cl.append([desc, list(full_key(m2))])
             members.append(m2)
         log.append({'round': -1, 'cyc': cl})

@@ -438,3 +438,32 @@ point / shift / repress -> the base value) and the whole match is re-scored by t
 All the +-1 tick shifts of Log / BarbLog / Rocket (the extractor window, as in the gate) are needed too. 0 unneeded, 0 harmful, 0 errors. Counted (owner 10-30 rule):
 FRESH9 v3 **128 pass / 125 strict of 177** (as extracted 120 / 117); `r4_report` output `results/live/recon/r5/f9_report_counted.txt`. Paired vs the gate (122 / 117, as extracted):
 pass only-gate 3 / only-v3 9 (p .146), strict 1 / 9 (p .022) -- the gate is not credited with its own flagged-exact records, so this is the report format, not a like-for-like test.
+
+### 12.2 Step 2 premise check: is the battle-log deck missing from the extractor? (c, contradicted)
+- The ticket assumed the opponent's deck / levels / evo and hero forms from the official battle log were not yet used. They are: `extract.side_info` builds `sides[s]` from the paired battle-log entry
+  (`deck` in API slot order, `api_ids`, `levels` = API level + 16 - maxLevel, `slot_flags` = API evolutionLevel 1 / 2, `word`), and `sme_live.plan_from` puts exactly that into `plan['decks']` / `slots` / `levels`. All 179 FRESH9 and all
+  196 FRESH2-8 RNG-free records carry it (`derived` = the live-log-only deck is only the fallback when no battle-log entry exists). `recon_search`'s add (b) already draws unseen plays only from `plan['decks'][side]`.
+- Replays (b of the ticket): `icebow/data/replay_rec/` holds two recordings only (`rec_20261008_210824`, `rec_20261026_130926`, the 10-26 device check); none is a FRESH9 / FRESH10 match. Harvesting one needs the MuMu device
+  (`replay_rec/recorder.py --device`, Battle Log -> Watch), which live play occupies, so no deal-order data exists for any held-out match tonight. Not needed for the mechanism below: crforge's result does not depend on WHICH
+  fitting deal the opponent has (a play is legal or refused), only on the play sequence fitting one.
+### 12.3 What is actually wrong with the opponent_no_fitting_deal class (a; `.foreman/scratch/recon5/cyc*.py`, `recon/cyc.py`)
+1. **Selection effect in the dev set.** FRESH2-8 hold 196 RNG-free records; the 151 "strict fresh" scored ones are the extractor-UNFLAGGED ones. 41 of the 196 (21%) have an opponent play sequence that fits no 4-card-cycle deal;
+   only 1 of them (031310) is among the 151. FRESH9 keeps the flagged records (28 of 177 = 16% opponent no-fit by the cycle census, 27 flagged by the gate's extractor, plus 8 own), the gate passes 0 / 35 of them. So the dev 142 / 151 vs held-out 122 / 177 gap is mostly the excluded class.
+2. **The identity deal.** For every non-fitting opponent `opp_deal_fit` is None and `recon.base_plan` / the gate hand crforge the deal [0..7]. crforge refuses the opponent's first play whose card is not in that hand: first divergence
+   at tick 169-526 in 14 / 27 FRESH9 records although the cycle first fails at tick 1,000-5,900 (130404: first div 249, the cycle fails at play 53 of 56, tick 5,591). So most of the 1,100-2,800 diverging frames are an artefact of the deal.
+3. **What fails the cycle.** 28 FRESH9 records (v3's flags-off extraction) have a non-fitting opponent sequence. Per record (`cyc.repairs`, any deck card, insertions only): 12 need ONE unseen play (4-13 optimal repairs each), 16 need 2-8 or
+   no insertion-only repair (3 decks hold a Mirror, whose play reads as the mirrored card; repeated Heal / Elixir Collector readings). With insertions limited to spells, plus invented plays dropped, plus the Mirror reading, every one of the 28 has a repair
+   (25 of cost <= 3, 16 of cost 1; `f9_cycle_census.json`, columns ins / spell / drop / ins+drop / spell+drop / spell+drop+mir).
+### 12.4 Our own taps restore our missed plays (a; `recon/r5_taps.py`, real functions, 375 records FRESH2-9)
+All 20 own_cycle_fail records have EXACTLY ONE own tap that no extracted own play explains (`recon.unmatched_taps`: same card within 120 ticks of tap + own_delay), and restoring it (point = the tap's point on 12,543 / 12,543 matched own plays,
+run = tap + own_delay, window -2..+3) makes our known deal fit on 20 / 20. 355 cycle-clean records: 2 have an unmatched tap (142334: the engine accepted the add in RECON-2; 010059 untested). The missed cards are Skeletons / IceWizard / Knight / Tesla.
+v3's add (b) restores it only where a body is listed (FRESH9: 6 of 11 own failures).
+### 12.5 The mechanism and its planted checks (code `recon/cyc.py`, `recon.py` RECON-5 section, `recon_search.py` RECON_CYC=1; absent = v3 byte-identical)
+- `cyc.solve / repairs`: the state after any play prefix is one of 70 x 24 = 1680 (hand set, queue order); shortest path with the observed plays (must be in hand), unseen plays of a hand card (cost 1),
+  an observed play dropped (cost 1), an observed play read as the Mirror (cost 1). All optimal repairs are enumerated. `best_prefix_deal`: the deal that lets the most plays run (replaces the identity deal).
+- `recon.cycle_repairs`: opponent side only, unseen plays restricted to SPELL cards (a reader can miss a spell; a troop leaves bodies), placed mid-gap at a grid point that touches nothing (>= radius + 1000 from every listed body / tower / projectile /
+  area), elixir bank rule enforced, cycle re-checked, deck conflicts refused. `recon_search`: the base plan (best-prefix deal, own taps restored when they fit our cycle) plus up to 24 repairs are all scored by the engine; the top B start the unchanged beam search.
+- Planted checks: `test_recon.py` ok 80 (24 new: best-prefix deal, planted deleted Zap restored in its gap, fits-after, ghost point clear, fitting side untouched, wrong deck refused, bank rule, own taps).
+  `r5_planted.py` on real sequences (151 dev + 179 FRESH9, `results/live/recon/r5/planted_dev151_f9.txt`): 2,096 plants (each SPELL play of a fitting sequence deleted in turn); 696 (33%) invisible (still fits); of the 1,400 detected
+  all 1,400 have the true (position, card) among the optimal repairs (completeness, by construction), median 3 optimal repairs, p90 7, max 12, unique 196 (14%): the cycle narrows an invisible spell to a handful, it does not identify it.
+  Wrong deck: 0 / 330 real records have an observed play outside the battle-log deck; a deck with one played card swapped out is flagged on 330 / 330.
