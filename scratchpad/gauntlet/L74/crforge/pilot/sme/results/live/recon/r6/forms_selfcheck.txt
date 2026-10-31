@@ -1,0 +1,3 @@
+ok 73
+real-record check: 2641 / 2648 (side, card) sequences cost 0; planted flips caught 15191 / 15191
+ok 24

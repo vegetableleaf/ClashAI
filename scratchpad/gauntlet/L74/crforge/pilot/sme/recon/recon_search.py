@@ -23,6 +23,7 @@ HEAL = 20
 MAX_ROUNDS = 40
 STRUCT = ('add', 'drop')
 CYC = int(os.environ.get('RECON_CYC', '0'))   # RECON-5 opt-in: absent = byte-identical to v3
+FORM = int(os.environ.get('RECON_FORM', '0'))  # RECON-6 opt-in: absent = byte-identical to RECON-5 / v3 (forms.form_repairs as extra start members)
 
 
 def key_of(plan):
@@ -74,6 +75,14 @@ def search(rec, frames, out, beam=4, ops=None, start=None):
                 inits.append(('identity deal (v3 start)', 0, ident))
                 plan['deals'][sd], ran = recon.best_prefix_deal(seq)
                 for desc, c, pp in recon.cycle_repairs(plan, frames, sd, tab, e0):
+                    inits.append((desc, c, pp))
+    if FORM and not start:
+        # RECON-6: the count rule (forms.py) explains the observed Hero / EV1 forms of the opponent's plays only with deleted plays (an invented
+        # play, or a Mirror copy read as the copied card): each such repair is an extra starting member, scored by the engine like a cycle repair.
+        import forms
+        for sd in (0, 1):
+            if sd != me:
+                for desc, c, pp in forms.form_repairs(rec, plan, sd, tab, e0):
                     inits.append((desc, c, pp))
     o, an = full_run(plan, frames, me, end, work, log)
     if o is None:

@@ -1,0 +1,17 @@
+match | RECON-5 final plan: exact, div, first div | opponent hero/evo slot flags cleared: exact, div, first div | verdict
+20261028_103056 | 1343, 417, 2846 | 1079, 681, 2316 | worse (first div earlier)
+20261028_143825 | 462, 1805, 1075 | 462, 1805, 1075 | same first div
+20261028_144727 | 2041, 471, 4236 | 1789, 723, 3600 | worse (first div earlier)
+20261028_153413 | 1150, 862, 2452 | 290, 1474, 726 | worse (first div earlier)
+20261028_180849 | 216, 1549, 583 | 216, 1549, 583 | same first div
+20261029_050136 | 1850, 1178, 3644 | 1203, 1825, 2558 | worse (first div earlier)
+20261029_051010 | 1591, 1324, 3336 | 1063, 1961, 1034 | worse (first div earlier)
+20261029_101523 | 2365, 97, 3597 | 1721, 741, 3595 | worse (first div earlier)
+20261029_105010 | 1810, 410, 3771 | 1468, 740, 1756 | worse (first div earlier)
+20261029_130404 | 2718, 162, 5593 | 666, 2214, 828 | worse (first div earlier)
+20261029_220240 | 1835, 1182, 3827 | 1416, 1045, 2987 | worse (first div earlier)
+20261030_022944 | 613, 57, 1376 | 613, 47, 1376 | same first div
+20261030_035831 | 1477, 415, 3105 | 922, 970, 420 | worse (first div earlier)
+20261030_061408 | 1381, 941, 2913 | 1381, 941, 2913 | same first div
+20261030_073613 | 2279, 142, 4719 | 1153, 609, 2463 | worse (first div earlier)
+15 records: worse 11, same 4, better 0

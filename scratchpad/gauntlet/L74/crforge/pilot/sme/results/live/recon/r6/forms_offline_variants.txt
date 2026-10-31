@@ -1,0 +1,2 @@
+261029_001538 side 0 cycle_base False 2 variants: ['formdrop s0 MegaKnight R911,2921', 'formdrop s0 MegaKnight R911,3097']
+records 465 with variants 1

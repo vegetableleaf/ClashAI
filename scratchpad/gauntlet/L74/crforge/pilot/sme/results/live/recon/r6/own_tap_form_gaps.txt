@@ -1,0 +1,4 @@
+261028_080427 Knight unmatched taps [('Knight', 2967)] form-gaps [(1668, 2575), (2575, 3598)]
+261030_012313 Knight unmatched taps [('Knight', 3131)] form-gaps [(2267, 2771), (2771, 3691)]
+261030_014530 Tesla unmatched taps [('Tesla', 4968)] form-gaps [(4017, 4528), (4528, 5216)]
+261030_143358 Tesla unmatched taps [('Tesla', 5048.0)] form-gaps [(4136, 4805), (4805, 5571)]

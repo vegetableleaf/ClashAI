@@ -1,0 +1,69 @@
+24 unit position-only offset ['261029_110610', '261029_114254', '261029_174855', '261029_194827', '261029_220240', '261030_013650', '261030_022312', '261030_035831', '261030_054304', '261030_060329', '261030_061408', '261030_134929']
+18 unit sim_only, no twin (extra / hidden body) ['261029_101523', '261029_200427', '261029_215349', '261029_223358', '261030_005035', '261030_021056', '261030_022944', '261030_035327', '261030_043533', '261030_180109', '261030_192113', '261030_204504']
+17 unit rec_only, no twin (unseen body) ['261029_084525', '261029_105010', '261029_132322', '261029_184204', '261029_192024', '261029_211723', '261029_212240', '261030_025504', '261030_143358', '261030_164917', '261030_203908', '261028_171948']
+10 area/projectile first ['261029_094801', '261029_132711', '261029_190609', '261030_003451', '261030_012853', '261030_033801', '261030_102619', '261030_231818', '261028_134922', '261029_054032']
+7 unit hp-only difference (same point) ['261029_130404', '261030_040421', '261030_073613', '261030_194359', '261028_124640', '261028_153413', '261029_005558']
+4 unit position + hp ['261029_130914', '261030_150602', '261030_211359', '261029_051010']
+2 tower row first ['261029_201127', '261030_052542']
+82
+---- position-only offsets
+FRESH9 261029_110610 first 2600 rec_only offsets [('DarkWitch', [23, 136, 0])] n div 195
+FRESH9 261029_114254 first 5292 rec_only offsets [('GoblinDrill', [-28, -9, 0])] n div 90
+FRESH9 261029_174855 first 3039 rec_only offsets [('GoldenKnight', [-49, 36, 0])] n div 274
+FRESH9 261029_194827 first 3569 rec_only offsets [('Knight', [-14, -58, 0])] n div 1302
+FRESH9 261029_220240 first 3827 rec_only offsets [('GoldenKnight', [-176, -175, 0]), ('Knight', [0, 0, 535])] n div 1182
+FRESH9 261030_013650 first 4450 rec_only offsets [('Valkyrie', [-15, 7, 0])] n div 225
+FRESH9 261030_022312 first 2564 rec_only offsets [('Firecracker', [1, 0, 0])] n div 506
+FRESH9 261030_035831 first 3105 rec_only offsets [('BarbLog', [0, -284, 0])] n div 415
+FRESH9 261030_054304 first 4282 rec_only offsets [('Bowler', [31, 31, 0])] n div 388
+FRESH9 261030_060329 first 5644 rec_only offsets [('Knight', [-11, 8, 0])] n div 37
+FRESH9 261030_061408 first 2913 rec_only offsets [('RamRider', [21, -19, 0]), ('Ronin', [3, 63, 0]), ('MegaMinion', [-14, 0, 0])] n div 941
+FRESH10 261030_134929 first 1675 rec_only offsets [('GoldenKnight', [388, -71, 0])] n div 30
+FRESH10 261030_152809 first 3754 rec_only offsets [('BarbLog', [0, -142, 0])] n div 181
+FRESH10 261030_180321 first 5927 rec_only offsets [('Knight', [40, 72, 0])] n div 140
+FRESH10 261030_190605 first 5975 rec_only offsets [('Miner', [-745, 673, 0])] n div 14
+FRESH10 261030_204237 first 172 rec_only offsets [('Wallbreakers', [-365, -2235, 0]), ('Wallbreakers', [397, -1980, 0])] n div 677
+FRESH10 261030_212038 first 351 rec_only offsets [('ElectroSpirit', [687, 465, 0])] n div 127
+dev49 261028_103056 first 2846 rec_only offsets [('BarbLog', [0, 142, 0])] n div 417
+dev49 261028_120902 first 5882 rec_only offsets [('Knight', [11, -58, 0])] n div 54
+dev49 261028_141816 first 3893 rec_only offsets [('Skeletons', [579, 294, 0]), ('Skeletons', [56, 127, 0]), ('Skeletons', [-372, 219, 0])] n div 236
+dev49 261028_143825 first 1075 rec_only offsets [('BarbLog', [-58, -10, 0])] n div 1805
+dev49 261028_144727 first 4236 rec_only offsets [('Knight', [36, 15, 0])] n div 471
+dev49 261028_180849 first 583 rec_only offsets [('BarbLog', [0, 142, 0])] n div 1549
+dev49 261029_050136 first 3644 rec_only offsets [('BarbLog', [0, 284, 0])] n div 1178
+---- twin names (sim side) of position / hp rows
+FRESH9 261029_110610 position-only o ['C:DarkWitch']
+FRESH9 261029_114254 position-only o ['C:GoblinDrill_EV1_Dig']
+FRESH9 261029_130404 hp-only differe ['C:IceWizardHero']
+FRESH9 261029_130914 position + hp ['C:HogRider']
+FRESH9 261029_174855 position-only o ['C:GoldenKnight']
+FRESH9 261029_194827 position-only o ['C:Knight']
+FRESH9 261029_220240 position-only o ['C:GoldenKnight', 'C:Knight_EV1']
+FRESH9 261030_013650 position-only o ['C:ValkyrieHero']
+FRESH9 261030_022312 position-only o ['C:Firecracker']
+FRESH9 261030_035831 position-only o ['C:BarbLogBarbarianHero']
+FRESH9 261030_040421 hp-only differe ['C:Xbow']
+FRESH9 261030_054304 position-only o ['C:BowlerHero']
+FRESH9 261030_060329 position-only o ['C:Knight']
+FRESH9 261030_061408 position-only o ['C:Ram', 'C:Ronin', 'C:MegaMinionHero']
+FRESH9 261030_073613 hp-only differe ['C:Xbow', 'C:BarbLogBarbarianHero']
+FRESH10 261030_134929 position-only o ['C:GoldenKnight']
+FRESH10 261030_150602 position + hp ['C:Skeleton', 'C:Skeleton', 'C:Skeleton']
+FRESH10 261030_152809 position-only o ['C:BarbLogBarbarianHero']
+FRESH10 261030_180321 position-only o ['C:Knight']
+FRESH10 261030_190605 position-only o ['C:Miner']
+FRESH10 261030_194359 hp-only differe ['C:Knight']
+FRESH10 261030_204237 position-only o ['C:Wallbreaker', 'C:Wallbreaker']
+FRESH10 261030_211359 position + hp ['C:MinionGiant']
+FRESH10 261030_212038 position-only o ['C:ElectroSpirit']
+dev49 261028_103056 position-only o ['C:BarbLogBarbarianHero']
+dev49 261028_120902 position-only o ['C:Knight']
+dev49 261028_124640 hp-only differe ['C:IceWizardHeroFloatingCube', 'C:Xbow']
+dev49 261028_141816 position-only o ['C:Skeleton', 'C:Skeleton', 'C:Skeleton']
+dev49 261028_143825 position-only o ['C:BarbLogBarbarianHero']
+dev49 261028_144727 position-only o ['C:Knight']
+dev49 261028_153413 hp-only differe ['C:IceWizardHero_IceCube', 'C:Knight_EV1']
+dev49 261028_180849 position-only o ['C:BarbLogBarbarianHero']
+dev49 261029_005558 hp-only differe ['C:Xbow', 'C:Knight']
+dev49 261029_050136 position-only o ['C:BarbLogBarbarianHero']
+dev49 261029_051010 position + hp ['C:Witch_EV1']
