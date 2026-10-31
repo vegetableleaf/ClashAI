@@ -1,3 +1,14 @@
+# 2026-10-31 ~04:10 EDT -- RECON-5 DONE: cycle repair + own-tap restore; FRESH9 significant, clean FRESH10 not significant
+
+- (a) RECON.md s12 (fab0cad freeze .. 3983925): the 8 flagged-exact FRESH9 records all ablation-confirmed -> FRESH9 v3 counted 128/125.
+  RECON-5 (RECON_CYC=1, opt-in): most-plays deal instead of the identity deal, deck-constrained cycle repair (1,680-state shortest
+  path; ghost Zap / drop invented / Mirror reading, engine-scored), unmatched own tap restored (20/20 own_cycle_fail records have one).
+  Counted pass / strict: Dev49 gate 6/5, v3 11/10, RECON-5 18/17; FRESH9 122/117, 128/125, 135/132 (CP low .704; vs gate 3:16 p .004 --
+  FRESH9 diagnosed the idea, so held-out for parameters only); FRESH10 (clean: list + code frozen before extraction, 88 matches)
+  63/60, 61/59, 66/63 (vs gate 3:6 p .51; vs v3 0:5 p .0625). ASSIGN guard PASS. Gains = own taps 11 + Mirror 2 + better start;
+  ghost-Zap repair restored nothing confirmed on its own.
+- Remaining FRESH9 failures (24 affected): hero / evo form mismatch 8, unseen troop plays 8, area spells 4, ghost-visible 4.
+- Engine held-out fidelity ~0.70-0.75 vs D1 0.90 / D2 0.98. Next targeted: hero/evo form by cycle count (RECON-6).
 # 2026-10-31 ~03:45 EDT -- CLXV live-verified; pilot2_L CONTINUED on 33308 (pilot2_Lc, true resume from u34); its checks armed
 
 - CLXV first live match (live_play_20261031_024337.jsonl): ckpt = ICEBOW_Mark_CLXV_LARGEBATCH.pt, gate_sample 0.1 / step 10, 1,734
