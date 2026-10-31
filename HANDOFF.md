@@ -1,3 +1,22 @@
+# 2026-10-30 ~21:10 EDT -- RTX PRO 6000 (31892) tests DONE and pod STOPPED (owner); full speed stack measured
+
+- Stopped from inside (runpodctl, key from /proc/1/environ, owner-authorized): pod 3apzu710v7z0ct "stopped", ssh refused after.
+  Results: repo pilot/loop/rspeed/ (62a7ad6, e887dd4), pilot/lrn/lspeed/{out,pod31892,ov3}; backups C:/Users/benpe/pod_backup_weekend/pro6000/.
+- ROLLOUT-SPEED DONE (5946547, 62a7ad6, e887dd4): graphs FIXED (pre-capture at start, frozen buckets, failed capture -> fresh pool +
+  eager; planted test) + proven (3 updates 0 capture failures; compare 16/16 lp 2.3e-5); F3 FASTLOOP_CELLS1 + F2' FASTLOOP_SHARDS
+  (opt-in env, compare 16/16); `fastloop --mps DIR` (private CUDA MPS daemon; exit-deadlock bug fixed). (a) one PRO 6000, 27 vCPU:
+  --local-forward 8.4k -> 13.0k matches/h (1.55x); + graphs 14.8k; MPS + graphs + local + CELLS1 + SHARDS3 9.5k rows/s ~51k
+  matches/h (knee near 24-32 producers); FULL STACK at 512/update (+ overlap + split_attn + trunk_graph): steady state one update
+  every 72.6-78.5 s = ~48 updates/h, ~24k matches/h, learner 2-3 s hidden (rollout-bound); critic warm-up 129-150 s (~25/h).
+  Projection (b): 5x PRO 6000 / 160 vCPU ~255k matches/h only with ~1,000 matches in flight per GPU; ~125 updates/h at 2,048 /
+  update. 4090: graph-mode shard servers ~17 GB each (~50 GB / GPU) do not fit 24 GB (fewer shards / smaller --max-batch, b).
+- LEARNER-SPEED: arm L stays lr 2e-5, NO ramp (a: 2e-5 is the only lr with no single-step overshoot on both the fresh and the
+  warmed update; 3e-5 / 4e-5 overshoot 2.1-2.2x in steady state too). Overlap v3 at arm-L settings: NOT worse per update (held KL
+  0.93x / 1.45x of mode 0, no saw-tooth, <= 0.43% truncated); overlap NEEDS dedicated learner cores (0.94x when sharing).
+  Full-stack lines: L `minibatch=65536 micro_batch=1024 critic_warmup_minibatch=256 lr=2e-5 ppo_epochs=2 mem_row_cache=true
+  split_attn=true trunk_graph=1024 ppo_decoupled=2.0`; S pilot.yaml + `mem_row_cache=true split_attn=true trunk_graph=256
+  ppo_decoupled=2.0`; both B0 + ability_head_from_init true; fastloop --mps DIR --server graphs --local-forward --overlap 1,
+  FASTLOOP_CELLS1=1 FASTLOOP_SHARDS=3; AVX-512 hosts: NPY_DISABLE_CPU_FEATURES=X86_V4,AVX512_ICL OPENBLAS_CORETYPE=ZEN.
 # 2026-10-30 ~20:20 EDT -- OWNER: hard-coded gate rules REMOVED from live (tau_threatened + per-phase tau); live restarted 20:13 EDT
 
 - Owner 10-31 ~00:20-00:35 UTC: "Remove the play threshold from live ... the model needs to learn how to defend by itself
