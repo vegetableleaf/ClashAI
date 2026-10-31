@@ -164,6 +164,9 @@ def splits(s):
             out.append(("counter", "counter in hand" if set(s["ctx"]["hand"]) & COUNTERS else "no counter in hand"))
     for c in s["cands"][1:]:
         m = c.get("meta") or {}
+        if "hp" in m and c["kind"] == "rocket_princess":     # SIMPRICE: Rocket crown-tower damage 546 at level 16 (ENG SME, = live 7/7)
+            h = m["hp"]
+            out.append(("princess_hp", "finishing (hp <= 546)" if h <= 546 else "hp 547-1200" if h <= 1200 else "hp > 1200"))
         if "value" in m and c["kind"] in ("combo", "rocket_clump"):
             v = m["value"]
             out.append(("value_" + c["kind"], "<4" if v < 4 else "4-6" if v < 6 else "6-8" if v < 8 else "8+"))

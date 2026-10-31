@@ -2284,6 +2284,9 @@ def cf_append(B: dict, results: list[dict], use: list, keep: list, W: list, cf: 
                     "match": j, "mem_row_tab": use.index(j), "r_step": 0.0, "gamma_row": 1.0, "phi": 0.0,
                     "w_post": 0.0, "w_ab": 0.0, "ab_sampled": False, "ab_press": False, "ab_lp": 0.0,
                     "posture_new": False, "posture_lp": 0.0}
+            if "ab_press" in cand and "w_ab" in B:            # cf_credit iw_press / iw_pressed (SIMPRICE): the same card
+                over.update(ab_sampled=True, ab_press=bool(cand["ab_press"]), ab_lp=float(cand["ab_lp"]),   # action with the
+                            w_ab=float(B["w_ab"][off[j] + int(keep[j][:di].sum())]))   # opposite press; the decision's press weight
             if "mem_row_t" in add:
                 over["mem_row_t"] = t["mem_t"][di]
             for k in add:

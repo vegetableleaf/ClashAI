@@ -45,6 +45,10 @@ sample; one sample per decision, the first firing trigger in TRIGGERS order that
   xbow            the policy plays a reach X-Bow         -> wait, xbow_defensive, xbow_other_lane
   idle_full       the policy waits at >= cf_full_elixir  -> play_now (its best card, argmax cell)
   log_bait        the policy plays the Log after the opponent showed a bait card -> wait
+  iw_pressed      (opt-in) the policy's ability head PRESSED the Hero IW button -> iw_hold (the same card decision, no press)
+  iw_press        (opt-in) the head decided on a pressable button and HELD -> iw_press (the same card decision + the press)
+                  (SIMPRICE 10-31: the press's value at the policy's own press moments / at its other button moments; two
+                  triggers so each estimand gets its own probability and batch reliability)
   random          any sampled decision                   -> cf_random_alts policy-sampled actions
 A restricted alternative takes the policy's own argmax cell inside its cell set. The combo's alternative row carries its FIRST
 play only (the Rocket); its Tornado is a scripted follow_ups play with no row of its own (cf/P6_DESIGN.md: prefix rows).
@@ -70,7 +74,7 @@ from typing import Optional
 import numpy as np
 
 TRIGGERS = ("rocket_cycle", "def_xbow", "rocket_tornado", "tornado_redirect", "rocket_played", "rocket", "wincon", "siege",
-            "xbow_after_fail", "xbow", "idle_full", "log_bait", "random")
+            "xbow_after_fail", "xbow", "idle_full", "log_bait", "iw_pressed", "iw_press", "random")
 # L1 pilots (plan1026/cf/data: pilot2 = 512 matches / 2,907 samples after the critic warm-up, pilot3 = the noise study): the
 # pilot's probabilities cost 5.9x the match ticks; these are pilot_report.py's water-filling split of 1.0x match ticks (equal
 # fork ticks per trigger, random half) -> 0.08-0.3 samples per match per trigger (cost to be re-measured at these values).
@@ -81,7 +85,7 @@ P_DEFAULT = {"rocket_played": 0.5, "rocket": 0.0009, "wincon": 0.008, "siege": 0
 # read only while their probability is > 0 (probability 0 = no condition read, no RNG draw, as before). The combo needs the
 # follow_ups play (action_delay_ticks > 0, no pipeline_decisions / tap_loss / tap_slow): a config without it gets rocket_tornado
 # 0.0 unless cf_p sets it (then cf_cfg refuses, naming the keys).
-OPT_IN = ("rocket_tornado", "tornado_redirect", "rocket_cycle", "def_xbow")
+OPT_IN = ("rocket_tornado", "tornado_redirect", "rocket_cycle", "def_xbow", "iw_pressed", "iw_press")
 # P6 macros as fork triggers (P3-FORK3, MACROS.md "What P3-FORK needs"; NOT in P_DEFAULT: absent from cf_p = probability 0 = off,
 # so every older cf-on hash stays). Each is hand-coded from its PINNED library entry (test_cf_credit TestMacros checks the file's
 # sha256 and the entry's prefix / window / horizon against these constants; a new library = a new sha = re-check):
@@ -117,9 +121,9 @@ DEFAULTS = {"cf_horizon_ticks": 600, "cf_k": 2, "cf_w": 1.0, "cf_clip": 3.0, "cf
             "cf_front_min_tiles": 5.0, "cf_front_max_tiles": 8.0, "cf_xbow_fail_window_ticks": 600, "cf_full_elixir": 9.9,
             "cf_combo_value": 6.0, "cf_redirect_dist_tiles": 12.0, "cf_k_by": None, "cf_horizon_by": None,
             "cf_horizon_sweep": None, "cf_adv_scale": 1.0, "cf_diag": False, "cf_rocket_lead": "off",
-            "cf_rocket_empty": False, "cf_diag_plays": False, "cf_redirect_king_tiles": None}
+            "cf_rocket_empty": False, "cf_diag_plays": False, "cf_redirect_king_tiles": None, "cf_alt_afford": False}
 NEW_KEYS = ("cf_combo_value", "cf_redirect_dist_tiles", "cf_k_by", "cf_horizon_by", "cf_horizon_sweep", "cf_adv_scale", "cf_diag", "cf_rocket_lead",
-            "cf_rocket_empty", "cf_diag_plays", "cf_redirect_king_tiles")   # dropped from the config hash at their
+            "cf_rocket_empty", "cf_diag_plays", "cf_redirect_king_tiles", "cf_alt_afford")   # dropped from the config hash at their
 # defaults (older cf-on hashes stay); cf_k_by / cf_horizon_by = {trigger: K / horizon ticks}, the per-trigger noise controls;
 # cf_horizon_sweep = [ticks, ...] (< the horizon): the SAME forks also record Q read at those earlier stops ("qh"), so one pilot
 # gives the SNR / critic-slope of every candidate horizon (diagnostic, the learner ignores it);
@@ -137,6 +141,10 @@ NEW_KEYS = ("cf_combo_value", "cf_redirect_dist_tiles", "cf_k_by", "cf_horizon_b
 # cf_rocket_empty = the rocket / xbow_after_fail triggers also fork "rocket_empty", the Rocket into a point with nothing within
 # EMPTY_CLEAR_TILES (its elixir + card cycle, no damage): rocket_princess - rocket_empty = the chip's own value in the SIM's
 # return, rocket_empty - chosen = the price of spending the Rocket (P4 audit decomposition, diagnostic);
+# cf_alt_afford (SIMPRICE 10-31; false = off) = a forced card alternative is offered only when the engine will take it: my elixir
+# at the issue tick (the decision + the side's e1 delay; crforge's client gate checks there, 20 ticks before the play runs) >= its
+# cost. Without it the look-ahead mask (elixir at landing) offers cards crforge refuses (f3base2: a Rocket alternative with 5-6
+# elixir at the root landed in 14-25% of forks, >= 6 in 97-100%), and the "Rocket" fork was a wait.
 # cf_redirect_king_tiles (null = off) = tornado_redirect also needs the unit within that many tiles of OUR king (P3-FORK3 on cfaud3:
 # tornado_king - tornado_on is +0.020 [-0.04, +0.08] with our king activated +0.061 at 7.5 s for units < 9 tiles from our king,
 # -0.109 for 9-12 tiles: the pull cannot bring a far unit into the king's reach, so the far samples price a misplaced Tornado)
@@ -160,7 +168,7 @@ def _num(v) -> bool:
 
 
 KEEP = ("cf_shrink", "cf_p", "cf_k_by", "cf_horizon_by", "cf_horizon_sweep", "cf_diag", "cf_rocket_lead", "cf_rocket_empty",
-        "cf_diag_plays", "cf_redirect_king_tiles")   # values kept as they are (not float())
+        "cf_diag_plays", "cf_redirect_king_tiles", "cf_alt_afford")   # values kept as they are (not float())
 
 
 def combo_ok(cfg: dict) -> bool:
@@ -205,7 +213,7 @@ def cf_cfg(cfg: dict) -> Optional[dict]:
         bad.append(f"cf_adv_scale must be a finite number in (0, 2], got {c['cf_adv_scale']!r}")
     if c["cf_rocket_lead"] not in ("off", "drift"):
         bad.append(f"cf_rocket_lead must be off or drift, got {c['cf_rocket_lead']!r}")
-    for k in ("cf_diag", "cf_rocket_empty", "cf_diag_plays"):
+    for k in ("cf_diag", "cf_rocket_empty", "cf_diag_plays", "cf_alt_afford"):
         if type(c[k]) is not bool:
             bad.append(f"{k} must be a bool, got {c[k]!r}")
     rk_t = c["cf_redirect_king_tiles"]
@@ -708,6 +716,14 @@ def candidates(m, s, d: dict, trig: str, c: dict) -> list[dict]:
     seen = {(chosen["slot"], chosen["cell"], bool(chosen.get("follow_ups")))}
     if trig == "random":
         return [chosen] + sampled_alts(pol, c["cf_random_alts"], m.cf_state["rng"], seen)
+    if trig in ("iw_pressed", "iw_press"):               # the same card decision, the opposite Hero IW press
+        press, lp = bool(d["ab_press"]), float(d["ab_lp"])
+        flip = math.log(-math.expm1(lp)) if lp < 0 else -745.0   # log(1 - exp(lp)): the other branch's log-prob
+        p1 = math.exp(lp) if press else -math.expm1(lp)   # P(press) of the head at this decision
+        info = {"ab_p": p1, "ab_feat": [round(float(x), 4) for x in d.get("ab_feat", ())]}
+        chosen.update(ab_press=press, ab_lp=lp, **info)
+        return [chosen, {**copy.deepcopy(chosen), "kind": "iw_hold" if press else "iw_press", "ab_press": not press,
+                         "ab_lp": flip}]
     want = []                                             # (kind, slot, where); slot -1 = wait
     if d["play"] and trig in ("rocket_played", "wincon", "siege", "xbow_after_fail", "xbow", "log_bait", "rocket_tornado",
                               "tornado_redirect", "rocket_cycle", "def_xbow"):
@@ -794,6 +810,8 @@ def candidates(m, s, d: dict, trig: str, c: dict) -> list[dict]:
     for kind, slot, where, *extra in want:
         if len(out) > c["cf_max_alts"]:
             break
+        if slot >= 0 and c.get("cf_alt_afford") and not issue_affordable(s, slot):
+            continue
         a = pol.cand(kind, slot, where)
         if a is not None:
             if extra:
@@ -803,6 +821,15 @@ def candidates(m, s, d: dict, trig: str, c: dict) -> list[dict]:
                 seen.add(key)
                 out.append(a)
     return out
+
+
+def issue_affordable(s, slot: int) -> bool:
+    """cf_alt_afford: my elixir at the tick the play is issued to the engine (the decision tick + the side's e1 delay; regen by
+    the env's own schedule) covers the card's cost."""
+    from pipeline.opp_elixir_count import REGEN_SCHEDULE, regen_between
+    t = int(s._cur[0])
+    sched = getattr(s.env, "elixir_regen_schedule", None) or REGEN_SCHEDULE
+    return own_elixir(s) + regen_between(t, t + int(getattr(s, "delay", 0)), sched) + 1e-9 >= float(s.costs[slot])
 
 
 def matchup_ctx(m, s, tick: int) -> tuple:
@@ -963,6 +990,9 @@ def triggers(m, s, d: dict, c: dict) -> list[str]:
                                 and tick - st["xb_fail_tick"] <= RC_WINDOW)
     if c["cf_p"].get("def_xbow", 0.0) > 0:
         cond["def_xbow"] = played == "xbow" and matchup_ctx(m, s, tick)[2]
+    if c["cf_p"].get("iw_pressed", 0.0) > 0 or c["cf_p"].get("iw_press", 0.0) > 0:   # the head decided on a button
+        btn = bool(d.get("ab_sampled")) and getattr(s, "_ab_cmd", None) is not None    # (e1_eval.ability_decide: _ab_cmd)
+        cond["iw_pressed"], cond["iw_press"] = btn and bool(d.get("ab_press")), btn and not d.get("ab_press")
     out = []
     for t in TRIGGERS:
         if t in OPT_IN and c["cf_p"].get(t, 0.0) <= 0:
@@ -1148,6 +1178,9 @@ class Runner:
                         f.opp.apply(p, dict(d))
                     elif i == 0:
                         f.learner.apply(p, dict(d))
+                    elif "ab_press" in a:                     # iw_press: the decision's card action, the opposite press
+                        f.learner._ability_commands[f.learner.side] = [L._ab_cmd] if a["ab_press"] else []
+                        f.learner.apply(p, dict(d))
                     else:                                     # (a decided second play belongs to the decision's card)
                         f.learner.apply(p, {**{x: v for x, v in d.items() if x != "follow_ups"}, "play": a["play"],
                                             "slot": a["slot"], "cell": a["cell"], "why": "cf", "lp_gate": a["lp_gate"],
@@ -1159,6 +1192,9 @@ class Runner:
         diag = bool(c.get("cf_diag"))
 
         n0 = (len(m.learner.accepted), len(m.opp.accepted))
+        npress = lambda e: sum(e.ability_presses[L.side].values()) if getattr(e, "ability_presses", None) else 0
+        nab = npress(env)                                     # iw_press: learner presses accepted before the root
+        ref0 = dict(L.refuse) if diag and hasattr(L, "refuse") else None   # cf_diag: the learner's refusals before the root
 
         def put_dg(i, k, key, part, f):                       # cf_diag: Phi / critic parts + snapshot + plays since the root
             slot = out[i].setdefault("dg", {}).setdefault(key, {"phi": [None] * K, "v": [None] * K, "snap": [None] * K,
@@ -1236,6 +1272,11 @@ class Runner:
             i, k = meta[fi]
             if cands[i].get("follow_ups"):
                 out[i].setdefault("follow", [None] * K)[k] = dict(getattr(f.learner, "follow_n", None) or {})
+            if "ab_press" in cands[i]:                        # iw_press: learner presses the engine accepted in this fork
+                out[i].setdefault("ab_n", [None] * K)[k] = npress(f.env) - nab
+            if ref0 is not None:                              # cf_diag: plays the engine refused in this fork, by reason
+                out[i].setdefault("refuse", [None] * K)[k] = {r: n - ref0.get(r, 0) for r, n in f.learner.refuse.items()
+                                                               if n - ref0.get(r, 0)}
         for ps in pre.values():                               # prefix outcomes per continuation (pending = the fork ended first)
             i, k = meta[ps["fi"]]
             out[i].setdefault("prefix", [None] * K)[k] = ps["n"] + [{"pending": True}] * len(ps["steps"])

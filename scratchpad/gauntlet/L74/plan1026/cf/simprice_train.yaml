@@ -1,0 +1,189 @@
+# SIMPRICE_TRAIN (account 3, 10-31; opt-in config for the next training run on the PYTHON rl_royale path): pilot2.yaml
+# + counterfactual fork credit for the Hero IW press (cf_credit triggers iw_pressed / iw_press, SIMPRICE.md section 3).
+# Changes vs pilot2.yaml, each named: stored_values / mem_row_cache / split_attn / trunk_graph / ppo_decoupled REMOVED
+# (cf_credit refuses stored_values; the others are fast-loop / graph learner speed keys); the cf block at the end.
+# NOT for the fast loop (no forks there, JAVA_FORKS.md) and NOT with micro_batch (rl_royale refuses cf rows with it).
+# Rocket family OFF here (SIMPRICE.md section 4: no state class where a forced Rocket is priced positive except finishing);
+# to include it set e.g. rocket_played 0.5 / rocket 0.0009 / wincon 0.008 (P_DEFAULT) in cf_p -- an owner / lead decision.
+# PILOT2 (account 3, 10-31; owner): every change since CLXIII in one checkpoint, full speed stack. Base = pilot/ops/pilot.yaml
+# (its header lists the changes vs succ48_x_s101); changes vs pilot.yaml, each named:
+#  - init = B0-full v2 + ZERO target layers (pilot2/build_init.py; identity vs CLXIII in PILOT2.md): CLXIII NOLEAK's tensors +
+#    the retrained full-history memory encoder (e_max 256 + board snapshot, xb_lock temperature fix, coupling 0, MEM_FULL.md s5)
+#    + tgt_in / tgt_out / tgt_back all zero (TARGET_OBS.md M3); top level = B0's (rl incl. CLXIII's IW press head).
+#  - memory_encoder_frozen false + memory_e_max 256 + memory_board_snap true (MEM_FULL.md s4/s5; owner: encoder not frozen).
+#  - target_obs: on (TARGET_OBS.md M2; fast loop = CfTgt, exact 8/8).
+#  - ability_head_from_init: true (keep CLXIII's press head; re-fit cost the old pilot -7.3 pp at u0).
+#  - tau_phase REMOVED (owner 10-31: live has no per-phase threshold; the sampled gate T_gate 0.1 is centred on tau 0.35 at
+#    every phase, = live --gate-sample with LIVE_OPTIONS' single tau). The learner seat runs NO decide rule (no SAMPLE_RULES
+#    key = none; the fast decide refuses any). Owner 10-31 keeps only the lethal Log finisher live; see PILOT2.md for why it
+#    is not a training key.
+#  - speed stack (HANDOFF 10-30 21:10): mem_row_cache, split_attn, trunk_graph 256 (arm L overrides 1024), ppo_decoupled 2.0
+#    (with fastloop --overlap 1); fastloop flags + env in pilot2/arm.sh.
+#  - max_updates 600, save_every 10 (checks every 20), n_actors 2 + screen_entries 1 (the init screen is a reference only;
+#    702 matches took 26 min on the A/B), fastloop block dropped (arm.sh's flags decide the loop shape).
+init: icebow/data/bench/rl_royale/b0/b0_full_v2_tgt.pt
+pool: icebow/data/ghost_pool/pool_env_v1.jsonl
+proagree_data: icebow/data/pipeline/s1_dataset.npz
+proagree_rows: 0
+proagree_data_gen: icebow/data/pipeline/gen_dataset_v32_fv5.npz
+noise_off: all
+opp_elixir: counter
+action_delay_ticks: 26
+extrapolate_ticks: 26
+hero_abilities: true
+forms_mode: deck
+league: true
+league_decks: icebow/data/rltest/decks_rl.json
+league_specialist: icebow/data/pipeline/s1_icebow_v6aug_s1.pt
+league_opp_policy: sample
+league_mix:
+  latest: 0.0
+  older: 0.0
+  init: 1.0
+  s1: 0.0
+league_snapshot_every: 100000
+league_snapshot_keep: 12
+league_icebow_share: 0.0
+league_deck_alpha: 1.0
+league_deck_floor: 0.0
+E: 128
+G: 4
+adv_clip: 2.0
+advantage: gae
+gae_gamma: 0.999
+gae_gamma_unit: tick
+gae_gamma_tick: 0.99994
+gae_terminal_gap: false
+gae_lambda: 0.95
+vf_coef: 0.5
+vf_clip: 0.2
+critic_warmup_updates: 5
+vf_trunk_grad: true
+shaping: tower_phat
+shaping_critic_scale: 1.5
+n_actors: 2
+in_flight: 8
+actor_device: cpu
+actor_threads: 1
+actor_timeout_s: 3600
+T: 0.5
+tau: 0.35
+T_gate: 0.1
+afford_mask: true
+stall_elixir: null
+stall_seconds: 12
+obs: live
+decide_every: 10
+learner_device: cuda
+learner_deterministic: true
+lr: 1.0e-05
+grad_clip: 0.5
+ppo_epochs: 2
+minibatch: 256
+clip: 0.2
+beta0: 0.0
+beta_min: 0.0
+beta_max: 0.0
+kl_target: 0.3
+kl_stop_prev: 0.02
+kl_ref_refresh_every: 1
+lazy_refine: true
+ent_pair_every: 4
+leash: max
+seed: 1028
+max_updates: 600
+save_every: 10
+proagree_every: 250
+screen_every: 100000
+screen_entries: 1
+screen_seeds:
+- 0
+- 1
+- 2
+stop_consecutive: 2
+plays_lo: 0.6
+plays_hi: 1.6
+kl_cell_stop: 0.5
+kl_gate_stop: 0.1
+tripwire_cell_pp: 5.0
+hard_cell_pp: 8.0
+hard_card_pp: 8.0
+hard_gate_bal: 0.05
+screen_stop_pp: -10.0
+entropy_floor_frac: 0.5
+outlived_pp: 15.0
+low_delivered_pp: 10.0
+ghost_refusal_x: 2.0
+league_pfsp: hard
+opp_style: 'on'
+league_pfsp_gamma: 1.0e-9
+league_pfsp_floor: 0.05
+league_external:
+- icebow/data/bench/rl_royale/wk_adapt_exp1/wk_adapt_exp1_u0015.pt
+- icebow/data/bench/rl_royale/wk_adapt_exp2/wk_adapt_exp2_u0015.pt
+- icebow/data/bench/rl_royale/wk_adapt_exp3/wk_adapt_exp3_u0015.pt
+- icebow/data/bench/rl_royale/newsim_base_exp1/newsim_base_exp1_u0015.pt
+- icebow/data/bench/rl_royale/newsim_base_exp2/newsim_base_exp2_u0015.pt
+- icebow/data/bench/rl_royale/rdef_e4/rdef_e4_u0020_barrel2k_cellref_towerref_w2.pt
+# lead 10-30 (owner: pilot on the best opponent once every calibration arm plateaued): arm G u0160 = ftR + opponent RL
+# (beta .003), CLXIII D3 73.3% (best of arms A-H), quick B RMS .30 (= ftR), stripped sha 9f8470a7ee996d03; timing-head seat.
+- icebow/data/pipeline/opp/oplc_ftR_l0003_a10b_u0160.pt
+league_learner_icebow_share: 1.0
+ability_policy: v2
+branch_gate: false
+learner_pipeline_frac: 0.0
+cue_inputs: true
+live_levels: all16
+heroiw_press: live
+kl_heads:
+- card
+ability_head: true
+ability_features: freeze
+league_exploiters:
+  ckpt: icebow/data/pipeline/o2/w14opp_I.pt
+  decks: scratchpad/gauntlet/L74/mix/decks_live_train.json
+  share: 0.125
+  T: 0.1
+  decide_every: 20
+  tau: 0.2
+league_deck_weights:
+  GoblinBarrel: 2.5
+  SkeletonBalloon: 2.5
+  BlowdartGoblin: 2.5
+  Princess: 2.5
+  GoblinGang: 2.5
+memory: v2
+memory_aux: v1
+memory_encoder_frozen: false
+memory_zero_empty: true
+barrel_decoy_sim: true
+memory_e_max: 256
+memory_board_snap: true
+target_obs: true
+ability_head_from_init: true
+# --- SIMPRICE cf block (noise controls: K 2 CRN continuations; 300-tick horizon = reliability SNR 1.34 / 1.11 for
+# iw_pressed / iw_press on spa1 u0 vs 1.08 / 0.50 at 900; per-trigger shrink by batch reliability (cf_shrink default true);
+# critic slope at 900 1.11 +- 0.33 (iw_pressed, in the PLAN band) / 0.51 +- 0.24 (iw_press); cf_alt_afford: card alternatives
+# only when the engine will take them)
+cf_credit: true
+cf_w: 1.0
+cf_k: 2
+cf_alt_afford: true
+cf_audit_p: 0.1
+cf_horizon_by:
+  iw_pressed: 300
+  iw_press: 300
+cf_p:
+  iw_pressed: 1.0
+  iw_press: 0.05
+  rocket_played: 0.0
+  rocket: 0.0
+  wincon: 0.0
+  siege: 0.0
+  xbow_after_fail: 0.0
+  xbow: 0.0
+  idle_full: 0.0
+  log_bait: 0.0
+  rocket_tornado: 0.0
+  tornado_redirect: 0.0
+  random: 0.0

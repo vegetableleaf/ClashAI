@@ -473,6 +473,7 @@ def ability_decide(matches: Sequence, enc, cfg: dict) -> Optional[list]:
             press = lp1 > lp0
         if press:
             m._ability_commands[m.side] = [o["cmd"]]
+        m._ab_cmd = o["cmd"]                                  # cf_credit iw_press: this decision's button (read only by a fork)
         s = m.__dict__.setdefault("ab_stats", {"decisions": 0, "presses": 0, "p_sum": 0.0})
         s["decisions"] += 1
         s["presses"] += int(press)

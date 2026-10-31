@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import copy
 import json
+import math
 import subprocess
 import sys
 import types
@@ -937,6 +938,57 @@ class TestNewTriggerForks(unittest.TestCase):
         kc, uc = cells["tornado_king"], cells["tornado_on"]
         self.assertLess(np.hypot(x[kc] - 9.0, y[kc] - 29.5), np.hypot(x[uc] - 9.0, y[uc] - 29.5))
         self.assertTrue(all(a["slot"] == tk for a in red if a["kind"].startswith("tornado")))
+
+
+class TestIwPress(unittest.TestCase):
+    """SIMPRICE (10-31): the opt-in iw_press trigger -- absent / 0.0 = the cf-on hash unchanged; its alternative is the
+    decision's own card action with the opposite Hero IW press and the complementary press log-prob."""
+
+    def test_config_and_hash(self):
+        self.assertTrue({"iw_pressed", "iw_press"} <= set(CF.OPT_IN))
+        self.assertFalse({"iw_pressed", "iw_press"} & set(CF.P_DEFAULT))
+        can = CF.canonical(ON)
+        self.assertEqual(CF.canonical({**ON, "cf_p": {"iw_press": 0.0, "iw_pressed": 0.0}}), can)
+        self.assertNotEqual(CF.canonical({**ON, "cf_p": {"iw_press": 0.2}}), can)
+        self.assertEqual(CF.cf_cfg({**ON, "cf_p": {"iw_press": 0.2}})["cf_p"]["iw_press"], 0.2)
+
+    def test_candidates_flip_the_press_only(self):
+        s = types.SimpleNamespace(engine_deck=["Rocket", "Xbow", "Tesla", "IceWizard", "Tornado", "Log", "Skeletons", "Knight"],
+                                  deck_index_of_slot=list(range(8)), side=0, cfg={"grid": "g18x32"},
+                                  env=types.SimpleNamespace(_cf_kinds={i: "TROOP" for i in range(8)}, deck_ids={0: list(range(8))}))
+        c = CF.cf_cfg({**ON, "cf_p": {"iw_press": 1.0}})
+        for press, p1 in ((False, 0.1), (True, 0.7)):
+            lp = math.log(p1 if press else 1 - p1)
+            d = {"allowed": np.ones(8, bool), "play": True, "slot": 2, "cell": 77, "lp_gate": -0.2, "lp_card": -1.0,
+                 "lp_cell": -2.0, "ab_sampled": True, "ab_press": press, "ab_lp": lp, "ab_feat": np.arange(55, dtype=np.float32)}
+            ch, alt = CF.candidates(None, s, d, "iw_pressed" if press else "iw_press", c)
+            self.assertEqual((ch["kind"], alt["kind"]), ("chosen", "iw_hold" if press else "iw_press"))
+            self.assertEqual((ch["ab_press"], alt["ab_press"]), (press, not press))
+            for k in ("play", "slot", "cell", "lp_gate", "lp_card", "lp_cell"):
+                self.assertEqual(ch[k], alt[k], k)
+            self.assertAlmostEqual(math.exp(ch["ab_lp"]) + math.exp(alt["ab_lp"]), 1.0, places=12)
+            self.assertAlmostEqual(ch["ab_p"], p1, places=12)
+            self.assertEqual(len(alt["ab_feat"]), 55)
+
+
+class TestAltAfford(unittest.TestCase):
+    """SIMPRICE (10-31): cf_alt_afford (bool, opt-in, absent = the cf-on hash unchanged) offers a forced card alternative only
+    when my elixir at the engine's issue tick (decision + the side's e1 delay) covers its cost."""
+
+    def test_config_and_hash(self):
+        can = CF.canonical(ON)
+        self.assertEqual(CF.canonical({**ON, "cf_alt_afford": False}), can)
+        self.assertNotEqual(CF.canonical({**ON, "cf_alt_afford": True}), can)
+        self.assertIs(CF.cf_cfg({**ON, "cf_alt_afford": True})["cf_alt_afford"], True)
+        with self.assertRaises(SystemExit):
+            CF.cf_cfg({**ON, "cf_alt_afford": 1})
+
+    def test_issue_affordable(self):
+        from pipeline.opp_elixir_count import regen_between
+        for el, want in ((5.80, False), (6.0 - regen_between(100, 106) + 1e-6, True), (6.5, True)):
+            s = types.SimpleNamespace(_cur=(100, None, None), delay=6, costs=[6.0], side=0, env=types.SimpleNamespace(),
+                                      state={"players": [{"side": 0, "elixir_exact": el}]})
+            self.assertIs(CF.issue_affordable(s, 0), want, el)
 
 
 class TestRocketEmpty(unittest.TestCase):
