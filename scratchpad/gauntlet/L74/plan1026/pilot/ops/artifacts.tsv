@@ -84,3 +84,5 @@ b8ae70953932839f7f220c90e1dbc346b3d0edf4a659b34da5ba8346b54e9758	crforge/tables/
 babaa3d129e370c5838f12001683e2a5579dbaec581fd94968e689aacfc3fb60	cb/icebow/data/cue_table/cards-160402017-20261006.json	33308:/workspace/d2/cb/research/ext/Royale/RoyaleSim/data/derived/cards-160402017-20261006.json
 3eda9d23db3f8476c5be42e902be9c32ab4ff59a9e9a6d13d3ca608255c23cd4	cb/icebow/data/bench/rl_royale/rlarm_succ48_o_s91/rlarm_succ48_o_s91_u0075.pt	33308:/workspace/d2/cb/icebow/data/bench/rl_royale/rlarm_succ48_o_s91/rlarm_succ48_o_s91_u0075.pt
 83323b38a99515e196f0af4dcbe8003be849d86ac38692681f6b137a5aa8ba5f	cb/icebow/data/ghost_pool/pool_env_v1_split.json	33308:/workspace/d2/cb/icebow/data/ghost_pool/pool_env_v1_split.json
+fc1caf14cca0c89a7b2ed22d615e5ed5c0f06b5162b30cc828c77aae197d5eb0	cb/icebow/data/bench/rl_royale/b0/b0_full_clxiii_mem256snap_xbtemp.pt	33903:/workspace/memretrain/out/b0_full/b0_full_clxiii_mem256snap_xbtemp.pt
+9f8470a7ee996d03812b6f738d420742a37b251897343ebe185e0da90c4eca3c	cb/icebow/data/pipeline/opp/oplc_ftR_l0003_a10b_u0160.pt	33308:/workspace/loop/cb/icebow/data/pipeline/opp/oplc_ftR_l0003_a10b_u0160.pt
