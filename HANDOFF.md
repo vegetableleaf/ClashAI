@@ -1,3 +1,15 @@
+# 2026-10-30 ~21:45 EDT -- lethal Log finisher was INERT after b1a71c5; fixed with lethal_rocket 'log' (4e0b15f); live restarted 21:38 EDT
+
+- (c, PILOT2-BUILD from code) decide() runs finishers only when lethal_rocket != off, so keeping --lethal-log on without
+  --lethal-rocket left NO rule firing live 21:03-21:38 EDT. Fix (opt-in value, absent behaviour unchanged): lethal_rocket 'log' =
+  the Log finisher only (needs lethal_log on; ot_behind phase / crown / landing rules; never a Rocket); test in test_lethal_log.py;
+  153 decision tests pass; livecal reads it. LIVE_OPTIONS: --lethal-rocket log --lethal-log on --lethal-quiet 1.0 (backup
+  LIVE_OPTIONS.pre_logonly_20261031). --check PASS; live restarted 21:38:02 EDT, first log live_play_20261030_213834.jsonl
+  shows lethal_rocket log + lethal_log on.
+- 33308 gate tree got the new decision_options.py + LIVE_OPTIONS; base2 (CLXIII re-baseline) restarted from scratch on it (the
+  first seed was under the inert-finisher stack: moved to /workspace/pgate2/ev_stale/).
+- Known small train/live difference: PILOT2 learner seats run NO rule (fast loop refuses SAMPLE_RULES for server-forwarded
+  learners); live adds the rare lethal Log finisher at deploy.
 # 2026-10-30 ~21:30 EDT -- owner asleep: overnight rules; old A/B gracefully stopped; SIM gate moved to 33308; CLXIII re-baseline queued
 
 - Owner (before sleep): keep 33308 for other work (stop only pods idle for long); continue pilot2; <= 3 workers on PLAN.md pillars,
