@@ -23,7 +23,22 @@ def main():
         C.update(load(a.cyc_aff))
     ms = sorted(G)
     ok = {'gate': set(), 'v3': set(a.ok_v3.split(',')) - {''}, 'cyc': set(a.ok_cyc.split(',')) - {''}}
-    P = {'gate': G, 'v3': V, 'cyc': C}
+    # union: per record the better of the v3 row and the RECON_CYC=1 row by the comparator's own key (class, first divergence, diverging frames):
+    # the RECON_CYC run keeps strict cycle rules on its repaired starts, so a route that needs an intermediate non-fitting plan can be lost (FRESH9 040421)
+    def key(r):
+        if not r or 'error' in r:
+            return (-1, 0, 0)
+        fd = r.get('first_div')
+        return (klass(r), 10 ** 9 if fd is None else fd, -(r.get('counts') or {}).get('div', 0))
+    U, ok_u = {}, set()
+    for m in ms:
+        v, c = V.get(m), C.get(m)
+        pick = c if c is not None and (v is None or key(c) >= key(v)) else v
+        U[m] = pick
+        if pick is v and v is not c and any(m.endswith(x) for x in ok['v3'] if x) or pick is c and any(m.endswith(x) for x in ok['cyc'] if x):
+            ok_u.add(m)
+    ok['union'] = ok_u
+    P = {'gate': G, 'v3': V, 'cyc': C, 'union': U}
 
     def cls(n, m):
         return klass(P[n][m]) if m in P[n] and 'error' not in P[n][m] else 0
@@ -45,12 +60,12 @@ def main():
         mm = mode.split()[0] if mode != 'as extracted' else 'as'
         mm = {'as extracted': 'asx', 'counted': 'counted', 'raw': 'raw'}[mode]
         line = []
-        for n in ('gate', 'v3', 'cyc'):
+        for n in ('gate', 'v3', 'cyc', 'union'):
             pa = sum(passes(n, m, mm, 1) for m in ms); st = sum(passes(n, m, mm, 2) for m in ms)
             line.append('%s pass %3d (%.3f, CP low %.3f) strict %3d (%.3f, CP low %.3f)' % (n, pa, pa / N, cp_lower(pa, N), st, st / N, cp_lower(st, N)))
         print('%-13s' % mode, ' | '.join(line))
         for lv, nm in ((1, 'pass'), (2, 'strict')):
-            for x, y in (('gate', 'cyc'), ('v3', 'cyc'), ('gate', 'v3')):
+            for x, y in (('gate', 'union'), ('v3', 'union'), ('gate', 'cyc'), ('v3', 'cyc'), ('gate', 'v3')):
                 ox = [m for m in ms if passes(x, m, mm, lv) and not passes(y, m, mm, lv)]
                 oy = [m for m in ms if passes(y, m, mm, lv) and not passes(x, m, mm, lv)]
                 print('   %s %-6s only-%s %2d only-%s %2d p=%.4f' % ('%s vs %s' % (x, y), nm, x, len(ox), y, len(oy), sign_p(len(ox), len(oy))))

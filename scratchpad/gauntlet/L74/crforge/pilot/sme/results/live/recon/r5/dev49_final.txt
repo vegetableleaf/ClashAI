@@ -6,13 +6,13 @@ as extracted  gate pass   6 (0.122, CP low 0.055) strict   5 (0.102, CP low 0.04
    gate vs cyc strict only-gate  4 only-cyc  0 p=0.1250
    v3 vs cyc strict only-v3  0 only-cyc  0 p=1.0000
    gate vs v3 strict only-gate  4 only-v3  0 p=0.1250
-counted       gate pass   6 (0.122, CP low 0.055) strict   5 (0.102, CP low 0.041) | v3 pass  10 (0.204, CP low 0.115) strict   9 (0.184, CP low 0.099) | cyc pass  17 (0.347, CP low 0.235) strict  16 (0.327, CP low 0.217)
-   gate vs cyc pass   only-gate  1 only-cyc 12 p=0.0034
+counted       gate pass   6 (0.122, CP low 0.055) strict   5 (0.102, CP low 0.041) | v3 pass  11 (0.224, CP low 0.131) strict  10 (0.204, CP low 0.115) | cyc pass  18 (0.367, CP low 0.253) strict  17 (0.347, CP low 0.235)
+   gate vs cyc pass   only-gate  1 only-cyc 13 p=0.0018
    v3 vs cyc pass   only-v3  0 only-cyc  7 p=0.0156
-   gate vs v3 pass   only-gate  1 only-v3  5 p=0.2188
-   gate vs cyc strict only-gate  1 only-cyc 12 p=0.0034
+   gate vs v3 pass   only-gate  1 only-v3  6 p=0.1250
+   gate vs cyc strict only-gate  1 only-cyc 13 p=0.0018
    v3 vs cyc strict only-v3  0 only-cyc  7 p=0.0156
-   gate vs v3 strict only-gate  1 only-v3  5 p=0.2188
+   gate vs v3 strict only-gate  1 only-v3  6 p=0.1250
 raw           gate pass   7 (0.143, CP low 0.069) strict   6 (0.122, CP low 0.055) | v3 pass  14 (0.286, CP low 0.182) strict  13 (0.265, CP low 0.165) | cyc pass  25 (0.510, CP low 0.385) strict  24 (0.490, CP low 0.365)
    gate vs cyc pass   only-gate  0 only-cyc 18 p=0.0000
    v3 vs cyc pass   only-v3  0 only-cyc 11 p=0.0010
