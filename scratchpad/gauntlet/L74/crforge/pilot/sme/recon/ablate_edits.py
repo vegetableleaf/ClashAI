@@ -55,7 +55,7 @@ def revert_edits(base, final):
     for j in list(gone):                      # pair a dropped play with the nearest added play of its card and side
         b = base['cmds'][j]
         cand = [k for k in free_adds if final['cmds'][k]['kind'] == b['kind'] == 'play' and final['cmds'][k]['side'] == b['side']
-                and final['cmds'][k].get('card') == b.get('card') and abs(final['cmds'][k]['run'] - b['run']) <= REPAIR]
+                and (final['cmds'][k].get('card') == b.get('card') or final['cmds'][k].get('card') == 'Mirror') and abs(final['cmds'][k]['run'] - b['run']) <= REPAIR]
         if cand:
             k = min(cand, key=lambda k: abs(final['cmds'][k]['run'] - b['run']))
             free_adds.remove(k); gone.remove(j); pairs.append((j, k))

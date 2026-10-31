@@ -53,8 +53,17 @@ def search(rec, frames, out, beam=4, ops=None, start=None):
     recon.with_elixir_base(plan, tab, e0)
     work = os.path.join(out, 'work')
     log = []
-    inits = []
+    inits, start_edits = [], []
     if CYC and not start:
+        # RECON-5, own side: a tap of ours that no extracted play explains is a missed play (our action log). When our own cycle
+        # fails and the restored plan fits it, the restore IS the base plan; otherwise it is one more engine-scored start.
+        rt = recon.restore_taps(rec, plan, me)
+        if rt:
+            if not plan['_cycle_base'][me] and rt[1]['_cycle_base'][me]:
+                start_edits, plan = [rt[0]], rt[1]
+                recon.with_elixir_base(plan, tab, e0)
+            else:
+                inits.append((rt[0], 1, rt[1]))
         # RECON-5 (opt-in): an opponent whose extracted plays fit no deal ran on the IDENTITY deal (opp_deal_fit None), whose first
         # refused play was the early divergence of the opponent_no_fitting_deal records. Part A: the deal that runs the most plays;
         # part B: deck-constrained repairs (cyc.py) scored by the engine as extra starting members.
@@ -67,7 +76,7 @@ def search(rec, frames, out, beam=4, ops=None, start=None):
     o, an = full_run(plan, frames, me, end, work, log)
     if o is None:
         return None, plan, log
-    members = [dict(plan=plan, o=o, an=an, edits=[], cost=0, given_up=[])]
+    members = [dict(plan=plan, o=o, an=an, edits=list(start_edits), cost=3 * len(start_edits), given_up=[])]
     seen = {key_of(plan)}
     if inits:
         cl = []

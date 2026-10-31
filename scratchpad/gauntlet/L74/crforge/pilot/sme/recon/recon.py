@@ -779,3 +779,45 @@ def cycle_repairs(plan, frames, side, tab, e0, cap=CYC_CAP, end=None):
 def collections_defaultdict_list():
     import collections
     return collections.defaultdict(list)
+
+
+# ------------------------------------------------------------------ RECON-5: our own taps (the bot's action log) restore missed own plays
+TAP_MATCH = 120           # a tap and an extracted play of the same card within this many ticks of tap + own_delay are one play
+TAP_WIN = (-2, 3)         # an own_tap play's tick is tap + own_delay + {-2..3} on 12,543 matched plays (point = the tap's point on all)
+
+
+def unmatched_taps(rec, plan, me):
+    """Own taps no extracted own play explains (greedy by tap order, the nearest same-card play within TAP_MATCH of tap + own_delay).
+    Our taps are the bot's own action log: a tap the game ran is a play, whatever the reader saw. 20 / 20 own_cycle_fail records
+    (FRESH2-9) have exactly one such tap and 355 cycle-clean records have 2 (RECON.md section 12.4)."""
+    deck = plan['decks'][me]
+    plays = [(c['run'], k) for k, c in enumerate(plan['cmds']) if c['side'] == me and c['kind'] == 'play']
+    used, out = set(), []
+    for t in rec.get('own_taps') or ():
+        if t['name'] not in deck:
+            continue
+        run = t['tick'] + rec['own_delay']
+        near = [(abs(r - run), k) for r, k in plays if k not in used and plan['cmds'][k]['card'] == t['name'] and abs(r - run) <= TAP_MATCH]
+        if near:
+            used.add(min(near)[1])
+        else:
+            out.append(t)
+    return out
+
+
+def restore_taps(rec, plan, me, taps=None):
+    """-> (description, plan with every unmatched own tap added as an own play at the tap's point and run tick + own_delay), or None."""
+    taps = unmatched_taps(rec, plan, me) if taps is None else taps
+    if not taps:
+        return None
+    p, what = plan, []
+    for t in taps:
+        R = t['tick'] + rec['own_delay']
+        c = add_cmd(p, me, t['name'], R, t['x'], t['y'], R + TAP_WIN[0], R + TAP_WIN[1])
+        c['_src'].update(own=True, source='own_tap', tap_restore=True)
+        p = apply_edit(p, {'op': 'add', 'pos': next(iter(add_positions(p, R))), 'cmd': c})
+        if p is None:
+            return None
+        what.append('%s R%d (%d,%d)' % (t['name'], R, t['x'], t['y']))
+    p['_cycle_base'] = [cycle_ok(p, s) for s in (0, 1)]
+    return 'tap s%d ' % me + '; '.join(what), p

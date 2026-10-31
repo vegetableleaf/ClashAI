@@ -282,6 +282,40 @@ def t_r5():
     ok(all(recon.elixir_ok(r[2], 0, tab, 0.0) for r in r_), 'every kept repair passes the bank rule')
 
 
+def t_r5_taps():
+    # our own taps: a tap no extracted own play explains is restored at the tap's point, tap + own_delay
+    rot = ['Knight', 'IceWizard', 'Tesla', 'Skeletons', 'Log']
+    cs = [cmd(1, rot[k % 5], 300 + 200 * k, x=7500, y=20500 + 100 * k, own=True) for k in range(12)]
+    full = plan_of([dict(c) for c in cs] + [cmd(0, 'Knight', 350)])
+    full['decks'] = [DECK0, DECK1]
+    # DECK1 = Knight, IceWizard, Tesla, Log, Xbow, Rocket, Tornado, Skeletons (own deal = identity here)
+    rotk = ['Knight', 'IceWizard', 'Tesla', 'Skeletons', 'Rocket']
+    cs = [cmd(1, rotk[k % 5], 300 + 200 * k, x=7500, y=20500 + 100 * k, own=True) for k in range(12)]
+    delay = 24
+    taps = [{'tick': c['run'] - delay, 'name': c['card'], 'x': c['x'], 'y': c['y']} for c in cs]
+    rec = {'own_taps': taps, 'own_delay': delay}
+    full = plan_of([dict(c) for c in cs])
+    deal1 = recon.fitting_deal(recon.plays_of(full, 1))
+    full['deals'][1] = deal1
+    ok(recon.cycle_ok(full, 1), 'the rotation fits a deal')
+    ok(recon.unmatched_taps(rec, full, 1) == [], 'every tap is explained by its play (and a play +-2 ticks off still matches)')
+    cut = plan_of([dict(c) for c in cs if c['run'] != cs[6]['run']])
+    cut['deals'][1] = deal1
+    ok(not recon.cycle_ok(cut, 1), 'with one own play missing our (known) cycle breaks')
+    um = recon.unmatched_taps(rec, cut, 1)
+    ok(len(um) == 1 and um[0]['name'] == cs[6]['card'], 'exactly the missing play is unmatched')
+    desc, rest = recon.restore_taps(rec, cut, 1)
+    new = [c for c in rest['cmds'] if c['_src'].get('tap_restore')][0]
+    ok((new['run'], new['x'], new['y'], new['card']) == (cs[6]['run'], cs[6]['x'], cs[6]['y'], cs[6]['card']), 'restored at tap + delay, tap point')
+    ok(rest['_cycle_base'][1] and recon.cycle_ok(rest, 1), 'the restored plan fits our known deal')
+    ok((new['_src']['lo'], new['_src']['hi']) == (new['run'] + recon.TAP_WIN[0], new['run'] + recon.TAP_WIN[1]), 'dating window')
+    ok(recon.restore_taps(rec, full, 1) is None, 'nothing to restore when every tap is explained')
+    rec2 = dict(rec, own_taps=taps + [{'tick': 1000, 'name': 'NotInDeck', 'x': 1, 'y': 1}])
+    ok(recon.unmatched_taps(rec2, full, 1) == [], 'a tap of a card outside the deck is ignored')
+    far = dict(rec, own_taps=[dict(taps[0], tick=taps[0]['tick'] + 400)])
+    ok(len(recon.unmatched_taps(far, full, 1)) == 1, 'a same-card play 400 ticks away does not explain the tap')
+
+
 def t_cases():
     import offline
     try:
@@ -291,6 +325,6 @@ def t_cases():
 
 
 if __name__ == '__main__':
-    for f in (t_cycle, t_elixir, t_zone, t_travel, t_edits, t_legal, t_victims, t_moves, t_r4, t_r5, t_cases):
+    for f in (t_cycle, t_elixir, t_zone, t_travel, t_edits, t_legal, t_victims, t_moves, t_r4, t_r5, t_r5_taps, t_cases):
         f()
     print('ok', N[0])
