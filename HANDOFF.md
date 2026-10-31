@@ -1,3 +1,10 @@
+# 2026-10-30 ~21:55 EDT -- OWNER: a live-trial revert NEVER restores removed rules
+
+- Owner: "do not restore any live options. there's a reason for why i stripped them. Your job would be to produce a better model
+  despite not having any of the live options to carry it." -> for any trial: back up the CURRENT stripped LIVE_OPTIONS right before
+  it (that is RESTORE_OPTIONS); the candidate adds only its own deploy flags (--gate-sample 0.1 --gate-sample-step-ticks 10 +
+  target / memory flags from LIVE-TGT's recipe); a revert restores that stripped backup. LIVE_OPTIONS.pre_notauthreat / pre_notauphase
+  / pre_norules / pre_logonly_20261031 are history only -- never deploy them.
 # 2026-10-30 ~21:45 EDT -- lethal Log finisher was INERT after b1a71c5; fixed with lethal_rocket 'log' (4e0b15f); live restarted 21:38 EDT
 
 - (c, PILOT2-BUILD from code) decide() runs finishers only when lethal_rocket != off, so keeping --lethal-log on without
