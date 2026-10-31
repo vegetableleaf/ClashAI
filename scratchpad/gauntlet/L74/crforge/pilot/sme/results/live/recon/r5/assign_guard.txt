@@ -1,0 +1,14 @@
+FRESH9 cyc records 3 PASS
+    261029_101523 off {'exact': 2365, 'torn_hidden': 38, 'div': 59} -> on {'exact': 2365, 'torn_hidden': 38, 'div': 59}
+    261029_200427 off {'exact': 1661, 'torn_hidden': 212, 'div': 63} -> on {'exact': 1661, 'torn_hidden': 212, 'div': 63}
+    261030_022944 off {'exact': 613, 'torn_hidden': 18, 'div': 39} -> on {'exact': 613, 'torn_hidden': 18, 'div': 39}
+FRESH10 gate records 3 PASS
+    261030_150042 off {'exact': 47, 'div': 1716} -> on {'exact': 47, 'div': 1716}
+    261030_180109 off {'exact': 979, 'torn_late': 1, 'div': 173} -> on {'exact': 979, 'torn_late': 1, 'div': 173}
+    261030_192113 off {'exact': 2428, 'torn_hidden': 92} -> on {'exact': 2428, 'torn_hidden': 92}
+FRESH10 v3 records 3 PASS
+    261030_150042 off {'exact': 47, 'div': 1716} -> on {'exact': 47, 'div': 1716}
+    261030_180109 off {'exact': 979, 'torn_late': 1, 'div': 173} -> on {'exact': 979, 'torn_late': 1, 'div': 173}
+    261030_192113 off {'exact': 2428, 'torn_hidden': 91, 'div': 1} -> on {'exact': 2428, 'torn_hidden': 91, 'div': 1}
+FRESH10 cyc records 1 PASS
+    261030_150042 off {'exact': 3000, 'torn_hidden': 50} -> on {'exact': 3000, 'torn_hidden': 50}

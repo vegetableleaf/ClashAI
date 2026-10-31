@@ -5,7 +5,11 @@ cases, `field_census.py` the rules on every frozen fresh input, `recon_search.py
 Evidence: `results/live/recon/`. Labels: (a) measured, (b) plausible but untested, (c) contradicted.
 
 ## STATUS (keep current)
-- **RECON-5 (10-31 ~03:00 EDT, section 12) -- held-out runs RUNNING.** Dev49 (a): raw exact gate 7, v3 14, v3 + RECON-5 25 of 49 (counted 6 / 10 / 17); code frozen at commit fab0cad (FRESH10_FREEZE.txt) BEFORE the held-out runs.
+- **RECON-5 (10-31 ~05:45 EDT, section 12) -- DONE, nothing of mine is running.** Counted pass / strict (ablation-confirmed flagged-exact records counted): FRESH9 (177) gate 122 / 117, v3 128 / 125, v3 + RECON-5 **135 / 132** (CP low .704 / .686);
+  FRESH10 (88, the clean held-out) gate 63 / 60, v3 61 / 59, v3 + RECON-5 **66 / 63** (.663 / .626; vs gate p .51, vs v3 p .06); dev49 (the 45 flagged records the old 151 excluded + 4) 6 / 11 / 18. Step 1: the 8 flagged-exact FRESH9 v3 records all ablation-confirmed (12.1).
+  Code: `recon/cyc.py` + RECON-5 section of `recon.py` + `RECON_CYC=1` in `recon_search.py` (opt-in; absent = v3), frozen at fab0cad. Evidence `results/live/recon/r5/`. Reproduce: pod 33903 `/workspace/smeR4` (runs/, data/, drive_held.sh, drive_dev49.sh).
+  Codex dispatches: none. Next: 12.9.
+- (earlier RECON-5 line, superseded) **RECON-5 (10-31 ~03:00 EDT) -- held-out runs RUNNING.** Dev49 (a): raw exact gate 7, v3 14, v3 + RECON-5 25 of 49 (counted 6 / 10 / 17); code frozen at commit fab0cad (FRESH10_FREEZE.txt) BEFORE the held-out runs.
   Driver on 33903 `/workspace/smeR4/drive_held.sh` (PID 1054681; steps skip when `runs/<step>.log` says done; a half-done step: delete `runs/<step>` first; restart `cd /workspace/smeR4 && (nohup bash drive_held.sh > drive_held.out 2>&1 < /dev/null &)`;
   ends with HELD_DONE in `runs/held_drive.log`): f9_cyc_aff (40 affected FRESH9 records), f10_gate, f10_cyc_aff, f10_v3, ASSIGN-off guards. Then: pull `runs/<step>/recon_results.jsonl` (gate: results.jsonl), ablate the flagged-exact cyc records
   (`runR.sh RUN ablate2 INPUTS FRAMES` with RARGS="--runs RUNDIR --matches M1,M2"), `r5_confirm.py`, `r5_final.py --name FRESH9 ... --cyc-aff`. Codex dispatches: none.
@@ -477,12 +481,46 @@ counted = a flagged record counts when it is exact AND every kept structural edi
 | | gate | v3 | v3 + RECON-5 (v2) |
 |---|---|---|---|
 | raw pass / strict | 7 / 6 | 14 / 13 | **25 / 24** (CP low 0.385) |
-| counted pass / strict | 6 / 5 | 10 / 9 | **17 / 16** (CP low 0.235) |
+| counted pass / strict | 6 / 5 | 11 / 10 | **18 / 17** (CP low 0.253 / 0.235) |
 | as extracted | 6 / 5 | 1 / 1 | 1 / 1 |
 Paired (raw): v3 vs cyc only-v3 0 / only-cyc 11 (p .001); gate vs cyc 0 / 18. Counted: v3 vs cyc 0 / 7 (p .016). cyc lost 0 records vs v3.
 - Iterations on dev (disclosed): v1 (spell ghosts of any card, tap window -2..+3) = 23 raw; it LOST 155249, 000242, 060537 to v3 (their restored tap ran 8-20 ticks after tap + own_delay: window too narrow) and kept ghost spells that leave
   objects (RoyalDelivery, Log, Rage: 214831, 054032, 064121 got A_sim_only / extra units). v2: ghosts only for the card the reader cannot see (Zap, the RECON visibility rule), tap window -3..+25 -> 25 raw, 0 lost.
-- v2 passes (25): 16 ablation-confirmed (own taps 8, Zap / BattleRam / MightyMiner / SuspiciousBush adds from v3's ops, 2 Mirror readings, drops of own ability presses), 6 with no structural edit (the best-prefix deal alone, or v3's swap on 031310), 1 unconfirmable
-  (001538: two dropped MegaKnight plays, the reverse run errors), 1 unflagged (142334), 1 more unflagged-not-needed. The 6 "deal only" records are exact although the cycle fails: the engine's refusal of a play no deal allows acts like dropping the invented / duplicated play.
+- v2 passes (25): 17 flagged records ablation-confirmed (own taps, Zap / BattleRam / MightyMiner / SuspiciousBush adds from v3's ops, 2 Mirror readings, drops of own ability presses), 6 with no structural edit (the best-prefix deal alone, or v3's swap on 031310),
+  1 unconfirmable (001538: two dropped MegaKnight plays, the reverse run errors), 1 unflagged (142334). The 6 "deal only" records are exact although the cycle fails: the engine's refusal of a play no deal allows acts like dropping the invented / duplicated play.
 - Still failing (24, v2): hero / evolution FORM mismatches (the SIM spawns BarbLogBarbarianHero / Knight_EV1 / Witch_EV1 where the reader lists the base card: 103056, 143825, 144727, 153413, 180849, 050136, 051010; the form is a function of how many
   times the card was cycled, so a missed play also shifts it: not modelled, (b)), unseen troop plays (171948 ZapMachine, 181209 MinionGiant, 213421 Xbow, 235316 IceSpirits, 054032 SuspiciousBush, 064121 LittlePrince area: cyc inserts spells only), and multi-play gaps.
+### 12.7 FRESH9 held-out (a; frozen list of 10-30; code frozen at fab0cad before the cyc run; evidence `results/live/recon/r5/f9_*`)
+The gate and v3 numbers are the held-out ones of RECON-4 (list and code frozen before any run). RECON-5 was DESIGNED after looking at FRESH9's failing records (the diagnosis of 12.3 came from them), so FRESH9 is held-out for its parameters
+(nothing was tuned on it) but not for its idea; FRESH10 (12.8) is the clean test. RECON_CYC=1 was run on the 40 records it can change (opponent plays fit no deal, or an unmatched own tap); every other record takes no RECON_CYC path, so its row is the v3 row.
+| 177 unique matches | gate | v3 | v3 + RECON-5 | best of v3 / RECON-5 (union) |
+|---|---|---|---|---|
+| as extracted, pass / strict | 122 / 117 | 120 / 117 | 121 / 118 | 121 / 118 |
+| **counted** (ablation-confirmed), pass / strict | 122 / 117 (CP low .627 / .598) | 128 / 125 (.662 / .645) | **135 / 132 (.704 / .686)** | 136 / 133 (.710 / .692) |
+| raw (flag ignored), pass / strict | 122 / 117 | 128 / 125 | 136 / 133 | 137 / 134 |
+Paired, counted pass: gate vs cyc only-gate 3 / only-cyc 16 (p .004); v3 vs cyc 1 / 8 (p .039); gate vs v3 3 / 9 (p .146). RECON-5 gained 9 raw records over v3 (083215, 110215, 110854, 123731, 010059, 014211, 031423, 061817, 063534) and lost one
+(040421: v3 solves it with drop + add + add through a non-fitting intermediate plan; the RECON_CYC run keeps the cycle rule on its repaired starts and its beam did not reach that route -> "union" = the better of the two runs by the comparator's own key; the
+union is an analysis choice made after seeing this loss, (b)). 15 flagged-exact RECON-5 records ablated: 14 confirmed (own taps 9, Zap, IceWizard, Knight, SuspiciousBush adds), 1 not confirmable (061817, a Mirror reading whose reverse run errors).
+Counted v3 (8 of 8 confirmed, 12.1) 128 / 125. Remaining 24 affected failures (cyc): unseen troop plays 8, hero / evolution form mismatches 8, areas 4, ghost-visible 4 (`fail_f9`-style census of the first diff rows).
+### 12.8 FRESH10: the clean held-out test of RECON-5 (a; list `fresh/FRESH10.tsv` sha ae5d48da and the code (fab0cad) committed BEFORE the first run; evidence `results/live/recon/r5/f10_*`)
+148 Ranked battles of 10-30 13:46 - 23:18 EDT after FRESH9 -> 90 RNG-free records, 88 unique matches (1 unplannable: no own deal in its record, every pipeline errors on it; the gate has one more error, 172612 "a kept variant failed"). 14 records
+are affected (opponent no-fit, or an unmatched own tap); the gate and v3 ran on all 88.
+| 88 unique matches | gate | v3 | v3 + RECON-5 |
+|---|---|---|---|
+| as extracted, pass / strict | 63 / 60 | 61 / 59 | 61 / 59 |
+| **counted** (ablation-confirmed), pass / strict | 63 / 60 (CP low .626 / .591) | 61 / 59 (.603 / .579) | **66 / 63 (.663 / .626)** |
+| raw (flag ignored), pass / strict | 64 / 61 | 65 / 63 | 69 / 66 (.699 / .663) |
+Paired, counted pass: gate vs cyc only-gate 3 / only-cyc 6 (p .51); v3 vs cyc 0 / 5 (p .0625); gate vs v3 3 / 1 (p .63). RECON-5 gained 4 raw records over v3 (150042, 152453, 193232, 215458), lost 0. Flagged-exact RECON-5 records: 8 -> 5 confirmed
+(2 Mirror readings, 3 adds), 1 deal-only (140450), 2 not confirmable (reverse run errors: 221240, 224356); v3's 4 flagged-exact: 0 confirmed (1 deal-only, 3 with a kept edit the ablation calls unneeded or errors).
+What the gain is made of: FRESH9 14 confirmed = 11 own-tap restores + 3 v3-op adds; FRESH10 5 confirmed = 2 Mirror readings (cyc) + 3 v3-op adds reachable from the better start; dev 17 = 7 taps + 2 Mirror + 8 v3-op adds. The cycle-repair ghosts (Zap) restored
+no record on its own in any set; the ghost-Zap and troop-insertion parts of the design are NOT shown to matter (b).
+ASSIGN off / on guard, per frame (`r4_report.guard`, SME_CLS_TICKS): PASS for RECON-5 on FRESH9's 3 affected reader-hidden records and FRESH10's 1; gate and v3 on FRESH10's 3 reader-hidden records PASS (identical counts, no exact frame lost).
+### 12.9 Verdict and next steps (labels as above)
+- (a) The dev -> held-out gap is mostly a selection effect: the historic "strict fresh 151" excluded the 21% of RNG-free matches the extractor flags; those matches are 15-16% of FRESH9 / FRESH10 and the hand rules pass 0 / 35 of them in FRESH9.
+- (a) The deck from the battle log was already in use; no replay data exists for any held-out match; neither can be the lever. The levers found: the opponent's deal (identity -> the deal that runs the most plays: exact frames 12% -> 40% on the 69 non-fitting
+  records of FRESH2-9 before any search), our own action log (an unmatched tap = a missed own play, 20 / 20), and the Mirror reading (4 ablation-confirmed passing records over dev and FRESH10, plus FRESH9 061817 whose reverse run errors).
+- (a) Held-out, counted pass: FRESH9 135 / 177 (CP low .704) vs gate 122 / 177 (.627), FRESH10 66 / 88 (.663) vs gate 63 / 88 (.626). The FRESH10 difference from the gate is NOT significant (3 : 6, p .51); against v3 it is 0 : 5 (p .06). Engine fidelity on a
+  fresh held-out set is now ~0.75 counted (raw 0.77-0.78), against D1 0.90 / D2 0.98: still far, the remaining failures are form mismatches (hero / evolution activation by cycle count), unseen troop plays, area spells, and multi-play gaps.
+- (b, next, in order of expected value) (1) hero / evolution FORM by cycle count (8 of the 24 remaining FRESH9 failures and 7 of the 24 dev ones: the SIM spawns the Hero / EV1 body the reader lists as the base card; the form of a play depends on the card's cycle count,
+  which the repaired cycle now knows); (2) unseen troop plays with frame evidence (add (b) inside the repaired cycle, 8 FRESH9 failures); (3) own-tap ground truth for point and tick of EVERY own play (the tap's point is exact on 12,543 / 12,543) to drop the own-play shifts.
+- Not done: the own side of the cycle repair beyond taps (own cycle failures without an unmatched tap: FRESH10 143358, 205343), troop-card ghosts, RECON_CYC on the 148 FRESH10 battles that are not RNG-free (the scored set excludes them as in FRESH2-9).

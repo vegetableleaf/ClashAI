@@ -1,0 +1,36 @@
+== FRESH10: n 88 unique matches
+as extracted  gate pass  63 (0.716, CP low 0.626) strict  60 (0.682, CP low 0.591) | v3 pass  61 (0.693, CP low 0.603) strict  59 (0.670, CP low 0.579) | cyc pass  61 (0.693, CP low 0.603) strict  59 (0.670, CP low 0.579) | union pass  61 (0.693, CP low 0.603) strict  59 (0.670, CP low 0.579)
+   gate vs union pass   only-gate  3 only-union  1 p=0.6250
+   v3 vs union pass   only-v3  0 only-union  0 p=1.0000
+   gate vs cyc pass   only-gate  3 only-cyc  1 p=0.6250
+   v3 vs cyc pass   only-v3  0 only-cyc  0 p=1.0000
+   gate vs v3 pass   only-gate  3 only-v3  1 p=0.6250
+   gate vs union strict only-gate  2 only-union  1 p=1.0000
+   v3 vs union strict only-v3  0 only-union  0 p=1.0000
+   gate vs cyc strict only-gate  2 only-cyc  1 p=1.0000
+   v3 vs cyc strict only-v3  0 only-cyc  0 p=1.0000
+   gate vs v3 strict only-gate  2 only-v3  1 p=1.0000
+counted       gate pass  63 (0.716, CP low 0.626) strict  60 (0.682, CP low 0.591) | v3 pass  61 (0.693, CP low 0.603) strict  59 (0.670, CP low 0.579) | cyc pass  66 (0.750, CP low 0.663) strict  63 (0.716, CP low 0.626) | union pass  66 (0.750, CP low 0.663) strict  63 (0.716, CP low 0.626)
+   gate vs union pass   only-gate  3 only-union  6 p=0.5078
+   v3 vs union pass   only-v3  0 only-union  5 p=0.0625
+   gate vs cyc pass   only-gate  3 only-cyc  6 p=0.5078
+   v3 vs cyc pass   only-v3  0 only-cyc  5 p=0.0625
+   gate vs v3 pass   only-gate  3 only-v3  1 p=0.6250
+   gate vs union strict only-gate  2 only-union  5 p=0.4531
+   v3 vs union strict only-v3  0 only-union  4 p=0.1250
+   gate vs cyc strict only-gate  2 only-cyc  5 p=0.4531
+   v3 vs cyc strict only-v3  0 only-cyc  4 p=0.1250
+   gate vs v3 strict only-gate  2 only-v3  1 p=1.0000
+raw           gate pass  64 (0.727, CP low 0.638) strict  61 (0.693, CP low 0.603) | v3 pass  65 (0.739, CP low 0.650) strict  63 (0.716, CP low 0.626) | cyc pass  69 (0.784, CP low 0.699) strict  66 (0.750, CP low 0.663) | union pass  69 (0.784, CP low 0.699) strict  66 (0.750, CP low 0.663)
+   gate vs union pass   only-gate  2 only-union  7 p=0.1797
+   v3 vs union pass   only-v3  0 only-union  4 p=0.1250
+   gate vs cyc pass   only-gate  2 only-cyc  7 p=0.1797
+   v3 vs cyc pass   only-v3  0 only-cyc  4 p=0.1250
+   gate vs v3 pass   only-gate  2 only-v3  3 p=1.0000
+   gate vs union strict only-gate  1 only-union  6 p=0.1250
+   v3 vs union strict only-v3  0 only-union  3 p=0.2500
+   gate vs cyc strict only-gate  1 only-cyc  6 p=0.1250
+   v3 vs cyc strict only-v3  0 only-cyc  3 p=0.2500
+   gate vs v3 strict only-gate  1 only-v3  3 p=0.6250
+raw gained by cyc over v3: ['261030_150042', '261030_152453', '261030_193232', '261030_215458']
+raw lost by cyc vs v3: []
