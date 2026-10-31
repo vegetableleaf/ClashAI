@@ -5,6 +5,11 @@ cases, `field_census.py` the rules on every frozen fresh input, `recon_search.py
 Evidence: `results/live/recon/`. Labels: (a) measured, (b) plausible but untested, (c) contradicted.
 
 ## STATUS (keep current)
+- **RECON-5 (10-31 ~00:45 EDT, section 12) -- IN PROGRESS.** Step 1 DONE (a): the 8 flagged-but-exact FRESH9 records (012313, 014530, 024332, 030902, 040421, 053225, 091421, 102101) ablated edit by edit
+  (`recon/ablate_edits.py`, evidence `results/live/recon/r5/f9_ablate_edits.jsonl`): every structural edit NEEDED (8 / 8 restored plays: add own Knight / Tesla / IceWizard x3, add opponent Zap x2, re-dated Zap), 0 unneeded,
+  0 harmful; FRESH9 v3 with the 8 counted: **128 / 177 pass (0.723, CP low 0.662), 125 strict (0.706, CP low 0.645)** vs as extracted 120 / 117; gate unchanged 122 / 117 (4 of the 8 are gate-exact already).
+  Step 2: the battle-log deck is ALREADY the extractor's deck (section 12.2); the open class is the opponent's play sequence (12.3). Mechanism = `recon/cyc.py` (deck-constrained cycle repair, shortest path over the 1680 cycle states) + `RECON_CYC=1` in
+  `recon_search.py`; planted checks `test_recon.py` ok 70, `r5_planted.py`. Dev / FRESH9 runs: section 12.5 (pod 33903, tree `/workspace/smeR4`, CPUs 226-237). Codex dispatches: none.
 - **RECON-4 (10-30 ~16:20 EDT, section 11) -- STOPPED at the owner's priority change; committed, resumable.** Built and committed (code frozen, `ok 56`): generator v3 operators
   + `cls_ticks` in recon results + `recon/r4_report.py` + `recon/r4_prep.sh`; FRESH9 frozen (list sha 88059ea5, commit 7ec0921, BEFORE any generator change). Measured:
   dev 151 (IN-SAMPLE): gate 142 / 132 strict; v2 126 / 119; **v3 136 pass / 129 strict (138 / 131 with 155249 + 000242 counted)**; 0 matches lost v2 -> v3;
@@ -414,3 +419,22 @@ r3_unit2 recon <ABSOLUTE inputs path> /workspace/smeR/data/allframes` (runR cds,
   full-run result), 210016 (HIDDEN_CHILD annotation, not an edit), 230352, 165155, 063025, 071306, 073232, 074143, 123045 (traced / untraced as section 10.4).
 - FRESH9 gate (held out for the gate: its rules were frozen at bf92222): 122 / 177 pass, 117 strict, 35 flagged (27 opp_no_fitting_deal, 8 own_cycle_fail). The flagged 35 are
   exactly the class RECON's cycle repair / HIDDEN_GEN-type add targets; whether v3 passes them is the first thing to read when f9_v3 finishes.
+
+
+## 12. RECON-5: counted flagged-exact records, then the opponent play sequence (10-30 / 10-31)
+### 12.1 Step 1: ablation of every kept edit on the 8 flagged-but-exact FRESH9 records (a; `recon/ablate_edits.py`, 1 min on the pod)
+Each kept edit of the v3 final plan (`runs/f9_v3/<m>/recon_plan.json`) is reverted ALONE (add -> removed, drop -> re-inserted, add + drop of one card within 60 ticks = one `replace`,
+point / shift / repress -> the base value) and the whole match is re-scored by the unchanged comparator. needed = (exact frames, first div) gets worse.
+| record | flag | kept structural edits | verdicts |
+|---|---|---|---|
+| 012313 | own_cycle_fail | add own Knight R3131 | needed |
+| 014530 | own_cycle_fail | add own Tesla R4968 | needed |
+| 024332 | opp_no_fitting_deal | add opp Zap R2902 (+ a drop / re-add of one Assassin at the same tick and point = a no-op on the commands, the deal is refitted) | needed (the no-op is not an edit) |
+| 030902 | own_cycle_fail | add own IceWizard R4664 | needed |
+| 040421 | opp_no_fitting_deal | add opp Zap R4176; replace Zap R3646 (2500,13500) -> R3644 (2000,13000) | both needed |
+| 053225 | own_cycle_fail | add own IceWizard R2804; points of two opponent Zaps | all needed |
+| 091421 | own_cycle_fail | add own Knight R5801 | needed |
+| 102101 | own_cycle_fail | add own IceWizard R4526 | needed |
+All the +-1 tick shifts of Log / BarbLog / Rocket (the extractor window, as in the gate) are needed too. 0 unneeded, 0 harmful, 0 errors. Counted (owner 10-30 rule):
+FRESH9 v3 **128 pass / 125 strict of 177** (as extracted 120 / 117); `r4_report` output `results/live/recon/r5/f9_report_counted.txt`. Paired vs the gate (122 / 117, as extracted):
+pass only-gate 3 / only-v3 9 (p .146), strict 1 / 9 (p .022) -- the gate is not credited with its own flagged-exact records, so this is the report format, not a like-for-like test.

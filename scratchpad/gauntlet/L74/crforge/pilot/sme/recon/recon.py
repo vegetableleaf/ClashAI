@@ -623,3 +623,159 @@ def runnable(plan):
     """The plan crforge reads (RECON's bookkeeping fields stripped)."""
     p = {k: v for k, v in plan.items() if not k.startswith('_') and k != 'levels'}
     return dict(p, cmds=[{k: v for k, v in c.items() if k != '_src'} for c in p['cmds']])   # = sme_live.runnable
+
+
+# ------------------------------------------------------------------ RECON-5: deck-constrained cycle repair (cyc.py; RECON.md section 12)
+sys.path.insert(0, HERE)
+import cyc  # noqa: E402
+
+CYC_MAX_COST = 4          # repairs up to this many edits (unseen plays + invented plays + Mirror readings) are generated
+CYC_POOL = 400            # optimal repairs enumerated before ranking (cyc.repairs cap)
+CYC_CAP = int(os.environ.get('RECON_CYC_CAP', '24'))   # engine-scored repairs per match (best by prior)
+GHOST_MARGIN = 1000       # a no-effect spell lands this far (plus its radius) from every listed body / tower
+
+
+def seq_of(plan, side):
+    """[(run, command index)] of the side's play commands whose card is a deck card, in plays_of's order."""
+    deck = plan['decks'][side]
+    return sorted(((c['run'], k) for k, c in enumerate(plan['cmds'])
+                   if c['side'] == side and c['kind'] == 'play' and c['card'] in deck))
+
+
+def deck_conflicts(plan, side):
+    """Play commands of the side whose card is not one of its 8 deck cards: a wrong deck (or a mislabelled play). A side with a
+    conflict is never repaired (the cycle model is only valid for the true deck)."""
+    return [c for c in plan['cmds'] if c['side'] == side and c['kind'] == 'play' and c['card'] not in plan['decks'][side]]
+
+
+def best_prefix_deal(seq):
+    """The deal that lets the most plays of seq run when a play whose card is not in hand is refused (the engine's behaviour):
+    for a sequence that fits no deal this replaces the identity deal (RECON-5: its first refused play, tick ~200-500, was the
+    early divergence of the opponent_no_fitting_deal records). First best state wins (ties: the lowest state index)."""
+    best, bs = -1, None
+    for s0, st in enumerate(cyc.STATES):
+        s, n = s0, 0
+        for h in seq:
+            t = cyc.TR[s].get(h)
+            if t is not None:
+                s, n = t, n + 1
+        if n > best:
+            best, bs = n, s0
+    return cyc.deal_of(cyc.STATES[bs]), best
+
+
+def harmless_point(frames, T, side, card, tab):
+    """A grid point in the caster's half where a spell cast at tick T touches nothing: the point farthest from every body, tower,
+    projectile and area the reader lists around T (a rolling spell: from every point of its path, a fixed 12,000 long)."""
+    ts = [t for t in frames if t <= T]
+    f = frames[max(ts)] if ts else None
+    objs = [(e[1], e[2]) for e in f['E']] + [(q[1], q[2]) for q in f['P']] + [(a[1], a[2]) for a in f['A']] if f else []
+    r = (tab.radius(card) or 2500) + GHOST_MARGIN
+    roll = bool(tab.projectile(card))
+    ys = range(500, 14501, 500) if side == 0 else range(17500, 31501, 500)
+    best, bp = -1, None
+    for x in range(500, 17501, 500):
+        for y in ys:
+            pts = [(x, y + FWD[side] * d) for d in range(0, 12001, 1500)] if roll else [(x, y)]
+            if roll and not all(0 <= py <= 32000 for _, py in pts):
+                continue
+            if not zone_ok(tab, card, side, x, y):
+                continue
+            d = min((math.hypot(ox - px, oy - py) for ox, oy in objs for px, py in pts), default=10 ** 6)
+            if d > best:
+                best, bp = d, (x, y)
+    return bp if best >= r else None
+
+
+def _cmd_ins(plan, side, card, T, x, y):
+    c = add_cmd(plan, side, card, T, x, y, T, T)
+    c['_src']['cyc'] = True
+    return c
+
+
+def cycle_repairs(plan, frames, side, tab, e0, cap=CYC_CAP, end=None):
+    """Engine-scorable repaired plans for a side whose play sequence fits no deal. -> [(description, cost, plan)], best prior first.
+    A repair = the fewest edits (cyc.repairs: unseen plays of SPELL cards, invented plays dropped, one play read as the Mirror) after
+    which the sequence is a legal 4-card cycle; the unseen spells run mid-gap between their neighbours (the elixir rule picks
+    among a few slots) at a point that touches nothing. [] when the side already fits or no repair <= CYC_MAX_COST exists."""
+    deck = plan['decks'][side]
+    if deck_conflicts(plan, side):
+        return []
+    sq = seq_of(plan, side)
+    seq = [deck.index(plan['cmds'][k]['card']) for _, k in sq]
+    if cyc.fits(seq):
+        return []
+    spells = [i for i, c in enumerate(deck) if c and tab.is_spell(c)]
+    mir = deck.index('Mirror') if 'Mirror' in deck else None
+    cost, reps = cyc.repairs(seq, ins_cards=spells, mirror=mir, allow_drop=True, cap=CYC_POOL, max_cost=CYC_MAX_COST)
+    if cost is None:
+        return []
+
+    def prior(rep):     # an invented play is likelier when it was a spell sighting than when bodies were seen
+        ins, rel, _ = rep
+        drops = [r[1] for r in rel if isinstance(r, tuple)]
+        return (len(ins) + len(rel)
+                + sum(0 if plan['cmds'][sq[j][1]]['_src'].get('source') == 'spell_seen' else 1 for j in drops), len(drops))
+
+    out = []
+    end = end or max(frames)
+    for ins, rel, deal in sorted(reps, key=prior):
+        p = dict(plan, cmds=[dict(c) for c in plan['cmds']], deals=list(plan['deals']))
+        what, drop_k = [], []
+        for r in rel:
+            if isinstance(r, tuple):
+                drop_k.append(sq[r[1]][1])
+                what.append('drop s%d %s R%d' % (side, plan['cmds'][sq[r[1]][1]]['card'], sq[r[1]][0]))
+            elif mir is not None:
+                k = sq[r][1]
+                what.append('mirror s%d %s R%d' % (side, p['cmds'][k]['card'], sq[r][0]))
+                p['cmds'][k]['card'] = 'Mirror'
+                p['cmds'][k]['level'] = plan['levels'][side][mir]
+        bad = False
+        for k in sorted(drop_k, reverse=True):
+            p = apply_edit(p, {'op': 'drop', 'i': k})
+            if p is None:
+                bad = True
+                break
+        if bad:
+            continue
+        gaps = collections_defaultdict_list()
+        for i, h in ins:
+            gaps[i].append(h)
+        for i, hs in sorted(gaps.items()):
+            a = sq[i - 1][0] if i > 0 else 0
+            b = sq[i][0] if i < len(sq) else end
+            for j, h in enumerate(hs):
+                T = a + (b - a) * (j + 1) // (len(hs) + 1)
+                if not a < T < b:
+                    bad = True
+                    break
+                pt = harmless_point(frames, T, side, deck[h], tab)
+                if pt is None:
+                    bad = True
+                    break
+                e = {'op': 'add', 'pos': next(iter(add_positions(p, T))), 'cmd': _cmd_ins(p, side, deck[h], T, *pt)}
+                p = apply_edit(p, e)
+                if p is None:
+                    bad = True
+                    break
+                what.append('ins s%d %s R%d (%d,%d)' % (side, deck[h], T, pt[0], pt[1]))
+            if bad:
+                break
+        if bad:
+            continue
+        p['deals'][side] = list(deal)
+        p['_cycle_base'] = [cycle_ok(p, s) for s in (0, 1)]
+        if not p['_cycle_base'][side]:
+            continue                                  # cannot happen when cyc and plays_of agree; checked, not assumed
+        if plan.get('_elixir_base', (True, True))[side] and not elixir_ok(p, side, tab, e0):
+            continue
+        out.append(('cyc ' + '; '.join(what), cost, p))
+        if len(out) >= cap:
+            break
+    return out
+
+
+def collections_defaultdict_list():
+    import collections
+    return collections.defaultdict(list)

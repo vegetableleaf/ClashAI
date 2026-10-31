@@ -22,6 +22,7 @@ sme_live.runnable = recon.runnable        # base_run / plant_suite read crforge'
 HEAL = 20
 MAX_ROUNDS = 40
 STRUCT = ('add', 'drop')
+CYC = int(os.environ.get('RECON_CYC', '0'))   # RECON-5 opt-in: absent = byte-identical to v3
 
 
 def key_of(plan):
@@ -52,11 +53,38 @@ def search(rec, frames, out, beam=4, ops=None, start=None):
     recon.with_elixir_base(plan, tab, e0)
     work = os.path.join(out, 'work')
     log = []
+    inits = []
+    if CYC and not start:
+        # RECON-5 (opt-in): an opponent whose extracted plays fit no deal ran on the IDENTITY deal (opp_deal_fit None), whose first
+        # refused play was the early divergence of the opponent_no_fitting_deal records. Part A: the deal that runs the most plays;
+        # part B: deck-constrained repairs (cyc.py) scored by the engine as extra starting members.
+        for sd in (0, 1):
+            if sd != me and not plan['_cycle_base'][sd]:
+                seq = [plan['decks'][sd].index(plan['cmds'][k]['card']) for _, k in recon.seq_of(plan, sd)]
+                plan['deals'][sd], ran = recon.best_prefix_deal(seq)
+                for desc, c, pp in recon.cycle_repairs(plan, frames, sd, tab, e0):
+                    inits.append((desc, c, pp))
     o, an = full_run(plan, frames, me, end, work, log)
     if o is None:
         return None, plan, log
     members = [dict(plan=plan, o=o, an=an, edits=[], cost=0, given_up=[])]
     seen = {key_of(plan)}
+    if inits:
+        cl = []
+        for desc, c, pp in inits:
+            if key_of(pp) in seen:
+                continue
+            seen.add(key_of(pp))
+            o2, an2 = full_run(pp, frames, me, end, work, log)
+            if o2 is None:
+                cl.append([desc, None])
+                continue
+            m2 = dict(plan=pp, o=o2, an=an2, edits=[desc], cost=c * recon.COST['add'], given_up=[])
+            cl.append([desc, list(full_key(m2))])
+            members.append(m2)
+        log.append({'round': -1, 'cyc': cl})
+        members.sort(key=lambda m: full_key(m), reverse=True)
+        members = members[:beam]
     for rnd in range(MAX_ROUNDS):
         cands, live = [], False
         for m in members:

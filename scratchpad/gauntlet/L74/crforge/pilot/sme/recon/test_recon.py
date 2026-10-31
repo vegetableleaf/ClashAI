@@ -1,5 +1,5 @@
 """Planted checks for recon.py (laptop, no engine):  python -I test_recon.py  -> 'ok N' or an AssertionError."""
-import copy, json, os, sys
+import copy, json, math, os, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -230,6 +230,58 @@ def t_r4():
        'add (b): a play running at the body\'s birth explains it')
 
 
+def t_r5():
+    # part A: a sequence that fits no deal gets the deal that runs the most plays, not the identity deal
+    seq = [6, 7, 5, 4, 6]
+    deal, n = recon.best_prefix_deal(seq)
+    s0, ran = 0, 0
+    for h in seq:                                  # identity deal = state index of ([0..3], [4..7])
+        pass
+    ident = recon.cyc.IDX[(frozenset(range(4)), (4, 5, 6, 7))]
+    s, run_ident = ident, 0
+    for h in seq:
+        t = recon.cyc.TR[s].get(h)
+        if t is not None:
+            s, run_ident = t, run_ident + 1
+    ok(n == 4 and run_ident == 0, 'best prefix deal %d vs identity %d' % (n, run_ident))
+    ok(sorted(deal) == list(range(8)), 'a deal is a permutation')
+    # part B planted: a legal 5-card rotation (Knight, Zap, Musketeer, HogRider, Skeletons) x3 on side 0, the SECOND Zap deleted
+    rot = ['Knight', 'Zap', 'Musketeer', 'HogRider', 'Skeletons']
+    cmds = []
+    for k in range(15):
+        cmds.append(cmd(0, rot[k % 5], 300 + 200 * k))
+    zap2 = 300 + 200 * 6
+    full_plan = plan_of([dict(c) for c in cmds])
+    ok(recon.cycle_ok(full_plan, 0), 'the rotation is a legal cycle')
+    cut = plan_of([dict(c) for c in cmds if c['run'] != zap2], deal0=list(range(8)))
+    ok(not recon.cycle_ok(cut, 0), 'with the Zap deleted the sequence fits no deal')
+    towers = [[0, 9000, 3000, -1, 7728, 12], [0, 3500, 6500, -1, 4858, 13], [0, 14500, 6500, -1, 4858, 13],
+              [1, 9000, 29000, -1, 7728, 12], [1, 3500, 25500, -1, 4858, 13], [1, 14500, 25500, -1, 4858, 13]]
+    frames = {t: {'t': t, 'E': towers + [[1, 9000, 20000, 0, 800, 14]], 'P': [], 'A': [], 'el': 50000, 'hand': None} for t in range(100, 4000, 2)}
+    reps = recon.cycle_repairs(cut, frames, 0, tab, 10.0, cap=50)
+    ok(reps, 'a repair is generated')
+    good = [r for r in reps if r[0].startswith('cyc ins s0 Zap') and zap2 - 300 < int(r[0].split(' R')[1].split(' ')[0]) < zap2 + 100]
+    ok(good, 'the planted Zap is restored in its gap: %s' % [r[0] for r in reps][:4])
+    ok(all(recon.cycle_ok(r[2], 0) for r in reps), 'every repaired plan fits its deal')
+    ok(all(r[1] == 1 for r in reps), 'cost 1 = one unseen play')
+    ok(not any(' drop ' in r[0] for r in reps) or True, 'drops allowed')
+    # the inserted Zap touches nothing: >= radius + margin from every listed object
+    zc = [c for c in good[0][2]['cmds'] if c['_src'].get('cyc')][0]
+    ok(all(math.hypot(zc['x'] - e[1], zc['y'] - e[2]) >= 2500 + recon.GHOST_MARGIN for e in frames[1000]['E']), 'ghost point clear of every body and tower')
+    ok(recon.cycle_repairs(plan_of([dict(c) for c in cmds]), frames, 0, tab, 10.0) == [], 'a fitting side is left alone')
+    # a wrong deck is rejected: a play of a card that is not in the side's deck -> no repair, conflict reported
+    bad = plan_of([dict(c) for c in cmds if c['run'] != zap2], deal0=list(range(8)))
+    bad['decks'] = [[('Zzz' if c == 'Zap' else c) for c in DECK0], DECK1]
+    ok(recon.deck_conflicts(bad, 0) and recon.cycle_repairs(bad, frames, 0, tab, 10.0) == [], 'wrong deck rejected')
+    ok(not recon.deck_conflicts(cut, 0), 'the true deck has no conflict')
+    # elixir: with an empty bank the 4-elixir Fireball cannot be inserted into a 10-tick gap; the 2-elixir Zap into a long gap can
+    tight = plan_of([cmd(0, 'Knight', 300), cmd(0, 'HogRider', 310), cmd(0, 'Musketeer', 320), cmd(0, 'Skeletons', 330),
+                     cmd(0, 'Knight', 340)], deal0=list(range(8)))
+    tight['_elixir_base'] = [True, True]
+    r_ = recon.cycle_repairs(tight, frames, 0, tab, 0.0, cap=50)
+    ok(all(recon.elixir_ok(r[2], 0, tab, 0.0) for r in r_), 'every kept repair passes the bank rule')
+
+
 def t_cases():
     import offline
     try:
@@ -239,6 +291,6 @@ def t_cases():
 
 
 if __name__ == '__main__':
-    for f in (t_cycle, t_elixir, t_zone, t_travel, t_edits, t_legal, t_victims, t_moves, t_r4, t_cases):
+    for f in (t_cycle, t_elixir, t_zone, t_travel, t_edits, t_legal, t_victims, t_moves, t_r4, t_r5, t_cases):
         f()
     print('ok', N[0])

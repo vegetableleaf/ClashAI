@@ -1,0 +1,4 @@
+records 330 plants 2096 {'restored': 1204, 'invisible': 696, 'unique': 196}
+detected 1400: restored (incl. unique) 1400 = 1.000; unique 196; missed 0
+optimal repairs per restored plant: median 3, p90 7, max 12
+real deck conflicts (must be 0): 0 of 330 records; planted wrong deck flagged: 330 of 330
