@@ -1,3 +1,9 @@
+# 2026-10-31 ~12:30 EDT -- OWNER: CLXV's 150-block is judged vs STRIPPED CLXIII (not the 32.7% bar); verdict watcher armed
+- Rule: keep CLXV unless significantly worse than stripped CLXIII (battle log 25 / 90 = 27.8%; one-sided two-proportion
+  p < .05). Applies to this block only. Now: CLXV 32 / 86 (37.2%), diff +9.4 pp [-4.4, +23.2], p(worse) 0.91.
+- block_vs_stripped.py (WMI-detached, report only, never touches live) posts the verdict to Discord at 150 Ranked
+  battles since 10:04 UTC; log scratchpad/gauntlet/L74/deploy/block_vs_stripped.log. Self-check: --test.
+
 # 2026-10-31 ~12:20 EDT -- CLXV streak review (owner ask); RECON-8 (Golden Knight dash, owner OK) running
 - Battle log (crapi own_battlelog.jsonl, Ranked only): CLXV block 31 W / 52 L at 83 (37.3%, Wilson [27.7, 48.1]);
   pre-streak 16 / 34 (47%) vs since 08:33 EDT 15 / 49 (31%), two-proportion p ~0.13 = consistent with noise. Same
