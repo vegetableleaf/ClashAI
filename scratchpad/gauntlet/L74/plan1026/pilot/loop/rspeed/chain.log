@@ -30,3 +30,15 @@
 2026-10-30T23:05:33Z bench mps_gcs_24x32x1 rc 0 45322 matches/h {'0': 97.87837837837837} cores 12.3 +srv 4.1 stage/match {'java': 0.232, 'fill': 0.005, 'start': 0.004, 'decide': 1.605, 'gather': 0.012, 'forward': 0.274, 'forward_wait': 0.407, 'decide_py': 0.575, 'fwd_rows': 694.288, 'fwd_calls': 26.565}
 2026-10-30T23:05:33Z bench mps_gcs_32x32x1 start
 2026-10-30T23:10:00Z MPS quit; lock released for LEARNER-SPEED
+2026-10-30T23:18:01Z final: MPS daemon up
+2026-10-30T23:18:01Z bench mps_g_32x32x1 start
+2026-10-30T23:22:19Z bench mps_g_32x32x1 rc 0 4737 rows/s 25685 matches/h 11.3 + 1.6
+2026-10-30T23:22:19Z full-stack fastloop start
+2026-10-30T23:42:10Z full-stack (rs_full3, fastloop --mps) start
+2026-10-31T00:11:00Z full-stack done: [fastloop] CUDA MPS daemon started (pipe /workspace/rs/mps3/pipe)|[fastloop] u0000 128 matches in 75.8 s = 6083 /h, 84009 rows (1109/s), skipped 0|[fastloop] u0000 512 matches in 80.2 s = 22985 /h, 348196 rows (4342/s), skipped 0|[fastloop] u0001 512 matches in 147.6 s = 12489 /h, 334578 rows (2267/s), skipped 0|[fastloop] u0002 512 matches in 145.4 s = 12674 /h, 344958 rows (2372/s), skipped 0|[fastloop] u0003 512 matches in 146.4 s = 12590 /h, 339548 rows (2319/s), skipped 0|
+2026-10-31T00:11:00Z daemons left: 2; final done
+2026-10-31T00:19:58Z compare mps_all3 rc 0 16 / 16 {'lp_gate': 2.2763419393001527e-05, 'lp_card': 5.6918621860191365e-06, 'lp_cell': 1.0005091570342017e-05, 'p_gate': 7.748603820800781e-07, 'ab_lp': 1.656619090795175e-06, 'lp_th': 0.0} {'rows': 5454, 'matches_without_v_old': 0, 'wver_mismatch_rows': 0, 'v_old_maxdiff': 9.469778260440265e-07}
+2026-10-31T00:20:00Z start_mps smoke rc 0 start_mps smoke: cuda sum 8.0 | mps-server listed: True | 86970, nvidia-cuda-mps-server; 86964, /workspace/loop/venv/bin/python; daemons left: 3
+2026-10-31T00:20:00Z steady-state run (rs_steady: critic_warmup_updates=1, full stack, fastloop --mps) start
+2026-10-31T00:30:01Z steady done: [fastloop] u0000 128 matches in 75.2 s = 6127 /h, 84009 rows (1117/s), skipped 0|[fastloop] u0000 512 matches in 80.0 s = 23029 /h, 348196 rows (4350/s), skipped 0|[fastloop] u0001 512 matches in 149.5 s = 12332 /h, 334578 rows (2238/s), skipped 0|[fastloop] u0002 512 matches in 75.5 s = 24420 /h, 344958 rows (4570/s), skipped 0|[fastloop] u0003 512 matches in 72.6 s = 25391 /h, 338079 rows (4657/s), skipped 0|[fastloop] u0004 512 matches in 78.4 s = 23503 /h, 344874 rows (4398/s), skipped 0|
+2026-10-31T00:30:01Z final2 done

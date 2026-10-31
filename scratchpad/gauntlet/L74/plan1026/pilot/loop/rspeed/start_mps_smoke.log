@@ -1,0 +1,2 @@
+[fastloop] CUDA MPS daemon started (pipe /workspace/rs/mps2/pipe)
+start_mps smoke: cuda sum 8.0 | mps-server listed: True | 86970, nvidia-cuda-mps-server; 86964, /workspace/loop/venv/bin/python

@@ -1,0 +1,36 @@
+[fastloop] CUDA MPS daemon started (pipe /workspace/rs/mps3/pipe)
+[fastloop] config /workspace/loop/in/pilot.yaml: fastloop block {'producers': 48, 'matches_per_producer': 32, 'threads': 4, 'gpus': [0, 1, 2, 3, 4, 5, 6, 7], 'server': {'max_batch': 4096, 'wait_ms': 2}} stripped -> /workspace/rs/out/rs_full3/rs_full3.fastloop_stripped.yaml
+[rl] runtime {"card_table": {"cards_json_fnv1a64": "803ec02c7eac9fd3", "cards_json_hash_source": "embedded", "cards_vintage": "15.535.29 client (2026, LIVE build family)"}, "engine": {"body_map_sha256": "7e0dbac185df3b92cf530c11496b6a7aa917a49d2d0fcf6fdb56965a105bb8c5", "crforge": "ad8ef3a532ada8dea732bf1ecdeb01beef0fb4b0", "facade_java_sha256": "c003fc7407fcd33ba94b4fb6eb00c41a8e3de174847d74721293499690982df0", "name": "crforge", "tables": "16.635.3"}, "manifest_sha256": "cc846edd6e67c1b23ecd6f966deb7a61adf70243bf8600a11a56d071e25820b2", "pins": {"RoyaleGym": "a7deb6e48c3580fe2cd7d856b7c7d19ce67f02f9", "RoyaleSim": "3f5676076fa7293de5355fa7c76275ddfbf4322c"}, "runtime_id": "fin16-linux", "schema": 1, "wheels": {"royalegym": "royalegym==0.1.23", "royalesim": "royalesim-0.1.36-cp310-abi3-manylinux_2_34_x86_64.whl"}}
+[rl] START rs_full3 pid 76916 config sha b22d7eecd964 argv ['--run', 'rs_full3', '--config', '/workspace/rs/out/rs_full3/rs_full3.fastloop_stripped.yaml', 'n_actors=2', 'save_every=1000', 'max_updates=4', 'split_attn=true', 'trunk_graph=256', 'screen_entries=1']
+[rl] deterministic learner: torch.use_deterministic_algorithms(True), cudnn.benchmark False, TF32 off, CUBLAS_WORKSPACE_CONFIG=:4096:8
+[rl] memory_encoder_frozen: 45 memory encoder / aux tensors (223051 params) frozen; mem.out trains
+[rl] lazy_refine: cell_refine / tower_refine cell features on the played rows only (model + refs)
+[rl] split_attn: 6 attention modules (model + refs)
+[rl] trunk_graph: the trunk of 256-row grad forwards replays as a CUDA graph
+[rl] run rs_full3: train 1204 loadable, held-out 234 loadable (screen uses 1); init icebow/data/bench/rl_royale/b0/b0_clxiii_s3aux_grafted.pt (GENERALIST) grid lattice; conditions (rollouts + screens): noise_off=all opp_elixir=counter action_delay_ticks=26 extrapolate_ticks=26; leash max; TAU_PHASE [0.35, 0.45, 0.55] (learner rollouts + screens); advantage gae gae_gamma=0.999 gae_lambda=0.95 vf_coef=0.5 vf_clip=0.2 critic_warmup_updates=5 shaping=tower_phat shaping_w_tower=0.3 shaping_w_crown=0.3 vf_trunk_grad=True gae_gamma_unit=tick gae_gamma_tick=0.99994 gae_terminal_gap=False shaping_critic_scale=1.5 shaping_solv_w=0.04 shaping_solv_k=1.0 shaping_solv_cap=10.0 shaping_ts_w_own=[0.15, 0.2, 0.3] shaping_ts_w_foe=[0.3, 0.2, 0.1] shaping_ts_w_tb=0.15 shaping_ts_h_power=3.0 shaping_tr_w=0.03 shaping_tr_cap=8.0 shaping_t2_w=0.04 shaping_t2_cap=6.0; ABILITY head (learner presses) ent 0.01 lr 0.0003 warm start 128 rule rollouts x 300 steps
+[rl] LEAGUE: 999 census decks + icebow (share 0.0), weights sides^1.0 floor 0.0x mean (max p 0.0558, min 0.0001); opponents mix {'latest': 0.0, 'older': 0.0, 'init': 1.0, 's1': 0.0} (opp policy sample), S1 specialist icebow/data/pipeline/s1_icebow_v6aug_s1.pt (icebow only); snapshot every 100000 updates, keep 12
+[rl] proagree: memory model scored with the pro rows' REAL memory tables (12237/12237 rows with a table)
+[rl] init pro agreement (12237 VAL rows, 31s): cell 0.1702 card 0.6199 gate_bal 0.7367
+[fastloop] 32 producers x 16 matches x 1 threads on ['cuda:0'], forwards on 3 serve.py (graphs)
+[fastloop] u0000 128 matches in 75.8 s = 6083 /h, 84009 rows (1109/s), skipped 0
+[rl] ability_head warm start: 14539 labels from 128 rule rollouts {'IceWizard': 14539}; rule q mean 0.0150; BCE 0.0779 -> 0.0375 (floor 0.0000); head p mean 0.0150 -> 0.0150 (79s)
+[rl] init held-out screen: 3 matches, winrate 1.000, plays/min 12.71, guards outlived 0.000 <=10dlv 0.000 refused/m 0.000 (15s)
+[rl] saved /workspace/rs/cb/icebow/data/bench/rl_royale/rs_full3/rs_full3_u0000.pt
+[fastloop] u0000 512 matches in 80.2 s = 22985 /h, 348196 rows (4342/s), skipped 0
+[rl] update-0 plays/min baseline 12.227 (stop outside [0.6, 1.6]x for 2 updates)
+[rl] kl_ref_refresh_every 1: the KL anchor is now the policy after update 0 (1 done)
+[rl] u0000 W/L/D 359/153/0 ppm 12.23 pgate 0.219 KL g/c/x 0.0000/0.0000/0.0000 beta 0->0 (leash max: card) clip 0.000 kl_stop no steps 1272 mixed 75/128 rows 162706 wall roll 80s upd 130s | gae WARMUP (critic only) vloss 0.0063 ev 0.924 A +0.0212/0.1699 ret +0.164 V +0.065 vshare - | ability dec 57647 press 0.019 p 0.019 acc/m 2.10 H 0.051 lab +0.1111 | tower_phat |F| 0.0050 |Phi| 0.1921 max 0.5000 dom 0.192 | league wr init 0.78/72 snapshot -/0 s1 -/0 exploiter 0.73/376 exploiter_league 0.45/64 D 0
+[fastloop] u0001 512 matches in 147.6 s = 12489 /h, 334578 rows (2267/s), skipped 0
+[rl] kl_ref_refresh_every 1: the KL anchor is now the policy after update 1 (2 done)
+[rl] u0001 W/L/D 349/163/0 ppm 12.23 pgate 0.221 KL g/c/x 0.0000/0.0000/0.0000 beta 0->0 (leash max: card) clip 0.000 kl_stop no steps 1250 mixed 82/128 rows 159933 wall roll 16s upd 129s | gae WARMUP (critic only) vloss 0.0066 ev 0.915 A +0.0183/0.1759 ret +0.180 V +0.079 vshare - | ability dec 57169 press 0.017 p 0.018 acc/m 1.88 H 0.049 lab +0.1257 | tower_phat |F| 0.0051 |Phi| 0.1931 max 0.5000 dom 0.193 | league wr init 0.75/76 snapshot -/0 s1 -/0 exploiter 0.69/344 exploiter_league 0.59/92 D 0
+[fastloop] u0002 512 matches in 145.4 s = 12674 /h, 344958 rows (2372/s), skipped 0
+[rl] kl_ref_refresh_every 1: the KL anchor is now the policy after update 2 (3 done)
+[rl] u0002 W/L/D 363/149/0 ppm 12.07 pgate 0.218 KL g/c/x 0.0000/0.0000/0.0000 beta 0->0 (leash max: card) clip 0.000 kl_stop no steps 1256 mixed 69/128 rows 160591 wall roll 14s upd 135s | gae WARMUP (critic only) vloss 0.0068 ev 0.919 A +0.0201/0.1722 ret +0.193 V +0.084 vshare - | ability dec 56005 press 0.019 p 0.019 acc/m 2.07 H 0.051 lab +0.1262 | tower_phat |F| 0.0051 |Phi| 0.1913 max 0.5000 dom 0.191 | league wr init 0.79/48 snapshot -/0 s1 -/0 exploiter 0.75/408 exploiter_league 0.34/56 D 0
+[fastloop] u0003 512 matches in 146.4 s = 12590 /h, 339548 rows (2319/s), skipped 0
+[rl] kl_ref_refresh_every 1: the KL anchor is now the policy after update 3 (4 done)
+[rl] u0003 W/L/D 346/166/0 ppm 12.12 pgate 0.220 KL g/c/x 0.0000/0.0000/0.0000 beta 0->0 (leash max: card) clip 0.000 kl_stop no steps 1242 mixed 83/128 rows 158759 wall roll 10s upd 119s | gae WARMUP (critic only) vloss 0.0070 ev 0.923 A +0.0173/0.1764 ret +0.141 V +0.064 vshare - | ability dec 55673 press 0.019 p 0.019 acc/m 2.00 H 0.051 lab +0.0937 | tower_phat |F| 0.0051 |Phi| 0.1974 max 0.5000 dom 0.197 | league wr init 0.72/40 snapshot -/0 s1 -/0 exploiter 0.70/400 exploiter_league 0.49/72 D 0
+[rl] DONE: max_updates 4 reached
+  warnings.warn('resource_tracker: There appear to be %d '
+  warnings.warn('resource_tracker: There appear to be %d '
+  warnings.warn('resource_tracker: There appear to be %d '
+rc 0

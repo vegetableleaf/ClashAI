@@ -92,9 +92,28 @@ Labels: (a) measured, (b) untested, (c) contradicted.
        updates.
   Codex dispatches: none. Restart: 31892 results in rspeed/ (bench_*.json, chain.log, cmp_*.json, per-run throughput /
   gpu / loop / train logs, the scripts) and C:/Users/benpe/pod_backup_weekend/pro6000/rs_results_2310.tgz.
-  OPEN on 31892 (after LEARNER-SPEED's block; then the pod can stop): one fastloop pilot run under MPS with --server graphs
-  --local-forward (+ CELLS1 / SHARDS 3) at 512 matches / update = measured matches/h + updates/h incl. the learner (and
-  the MPS g-vs-gcs pair at 32x32x1), folding in LEARNER-SPEED's split_attn / trunk_graph keys (bc2470f) if they are ready.
+  6. FINAL 31892 block (a; 23:18-00:30Z; rspeed/chain.log, rs_full3/, rs_steady/, bench_mps_g_32x32x1.json, cmp_mps_all3.json):
+     - F3 + F2' under MPS (the pair owed in 4): graphs + local-forward 32x32x1 = 4,737 rows/s WITHOUT CELLS1 / SHARDS 3 vs
+       9,498 WITH them: 2.0x. Without MPS they gave nothing (4); with MPS they are half of the per-GPU number.
+     - compare.py under MPS (graphs + local-forward + CELLS1 + SHARDS 3): 16 / 16 identical, lp max 2.3e-5, v_old 9.5e-7,
+       wver 0: MPS changes no result.
+     - fastloop --mps DIR (NEW, opt-in; absent = no MPS): a private MPS daemon started before any CUDA use; serve.py,
+       producers and the learner all join (start_mps_smoke.log: the MPS server listed). Bug found in its first form and
+       fixed: a BLOCKING "quit" at exit deadlocks (quit waits for every client, fastloop is one): rs_full3 finished its 4
+       updates and then hung 15 min in atexit; now the quit is a detached Popen (rs_steady exited cleanly, no daemon left).
+     - Full stack = fastloop --mps + --server graphs --local-forward --overlap 1 + CELLS1 + SHARDS 3 + split_attn +
+       trunk_graph 256 (LEARNER-SPEED bc2470f), 32 x 16 x 1 = 512 matches / update, pilot.yaml (screen_entries=1, n_actors=2):
+       | run | phase | per update (t between updates) | rollout wait after learner | learner | updates/h | matches/h |
+       |---|---|---:|---:|---:|---:|---:|
+       | rs_full3 u0001-u0003 | critic warm-up | 129-150 s | 10-16 s | 119-135 s | ~25 | ~12.6k |
+       | rs_steady u0002-u0004 (critic_warmup_updates=1) | PPO steady state | 72.6-78.5 s (mean 75.6) | 67.5-72.9 s | 2-3 s (10-12 steps, KL stop) | ~48 | ~24.4k |
+       u0000 wave alone (no learner beside it): 80.0-80.2 s = 23.0k/h. So in steady state the update is ROLLOUT-bound (the
+       learner is ~3% and hidden by --overlap), in the critic warm-up LEARNER-bound (split_attn + trunk_graph did not shorten
+       the warm-up here: 119-135 s vs 120-126 s without; LEARNER-SPEED owns that number). 512 matches in flight is below the
+       per-GPU knee (32x32 = 1,024 in flight gave 9.5k rows/s = 51k/h in bench), so at 512 matches / update one PRO 6000 makes
+       ~48 updates/h; the projection in 5 (2,048 / update -> ~125 updates/h on 5 GPUs) stands as (b).
+     31892 work is DONE: everything copied to rspeed/ and C:/Users/benpe/pod_backup_weekend/pro6000/rs_results_final.tgz;
+     no process / MPS daemon of mine left; BENCH_LOCK released (LEARNER-SPEED holds it).
 - ROLLOUT-SPEED (FASTLOOP-FIX worker, 10-30 late; PARTIAL -- hand-off to a fresh worker recommended, see the list):
   (a) where the pilot's producer wall goes (33308 pilot_box3 throughput.jsonl, read-only; Producer.tm is CUMULATIVE over
   updates, so per-update = the difference of consecutive lines): u0023 producer walls 658 .. 924 s with 128 matches,

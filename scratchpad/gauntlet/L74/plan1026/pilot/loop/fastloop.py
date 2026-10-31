@@ -323,6 +323,22 @@ def install(R, a, state: dict, pool=FastPool) -> None:
         R.Learner.rollout = rollout
 
 
+def start_mps(d: str) -> None:
+    """A private MPS control daemon: only processes with this CUDA_MPS_PIPE_DIRECTORY (this one and its children) join;
+    other CUDA users of the machine are untouched. Quit at exit."""
+    import atexit
+    import subprocess
+    pipe, logd = Path(d, "pipe"), Path(d, "log")
+    pipe.mkdir(parents=True, exist_ok=True)
+    logd.mkdir(parents=True, exist_ok=True)
+    os.environ["CUDA_MPS_PIPE_DIRECTORY"], os.environ["CUDA_MPS_LOG_DIRECTORY"] = str(pipe), str(logd)
+    subprocess.run(["nvidia-cuda-mps-control", "-d"], check=True)
+    # quit WITHOUT waiting: "quit" blocks until every client is gone, and this process is one of them (31892 rs_full3:
+    # a blocking quit at exit hung fastloop for 15 min after its last update)
+    atexit.register(lambda: subprocess.Popen(["sh", "-c", "echo quit | nvidia-cuda-mps-control"], start_new_session=True))
+    print(f"[fastloop] CUDA MPS daemon started (pipe {pipe})", flush=True)
+
+
 def main() -> int:
     argv = sys.argv[1:]
     cut = argv.index("--") if "--" in argv else len(argv)
@@ -340,8 +356,14 @@ def main() -> int:
     ap.add_argument("--overlap", type=int, choices=(0, 1), default=None,
                     help="OVERLAP.md: 1 = the next wave plays while the learner trains (one version stale); 0 = its "
                          "synchronous control (same matchup stream); absent = production's alternating loop")
+    ap.add_argument("--mps", default=None, metavar="DIR",
+                    help="ROLLOUT-SPEED: start a private CUDA MPS daemon (pipe / log dirs under DIR) before any CUDA use; "
+                         "every process of the run (learner, serve.py, producers) shares the GPU through it, quit at exit. "
+                         "31892: 3.5k -> 9.5k rows/s per GPU (LOOP_INT STATUS). Absent = no MPS, as before")
     a = ap.parse_args(argv[:cut])
     rl_argv = argv[cut + 1:]
+    if a.mps:
+        start_mps(a.mps)
     from pipeline import rl_royale as R
     run_name = rl_argv[rl_argv.index("--run") + 1]
     import yaml
