@@ -1,3 +1,15 @@
+# 2026-10-30 ~22:00 EDT -- PILOT2 init identity PASS; checks for pilot2_S / pilot2_L armed (vs re-baselined CLXIII)
+
+- PILOT2-BUILD (a): both PRO 6000 pods booted (86 artifacts sha-verified, EXACT_GATE PASS, code origin 930adf2). Init
+  icebow/data/bench/rl_royale/b0/b0_full_v2_tgt.pt sha cdde779a... (B0-full v2 + zero target layers): vs CLXIII NOLEAK on 10,000 rows
+  (351 > 128 events) x 3 target modes: max |diff| 0.0 on gate / card / cell / value / log-probs; ability head == CLXIII's.
+  Smokes + compares + planted SIM-gate blocks (target / memory must change play) running. Runs: pilot2_S (29153) / pilot2_L
+  (28263), ckpts /workspace/loop/cb/icebow/data/bench/rl_royale/pilot2_{S,L}/ on each pod, save_every 10; its watcher copies every
+  u%20 + FINAL to C:/Users/benpe/pod_backup_weekend/pilot2/{S,L}/ and stops each pod after the copy.
+- Lead: pilot/gate/pchk2.sh (33308 /workspace/pgate2, current-code tree, GATE_SAMPLE 0.1, stripped live stack, paired vs
+  base2_iu40) + laptop pilot/gate/pilot_check2.sh RUN ARM CPUS (WMI; reads the LAPTOP backup so it survives the pod stop):
+  pilot2_S on 33308 CPUs 0-47, pilot2_L on 48-95, u0020..u0600 step 20; logs pilot/gate/check2_pilot2_{S,L}.log + Discord.
+  u0ref.sh: p2init under the sampled gate vs base2 after BASE2_DONE (the arms' starting point). base2 iu40 done, e4 running.
 # 2026-10-30 ~21:55 EDT -- OWNER: a live-trial revert NEVER restores removed rules
 
 - Owner: "do not restore any live options. there's a reason for why i stripped them. Your job would be to produce a better model
