@@ -1,3 +1,8 @@
+# 2026-10-31 ~06:15 EDT -- CLXV live again (06:05:45 EDT, guard OK); 150-match block counts results AFTER overnight.out line 86759
+
+- Count: `tail -n +86760 scratchpad/gauntlet/L70/live/overnight.out | grep '\[ladder\] result:' | head -150 | grep -c WIN`, then
+  `python scratchpad/gauntlet/L74/plan1026/pilot/gate/block_verdict.py block <W> 150` (KEEP iff Wilson LB > 32.7%, i.e. >= 61 / 150).
+  At ~13 matches / h the block ends ~17:30 EDT 10-31. No auto-revert armed; the owner monitors.
 # 2026-10-31 ~06:10 EDT -- CLXV trial: 9 / 30 wins; the 04:39 auto-REVERT was a TOOLING BUG (baseline label); CLXV REDEPLOYED for the 150-match block
 
 - trial30_CLXV.log: 30 results 9 W / 21 L (>= MIN_WINS 6 -> passes on wins); idle-on-threat line "CLXIII n/a / CLXV 0.180" -> the awk read
