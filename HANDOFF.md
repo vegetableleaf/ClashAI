@@ -1,3 +1,17 @@
+# 2026-10-31 ~12:55 EDT -- 33903 DISK FULL: OPP-PUSH arm 4 crashed at u74 (16:32 UTC); RECON-8: Golden Knight dash is NOT an engine mismatch
+- 33903 overlay / was 100% (169 MB free). Arm 4 (oplc_ftR_l0003_d3env) died on a failed checkpoint save at u74 ("unexpected
+  pos", crash save failed too); last good = ..._latest.pt 16:29 UTC (loads). Its D3 loop (PID 1612694) still runs.
+  SIMPRICE spb_clxv hit 3 write errors and restarted as spb_clxv2 (warned to keep outputs in /dev/shm).
+- Freed: 2 failed .tmp checkpoint partials + /root/.cache/pip -> 1.4 GB free. Biggest reclaimable: /workspace/opp/v1/
+  hf_slot_v1 (36 GB) + hf_slot_v1_memory.npz (2.2 GB) = 10-28 opponent-v1 BC training rows, rebuildable on the pod
+  (/workspace/opp/v1/build_rows.sh first command; sources slot_bec5811a + hf_il_replay stay); nothing running uses them.
+  Deletion was blocked by the permission check -> OWNER asked. Arm 4 NOT resumed until space is freed.
+- RECON-8 (76dbe5f, 9c888af; RECON.md section 15): all 5 failing GK records = wrong / missing presses from the extractor
+  (Tornado pull and Rage walk read as dashes; press during an IW freeze; a real dash hidden by the 100-tick gate after a
+  false burst). With the right press every GK trace is exact (174855 1742 / 1742). Engine dash (398 / tick) matches live.
+  Max gain of a GK press fix +0.5 pp (2 records of 406). FRESH13 frozen (43 battles, sha 30f9a772), not yet scored.
+  Old "REC 240-250 / tick" was the Tornado pull. Owner's 10-29 prior (failures ~all observation) holds again here.
+
 # 2026-10-31 ~12:30 EDT -- OWNER: CLXV's 150-block is judged vs STRIPPED CLXIII (not the 32.7% bar); verdict watcher armed
 - Rule: keep CLXV unless significantly worse than stripped CLXIII (battle log 25 / 90 = 27.8%; one-sided two-proportion
   p < .05). Applies to this block only. Now: CLXV 32 / 86 (37.2%), diff +9.4 pp [-4.4, +23.2], p(worse) 0.91.
