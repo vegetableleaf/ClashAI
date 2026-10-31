@@ -1638,6 +1638,19 @@ class Match:
         acc = bool(r["accepted"])
         code = int(r.get("result_code", -1))
         card = self.deck.cards[d["slot"]]
+        if (not acc) and landed and not lost and cur is None and getattr(self, "tap_hold", None):
+            # refuses it at once. A not-enough-elixir refusal is retried each tick for N ticks, the ghost seats' elixir_slack rule: the
+            # card stays in hand and nothing is spent until the retry lands. The attempt is tallied once, by the landing that ends the hold.
+            names0 = env._code_names if type(env).__name__ in ("RoyalePoolEnv", "RoyaleSelfPlayEnv") else ep.RESULT_CODE_NAMES
+            first = d.get("_hold_from", land)
+            if names0.get(code, "").startswith("not_enough_elixir") and int(env.tick) - first < self.tap_hold and not env.terminated:
+                if "_hold_from" not in d:
+                    self.n_tap_held += 1
+                self.n_att -= 1
+                self.n_stall -= int(d["why"] == "stall")
+                self.pending = (int(env.tick) + 1, p, dict(d, _hold_from=first))
+                self.next_tick = max(self.next_tick, first + self.tap_hold + 1)
+                return False
         self.mix_att[card] += 1
         rec = {"tick": tick, "slot": d["slot"], "card": card, "cell": d["cell"], "p": round(p, 4), "why": d["why"],
                "elixir": el_int, "elixir_exact": round(float(bs.my_elixir), 3), "accepted": acc}
@@ -1650,6 +1663,9 @@ class Match:
             self.last_play_tick = land
             if self.own_fx is not None:
                 self.own_fx.append(dict(card=card, x=X, y=Y, tick=int(land)))
+            if d.get("_hold_from") is not None:
+                de0, eng0 = self.cfg["decide_every"], int(getattr(env, "engine_delay_ticks", 0))   # own delay), as after any play (no card_pending)
+                self.next_tick = max(self.next_tick, int(land) + eng0 + 1 if self.play_resume else tick + de0 * ((int(land) - tick + eng0) // de0 + 1))
         elif not landed:
             self.n_unlanded += 1
             self.refuse["match_over_before_landing"] += 1
@@ -1714,6 +1730,9 @@ class Match:
                if getattr(self, "tap_loss", None) is not None else {}),   # SelfPlaySide cfg["tap_loss"] (L74 W18)
             **({"tap_slow": list(self.tap_slow), "plays_tap_slow": self.n_tap_slow}
                if getattr(self, "tap_slow", None) is not None else {}),   # SelfPlaySide cfg["tap_slow"] (L74 W18)
+            **({"tap_hold": self.tap_hold, "plays_tap_held": self.n_tap_held}
+               if getattr(self, "tap_hold", None) is not None else {}),   # SelfPlaySide cfg["tap_hold"] (RECON-7)
+            **({"play_resume": self.play_resume} if getattr(self, "play_resume", None) else {}),   # SelfPlaySide cfg["play_resume"] (RECON-7)
             **({"extrapolate_ticks": self.extrap} if self.extrap else {}),
             **({"afford_ticks": int(cfg["afford_ticks"])} if cfg.get("afford_ticks") is not None else {}),
             **({"predict_drops": True} if self.drops is not None else {}),
@@ -1999,6 +2018,17 @@ class SelfPlaySide(Match):
         if self.tap_loss is not None or self.tap_slow is not None:
             if not self.delay or self.pipe:
                 raise ValueError("cfg['tap_loss'] / cfg['tap_slow'] need action_delay_ticks > 0 and no pipeline_decisions")
+        self.tap_hold = parse_tap_hold(cfg.get("tap_hold"))   # cfg["tap_hold"] (RECON-7, opt-in): a not-enough-elixir play is retried for N ticks
+        self.n_tap_held = 0
+        # cfg["play_resume"] (RECON-7, opt-in; "land"): after a delayed play the next decision is the first tick the engine has run it (act + engine
+        # play decision in 50% of plays (24-28 in 77%), then every 10 ticks from there; the SIM's grid made it 30. Absent = byte-identical.
+        self.play_resume = cfg.get("play_resume")
+        if self.play_resume not in (None, "land"):
+            raise ValueError(f"cfg['play_resume'] is 'land' or absent, got {self.play_resume!r}")
+        if self.play_resume and (not self.delay or self.pipe or cfg.get("follow_ups")):
+            raise ValueError("cfg['play_resume'] needs action_delay_ticks > 0 and neither pipeline_decisions nor follow_ups")
+        if self.tap_hold is not None and (not self.delay or self.pipe or cfg.get("follow_ups")):
+            raise ValueError("cfg['tap_hold'] needs action_delay_ticks > 0 and neither pipeline_decisions nor follow_ups")
         if self.tap_loss is not None:
             self._tl_rng = random.Random(zlib.crc32(f"{tag}:tap_loss".encode()))
         if self.tap_slow is not None:
@@ -2045,7 +2075,7 @@ class SelfPlaySide(Match):
             d, extra = self._tap_draw(d, tick)
             delay += extra
             self.pending = (tick + delay, p, d)
-            self.next_tick = tick + de * ((delay + eng) // de + 1)   # crforge: none until the engine runs it (Match.apply)
+            self.next_tick = (tick + delay + eng + 1) if self.play_resume else tick + de * ((delay + eng) // de + 1)   # crforge: none until the engine runs it (Match.apply)
             return
         if d["play"]:
             self._land(p, d, tick, True)
@@ -2227,6 +2257,20 @@ def parse_tap_slow(spec) -> Optional[tuple]:
     if not 0.0 <= p < 1.0 or x < 1:
         raise ValueError(f"tap_slow: need 0 <= P < 1 and EXTRA >= 1, got {spec!r}")
     return p, x
+
+
+def parse_tap_hold(spec) -> Optional[int]:
+    """
+    """
+    if not spec:
+        return None
+    try:
+        n = int(spec)
+    except (ValueError, TypeError):
+        raise ValueError(f"tap_hold: an int >= 1 expected, got {spec!r}") from None
+    if n < 1 or isinstance(spec, bool):
+        raise ValueError(f"tap_hold: an int >= 1 expected, got {spec!r}")
+    return n
 
 
 class SelfPlayMatch:
