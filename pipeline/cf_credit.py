@@ -121,9 +121,10 @@ DEFAULTS = {"cf_horizon_ticks": 600, "cf_k": 2, "cf_w": 1.0, "cf_clip": 3.0, "cf
             "cf_front_min_tiles": 5.0, "cf_front_max_tiles": 8.0, "cf_xbow_fail_window_ticks": 600, "cf_full_elixir": 9.9,
             "cf_combo_value": 6.0, "cf_redirect_dist_tiles": 12.0, "cf_k_by": None, "cf_horizon_by": None,
             "cf_horizon_sweep": None, "cf_adv_scale": 1.0, "cf_diag": False, "cf_rocket_lead": "off",
-            "cf_rocket_empty": False, "cf_diag_plays": False, "cf_redirect_king_tiles": None, "cf_alt_afford": False}
+            "cf_rocket_empty": False, "cf_diag_plays": False, "cf_redirect_king_tiles": None, "cf_alt_afford": False,
+            "cf_iw_block_ticks": None, "cf_iw_min_elixir": None}
 NEW_KEYS = ("cf_combo_value", "cf_redirect_dist_tiles", "cf_k_by", "cf_horizon_by", "cf_horizon_sweep", "cf_adv_scale", "cf_diag", "cf_rocket_lead",
-            "cf_rocket_empty", "cf_diag_plays", "cf_redirect_king_tiles", "cf_alt_afford")   # dropped from the config hash at their
+            "cf_rocket_empty", "cf_diag_plays", "cf_redirect_king_tiles", "cf_alt_afford", "cf_iw_block_ticks", "cf_iw_min_elixir")   # dropped from the config hash at their
 # defaults (older cf-on hashes stay); cf_k_by / cf_horizon_by = {trigger: K / horizon ticks}, the per-trigger noise controls;
 # cf_horizon_sweep = [ticks, ...] (< the horizon): the SAME forks also record Q read at those earlier stops ("qh"), so one pilot
 # gives the SNR / critic-slope of every candidate horizon (diagnostic, the learner ignores it);
@@ -145,6 +146,11 @@ NEW_KEYS = ("cf_combo_value", "cf_redirect_dist_tiles", "cf_k_by", "cf_horizon_b
 # at the issue tick (the decision + the side's e1 delay; crforge's client gate checks there, 20 ticks before the play runs) >= its
 # cost. Without it the look-ahead mask (elixir at landing) offers cards crforge refuses (f3base2: a Rocket alternative with 5-6
 # elixir at the root landed in 14-25% of forks, >= 6 in 97-100%), and the "Rocket" fork was a wait.
+# cf_iw_block_ticks N (SIMPRICE round 2; null = off) = in an iw_pressed / iw_press fork set, the NO-press candidate's copies cannot
+# press for N ticks after the root (e1_eval.ability_decide reads the fork-only _ab_block_until; its RNG draw still happens): the
+# contrast becomes "press now vs no freeze for this engagement" instead of "press now vs press a moment later" (spa1: after a hold
+# the head re-pressed in 77% of forks). cf_iw_min_elixir E (null = off) = the iw triggers fire only when the head's freeze target
+# carries >= E elixir of troops (royale_env freeze feature 2 x 10): concentrates the samples on the class the owner's doctrine names.
 # cf_redirect_king_tiles (null = off) = tornado_redirect also needs the unit within that many tiles of OUR king (P3-FORK3 on cfaud3:
 # tornado_king - tornado_on is +0.020 [-0.04, +0.08] with our king activated +0.061 at 7.5 s for units < 9 tiles from our king,
 # -0.109 for 9-12 tiles: the pull cannot bring a far unit into the king's reach, so the far samples price a misplaced Tornado)
@@ -168,7 +174,7 @@ def _num(v) -> bool:
 
 
 KEEP = ("cf_shrink", "cf_p", "cf_k_by", "cf_horizon_by", "cf_horizon_sweep", "cf_diag", "cf_rocket_lead", "cf_rocket_empty",
-        "cf_diag_plays", "cf_redirect_king_tiles", "cf_alt_afford")   # values kept as they are (not float())
+        "cf_diag_plays", "cf_redirect_king_tiles", "cf_alt_afford", "cf_iw_block_ticks", "cf_iw_min_elixir")   # values kept as they are
 
 
 def combo_ok(cfg: dict) -> bool:
@@ -213,6 +219,12 @@ def cf_cfg(cfg: dict) -> Optional[dict]:
         bad.append(f"cf_adv_scale must be a finite number in (0, 2], got {c['cf_adv_scale']!r}")
     if c["cf_rocket_lead"] not in ("off", "drift"):
         bad.append(f"cf_rocket_lead must be off or drift, got {c['cf_rocket_lead']!r}")
+    bt = c["cf_iw_block_ticks"]
+    if bt is not None and not (isinstance(bt, int) and not isinstance(bt, bool) and bt >= 1):
+        bad.append(f"cf_iw_block_ticks must be null or an integer >= 1 (ticks), got {bt!r}")
+    me = c["cf_iw_min_elixir"]
+    if me is not None and not (_num(me) and me >= 0):
+        bad.append(f"cf_iw_min_elixir must be null or a finite number >= 0, got {me!r}")
     for k in ("cf_diag", "cf_rocket_empty", "cf_diag_plays", "cf_alt_afford"):
         if type(c[k]) is not bool:
             bad.append(f"{k} must be a bool, got {c[k]!r}")
@@ -823,6 +835,18 @@ def candidates(m, s, d: dict, trig: str, c: dict) -> list[dict]:
     return out
 
 
+IW_TGT_ELIXIR = 46     # e1_eval.ABILITY_FEAT_N + 2: the freeze target's troop elixir / 10 (royale_env 'freeze' features)
+
+
+def iw_value_ok(d: dict, c: dict) -> bool:
+    """cf_iw_min_elixir: the decision's freeze target carries >= that many elixir of troops (off -> True)."""
+    me = c.get("cf_iw_min_elixir")
+    if me is None:
+        return True
+    f = d.get("ab_feat")
+    return f is not None and len(f) > IW_TGT_ELIXIR and float(f[IW_TGT_ELIXIR]) * 10.0 + 1e-6 >= float(me)
+
+
 def issue_affordable(s, slot: int) -> bool:
     """cf_alt_afford: my elixir at the tick the play is issued to the engine (the decision tick + the side's e1 delay; regen by
     the env's own schedule) covers the card's cost."""
@@ -992,6 +1016,7 @@ def triggers(m, s, d: dict, c: dict) -> list[str]:
         cond["def_xbow"] = played == "xbow" and matchup_ctx(m, s, tick)[2]
     if c["cf_p"].get("iw_pressed", 0.0) > 0 or c["cf_p"].get("iw_press", 0.0) > 0:   # the head decided on a button
         btn = bool(d.get("ab_sampled")) and getattr(s, "_ab_cmd", None) is not None    # (e1_eval.ability_decide: _ab_cmd)
+        btn = btn and iw_value_ok(d, c)
         cond["iw_pressed"], cond["iw_press"] = btn and bool(d.get("ab_press")), btn and not d.get("ab_press")
     out = []
     for t in TRIGGERS:
@@ -1173,6 +1198,8 @@ class Runner:
                 f = fork_into(m, self.pool[len(forks)], blob, fresh=FORK_FRESH)
                 if k:
                     reseed(f, seed, k)
+                if c.get("cf_iw_block_ticks") and "ab_press" in a and not a["ab_press"]:   # no freeze in this copy for N ticks
+                    f.learner._ab_block_until = root + int(c["cf_iw_block_ticks"])
                 for s, p, d in entries:
                     if s is not L:
                         f.opp.apply(p, dict(d))
@@ -1274,6 +1301,9 @@ class Runner:
                 out[i].setdefault("follow", [None] * K)[k] = dict(getattr(f.learner, "follow_n", None) or {})
             if "ab_press" in cands[i]:                        # iw_press: learner presses the engine accepted in this fork
                 out[i].setdefault("ab_n", [None] * K)[k] = npress(f.env) - nab
+                t0 = [int(e["tick"]) - root for e in getattr(f.env, "own_ability_events", None) or ()
+                      if int(e.get("side", -1)) == L.side and int(e["tick"]) >= root]
+                out[i].setdefault("ab_t0", [None] * K)[k] = min(t0) if t0 else None   # its first accepted press, ticks after root
             if ref0 is not None:                              # cf_diag: plays the engine refused in this fork, by reason
                 out[i].setdefault("refuse", [None] * K)[k] = {r: n - ref0.get(r, 0) for r, n in f.learner.refuse.items()
                                                                if n - ref0.get(r, 0)}

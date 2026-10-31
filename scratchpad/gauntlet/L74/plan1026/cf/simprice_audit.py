@@ -48,8 +48,12 @@ def rows(paths, from_update):
                 dh={h: float(np.mean(pr['qh'][h]) - np.mean(ho['qh'][h])) for h in (pr.get('qh') or {})
                     if None not in pr['qh'][h] and None not in ho['qh'][h]},
                 n_press=pr.get('ab_n'), n_hold=ho.get('ab_n'), p=float(c0.get('ab_p', np.nan)),
+                t0_hold=ho.get('ab_t0'), sig=(r.get('end_tick'), r.get('outcome'), tuple(int(x['tick']) for x in r['cf'].get('samples', []) if x['trigger'] in ('iw_pressed', 'iw_press'))),
+                d300=None, d900=None, terminal=all(pr['terminal']) and all(ho['terminal']),
                 tgt=fz[0] > 0.5, troops=round(fz[1] * 5), elixir=fz[2] * 10, wincon=fz[3] > 0.5,
                 cube_elixir=fz[5] * 10, cube_mine=fz[8] > 0.5, marked=fz[9] > 0.5, s=s, upd=r.get('update', 0)))
+    for x in out:
+        x['d300'], x['d900'] = x['dh'].get('300'), x['dh'].get('900')
     return out
 
 
@@ -76,8 +80,8 @@ def fmt(c):
 
 def table(rs, title):
     print(f"\n## {title}")
-    print("| split | n | dQ 45 s (press - hold) | terminal (audited) |")
-    print("|---|---|---|---|")
+    print("| split | n | dQ main horizon (press - hold) | audited terminal | critic Q at 900 | critic Q at 300 |")
+    print("|---|---|---|---|---|---|")
     groups = [('all', lambda r: True),
               ('policy pressed (iw_pressed)', lambda r: r['trig'] == 'iw_pressed'),
               ('policy held (iw_press)', lambda r: r['trig'] == 'iw_press'),
@@ -95,7 +99,7 @@ def table(rs, title):
     for name, f in groups:
         g = [r for r in rs if f(r)]
         if g:
-            print(f"| {name} | {len(g)} | {fmt(ci(g))} | {fmt(ci(g, 'dt'))} |")
+            print(f"| {name} | {len(g)} | {fmt(ci(g))} | {fmt(ci(g, 'dt'))} | {fmt(ci(g, 'd900'))} | {fmt(ci(g, 'd300'))} |")
 
 
 def main(argv):
@@ -103,6 +107,7 @@ def main(argv):
     ap.add_argument('dumps', nargs='+')
     ap.add_argument('--from-update', type=int, default=0)
     ap.add_argument('--json')
+    ap.add_argument('--pair', help="another dump of the SAME real matches (same seed / policy), e.g. with cf_iw_block_ticks")
     a = ap.parse_args(argv)
     rs = rows(a.dumps, a.from_update)
     print(f"# SIMPRICE IW press audit: {len(rs)} samples, {len({r['m'] for r in rs})} matches, updates >= {a.from_update}")
@@ -119,13 +124,45 @@ def main(argv):
         if npress and nhold:
             print(f"{trig} accepted presses per fork over the horizon: press branch {np.mean(npress):.2f}, hold branch "
                   f"{np.mean(nhold):.2f} (share of hold forks with a re-press {np.mean([x > 0 for x in nhold]):.2f})")
+        t0 = [t for r in g for t in (r['t0_hold'] or []) if t is not None]
+        nk = sum(len(r['t0_hold'] or []) for r in g)
+        if nk:
+            print(f"{trig} hold branch: first accepted press after the root in {len(t0)} / {nk} forks; ticks after root p10 / p50 "
+                  f"{np.percentile(t0, 10) if t0 else float('nan'):.0f} / {np.percentile(t0, 50) if t0 else float('nan'):.0f}; "
+                  f"within 200 ticks {sum(t <= 200 for t in t0)}")
         rel = CF.reliability([CF.sample_adv(r['s']['cands']) for r in g])
         sl = CF.slope_audit([r['s'] for r in g])
         print(f"{trig} reliability: SNR {rel['snr']}, factor {rel['factor']}, r_split {rel['r_split']} (n {rel['n']}); "
               f"critic slope (terminal on horizon) diffs {sl.get('diffs')} levels {sl.get('levels')}")
+    if a.pair:                                        # SIMPRICE round 2: the same real matches with / without cf_iw_block_ticks
+        rb = rows([a.pair], a.from_update)
+        key = lambda r: (r['sig'], r['tick'], r['trig'])
+        bk = {key(r): r for r in rb}
+        pairs = [(r, bk[key(r)]) for r in rs if key(r) in bk]
+        print(f"\n## paired with {a.pair}: {len(pairs)} identical roots (of {len(rs)} / {len(rb)})")
+        for trig in ('iw_pressed', 'iw_press', None):
+            g = [dict(x, dd=y['dq'] - x['dq'], m=x['m']) for x, y in pairs if trig is None or x['trig'] == trig]
+            if g:
+                print(f"{trig or 'all'}: dQ this run {fmt(ci(g))}, other run {fmt(ci([dict(y, m=x['m']) for x, y in pairs if trig is None or x['trig'] == trig]))}, "
+                      f"other - this (paired) {fmt(ci(g, 'dd'))}")
     if a.json:
         Path(a.json).write_text(json.dumps([{k: v for k, v in r.items() if k != 's'} for r in rs]), encoding='utf-8')
 
 
 if __name__ == '__main__':
     main(sys.argv[1:])
+
+
+def snaps(paths, h='900'):
+    """cf_diag snapshots at the h-tick sweep stop, press - hold per sample (K-mean): own / foe princess HP lost (princess units),
+    own crowns conceded, own elixir (snap layout: cf_credit.snap)."""
+    out = []
+    for r in rows(paths, 0):
+        pr, ho = (r['s']['cands'][0], r['s']['cands'][1]) if r['s']['cands'][0]['ab_press'] else (r['s']['cands'][1], r['s']['cands'][0])
+        b = ((ho.get('dg') or {}).get(h) or {}).get('snap')
+        a = ((pr.get('dg') or {}).get(h) or {}).get('snap')
+        if not a or not b or None in a or None in b:
+            continue
+        m = lambda v, i: float(np.mean([x[i] for x in v]))
+        out.append(dict(r, own=m(a, 0) - m(b, 0), foe=m(a, 4) - m(b, 4), crown=m(a, 3) - m(b, 3), elix=m(a, 8) - m(b, 8)))
+    return out

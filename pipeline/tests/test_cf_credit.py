@@ -971,6 +971,56 @@ class TestIwPress(unittest.TestCase):
             self.assertEqual(len(alt["ab_feat"]), 55)
 
 
+class TestIwBlockAndValue(unittest.TestCase):
+    """SIMPRICE round 2: cf_iw_block_ticks (the no-press fork copy cannot press for N ticks) and cf_iw_min_elixir (the iw triggers
+    only where the freeze target holds >= E elixir); both opt-in, absent = the cf-on hash unchanged."""
+
+    def test_config_and_hash(self):
+        can = CF.canonical(ON)
+        self.assertEqual(CF.canonical({**ON, "cf_iw_block_ticks": None, "cf_iw_min_elixir": None}), can)
+        self.assertNotEqual(CF.canonical({**ON, "cf_iw_block_ticks": 200}), can)
+        self.assertNotEqual(CF.canonical({**ON, "cf_iw_min_elixir": 6.0}), can)
+        c = CF.cf_cfg({**ON, "cf_iw_block_ticks": 200, "cf_iw_min_elixir": 6.0})
+        self.assertEqual((c["cf_iw_block_ticks"], c["cf_iw_min_elixir"]), (200, 6.0))
+        for bad in ({"cf_iw_block_ticks": 0}, {"cf_iw_block_ticks": 1.5}, {"cf_iw_block_ticks": True}, {"cf_iw_min_elixir": -1}):
+            with self.assertRaises(SystemExit):
+                CF.cf_cfg({**ON, **bad})
+
+    def test_value_filter(self):
+        f = np.zeros(55, np.float32)
+        f[CF.IW_TGT_ELIXIR] = 0.7                                               # 7 elixir in the freeze target
+        self.assertTrue(CF.iw_value_ok({"ab_feat": f}, {"cf_iw_min_elixir": 6.0}))
+        self.assertFalse(CF.iw_value_ok({"ab_feat": f}, {"cf_iw_min_elixir": 8.0}))
+        self.assertFalse(CF.iw_value_ok({"ab_feat": np.zeros(44, np.float32)}, {"cf_iw_min_elixir": 0.5}))   # base features only
+        self.assertTrue(CF.iw_value_ok({}, {"cf_iw_min_elixir": None}))
+
+    def test_block_suppresses_the_press_and_keeps_the_rng(self):
+        """e1_eval.ability_decide on a fake side + head (P(press) ~ 1): pressed without a block; with _ab_block_until >= the tick
+        no press, the record says so, and the ability RNG advanced exactly as without the block (one draw per decision)."""
+        from pipeline import e1_eval as E
+
+        class Head:
+            def __call__(self, g, feat):
+                return torch.full((g.shape[0],), 30.0)
+
+        def side(block):
+            m = types.SimpleNamespace(_ability_opts=[{"cmd": (0, 7, 11), "feat": np.zeros(55, np.float32)}], n_dec=0, side=0,
+                                      _ability_commands={0: []}, cfg={}, tag="t", _cur=(500, None, None),
+                                      rng_ability=np.random.default_rng(3))
+            if block is not None:
+                m._ab_block_until = block
+            return m
+        cfg = {"ability": {"mode": "sample", "head": Head(), "n_feat": 55}}
+        enc = {"g": torch.zeros(1, 4)}
+        for block, want in ((None, True), (499, True), (500, False), (700, False)):
+            m = side(block)
+            out = E.ability_decide([m], enc, cfg)
+            self.assertIs(out[0]["ab_press"], want, block)
+            self.assertEqual(m._ability_commands[0], [(0, 7, 11)] if want else [], block)
+            self.assertEqual(m._ab_cmd, (0, 7, 11))
+            self.assertEqual(m.rng_ability.random(), np.random.default_rng(3).random(2)[1], block)   # exactly one draw used
+
+
 class TestAltAfford(unittest.TestCase):
     """SIMPRICE (10-31): cf_alt_afford (bool, opt-in, absent = the cf-on hash unchanged) offers a forced card alternative only
     when my elixir at the engine's issue tick (decision + the side's e1 delay) covers its cost."""

@@ -471,6 +471,8 @@ def ability_decide(matches: Sequence, enc, cfg: dict) -> Optional[list]:
             press = bool(m.rng_ability.random() < math.exp(lp1))
         else:
             press = lp1 > lp0
+        if press and getattr(m, "_ab_block_until", -1) >= int(m._cur[0]):   # cf_credit cf_iw_block_ticks: a fork's no-press copy
+            press = False
         if press:
             m._ability_commands[m.side] = [o["cmd"]]
         m._ab_cmd = o["cmd"]                                  # cf_credit iw_press: this decision's button (read only by a fork)
