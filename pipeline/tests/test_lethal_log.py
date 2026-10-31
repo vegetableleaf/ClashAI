@@ -311,3 +311,20 @@ def test_history_spans_the_in_flight_window_not_a_count():
     assert hist[0][0] == 598 - LETHAL_HIST_TICKS and hist[-1][0] == 598 and len(hist) == LETHAL_HIST_TICKS + 1 > 64
     assert record_hp(hist, 598, {'L': 0})[-1] == (598, {'L': 598})          # one entry per tick
     assert record_hp(hist, 10, {'L': 1}) == [(10, {'L': 1})]               # tick went back: a new match
+
+
+# --lethal-rocket log (owner 2026-10-31: every live rule removed except the lethal Log finisher): the Log branch only.
+LOG_ONLY = DecisionOptions(lethal_rocket='log', lethal_log='on')
+
+
+def test_log_only_mode_fires_the_log_never_the_rocket():
+    with pytest.raises(ValueError):
+        DecisionOptions(lethal_rocket='log')                               # needs lethal_log on
+    ap = argparse.ArgumentParser(); add_arguments(ap)
+    assert options_from_config(config_from_args(ap.parse_args(['--lethal-rocket', 'log', '--lethal-log', 'on']))) \
+        .lethal_rocket == 'log'
+    slot, cell, target = lethal_rocket_choice(LOG_ONLY, 200.0, NAMES, OK, towers(0, 40, 1092), 0, 'lattice')
+    assert (slot, cell, target['card']) == (2, LOG_L, 'Log')               # Log-lethal princess: the Log, as in 'on'
+    assert lethal_rocket_choice(LOG_ONLY, 200.0, NAMES, OK, towers(0, 300, 1092), 0, 'lattice') is None   # Rocket-only lethal
+    no_log = ['Knight', 'Rocket', 'Tesla', 'IceWizard']
+    assert lethal_rocket_choice(LOG_ONLY, 200.0, no_log, OK, towers(0, 40, 1092), 0, 'lattice') is None   # no Log: no Rocket

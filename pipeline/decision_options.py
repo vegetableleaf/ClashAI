@@ -104,8 +104,10 @@ class DecisionOptions:
             raise ValueError('barrel_lane must be off or on')
         if not math.isfinite(self.lethal_quiet) or self.lethal_quiet < 0:
             raise ValueError('lethal_quiet must be finite and >= 0 (0 = off)')
-        if self.lethal_rocket not in ('off', 'ot', 'ot_behind'):
-            raise ValueError('lethal_rocket must be off, ot or ot_behind')
+        if self.lethal_rocket not in ('off', 'ot', 'ot_behind', 'log'):
+            raise ValueError('lethal_rocket must be off, ot, ot_behind or log')
+        if self.lethal_rocket == 'log' and self.lethal_log != 'on':
+            raise ValueError('lethal_rocket log (the Log-only finisher) needs lethal_log on')
         if self.xbow_dead_lane not in ('allow', 'block'):
             raise ValueError('xbow_dead_lane must be allow or block')
         if self.rocket_dead_target not in ('allow', 'block'):
@@ -194,7 +196,7 @@ def add_arguments(parser):
                              'the last SECONDS of decision-board time (public tower HP); 0 = off')
     parser.add_argument('--gate-hazard-threat-radius', type=float, default=0.0, metavar='TILES',
                         help='hazard draws ALSO while an enemy unit is within TILES of one of my alive towers; 0 = off')
-    parser.add_argument('--lethal-rocket', choices=('off', 'ot', 'ot_behind'), default='off',
+    parser.add_argument('--lethal-rocket', choices=('off', 'ot', 'ot_behind', 'log'), default='off',
                         help='ot: in overtime (t >= 180 s, the tau_phase edge) play Rocket NOW, whatever the gate, at the '
                              'centre of an alive enemy PRINCESS tower whose HP <= my Rocket crown-tower damage (lower HP '
                              'first; never the king), when Rocket is in hand and affordable; else unchanged. ot_behind: '
@@ -1344,7 +1346,7 @@ def _lethal_phase(options, t_sec, crown_towers, side, hit_ticks):
     """OT, or (ot_behind) regulation while behind on crowns and the card still hits before REGULATION_END_TICK."""
     if phase_index([t_sec])[0] == 2:
         return True
-    return (options.lethal_rocket == 'ot_behind' and round(t_sec / 0.05) + hit_ticks <= REGULATION_END_TICK
+    return (options.lethal_rocket in ('ot_behind', 'log') and round(t_sec / 0.05) + hit_ticks <= REGULATION_END_TICK
             and crowns_behind(crown_towers, side))
 
 
@@ -1373,7 +1375,7 @@ def lethal_rocket_choice(options, t_sec, names, allowed, crown_towers, side, gri
         own = None                                  # off: today's rule exactly (no in-flight guard)
     else:                                           # the Log first: cheaper and it hits sooner
         hit = lethal_log_choice(options, t_sec, names, allowed, crown_towers, side, grid, own, skip=skip)
-        if hit is not None:
+        if hit is not None or options.lethal_rocket == 'log':   # 'log' (owner 10-31): the Log finisher only, never a Rocket
             return hit
     if phase_index([t_sec])[0] != 2:
         if (options.lethal_rocket != 'ot_behind' or round(t_sec / 0.05) + ROCKET_FLIGHT_TICKS > REGULATION_END_TICK
