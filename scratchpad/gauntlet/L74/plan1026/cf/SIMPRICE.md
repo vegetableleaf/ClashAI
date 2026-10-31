@@ -3,7 +3,16 @@
 Owner ask 10-31: the model must learn to use Rocket and the Hero Ice Wizard ability at the right moments. Lead's diagnosis to
 test: the SIM prices both as losses. Labels: (a) measured (number + source), (b) plausible, untested, (c) contradicted.
 
-## STATUS (keep current) -- 2026-10-31 ~17:55 UTC: round 2 DONE_WITH_CONCERNS, nothing of mine running
+## STATUS (keep current) -- 2026-10-31 ~21:20 UTC: FREEZE-LIVE (section 9) DONE, nothing of mine running
+- FREEZE-LIVE (10-31, section 9; verdict: the ENGINE does NOT under-power the freeze, (c) contradicted): 220 fully exact RECON records
+  contain 419 Hero IW presses (376 ours, 233 with >= 6 elixir of enemy troops in the cube radius), every tower / unit (side, x, y, hp)
+  equal on every frame, ~82,600 frames inside 450 ticks after a press; re-running the same records with a freeze 10% leaky breaks 87%,
+  radius -20% / +20% 29% / 22%, cube 4 s 51%, slow -15% / 0 51% (no-op control 0%). Exact rate with a press 220 / 257 = without 240 / 290
+  (Fisher p .41). Engine press - no press at live presses (own, >= 6): our princess +312 HP at 7.5 s, +607 [+487, +732] at 15 s, but median
+  +86 (45% change nothing); at held moments ~+60-90 HP at 7.5 s; the SIM's forks show the same split (held ~-45 HP, pressed hundreds).
+  Same estimator live vs SIM: princess HP lost in the next 15 s after a press 0.121 (live CLXIII, n 849) vs 0.120 (SIM p2init, n 43), CLXV
+  0.157 vs 0.150; after a held moment 0.075 vs 0.078, 0.077 vs 0.097. So the SIM's ~0 net press value is engine-consistent; the learned
+  "stop pressing" is not an engine artefact. Code `freeze_live_*.py`, results `freeze_live_out/`; no engine / trainer change.
 - ROUND 2 (coordinator 10-31, section 8): match-end IW audit on CLXV (490271e5) + p2init, valuable class (>= 6 elixir in the
   freeze target); opt-in cf_iw_block_ticks (no freeze for 200 ticks in the no-press copy) + cf_iw_min_elixir (c95368e, sp_smoke7
   SMOKE PASS). Result: at match end the press is ~0 for BOTH heads (CLXV +0.009 [-0.055, +0.082] n 474; p2init -0.017, clean
@@ -223,10 +232,114 @@ spc_p2i_blk.jsonl).
   match end it is ~0 for both heads (no push either way; end SNR 0.55 / ~0.1 is too low for credit). Neither restores presses.
   The decision stays the lead's / owner's: the SIM does not price the press as a loss at match end, but it does not reward it.
 
+## 9. FREEZE-LIVE (10-31): does the engine model the Hero IW freeze's real effect? (labels a / b / c)
+Question (owner 10-31): is the SIM's ~0 press value (sections 3, 8) an engine under-power? Tools `freeze_live_*.py` (laptop: collect / sel /
+parse / est / report; pod 33903 CPUs 226-237, /dev/shm, tree /workspace/smeR6: cf / held / mktabs / env, nothing left running), results
+`freeze_live_out/` (report.txt, estimator_out.txt, freeze_live_data.tar.gz = the raw per-press / per-moment rows). Engine, trainer and tables
+untouched (perturbed table COPIES in /dev/shm only). Reproduce the tables: extract the tarball into a directory D, `python -I freeze_live_report.py D`;
+the live estimator needs `freeze_live_parse.py` output (32 MB, not committed): `python -B freeze_live_est.py LIVE.jsonl`. Pod order: `freeze_live_collect.py` ->
+`freeze_live_sel.py` (laptop) -> `freeze_live_list.py` -> `freeze_live_cf.py` (full) / `freeze_live_sens.sh` (perturbed tables) / `freeze_live_held.py`.
+
+### 9.1 Step 1: the freeze inside exact RECON records (a)
+- What the SME comparator compares (SME.md "The comparator", sme.py canon_rec / canon_sim): the multisets of (side, x, y, **hp**) of every
+  tower and every unit (the ice cube is a unit: hp 104 and its decay compared), (side, x, y) of projectiles and area effects, and our elixir /
+  hand / queue, on every reader frame (~every 2nd tick), no tolerance; reader-flagged torn frames are excluded. Card names and buff states are
+  NOT compared: a freeze shows only through positions, hp and attack timing, which is exactly what it changes (a frozen unit that moved or hit
+  one frame too early is a diff).
+- Count (all RECON runs pooled, best plan per match; `freeze_live_collect.py`, `freeze_live_sel.py`): 547 matches, 460 fully exact. **220 exact
+  records contain >= 1 Hero IW press (either side): 419 presses = 376 ours + 43 the opponent's**; 188 of those records / 359 presses come from the
+  hand-rule gate plans (no RECON edits; the press is the extractor's, run ticks moved only inside their window); press sources 368 cast_seen
+  (cube sighting), 49 own_press, 2 charge_drop. 206 / 391 re-run plain-exact (the other 14 contain reader-torn frames, counted exact by RECON's
+  comparator). Engine exposure at the cube (enemy bodies within 2.5 t, approx. elixir from the card table): **233 presses >= 6 elixir (207
+  ours)**, 102 3-6, 16 < 3, 68 nothing. The cube stood median 54 ticks, max 100 (= the table's 5.0 s; 108 presses ran the full 5 s).
+- Windows: ~82,600 reader frames lie within 450 ticks (22 s: cube <= 5 s + slow) after a press, all exact (77,600 in the 206 plain-exact
+  records); the exact stretch is the whole record (median 2,090 frames, range 941-3,054).
+- Not a selection artefact of "exact records only": exact rate in matches WITH a press 220 / 257 (0.856) vs WITHOUT 240 / 290 (0.828), Fisher
+  p .41 (gate plans only: 188 / 259 = .726 vs 210 / 288 = .729, p 1.0). Of the 37 failing records with a press, 7 first diverge <= 300 ticks
+  after one: 230352 + 134929 = Golden Knight press plans (RECON-8, not the freeze), 094801 (the opponent's hero Balloon ability: its Skeletrooper spawns differently; the cube stood 5 tiles from the Balloon, which tracks the reader
+  to the unit until then), 132322 (an opponent MiniPekka the plan lacks, 189 ticks after the press), 093127 (opponent Skeleton / Tesla_EV1 plays), 190605
+  (Miner deploy point) are not freeze rows; **153413 is the one IW row** (the SIM has a cube + freeze
+  aura at 2452 where the reader lists none, 81 ticks after the press at 2371; an old d49_cyc_old1 plan; cube timing / target, not power).
+- **Sensitivity (the comparator's power; c-test of "the engine under-powers it")**, the 206 plain-exact records re-run with a perturbed copy of the
+  tables 16.635.3 (`freeze_live_mktabs.py`), records that stop being exact (>= 6-elixir class of 145 in brackets):
+  | perturbation | broke | first diff after the press |
+  |---|---|---|
+  | no-op copy (control) | 0 / 206 (0 / 145) | - |
+  | FreezeBuff speed / hit-speed -100% -> -90% | 179 (87%) (137) | 10 ticks |
+  | freeze aura radius 2.5 t -> 2.0 t / -> 3.0 t | 59 (29%) (47) / 45 (22%) (39) | 9 ticks |
+  | cube lifetime timer 5 s -> 4 s | 106 (51%) (83) | 87 ticks |
+  | cube timer + LifeTime 4 s (also changes the cube's hp decay) | 198 (96%) | 28 ticks |
+  | slow after the freeze -30% -> -15% / -> 0 | 106 (51%) (90) both | ~80 ticks |
+  So a freeze that leaks 10% of its speed, a 20% smaller or larger aura, a 1-s shorter cube or a weaker slow would have shown in most
+  records; the engine's numbers (-100% freeze, 2.5 t, 5 s, -30% slow) are the live ones to that resolution. **(c) contradicted: "the engine
+  under-powers the freeze".** (b) Not covered: freeze on buildings / evolutions as a separate class, regimes the 220 records do not contain.
+
+### 9.2 Engine press - no press from the reconstructed state (step 3, a; `freeze_live_cf.py`)
+Each press in the 220 exact records dropped on its own (the true history re-run without it), same recorded later plays, our princess HP
+(both princesses, HP) at +150 / +300 / +450 / +900 ticks after the run tick, 90% match-cluster CI, press - no press (+ = the press saves):
+| presses | +150 | +300 | +450 | +900 |
+|---|---|---|---|---|
+| ours, target >= 6 elixir (n ~198 / 186 / 167 / 133) | +312 [+240, +393] | **+607 [+487, +732]** | +686 [+543, +839] | +742 [+566, +938] |
+| ours, 3-6 elixir | +154 [+90, +231] | +339 [+185, +519] | +384 | +359 |
+| ours, nothing in the cube (n 57 / 51 / 44 / 36; negative control) | +0 | +8 [-5, +26] | +33 [-5, +92] | -12 [-97, +61] |
+| the opponent's, >= 6 (their freeze on our units) | -94 [-220, +7] | -115 [-243, -15] | -144 [-294, -26] | -148 [-353, +2] |
+- Heavy-tailed (own >= 6, +300, n 186): mean 607 but **median +86 HP, 45% of presses change nothing, 44% save > 300** (a freeze matters when the frozen
+  push is on the tower, not otherwise). 188 / 207 own >= 6 presses change some enemy body (x, y, hp) vs no press. 0 / 207 have the no-press branch
+  accept a recorded play the live history refused.
+- (b) Bias: both branches replay the recorded plays, which were timed to the press world, so this reading is tilted UP for the press branch and
+  grows with the horizon (see 9.3's placebo); read +150 / +300 as mechanics, not +450 / +900. It carries no offence cost (plays are fixed).
+### 9.3 The press added at HELD moments, and the SIM's own forks (a; `freeze_live_held.py`)
+At the 934 moments (177 exact records) where the live head held a pressable button with a >= 6-elixir target (head feature 46), the engine with
+one press ADDED at tick + 26 (752 accepted, 265 dropped as a real own press lies within 600 ticks), vs the live (no-press) history; only moments
+where the press branch refuses none of my recorded plays (the press costs 2 elixir): OUR princess HP, press - live: +100 +48 [+24, +75] (n 429),
+**+150 +59 [+29, +94] (395)**, +300 -29 [-90, +34] (338), +450 -303 [-418, -194] (297). By what the engine says the cube catches: >= 6 elixir
++76 / +88 [+42, +141] / +21 / -268; **placebo (cube catches nothing): +6 / -5 [-30, +19] / -144 [-271, -25] / -414 [-707, -152]** -> beyond 150
+ticks this CF measures replay mismatch, not the freeze. At +150 a press at a held moment saves ~+90 HP (>= 6 class) vs +312 at the live press
+moments: the head's own presses are the ~3.5x better moments (selection works).
+The SIM's forks, same estimand (cf_diag snapshot, `freeze_live_est.py`, princess units x 4858, adaptive continuations; negative = the press saves):
+| | held moments (forced press - hold), h 300 | pressed moments (press - hold), h 300 | clean pairs (the hold branch never presses) at pressed moments |
+|---|---|---|---|
+| CLXV (spb_clxv2 + 3) | -0.009 [-0.017, -0.001] = -45 HP (n 367; clean -56, n 323) | -0.064 [-0.142, +0.027] = -311 HP (n 22) | -0.024 [-0.106, +0.040] = -116 HP (n 12) |
+| p2init (spb_p2i) | -0.009 [-0.019, +0.000] = -43 HP (n 202) | -0.018 [-0.043, +0.002] = -89 HP (n 43; its hold branch re-presses in 77%) | -0.067 [-0.156, -0.004] = -326 HP (n 12) |
+So the SIM's own per-press saving has the engine-on-live split: tens of HP at held moments (SIM saves 43-56 HP at 15 s; engine on live held moments +59 [+29, +94]
+at 7.5 s and -29 [-90, +34] at 15 s), hundreds at pressed moments (SIM -311 / -326 = saves; engine on live presses +607 at 15 s; the CIs are wide and overlap). The SIM does not under-price the freeze mechanically.
+### 9.4 Step 2: the same observational estimator on live and SIM (a; `freeze_live_parse.py`, `freeze_live_est.py`)
+Live: 1,759 logs 10-26 .. 10-31 (52,820 press / held decisions; `ability` taps vs `ability_held`, 55 'freeze' head features, our princess HP lost from the reader
+frames, a tower row missing for < 40 ticks = reader gap). SIM: the spb forks' CHOSEN branch only (what the policy did), the same cf_diag HP
+lost over h ticks from the root snapshot. Outcome: our princess HP lost in the next h ticks (princess units; 1.0 = 4,858 HP); target >= 6 elixir
+(feature 46); estimators raw / OLS (target elixir, win condition, cube side + y, tick, own elixir, HP lost so far, phase) / stratified (target
+bin x phase x cube side x own elixir >= 6); 90% match-cluster bootstrap.
+| group | pressed / held (matches) | lost 15 s: pressed / held | pressed - held at 15 s: raw / OLS / strat | at 45 s: raw / OLS / strat |
+|---|---|---|---|---|
+| LIVE CLXIII | 923 / 5,929 (1,166) | 0.121 (n 849) / 0.075 (5,530) | +0.046 [+0.034, +0.058] / +0.036 [+0.026, +0.047] / +0.039 [+0.028, +0.050] | +0.086 / +0.073 / +0.079 (all CIs > 0) |
+| SIM p2init | 59 / 248 (65) | 0.120 (n 43) / 0.078 (203) | +0.042 [-0.002, +0.098] / +0.013 [-0.025, +0.062] / +0.022 [-0.027, +0.084] | -0.005 / -0.035 / -0.071 (CIs ~ +-0.1) |
+| LIVE CLXV | 31 / 796 (134) | 0.157 (n 29) / 0.077 (750) | +0.080 [+0.024, +0.130] / +0.041 [-0.008, +0.083] / +0.043 [-0.013, +0.089] | +0.061 / +0.031 / +0.046 (CIs span 0) |
+| SIM CLXV | 26 / 448 (87) | 0.150 (n 23) / 0.097 (368) | +0.053 [-0.017, +0.140] / +0.032 [-0.042, +0.125] / +0.019 [-0.047, +0.101] | +0.028 / +0.007 / -0.009 (CIs ~ +-0.1) |
+- (a) The SIM's boards match live around the decision: princess HP lost in the next 15 s after a press 0.121 live vs 0.120 SIM (CLXIII / p2init),
+  0.157 vs 0.150 (CLXV), after a held moment 0.075 vs 0.078 and 0.077 vs 0.097 (SIM pressed n 23-43: SE ~0.03). Like for like the two agree.
+- (a) The contrast pressed - held is POSITIVE everywhere (live CLXIII adjusted +0.036 [+0.026, +0.047] = ~175 HP at 15 s): the head presses when the
+  push is already on the tower. The listed covariates do not remove that. (b) So the observational estimate cannot size the freeze's saving (selection
+  is larger than the effect, CIs +-0.02 live / +-0.1 SIM); what it does show is that live and SIM behave alike under the same estimator.
+- (b) Confounding stated plainly: the model chooses when to press; the live logs have no randomisation. Unconfirmed taps sit in the pressed group
+  (371 of 398 taps were confirmed in the 10-30 / 10-31 logs = 93%; the `conf` join in the parse output is empty because of a 24-byte head slice, fixed in the
+  script, data not re-parsed).
+### 9.5 Verdict
+- **The SIM's ~0 freeze value is not an engine under-power (c: contradicted).** The engine's freeze reproduces every frame of 220 live records with
+  419 presses (233 on >= 6-elixir pushes), and the same records break under a 10% leak, a 20% radius change, a 1-s shorter cube or a weaker slow. No
+  mechanic (duration, radius, slow, targeting, cube timing) is shown wrong; the one IW cube row that fails is 1 record of 37 with a press (153413).
+- What the engine says a press is worth: hundreds of HP of our princess at the moments the head presses (+312 at 7.5 s, +607 at 15 s) but ~+60-90 at
+  held moments (7.5 s) and 0 with nothing in the cube; heavy-tailed (45% of presses change nothing). The SIM's forks reproduce that split. The value is rare-moment,
+  so a decision-level mean of ~0 (section 8: match end +0.009 [-0.055, +0.082] over all >= 6 moments) is what the engine predicts for forced presses, net of 2 elixir.
+- (b) Not shown here: that the match-end price is right as a policy price (adaptive continuation, offence cost, noise; no per-decision live reference can exist),
+  and the CLXV critic bias of 8.1 stands. The "stop pressing" the trainer learned is therefore not an engine artefact: it comes from rare, heavy-tailed value,
+  a certain 2-elixir cost, and a critic / credit signal that cannot see the rare large saving. Owed if the owner wants the last link: a policy-in-the-loop fork
+  from RECON-reconstructed live states (press vs hold, adaptive), which would put live and SIM on exactly one estimand.
+
 ## 7. Next steps (in order)
 1. DONE in round 2 (section 8). Remaining: ~2 more 48-match runs per policy for the 0.05 half-width; a live reference for the
-   freeze's HP saving (live reader buffs IceWizardHero_FreezeBuff on enemy units + their tower damage over 15 s, vs the SIM's
-   ~100-150 HP): the one check that separates "SIM right (press ~ 0)" from "engine under-powers the freeze".
+   freeze's HP saving: DONE in section 9 (FREEZE-LIVE: the engine reproduces 419 live presses frame for frame, so it does not
+   under-power the freeze; the saving is concentrated in a minority of moments). Owed (b): one policy-in-the-loop fork from RECON
+   reconstructed live states (press vs hold, adaptive) to put live and SIM on one estimand; the CLXV critic bias (8.1) stays.
 2. DONE (cf_iw_block_ticks, c95368e). For CLXV the critic bias (8.1) is the training-side item: a critic refit on states after
    presses, or match-end returns for the iw triggers once their SNR allows.
 3. Rocket: re-run the audit with RECON-7's tap_hold in the continuations once it is a training key, and with an opponent

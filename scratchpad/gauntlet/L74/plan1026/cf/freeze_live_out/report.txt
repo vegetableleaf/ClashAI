@@ -1,0 +1,43 @@
+A. RECON records (all runs pooled, best plan per match): 547 matches; fully exact (every reader frame; reader-flagged torn frames excluded) 460
+   with >= 1 Hero IW press (either side): 220 records, 419 presses ({'cast_seen': 368, 'own_press': 49, 'charge_drop': 2}); of them GATE plans (hand rules, no RECON edits) 188 records / 359 presses
+   exact rate with a press 220 / 257, without 240 / 290
+   failing records with a press: 37; first divergence within 300 ticks after a press: 7
+
+B. engine press - no press from the exact state (220 records, 419 presses: own 376, opponent 43; 206 records re-run plain-exact)
+   cube lifetime in the exact records (ticks): median 54, max 100; exposure class (enemy bodies in 2.5 t of the cube): {'3-6': 102, '>=6': 233, 'none': 68, '<3': 16}
+   OUR princess HP, press - no press (HP; own presses + = saves; opponent presses - = their freeze costs us), 90% match-cluster CI:
+     OWN all   | +150: +218 [+170, +268] n355 | +300: +435 [+355, +520] n333 | +450: +497 [+392, +606] n301 | +900: +517 [+394, +649] n237
+     OWN >=6   | +150: +312 [+240, +393] n198 | +300: +607 [+487, +732] n186 | +450: +686 [+543, +839] n167 | +900: +742 [+566, +938] n133
+        distribution at +300 (n 186): mean 607, median 86, quartiles [0, 854], 90th 1967, share 0: 0.45, share > 300: 0.44
+     OWN 3-6   | +150: +154 [+90, +231] n85 | +300: +339 [+185, +519] n81 | +450: +384 [+212, +578] n75 | +900: +359 [+192, +560] n58
+     OWN <3    | +150: +169 [+7, +375] n15 | +300: +260 [+57, +539] n15 | +450: +317 [+85, +625] n15 | +900: +348 [+53, +743] n10
+     OWN none  | +150: +0 [+0, +0] n57 | +300: +8 [-5, +26] n51 | +450: +33 [-5, +92] n44 | +900: -12 [-97, +61] n36
+     OPP all   | +150: -74 [-162, -11] n42 | +300: -90 [-177, -27] n42 | +450: -118 [-216, -40] n38 | +900: -81 [-210, +23] n30
+     OPP >=6   | +150: -94 [-220, +7] n25 | +300: -115 [-243, -15] n25 | +450: -144 [-294, -26] n23 | +900: -148 [-353, +2] n17
+     OPP 3-6   | +150: -35 [-82, -5] n11 | +300: -35 [-82, -5] n11 | +450: -63 [-131, -6] n10 | +900: +53 [-74, +180] n8
+     OPP <3    | +150: n 1 | +300: n 1 | +450: n 0 | +900: n 0
+     OPP none  | +150: -78 [-134, -22] n5 | +300: -106 [-208, -22] n5 | +450: -106 [-208, -22] n5 | +900: -69 [-191, +52] n5
+   own >= 6 presses where the no-press branch accepts a recorded own play the live history refused (the press cost 2 elixir; favours the no-press branch): 0 / 207
+     without those presses, +150: +312 [+240, +393] n198
+     without those presses, +300: +607 [+487, +732] n186
+     without those presses, +900: +742 [+566, +938] n133
+   own >=6 presses whose no-press branch differs in some enemy body (x, y, hp) at >= 25 ticks: 188 / 207
+
+C. sensitivity: the same 206 plain-exact records re-run with perturbed freeze tables (engine code untouched):
+   noop        no longer exact   0 / 206 ( 0%); of the >= 6 class   0 / 145; first diverging frame after the last press: median - ticks
+   freeze90    no longer exact 179 / 206 (87%); of the >= 6 class 137 / 145; first diverging frame after the last press: median 10 ticks
+   radius2000  no longer exact  59 / 206 (29%); of the >= 6 class  47 / 145; first diverging frame after the last press: median 9 ticks
+   radius3000  no longer exact  45 / 206 (22%); of the >= 6 class  39 / 145; first diverging frame after the last press: median 9 ticks
+   cube4000b   no longer exact 106 / 206 (51%); of the >= 6 class  83 / 145; first diverging frame after the last press: median 87 ticks
+   cube4000    no longer exact 198 / 206 (96%); of the >= 6 class 144 / 145; first diverging frame after the last press: median 28 ticks
+   slow15      no longer exact 106 / 206 (51%); of the >= 6 class  90 / 145; first diverging frame after the last press: median 84 ticks
+   slow0       no longer exact 106 / 206 (51%); of the >= 6 class  90 / 145; first diverging frame after the last press: median 77 ticks
+
+D. engine press ADDED at held moments (>= 6-elixir freeze target by the head feature) vs the live no-press history: 934 moments, 752 accepted (cube stands), 265 dropped (a real own press within 600 ticks)
+   OUR princess HP, press - live (+ = the added press saves), all accepted: +100: +46 [+24, +71] n483 | +150: +48 [+20, +80] n476 | +300: -71 [-122, -21] n450 | +450: -394 [-491, -302] n410
+   same, only moments where the press branch refuses none of my recorded plays (the press costs 2 elixir; the plays do not adapt): +100: +48 [+24, +75] n429 | +150: +59 [+29, +94] n395 | +300: -29 [-90, +34] n338 | +450: -303 [-418, -194] n297
+   moments with >= 1 extra refused own play inside +450: 178 / 752 accepted
+   held-add by engine exposure >=6  | +100: +76 [+37, +123] n253 | +150: +88 [+42, +141] n235 | +300: +21 [-74, +111] n200 | +450: -268 [-415, -104] n177
+   held-add by engine exposure 3-6  | +100: +9 [-14, +32] n72 | +150: +40 [-3, +96] n67 | +300: -93 [-202, -2] n60 | +450: -404 [-653, -190] n52
+   held-add by engine exposure <3   | +100: +2 [+0, +5] n32 | +150: +2 [+0, +6] n28 | +300: -25 [-70, +6] n23 | +450: -33 [-97, +4] n17
+   held-add by engine exposure none | +100: +6 [+0, +13] n72 | +150: -5 [-30, +19] n65 | +300: -144 [-271, -25] n55 | +450: -414 [-707, -152] n51
