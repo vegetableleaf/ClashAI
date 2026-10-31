@@ -1,3 +1,5 @@
+# 2026-10-31 ~08:40 EDT -- OPP-PUSH round 2: s1f D3 peaks 26.9% at u160 (= G best) then 21.9%; train-D3 gap reopens to +10 pp by u200; arms 2 (gae, pod B), 3 (large batch lr 1.4e-4, pod A), 4 (train under D3 conditions, 33903) running; PUSH-70 ranked plan in PUSH.md (d77316e, cbfa192); D3 loops now pod-side (pod_d3_loop.sh); lead's laptop D3 loop for oplc_ftR_l0003_live stopped (STOP_ARM_D3).
+
 # 2026-10-31 ~07:45 EDT -- owner morning: CLXV block 9/19; three workstreams dispatched (Rocket/IW credit, engine parity, opponent 70%)
 
 - Owner watched CLXV: Rocket use extremely sparse, aggressive X-Bow (old issue), fewer IW presses, 3 wins in a row. Block so far
