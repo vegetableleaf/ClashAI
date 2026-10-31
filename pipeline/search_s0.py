@@ -706,6 +706,7 @@ class Runner:
                 "opp_plays_accepted": r["opp_side"]["plays_accepted"], "decisions": r["decisions"],
                 **({"plays_tap_lost": r["plays_tap_lost"]} if "plays_tap_lost" in r else {}),   # --tap-loss (W18)
                 **({"plays_tap_slow": r["plays_tap_slow"]} if "plays_tap_slow" in r else {}),   # --tap-slow (W18)
+                **({"plays_tap_held": r["plays_tap_held"]} if "plays_tap_held" in r else {}),   # --tap-hold (RECON-7)
                 **st, "search_s": round(st["search_s"], 2),
                 "s_per_searched": round(st["search_s"] / st["searched"], 3) if st["searched"] else None,
                 **({k: r[k] for k in ("hero_abilities", "ability_presses", "ability_policy", "ability_fallback_generic",
@@ -876,6 +877,10 @@ def _init_worker(args: dict) -> None:
         learner_cfg['tap_loss'] = E.parse_tap_loss(args['tap_loss'])
     if args.get('tap_slow'):                                # L74 W18: the live pilot's slow taps on OUR side only
         learner_cfg['tap_slow'] = E.parse_tap_slow(args['tap_slow'])
+    if args.get('tap_hold'):                                # RECON-7: the game's hold of a tap that cannot pay yet, OUR side only
+        learner_cfg['tap_hold'] = E.parse_tap_hold(args['tap_hold'])
+    if args.get('play_resume'):                             # RECON-7: the next decision right after the engine ran our play (live), OUR side only
+        learner_cfg['play_resume'] = args['play_resume']
     if args.get('decision_options'):
         learner_cfg.update(args['decision_options'])
     if args.get('gate_sample'):                             # GATE-SAMPLE: the trainer's sampled gate (match_kwargs)
@@ -1136,6 +1141,12 @@ def main(argv=None) -> int:
     ap.add_argument("--tap-slow", default=None, metavar="P:EXTRA",
                     help="L74 W18: OUR decided play lands EXTRA ticks late with probability P (e1_eval.parse_tap_slow: the "
                          "live pilot's slow taps); default none")
+    ap.add_argument("--tap-hold", type=int, default=None, metavar="N",
+                    help="RECON-7: OUR not-enough-elixir play is retried each tick for N ticks after its landing, as the game holds a tap "
+                         "that cannot pay yet (live ~22; e1_eval.parse_tap_hold); default none")
+    ap.add_argument("--play-resume", default=None, choices=("land",),
+                    help="RECON-7: after OUR delayed play the next decision is the tick after the engine ran it (live 26 ticks after the "
+                         "decision), not the next decision-grid tick (30); default none")
     ap.add_argument("--probe-xbow-focus", action="store_true",
                     help="SIM-ONLY measurement probe (owner 2026-10-15; never live): once an enemy princess is damaged, an "
                          "offensive X-Bow of ours that misses the weaker alive princess moves to the model's best cell "
@@ -1266,14 +1277,16 @@ def main(argv=None) -> int:
         wargs['spell_log'] = True
     if a.crown_log:
         wargs['crown_log'] = True
-    for k in ('opp_decide_every', 'opp_reaction_ticks', 'opp_tau', 'tap_loss', 'tap_slow', 'probe_xbow_start'):   # L74 tempo; W18 opp_tau / tap_loss
+    for k in ('opp_decide_every', 'opp_reaction_ticks', 'opp_tau', 'tap_loss', 'tap_slow', 'tap_hold', 'play_resume', 'probe_xbow_start'):   # L74 tempo; W18 opp_tau / tap_loss
         if getattr(a, k) is not None:
             wargs[k] = getattr(a, k)
     if a.tap_loss is not None:
         E.parse_tap_loss(a.tap_loss)                         # fail before any worker starts
     if a.tap_slow is not None:
         E.parse_tap_slow(a.tap_slow)
-    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads', 'learner_T_gate') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k != 'ability_head_decode' or v != 'greedy') and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'gate_sample', 'record_plays', 'probe_xbow_focus', 'ability_stats', 'live_levels', 'habit_log', 'spell_log', 'crown_log', 'record_board') or v) and (k not in ('opp_decide_every', 'opp_reaction_ticks', 'opp_tower_troops', 'opp_tau', 'tap_loss', 'tap_slow', 'probe_xbow_start') or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
+    if a.tap_hold is not None:
+        E.parse_tap_hold(a.tap_hold)
+    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k not in ('tap_hold', 'play_resume') or v is not None) and (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads', 'learner_T_gate') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k != 'ability_head_decode' or v != 'greedy') and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'gate_sample', 'record_plays', 'probe_xbow_focus', 'ability_stats', 'live_levels', 'habit_log', 'spell_log', 'crown_log', 'record_board') or v) and (k not in ('opp_decide_every', 'opp_reaction_ticks', 'opp_tower_troops', 'opp_tau', 'tap_loss', 'tap_slow', 'probe_xbow_start') or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
                                                 "gen_sha256": sha256(REPO / a.gen), "opp_gen_sha256": opp_sha,
                                                 "s1_sha256": sha256(REPO / a.s1),
                                                 "tau_plain": TAU_PLAIN, "tau_opp": TAU_OPP, "crown_w": CROWN_W,
