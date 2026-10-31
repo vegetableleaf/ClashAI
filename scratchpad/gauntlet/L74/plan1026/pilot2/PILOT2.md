@@ -7,14 +7,22 @@ Labels: (a) measured (number + source), (b) plausible, untested, (c) contradicte
   root@81.27.69.177` (RunPod id dlkk6eevgt9yhv), POD2 arm L `-p 28263` (id 8cq6fx8mbv0ynf). 86 artifacts sha-verified, EXACT_GATE
   PASS on both (EPYC 9554, AVX-512 paths). Code on both = origin 930adf2 (then later commits, see below).
 - Init BUILT + identity PASS (section 1). Smokes PASS + compare 16/16 (section 2). SIM-gate path PASS (section 3).
-- 10-31 02:03 UTC ARMS LAUNCHED (code 930adf2): `pilot2_S` on POD1 (config sha of the run: see loop.log START line),
-  `pilot2_L` on POD2 (+ minibatch 65536 micro_batch 1024 critic_warmup_minibatch 256 lr 2e-5 ppo_epochs 2 trunk_graph 1024).
-  Pods: arm.sh pids in /workspace/loop/p2/RUN/pids (S: sh 4292 main 4294 auto_stop 4365 pinner 4366; L: sh 4420 main 4422
-  auto_stop 4488 pinner 4489). Laptop watchers (WMI): S bash PID 77760, L 35140 (watch.log in the backup dirs).
+- 10-31 02:03 UTC arms launched (try1, 32 producers x 16), then STOPPED at u0001 by me (watchers first, then the process
+  groups by exact id, MPS quit, GPU 0 MiB; dirs renamed *_try1, laptop copies in pilot2/ARM/try1/): (a) GPU 90.4-93.3 / 97.9 GB
+  in the critic warm-up (3 graph servers 59 GB: learner shard 23.6 GB, opponent shards 18.1 + 17.2; 32 producer contexts
+  29 GB; learner 3.5-4.9 GB) vs LSPEED's arm-L learner peak 10.9 GB at micro 1024 without mem-full -> an OOM at the first
+  policy update was likely.
+- 10-31 02:10 UTC ARMS RELAUNCHED (code 930adf2), same names, PRODUCERS=24 MATCHES=22 (528 slots, 512 matches / update) on
+  both: `pilot2_S` on POD1 (sh 10222 main 10224 auto_stop 10287 pinner 10288); `pilot2_L` on POD2 with minibatch 65536
+  micro_batch 512 (exact accumulation) critic_warmup_minibatch 256 lr 2e-5 ppo_epochs 2 trunk_graph 512 (sh 9729 main 9731
+  auto_stop 9801 pinner 9802). Laptop watchers (WMI): S bash 76640, L 92168. Lead's checks (33308) read the laptop copies.
 
 ## Restart / operate
 - Pod env: `/workspace/p2/env.sh` (= pilot2/env.sh). Launch an arm (pod): `bash /workspace/loop/cb/scratchpad/gauntlet/L74/plan1026/pilot2/arm.sh RUN [k=v ...]`
-  - S: `arm.sh pilot2_S`; L: `arm.sh pilot2_L minibatch=65536 micro_batch=1024 critic_warmup_minibatch=256 lr=2.0e-5 ppo_epochs=2 trunk_graph=1024`.
+  - S: `PRODUCERS=24 MATCHES=22 arm.sh pilot2_S`; L: `PRODUCERS=24 MATCHES=22 arm.sh pilot2_L minibatch=65536 micro_batch=512
+    critic_warmup_minibatch=256 lr=2.0e-5 ppo_epochs=2 trunk_graph=512`. A re-used RUN is refused: move its 3 dirs aside first
+    (scratchpad/gauntlet/L68/rl/RUN, icebow/data/bench/rl_royale/RUN, /workspace/loop/p2/RUN), or resume a crash with the same
+    line + `--resume` (old loop.log kept as loop.log.TIME; auto_stop counts from the resume; touch KEEP_ARM first, re-arm the watcher).
   - Outputs /workspace/loop/p2/RUN/ (loop.log, loop.rc, pids, throughput.jsonl, FINAL, auto_stop.log, pin.log, gpu.log);
     checkpoints /workspace/loop/cb/icebow/data/bench/rl_royale/RUN/ (save_every 10).
   - Graceful stop: `touch /workspace/loop/p2/RUN/STOP` (finishes the update, saves, FINAL).
