@@ -1,3 +1,17 @@
+# 2026-10-31 ~12:20 EDT -- CLXV streak review (owner ask); RECON-8 (Golden Knight dash, owner OK) running
+- Battle log (crapi own_battlelog.jsonl, Ranked only): CLXV block 31 W / 52 L at 83 (37.3%, Wilson [27.7, 48.1]);
+  pre-streak 16 / 34 (47%) vs since 08:33 EDT 15 / 49 (31%), two-proportion p ~0.13 = consistent with noise. Same
+  opponent mix, all cards level 16 both sides; CLXV behaviour unchanged (plays/min 11.0 vs 10.5, full-elixir 4.9 vs
+  4.8% of decisions, IW 0.24 vs 0.22 / match). Mega Knight decks 1-11 in the block (trial + block 3-13).
+- Live path: 1 block loss caused by a mid-match reader stall (live_play_20261031_095529, stop tick_stalled at 123 s,
+  0-3, 26 elixir leaked); CLXV tick_stalled 3 / 116 (2 near the end). Baselines exclude the 10-30 20:32-21:30 burst
+  of 26 stalled 0-3 losses (between the rules and stripped windows).
+- Comparators: CLXIII rules 88 / 243 (36.2%), CLXIII stripped 25 / 90 (27.8%), CLXV trial + block 41 / 113 (36.3%;
+  vs stripped +8.5 pp, p ~0.2). Block bar (>= 61 / 150) needs 30 of the last 67 (44.8%): ~13% at the current rate.
+  The 32.7% reference was CLXIII WITH rules; the revert target is CLXIII stripped -> owner asked how to judge at 150.
+  No auto-revert process exists for the block (verdict is manual).
+- RECON-8 subagent running (Golden Knight dash as an engine rule; FRESH13 frozen first; 33903 CPUs 226-237).
+
 # 2026-10-31 ~10:30 EDT -- SIMPRICE + RECON-7 handed back (verified); SIMPRICE round 2 running; engine direction owed to owner
 - SIMPRICE (dfe4b33, b1dd099; cf/SIMPRICE.md): live counts CLXV IW presses 0.31 vs CLXIII-stripped 0.96 / match (-0.64
   [-0.93, -0.35]); Rocket rare for both without rules (+0.09, n.s.); X-Bow share unchanged (11.7 vs 11.1%). IW press at
