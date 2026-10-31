@@ -1,0 +1,44 @@
+== live vs SIM per phase, composition
+LIVE CLXIII confirmed (n 856)
+  1x    time share 0.53  plays/min 7.94  elixir spent/min 23.47  mean cost 2.96
+  2x    time share 0.25  plays/min 13.36  elixir spent/min 40.57  mean cost 3.04
+  ot2x  time share 0.14  plays/min 13.88  elixir spent/min 42.77  mean cost 3.08
+  ot3x  time share 0.08  plays/min 20.27  elixir spent/min 61.90  mean cost 3.05
+SIM oplc_ftR_l0003_live_u0080 accepted (n 480)
+  1x    time share 0.61  plays/min 7.40  elixir spent/min 22.63  mean cost 3.06
+  2x    time share 0.29  plays/min 13.05  elixir spent/min 39.50  mean cost 3.03
+  ot2x  time share 0.07  plays/min 12.64  elixir spent/min 39.83  mean cost 3.15
+  ot3x  time share 0.03  plays/min 16.82  elixir spent/min 51.02  mean cost 3.03
+pooled LIVE confirmed plays/min 11.13
+pooled SIM accepted plays/min 9.67; with LIVE time shares 10.31 (composition explains 0.64 of the 1.46 gap; the per-phase rates the rest 0.82)
+  time share live {'1x': 0.53, '2x': 0.25, 'ot2x': 0.14, 'ot3x': 0.08} sim {'1x': 0.61, '2x': 0.29, 'ot2x': 0.07, 'ot3x': 0.03}
+
+== gaps live vs SIM (480 games)
+LIVE confirmed-play gaps (s) quantiles .02 .05 .10 .25 .50 .75 .90: [1.3, 1.3, 1.3, 1.9, 3.8, 6.75, 10.7] n 35188 share < 1.5 s 0.178 share < 2.0 s 0.254
+SIM oplc_ftR_l0003_live_u0080 accepted-play gaps: [1.5, 1.5, 1.5, 2.5, 4.5, 7.85, 12.0] n 14635 share < 1.5 s 0.002 share < 2.0 s 0.171
+
+== live decision cadence
+logs 20 decisions 7712 plays 906
+dt between decisions, no play at the first: n 6798 quantiles [2, 10, 10, 10, 10, 10, 11] mean 9.7
+dt from a PLAY decision to the next decision: n 894 quantiles [24, 26, 26, 26, 28, 42, 47] mean 29.1
+most common dt (no play): [(10, 5616), (11, 587), (2, 157), (6, 128), (8, 112), (4, 104)]
+most common dt (after play): [(26, 446), (28, 132), (27, 66), (46, 37), (25, 37), (24, 25), (30, 19), (29, 18)]
+
+== 480-game SIM rows: refused share by elixir margin (normal taps)
+elixir - cost +0.00 accepted 1 refused 573 share 1.00
+elixir - cost +0.25 accepted 11 refused 782 share 0.99
+elixir - cost +0.50 accepted 450 refused 296 share 0.40
+elixir - cost +0.75 accepted 607 refused 180 share 0.23
+elixir - cost +1.00 accepted 551 refused 64 share 0.10
+elixir - cost +1.25 accepted 637 refused 84 share 0.12
+elixir - cost +1.50 accepted 683 refused 70 share 0.09
+elixir - cost +1.75 accepted 634 refused 69 share 0.10
+elixir - cost +2.00 accepted 528 refused 68 share 0.11
+elixir - cost +2.25 accepted 507 refused 71 share 0.12
+elixir - cost +2.50 accepted 519 refused 52 share 0.09
+elixir - cost +2.75 accepted 533 refused 56 share 0.10
+elixir - cost +3.00 accepted 6946 refused 712 share 0.09
+
+== live attempted vs confirmed
+n 856 attempted/min 11.24 confirmed/min 10.82 pooled attempted 37276 confirmed 36044 ratio 0.967
+median gap attempted 3.6 confirmed 3.8

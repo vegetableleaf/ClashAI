@@ -1,0 +1,43 @@
+== arms A (no key) vs C (tap_hold 22): rr_an2
+LIVE   n 856 confirmed/min 10.82 attempted/min 11.24 confirmed/min 1x 7.94 median gap 3.80 s
+recon7 n  48 accepted/min 9.45 attempted/min(real) 11.36 accepted/min 1x 7.55 median gap 4.50 s  not_enough_elixir 11.6% of attempts  wins 35/48
+recon7 n  48 accepted/min 9.41 attempted/min(real) 10.00 accepted/min 1x 7.55 median gap 4.20 s  not_enough_elixir 1.3% of attempts  wins 34/48
+paired accepted/min B - A: -0.04 [-0.36, +0.27] (n 48)
+
+== arms A vs D (tap_hold 22 + play_resume land)
+LIVE   n 856 confirmed/min 10.82 attempted/min 11.24 confirmed/min 1x 7.94 median gap 3.80 s
+recon7 n  48 accepted/min 9.45 attempted/min(real) 11.36 accepted/min 1x 7.55 median gap 4.50 s  not_enough_elixir 11.6% of attempts  wins 35/48
+recon7 n  48 accepted/min 9.37 attempted/min(real) 9.80 accepted/min 1x 7.42 median gap 4.32 s  not_enough_elixir 0.5% of attempts  wins 35/48
+paired accepted/min B - A: -0.08 [-0.41, +0.25] (n 48)
+
+== refusal reasons A
+n 48 attempted 1935 accepted 1562 ratio 0.807 attempted/min 12.01 accepted/min 9.69
+refuse reasons {'not_enough_elixir': 224, 'tap_lost': 78, 'game_over': 64, 'match_over_before_landing': 6, 'card_pending': 1}
+not_enough_elixir 224 elixir-cost median 0.23
+tap_lost 78 elixir-cost median 3.43
+game_over 64 elixir-cost median 4.00
+match_over_before_landing 6 elixir-cost median 6.24
+card_pending 1 elixir-cost median 7.00
+== refusal reasons C
+n 48 attempted 1750 accepted 1564 ratio 0.894 attempted/min 10.76 accepted/min 9.61
+refuse reasons {'tap_lost': 74, 'not_enough_elixir': 23, 'game_over': 77, 'match_over_before_landing': 12}
+tap_lost 74 elixir-cost median 3.39
+not_enough_elixir 23 elixir-cost median 0.70
+game_over 77 elixir-cost median 3.99
+match_over_before_landing 12 elixir-cost median 4.00
+== refusal reasons D
+n 48 attempted 1723 accepted 1550 ratio 0.9 attempted/min 10.57 accepted/min 9.51
+refuse reasons {'tap_lost': 64, 'game_over': 88, 'not_enough_elixir': 8, 'match_over_before_landing': 13}
+tap_lost 64 elixir-cost median 2.86
+game_over 88 elixir-cost median 3.68
+not_enough_elixir 8 elixir-cost median 0.47
+match_over_before_landing 13 elixir-cost median 4.00
+
+== accepted-play gap quantiles
+rr_a_rows.jsonl accepted-play gap quantiles (.02 .1 .25 .5 .75 .9): [1.5, 1.5, 2.5, 4.5, 7.5, 11.5] n 1514
+rr_c_rows.jsonl accepted-play gap quantiles (.02 .1 .25 .5 .75 .9): [1.5, 1.5, 2.35, 4.2, 7.5, 12.15] n 1516
+rr_d_rows.jsonl accepted-play gap quantiles (.02 .1 .25 .5 .75 .9): [1.35, 1.35, 2.35, 4.35, 7.85, 12.35] n 1502
+
+== absent key identical to the unpatched code (rr_p1 vs rr_a)
+rr_p1 (pod code, no key) vs rr_a (patched code, no key): identical on 48 of 48 matches ['outcome', 'plays_attempted', 'plays_accepted', 'end_tick', 'decisions', 'crowns_for', 'tower_hp_diff']
+own play lists identical (tick, land, card, accepted, reason, elixir): 48 of 48
