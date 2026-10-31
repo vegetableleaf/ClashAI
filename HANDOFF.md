@@ -1,3 +1,13 @@
+# 2026-10-30 ~22:45 EDT -- PILOT2 arms running past their first policy update (relaunched 02:10 UTC for GPU memory)
+
+- PILOT2-BUILD (142bb02 + relaunch, a): relaunched 02:10 UTC under the same names (24 producers x 22 = 512 matches/update both arms;
+  arm L micro_batch 512 + trunk_graph 512) because warm-up GPU sat at 90-93 / 97.9 GB (3 graph shard servers 59 GB incl. a 23.6 GB
+  mem-full learner shard; 32 producer contexts 29 GB). Old dirs *_try1; laptop copies pilot2/{S,L}/try1/.
+- u0005 both clean, no OOM. S: kl_stop at mb78 (KL .0212), learner 18 s; steady 72-78 s / update = ~48 updates/h, 25.6k matches/h;
+  GPU peak 89.4 GB. L: 6 steps, cap never fired (no step > 0.03), update KL sum .011; learner 120 s = L's bound, ~137 s / update
+  = ~26 updates/h; GPU peak 93.4 GB. 600 updates = S ~12.5 h / L ~23 h unless the 50-update plateau stop fires.
+- Watchers (WMI) S 76640 / L 92168: copy u%20 + FINAL to the laptop, then stop the pod (crash: alert, stop after 30 min unless
+  pilot2/<arm>/KEEP_<arm>). Lead's pilot_check2 loops score u0020+ vs base2 on 33308.
 # 2026-10-30 ~22:00 EDT -- PILOT2 init identity PASS; checks for pilot2_S / pilot2_L armed (vs re-baselined CLXIII)
 
 - PILOT2-BUILD (a): both PRO 6000 pods booted (86 artifacts sha-verified, EXACT_GATE PASS, code origin 930adf2). Init
