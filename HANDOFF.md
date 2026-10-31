@@ -1,3 +1,13 @@
+# 2026-10-31 ~08:35 EDT -- pilot2_Lc died at u86: pod 33308's HOST rebooted (not our code); resumed from u86
+- Evidence: PID 1 started 12:13:15 UTC, uptime 19 min at 12:31 (host boot ~12:12:40); oom_kill 0; loop.rc empty (the sh
+  wrapper died too); log ends mid-u86 with no traceback; auto_stop's last line 12:09:39. 33903 (same public IP) is a
+  different machine (up 11 days), untouched. Nothing else was running on 33308 (u80 check had finished 11:49 UTC).
+- Resumed 12:29 UTC with arm.sh pilot2_Lc ... --resume ("resumed at update 86"); laptop watcher + check loop
+  (pilot_check2.sh pilot2_Lc Lc 0-31 40, still the 07:21 UTC process) running. Lost ~20 min + one partial update.
+- Lc checks vs CLXIII (iu40 480): u40 +7.08 [+1.43, +12.74], u60 +7.92 [+2.21, +13.62], u80 +4.58 [-1.10, +10.26]
+  (u80 does not clear 0). Press rate in training is ~0.001 per ability decision.
+- CLXV block at 12:33 UTC: 16 W / 17 L (48.5%, Wilson [32.5, 64.8]); verdict at 150 (~17:30 EDT).
+
 # 2026-10-31 ~08:40 EDT -- OPP-PUSH round 2: s1f D3 peaks 26.9% at u160 (= G best) then 21.9%; train-D3 gap reopens to +10 pp by u200; arms 2 (gae, pod B), 3 (large batch lr 1.4e-4, pod A), 4 (train under D3 conditions, 33903) running; PUSH-70 ranked plan in PUSH.md (d77316e, cbfa192); D3 loops now pod-side (pod_d3_loop.sh); lead's laptop D3 loop for oplc_ftR_l0003_live stopped (STOP_ARM_D3).
 
 # 2026-10-31 ~07:45 EDT -- owner morning: CLXV block 9/19; three workstreams dispatched (Rocket/IW credit, engine parity, opponent 70%)
