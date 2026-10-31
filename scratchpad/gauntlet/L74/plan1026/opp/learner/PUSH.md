@@ -5,6 +5,16 @@ its live stack); v6 B-live RMS <= 0.20; siege facts inside the v6 margins (lock 
 P(lock|fail) .36 +- .07). Grades: (a) measured (number + source), (b) plausible untested, (c) contradicted.
 
 ## STATUS (2026-10-31 ~11:00 UTC, account 3) -- RESTART POINT
+**KEY FINDING (a, style track S0c): CLXIII plays 17% FEWER cards in SIM than live -- 9.3 vs 11.2 plays / min (median gap
+between its plays 4.7 s SIM vs 3.8 s live; ftR D3 480 games vs the CLXIII calibration block 856).** The opponent's reaction
+stats (react_lift, react_s) are measured against OUR plays, and the same ftR scores B-live RMS .30 against live humans vs CLXIII
+but RMS .20 against HF humans with no CLXIII in the loop (react_lift +.50 -> -.08). So most of the B-live style error is the
+CLXIII-in-SIM environment (or the live reader), not the opponent model; the opponent cannot reach RMS .20 on B-live while
+CLXIII's SIM pace is off (b: mechanism; size not yet measured -- next: a pace-matched B-live).
+- LEAD 10-31 ~11:00 UTC: (1) arm 2 gae ACCEPTED. (2) pod A -> ARM 3 = the large-batch recipe as ONE change (minibatch = the
+  whole update batch with micro_batch 256 accumulation + lr from an equal-KL probe: one update ~0.02 KL, no step > 0.03),
+  after s1f's u160 + u200 D3s. Yaml `opp_learner_calib_live_lb.yaml` (minibatch 16384, micro_batch 256), probe `lb_probe.sh`.
+  (3) Usage high: milestone reports only, Codex for babysitting, no runs beyond the three arms.
 Pods: A = `ssh -i ~/.ssh/runpod_clashbot -p 40088 root@213.192.2.118` (3090, quota 31.1 CPUs, EPYC 7H12); B = `-p 40008
 root@213.192.2.110` (3090, 31.1 CPUs, EPYC 7763). Both booted by boot_opp_pod.sh (BOOT OK). Fast-loop trees: pods A / B
 `/workspace/mfl/cbm`, 33903 `/workspace/mfl/cbopp`; all = origin/main 6ebf9ad (pipeline + pilot/loop + obsid) over links to cb2
