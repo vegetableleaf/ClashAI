@@ -1,3 +1,9 @@
+# 2026-10-31 ~13:10 EDT -- 33903 space freed (owner OK); OPP-PUSH arm 4 RESUMED at u73
+- Deleted /workspace/opp/v1/hf_slot_v1 + hf_slot_v1_memory.npz (owner OK; note hf_slot_v1.DELETED.txt; rebuild = first
+  command of /workspace/opp/v1/build_rows.sh). Disk 120 GB: 40 GB free (68%). Test set hf_slot_v1_test kept.
+- Arm 4: /workspace/opppush/resume_arm4.sh (= switch_arm4.sh launch + --resume), "[rl] resumed at update 73", new log
+  /workspace/oplm/logs/oplc_ftR_l0003_d3env.resume1.out (old log kept). Its D3 loop (PID 1612694) still waits for u0080+.
+
 # 2026-10-31 ~12:55 EDT -- 33903 DISK FULL: OPP-PUSH arm 4 crashed at u74 (16:32 UTC); RECON-8: Golden Knight dash is NOT an engine mismatch
 - 33903 overlay / was 100% (169 MB free). Arm 4 (oplc_ftR_l0003_d3env) died on a failed checkpoint save at u74 ("unexpected
   pos", crash save failed too); last good = ..._latest.pt 16:29 UTC (loads). Its D3 loop (PID 1612694) still runs.
