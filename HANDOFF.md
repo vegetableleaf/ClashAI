@@ -1,3 +1,16 @@
+# 2026-10-31 ~17:30 EDT -- CLXV block verdict KEEP (owner rule); FREEZE-LIVE: engine freeze is right; Lc watcher was dead 9 h
+- CLXV 150-block (block_vs_stripped.py, posted 16:50 EDT): CLXV 52 / 150 (34.7%) vs CLXIII stripped 25 / 90 (27.8%), diff
+  +6.9 pp [-5.1, +18.9], p(worse) 0.87 -> KEEP CLXV live (owner 10-31 rule; the old 32.7% bar would have failed it).
+- FREEZE-LIVE (dd69a9a; SIMPRICE.md section 9): (c) "engine under-powers the IW freeze" contradicted. Comparator = (side,
+  x, y, hp) of every tower + unit, no tolerance; 220 exact records hold 419 live presses (233 on >= 6-elixir pushes),
+  ~82,600 frames within 22 s after a press all exact; perturbing the freeze tables breaks 22-96% of 206 records (no-op
+  control 0). Engine press-vs-no-press at the head's own >= 6-elixir presses: +607 [+487, +732] princess HP at 15 s
+  (median +86; 45% change nothing); negative control +8. Live and SIM boards agree under one estimator. So the learned
+  "stop pressing" is not an engine artefact; remaining: SIM match-end value ~0 (offence cost) + CLXV critic bias (n.s.).
+- Lc watcher (laptop) died silently after its 12:29 UTC relaunch -> no u100+ copies -> the check loop stalled at u80.
+  Relaunched 21:25 UTC via WMI with HOST + POD_W + NO_STOP, stderr to pilot2/Lc/watch.out; u0100 copied. Checks u100,
+  u120, u140, u160 now run in order (~1 h 45 each). Lc itself is healthy at u176.
+
 # 2026-10-31 ~13:40 EDT -- FREEZE-LIVE dispatched (owner OK): does crforge under-power the Hero IW freeze?
 - Subagent (sonnet, ~3 h): (1) do exact RECON records with IW presses also match HP through the freeze window; (2) live
   vs SIM princess-HP saving after presses on >= 6-elixir pushes with one estimator; (3) RECON replays if needed. No engine
