@@ -21,6 +21,11 @@ Labels: (a) measured (number + source), (b) plausible, untested, (c) contradicte
   epochs), kl_stop never fired (checked after each step -> KL vs previous <= 0.02 at every step), update KL g/c/x
   .0062/.0021/.0023, learner 120 s = the bottleneck (u0006 137 s, ~26 updates/h); GPU peak 93.4 / 97.9 GB. Warm-up updates:
   rollout ~112 s + critic ~93 s. (b) 600 updates = S ~12.5 h, L ~23 h if no plateau stop.
+- (a) 02:43 UTC watcher S copied pilot2_S_u0020.pt (laptop sha 2d7f7e85 == pod) and posted the u0020 line to Discord;
+  auto_stop reading the log (best10 70.39 @ 9). Training win rate vs the pool, arm S: u0000 372/512 (72.7%), u0005 359,
+  u0017 330, u0020 336, u0021 323 (63.1%) -- a downward drift of ~9 pp over the first 16 policy updates (b: per-update SE
+  ~2 pp, pool composition is fixed, so the trend is probably real; the lead's 480-game checks decide). Arm L u0010 367/512 (71.7%),
+  update KL ~0.001 (L moves far less per update than S, by design).
 
 ## Restart / operate
 - Pod env: `/workspace/p2/env.sh` (= pilot2/env.sh). Launch an arm (pod): `bash /workspace/loop/cb/scratchpad/gauntlet/L74/plan1026/pilot2/arm.sh RUN [k=v ...]`
