@@ -178,6 +178,8 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
             decision['public_audit'] = self._public_audit_snapshot
         if getattr(self, 'cue_log', None) is not None:   # step c (--cue-inputs on, cue model): this row's cue summary
             decision['cue'] = self.cue_log
+        if getattr(self, 'tgt_log', None) is not None:   # TARGET-OBS (a target-layer model): this row's target summary
+            decision['tgt'] = self.tgt_log
         if getattr(self, 'posture', None) and getattr(self, '_posture', None) is not None:   # C1: the posture in force
             decision.update(posture=self._posture[0], posture_dtau=float(self.posture['dtau'][self._posture[0]]),
                             posture_new=self._posture_new is not None)

@@ -934,14 +934,17 @@ def load_pilot(a, decision_cfg, ckpt=None):
         pilot.pipeline_tau_delta = float(getattr(a, "pipeline_tau_delta", 0.0) or 0.0)
     if getattr(a, "anti_leak", False):          # default: the class's None = off, the decision rule unchanged
         pilot.anti_leak_elixir, pilot.anti_leak_seconds = a.anti_leak_elixir, a.anti_leak_seconds
-    if getattr(getattr(pilot, "model", None), "cue_in", None) is not None:   # step c cue model; else the flag is a no-op
+    tgt = getattr(getattr(pilot, "model", None), "tgt_in", None) is not None   # TARGET-OBS layers (checkpoint content)
+    if getattr(getattr(pilot, "model", None), "cue_in", None) is not None or tgt:   # step c cue model; else a no-op
         if getattr(a, "cue_inputs", "off") != "on":
-            raise SystemExit(f"refusing: {ckpt or a.ckpt} has a cue layer (step c) -- run it with --cue-inputs on; "
-                             f"without its cue source it would play cue-blind")
+            raise SystemExit(f"refusing: {ckpt or a.ckpt} has a cue layer (step c) or target layers -- run it with "
+                             f"--cue-inputs on; without its cue source it would play cue- / target-blind")
         if getattr(a, "reader", None) in ("v1", "v2"):
             raise SystemExit(f"refusing: --cue-inputs needs a reader with cue blocks (the merged reader); --reader is {a.reader}")
         from pipeline.live_unit_state import LiveCues
-        pilot.cues = LiveCues()                  # loads + sha-checks the card table the SIM embeds
+        # loads + sha-checks the card table the SIM embeds; a target-layer model reads acquired targets by the TARGET-VAL
+        # rule (CfCore.acquired's formula, as its crforge training rows), cues included; any other model: the S6 rule
+        pilot.cues = LiveCues(acq_rule="engine") if tgt else LiveCues()
     if getattr(a, "iw_press", "rule") == "head":   # B6 stage B; rule / never: nothing loaded, unchanged
         from ability_head_live import load_head
         pilot.ability = load_head(ckpt or a.ckpt, device, pilot,   # refuses (SystemExit) a checkpoint without a head
@@ -962,7 +965,9 @@ def cue_log(pilot, reader=None) -> dict:
     from pipeline.live_unit_state import TABLE_SHA256
     if getattr(pilot, "cues", None) is None:
         return dict(active=False, reader=reader, why="the checkpoint has no cue layer: --cue-inputs is a no-op for it")
-    return dict(active=True, reader=reader, table_sha256=TABLE_SHA256)
+    tgt = getattr(getattr(pilot, "model", None), "tgt_in", None) is not None
+    return dict(active=True, reader=reader, table_sha256=TABLE_SHA256,
+                **({"targets": True, "acq_rule": pilot.cues.acq_rule} if tgt else {}))
 
 
 def emote_log(a) -> dict:
@@ -1499,7 +1504,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                   decision={k:d[k] for k in ('play','p_play','no_affordable','hand_pos','name','card','form','xy','gate_tau',
                                              'xy_unguarded','stalled','hazard_step_s','hazard_play','why',
                                              'lethal_rocket', 'posture', 'posture_dtau', 'cue', 'ui_guard',
-                                             'xb_lock_p') if k in d},
+                                             'xb_lock_p', 'tgt') if k in d},
                   **({"pending": [pd["d"]["name"] for pd in pending]} if pending else {}),
                   public=d['public_audit'])
                 last_audit_tick = tick

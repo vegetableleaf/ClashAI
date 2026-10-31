@@ -18,6 +18,11 @@ swept on 413k paired live/SIM body-frames, scratchpad/gauntlet/L74/cues/STEP_C_S
 (raw 'engaged' with no acquired target -> moving / idle, extract's definition), charging from 2-frame speed on charger
 cards, Tesla hide from raw 0/2, a far target dropped (edge distance > max(sight, range) + 1.5 tiles; a unit with no
 attack holds none), shield-hp cards shielded while hp == max hp (the stream has no shield hp).
+``LiveCues(acq_rule="engine")`` (a target-aware checkpoint, live_play.load_pilot) swaps that far-target rule for the
+TARGET-VAL one, CfCore.acquired's formula on the reader's inputs: keep the reference while engaged, else iff the CENTRE
+distance <= target radius + own sight (table, else the reader's definition, else 0) + own radius (+ 2 tiles to a crown
+tower). Reader vs engine acquired-target agreement 0.9812 -> 0.9983 on 71,052 SME-exact frames
+(plan1026/target_obs/TARGET_OBS.md M1c-R). Default "live" = the S6 rule, unchanged.
 A degraded frame (cues_degraded, an invalid block, no blocks at all) -> every row 0 (cue_known 0), never stale cues.
 """
 from __future__ import annotations
@@ -42,6 +47,7 @@ TABLE_PATH = REPO / "icebow/data/cue_table/cards-160402017-20261006.json"
 TABLE_SHA256 = "babaa3d129e370c5838f12001683e2a5579dbaec581fd94968e689aacfc3fb60"
 HIT_WINDOW_MS = 100       # the live 2-tick sampling; the SIM side is extracted with hit_window_ms=100 too
 SIGHT_SLACK_MT = 1500     # S6: a target farther than max(sight, range) + 1.5 tiles is a path / default target, not acquired
+CROWN_EXTRA_MT = 2000    # acq_rule "engine": crforge EXTRA_SIGHT_RANGE_TO_CROWN_TOWERS (building extra 0; TARGET-VAL)
 CHARGE_SPEED = 1.6        # S6 / READER_VALIDATION_1016: charged = >= 1.6 x walk over two frames (table speed 60 = 59 mt/tick)
 STATE = {0: "idle", 1: "moving", 2: "engaged", 3: "jumping", 4: "deploying", 5: "jumping", 6: "tunnelling",
          10: "casting", 11: "deploying"}     # READER_STREAM_SPEC section 5; any other raw value -> 'idle'
@@ -93,7 +99,10 @@ class LiveCues:
     the table lacks), and this match's buff-total memo (reset() between matches; a game tick going backwards also
     clears it, as GenPilot.observe clears its frames)."""
 
-    def __init__(self, table: dict | None = None):
+    def __init__(self, table: dict | None = None, acq_rule: str = "live"):
+        if acq_rule not in ("live", "engine"):
+            raise ValueError(f"acq_rule {acq_rule!r} not in ('live', 'engine')")
+        self.acq_rule = acq_rule
         self.T = table if table is not None else load_table()
         self.defs: dict = {}
         self.memo: dict = {}
@@ -149,7 +158,15 @@ class LiveCues:
                 charging = v >= CHARGE_SPEED * ct["speed"] * 59 / 60
             att = u3.get("attack")
             tgt = att.get("target_gen") if att else None
-            if tgt is not None and ct and not (ct.get("range_milli") or ct.get("sight_range_milli")):
+            if self.acq_rule == "engine":     # TARGET-VAL: CfCore.acquired on the reader's inputs
+                if tgt is not None and tgt in by_gen and STATE.get(raw) != "engaged":
+                    tb = by_gen[tgt]
+                    sight = ct.get("sight_range_milli") or (self.defs.get(u3.get("definition_id")) or {}).get("SightRange") or 0
+                    reach = (((self.T["char"].get((p2.get(tgt) or {}).get("name")) or {}).get("collision_radius_milli") or 0)
+                             + sight + (ct.get("collision_radius_milli") or 0) + (CROWN_EXTRA_MT if tgt in towers else 0))
+                    if (e["x"] - tb["x"]) ** 2 + (e["y"] - tb["y"]) ** 2 > reach * reach:
+                        tgt = None
+            elif tgt is not None and ct and not (ct.get("range_milli") or ct.get("sight_range_milli")):
                 tgt = None                                    # a unit with no attack (Tombstone...) acquires nothing
             elif tgt is not None and tgt in by_gen:           # drop a far default / path target (S6; edge distance)
                 dd = self.defs.get(u3.get("definition_id")) or {}

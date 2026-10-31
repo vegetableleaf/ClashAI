@@ -4,7 +4,8 @@
 
 ``units`` = bodies in ``sim_unit_state.extract``'s schema, the ONE interface both sides already produce:
   SIM  ``sim_unit_state.extract(battle)["units"]`` (crforge: ``CfCore.acquired``, the facade's acquired target)
-  LIVE ``live_unit_state.LiveCues.units(frame, prev)`` (the reader's reference after the far-default filter)
+  LIVE ``live_unit_state.LiveCues.units(frame, prev)`` (the reader's reference after its acquired rule: a target-layer
+       model gets acq_rule "engine", CfCore.acquired's formula, live_play.load_pilot; TARGET_OBS.md M1c-R)
 Read per body: id (``uid`` SIM / ``generation`` live), ``team``, ``x`` / ``y`` (tiles, engine frame), tower (SIM ``kind``
 princess_tower / king_tower; live ``tower``), ``attack.target`` (an id or None), ``attack.frac`` (0..1 or None).
 
@@ -104,7 +105,7 @@ def sim_target_rows(match):
 
 
 def live_target_rows(cues, frame: dict, prev, tok: np.ndarray, mask: np.ndarray, side: int):
-    """LIVE side (NOT wired into live_gen: a live change needs the lead): ``cues`` = the pilot's LiveCues. A malformed
+    """LIVE side (live_gen.GenPilot.row for a target-layer checkpoint): ``cues`` = the pilot's LiveCues. A malformed
     block reads as no targets (all 0 / -1), never stops a match."""
     try:
         us = cues.units(frame, prev)

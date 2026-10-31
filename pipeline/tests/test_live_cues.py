@@ -178,3 +178,51 @@ def test_malformed_block_reads_no_cue(table):
     f["entities"][3].pop("x")                                        # a body without a position: the error path
     rows, log = LiveCues(table).rows(f, None, tok, mask, 1)
     assert not rows.any() and log["degraded"] and "KeyError" in log["error"]
+
+
+def test_engine_acq_rule_on_a_synthetic_frame(table):
+    """acq_rule 'engine' (TARGET-VAL; a target-layer model, live_play.load_pilot): CfCore.acquired's formula -- keep while
+    engaged, else iff centre distance <= target radius + own sight + own radius (+ 2 tiles to a crown tower). The two
+    measured disagreement classes flip; the default stays the S6 rule."""
+    f = _frame()
+    e11 = next(e for e in f["entities"] if e["category"] == 11)   # enemy Knight, moving, my princess (gen 4) 8.75 tiles
+    e11.update(x=3500, y=25500 - 8750, behavior_state_raw=1)       # centre to centre: S6 drops (edge 7.25 > 5.5 + 1.5),
+    #                                                                the engine keeps (<= 1 + 5.5 + 0.5 + 2)
+    f["entities"] += [_ent(18, 0, 3500, 17500, 0), _ent(19, 0, 15000, 5000, 2)]
+    f["phase2"]["units"] += [dict(generation=18, name="NoTableRowTroop", buffs=[]), dict(generation=19, name="Knight", buffs=[])]
+    f["phase3"]["bodies"] += [dict(generation=g, definition_id=0, attack=dict(target_gen=4, progress_raw=0)) for g in (18, 19)]
+    live = {u["generation"]: u for u in LiveCues(table).units(copy.deepcopy(f))}
+    eng = {u["generation"]: u for u in LiveCues(table, acq_rule="engine").units(copy.deepcopy(f))}
+    t = lambda us, g: us[g]["attack"]["target"]                    # noqa: E731
+    assert (t(live, 11), t(live, 18), t(live, 19)) == (None, 4, None)   # no table row: S6 keeps its path tower
+    assert (t(eng, 11), t(eng, 18), t(eng, 19)) == (4, None, 4)         # 8 tiles > 1 + 0 + 0 + 2; engaged keeps
+    assert eng[11]["target_is_tower"] and eng[19]["state"] == "engaged" and live[19]["state"] == "moving"
+    assert t(live, 10) == t(eng, 10) == 11 and t(live, 16) is None and t(eng, 16) is None
+    assert LiveCues(table).acq_rule == "live"
+    with pytest.raises(ValueError, match="acq_rule"):
+        LiveCues(table, acq_rule="edge")
+
+
+def test_pilot_row_target_rows_follow_the_model(table):
+    """TARGET-OBS live wiring: no target layers -> no b['tgt'] / decision 'tgt' (unchanged); target layers -> b['tgt'] /
+    b['tgt_idx'] = target_obs.live_target_rows on the decision frame, a 'tgt' summary in the decision, and a refusal
+    without a cue source."""
+    from pipeline.target_obs import TGT_N, live_target_rows
+    f = icebow_frame()
+    f.update(phase2=dict(valid=True, units=[dict(generation=5000006, name="Knight", buffs=[])]),
+             phase3=dict(valid=True, defs=[], bodies=[dict(generation=5000006, definition_id=0, attack=None)]),
+             cues_degraded=False)
+    p = pilot(DecisionOptions())
+    p.cues = LiveCues(table)
+    b0, _ = p.row(copy.deepcopy(f))
+    assert "tgt" not in b0 and "tgt" not in p.decide(copy.deepcopy(f))
+    p.model.tgt_in = object()                                                      # a target-layer checkpoint
+    b1, _ = p.row(copy.deepcopy(f))
+    rows, idx = live_target_rows(p.cues, f, None, b1["tok"][0].numpy(), b1["mask"][0].numpy(), 1)
+    assert b1["tgt"].shape == (1, b0["tok"].shape[1], TGT_N) and torch.equal(b1["tgt"][0], torch.from_numpy(rows))
+    assert torch.equal(b1["tgt_idx"][0], torch.from_numpy(idx)) and b1["tgt"][0, :, 0].sum() == 1   # my Knight's token
+    assert all(torch.equal(b0[k], b1[k]) for k in b0)                              # every other input unchanged
+    assert p.decide(copy.deepcopy(f))["tgt"] == dict(known=1, edges=0, tower=0, acq_rule="live")
+    p.cues = None
+    with pytest.raises(ValueError, match="target layers"):
+        p.row(copy.deepcopy(f))

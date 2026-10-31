@@ -242,5 +242,96 @@ class TestModel(unittest.TestCase):
         self.assertEqual(bad, 0)
 
 
+class TestLiveWiring(unittest.TestCase):
+    """LIVE-TGT 10-31: live_play.load_pilot + GenPilot.row with a target-layer checkpoint (temp copies of CLXIII + zero /
+    planted target layers) on N_DEC recorded live decisions: the TARGET-VAL acquired rule is picked for it (CLXIII keeps
+    the S6 rule), zero layers decide exactly as CLXIII, planted layers move g exactly on the rows with known tokens."""
+
+    @classmethod
+    def setUpClass(cls):
+        import tempfile
+        from pipeline.tests import test_decide_identity as D
+        if not D.CKPT.exists() or not (D.LIVE_DIR / D.LOGS[0]).exists():
+            raise unittest.SkipTest("CLXIII or the recorded live logs are not on this machine")
+        cls.D, cls.tmp = D, tempfile.TemporaryDirectory()
+        st = torch.load(D.CKPT, map_location="cpu", weights_only=False)
+        d, g = int(st["args"]["d"]), torch.Generator().manual_seed(1)
+        cls.ck = {}
+        for tag, mk in (("zero", torch.zeros), ("planted", lambda *s: torch.randn(*s, generator=g) * 0.05)):
+            sd = {**st["model"], "tgt_in.weight": mk(d, TO.TGT_N), "tgt_out.weight": mk(d, d), "tgt_back.weight": mk(d, d)}
+            cls.ck[tag] = Path(cls.tmp.name) / f"{tag}.pt"
+            torch.save({**st, "model": sd}, cls.ck[tag])
+        cls.ck["clxiii"] = D.CKPT
+        cls.start, cls.ev = D.read_log(D.LIVE_DIR / D.LOGS[0])
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.tmp.cleanup()
+
+    def _pilot(self, tag, cue_inputs=True):
+        D = self.D
+        D_CKPT = D.CKPT
+        D.CKPT = self.ck[tag]                                  # test_decide_identity.live_pilot reads the module global
+        try:
+            start = self.start if cue_inputs else {**self.start, "cue_inputs": None}
+            return D.live_pilot(start)
+        finally:
+            D.CKPT = D_CKPT
+
+    def _run(self, pilot):
+        """-> [(decision without its 'tgt' log, the trunk g, b keys, tgt log)] for the first N_DEC decisions."""
+        got, cur = [], {}
+        fwd = pilot._policy_forward
+
+        def wrapped(b):
+            out, cell = fwd(b)
+            cur.update(g=out["g"].clone(), keys=set(b))
+            return out, cell
+        pilot._policy_forward = wrapped
+        pilot.reset_match()
+        f = None
+        for e in self.ev:
+            if len(got) >= N_DEC:
+                break
+            if e[0] == "frame":
+                f = e[1]
+                pilot.observe(f)
+            elif e[0] == "decision" and f is not None and f["game_tick"] == e[1]:
+                d = self.D.canon(pilot.decide(f))
+                got.append((dict(d, tgt=None), cur["g"], cur["keys"], d.get("tgt")))
+            elif e[0] == "confirmed" and None not in e[2:]:
+                pilot.record_play(e[2], e[3], e[4], e[1] * 0.05)
+            elif e[0] == "ability":
+                pilot.record_ability(e[1], e[2])
+        return got
+
+    def test_load_pilot_rule_and_log(self):
+        import live_play as lp                                 # on sys.path after live_pilot
+        ref, tgt = self._pilot("clxiii"), self._pilot("zero")
+        self.assertEqual((ref.cues.acq_rule, tgt.cues.acq_rule), ("live", "engine"))
+        self.assertNotIn("targets", lp.cue_log(ref))
+        self.assertEqual({k: lp.cue_log(tgt)[k] for k in ("targets", "acq_rule")}, dict(targets=True, acq_rule="engine"))
+        with self.assertRaises(SystemExit):                    # a target-layer model never plays target-blind
+            self._pilot("zero", cue_inputs=False)
+
+    def test_zero_layers_decide_as_clxiii_and_planted_reach_the_model(self):
+        ref = self._run(self._pilot("clxiii"))
+        runs = {}
+        for tag in ("zero", "planted"):
+            p = self._pilot(tag)
+            p.cues.acq_rule = "live"                           # isolate the wiring from the reader rule (same cues)
+            runs[tag] = self._run(p)
+        self.assertEqual(len(ref), N_DEC)
+        self.assertTrue(all("tgt" not in k and t is None for _, _, k, t in ref))
+        for (dr, gr, _, _), (dz, gz, kz, tz) in zip(ref, runs["zero"]):
+            self.assertEqual(dr, dz)                           # decision dicts (taps, xy, why, cue log) identical
+            self.assertTrue(torch.equal(gr, gz) and {"tgt", "tgt_idx"} <= kz and tz["acq_rule"] == "live")
+        moved = [not torch.equal(gr, gp) for (_, gr, _, _), (_, gp, _, _) in zip(ref, runs["planted"])]
+        known = [tp["known"] > 0 for _, _, _, tp in runs["planted"]]
+        self.assertEqual(moved, known)                         # rows reach the model: g moves iff a token has a row
+        self.assertGreater(sum(known), 0)
+        self.assertGreater(sum(tp["edges"] for _, _, _, tp in runs["planted"]), 0)
+
+
 if __name__ == "__main__":
     unittest.main()

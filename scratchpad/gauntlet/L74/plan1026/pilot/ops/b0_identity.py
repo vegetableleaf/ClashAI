@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[6]
 sys.path.insert(0, str(ROOT))
 CLXIII = 'icebow/data/models/ICEBOW/ICEBOW_Mark_CLXIII_NOLEAK.pt'
 LOG_ONLY = 'xb_lock_p'     # live_gen_v2.decide adds it for a memory v2 model (frozen lock head P(lock)); live_play only logs it
+LOG_ONLY_TGT = 'tgt'       # live_gen_v2._audited adds it for a target-layer model (target-row counts); live_play only logs it
 
 
 def pilot_for(start, ckpt, device):
@@ -96,7 +97,7 @@ def compare(pa, pb):
     assert len(a['rec']) == len(b['rec']), (len(a['rec']), len(b['rec']))
     n = len(a['rec'])
     la, lb = (sum(LOG_ONLY in x['d'] for x in r['rec']) for r in (a, b))        # a memory model's lock-head P, log only
-    strip = lambda d: {k: v for k, v in d.items() if k != LOG_ONLY}                 # noqa: E731
+    strip = lambda d: {k: v for k, v in d.items() if k not in (LOG_ONLY, LOG_ONLY_TGT)}   # noqa: E731
     same_d = sum(strip(x['d']) == strip(y['d']) for x, y in zip(a['rec'], b['rec']))
     same_tap = sum(x['tap'] == y['tap'] for x, y in zip(a['rec'], b['rec']))
     same_rng = sum(x['rng'] == y['rng'] for x, y in zip(a['rec'], b['rec']))

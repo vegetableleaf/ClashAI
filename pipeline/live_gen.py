@@ -392,6 +392,15 @@ class GenPilot:
             prev = next((f for t, f in reversed(self.frames) if t < int(raw_tick)), None)
             cue, self.cue_log = self.cues.rows(raw_frame, prev, tok, mask, side)
             b["cue"] = T(cue, torch.float32)
+        if getattr(self.model, "tgt_in", None) is not None:    # TARGET-OBS: who targets whom per unit token, from the
+            if getattr(self, "cues", None) is None:            # same frame / prev / tokens as the cues; refuse target-blind
+                raise ValueError("this checkpoint has target layers: it needs a live cue source (live_play --cue-inputs on)")
+            from .target_obs import live_target_rows
+            prev = next((f for t, f in reversed(self.frames) if t < int(raw_tick)), None)
+            tr, ti = live_target_rows(self.cues, raw_frame, prev, tok, mask, side)
+            b["tgt"], b["tgt_idx"] = T(tr, torch.float32), T(ti)
+            self.tgt_log = dict(known=int((tr[:, 0] > 0).sum()), edges=int((ti >= 0).sum()), tower=int(tr[:, 2].sum()),
+                                acq_rule=self.cues.acq_rule)
         if getattr(self, "feature_version", 1) >= 3:
             from .dataset_gen import opponent_past
             from .obs_contract import to_unit_forms

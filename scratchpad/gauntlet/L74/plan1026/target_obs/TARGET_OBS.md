@@ -5,6 +5,19 @@ Rule: this file and every tracked file it names are READER-AGNOSTIC. Reader inte
 git-ignored `icebow/data/reader_targets/`. Tracked code consumes only the per-unit interface below.
 
 ## STATUS + restart point (keep current)
+- **LIVE-TGT 10-31 (worker, lead account 3; owner-agreed 10-30): live wiring + reader target rule DONE, deploy recipe
+  written, NOT applied.** Section "LIVE-TGT" below = what changed, evidence, recipe. Nothing of mine runs anywhere.
+  Live was not started / stopped by me; the lead's ~21:30 EDT restart (lethal_rocket log) already imported this code with
+  CLXIII = the absent path, proven identical below.
+  Codex: `.foreman/scratch/a2/codex/LIVE-TGT_1.md` (effort low, 459 s): tval_score + tval_agg on 33903 CPUs 200-211 over
+  tv_f4/5/6 -> `tval_fresh456_85.txt`; it reported BLOCKED only because the ticket expected 108 scored matches (85 =
+  every unflagged one; the scorer skips flagged matches by design); numbers checked against the file. Pod outputs
+  `/workspace/tval/lt_f{4,5,6}.jsonl`, `lt_agg.txt`, env `/workspace/tval/tv_env_lt.sh` (nothing left running).
+  Re-run the replays: `PY=icebow/.venv/Scripts/python.exe; T=scratchpad/gauntlet/L74/plan1026/target_obs/live_tgt_replay.py;
+  $PY -B $T mkckpt icebow/data/models/ICEBOW/ICEBOW_Mark_CLXIII_NOLEAK.pt Z.pt P.pt; HEAD_CODE=d6cd6d0 $PY -B $T run
+  <CLXIII> A.pt; $PY -B $T run <CLXIII> B.pt; $PY -B $T diff A.pt B.pt` (FORCE_ACQ=engine for the rule effect; LOG args
+  for other logs). Reader-rule identity (local): `$PY -B icebow/data/reader_targets/acq_check.py .foreman/scratch/tval/reader
+  .foreman/scratch/tval/matches.txt OUT.json` (~30 min).
 - 10-30 13:45 EDT: started. 14:05 M1 committed (de0f05e). 14:10 M2 + M3 code written, laptop tests pass.
 - 14:05 UTC (10:05 EDT pod clock) two REAL `rl_royale --smoke` runs on 33903 (tree `/workspace/tobs/cb` = pod tree c51efd9
   + origin match_memory + this change, crforge 5e8089a4 plain, tables 16.635.3, config `stepd/cfg/succ48_x_s101.yaml`):
@@ -181,11 +194,9 @@ Inferno in 2, 162534 / 173440; they sit in the siege / building rows, not split 
   pinned vs de0f05e in `pipeline/tests/test_target_obs.py`): `rl_royale` key `target_obs` (bool), init gets the zero layers;
   `e1_eval.GEN_TGT_KEYS = ("tgt", "tgt_idx")` in `gen_row_keys` / `gen_row` / the trajectory stack; rl_royale collate +
   `branch_row`; `batched_rollout` never vmaps a tgt model with plain ones.
-- **Live is NOT wired** (no live change without the lead). Owed in `live_gen.GenPilot.row`, next to the cue block:
-  `if getattr(self.model, "tgt_in", None) is not None:` -> require `self.cues`, then
-  `rows, idx = live_target_rows(self.cues, raw_frame, prev, tok, mask, side)`; `b["tgt"] = T(rows, torch.float32)`;
-  `b["tgt_idx"] = T(idx)`. Until then a tgt checkpoint must not go live (without b["tgt"] its layers are skipped: it
-  plays target-blind, silently).
+- **Live: WIRED (LIVE-TGT 10-31, section below).** `live_gen.GenPilot.row`: a checkpoint with `tgt_in` gets
+  `b["tgt"]` / `b["tgt_idx"]` = `live_target_rows(self.cues, raw_frame, prev, tok, mask, side)` (refuses without a cue
+  source); `live_play.load_pilot` refuses it without `--cue-inputs on` and builds its LiveCues with `acq_rule="engine"`.
 - **Java fast loop: BUILT** (CFTGT in STATUS; the spec it was built from:) a `CfTgt.build` beside
   `speed/crforge/obsid/CfCue.build` that reuses CfCue's token match verbatim (ti / ord-by-uid / argmin loop), records the
   body->token map, then per matched body: `CfCore.acquired(w)` -> entity id -> token index or tower flag, `frac` = CfCue's
@@ -216,11 +227,115 @@ zero-initialised, added to each unit token's input embedding (the cue_in hook po
   policies, so the rates are not comparable.)
 - Real `rl_royale --smoke` x 2 on 33903 (absent + target_obs=on): PASS (STATUS above).
 
+## LIVE-TGT (10-31): reader target rule + target_obs live wiring + deploy recipe
+### What changed (all opt-in by checkpoint CONTENT; CLXIII = the absent path)
+- `pipeline/live_unit_state.py`: `LiveCues(acq_rule="live" | "engine")`, default "live" = the S6 far-target rule, code
+  path unchanged. "engine" = M1c-R's proposed rule exactly (= `icebow/data/reader_targets/tval_reader.py eng_rule`, the
+  scored acq2 column): keep the reference while engaged, else iff centre distance <= target radius + own sight (table,
+  else the reader's definition, else 0) + own radius (+ 2 tiles, `CROWN_EXTRA_MT`, to a crown tower). One rule; it
+  replaces the S6 filter AND the "no attack holds none" rule (eng_rule has neither). It feeds the cue rows too (state,
+  has_target, target_is_tower, phase, frac all read the acquired target), which is right for a crforge-trained model:
+  crforge's SIM cue and target rows both come from `CfCore.acquired`.
+- `pipeline/live_gen.py` GenPilot.row: a `tgt_in` model gets `b["tgt"]` / `b["tgt_idx"]` = `live_target_rows(self.cues,
+  raw_frame, prev, tok, mask, side)` (the cue block's frame / prev / tokens); no cue source -> ValueError (never
+  target-blind); `self.tgt_log` = {known, edges, tower, acq_rule} -> `live_gen_v2._audited` puts it in the decision as
+  'tgt' (live_play logs it in the 'decision' event). No `tgt_in` = not one new line runs.
+- `live_play.py` load_pilot: a `tgt_in` model needs `--cue-inputs on` (SystemExit otherwise) and gets
+  `LiveCues(acq_rule="engine")`; any other model `LiveCues()` as before. `cue_log` (--check JSON / start event) adds
+  `targets: true, acq_rule: engine` for a target model only. 'tgt' added to the decision-event key list (absent for CLXIII).
+- `b0_identity.compare` strips the log-only 'tgt' like 'xb_lock_p'. Harness: `target_obs/live_tgt_replay.py` (run with
+  FORCE_ACQ / HEAD_CODE, mkckpt, diff).
+- Why the rule is keyed to target layers and not on for CLXIII: CLXIII reads has_target / target_is_tower / state /
+  phase / frac cue floats, so the rule moves its inputs (counts below); owner rule = CLXIII unchanged while the key is
+  absent. (b) a crforge-trained successor WITHOUT target layers would want "engine" too: a one-line live_play flag if
+  that case appears.
+
+### Evidence
+- (a) Reader rule = the scored rule, row for row: `icebow/data/reader_targets/acq_check.py` (local; re-runs the TARGET-VAL
+  converter with each acq_rule) on all 108 FRESH4/5/6 matches: 238,108 usable frames, 2,534,433 body rows;
+  `LiveCues(acq_rule="engine")` == stored acq2 on 2,534,433 / 2,534,433, default "live" == stored acq on 2,534,433 /
+  2,534,433 (the old rule reproduced exactly); the two rules differ on 52,170 rows (2.06%). Result
+  `icebow/data/reader_targets/ACQ_CHECK.json`.
+- (a) Agreement with the engine (tval_score / tval_agg re-run by Codex on 33903 on every UNFLAGGED match of FRESH4/5/6 =
+  61 + 12 + 12 = 85; 174,416 prefix-exact frames, 1,836,210 paired body rows; `target_obs/tval_fresh456_85.txt`):
+  acq (S6 rule) 0.9852 [0.9763, 0.9918] -> **acq2 = the new rule 0.9985 [0.9982, 0.9988]** (bar: lower bound >= 0.99);
+  active rows 0.9522 -> 0.9951; strict cohort (68 matches) 0.9864 -> 0.9986 [0.9982, 0.9989]. Per class (acq2): troop
+  0.9957, air 0.9996, bld_only 0.9996, building 0.9999, siege 1.0000, tower 0.9999. Remaining acq2 errors: 2,322
+  `acq_filter_eng_keeps` (class 3 above: names without a table sight) + 278 rd_none + 45 unpaired + 20. Planted controls
+  drop (rotate 0.342, shift 0.966). The 33-match M1c-R cohort (subset) was 0.9983.
+- (a) Absent path identical, 4 recorded CLXIII logs (test_decide_identity.LOGS, 1,718 decisions, 229 plays), CPU:
+  pre-change code (HEAD d6cd6d0, run before any edit) vs this tree: decision dicts 1,718 / 1,718, taps 1,718 / 1,718,
+  RNG states 1,718 / 1,718, max |log-prob diff| 0 on gate, card, cell, value, wait, g -> IDENTICAL.
+  16 newest full 10-30 CLXIII logs (19:32-21:13 EDT, incl. one after the 21:03 rule strip; 6,030 decisions;
+  `live_tgt_replay.py run` with HEAD_CODE=d6cd6d0 vs this tree, `diff`): dicts 6,030 / 6,030, taps 0 differ, RNG 6,030,
+  log-probs 0 on the 5,737 decisions through `_policy_forward` (293 = the legacy decide path of the post-strip log,
+  options inactive then: compared by dict incl. p_play) -> IDENTICAL.
+- (a) Zero-init target checkpoint (CLXIII + zero tgt_in / tgt_out / tgt_back, sha 4c2e8900): (i) with the S6 rule forced
+  (wiring alone) vs CLXIII: IDENTICAL on all 1,718 (dicts, taps, RNG, log-probs 0); (ii) as loaded (load_pilot picks
+  "engine") vs CLXIII with "engine" forced: IDENTICAL on all 1,718 -> the zero layers are inert and the only change a
+  target model brings beyond its weights is the reader rule. 16 logs: zero-target as loaded vs CLXIII-engine: 6,030 /
+  6,030 dicts, 0 taps, log-probs 0 -> IDENTICAL.
+- (a) Planted (non-zero target weights, normal 0, .05): vs CLXIII-engine 170 / 1,718 taps differ, max |dlogp| gate 3.95,
+  cell 31 -> the target rows reach the model. Unit test: g moves on exactly the decisions with >= 1 known token
+  (`test_target_obs.TestLiveWiring`).
+- (a) If the engine rule were applied to CLXIII (NOT done; key absent): 4 logs: 198 / 1,718 decisions change p_play (max
+  |dp| 0.060, 28 > 0.01), 2 / 1,718 taps differ (182408 t2812 Knight play -> wait at p .234 -> .189; t3166 Rocket
+  follow-up changed). 16 logs: 418 / 6,030 p_play change (max |dp| 0.046, 44 > 0.01), 2 / 6,030 taps differ (both
+  wait -> play: 200700 t3516 Skeletons p .449 -> .453; 195801 t1410 IceWizard .322 -> .368). So CLXIII DOES read the
+  rule (cue floats has_target, target_is_tower, state, phase, frac); with the key absent it is not applied: 0 changes.
+- Tests (icebow/.venv, CPU): `test_target_obs` 9 / 9 (2 new: load_pilot rule + log + refusal; zero = CLXIII decisions on
+  60, planted g moves iff known tokens), `test_live_cues` 47 / 47 (2 new: engine rule on a synthetic frame -- both
+  disagreement classes flip, engaged keeps; GenPilot.row target rows + refusal). Live-path subset (19 files: live_cues,
+  live_decision_options, live_gen_afford, gate_sample_identity, cue_inputs, live_options, identity_ext, live_anti_leak,
+  posture_live, public_decision_audit, memory_s1b, own_effects + L68 cue_inputs_live, cues_reader, live_entry, iw_press,
+  pipeline_decisions, capture_p3, ckpt_alternate): 267 passed, 8 skipped, 12 failed. 11 of the 12 fail identically with
+  HEAD's live path loaded (`live_tgt_replay.py pytest_head d6cd6d0`): pre-existing (5 live_options = the stripped
+  LIVE_OPTIONS; ckpt_alternate = --iw-press head in LIVE_OPTIONS; posture_live = the single-pass forward bypasses its
+  spy; own_effects / live_entry = stubs without .model / legal_guard; capture_p3 = a renamed helper binary). The 12th,
+  L68 test_cue_inputs_live::test_decision_event_carries_the_cue_summary, failed only inside the 36-min suite run: it
+  passes alone (this tree and HEAD) and after each of 9 earlier modules (b: order-dependent through one of
+  gate_sample_identity / posture_live / anti_leak, not chased; this change only adds 'tgt' to an `if k in d` key list).
+  test_decide_identity (BASE a76f57e vs this tree, live recorded + stress + SIM + cross-path): 5 / 5 passed.
+- (a) Latency (CPU, 300 recorded decisions): GenPilot.row median 2.51 -> 3.17 ms, p90 3.52 -> 5.77 ms for a target
+  model (live_target_rows 0.50 ms median); CLXIII unchanged.
+- (a) `live_play.py --check` offline (merged reader env, --tau 0.35 --no-anti-leak, --device cpu): CLXIII from
+  CKPT_OVERRIDE: LIVE_CHECK_PASS, cue_inputs without targets keys (unchanged); the zero-target checkpoint: PASS,
+  cue_inputs.targets true, acq_rule engine; with the recipe options below: PASS.
+
+### Deploy recipe for a target-aware + full-memory + sampled-gate successor (PILOT2) -- written, NOT applied
+PILOT2 (`pilot2/pilot2.yaml`): T_gate 0.1, tau 0.35 single (tau_phase removed), decide_every 10, target_obs true,
+memory v2 + e_max 256 + board snap, ability_head_from_init, no learner decide rule. Live reads targets and memory from
+the checkpoint CONTENT (tgt_in -> target rows + acq_rule engine; mem.* + e_max / snap -> memory_rows): no flag for either.
+1. Register the Mark (checkpoint naming convention; REGISTRY + hard link) -> `MARK=icebow/data/models/ICEBOW/<Mark>.pt`,
+   `SHA16=$(sha256sum $MARK | cut -c1-16)`.
+2. Back up, then add ONE line to `scratchpad/gauntlet/L70/live/LIVE_OPTIONS` right before the deploy (a supervisor
+   restart in between would put CLXIII under the sampled gate, -6.9 pp at u0):
+   `cp scratchpad/gauntlet/L70/live/LIVE_OPTIONS scratchpad/gauntlet/L70/live/LIVE_OPTIONS.pre_<Mark>`
+   `printf -- '--gate-sample 0.1 --gate-sample-step-ticks 10\n' >> scratchpad/gauntlet/L70/live/LIVE_OPTIONS`
+   Everything else stays: `--cue-inputs on` (required: the target model refuses without it), merged reader
+   (`icebow/data/reader_notes/merged/live_env.sh`), `--iw-press head --iw-press-head-decode sample`, `--lethal-rocket
+   log --lethal-log on --lethal-quiet 1.0` (owner's one rule; keeps decision options active, which --gate-sample needs:
+   without it live refuses "gate_sample needs decision options active"). The learner trained WITHOUT the finisher.
+3. --check (= start_live.sh's line, CKPT explicit):
+   `(. icebow/data/reader_notes/merged/live_env.sh; icebow/.venv/Scripts/python.exe -B scratchpad/gauntlet/L68/live_reader/live_play.py --ckpt $MARK --tau 0.35 --no-anti-leak --check)`
+   Expect: `"check": "LIVE_CHECK_PASS"`, checkpoint / sha256 = the Mark, feature_version 6, `cue_inputs` = {active: true,
+   reader: merged_sf, table_sha256 babaa3d1..., **targets: true, acq_rule: engine**}, `live_options.from_file` has
+   **gate_sample 0.1, gate_sample_step_ticks 10**, `decision_options.lethal_rocket "log"`, lethal_log on, every other
+   rule off / argmax, tau 0.35, tau_phase null, iw_press head / sample, barrel_decoy true. (Measured with the zero-target
+   stand-in + this recipe file: exactly that; the stand-in has no memory encoder.) First live match: the start event has
+   gate_sample 0.1 / gate_sample_step_ticks 10 and cue_inputs.targets; 'decision' events carry 'tgt' {known, edges, tower,
+   acq_rule engine} with edges > 0 on contested boards, and 'gate_draw' events.
+4. Trial (owner's overnight bar): `MIN_WINS=6 RESTORE_OPTIONS=scratchpad/gauntlet/L70/live/LIVE_OPTIONS.pre_<Mark>
+   BASE_CK=icebow/data/models/ICEBOW/ICEBOW_Mark_CLXIII_NOLEAK.pt BASE_SHA=8d328a43bf09fb7e BASE_LABEL=CLXIII
+   bash scratchpad/gauntlet/L74/deploy/trial30.sh $MARK $SHA16 <Mark>`.
+5. Revert line (manual):
+   `cp scratchpad/gauntlet/L70/live/LIVE_OPTIONS.pre_<Mark> scratchpad/gauntlet/L70/live/LIVE_OPTIONS && bash scratchpad/gauntlet/L74/deploy/deploy_ckpt.sh icebow/data/models/ICEBOW/ICEBOW_Mark_CLXIII_NOLEAK.pt 8d328a43bf09fb7e "revert to CLXIII"`
+   (options first: deploy_ckpt restarts live between matches and LIVE_OPTIONS is read at start).
+
 ## Concerns (graded)
-- (b) SIM / live "acquired" rules differ: the facade keeps a reference within target radius + sight + own radius (+ the
-  crown-tower / building extra) by centre distance; live drops one whose EDGE distance > max(sight, range) + 1.5 tiles.
-  Near the boundary the two can disagree. M1c measures exactly this (acq agreement on exact frames).
-- (b) 18.7% of live attacker names have no 10-06 table row: LiveCues then takes the reach from the reader's own
-  definition rows, and keeps a far reference when that is missing too (reach 0), so such a unit may show its path
-  tower as a target live while the SIM shows none. Count it in M1c.
+- (a, resolved by M1c-R + LIVE-TGT) SIM / live "acquired" rules differed (centre + sight + 2-tile crown extra vs edge +
+  max(sight, range) + 1.5): a target model now reads the engine formula (0.9985 on 85 exact matches).
+- (a, resolved for target models) names without a table row kept their far path tower live (the bulk of the S6 rule's
+  17,125 `acq_filter_rd_keeps` rows on the 85 matches; 10,043 of 14,365 in M1c-R); the engine rule drops them (sight 0). Still open (b): those names' real sight (class
+  3, 2,322 rows): a definition / base-card sight fallback would close most of the rest.
 - The feature is untrained: it changes play only after training (owner step iv) + the SIM gate.
