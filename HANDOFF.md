@@ -1,3 +1,18 @@
+# 2026-10-30 ~20:20 EDT -- OWNER: hard-coded gate rules REMOVED from live (tau_threatened + per-phase tau); live restarted 20:13 EDT
+
+- Owner 10-31 ~00:20-00:35 UTC: "Remove the play threshold from live ... the model needs to learn how to defend by itself
+  without us manipulating its gates", then "Also remove the per-phase play threshold ... with match memory being incorporated
+  we don't need [it]". No SIM games on either (owner: will not restore them; PLAN.md makes hard-coded rules obsolete).
+  NOT added to the trainer (owner rejected "option A"); the pilot keeps its trained sampled gate (decision 2a stands).
+- LIVE_OPTIONS: removed `--tau-threatened 0.2` and `--tau-phase 0.35 0.45 0.55` (backups LIVE_OPTIONS.pre_notauthreat_20261031,
+  LIVE_OPTIONS.pre_notauphase_20261031). start_live --check PASS: tau 0.35 (single base threshold), tau_phase null,
+  tau_threatened null, barrel_decoy true. Match-boundary restart: supervisor start 20:13:16 EDT; first log
+  live_play_20261030_201337.jsonl confirms. (b) CLXIII trained with per-phase thresholds: live now differs from its training
+  decoder; cost unmeasured by owner choice. The CLXIII live baseline (32.7%) was measured WITH both rules.
+- (a) Before the stop: A/B u0 (= CLXIII weights) under the THRESHOLD gate = 291/480, +0.00 exactly vs CLXIII; under the trainer's
+  sampled gate -6.88 pp [-12.18, -1.57].
+- Restart trap: a "wait for [sup] done" on `tail -n 3` matched an OLD line and skipped the wait (first restart did not happen);
+  wait on lines AFTER a recorded line count.
 # 2026-10-30 ~20:05 EDT -- arm L GPU-OOM at its first policy update (my --local-forward restart); resumed at micro 512; SAMPLED GATE costs ~7 pp
 
 - (a) abL_b0 CRASHED 23:27 UTC at u0005 = its first large-batch PPO update: `CUDA out of memory ... tried 418 MiB, 183 MiB
