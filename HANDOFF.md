@@ -1,3 +1,11 @@
+# 2026-10-30 ~23:55 EDT -- (a) LARGE-BATCH LEARNS, SMALL STEPS DRIFT: pilot2_L u20 +6.88 pp vs its start; S -15.4 by u40
+
+- u0 reference (p2init = the shared init, sampled gate T .1, stripped stack) vs base2 CLXIII: 246/480, -3.12 [-8.30, +2.05].
+- Paired vs that start, same 480 iu40 games (presses.py): pilot2_L u0020 +6.88 [+1.44, +12.31]; pilot2_S u0020 -7.29 [-12.87, -1.71],
+  u0040 -15.42 [-21.09, -9.74]. One seed each; first measured evidence that large-batch steps (65536 rows, micro 512, lr 2e-5) learn
+  under the same cap while minibatch-256 PPO random-walks downhill (pattern 6; LEARNER-SCALE noise finding).
+- Watch item (b): L's Ice Wizard presses fell to 1.03 / match (CLXIII 1.86; S 1.7-2.2). The SIM priced pressing negative before
+  (iw-press-train-mismatch memory: never pressing +3.65 in SIM, untested live) -- part of L's gain may be a SIM pricing artifact.
 # 2026-10-30 ~23:35 EDT -- PILOT2 first checks: arm S drifts down fast, arm L at/above CLXIII; LIVE-TGT done; RECON-5 milestone 1
 
 - (a) pchk2 vs base2 (CLXIII on the stripped live stack; iu40 seed 741200, 480 paired games, sampled gate T .1):
