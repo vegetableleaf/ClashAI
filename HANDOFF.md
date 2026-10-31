@@ -1,3 +1,22 @@
+# 2026-10-31 ~10:30 EDT -- SIMPRICE + RECON-7 handed back (verified); SIMPRICE round 2 running; engine direction owed to owner
+- SIMPRICE (dfe4b33, b1dd099; cf/SIMPRICE.md): live counts CLXV IW presses 0.31 vs CLXIII-stripped 0.96 / match (-0.64
+  [-0.93, -0.35]); Rocket rare for both without rules (+0.09, n.s.); X-Bow share unchanged (11.7 vs 11.1%). IW press at
+  CLXIII-head presses ~0 (-0.014 at 45 s, +0.111 end) -> lead's "SIM prices presses as losses" only holds for presses on
+  nothing; CLXV-head forced press -0.065 at 45 s (critic slope 0.53, out of band) = open candidate wrong sign. Rocket: all
+  forced classes negative except finishing (+0.14, n 7); old audits diluted by issue-tick refusals (cf_alt_afford fixes).
+  No fork weight on. Blockers for training at scale: fast loop has no forks; cf rows refused under micro_batch.
+  Round 2 RUNNING (subagent a52ff33a4397a29dc, ~3 h): iw_press with match-end on every sample (CLXV + p2init) + a
+  hold-window no-press variant (working-tree e1_eval.py `_ab_block_until` hunk is ITS uncommitted work).
+- RECON-7 (54c5ec6, c77355b, 00ca929, c8f9394; RECON.md section 14): position-only class has NO general offset (c);
+  hero BarbLog re-roll press (RECON_LATE) 5 / 6 exact; FRESH12 (frozen first) RECON-7 34 / 33 of 39; pooled clean
+  FRESH11 + 12 73 / 71 of 88 (.830, CP low .750) vs RECON-5 72 / 70 (+1 record, n.s.). Pace: attempts match live; the
+  SIM refusals (tap_hold / play_resume, opt-in) fix refusal rate + min gap but not plays / min (9.45 -> 9.37); the gap is
+  44% overtime share (live 22% vs SIM 10%) + per-phase rate -> judge opponent human-likeness per phase, not pooled pace.
+  Remaining failures = engine mechanics (Golden Knight dash x3, Bowler knock-back, stop-at-range, IW slow, heading at a
+  hit, 103056 elixir rule) -> owner decision owed: these are engine rules, but the 10-29 direction says no one-by-one fixes.
+- Lead decision: tap_hold / play_resume NOT applied to Lc or the current gate (comparability); queued as a one-change
+  step for the next run + a CLXIII re-baseline with the same keys.
+
 # 2026-10-31 ~08:35 EDT -- pilot2_Lc died at u86: pod 33308's HOST rebooted (not our code); resumed from u86
 - Evidence: PID 1 started 12:13:15 UTC, uptime 19 min at 12:31 (host boot ~12:12:40); oom_kill 0; loop.rc empty (the sh
   wrapper died too); log ends mid-u86 with no traceback; auto_stop's last line 12:09:39. 33903 (same public IP) is a
