@@ -1,3 +1,22 @@
+# 2026-10-31 ~06:10 EDT -- CLXV trial: 9 / 30 wins; the 04:39 auto-REVERT was a TOOLING BUG (baseline label); CLXV REDEPLOYED for the 150-match block
+
+- trial30_CLXV.log: 30 results 9 W / 21 L (>= MIN_WINS 6 -> passes on wins); idle-on-threat line "CLXIII n/a / CLXV 0.180" -> the awk read
+  n/a as 0 -> REVERT 04:39 EDT. Cause: lead passed BASE_LABEL=CLXIII (from LIVE-TGT's recipe); trial30's ape_score call needs the sha8
+  (`live:8d328a43`), so the base row was empty. FIX for every future trial: BASE_LABEL=8d328a43 (= BASE_SHA's first 8 hex).
+- (a) Re-measured (ape_score live:8d328a43 live:490271e5 --base live:8d328a43 --since 20261030): idle >= 4 s with elixir CLXIII 0.137,
+  CLXV 0.180 (+0.043 [-0.025, +0.116]) <= +0.05 -> under the owner's bar (revert iff <= 5/30 or idle worse) CLXV PASSED the trial.
+  (The since-20261019 run printed nothing.) Live context (scorecard): CLXIII stripped 21:31-02:24 16 W / 40 L decided (28.6%);
+  CLXV trial 7 / 12 decided by scorecard (9 / 30 by the trial counter); CLXIII after the revert 1 / 13 decided (04:40-05:52).
+- Redeployed CLXV (~06:05 EDT): LIVE_OPTIONS = stripped + `--gate-sample 0.1 --gate-sample-step-ticks 10` (stripped copy:
+  LIVE_OPTIONS.pre_CLXV); --check PASS; deploy_ckpt.sh (log deploy/deploy_CLXV_block.out). 150-match block counts results AFTER the
+  redeploy (overnight.out line recorded in the next entry); KEEP iff >= 61 / 150 (Wilson LB > 32.7%; 32.7% was CLXIII WITH the rules).
+  Revert (owner rule): cp LIVE_OPTIONS.pre_CLXV LIVE_OPTIONS + deploy_ckpt.sh CLXIII NOLEAK 8d328a43bf09fb7e. No auto-revert armed for
+  the block (owner monitors).
+- pilot2_Lc (resume) u0040 check: +7.08 [+1.43, +12.74] vs CLXIII (iu40 480). Opponent live-partner arm D3: u40 78.5%, u80 78.3% CLXIII
+  win (opponent 21.5 / 21.7%; G u80 23.8%). OPP-PUSH resumed (it had paused waiting for u40).
+- RECON-6 DONE (a2e03f5..3c72ae9): form class = naming artifact (crforge already derives forms from cast counts; 99.74% of 15,597 plays
+  explained). FRESH11 (49, frozen first): gate 37, v3 36, RECON-5 39. Pooled clean FRESH10+11 (137): gate 100, v3 97, RECON-5 105
+  (vs v3 0:8 p .0078; vs gate 5:10 p .30). Engine held-out fidelity ~0.77. Largest class now: position-only first-diff offsets (24/82).
 # 2026-10-31 ~04:10 EDT -- RECON-5 DONE: cycle repair + own-tap restore; FRESH9 significant, clean FRESH10 not significant
 
 - (a) RECON.md s12 (fab0cad freeze .. 3983925): the 8 flagged-exact FRESH9 records all ablation-confirmed -> FRESH9 v3 counted 128/125.
