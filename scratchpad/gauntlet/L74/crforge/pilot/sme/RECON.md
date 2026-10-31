@@ -5,7 +5,11 @@ cases, `field_census.py` the rules on every frozen fresh input, `recon_search.py
 Evidence: `results/live/recon/`. Labels: (a) measured, (b) plausible but untested, (c) contradicted.
 
 ## STATUS (keep current)
-- **RECON-5 (10-31 ~00:45 EDT, section 12) -- IN PROGRESS.** Step 1 DONE (a): the 8 flagged-but-exact FRESH9 records (012313, 014530, 024332, 030902, 040421, 053225, 091421, 102101) ablated edit by edit
+- **RECON-5 (10-31 ~03:00 EDT, section 12) -- held-out runs RUNNING.** Dev49 (a): raw exact gate 7, v3 14, v3 + RECON-5 25 of 49 (counted 6 / 10 / 17); code frozen at commit fab0cad (FRESH10_FREEZE.txt) BEFORE the held-out runs.
+  Driver on 33903 `/workspace/smeR4/drive_held.sh` (PID 1054681; steps skip when `runs/<step>.log` says done; a half-done step: delete `runs/<step>` first; restart `cd /workspace/smeR4 && (nohup bash drive_held.sh > drive_held.out 2>&1 < /dev/null &)`;
+  ends with HELD_DONE in `runs/held_drive.log`): f9_cyc_aff (40 affected FRESH9 records), f10_gate, f10_cyc_aff, f10_v3, ASSIGN-off guards. Then: pull `runs/<step>/recon_results.jsonl` (gate: results.jsonl), ablate the flagged-exact cyc records
+  (`runR.sh RUN ablate2 INPUTS FRAMES` with RARGS="--runs RUNDIR --matches M1,M2"), `r5_confirm.py`, `r5_final.py --name FRESH9 ... --cyc-aff`. Codex dispatches: none.
+- (earlier RECON-5 line) **RECON-5 (10-31 ~00:45 EDT, section 12) -- superseded by the line above.** Step 1 DONE (a): the 8 flagged-but-exact FRESH9 records (012313, 014530, 024332, 030902, 040421, 053225, 091421, 102101) ablated edit by edit
   (`recon/ablate_edits.py`, evidence `results/live/recon/r5/f9_ablate_edits.jsonl`): every structural edit NEEDED (8 / 8 restored plays: add own Knight / Tesla / IceWizard x3, add opponent Zap x2, re-dated Zap), 0 unneeded,
   0 harmful; FRESH9 v3 with the 8 counted: **128 / 177 pass (0.723, CP low 0.662), 125 strict (0.706, CP low 0.645)** vs as extracted 120 / 117; gate unchanged 122 / 117 (4 of the 8 are gate-exact already).
   Step 2: the battle-log deck is ALREADY the extractor's deck (section 12.2); the open class is the opponent's play sequence (12.3). Mechanism = `recon/cyc.py` (deck-constrained cycle repair, shortest path over the 1680 cycle states) + `RECON_CYC=1` in
@@ -467,3 +471,18 @@ v3's add (b) restores it only where a body is listed (FRESH9: 6 of 11 own failur
   `r5_planted.py` on real sequences (151 dev + 179 FRESH9, `results/live/recon/r5/planted_dev151_f9.txt`): 2,096 plants (each SPELL play of a fitting sequence deleted in turn); 696 (33%) invisible (still fits); of the 1,400 detected
   all 1,400 have the true (position, card) among the optimal repairs (completeness, by construction), median 3 optimal repairs, p90 7, max 12, unique 196 (14%): the cycle narrows an invisible spell to a handful, it does not identify it.
   Wrong deck: 0 / 330 real records have an observed play outside the battle-log deck; a deck with one played card swapped out is flagged on 330 / 330.
+### 12.6 Dev result (a; 49 records = the 45 FRESH2-8 RNG-free records the old 151 excluded + the 4 flagged ones inside the 151; evidence `results/live/recon/r5/`, table `dev49_final.txt`)
+Same engine / lib / env as every RECON run (`runR.sh`, lib 5e8089a4, ASSIGN on); gate = the 20-flag hand rules on the flags-on re-extraction, v3 = generator v3, cyc = v3 + RECON_CYC=1. raw = exact apart from torn with the extractor flag ignored;
+counted = a flagged record counts when it is exact AND every kept structural edit is ablation-needed (`ablate_edits.py`, `r5_confirm.py`); as extracted = flagged never counts (all 49 are flagged).
+| | gate | v3 | v3 + RECON-5 (v2) |
+|---|---|---|---|
+| raw pass / strict | 7 / 6 | 14 / 13 | **25 / 24** (CP low 0.385) |
+| counted pass / strict | 6 / 5 | 10 / 9 | **17 / 16** (CP low 0.235) |
+| as extracted | 6 / 5 | 1 / 1 | 1 / 1 |
+Paired (raw): v3 vs cyc only-v3 0 / only-cyc 11 (p .001); gate vs cyc 0 / 18. Counted: v3 vs cyc 0 / 7 (p .016). cyc lost 0 records vs v3.
+- Iterations on dev (disclosed): v1 (spell ghosts of any card, tap window -2..+3) = 23 raw; it LOST 155249, 000242, 060537 to v3 (their restored tap ran 8-20 ticks after tap + own_delay: window too narrow) and kept ghost spells that leave
+  objects (RoyalDelivery, Log, Rage: 214831, 054032, 064121 got A_sim_only / extra units). v2: ghosts only for the card the reader cannot see (Zap, the RECON visibility rule), tap window -3..+25 -> 25 raw, 0 lost.
+- v2 passes (25): 16 ablation-confirmed (own taps 8, Zap / BattleRam / MightyMiner / SuspiciousBush adds from v3's ops, 2 Mirror readings, drops of own ability presses), 6 with no structural edit (the best-prefix deal alone, or v3's swap on 031310), 1 unconfirmable
+  (001538: two dropped MegaKnight plays, the reverse run errors), 1 unflagged (142334), 1 more unflagged-not-needed. The 6 "deal only" records are exact although the cycle fails: the engine's refusal of a play no deal allows acts like dropping the invented / duplicated play.
+- Still failing (24, v2): hero / evolution FORM mismatches (the SIM spawns BarbLogBarbarianHero / Knight_EV1 / Witch_EV1 where the reader lists the base card: 103056, 143825, 144727, 153413, 180849, 050136, 051010; the form is a function of how many
+  times the card was cycled, so a missed play also shifts it: not modelled, (b)), unseen troop plays (171948 ZapMachine, 181209 MinionGiant, 213421 Xbow, 235316 IceSpirits, 054032 SuspiciousBush, 064121 LittlePrince area: cyc inserts spells only), and multi-play gaps.
