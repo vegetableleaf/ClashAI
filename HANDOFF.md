@@ -1,3 +1,19 @@
+# 2026-10-30 ~21:10 EDT -- OWNER: all live decision rules removed except lethal Log; pilot2 on 2x RTX PRO 6000 (every change since CLXIII)
+
+- Owner 10-31 ~01:40 UTC: "Remove every hardcoded live rule except lethal log finisher. It will tank current live performance but
+  should force the model to learn the required behaviors." LIVE_OPTIONS (backup LIVE_OPTIONS.pre_norules_20261031) keeps only
+  --lethal-log on + --lethal-quiet 1.0 among decision rules; removed barrel_lane, lethal_rocket, rocket_tornado*, rocket_value*,
+  spell_aim, log_aim, log_air, xbow_class*, xbow_dead_lane, rocket_dead_target, tornado_river (tau_phase / tau_threatened earlier).
+  Kept: barrel_decoy (input relabel), execution / IO settings, the learned IW head. --check PASS (spell_aim argmax, xbow_class
+  argmax, lethal_log on, barrel_lane off, rocket_tornado off). Live restarted 21:03:06 EDT (live_play_20261030_210328.jsonl).
+  Supersedes the 10-26 "barrel_lane kept for successors". Expect lower live win rate under CLXIII (owner accepted).
+- Pods (owner rented): PILOT2 arm S 81.27.69.177 -p 29153, arm L 81.27.69.177 -p 28263 (RTX PRO 6000 96 GB, 27.2 CPUs, 175 GiB,
+  EPYC 9554); a 13.6-CPU pod 216.243.220.243:10014 was stopped at the owner's word (s3ezvb4f16bvmw). Owner rule: stop each pod
+  IMMEDIATELY when its training concludes (max_updates 600 or 50 updates without improvement; copy back first).
+- Workers: PILOT2-BUILD (init = B0-full v2 + zero-init target layers, identity vs CLXIII; mem-full + target_obs compare;
+  ability_head_from_init; sampled gate; learner decide = lethal Log only; full speed stack; auto copy-back + pod stop watcher),
+  LIVE-TGT (target_obs live wiring + reader target fix, owner-agreed 10-30, absent = identical; deploy recipe not applied),
+  OPP-PUSH. memory overnight-2026-10-31-pilot2.md.
 # 2026-10-30 ~21:10 EDT -- RTX PRO 6000 (31892) tests DONE and pod STOPPED (owner); full speed stack measured
 
 - Stopped from inside (runpodctl, key from /proc/1/environ, owner-authorized): pod 3apzu710v7z0ct "stopped", ssh refused after.
