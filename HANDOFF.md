@@ -1,3 +1,14 @@
+# 2026-10-31 ~07:15 EDT -- OPP-PUSH round 1: transfer fixed at u40; live-partner strength costs style; CLXIII paces slower in SIM
+
+- (a, 27e144e / 371b238, PUSH.md Round 1): live-partner D3 opponent win u40 21.5% / 18.1% (seeds 0 / 1), u80 21.7% / 22.5% (G best block
+  23.8%, G mean 23.3%); train - D3 gap u40 -1.5 / +3.1, u80 +3.7 / +3.7 pp (old sampled partner +4..+8). Strength comes from deep pushes
+  into CLXIII's half: pocket_share +.99, our_half +.73 -> quick-card RMS .30 -> .41; siege lock not improved.
+- (a) Style diagnostic: ftR vs itself on 3,741 HF human deck pairs (no CLXIII / live reader) RMS .20 vs .30 in the live comparison;
+  react_lift / spell_depth / push_mean / own_half errors vanish; gap_p10 persists (-.41). CLXIII paces 11.2 plays/min live vs 9.3 in
+  SIM (median gap 3.8 vs 4.7 s) -> (b) the style bar is largely capped by CLXIII's SIM behaviour (a decoder / engine parity issue).
+- Running (fast loop): seed 0 live run on 33903 (~240 s / update, was ~1,114 s production; u0-u84 log overwritten, rows in
+  train_log.jsonl), s1f on pod A (~u230), arm 2 = gae + value pre-fit on pod B (warm-up). Lead decisions: gae accepted; pod A ->
+  arm 3 = large-batch recipe (whole-batch minibatch + equal-KL lr probe, one recipe change) after s1f's u160 + u200 D3s.
 # 2026-10-31 ~06:15 EDT -- CLXV live again (06:05:45 EDT, guard OK); 150-match block counts results AFTER overnight.out line 86759
 
 - Count: `tail -n +86760 scratchpad/gauntlet/L70/live/overnight.out | grep '\[ladder\] result:' | head -150 | grep -c WIN`, then
