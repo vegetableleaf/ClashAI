@@ -1,3 +1,15 @@
+# 2026-10-31 ~01:40 EDT -- PILOT2: S plateau-stopped (u60, pod stopped); L CRASHED at u35 (GPU OOM on a producer restart; pod stopped)
+
+- pilot2_S: auto_stop at u60 (best10 @ u9), FINAL pilot2_S_u0060.pt, last check u0060 -18.33 [-24.20, -12.46] vs base2; watcher copied
+  + stopped pod dlkk6eevgt9yhv 03:36 UTC. Laptop: C:/Users/benpe/pod_backup_weekend/pilot2/S/.
+- pilot2_L: CRASHED 03:34 UTC at u35: a producer died and its restart hit CUDA OOM (GPU 97.25 / 97.9 GB, 2.5 MB free; L ran at 93.4 GB
+  peak from the start -> memory creep). Watcher copied (u0000, u0020, u0030, crash_u0035, latest, logs) and stopped pod 8cq6fx8mbv0ynf
+  04:06 UTC after the 30-min KEEP window (lead missed the alert). Lead did NOT restart the pod (billing = owner's call).
+  Also (a): L's per-update KL fell to ~0.001 (g/c/x .0006/.0002/.0004) by u30-u34 vs the 0.02 cap -- the warmed Adam at lr 2e-5 barely
+  moves now; training win 73-76% flat. Resume fix if the owner restarts it: fewer producers (e.g. 20 x 26) or FASTLOOP_SHARDS 2 for GPU
+  headroom, and a steady-state lr / step review (the cap is far from binding).
+- Running: checks of pilot2_L_u0030 + pilot2_L_latest (33308, c_L30.res / c_Llat.res); the best L checkpoint then gets fullgate2.sh.
+- pilot_check2.sh trap: its FINAL test matched the crash's FINAL (written on crash too) -> the L loop exited before u0030.
 # 2026-10-30 ~23:55 EDT -- (a) LARGE-BATCH LEARNS, SMALL STEPS DRIFT: pilot2_L u20 +6.88 pp vs its start; S -15.4 by u40
 
 - u0 reference (p2init = the shared init, sampled gate T .1, stripped stack) vs base2 CLXIII: 246/480, -3.12 [-8.30, +2.05].
