@@ -1,3 +1,15 @@
+# 2026-10-31 ~03:45 EDT -- CLXV live-verified; pilot2_L CONTINUED on 33308 (pilot2_Lc, true resume from u34); its checks armed
+
+- CLXV first live match (live_play_20261031_024337.jsonl): ckpt = ICEBOW_Mark_CLXV_LARGEBATCH.pt, gate_sample 0.1 / step 10, 1,734
+  gate_draw events, tgt on 482 decisions, first-match guard OK (icebow deck); 0-1 loss, 61 plays / 309 s, 0 fails.
+- L-RESUME (eade7fd, a): pilot2_Lc on 33308 GPU 0 = TRUE resume of pilot2_L after u34 ("resumed at update 35"; optimizer / rng /
+  kl_ref restored); changes only max_updates 200, micro_batch 256 + trunk_graph 256 (exact accumulation); eager server, SHARDS 1, no
+  local-forward, MPS; tree /workspace/loopL (pipeline + L74 from 7c9af63; /workspace/loop/cb + pgate2 untouched); GPU peak 13.0 / 24.6
+  GB; RAM ~48 GB; ~290 s / update (learner 212 s); CPUs 0-104 + learner 105-107, a pinner squeezes producers to 96-104 while gap.py
+  runs. Stop: touch /workspace/loopL/p2/pilot2_Lc/STOP. Laptop watcher (NO_STOP: never stops 33308) copies u%20 to
+  C:/Users/benpe/pod_backup_weekend/pilot2/Lc/. Presses keep falling (0.48 / match at u36).
+- pilot_check2.sh: new optional START ($4). Lc loop armed: pilot2_Lc Lc 0-31 40 (33308 CPUs 0-31; first ckpt u0040 ~07:40 UTC).
+- Trap: laptop `git archive` without core.autocrlf=false writes CRLF -> runtime-stamp hashes change -> rl_royale refuses resume.
 # 2026-10-31 ~02:30 EDT -- ICEBOW Mark CLXV: LARGEBATCH PASSED THE SIM GATE -> 30-match LIVE TRIAL STARTED (owner's overnight rule)
 
 - (a) fullgate2.sh pilot2_L_latest (= pilot2_L after update 34) vs base2 (CLXIII on the stripped live stack), 3,840 paired games,
