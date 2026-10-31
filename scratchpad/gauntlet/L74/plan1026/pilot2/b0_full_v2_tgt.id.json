@@ -1,0 +1,29 @@
+{
+ "rows": 10000,
+ "rows_gt128": 351,
+ "random_target_edges": 630234,
+ "max_diff": {
+  "rand_gate": 0.0,
+  "rand_card": 0.0,
+  "rand_logp_card": 0.0,
+  "rand_value": 0.0,
+  "rand_cell": 0.0,
+  "rand_logp_cell": 0.0,
+  "none_gate": 0.0,
+  "none_card": 0.0,
+  "none_logp_card": 0.0,
+  "none_value": 0.0,
+  "none_cell": 0.0,
+  "none_logp_cell": 0.0,
+  "nokeys_gate": 0.0,
+  "nokeys_card": 0.0,
+  "nokeys_logp_card": 0.0,
+  "nokeys_value": 0.0,
+  "nokeys_cell": 0.0,
+  "nokeys_logp_cell": 0.0
+ },
+ "pass": true,
+ "ability_head_equal": true,
+ "init_sha256": "cdde779a6ca58090bde79a238f072ee8d330ccf38c5c0707ef7b5a3dd9b12119",
+ "clxiii_sha256": "8d328a43bf09fb7e389d41f01524fbb50955e15b64fdb72e28488a123eabad42"
+}
