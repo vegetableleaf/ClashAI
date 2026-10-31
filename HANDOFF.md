@@ -1,3 +1,12 @@
+# 2026-10-31 ~07:45 EDT -- owner morning: CLXV block 9/19; three workstreams dispatched (Rocket/IW credit, engine parity, opponent 70%)
+
+- Owner watched CLXV: Rocket use extremely sparse, aggressive X-Bow (old issue), fewer IW presses, 3 wins in a row. Block so far
+  (after overnight.out line 86759): 9 W / 10 L = 47.4% (Wilson [27.3, 68.3]); verdict at 150. pilot2_Lc SIM checks u40 +7.08,
+  u60 +7.92 [+2.21, +13.62] vs CLXIII (stripped). Lead's live Rocket / X-Bow grep returned zeros (wrong field names): NOT measured.
+- Owner ask: (1) reward Rocket + IW ability use at the right moments via counterfactual fork credit after fixing why the SIM prices them
+  negative -> worker SIMPRICE (plan1026/cf/SIMPRICE.md; also redoes the live counts); (2) engine parity -> worker RECON-7 (position-only
+  first-diff offsets + CLXIII's SIM pace 9.3 vs 11.2 plays/min live; FRESH12 frozen first); (3) push opponent strength to 70% with
+  human-likeness -> OPP-PUSH (ranked plan + top item in PUSH.md). Workers: SIMPRICE, RECON-7, OPP-PUSH (cap 3). Weekly usage 46% at 06:20.
 # 2026-10-31 ~07:15 EDT -- OPP-PUSH round 1: transfer fixed at u40; live-partner strength costs style; CLXIII paces slower in SIM
 
 - (a, 27e144e / 371b238, PUSH.md Round 1): live-partner D3 opponent win u40 21.5% / 18.1% (seeds 0 / 1), u80 21.7% / 22.5% (G best block
