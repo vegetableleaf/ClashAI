@@ -1,0 +1,10 @@
+-- FRESH11 all 69 records (flags-on extraction)
+sequences with a form rule: 400, cost 0: 400 (100.00%); plays in them 2370
+{}
+-- FRESH11 scored 49 records
+sequences with a form rule: 285, cost 0: 285 (100.00%); plays in them 1760
+{}
+-- FRESH11 flags-off scored records
+sequences with a form rule: 285, cost 0: 284 (99.65%); plays in them 1759
+('261031_035731', 'own', 'Tesla', 1, 11, [(('ins', 6),), (('ins', 7),)])
+{('own_resid', 2, True): 1}

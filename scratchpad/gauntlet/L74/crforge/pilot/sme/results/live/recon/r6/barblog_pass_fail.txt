@@ -1,0 +1,4 @@
+records without result 2
+('BarbLog', 0) pass 79 fail 19
+('BarbLog', 2) pass 7 fail 7
+('Log', 0) pass 142 fail 34

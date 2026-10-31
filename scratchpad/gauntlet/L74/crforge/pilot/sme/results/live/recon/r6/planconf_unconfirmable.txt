@@ -1,0 +1,6 @@
+forms.plan_cost (recon/r6_planconf.py, pod) of the base plan vs the RECON-5 final plan, per card with a form rule. 0 / {} = the count rule explains every observed Hero / EV1 form of the plan's plays.
+The four flagged-exact RECON-5 records whose ablation cannot run (reverse run errors): only 001538 carries a form signal.
+261029_001538 side 0 opp base cost {'MegaKnight': 2} final cost {}      (two invented MegaKnight plays next to the Mirror plays: corroborated by the forms; the ablation still cannot run)
+261030_061817 side 1 opp base cost {} final cost {}                     (Mirror reading of a card without a form rule: forms say nothing)
+261030_221240 side 0 opp base cost {} final cost {}                     (same)
+261030_224356 side 0 opp base cost {} final cost {}                     (same)

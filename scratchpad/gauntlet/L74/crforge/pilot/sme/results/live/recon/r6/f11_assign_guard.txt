@@ -1,0 +1,12 @@
+FRESH11 gate records 4 PASS
+    261030_232137 off {'exact': 2218, 'torn_hidden': 52} -> on {'exact': 2218, 'torn_hidden': 52}
+    261031_003250 off {'exact': 1471, 'torn_hidden': 78, 'div': 48} -> on {'exact': 1471, 'torn_hidden': 78, 'div': 48}
+    261031_020140 off {'exact': 2939, 'torn_hidden': 82} -> on {'exact': 2939, 'torn_hidden': 82}
+    261031_033045 off {'exact': 1706, 'torn_hidden': 60} -> on {'exact': 1706, 'torn_hidden': 60}
+FRESH11 v3 records 4 PASS
+    261030_232137 off {'exact': 2218, 'torn_hidden': 51, 'div': 1} -> on {'exact': 2218, 'torn_hidden': 51, 'div': 1}
+    261031_003250 off {'exact': 1471, 'torn_hidden': 78, 'div': 48} -> on {'exact': 1471, 'torn_hidden': 78, 'div': 48}
+    261031_020140 off {'exact': 2938, 'torn_hidden': 15, 'div': 68} -> on {'exact': 2938, 'torn_hidden': 15, 'div': 68}
+    261031_033045 off {'exact': 1706, 'torn_hidden': 60} -> on {'exact': 1706, 'torn_hidden': 60}
+FRESH11 RECON-5 + forms records 1 PASS
+    261030_232137 off {'exact': 2218, 'torn_hidden': 51, 'div': 1} -> on {'exact': 2218, 'torn_hidden': 51, 'div': 1}

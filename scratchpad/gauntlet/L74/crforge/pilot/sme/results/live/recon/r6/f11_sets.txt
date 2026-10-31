@@ -1,0 +1,5 @@
+FRESH11 run subsets (recon/r6_mk_sets.py on pod 33903 /workspace/smeR5/data/f11): 49 unique records (RNG-free subset of the 69 frozen battles), 12 affected by RECON_CYC, 0 with a form residual, 12 = affected + form, 4 reader-hidden (1 of them affected).
+affected ['002825', '004941', '012542', '021728', '023819', '024855', '025235', '030616', '034822', '035731', '232137', '234450']
+form-residual []
+flags-off inputs sha256 (CR stripped) 2efa32319c4f299815bff3cdd994e6618cefca16cdd4910e109e8a454f0fb1ff; flags-on (gate) inputs 23442bd57c1d6c03d738682ea9bbb0856ea23a0f3d32fcb245144f16a40d927e; 49 frame files.
+driver recon/r6_drive_f11.sh (08:36-09:36 UTC 10-31): gate, v3, RECON_CYC=1 on the affected, RECON_CYC=1 RECON_FORM=1 on affected + form, ASSIGN-off guards on the reader-hidden records; ablation of the flagged-exact records by hand (runR.sh ablate2).

@@ -1,0 +1,43 @@
+== FRESH10+FRESH11 pooled (the two clean held-out sets): n 137 unique matches; rows missing or errored: {'gate': 2, 'v3': 2, 'recon5': 2, 'forms': 2}
+asx      gate pass 100 (0.730, CP low 0.660) strict  94 (0.686, CP low 0.615) | v3 pass  95 (0.693, CP low 0.622) strict  92 (0.672, CP low 0.600) | recon5 pass  95 (0.693, CP low 0.622) strict  92 (0.672, CP low 0.600) | forms pass  95 (0.693, CP low 0.622) strict  92 (0.672, CP low 0.600)
+   gate vs v3     pass   only-gate  7 only-v3  2 p=0.1797
+   gate vs recon5 pass   only-gate  7 only-recon5  2 p=0.1797
+   gate vs forms  pass   only-gate  7 only-forms  2 p=0.1797
+   v3 vs recon5 pass   only-v3  0 only-recon5  0 p=1.0000
+   v3 vs forms  pass   only-v3  0 only-forms  0 p=1.0000
+   recon5 vs forms  pass   only-recon5  0 only-forms  0 p=1.0000
+   gate vs v3     strict only-gate  4 only-v3  2 p=0.6875
+   gate vs recon5 strict only-gate  4 only-recon5  2 p=0.6875
+   gate vs forms  strict only-gate  4 only-forms  2 p=0.6875
+   v3 vs recon5 strict only-v3  0 only-recon5  0 p=1.0000
+   v3 vs forms  strict only-v3  0 only-forms  0 p=1.0000
+   recon5 vs forms  strict only-recon5  0 only-forms  0 p=1.0000
+counted  gate pass 100 (0.730, CP low 0.660) strict  94 (0.686, CP low 0.615) | v3 pass  97 (0.708, CP low 0.637) strict  94 (0.686, CP low 0.615) | recon5 pass 105 (0.766, CP low 0.699) strict 101 (0.737, CP low 0.668) | forms pass 105 (0.766, CP low 0.699) strict 101 (0.737, CP low 0.668)
+   gate vs v3     pass   only-gate  5 only-v3  2 p=0.4531
+   gate vs recon5 pass   only-gate  5 only-recon5 10 p=0.3018
+   gate vs forms  pass   only-gate  5 only-forms 10 p=0.3018
+   v3 vs recon5 pass   only-v3  0 only-recon5  8 p=0.0078
+   v3 vs forms  pass   only-v3  0 only-forms  8 p=0.0078
+   recon5 vs forms  pass   only-recon5  0 only-forms  0 p=1.0000
+   gate vs v3     strict only-gate  2 only-v3  2 p=1.0000
+   gate vs recon5 strict only-gate  2 only-recon5  9 p=0.0654
+   gate vs forms  strict only-gate  2 only-forms  9 p=0.0654
+   v3 vs recon5 strict only-v3  0 only-recon5  7 p=0.0156
+   v3 vs forms  strict only-v3  0 only-forms  7 p=0.0156
+   recon5 vs forms  strict only-recon5  0 only-forms  0 p=1.0000
+raw      gate pass 101 (0.737, CP low 0.668) strict  95 (0.693, CP low 0.622) | v3 pass 101 (0.737, CP low 0.668) strict  98 (0.715, CP low 0.645) | recon5 pass 108 (0.788, CP low 0.723) strict 104 (0.759, CP low 0.691) | forms pass 108 (0.788, CP low 0.723) strict 104 (0.759, CP low 0.691)
+   gate vs v3     pass   only-gate  4 only-v3  4 p=1.0000
+   gate vs recon5 pass   only-gate  4 only-recon5 11 p=0.1185
+   gate vs forms  pass   only-gate  4 only-forms 11 p=0.1185
+   v3 vs recon5 pass   only-v3  0 only-recon5  7 p=0.0156
+   v3 vs forms  pass   only-v3  0 only-forms  7 p=0.0156
+   recon5 vs forms  pass   only-recon5  0 only-forms  0 p=1.0000
+   gate vs v3     strict only-gate  1 only-v3  4 p=0.3750
+   gate vs recon5 strict only-gate  1 only-recon5 10 p=0.0117
+   gate vs forms  strict only-gate  1 only-forms 10 p=0.0117
+   v3 vs recon5 strict only-v3  0 only-recon5  6 p=0.0312
+   v3 vs forms  strict only-v3  0 only-forms  6 p=0.0312
+   recon5 vs forms  strict only-recon5  0 only-forms  0 p=1.0000
+raw gained by recon5 over v3: ['261030_150042', '261030_152453', '261030_193232', '261030_215458', '261030_234450', '261031_023819', '261031_034822'] | lost: []
+raw gained by forms over recon5: [] | lost: []
+raw gained by forms over v3: ['261030_150042', '261030_152453', '261030_193232', '261030_215458', '261030_234450', '261031_023819', '261031_034822'] | lost: []
