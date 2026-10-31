@@ -11,7 +11,7 @@ RUN=$1; shift
 . /workspace/p2/env.sh || exit 1
 OUT=$W/p2/$RUN; PC=${PCPUS:-0-23}; LC=${LCPUS:-24-26}
 mkdir -p $OUT; cd $CB || exit 1
-case " $* " in *" --resume "*) mv $OUT/loop.log $OUT/loop.log.$(date +%s) 2> /dev/null; rm -f $OUT/FINAL $OUT/STOP $OUT/loop.rc ;;   # crash resume
+case " $* " in *" --resume "*) kill $(sed -n 's/^auto_stop //p' $OUT/pids 2> /dev/null) 2> /dev/null; mv $OUT/loop.log $OUT/loop.log.$(date +%s) 2> /dev/null; rm -f $OUT/FINAL $OUT/STOP $OUT/loop.rc ;;   # crash resume
   *) [ -e scratchpad/gauntlet/L68/rl/$RUN ] && { echo "run $RUN exists (rl_royale refuses a re-used name; pass --resume)"; exit 1; } ;; esac
 $PY -c "import sys, pathlib, os; sys.path.insert(0, '$L'); import producer; producer.compile_java(pathlib.Path(os.environ['CRFORGE_FACADE_BUILD']), pathlib.Path(os.environ['CRFORGE_LIB']))" || exit 1
 setsid nohup sh -c 'taskset -c '$PC' "$0" "$@"; echo $? > '$OUT/loop.rc $PY -u $L/fastloop.py --producers ${PRODUCERS:-32} \

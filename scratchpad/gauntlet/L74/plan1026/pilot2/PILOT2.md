@@ -16,6 +16,11 @@ Labels: (a) measured (number + source), (b) plausible, untested, (c) contradicte
   both: `pilot2_S` on POD1 (sh 10222 main 10224 auto_stop 10287 pinner 10288); `pilot2_L` on POD2 with minibatch 65536
   micro_batch 512 (exact accumulation) critic_warmup_minibatch 256 lr 2e-5 ppo_epochs 2 trunk_graph 512 (sh 9729 main 9731
   auto_stop 9801 pinner 9802). Laptop watchers (WMI): S bash 76640, L 92168. Lead's checks (33308) read the laptop copies.
+- (a) First policy update u0005, both clean: S KL stop e0 mb78 KL 0.0212 (78 steps, learner 18 s); u0006 0.0211; steady state
+  72-78 s / update (u0007 72.1 s, 25.6k matches/h) = ~48 updates/h; GPU peak 89.4 / 97.9 GB. L 6 steps (3 minibatches x 2
+  epochs), kl_stop never fired (checked after each step -> KL vs previous <= 0.02 at every step), update KL g/c/x
+  .0062/.0021/.0023, learner 120 s = the bottleneck (u0006 137 s, ~26 updates/h); GPU peak 93.4 / 97.9 GB. Warm-up updates:
+  rollout ~112 s + critic ~93 s. (b) 600 updates = S ~12.5 h, L ~23 h if no plateau stop.
 
 ## Restart / operate
 - Pod env: `/workspace/p2/env.sh` (= pilot2/env.sh). Launch an arm (pod): `bash /workspace/loop/cb/scratchpad/gauntlet/L74/plan1026/pilot2/arm.sh RUN [k=v ...]`
