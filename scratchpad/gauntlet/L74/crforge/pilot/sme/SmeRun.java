@@ -98,7 +98,7 @@ public class SmeRun {
         b.play(g, r, b.getWorld().getRecords().card(c.get("card").asText()), c.get("level").asInt(), s,
             c.get("x").asInt(), c.get("y").asInt(), name);
       else if (c.get("kind").asText().equals("skip")) continue;  // a dropped command keeps its index (cmd names)
-      else if (c.has("banner")) { banners.add(c); bannerNames.add(name); }  // round 8.5: queued in the tick loop
+      else if (c.has("banner") || c.has("late_unit")) { banners.add(c); bannerNames.add(name); }  // round 8.5 / RECON-7: queued in the tick loop
       else b.useAbility(r, s, c.get("unit").asText(), name);  // ponytail: by unit name, given = run - 20 (the only delay crforge accepts)
     }
     try (PrintWriter w = new PrintWriter(new BufferedWriter(new FileWriter(out)))) {
@@ -125,12 +125,17 @@ public class SmeRun {
       int g = c.get("given").asInt(), r = c.get("run").asInt(), s = c.get("side").asInt();
       if (now >= r) { cs.set(k, null); continue; }
       if (BANNER_GIVEN && now < g) continue;  // ENG-FIX3: the banner standing when the press was given (above)
+      if (c.has("late_unit") && now < r - 1) continue;  // RECON-7: the unit alive at the last tick before the press
       int id = -1;
+      // RECON-7: "late_unit": the press names a unit the play only makes LATER (a Barbarian Barrel's hero barbarian leaves the barrel
+      // when the roll ends, so no play of the plan "made" it): the side's newest live unit of that name, by object id, as the game's
+      // command does. banner = the Goblins' flag (round 8.5).
+      String want = c.has("late_unit") ? c.get("late_unit").asText() : "GoblinHero_Flag_Building";
       for (BattleEntity e : b.getBattle().getHolder().entities())
         if (e instanceof WorldEntity we && !(we instanceof TowerEntity) && we.side() == s
-            && we.getData().name().equals("GoblinHero_Flag_Building")) id = e.getId();
+            && we.getData().name().equals(want)) id = e.getId();
       if (id >= 0) { b.useAbility(g, r, s, id, names.get(k)); cs.set(k, null); }
-      else if (now == r - 1) { b.useAbility(r, s, c.get("unit").asText(), names.get(k)); cs.set(k, null); }
+      else if (now == r - 1) { if (!c.has("late_unit")) b.useAbility(r, s, c.get("unit").asText(), names.get(k)); cs.set(k, null); }  // late_unit with no unit by r - 1: no press ("unit" is bookkeeping for it)
     }
   }
 

@@ -318,6 +318,46 @@ def t_r5_taps():
     ok(len(recon.unmatched_taps(far, full, 1)) == 1, 'a same-card play 400 ticks away does not explain the tap')
 
 
+def t_r7():
+    """RECON-7: a press of a spell card whose hero unit exists only later (the hero Barbarian Barrel's barbarian) is named by object id."""
+    ok(tab.late_unit('BarbLog') == 'BarbLogBarbarianHero', 'late_unit: the hero Barbarian Barrel names its barbarian by object id')
+    ok(all(tab.late_unit(c) is None for c in ('Knight', 'IceWizard', 'Tesla', 'Zap', 'Log', 'Pekka')), 'late_unit: none for cards whose play makes the unit')
+    ok(tab.ability_cost('BarbLog') and tab.ability_cost('IceWizard') and not tab.ability_cost('Zap'), 'ability_cost unchanged: hero rows priced, a plain spell is free')
+    bl = card_id('BarbLog')
+    fr = {290: {'E': [[0, 9000, 20000, bl, 500, 14]], 'P': []}, 300: {'E': [], 'P': []}}
+    p = plan_of([cmd(0, 'BarbLog', 250, 9000, 14000)])
+    p['decks'] = [['BarbLog'] + DECK0[1:], DECK1]
+    det = [['U_rec_only', [0, 9000, 19858, 500], 'BarbLog', [0, 142, 0]], ['U_sim_only', [0, 9000, 20000, 500], 'C:BarbLogBarbarianHero', [0, -142, 0]]]
+    prs0 = [e for e, _ in recon.hypotheses(p, fr, 300, det, tab, 1) if e['op'] == 'add' and e['cmd']['kind'] == 'ability']
+    ok(prs0 and not any('late_unit' in e['cmd'] for e in prs0) and {e['cmd']['unit'] for e in prs0} == {'cmd0_0', 'cmd0_1', 'cmd0_2'}, 'RECON_LATE absent: the (play, unit) guesses as in RECON-5')
+    recon.LATE = 1
+    prs = [e for e, _ in recon.hypotheses(p, fr, 300, det, tab, 1) if e['op'] == 'add' and e['cmd']['kind'] == 'ability']
+    ok(prs and all(e['cmd'].get('late_unit') == 'BarbLogBarbarianHero' and e['cmd']['unit'] == 'cmd0_0' for e in prs), 'press: a BarbLog press carries late_unit (and no (play, unit) guess)')
+    ok({e['cmd']['run'] for e in prs} == {296, 297, 298, 299}, 'press: at R in [d - 4, d - 1]')
+    q = recon.apply_edit(p, prs[0])
+    ok(q is not None and any(c.get('late_unit') for c in q['cmds']) and recon.runnable(q)['cmds'][-1].get('late_unit'), 'an added late press survives apply_edit and runnable')
+    # a later play of the card (after d) does not take the press away with RECON_LATE=1 (the re-roll read as a second BarbLog play)
+    p3 = plan_of([cmd(0, 'BarbLog', 250, 9000, 14000), cmd(0, 'BarbLog', 304, 9000, 14000)])
+    p3['decks'] = p['decks']
+    prs3 = [e for e, _ in recon.hypotheses(p3, fr, 300, det, tab, 1) if e['op'] == 'add' and e['cmd']['kind'] == 'ability']
+    ok(prs3 and all(e['cmd']['unit'] == 'cmd0_0' for e in prs3), 'a BarbLog play after d does not block the press of the one before it')
+    # the press comes long after the play (143825: 169 ticks): the diff names the card, so its play counts at any age (not for a card without a late unit)
+    p4 = plan_of([cmd(0, 'BarbLog', 20, 9000, 14000)])
+    p4['decks'] = p['decks']
+    prs4 = [e for e, _ in recon.hypotheses(p4, fr, 300, det, tab, 1) if e['op'] == 'add' and e['cmd']['kind'] == 'ability']
+    ok(prs4 and all(e['cmd']['unit'] == 'cmd0_0' and e['cmd'].get('late_unit') for e in prs4), 'a BarbLog play 280 ticks before d is still the presser the diff names')
+    recon.LATE = 0
+    ok(not [e for e, _ in recon.hypotheses(p4, fr, 300, det, tab, 1) if e['op'] == 'add' and e['cmd']['kind'] == 'ability'], 'RECON_LATE absent: a play older than WIN is no presser')
+    ok(not [e for e, _ in recon.hypotheses(p3, fr, 300, det, tab, 1) if e['op'] == 'add' and e['cmd']['kind'] == 'ability'], 'RECON_LATE absent: only the latest play of the whole match is a presser')
+    ic = card_id('IceWizard')
+    fr = {290: {'E': [[0, 9000, 20000, ic, 500, 14]], 'P': []}, 300: {'E': [], 'P': []}}
+    p2 = plan_of([cmd(0, 'IceWizard', 100, 9000, 14000)])
+    p2['decks'] = [['IceWizard'] + DECK0[1:], DECK1]
+    vic = [['U_sim_only', [1, 9000, 16000, 600], 'C:Knight', None]]
+    prs2 = [e for e, _ in recon.hypotheses(p2, fr, 300, vic, tab, 1) if e['op'] == 'add' and e['cmd']['kind'] == 'ability']
+    ok(prs2 and not any('late_unit' in e['cmd'] for e in prs2) and {e['cmd']['unit'] for e in prs2} == {'cmd0_0', 'cmd0_1', 'cmd0_2'}, 'press: a hero whose play makes its unit keeps the (play, unit) guesses')
+
+
 def t_cases():
     import offline
     try:
@@ -327,6 +367,6 @@ def t_cases():
 
 
 if __name__ == '__main__':
-    for f in (t_cycle, t_elixir, t_zone, t_travel, t_edits, t_legal, t_victims, t_moves, t_r4, t_r5, t_r5_taps, t_cases):
+    for f in (t_cycle, t_elixir, t_zone, t_travel, t_edits, t_legal, t_victims, t_moves, t_r4, t_r5, t_r5_taps, t_r7, t_cases):
         f()
     print('ok', N[0])

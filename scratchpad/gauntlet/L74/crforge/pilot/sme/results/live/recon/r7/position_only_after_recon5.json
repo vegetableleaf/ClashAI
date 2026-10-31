@@ -1,0 +1,458 @@
+[
+{
+"set": "FRESH9",
+"match": "live_play_20261029_110610",
+"first_div": 2600,
+"rec": "DarkWitch",
+"sim": "C:DarkWitch",
+"near": [
+23,
+136,
+0
+],
+"first": [
+1,
+11347,
+10929,
+1079
+],
+"nfd": 2
+},
+{
+"set": "FRESH9",
+"match": "live_play_20261029_114254",
+"first_div": 5292,
+"rec": "GoblinDrill",
+"sim": "C:GoblinDrill_EV1_Dig",
+"near": [
+-28,
+-9,
+0
+],
+"first": [
+1,
+13776,
+9932,
+4090
+],
+"nfd": 2
+},
+{
+"set": "FRESH9",
+"match": "live_play_20261029_174855",
+"first_div": 3039,
+"rec": "GoldenKnight",
+"sim": "C:GoldenKnight",
+"near": [
+-49,
+36,
+0
+],
+"first": [
+0,
+4997,
+17555,
+1630
+],
+"nfd": 2
+},
+{
+"set": "FRESH9",
+"match": "live_play_20261029_194827",
+"first_div": 3569,
+"rec": "Knight",
+"sim": "C:Knight",
+"near": [
+-14,
+-58,
+0
+],
+"first": [
+0,
+12689,
+10500,
+967
+],
+"nfd": 2
+},
+{
+"set": "FRESH9",
+"match": "live_play_20261029_220240",
+"first_div": 3827,
+"rec": "GoldenKnight",
+"sim": "C:GoldenKnight",
+"near": [
+-176,
+-175,
+0
+],
+"first": [
+0,
+4068,
+15571,
+2303
+],
+"nfd": 4
+},
+{
+"set": "FRESH9",
+"match": "live_play_20261030_013650",
+"first_div": 4450,
+"rec": "Valkyrie",
+"sim": "C:ValkyrieHero",
+"near": [
+-15,
+7,
+0
+],
+"first": [
+0,
+2628,
+14762,
+2010
+],
+"nfd": 2
+},
+{
+"set": "FRESH9",
+"match": "live_play_20261030_022312",
+"first_div": 2564,
+"rec": "Firecracker",
+"sim": "C:Firecracker",
+"near": [
+1,
+0,
+0
+],
+"first": [
+1,
+4257,
+18347,
+290
+],
+"nfd": 2
+},
+{
+"set": "FRESH9",
+"match": "live_play_20261030_035831",
+"first_div": 3105,
+"rec": "BarbLog",
+"sim": "C:BarbLogBarbarianHero",
+"near": [
+0,
+-284,
+0
+],
+"first": [
+1,
+1500,
+13284,
+651
+],
+"nfd": 4
+},
+{
+"set": "FRESH9",
+"match": "live_play_20261030_054304",
+"first_div": 4282,
+"rec": "Bowler",
+"sim": "C:BowlerHero",
+"near": [
+31,
+31,
+0
+],
+"first": [
+1,
+8034,
+18034,
+3325
+],
+"nfd": 4
+},
+{
+"set": "FRESH9",
+"match": "live_play_20261030_060329",
+"first_div": 5644,
+"rec": "Knight",
+"sim": "C:Knight",
+"near": [
+-11,
+8,
+0
+],
+"first": [
+0,
+13283,
+12696,
+1826
+],
+"nfd": 2
+},
+{
+"set": "FRESH9",
+"match": "live_play_20261030_061408",
+"first_div": 2913,
+"rec": "RamRider",
+"sim": "C:Ram",
+"near": [
+21,
+-19,
+0
+],
+"first": [
+0,
+15075,
+16013,
+1503
+],
+"nfd": 14
+},
+{
+"set": "FRESH10",
+"match": "live_play_20261030_134929",
+"first_div": 1675,
+"rec": "GoldenKnight",
+"sim": "C:GoldenKnight",
+"near": [
+388,
+-71,
+0
+],
+"first": [
+0,
+12291,
+18426,
+1611
+],
+"nfd": 4
+},
+{
+"set": "FRESH10",
+"match": "live_play_20261030_152809",
+"first_div": 3754,
+"rec": "BarbLog",
+"sim": "C:BarbLogBarbarianHero",
+"near": [
+0,
+-142,
+0
+],
+"first": [
+1,
+13500,
+13743,
+153
+],
+"nfd": 4
+},
+{
+"set": "FRESH10",
+"match": "live_play_20261030_180321",
+"first_div": 5927,
+"rec": "Knight",
+"sim": "C:Knight",
+"near": [
+40,
+72,
+0
+],
+"first": [
+0,
+2580,
+14942,
+2410
+],
+"nfd": 2
+},
+{
+"set": "FRESH10",
+"match": "live_play_20261030_190605",
+"first_div": 5975,
+"rec": "Miner",
+"sim": "C:Miner",
+"near": [
+-745,
+673,
+0
+],
+"first": [
+1,
+9245,
+25827,
+1934
+],
+"nfd": 2
+},
+{
+"set": "FRESH10",
+"match": "live_play_20261030_204237",
+"first_div": 172,
+"rec": "Wallbreakers",
+"sim": "C:Wallbreaker",
+"near": [
+-365,
+-2235,
+0
+],
+"first": [
+0,
+14115,
+16735,
+527
+],
+"nfd": 4
+},
+{
+"set": "FRESH10",
+"match": "live_play_20261030_212038",
+"first_div": 351,
+"rec": "ElectroSpirit",
+"sim": "C:ElectroSpirit",
+"near": [
+687,
+465,
+0
+],
+"first": [
+0,
+10913,
+2249,
+343
+],
+"nfd": 2
+},
+{
+"set": "dev49",
+"match": "live_play_20261028_103056",
+"first_div": 2846,
+"rec": "BarbLog",
+"sim": "C:BarbLogBarbarianHero",
+"near": [
+0,
+142,
+0
+],
+"first": [
+0,
+5737,
+21492,
+130
+],
+"nfd": 2
+},
+{
+"set": "dev49",
+"match": "live_play_20261028_120902",
+"first_div": 5882,
+"rec": "Knight",
+"sim": "C:Knight",
+"near": [
+11,
+-58,
+0
+],
+"first": [
+1,
+2517,
+17443,
+2822
+],
+"nfd": 2
+},
+{
+"set": "dev49",
+"match": "live_play_20261028_141816",
+"first_div": 3893,
+"rec": "Skeletons",
+"sim": "C:Skeleton",
+"near": [
+579,
+294,
+0
+],
+"first": [
+0,
+13201,
+13754,
+130
+],
+"nfd": 7
+},
+{
+"set": "dev49",
+"match": "live_play_20261028_143825",
+"first_div": 1075,
+"rec": "BarbLog",
+"sim": "C:BarbLogBarbarianHero",
+"near": [
+-58,
+-10,
+0
+],
+"first": [
+1,
+13611,
+12498,
+340
+],
+"nfd": 2
+},
+{
+"set": "dev49",
+"match": "live_play_20261028_144727",
+"first_div": 4236,
+"rec": "Knight",
+"sim": "C:Knight",
+"near": [
+36,
+15,
+0
+],
+"first": [
+1,
+3244,
+16373,
+2095
+],
+"nfd": 2
+},
+{
+"set": "dev49",
+"match": "live_play_20261028_180849",
+"first_div": 583,
+"rec": "BarbLog",
+"sim": "C:BarbLogBarbarianHero",
+"near": [
+0,
+142,
+0
+],
+"first": [
+0,
+15500,
+18257,
+799
+],
+"nfd": 4
+},
+{
+"set": "dev49",
+"match": "live_play_20261029_050136",
+"first_div": 3644,
+"rec": "BarbLog",
+"sim": "C:BarbLogBarbarianHero",
+"near": [
+0,
+284,
+0
+],
+"first": [
+0,
+12566,
+19051,
+366
+],
+"nfd": 4
+}
+]

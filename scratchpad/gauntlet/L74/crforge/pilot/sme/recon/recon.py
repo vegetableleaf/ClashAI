@@ -33,6 +33,7 @@ RIVER = (15000, 17000)                    # side 0 owns y < 15000, side 1 y >= 1
 POCKET = (21000, 11000)                   # a fallen enemy princess tower opens rows up to 20 (side 0) / from 11 (side 1)
 ZONE_SLACK = 500                          # calibration knob: extracted points are body centres, not taps
 SLACK = float(os.environ.get('RECON_ELIXIR_SLACK', '0.5'))   # calibration knob (field census in RECON.md)
+LATE = int(os.environ.get('RECON_LATE', '0'))   # RECON-7 opt-in: absent = RECON-5 / v3 byte-identical (late_unit presses, presser = latest play before d)
 REGEN = 1 / 56                            # elixir per tick at 1x (measured: own frames +0.0178 / tick, 3x +0.0537)
 PHASES = (2400, 4800)                     # 2x from tick 2400, 3x from 4800 (fights.elixir_wait)
 PRESS_BACK = 4                            # a press is tried at R in [d - 4, d - 1] (sme_live.GHOST_BACK)
@@ -69,16 +70,29 @@ class Tab:
     def cost(self, c):
         return self.card(c)[1].get('ManaCost') or 0
 
-    def ability_cost(self, c):
-        """Elixir of the card's ability press: the champion's character Ability, else the hero ability row named after
-        the card (ponytail: name match; 0 when none matches, which only makes the bank rule more permissive)."""
+    def ability_key(self, c):
+        """The card's ability row: the champion's character Ability, else the hero ability row named after the card
+        (ponytail: name match; None when none matches)."""
         ab = self.col('characters', self.card(c)[1].get('SummonCharacter')).get('Ability')
         rows = self.rows['character_abilities']
         if ab in rows:
-            return rows[ab]['columns'].get('ManaCost') or 0
+            return ab
         key = re.sub(r'[^a-z]', '', c.lower()).rstrip('s') + 'hero'
         hit = [k for k in rows if re.sub(r'[^a-z]', '', k.lower()).startswith(key)]
-        return (rows[hit[0]]['columns'].get('ManaCost') or 0) if len(hit) == 1 else 0
+        return hit[0] if len(hit) == 1 else None
+
+    def ability_cost(self, c):
+        """Elixir of the card's ability press (0 when it has none, which only makes the bank rule more permissive)."""
+        k = self.ability_key(c)
+        return (self.rows['character_abilities'][k]['columns'].get('ManaCost') or 0) if k else 0
+
+    def late_unit(self, c):
+        """RECON-7: the character an ability press of the SPELL card c names when the play makes it only LATER: a Barbarian Barrel's
+        hero barbarian leaves the barrel when the roll ends, so no play 'made' it and a 'cmdN_k' press names nothing (the run is
+        refused). SmeRun names it by object id (plan field late_unit). The unit = the one character whose Ability is the card's."""
+        k = self.ability_key(c) if self.is_spell(c) else None
+        hit = [n for n, v in self.rows['characters'].items() if k and (v.get('columns') or {}).get('Ability') == k]
+        return hit[0] if len(hit) == 1 else None
 
     def is_spell(self, c):
         return self.card(c)[0] == 'spells_other'
@@ -472,6 +486,10 @@ def hypotheses(plan, frames, d, detail, tab, me):
     # Boss Bandit's press, the diff names our Knight)
     tp0 = prev_frame(frames, d)
     pressers = set(imp)
+    if LATE:    # RECON-7: a hero's press can come long after its play (143825: the barrel's barbarian walked 169 ticks): the diff names the card -> its plays count at any age
+        names_d = {norm(r[2]) for r in detail if r[2]}
+        pressers |= {i for i, c in enumerate(cmds) if c['kind'] == 'play' and c['run'] < d and tab.late_unit(c['card'])
+                     and tab.names_of(c['card']) & names_d}
     for v, _, _ in victims(detail) + overhit(detail):
         for i, c in enumerate(cmds):
             if c['kind'] == 'play' and c['side'] == 1 - v and c['run'] <= d and tp0 in frames and any(
@@ -479,14 +497,19 @@ def hypotheses(plan, frames, d, detail, tab, me):
                 pressers.add(i)
     for i in sorted(pressers):
         c = cmds[i]
+        # RECON-7 (RECON_LATE=1): the presser is the side's latest play of the card BEFORE d, not the latest of the whole match: a later play
+        # (a hero Barbarian Barrel's re-roll projectile is extracted as a second BarbLog play, 6 records) does not take the press away
         if c['kind'] != 'play' or not tab.ability_cost(c['card']) or any(
                 k > i and cmds[k].get('card') == c['card'] and cmds[k]['side'] == c['side'] and cmds[k]['kind'] == 'play'
-                for k in range(len(cmds))):
+                and (not LATE or cmds[k]['run'] < d) for k in range(len(cmds))):
             continue
+        lu = tab.late_unit(c['card']) if LATE else None   # RECON-7: a spell card's hero unit exists only later: named by object id, not by (play, unit)
         for R in range(max(c['run'] + 1, d - PRESS_BACK), d):
-            for u in PRESS_UNITS:
+            for u in ((0,) if lu else PRESS_UNITS):
                 a = {'kind': 'ability', 'given': R - 20, 'run': R, 'side': c['side'], 'unit': 'cmd%d_%d' % (i, u),
                      '_src': {'lo': R, 'hi': R, 'tick': R, 'source': 'recon_add', 'own': c['_src']['own']}}
+                if lu:
+                    a['late_unit'] = lu            # SmeRun ignores 'unit' for it (bookkeeping only: the play, the bank)
                 for k in add_positions(plan, R):
                     out.append(({'op': 'add', 'pos': k, 'cmd': a}, COST['add'] + (u != 0)))
     # repress (RECON-4: re-bound, unit chosen): a later-extracted press of a card the diff names, re-dated to just before d, bound

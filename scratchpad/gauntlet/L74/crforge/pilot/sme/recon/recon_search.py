@@ -20,7 +20,7 @@ from sme import run_batch  # noqa: E402
 
 sme_live.runnable = recon.runnable        # base_run / plant_suite read crforge's plan through this name
 HEAL = 20
-MAX_ROUNDS = 40
+MAX_ROUNDS = int(os.environ.get('RECON_ROUNDS', '40'))   # RECON-7 opt-in (absent = 40, byte-identical): 2 of the 82 failures after RECON-5 stopped at round 39 with a healing shift still ahead
 STRUCT = ('add', 'drop')
 CYC = int(os.environ.get('RECON_CYC', '0'))   # RECON-5 opt-in: absent = byte-identical to v3
 FORM = int(os.environ.get('RECON_FORM', '0'))  # RECON-6 opt-in: absent = byte-identical to RECON-5 / v3 (forms.form_repairs as extra start members)
