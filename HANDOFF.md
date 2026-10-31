@@ -1,3 +1,21 @@
+# 2026-10-30 ~23:35 EDT -- PILOT2 first checks: arm S drifts down fast, arm L at/above CLXIII; LIVE-TGT done; RECON-5 milestone 1
+
+- (a) pchk2 vs base2 (CLXIII on the stripped live stack; iu40 seed 741200, 480 paired games, sampled gate T .1):
+  pilot2_S u0020 -10.42 [-16.03, -4.80], u0040 -18.54 [-24.12, -12.96]; pilot2_L u0020 +3.75 [-1.81, +9.31].
+  Training win vs the fixed pool: S 72.7% (u0) -> 51.0% (u54), plays/min 12.2 -> 15.0 (over-playing); auto_stop best10 70.4 @ u9 ->
+  S stops itself at u59. L best10 72.5 -> 73.1% (u27-u30), still improving. (b) supports "small KL-capped steps random-walk / drift,
+  large-batch steps learn" -- one seed each; u0 reference (p2init sampled vs base2) running (u0ref.res) to anchor the movement.
+- fullgate2.sh (33308 /workspace/pgate2): the owner's bar for a pilot2 checkpoint = 3,840 games (iu40 + e4, 4 seeds, sampled gate,
+  stripped stack) paired vs base2 -> PASS iff pooled CI low > 0. Run it on arm L's best checkpoint when its checks support it; a PASS ->
+  register the Mark + live trial per LIVE-TGT's recipe (TARGET_OBS.md "LIVE-TGT"; --check on the real Mark first).
+- LIVE-TGT DONE (3125bca): reader acq_rule "engine" (TARGET-VAL rule; 0.9985 [0.9982, 0.9988] vs engine on 85 matches) used ONLY for a
+  checkpoint with target layers; target_obs live wiring; CLXIII unchanged (6,030 decisions identical; live already runs this code
+  since the 21:38 restart). Deploy recipe for the successor (gate-sample flags, keep --lethal-rocket log for decision options) in
+  TARGET_OBS.md; trial30 with MIN_WINS=6 RESTORE_OPTIONS=<pre-trial stripped backup>.
+- RECON-5 (0429544, a): the 8 flagged-but-exact FRESH9 records: every kept edit needed -> FRESH9 RECON v3 128 / 177 pass (CP low .662),
+  125 strict, vs hand-rule gate 122 / 117. Battle-log deck already used (c); no FRESH9 replays. Real cause of opp_no_fitting_deal:
+  identity-deal fallback -> early divergence; the dev 151 had excluded those records (selection effect). recon/cyc.py (cycle-state
+  shortest path) built + planted; dev run on the 41 never-scored non-fitting FRESH2-8 records running (33903 /workspace/smeR4).
 # 2026-10-30 ~22:45 EDT -- PILOT2 arms running past their first policy update (relaunched 02:10 UTC for GPU memory)
 
 - PILOT2-BUILD (142bb02 + relaunch, a): relaunched 02:10 UTC under the same names (24 producers x 22 = 512 matches/update both arms;
