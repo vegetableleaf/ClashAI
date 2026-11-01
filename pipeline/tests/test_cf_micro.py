@@ -12,6 +12,7 @@ import unittest
 import numpy as np
 import torch
 
+from pipeline import cf_credit as CF
 from pipeline import rl_royale as RL
 from pipeline.tests import test_learner_fast_accum as ACC
 from pipeline.tests.test_rl_royale import TAU, T
@@ -63,6 +64,37 @@ class TestCfMicro(unittest.TestCase):
         out = RL.ppo_update(m, torch.optim.SGD(m.parameters(), lr=1e-2), self.B, self.R, cfg, 0.0, np.random.default_rng(0))
         self.assertIsNone(out["nonfinite"])
         self.assertGreater(out["steps"], 0)
+
+
+class TestCfStored(unittest.TestCase):
+    """
+    (cf_append appends no alternative rows to it); gae_batch on the stored V (one_update's v_shared) gives the real rows the
+    same return as the cf-free batch and the alternatives their fork advantages; cf_cfg accepts the pair."""
+
+    def test_collate_and_gae_with_stored_values(self):
+        from pipeline.tests import test_cf_credit as TC
+        model = TC._tiny_model(7)
+        res = TC._with_tick(TC._with_cf(model, TC._monitor_fields(TC._results(model, TC.SPEC, seed=21))))
+        rng = np.random.default_rng(3)
+        for r in res:
+            r["traj"]["v_old"] = rng.normal(0, 0.3, len(r["traj"]["played"]))
+        cf = CF.cf_cfg(TC.ON)
+        self.assertIsNotNone(CF.cf_cfg({**TC.ON, "stored_values": True}))
+        kw = {"advantage": "gae", "gamma_tick": 0.99994}
+        B0, _ = RL.collate(copy.deepcopy(res), 2.0, **kw)
+        B1, _ = RL.collate(copy.deepcopy(res), 2.0, **kw, cf=cf)
+        n = len(B0["A"])
+        self.assertGreater(len(B1["A"]), n)                        # alternatives appended ...
+        self.assertEqual(B1["v_stored"].tobytes(), B0["v_stored"].tobytes())   # ... V stays the real rows'
+        cfg = {**TC.GAE, **TC.ON}
+        T0, T1 = RL.to_device(B0, "cpu"), RL.to_device(B1, "cpu")
+        for T_ in (T0, T1):
+            T_["v_shared"] = T_.pop("v_stored")
+        RL.gae_batch(model, T0, cfg)
+        RL.gae_batch(model, T1, cfg)
+        self.assertEqual(T1["ret"][:n].numpy().tobytes(), T0["ret"].numpy().tobytes())
+        self.assertTrue(bool((T1["ret"][n:] == 0).all()))          # alternatives: no value target
+        self.assertTrue(torch.isfinite(T1["A"]).all())
 
 
 if __name__ == "__main__":

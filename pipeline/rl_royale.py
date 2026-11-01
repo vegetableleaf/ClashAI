@@ -2231,7 +2231,7 @@ def cf_append(B: dict, results: list[dict], use: list, keep: list, W: list, cf: 
     adv, rel = CF.batch_advantages(used, cf)
     cfq = np.full(n, np.nan)
     alt_q: list = []
-    add: dict = {k: [] for k in B if not k.startswith("mem_tab_")}
+    add: dict = {k: [] for k in B if not k.startswith("mem_tab_") and k != "v_stored"}   # stored_values: V of the real rows only
     for smp, (j, di), a in zip(used, where, adv):
         cfq[off[j] + int(keep[j][:di].sum())] = a[0]
         t = results[j]["traj"]
@@ -5079,11 +5079,12 @@ class Learner:
         # LOOP-LRN shared pass: with kl_ref_refresh_every 1 the anchor IS the update-start model, so ref_terms' forward
         # also gives gae_batch's V(s) (one no-grad pass over every row instead of two; identity-gated, LRN.md)
         stored = bool(cfg.get("stored_values"))
-        if stored and (gate_ref is not None or card_ref is not None or glo is not None or "cf" in B
+        if stored and (gate_ref is not None or card_ref is not None or glo is not None
                        or getattr(self, "ctx_head", None) is not None or getattr(self, "posture_head", None) is not None
                        or "v_stored" not in B or adv_cfg(cfg)["advantage"] != "gae"):
             raise SystemExit("stored_values needs gae, rows with the server's v_old, and no kl_ref_gate / kl_ref_card / "
-                             "kl_ref_gate_max_elixir / critic_ctx / posture_head / cf_credit")
+                             "kl_ref_gate_max_elixir / critic_ctx / posture_head")
+        # (cf_credit rows: v_stored = the real rows' V (cf_append skips it); gae_batch reads V of the real rows only)
         v_stored = B.pop("v_stored", None)                    # recompute mode: the stored V is not used
         share = (cfg.get("kl_ref_refresh_every") == 1 and gate_ref is None and card_ref is None and glo is None
                  and getattr(self, "ctx_head", None) is None and adv_cfg(cfg)["advantage"] == "gae" and "cf" not in B

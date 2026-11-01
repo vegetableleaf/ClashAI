@@ -255,7 +255,7 @@ def cf_cfg(cfg: dict) -> Optional[dict]:
     if not cfg.get("league"):
         bad.append("cf_credit needs league true (the forks are self-play matches)")
     for k in ("branch_gate", "posture_head", "posture", "critic_ctx", "kl_ref_gate_max_elixir", "spell_value",
-              "habit_reward", "learner_pipeline_frac", "stored_values"):
+              "habit_reward", "learner_pipeline_frac"):
         if cfg.get(k) not in (None, False, 0, 0.0):
             bad.append(f"cf_credit with {k} is not supported (its rows / rewards are not in the fork return)")
     if cfg.get("shaping", "none") not in PHI_MODES:
