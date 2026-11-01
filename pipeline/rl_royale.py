@@ -3060,16 +3060,19 @@ def accum_backward(model, B: dict, R: dict, idx, micro: int, n_total: int, kw: d
     monitors: sums for the scaled losses / counts, max for the max-deviations, row-count-weighted means for the rest
     with minibatch_loss's own masks: gate-sampled rows for the gate KL / entropy, played rows for card / cell)."""
     sts, wts, total = [], [], None
-    gt, pt = max(1, int(B["gate_sampled"][idx].sum())), max(1, int(B["played"][idx].sum()))
+    gsm, plm = B["gate_sampled"], B["played"]
+    if "cf" in B:                                             # cf_credit rows: minibatch_loss's KL / entropy masks are the
+        gsm, plm = gsm & ~B["cf"], plm & ~B["cf"]
+    gt, pt = max(1, int(gsm[idx].sum())), max(1, int(plm[idx].sum()))
     for s in range(0, len(idx), micro):
         ii = idx[s:s + micro]
-        kw_ = {"g": int(B["gate_sampled"][ii].sum()) / gt, "p": int(B["played"][ii].sum()) / pt, "n": len(ii) / len(idx)}
+        kw_ = {"g": int(gsm[ii].sum()) / gt, "p": int(plm[ii].sum()) / pt, "n": len(ii) / len(idx)}
         loss, st = minibatch_loss(model, B, R, ii, n_total=n_total * len(ii) / len(idx), kl_w=kw_, **kw)
         if torch.isfinite(loss):
             loss.backward()
         total = loss.detach() if total is None else total + loss.detach()
         sts.append(st)
-        wts.append({"g": int(B["gate_sampled"][ii].sum()), "p": int(B["played"][ii].sum()), "n": len(ii),
+        wts.append({"g": int(gsm[ii].sum()), "p": int(plm[ii].sum()), "n": len(ii),
                     "post_n": st.get("post_n") or 0, "ab_n": st.get("ab_n") or 0, "th_n": st.get("th_n") or 0})
     out = {}
     for k in sts[0]:
@@ -3141,8 +3144,8 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
     stop = None
     pe = int(cfg.get("ent_pair_every") or 0) if ent_ref is not None else 0   # LOOP-LRN paired entropy baseline
     micro = int(cfg.get("micro_batch") or 0)                  # LEARNER-SCALE gradient accumulation (0 = off)
-    if micro and ("cf" in B or "low" in R):
-        raise SystemExit("micro_batch: cf_credit rows / kl_ref_gate_max_elixir are not supported (their monitors)")
+    if micro and "low" in R:
+        raise SystemExit("micro_batch: kl_ref_gate_max_elixir is not supported (its monitors)")
     ka = cfg.get("kl_lr_target")                              # LEARNER-SCALE KL-adaptive lr (None = off); policy steps only
     ka = None if ka is None or (vf is not None and not vf["policy"]) else float(ka)
     kl_last, lr0 = None, (float(cfg["lr"]) if ka is not None else None)
