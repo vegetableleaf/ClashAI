@@ -3050,7 +3050,8 @@ _ST_W = {"kl_gate": "g", "ent_gate": "g", "ent0_gate": "g", "kl_card": "p", "kl_
          "ent_posture": "post_n", "ent_ability": "ab_n", "is_trunc_frac": "n", "kl_th": "n", "th_clip_frac": "th_n"}
 
 
-def accum_backward(model, B: dict, R: dict, idx, micro: int, n_total: int, kw: dict) -> tuple[torch.Tensor, dict]:
+def accum_backward(model, B: dict, R: dict, idx, micro: int, n_total: int, kw: dict,
+                   dp=None) -> tuple[torch.Tensor, dict]:
     """LEARNER-SCALE ``micro_batch``: minibatch_loss of the minibatch ``idx`` computed in micro-batches of ``micro`` rows,
     each backpropagated at once (memory: one micro-batch's graph). Micro-batch j runs with n_total x |j| / |idx|, so its
     loss is |j| / |idx| x its own full-batch estimate and the micro losses (and gradients) SUM to the minibatch's
@@ -3058,22 +3059,50 @@ def accum_backward(model, B: dict, R: dict, idx, micro: int, n_total: int, kw: d
     rows of that mask (``kl_w``; before 10-29 they were summed per micro-batch, i.e. x the micro-batch count when beta > 0
     or th_anchor is on). The caller zeroes the gradients first. -> (summed loss, detached; the minibatch's
     monitors: sums for the scaled losses / counts, max for the max-deviations, row-count-weighted means for the rest
-    with minibatch_loss's own masks: gate-sampled rows for the gate KL / entropy, played rows for card / cell)."""
+    with minibatch_loss's own masks: gate-sampled rows for the gate KL / entropy, played rows for card / cell).
+    ``dp`` (MGPU, pipeline.learner_dp.DPCtx; None = the code above, unchanged): data-parallel learner. Micro-batch j is
+    computed on rank j % world only (each rank backpropagates its own, so its .grad is the SUM of its micro-batches; the
+    caller then sums the ranks' grads), and every rank gets the per-micro-batch (loss, monitors) of all of them, merged in
+    micro-batch order below: the merged loss / monitors (so the KL stop and every later decision) are the same on every
+    rank and equal the single-GPU values (each micro-batch is the same computation wherever it runs)."""
     sts, wts, total = [], [], None
     gsm, plm = B["gate_sampled"], B["played"]
     if "cf" in B:                                             # cf_credit rows: minibatch_loss's KL / entropy masks are the
         gsm, plm = gsm & ~B["cf"], plm & ~B["cf"]
     gt, pt = max(1, int(gsm[idx].sum())), max(1, int(plm[idx].sum()))
-    for s in range(0, len(idx), micro):
-        ii = idx[s:s + micro]
-        kw_ = {"g": int(gsm[ii].sum()) / gt, "p": int(plm[ii].sum()) / pt, "n": len(ii) / len(idx)}
-        loss, st = minibatch_loss(model, B, R, ii, n_total=n_total * len(ii) / len(idx), kl_w=kw_, **kw)
-        if torch.isfinite(loss):
-            loss.backward()
-        total = loss.detach() if total is None else total + loss.detach()
-        sts.append(st)
-        wts.append({"g": int(gsm[ii].sum()), "p": int(plm[ii].sum()), "n": len(ii),
-                    "post_n": st.get("post_n") or 0, "ab_n": st.get("ab_n") or 0, "th_n": st.get("th_n") or 0})
+    if dp is not None:
+        mine, wc = [], []
+        for j, s in enumerate(range(0, len(idx), micro)):
+            ii = idx[s:s + micro]
+            wc.append({"g": int(gsm[ii].sum()), "p": int(plm[ii].sum()), "n": len(ii)})
+            if not dp.owns(j):
+                continue
+            kw_ = {"g": wc[j]["g"] / gt, "p": wc[j]["p"] / pt, "n": len(ii) / len(idx)}
+            loss, st = minibatch_loss(model, B, R, ii, n_total=n_total * len(ii) / len(idx), kl_w=kw_, **kw)
+            if torch.isfinite(loss):
+                loss.backward()
+            mine.append((j, float(loss.detach()), st))
+        got = {j: (lf, st) for part in dp.gather(mine) for j, lf, st in part}
+        lt = 0.0                                              # python float64 adds in micro-batch order = the float64 tensor adds
+        for j in range(len(wc)):
+            lt += got[j][0]
+            st = got[j][1]
+            sts.append(st)
+            wts.append({**wc[j], "post_n": st.get("post_n") or 0, "ab_n": st.get("ab_n") or 0, "th_n": st.get("th_n") or 0})
+        total = torch.as_tensor(lt, dtype=torch.float64, device=idx.device)
+        if len(sts) == 1:                                     # one piece = the whole minibatch: its own monitors, as unsplit
+            return total, dict(sts[0])
+    else:
+        for s in range(0, len(idx), micro):
+            ii = idx[s:s + micro]
+            kw_ = {"g": int(gsm[ii].sum()) / gt, "p": int(plm[ii].sum()) / pt, "n": len(ii) / len(idx)}
+            loss, st = minibatch_loss(model, B, R, ii, n_total=n_total * len(ii) / len(idx), kl_w=kw_, **kw)
+            if torch.isfinite(loss):
+                loss.backward()
+            total = loss.detach() if total is None else total + loss.detach()
+            sts.append(st)
+            wts.append({"g": int(gsm[ii].sum()), "p": int(plm[ii].sum()), "n": len(ii),
+                        "post_n": st.get("post_n") or 0, "ab_n": st.get("ab_n") or 0, "th_n": st.get("th_n") or 0})
     out = {}
     for k in sts[0]:
         vals = [st[k] for st in sts]
@@ -3094,7 +3123,7 @@ def accum_backward(model, B: dict, R: dict, idx, micro: int, n_total: int, kw: d
 
 def ppo_update(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.random.Generator,
                vf: Optional[dict] = None, posture: Optional[dict] = None, ability: Optional[dict] = None,
-               ent_ref=None, th_ref=None) -> dict:
+               ent_ref=None, th_ref=None, dp=None) -> dict:
     """``ppo_epochs`` passes over the batch in random minibatches. Returns the monitors; ``first`` = epoch 0 minibatch 0
     (the on-policy check), ``nonfinite`` set (and the step skipped) on a non-finite loss or gradient norm.
     ``vf`` (gae mode, ``minibatch_loss``): + ``l_v``; ``vf["policy"]`` False = critic warm-up: ONLY ``value_head``
@@ -3110,13 +3139,16 @@ def ppo_update(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
     (no_grad, no RNG: the steps are unchanged).
     ``cfg["micro_batch"]`` m (LEARNER-SCALE; absent / null = off): a minibatch larger than m rows is computed in micro-batches
     of m rows with gradient accumulation (``accum_backward``): the same loss, gradient, clip and step as one forward of
-    the whole minibatch (fp32 summation order aside), so ``minibatch`` can be 32k-131k rows on one GPU."""
+    the whole minibatch (fp32 summation order aside), so ``minibatch`` can be 32k-131k rows on one GPU.
+    ``dp`` (MGPU, pipeline.learner_dp.DPCtx; None = off, the code unchanged): data-parallel learner. Every rank calls this
+    with identical B / R / cfg / rng state; each minibatch's micro-batches are dealt to the ranks (``accum_backward``), the
+    ranks' gradients are summed before the clip, every rank takes the same step. Needs ``micro_batch``."""
     frozen = [p for n, p in model.named_parameters()
               if vf is not None and not vf["policy"] and not n.startswith("value_head.") and p.requires_grad]
     for p in frozen:
         p.requires_grad_(False)
     try:
-        return _ppo_steps(model, opt, B, R, cfg, beta, rng, vf, posture, ability, ent_ref, th_ref)
+        return _ppo_steps(model, opt, B, R, cfg, beta, rng, vf, posture, ability, ent_ref, th_ref, dp)
     finally:
         for p in frozen:
             p.requires_grad_(True)
@@ -3124,7 +3156,7 @@ def ppo_update(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
 
 def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.random.Generator,
                vf: Optional[dict], posture: Optional[dict] = None, ability: Optional[dict] = None, ent_ref=None,
-               th_ref=None) -> dict:
+               th_ref=None, dp=None) -> dict:
     N = len(B["A"])
     dev = B["A"].device
     mb = int(cfg["minibatch"])
@@ -3146,6 +3178,13 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
     micro = int(cfg.get("micro_batch") or 0)                  # LEARNER-SCALE gradient accumulation (0 = off)
     if micro and "low" in R:
         raise SystemExit("micro_batch: kl_ref_gate_max_elixir is not supported (its monitors)")
+    if dp is not None:                                        # MGPU: every minibatch goes through accum_backward (a piece per rank)
+        if not micro:
+            raise SystemExit("learner data-parallel needs micro_batch (a minibatch is split in micro-batches across the ranks)")
+        if "low" in R or cfg.get("gate_baseline") is not None:
+            raise SystemExit("learner data-parallel: kl_ref_gate_max_elixir / gate_baseline are not supported")
+        dp_heads = [h for h in (ability and ability["head"], posture and posture["head"], vf and vf.get("ctx_head"))
+                    if h is not None]
     ka = cfg.get("kl_lr_target")                              # LEARNER-SCALE KL-adaptive lr (None = off); policy steps only
     ka = None if ka is None or (vf is not None and not vf["policy"]) else float(ka)
     kl_last, lr0 = None, (float(cfg["lr"]) if ka is not None else None)
@@ -3195,11 +3234,12 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
                       **({"decoupled": cfg["ppo_decoupled"]} if cfg.get("ppo_decoupled") is not None else {}),
                       **({"gate_bl": gbl} if gbl is not None else {}),
                       **({"th_anchor": (float(cfg["th_anchor"]), th_ref)} if th_ref is not None else {}))   # OPP-LEARN-C
-            if micro and micro < len(idx):                    # LEARNER-SCALE micro_batch: the same minibatch loss and
+            acc = bool(micro) and (micro < len(idx) or dp is not None)   # (dp: even one piece, so every rank joins the reduce)
+            if acc:                                           # LEARNER-SCALE micro_batch: the same minibatch loss and
                 for o in (opt, ctx_opt, post_opt, ab_opt):    # gradient, accumulated over micro-batches (backward per
                     if o is not None:                         # micro-batch; the KL check below sees the whole minibatch)
                         o.zero_grad(set_to_none=True)
-                loss, st = accum_backward(model, B, R, idx, micro, N, kw)
+                loss, st = accum_backward(model, B, R, idx, micro, N, kw, **({"dp": dp} if dp is not None else {}))
             else:
                 loss, st = minibatch_loss(model, B, R, idx, n_total=N, **kw)
             if first is None:
@@ -3214,7 +3254,7 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
                 if not last_ep:
                     last_ep.extend(cur or ep0)
                 return summary(None)
-            if not (micro and micro < len(idx)):              # (micro_batch: zeroed and backpropagated above)
+            if not acc:                                       # (micro_batch: zeroed and backpropagated above)
                 opt.zero_grad(set_to_none=True)
                 if ctx_opt is not None:
                     ctx_opt.zero_grad(set_to_none=True)
@@ -3223,6 +3263,8 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
                 if ab_opt is not None:
                     ab_opt.zero_grad(set_to_none=True)
                 loss.backward()
+            if dp is not None:                                # MGPU: sum the ranks' gradients (same on every rank after this)
+                dp.reduce_grads([p for m in [model, *dp_heads] for p in m.parameters() if p.requires_grad])
             gn = torch.nn.utils.clip_grad_norm_(model.parameters(), float(cfg["grad_clip"]))
             if not torch.isfinite(gn):
                 return summary(f"grad norm {float(gn)} at epoch {ep} minibatch {s // mb}")
