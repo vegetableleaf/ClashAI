@@ -1,0 +1,922 @@
+{
+"cards": [
+{
+"card_id": 26000000,
+"display_name": "Knight",
+"evolution_form_id": 13000000,
+"hero_form_id": 203000000
+},
+{
+"card_id": 26000001,
+"display_name": "Archer",
+"evolution_form_id": 13000001,
+"hero_form_id": null
+},
+{
+"card_id": 26000002,
+"display_name": "Goblins",
+"evolution_form_id": null,
+"hero_form_id": 203000002
+},
+{
+"card_id": 26000003,
+"display_name": "Giant",
+"evolution_form_id": null,
+"hero_form_id": 203000003
+},
+{
+"card_id": 26000004,
+"display_name": "Pekka",
+"evolution_form_id": 13000004,
+"hero_form_id": null
+},
+{
+"card_id": 26000005,
+"display_name": "Minions",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000006,
+"display_name": "Balloon",
+"evolution_form_id": null,
+"hero_form_id": 203000006
+},
+{
+"card_id": 26000007,
+"display_name": "Witch",
+"evolution_form_id": 13000007,
+"hero_form_id": null
+},
+{
+"card_id": 26000008,
+"display_name": "Barbarians",
+"evolution_form_id": 13000008,
+"hero_form_id": null
+},
+{
+"card_id": 26000009,
+"display_name": "Golem",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000010,
+"display_name": "Skeletons",
+"evolution_form_id": 13000010,
+"hero_form_id": null
+},
+{
+"card_id": 26000011,
+"display_name": "Valkyrie",
+"evolution_form_id": 13000011,
+"hero_form_id": 203000011
+},
+{
+"card_id": 26000012,
+"display_name": "SkeletonArmy",
+"evolution_form_id": 13000012,
+"hero_form_id": null
+},
+{
+"card_id": 26000013,
+"display_name": "Bomber",
+"evolution_form_id": 13000013,
+"hero_form_id": null
+},
+{
+"card_id": 26000014,
+"display_name": "Musketeer",
+"evolution_form_id": 13000014,
+"hero_form_id": 203000014
+},
+{
+"card_id": 26000015,
+"display_name": "BabyDragon",
+"evolution_form_id": 13000015,
+"hero_form_id": null
+},
+{
+"card_id": 26000016,
+"display_name": "Prince",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000017,
+"display_name": "Wizard",
+"evolution_form_id": 13000017,
+"hero_form_id": 203000017
+},
+{
+"card_id": 26000018,
+"display_name": "MiniPekka",
+"evolution_form_id": null,
+"hero_form_id": 203000018
+},
+{
+"card_id": 26000019,
+"display_name": "SpearGoblins",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000020,
+"display_name": "GiantSkeleton",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000021,
+"display_name": "HogRider",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000022,
+"display_name": "MinionHorde",
+"evolution_form_id": 13000022,
+"hero_form_id": null
+},
+{
+"card_id": 26000023,
+"display_name": "IceWizard",
+"evolution_form_id": null,
+"hero_form_id": 203000023
+},
+{
+"card_id": 26000024,
+"display_name": "RoyalGiant",
+"evolution_form_id": 13000024,
+"hero_form_id": null
+},
+{
+"card_id": 26000025,
+"display_name": "SkeletonWarriors",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000026,
+"display_name": "Princess",
+"evolution_form_id": 13000026,
+"hero_form_id": null
+},
+{
+"card_id": 26000027,
+"display_name": "DarkPrince",
+"evolution_form_id": null,
+"hero_form_id": 203000027
+},
+{
+"card_id": 26000028,
+"display_name": "ThreeMusketeers",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000029,
+"display_name": "LavaHound",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000030,
+"display_name": "IceSpirits",
+"evolution_form_id": 13000030,
+"hero_form_id": null
+},
+{
+"card_id": 26000031,
+"display_name": "FireSpirits",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000032,
+"display_name": "Miner",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000033,
+"display_name": "ZapMachine",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000034,
+"display_name": "Bowler",
+"evolution_form_id": null,
+"hero_form_id": 203000034
+},
+{
+"card_id": 26000035,
+"display_name": "RageBarbarian",
+"evolution_form_id": 13000035,
+"hero_form_id": null
+},
+{
+"card_id": 26000036,
+"display_name": "BattleRam",
+"evolution_form_id": 13000036,
+"hero_form_id": null
+},
+{
+"card_id": 26000037,
+"display_name": "InfernoDragon",
+"evolution_form_id": 13000037,
+"hero_form_id": null
+},
+{
+"card_id": 26000038,
+"display_name": "IceGolemite",
+"evolution_form_id": null,
+"hero_form_id": 203000038
+},
+{
+"card_id": 26000039,
+"display_name": "MegaMinion",
+"evolution_form_id": null,
+"hero_form_id": 203000039
+},
+{
+"card_id": 26000040,
+"display_name": "BlowdartGoblin",
+"evolution_form_id": 13000040,
+"hero_form_id": null
+},
+{
+"card_id": 26000041,
+"display_name": "GoblinGang",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000042,
+"display_name": "ElectroWizard",
+"evolution_form_id": null,
+"hero_form_id": 203000042
+},
+{
+"card_id": 26000043,
+"display_name": "AngryBarbarians",
+"evolution_form_id": 13000043,
+"hero_form_id": null
+},
+{
+"card_id": 26000044,
+"display_name": "Hunter",
+"evolution_form_id": 13000044,
+"hero_form_id": null
+},
+{
+"card_id": 26000045,
+"display_name": "AxeMan",
+"evolution_form_id": 13000045,
+"hero_form_id": null
+},
+{
+"card_id": 26000046,
+"display_name": "Assassin",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000047,
+"display_name": "RoyalRecruits",
+"evolution_form_id": 13000047,
+"hero_form_id": null
+},
+{
+"card_id": 26000048,
+"display_name": "DarkWitch",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000049,
+"display_name": "Bats",
+"evolution_form_id": 13000049,
+"hero_form_id": null
+},
+{
+"card_id": 26000050,
+"display_name": "Ghost",
+"evolution_form_id": 13000050,
+"hero_form_id": null
+},
+{
+"card_id": 26000051,
+"display_name": "RamRider",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000052,
+"display_name": "MiniSparkys",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000053,
+"display_name": "Rascals",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000054,
+"display_name": "MovingCannon",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000055,
+"display_name": "MegaKnight",
+"evolution_form_id": 13000055,
+"hero_form_id": null
+},
+{
+"card_id": 26000056,
+"display_name": "SkeletonBalloon",
+"evolution_form_id": 13000056,
+"hero_form_id": null
+},
+{
+"card_id": 26000057,
+"display_name": "DartBarrell",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000058,
+"display_name": "Wallbreakers",
+"evolution_form_id": 13000058,
+"hero_form_id": null
+},
+{
+"card_id": 26000059,
+"display_name": "RoyalHogs",
+"evolution_form_id": 13000059,
+"hero_form_id": null
+},
+{
+"card_id": 26000060,
+"display_name": "GoblinGiant",
+"evolution_form_id": 13000060,
+"hero_form_id": null
+},
+{
+"card_id": 26000061,
+"display_name": "Fisherman",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000062,
+"display_name": "EliteArcher",
+"evolution_form_id": null,
+"hero_form_id": 203000062
+},
+{
+"card_id": 26000063,
+"display_name": "ElectroDragon",
+"evolution_form_id": 13000063,
+"hero_form_id": null
+},
+{
+"card_id": 26000064,
+"display_name": "Firecracker",
+"evolution_form_id": 13000064,
+"hero_form_id": null
+},
+{
+"card_id": 26000065,
+"display_name": "MightyMiner",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000066,
+"display_name": "SuperWitch",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000067,
+"display_name": "ElixirGolem",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000068,
+"display_name": "BattleHealer",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000069,
+"display_name": "SkeletonKing",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000070,
+"display_name": "SuperLavaHound",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000071,
+"display_name": "SuperEliteArcher",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000072,
+"display_name": "ArcherQueen",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000073,
+"display_name": "SuperHogRider",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000074,
+"display_name": "GoldenKnight",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000075,
+"display_name": "SuperIceGolemite",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000076,
+"display_name": "CHAR_DISABLED_1",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000077,
+"display_name": "Monk",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000078,
+"display_name": "SuperArcher",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000079,
+"display_name": "RoyalRecruits_Chess",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000080,
+"display_name": "SkeletonDragons",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000081,
+"display_name": "SuperHogRiderTerry",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000082,
+"display_name": "SuperMiniPekka",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000083,
+"display_name": "WitchMother",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000084,
+"display_name": "ElectroSpirit",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000085,
+"display_name": "ElectroGiant",
+"evolution_form_id": 13000075,
+"hero_form_id": null
+},
+{
+"card_id": 26000086,
+"display_name": "PrinceBuff",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000087,
+"display_name": "Phoenix",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000088,
+"display_name": "CHAR_DISABLED_3",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000089,
+"display_name": "CHAR_DISABLED_4",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000090,
+"display_name": "CHAR_DISABLED_5",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000091,
+"display_name": "CHAR_DISABLED_6",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000092,
+"display_name": "CHAR_DISABLED_7",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000093,
+"display_name": "LittlePrince",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000094,
+"display_name": "TriWizards",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000095,
+"display_name": "GoblinDemolisher",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000096,
+"display_name": "GoblinMachine",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000097,
+"display_name": "SuspiciousBush",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000098,
+"display_name": "SuperKnight",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000099,
+"display_name": "Goblinstein",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000100,
+"display_name": "SkeletonWarriors_SpookyChess",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000101,
+"display_name": "GiantBuffer",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000102,
+"display_name": "Berserker",
+"evolution_form_id": null,
+"hero_form_id": 203000076
+},
+{
+"card_id": 26000103,
+"display_name": "BossBandit",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000104,
+"display_name": "MergeMaiden_Normal",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000105,
+"display_name": "MergeMaiden_Mounted",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000106,
+"display_name": "Ronin",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 27000000,
+"display_name": "Cannon",
+"evolution_form_id": 13000096,
+"hero_form_id": null
+},
+{
+"card_id": 27000001,
+"display_name": "GoblinHut",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 27000002,
+"display_name": "Mortar",
+"evolution_form_id": 13000098,
+"hero_form_id": null
+},
+{
+"card_id": 27000003,
+"display_name": "InfernoTower",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 27000004,
+"display_name": "BombTower",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 27000005,
+"display_name": "BarbarianHut",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 27000006,
+"display_name": "Tesla",
+"evolution_form_id": 13000102,
+"hero_form_id": null
+},
+{
+"card_id": 27000007,
+"display_name": "Elixir Collector",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 27000008,
+"display_name": "Xbow",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 27000009,
+"display_name": "Tombstone",
+"evolution_form_id": null,
+"hero_form_id": 203000088
+},
+{
+"card_id": 27000010,
+"display_name": "FirespiritHut",
+"evolution_form_id": 13000106,
+"hero_form_id": null
+},
+{
+"card_id": 27000011,
+"display_name": "BarbarianLauncher",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 27000012,
+"display_name": "GoblinCage",
+"evolution_form_id": 13000107,
+"hero_form_id": null
+},
+{
+"card_id": 27000013,
+"display_name": "GoblinDrill",
+"evolution_form_id": 13000108,
+"hero_form_id": null
+},
+{
+"card_id": 27000014,
+"display_name": "GoblinPartyHut",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 27000015,
+"display_name": "DarkElixir_Bottle",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 27000016,
+"display_name": "ElixirBarrel",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 27000017,
+"display_name": "GoblinRocketSilo",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 28000000,
+"display_name": "Fireball",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 28000001,
+"display_name": "Arrows",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 28000002,
+"display_name": "Rage",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 28000003,
+"display_name": "Rocket",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 28000004,
+"display_name": "GoblinBarrel",
+"evolution_form_id": 13000081,
+"hero_form_id": null
+},
+{
+"card_id": 28000005,
+"display_name": "Freeze",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 28000006,
+"display_name": "Mirror",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 28000007,
+"display_name": "Lightning",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 28000008,
+"display_name": "Zap",
+"evolution_form_id": 13000085,
+"hero_form_id": null
+},
+{
+"card_id": 28000009,
+"display_name": "Poison",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 28000010,
+"display_name": "Graveyard",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 28000011,
+"display_name": "Log",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 28000012,
+"display_name": "Tornado",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 28000013,
+"display_name": "Clone",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 28000014,
+"display_name": "Earthquake",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 28000015,
+"display_name": "BarbLog",
+"evolution_form_id": null,
+"hero_form_id": 203000107
+},
+{
+"card_id": 28000016,
+"display_name": "Heal",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 28000017,
+"display_name": "Snowball",
+"evolution_form_id": 13000094,
+"hero_form_id": null
+},
+{
+"card_id": 28000018,
+"display_name": "RoyalDelivery",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 28000019,
+"display_name": "GlobalClone",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 28000020,
+"display_name": "GoblinPartyRocket",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 28000021,
+"display_name": "WarmSpell",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 28000022,
+"display_name": "GlobalLightning",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 28000023,
+"display_name": "DarkMagic",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 28000024,
+"display_name": "GoblinCurse",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 28000025,
+"display_name": "MergeMaiden",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 28000026,
+"display_name": "Vines",
+"evolution_form_id": null,
+"hero_form_id": null
+},
+{
+"card_id": 26000107,
+"display_name": "MinionGiant",
+"evolution_form_id": null,
+"hero_form_id": null
+}
+]
+}

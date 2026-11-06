@@ -1,0 +1,6 @@
+numpy>=1.26
+PyYAML>=6.0
+torch
+msgspec
+royalesim
+royalegym

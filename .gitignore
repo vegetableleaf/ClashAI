@@ -1,0 +1,16 @@
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+data/
+*.pt
+*.mp4
+research/ext/
+graphify-out/
+.DS_Store
+Thumbs.db
+scratchpad/

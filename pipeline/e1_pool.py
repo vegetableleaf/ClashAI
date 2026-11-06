@@ -582,12 +582,7 @@ _CLASSES: dict[int, type] = {}
 
 
 def env_module():
-    """"""
-    mod = sys.modules.get("l62_env")
-    if mod is None:
-        from pipeline import policy_io
-        mod = policy_io._load_env()
-    return mod
+    raise RuntimeError("only --engine royale is available")
 
 
 class PoolV1Env:
