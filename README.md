@@ -40,6 +40,3 @@ python -m pipeline.e1_eval --help
 Checkpoints and datasets are not in this repository, so training needs an initial checkpoint and a replay pool of your own
 (see the `init` and `pool` keys in `pipeline/rl_royale.yaml`). `tools/` downloads a public replay set.
 
-## Support
-
-See the Sponsor button on this page.
